@@ -1,9 +1,15 @@
 package com.sberbank.pfm.test.concordion.extensions.exam.rest.commands;
 
 import com.sberbank.pfm.test.concordion.extensions.exam.PlaceholdersResolver;
-import org.concordion.api.*;
+import com.sberbank.pfm.test.concordion.extensions.exam.html.Html;
+import org.concordion.api.CommandCall;
+import org.concordion.api.CommandCallList;
+import org.concordion.api.Evaluator;
+import org.concordion.api.ResultRecorder;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
+import static com.sberbank.pfm.test.concordion.extensions.exam.html.Html.*;
+import static com.sberbank.pfm.test.concordion.extensions.exam.rest.commands.RequestExecutor.fromEvaluator;
 
 public class CaseCommand extends RestVerifyCommand {
     private static final String DESC = "desc";
@@ -12,82 +18,62 @@ public class CaseCommand extends RestVerifyCommand {
     private int number = 0;
 
     @Override
-    public void execute(CommandCall commandCall, Evaluator evaluator, ResultRecorder resultRecorder) {
-        CommandCallList childCommands = commandCall.getChildren();
-        childCommands.setUp(evaluator, resultRecorder);
+    public void execute(CommandCall cmd, Evaluator eval, ResultRecorder resultRecorder) {
+        CommandCallList childCommands = cmd.getChildren();
+        childCommands.setUp(eval, resultRecorder);
 
-        Element element = commandCall.getElement();
-        String urlParams = element.getAttributeValue(URL_PARAMS);
-        if (urlParams != null) {
-            element.removeAttribute(URL_PARAMS);
-        }
+        final String expectedStatus = "HTTP/1.1 200 OK";
+        Html statusTd = td(expectedStatus);
+        Html root = new Html(cmd.getElement()).childs(statusTd);
 
-        RequestExecutor executor = RequestExecutor.fromEvaluator(evaluator).urlParams(urlParams);
+        RequestExecutor executor = fromEvaluator(eval).urlParams(root.takeAwayAttr(URL_PARAMS));
 
-        String cookies = element.getAttributeValue(COOKIES);
+        String cookies = root.takeAwayAttr(COOKIES);
         if (cookies != null) {
-            cookies = PlaceholdersResolver.resolve(cookies, evaluator);
-            element.removeAttribute(COOKIES);
+            cookies = PlaceholdersResolver.resolve(cookies, eval);
             executor.cookies(cookies);
         }
 
         executor.execute();
-        childCommands.execute(evaluator, resultRecorder);
-        childCommands.verify(evaluator, resultRecorder);
-    }
-
-    @Override
-    public void verify(CommandCall commandCall, Evaluator evaluator, ResultRecorder resultRecorder) {
-        RequestExecutor executor = RequestExecutor.fromEvaluator(evaluator);
-        final String colspan = executor.hasRequestBody() ? "3" : "2";
-
-        Element element = commandCall.getElement();
-
-        String expectedStatus = "HTTP/1.1 200 OK";
-
-        Element td = new Element("td");
-        td.appendText(expectedStatus);
-        element.appendChild(td);
-
-        Element descTD = new Element("td");
-        descTD.addAttribute("colspan", colspan);
-        descTD.addStyleClass("text-muted");
-        descTD.appendText(caseDesc(element));
-
-        Element tr = new Element("tr");
-        element.moveChildrenTo(tr);
-        element.appendSister(tr);
-
-        Element getDescTD = new Element("td");
-        getDescTD.addAttribute("colspan", colspan);
-
-        Element getDescBlock = new Element("div");
-        getDescBlock.appendChild(new Element("i").appendText(executor.requestMethod() + " "));
-        getDescBlock.appendChild(new Element("code").appendText(executor.requestUrlWithParams()));
-        String cookies = executor.cookies();
-        if (!isNullOrEmpty(cookies)) {
-            getDescBlock.appendChild(new Element("i").appendText(" Cookies "));
-            getDescBlock.appendChild(new Element("code").appendText(cookies));
-        }
-
-        getDescTD.appendChild(getDescBlock);
-
-        Element tr2 = new Element("tr");
-        tr2.appendChild(getDescTD);
-        element.appendSister(tr2);
-
-        element.appendChild(descTD);
+        childCommands.execute(eval, resultRecorder);
+        childCommands.verify(eval, resultRecorder);
 
         String actualStatus = executor.statusLine();
         if (expectedStatus.equals(actualStatus)) {
-            success(resultRecorder, td);
+            success(resultRecorder, statusTd.el());
         } else {
-            failure(resultRecorder, td, actualStatus, expectedStatus);
+            failure(resultRecorder, statusTd.el(), actualStatus, expectedStatus);
         }
     }
 
-    private String caseDesc(Element element) {
-        String desc = element.getAttributeValue(DESC);
+    @Override
+    public void verify(CommandCall cmd, Evaluator evaluator, ResultRecorder resultRecorder) {
+        RequestExecutor executor = fromEvaluator(evaluator);
+        final String colspan = executor.hasRequestBody() ? "3" : "2";
+
+        Html root = new Html(cmd.getElement()).dropAllTo(tr());
+        Html div = div().childs(
+                i(executor.requestMethod() + " "),
+                code(executor.requestUrlWithParams())
+        );
+        String cookies = executor.cookies();
+        if (!isNullOrEmpty(cookies)) {
+            div.childs(i(" Cookies "), code(cookies));
+        }
+
+        root.childs(
+                td(caseDesc(root)).attr("colspan", colspan).muted()
+        ).below(
+                tr().childs(
+                        td().attr("colspan", colspan).childs(
+                                div
+                        )
+                )
+        );
+    }
+
+    private String caseDesc(Html element) {
+        String desc = element.attr(DESC);
         return ++number + ") " + (desc == null ? "" : desc);
     }
 }

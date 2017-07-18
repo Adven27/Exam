@@ -1,7 +1,7 @@
 package com.sberbank.pfm.test.concordion.extensions.exam.db.commands;
 
+import com.sberbank.pfm.test.concordion.extensions.exam.html.Html;
 import org.concordion.api.CommandCall;
-import org.concordion.api.Element;
 import org.concordion.api.Evaluator;
 import org.concordion.api.ResultRecorder;
 import org.dbunit.JdbcDatabaseTester;
@@ -22,7 +22,7 @@ public class DBSetCommand extends DBCommand {
     public void setUp(CommandCall commandCall, Evaluator evaluator, ResultRecorder resultRecorder) {
         super.setUp(commandCall, evaluator, resultRecorder);
         try {
-            Element el = commandCall.getElement();
+            Html el = new Html(commandCall.getElement());
             renderTable(el, expectedTable);
             setUpDB(expectedTable, parseInsertMode(el));
         } catch (Exception e) {
@@ -49,8 +49,8 @@ public class DBSetCommand extends DBCommand {
         }
     }
 
-    private DatabaseOperation parseInsertMode(Element el) {
-        return el.getAttributeValue("mode") != null && el.getAttributeValue("mode").equals("add") ?
+    private DatabaseOperation parseInsertMode(Html el) {
+        return el.attr("mode") != null && el.attr("mode").equals("add") ?
                 INSERT : CLEAN_INSERT;
     }
 }

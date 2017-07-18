@@ -2,6 +2,7 @@ package com.sberbank.pfm.test.concordion.extensions.exam.db.commands;
 
 import com.sberbank.pfm.test.TableData;
 import com.sberbank.pfm.test.concordion.extensions.exam.PlaceholdersResolver;
+import com.sberbank.pfm.test.concordion.extensions.exam.html.Html;
 import org.concordion.api.*;
 import org.dbunit.JdbcDatabaseTester;
 import org.dbunit.dataset.Column;
@@ -11,11 +12,12 @@ import org.dbunit.dataset.ITable;
 import java.util.*;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
+import static com.sberbank.pfm.test.concordion.extensions.exam.html.Html.*;
 
 public class DBCommand extends AbstractCommand {
     protected final JdbcDatabaseTester dbTester;
-    protected ITable expectedTable;
     private final Map<String, String> remarks = new HashMap<>();
+    protected ITable expectedTable;
 
     public DBCommand(JdbcDatabaseTester dbTester) {
         this.dbTester = dbTester;
@@ -23,19 +25,18 @@ public class DBCommand extends AbstractCommand {
 
     @Override
     public void setUp(CommandCall commandCall, Evaluator evaluator, ResultRecorder resultRecorder) {
-        Element el = commandCall.getElement();
-        el.addStyleClass("table table-condensed");
+        Html root = new Html(commandCall.getElement()).style("table table-condensed");
         try {
-            expectedTable = TableData.filled(parseTableName(el), parseRows(el, evaluator), parseCols(el, evaluator));
+            expectedTable = TableData.filled(root.takeAwayAttr("table"), parseRows(root, evaluator), parseCols(root, evaluator));
         } catch (DataSetException e) {
             throw new RuntimeException(e);
         }
     }
 
-    protected TableData.Cols parseCols(Element el, Evaluator eval) {
+    protected TableData.Cols parseCols(Html el, Evaluator eval) {
         List<String> cols = new ArrayList<>();
         Map<String, Object> defaults = new HashMap<>();
-        String attr = el.getAttributeValue("cols");
+        String attr = el.takeAwayAttr("cols");
         if (attr != null) {
             for (String col : attr.split(",")) {
                 String c = col.trim();
@@ -58,30 +59,23 @@ public class DBCommand extends AbstractCommand {
                     }
                 }
             }
-            el.removeAttribute("cols");
         }
         return new TableData.Cols(defaults, cols.toArray(new String[cols.size()]));
     }
 
 
-    protected List<List<Object>> parseRows(Element el, Evaluator evaluator) {
+    protected List<List<Object>> parseRows(Html el, Evaluator evaluator) {
         List<List<Object>> result = new ArrayList<>();
-        for (Element r : el.getChildElements()) {
-            if ("row".equals(r.getLocalName())) {
-                result.add(parseValues(r, evaluator));
-                el.removeChild(r);
+        for (Html r : el.childs()) {
+            if ("row".equals(r.localName())) {
+                result.add(parseValues(evaluator, r.text()));
+                el.remove(r);
             }
         }
         return result;
     }
 
-    protected String parseTableName(Element el) {
-        final String table = el.getAttributeValue("table");
-        el.removeAttribute("table");
-        return table;
-    }
-
-    protected void renderTable(Element element, ITable t) {
+    protected void renderTable(Html root, ITable t) {
         try {
             List<List<String>> rows = new ArrayList<>();
             Column[] cols = t.getTableMetaData().getColumns();
@@ -97,7 +91,6 @@ public class DBCommand extends AbstractCommand {
                 }
             });
 
-
             for (int i = 0; i < t.getRowCount(); i++) {
                 List<String> row = new ArrayList<>();
                 for (Column col : cols) {
@@ -111,25 +104,27 @@ public class DBCommand extends AbstractCommand {
                 rows.add(row);
             }
 
-            String title = element.getAttributeValue("caption");
+            String title = root.takeAwayAttr("caption");
             if (!isNullOrEmpty(title)) {
-                element.appendChild(new Element("caption").appendText(title));
+                root.childs(caption(title));
             }
 
-            Element headerRow = new Element("tr");
+            Html header = tr();
             for (Column col : cols) {
-                headerRow.appendChild(new Element("th").appendText(col.getColumnName()).
-                        addStyleClass(markedColumn(col)));
+                header.childs(
+                        th(col.getColumnName()).style(markedColumn(col))
+                );
             }
-            element.appendChild(headerRow);
+            root.childs(header);
 
             for (List<String> row : rows) {
-                Element tr = new Element("tr");
+                Html tr = tr();
                 for (int i = 0; i < row.size(); i++) {
-                    tr.appendChild(new Element("td").appendText(row.get(i)).
-                            addStyleClass(markedColumn(cols[i])));
+                    tr.childs(
+                            td(row.get(i)).style(markedColumn(cols[i]))
+                    );
                 }
-                element.appendChild(tr);
+                root.childs(tr);
             }
         } catch (DataSetException e) {
             throw new RuntimeException(e);
@@ -140,9 +135,9 @@ public class DBCommand extends AbstractCommand {
         return remarks.containsKey(col.getColumnName()) ? "bg-info" : "text-muted";
     }
 
-    private List<Object> parseValues(Element r, Evaluator eval) {
+    private List<Object> parseValues(Evaluator eval, String text) {
         List<Object> values = new ArrayList<>();
-        String comaSeparatedValues = r.getText();
+        String comaSeparatedValues = text;
         if (!isNullOrEmpty(comaSeparatedValues)) {
             for (String val : comaSeparatedValues.split(",")) {
                 values.add(PlaceholdersResolver.resolveToObj(val, eval));

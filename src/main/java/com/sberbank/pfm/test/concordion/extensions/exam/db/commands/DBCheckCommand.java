@@ -1,6 +1,7 @@
 package com.sberbank.pfm.test.concordion.extensions.exam.db.commands;
 
 import com.sberbank.pfm.test.concordion.extensions.exam.db.DbResultRenderer;
+import com.sberbank.pfm.test.concordion.extensions.exam.html.Html;
 import org.concordion.api.CommandCall;
 import org.concordion.api.Element;
 import org.concordion.api.Evaluator;
@@ -21,6 +22,7 @@ import org.dbunit.dataset.SortedTable;
 
 import java.util.List;
 
+import static com.sberbank.pfm.test.concordion.extensions.exam.html.Html.*;
 import static org.concordion.api.Result.FAILURE;
 import static org.concordion.api.Result.SUCCESS;
 import static org.dbunit.Assertion.assertEquals;
@@ -50,13 +52,13 @@ public class DBCheckCommand extends DBCommand {
             final ITable actual = dbTester.getConnection().createTable(expectedTable.getTableMetaData().getTableName());
             final ITable filteredActual = includedColumnsTable(actual, expectedTable.getTableMetaData().getColumns());
 
-            assertEq(commandCall.getElement(), resultRecorder, expectedTable, filteredActual);
+            assertEq(new Html(commandCall.getElement()), resultRecorder, expectedTable, filteredActual);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    private void assertEq(Element element, ResultRecorder resultRecorder, ITable expected, ITable actual)
+    private void assertEq(Html root, ResultRecorder resultRecorder, ITable expected, ITable actual)
             throws DatabaseUnitException {
         final DiffCollectingFailureHandler diffHandler = new DiffCollectingFailureHandler();
         Column[] columns = expected.getTableMetaData().getColumns();
@@ -66,25 +68,22 @@ public class DBCheckCommand extends DBCommand {
         } catch (DbComparisonFailure f) {
             //TODO move to ResultRenderer
             resultRecorder.record(FAILURE);
-            Element div = new Element("div").addStyleClass("rest-failure bs-callout bs-callout-danger");
-            element.appendSister(div);
-            div.appendChild(new Element("div").appendText(f.getMessage()));
+            Html div = div().style("rest-failure bs-callout bs-callout-danger").childs(div(f.getMessage()));
+            root.below(div);
 
-            Element exp = new Element("table").addStyleClass("table table-condensed");
-            div.appendChild(new Element("span").appendText("Expected: "));
-            div.appendChild(exp);
-            element = exp;
+            Html exp = table();
+            div.childs(span("Expected: "), exp);
+            root = exp;
 
-            Element act = new Element("table").addStyleClass("table table-condensed");
+            Html act = table();
             renderTable(act, actual);
-            div.appendChild(new Element("span").appendText("but was: "));
-            div.appendChild(act);
+            div.childs(span("but was: "), act);
 
         }
         for (Difference diff : (List<Difference>) diffHandler.getDiffList()) {
             System.err.println("***** DIFF " + diff.toString());
         }
-        checkResult(element, expectedTable, diffHandler.getDiffList(), resultRecorder);
+        checkResult(root.el(), expectedTable, diffHandler.getDiffList(), resultRecorder);
     }
 
     private void checkResult(Element element, ITable expected, List<Difference> diffs, ResultRecorder resultRecorder) {

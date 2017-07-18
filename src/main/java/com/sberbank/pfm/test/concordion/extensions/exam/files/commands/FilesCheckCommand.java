@@ -5,6 +5,7 @@ import com.google.common.io.CharSource;
 import com.google.common.io.Files;
 import com.sberbank.pfm.test.concordion.extensions.exam.PlaceholdersResolver;
 import com.sberbank.pfm.test.concordion.extensions.exam.files.FilesResultRenderer;
+import com.sberbank.pfm.test.concordion.extensions.exam.html.Html;
 import nu.xom.Builder;
 import nu.xom.Document;
 import nu.xom.ParsingException;
@@ -25,6 +26,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.sberbank.pfm.test.concordion.extensions.exam.html.Html.*;
 import static java.io.File.separator;
 import static java.util.Arrays.asList;
 import static org.xmlunit.builder.Input.fromString;
@@ -39,16 +41,14 @@ public class FilesCheckCommand extends BaseCommand {
     /**
      * verify stage.
      *
-     * @param commandCall - command
-     * @param evaluator - evaluator
+     * @param commandCall    - command
+     * @param evaluator      - evaluator
      * @param resultRecorder - result
      */
     public void verify(CommandCall commandCall, Evaluator evaluator, ResultRecorder resultRecorder) {
-        Element element = commandCall.getElement();
-        element.addStyleClass("table table-condensed");
+        Html root = new Html(commandCall.getElement()).style("table table-condensed");
 
-        final String path = element.getAttributeValue("dir");
-        element.removeAttribute("dir");
+        final String path = root.takeAwayAttr("dir");
         if (path != null) {
             final File dir = new File(evaluator.evaluate(path).toString());
 
@@ -56,54 +56,53 @@ public class FilesCheckCommand extends BaseCommand {
             List<String> surplusFiles = names == null || names.length == 0 ?
                     new ArrayList<String>() : new ArrayList<>(asList(names));
 
-            addHeader(element, HEADER + dir.getPath(), FILE_CONTENT);
+            addHeader(root.el(), HEADER + dir.getPath(), FILE_CONTENT);
             boolean empty = true;
-            for (Element f : element.getChildElements()) {
-                if ("file".equals(f.getLocalName())) {
-                    final String expectedName = f.getAttributeValue("name");
+            for (Html f : root.childs()) {
+                if ("file".equals(f.localName())) {
+                    final String expectedName = f.attr("name");
                     File actual = new File(dir + separator + expectedName);
-                    Element tr = new Element("tr");
-                    Element fileNameTD = new Element("td");
-                    tr.appendChild(fileNameTD.appendText(expectedName));
-                    Element pre = new Element("pre");
+                    Html tr = tr();
+                    Html fileNameTD = td(expectedName);
+                    tr.childs(fileNameTD);
+                    Html pre = Html.pre();
                     if (!actual.exists()) {
                         resultRecorder.record(Result.FAILURE);
-                        announceFailure(fileNameTD, expectedName, null);
+                        announceFailure(fileNameTD.el(), expectedName, null);
                     } else {
                         resultRecorder.record(Result.SUCCESS);
-                        announceSuccess(fileNameTD);
+                        announceSuccess(fileNameTD.el());
                         surplusFiles.remove(expectedName);
                         if (f.hasChildren()) {
                             f.moveChildrenTo(pre);
                             f.moveAttributesTo(pre);
-                            checkContent(actual, evaluator, resultRecorder, pre);
+                            checkContent(actual, evaluator, resultRecorder, pre.el());
                         } else {
-                            pre.appendText(readFile(dir, expectedName));
+                            pre.text(readFile(dir, expectedName));
                         }
                     }
 
-                    Element td = new Element("td");
-                    td.appendChild(pre);
-                    tr.appendChild(td);
-                    element.appendChild(tr);
+                    Html td = td().childs(pre);
+                    tr.childs(td);
 
-                    element.removeChild(f);
+                    root.remove(f);
                     empty = false;
                 }
             }
             for (String file : surplusFiles) {
                 resultRecorder.record(Result.FAILURE);
-                Element tr = new Element("tr");
-                Element td = new Element("td");
-                tr.appendChild(td);
-                Element tdContent = new Element("td");
-                tdContent.appendChild(new Element("pre").appendText(readFile(dir, file)));
-                tr.appendChild(tdContent);
-                element.appendChild(tr);
-                announceFailure(td, null, file);
+                Html td = td();
+                Html tr = tr().childs(
+                        td,
+                        td().childs(
+                                pre().text(readFile(dir, file))
+                        )
+                );
+                root.childs(tr);
+                announceFailure(td.el(), null, file);
             }
             if (empty) {
-                addRow(element, EMPTY, "");
+                addRow(root.el(), EMPTY, "");
             }
         }
     }

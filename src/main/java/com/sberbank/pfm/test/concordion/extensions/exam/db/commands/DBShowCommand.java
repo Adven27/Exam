@@ -1,7 +1,7 @@
 package com.sberbank.pfm.test.concordion.extensions.exam.db.commands;
 
+import com.sberbank.pfm.test.concordion.extensions.exam.html.Html;
 import org.concordion.api.CommandCall;
-import org.concordion.api.Element;
 import org.concordion.api.Evaluator;
 import org.concordion.api.ResultRecorder;
 import org.dbunit.JdbcDatabaseTester;
@@ -19,13 +19,11 @@ public class DBShowCommand extends DBCommand {
 
     @Override
     public void setUp(CommandCall commandCall, Evaluator eval, ResultRecorder resultRecorder) {
-        Element el = commandCall.getElement();
-        el.addStyleClass("table table-condensed");
-
+        Html el = new Html(commandCall.getElement()).style("table table-condensed");
         IDatabaseConnection conn = null;
         try {
             conn = dbTester.getConnection();
-            renderTable(el, includedColumnsTable(conn.createTable(parseTableName(el)), parseCols(el, eval).cols()));
+            renderTable(el, includedColumnsTable(conn.createTable(el.takeAwayAttr("table")), parseCols(el, eval).cols()));
         } catch (Exception e) {
             throw new RuntimeException(e);
         } finally {

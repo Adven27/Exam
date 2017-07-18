@@ -2,14 +2,15 @@ package com.sberbank.pfm.test.concordion.extensions.exam.rest.commands;
 
 import com.sberbank.pfm.test.concordion.extensions.exam.PlaceholdersResolver;
 import com.sberbank.pfm.test.concordion.extensions.exam.commands.ExamCommand;
+import com.sberbank.pfm.test.concordion.extensions.exam.html.Html;
 import org.concordion.api.CommandCall;
-import org.concordion.api.Element;
 import org.concordion.api.Evaluator;
 import org.concordion.api.ResultRecorder;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.sberbank.pfm.test.concordion.extensions.exam.html.Html.*;
 import static com.sberbank.pfm.test.concordion.extensions.exam.rest.commands.RequestExecutor.newExecutor;
 
 public abstract class RequestCommand extends ExamCommand {
@@ -23,36 +24,37 @@ public abstract class RequestCommand extends ExamCommand {
     @Override
     public void setUp(CommandCall commandCall, Evaluator evaluator, ResultRecorder resultRecorder) {
         RequestExecutor executor = newExecutor(evaluator).method(method());
-        Element element = commandCall.getElement();
-        element.addStyleClass("bs-callout bs-callout-success");
+        Html root = new Html(commandCall.getElement()).success();
 
-        String url = attr(element, URL, "/", evaluator);
-        String type = attr(element, TYPE, "application/json", evaluator);
-        String cookies = cookies(evaluator, element);
-        Map<String, String> headersMap = headers(element);
+        String url = attr(root, URL, "/", evaluator);
+        String type = attr(root, TYPE, "application/json", evaluator);
+        String cookies = cookies(evaluator, root);
+        Map<String, String> headersMap = headers(root);
 
-        addRequestDescTo(element, url, type, cookies);
-        startTable(element, executor.hasRequestBody());
+        addRequestDescTo(root, url, type, cookies);
+        startTable(root, executor.hasRequestBody());
 
         executor.type(type).url(url).header(headersMap).cookies(cookies);
     }
 
-    private void startTable(Element element, boolean hasRequestBody) {
-        Element table = new Element("table");
-        table.addStyleClass("table table-condensed");
-        Element headerRow = new Element("tr");
+    private void startTable(Html html, boolean hasRequestBody) {
+        Html table = table();
+        Html header = tr();
         if (hasRequestBody) {
-            headerRow.appendChild(new Element("th").appendText("Request"));
+            header.childs(
+                    th("Request")
+            );
         }
-        headerRow.appendChild(new Element("th").appendText("Expected response"));
-        headerRow.appendChild(new Element("th").appendText("Status code"));
-        table.appendChild(headerRow);
-        element.moveChildrenTo(table);
-        element.appendChild(table);
+        header.childs(
+                th("Expected response"),
+                th("Status code")
+        );
+        table.childs(header);
+        html.dropAllTo(table);
     }
 
-    private Map<String, String> headers(Element element) {
-        String headers = element.getAttributeValue(HEADERS);
+    private Map<String, String> headers(Html html) {
+        String headers = html.takeAwayAttr(HEADERS);
         Map<String, String> headersMap = new HashMap<>();
         if (headers != null) {
             String[] headersArray = headers.split(",");
@@ -61,41 +63,37 @@ public abstract class RequestCommand extends ExamCommand {
                     headersMap.put(headersArray[i - 1], headersArray[i]);
                 }
             }
-            element.removeAttribute("headers");
         }
         return headersMap;
     }
 
-    private String cookies(Evaluator evaluator, Element element) {
-        String cookies = element.getAttributeValue(COOKIES);
+    private String cookies(Evaluator evaluator, Html html) {
+        String cookies = html.takeAwayAttr(COOKIES);
         if (cookies != null) {
             cookies = PlaceholdersResolver.resolve(cookies, evaluator);
-            element.removeAttribute(COOKIES);
         }
         evaluator.setVariable("#cookies", cookies);
         return cookies;
     }
 
-    private void addRequestDescTo(Element element, String url, String type, String cookies) {
-        Element div = new Element("div");
-        div.appendChild(new Element("span").appendText(method() + " "));
-        div.appendChild(new Element("code").appendText(url));
-        div.appendChild(new Element("span").appendText("  Content-Type  "));
-        div.appendChild(new Element("code").appendText(type));
+    private void addRequestDescTo(Html root, String url, String type, String cookies) {
+        final Html div = Html.div().childs(
+                span(method() + " "),
+                code(url),
+                span("  Content-Type  "),
+                code(type)
+        );
         if (cookies != null) {
-            div.appendChild(new Element("span").appendText("  Cookies  "));
-            div.appendChild(new Element("code").appendText(cookies));
+            div.childs(
+                    span("  Cookies  "),
+                    code(cookies)
+            );
         }
-        element.appendChild(div);
+        root.childs(div);
     }
 
-    private String attr(Element element, String attrName, String defaultValue, Evaluator evaluator) {
-        String attr = element.getAttributeValue(attrName);
-        if (attr == null) {
-            attr = defaultValue;
-        } else {
-            element.removeAttribute(attrName);
-        }
+    private String attr(Html html, String attrName, String defaultValue, Evaluator evaluator) {
+        String attr = html.takeAwayAttr(attrName, defaultValue);
         evaluator.setVariable("#" + attrName, attr);
         return attr;
     }
