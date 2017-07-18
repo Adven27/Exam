@@ -1,0 +1,78 @@
+group 'ru.sbrf.pfm'
+version = 0.1
+
+apply plugin: 'maven'
+apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: 'jacoco'
+apply plugin: 'findbugs'
+apply plugin: 'checkstyle'
+
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
+compileJava.options.encoding = 'utf-8'
+compileTestJava.options.encoding = 'utf-8'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile 'org.hamcrest:hamcrest-all:1.3'
+    compile 'org.mockito:mockito-core:2.0.43-beta'
+    compile 'org.dbunit:dbunit:2.5.2'
+    compile 'de.ppi.dbunit.datasetbuilder:dbunit-datasetbuilder:1.4'
+    compile 'net.javacrumbs.json-unit:json-unit:1.24.0'
+    compile 'com.google.code.gson:gson:2.4'
+    compile 'org.xmlunit:xmlunit-core:2.3.0'
+    compile 'com.jayway.restassured:rest-assured:2.9.0'
+    compile 'org.concordion:concordion:2.1.0'
+    compile "net.steppschuh.markdowngenerator:markdowngenerator:1.3.0.0"
+    compile 'com.google.code.findbugs:annotations:3.0.1'
+    compile 'com.google.guava:guava:19.0'
+    compile group: 'joda-time', name: 'joda-time', version: '2.9.9'
+    testCompile 'com.h2database:h2:1.4.195'
+    testCompile 'org.simpleframework:simple:5.1.6'
+}
+
+test {
+    onOutput {descriptor, event ->
+        logger.lifecycle("" + descriptor + ":" + event.message)
+    }
+    systemProperty 'concordion.output.dir', "$reporting.baseDir/spec"
+    finalizedBy jacocoTestReport
+}
+
+tasks.withType(FindBugs) {
+    reports {
+        xml.enabled false
+        html.enabled true
+    }
+}
+
+tasks.withType(Checkstyle) {
+    reports {
+        xml.enabled false
+        html.enabled true
+    }
+}
+
+findbugs {
+    effort = "max"
+    ignoreFailures = false
+}
+
+checkstyle {
+    configFile = rootProject.file('config/checkstyle/checkstyle.xml')
+    toolVersion = "6.19"
+    ignoreFailures = true
+}
+
+jacocoTestReport {
+    afterEvaluate {
+        classDirectories = files(classDirectories.files.collect {
+            fileTree(dir: it,
+                    exclude: ['**/test/**'])
+        })
+    }
+}
