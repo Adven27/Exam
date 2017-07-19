@@ -1,5 +1,6 @@
 package com.sberbank.pfm.test.concordion.extensions.exam.rest.commands;
 
+import com.sberbank.pfm.test.concordion.extensions.exam.html.Html;
 import com.sberbank.pfm.test.concordion.extensions.exam.rest.JsonPrettyPrinter;
 import com.sberbank.pfm.test.concordion.extensions.exam.rest.RestResultRenderer;
 import org.concordion.api.AbstractCommand;
@@ -29,5 +30,13 @@ public class RestVerifyCommand extends AbstractCommand {
     protected void success(ResultRecorder resultRecorder, Element element) {
         resultRecorder.record(SUCCESS);
         listeners.announce().successReported(new AssertSuccessEvent(element));
+    }
+
+    protected void failure(ResultRecorder resultRecorder, Html element, String actual, String expected) {
+        failure(resultRecorder, element.el(), actual, expected);
+    }
+
+    protected void success(ResultRecorder resultRecorder, Html element) {
+        success(resultRecorder, element.el());
     }
 }

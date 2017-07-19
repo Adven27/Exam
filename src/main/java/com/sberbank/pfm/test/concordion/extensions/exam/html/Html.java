@@ -12,6 +12,10 @@ public class Html {
         this.el = el;
     }
 
+    public Html(String tag) {
+        this(new Element(tag));
+    }
+
     public static Html div() {
         return new Html(new Element("div"));
     }
@@ -35,7 +39,7 @@ public class Html {
     }
 
 
-    public static Html i(String txt) {
+    public static Html italic(String txt) {
         return new Html(new Element("i").appendText(txt));
     }
 
@@ -61,7 +65,9 @@ public class Html {
 
     public Html childs(Html... htmls) {
         for (Html html : htmls) {
-            el.appendChild(html.el);
+            if (html != null) {
+                el.appendChild(html.el);
+            }
         }
         return this;
     }
@@ -179,5 +185,40 @@ public class Html {
     public Html text(String txt) {
         el.appendText(txt);
         return this;
+    }
+
+    public Html insteadOf(Element original) {
+        original.moveChildrenTo(this.el);
+        original.moveAttributesTo(this.el);
+        original.appendSister(this.el);
+        original.getParentElement().removeChild(original);
+        return this;
+    }
+
+    public Html insteadOf(Html original) {
+        return insteadOf(original.el);
+    }
+
+    public Html first(String tag) {
+        Element first = this.el.getFirstChildElement(tag);
+        return first == null? null : new Html(first);
+    }
+
+    public Html removeChildren() {
+        this.moveChildrenTo(new Html(new Element("tmp")));
+        return this;
+    }
+
+    public Html removeChilds(Html... childs) {
+        for (Html child : childs) {
+            if (child != null) {
+                this.remove(child);
+            }
+        }
+        return this;
+    }
+
+    public static Html tag(String tag) {
+        return new Html(tag);
     }
 }

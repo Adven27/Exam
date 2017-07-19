@@ -73,8 +73,6 @@ public class ExamExtension implements ConcordionExtension {
         ex.withCommand(NS, "rs-post", new PostCommand());
         ex.withCommand(NS, "rs-get", new GetCommand());
         ex.withCommand(NS, "rs-case", new CaseCommand());
-        ex.withCommand(NS, "rs-body", new BodyCommand());
-        ex.withCommand(NS, "rs-expected", new ExpectedCommand());
         ex.withCommand(NS, "rs-echoJson", new EchoJsonCommand());
         ex.withCommand(NS, "rs-status", new ExpectedStatusCommand());
 
@@ -99,8 +97,6 @@ public class ExamExtension implements ConcordionExtension {
                 tags.put("rs-post", "div");
                 tags.put("rs-get", "div");
                 tags.put("rs-case", "tr");
-                tags.put("rs-expected", "td");
-                tags.put("rs-body", "td");
                 tags.put("rs-status", "code");
             }
 
