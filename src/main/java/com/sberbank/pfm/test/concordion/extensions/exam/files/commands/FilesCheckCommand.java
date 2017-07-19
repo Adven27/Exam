@@ -84,8 +84,7 @@ public class FilesCheckCommand extends BaseCommand {
 
                     Html td = td().childs(pre);
                     tr.childs(td);
-
-                    root.remove(f);
+                    root.childs(tr).remove(f);
                     empty = false;
                 }
             }

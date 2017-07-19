@@ -1,6 +1,6 @@
 package specs.exam.rs.get;
 
-import specs.exam.rs.Rs;
+import specs.exam.Exam;
 
-public class Get extends Rs {
+public class Get extends Exam {
 }

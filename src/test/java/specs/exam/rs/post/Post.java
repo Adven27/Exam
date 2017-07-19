@@ -1,6 +1,6 @@
 package specs.exam.rs.post;
 
-import specs.exam.rs.Rs;
+import specs.exam.Exam;
 
-public class Post extends Rs {
+public class Post extends Exam {
 }
