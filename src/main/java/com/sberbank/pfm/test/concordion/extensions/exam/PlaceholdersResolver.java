@@ -17,7 +17,7 @@ public class PlaceholdersResolver {
             Object variable = evaluator.getVariable("#" + var);
 
             original = original.replace("${var." + var + "}",
-                    (variable == null ? evaluator.evaluate(var) : variable).toString());
+                    (variable == null ? evaluator.evaluate("#" + var) : variable).toString());
             body = original;
         }
         while (body.contains("${exam.")) {

@@ -67,6 +67,9 @@ public class Exam {
         @Override
         public void handle(Request req, Response resp) {
             try {
+                for (Cookie cookie : req.getCookies()) {
+                    resp.setCookie(cookie);
+                }
                 resp.setStatus("/status/400".equals(req.getAddress().toString()) ? BAD_REQUEST : OK);
                 PrintStream body = resp.getPrintStream();
                 if ("POST".equals(req.getMethod())) {

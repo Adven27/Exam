@@ -68,6 +68,10 @@ public class RequestExecutor {
         }
 
         if (cookies != null) {
+            cookies = cookies.trim();
+            if (cookies.startsWith("{")) {
+                cookies = cookies.substring(1, cookies.length() - 1);
+            }
             request.cookies(Splitter.on(",").trimResults().withKeyValueSeparator("=").split(cookies));
         }
 

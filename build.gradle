@@ -44,6 +44,7 @@ test {
     onOutput {descriptor, event ->
         logger.lifecycle("" + descriptor + ":" + event.message)
     }
+    include '**/Exam.class'
     systemProperty 'concordion.output.dir', "$reporting.baseDir/spec"
     finalizedBy jacocoTestReport
 }

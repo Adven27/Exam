@@ -105,11 +105,33 @@
                 }
             </expected>
         </e:rs-case>
-        <e:rs-case cookies="cook=${var.url}" desc="Можно использовать плейсхолдеры для вызова переменных и методов">        
+        <e:rs-case cookies="cook=${var.url},anotherCook=asd" desc="Можно использовать плейсхолдеры для вызова переменных и методов">
             <expected>
                 {
                   "get": "/relative/url",
-                  "cookies": {"cook": "relative/url" }
+                  "cookies": {
+                    "cook": "relative/url",
+                    "anotherCook": "asd"
+                  }
+                }
+            </expected>
+            <e:check>
+                Последний респонс лежит в #exam_response<br/>
+                <ol>
+                <li><code c:execute="#ck = #exam_response.cookies()">c:execute="#ck = #exam_response.cookies()</code></li>
+                <li>echo #exam_response.cookies() => <code c:echo="#exam_response.cookies()"/></li>
+                <li>echo #ck => <code c:echo="#ck"/></li>
+                </ol>
+            </e:check>
+        </e:rs-case>
+        <e:rs-case cookies="${var.exam_response.cookies()}" desc="Можно использовать поля предыдущего респонса, например ${var.exam_response.cookies()}, если пометить спеку @FullOGNL">
+            <expected>
+                {
+                  "get": "/relative/url",
+                  "cookies": {
+                    "cook": "relative/url",
+                    "anotherCook": "asd"
+                  }
                 }
             </expected>
         </e:rs-case>

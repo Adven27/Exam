@@ -1,5 +1,6 @@
 package com.sberbank.pfm.test.concordion.extensions.exam.rest.commands;
 
+import com.jayway.restassured.response.Response;
 import com.sberbank.pfm.test.concordion.extensions.exam.html.Html;
 import com.sberbank.pfm.test.concordion.extensions.exam.rest.JsonPrettyPrinter;
 import org.apache.commons.collections.map.HashedMap;
@@ -96,7 +97,8 @@ public class CaseCommand extends RestVerifyCommand {
             caseTR.childs(statusTd);
 
             childCommands.setUp(eval, resultRecorder);
-            executor.execute();
+            Response response = executor.execute();
+            eval.setVariable("#exam_response", response);
             childCommands.execute(eval, resultRecorder);
             childCommands.verify(eval, resultRecorder);
 
