@@ -1,6 +1,7 @@
 package com.sberbank.pfm.test.concordion.extensions.exam.rest.commands;
 
 import com.jayway.restassured.response.Response;
+import com.sberbank.pfm.test.concordion.extensions.exam.PlaceholdersResolver;
 import com.sberbank.pfm.test.concordion.extensions.exam.html.Html;
 import com.sberbank.pfm.test.concordion.extensions.exam.rest.JsonPrettyPrinter;
 import org.apache.commons.collections.map.HashedMap;
@@ -70,7 +71,11 @@ public class CaseCommand extends RestVerifyCommand {
         CommandCallList childCommands = cmd.getChildren();
         Html root = new Html(cmd.getElement());
 
-        final RequestExecutor executor = fromEvaluator(eval).urlParams(root.takeAwayAttr(URL_PARAMS));
+        final RequestExecutor executor = fromEvaluator(eval);
+        String urlParams = root.takeAwayAttr(URL_PARAMS);
+        if (urlParams != null) {
+            executor.urlParams(PlaceholdersResolver.resolve(urlParams, eval));
+        }
 
         String cookies = root.takeAwayAttr(COOKIES);
         if (cookies != null) {
