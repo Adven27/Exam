@@ -10,14 +10,14 @@ import static org.joda.time.format.DateTimeFormat.forPattern;
 
 public class PlaceholdersResolver {
 
-    public static String resolve(String body, Evaluator evaluator) {
+    public static String resolve(String body, Evaluator eval) {
         while (body.contains("${var.")) {
             String original = body;
             String var = extractVarFrom(original, "var");
-            Object variable = evaluator.getVariable("#" + var);
+            Object variable = eval.getVariable("#" + var);
 
             original = original.replace("${var." + var + "}",
-                    (variable == null ? evaluator.evaluate("#" + var) : variable).toString());
+                    (variable == null ? eval.evaluate(var.contains(".") ? "#" + var : var) : variable).toString());
             body = original;
         }
         while (body.contains("${exam.")) {
@@ -37,10 +37,15 @@ public class PlaceholdersResolver {
 
     private static Object constants(String var) {
         switch (var) {
-            case "yesterday": return now().minusDays(1).toDate();
-            case "today": case "now": return now().toDate();
-            case "tomorrow": return now().plusDays(1).toDate();
-            default: return null;
+            case "yesterday":
+                return now().minusDays(1).toDate();
+            case "today":
+            case "now":
+                return now().toDate();
+            case "tomorrow":
+                return now().plusDays(1).toDate();
+            default:
+                return null;
         }
     }
 
