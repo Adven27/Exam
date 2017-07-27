@@ -1,6 +1,7 @@
 package com.sberbank.pfm.test.concordion.extensions.exam.rest.commands;
 
 import com.jayway.restassured.response.Response;
+import com.sberbank.pfm.test.concordion.extensions.exam.PlaceholdersResolver;
 import com.sberbank.pfm.test.concordion.extensions.exam.html.Html;
 import com.sberbank.pfm.test.concordion.extensions.exam.rest.JsonPrettyPrinter;
 import org.apache.commons.collections.map.HashedMap;
@@ -72,17 +73,20 @@ public class CaseCommand extends RestVerifyCommand {
         CommandCallList childCommands = cmd.getChildren();
         Html root = new Html(cmd.getElement());
 
-        final RequestExecutor executor = fromEvaluator(eval).urlParams(root.takeAwayAttr(URL_PARAMS, eval));
-
-        String cookies = root.takeAwayAttr(COOKIES, eval);
-        if (cookies != null) {
-            executor.cookies(cookies);
-        }
+        final RequestExecutor executor = fromEvaluator(eval);
+        String urlParams = root.takeAwayAttr(URL_PARAMS);
+        String cookies = root.takeAwayAttr(COOKIES);
 
         for (Map<String, Object> aCase : cases) {
             for (Map.Entry<String, Object> entry : aCase.entrySet()) {
                 eval.setVariable(entry.getKey(), entry.getValue());
             }
+
+            if (cookies != null) {
+                executor.cookies(PlaceholdersResolver.resolve(cookies, eval));
+            }
+
+            executor.urlParams(urlParams == null ? null : PlaceholdersResolver.resolve(urlParams, eval));
 
             Html caseTR = tr().insteadOf(root.first("case"));
             Html body = caseTR.first("body");
