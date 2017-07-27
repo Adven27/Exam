@@ -10,7 +10,7 @@ public class ExamplesSummaryCommand extends AbstractCommand {
     @Override
     public void setUp(CommandCall cmd, Evaluator evaluator, ResultRecorder resultRecorder) {
         Html el = new Html(cmd.getElement()).attr("id", "summary");
-        final String title = el.takeAwayAttr("title");
+        final String title = el.takeAwayAttr("title", evaluator);
         if (!isNullOrEmpty(title)) {
             el.childs(h4(title));
         }

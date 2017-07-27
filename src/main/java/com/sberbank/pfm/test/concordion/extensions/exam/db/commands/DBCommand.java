@@ -24,10 +24,11 @@ public class DBCommand extends AbstractCommand {
     }
 
     @Override
-    public void setUp(CommandCall commandCall, Evaluator evaluator, ResultRecorder resultRecorder) {
+    public void setUp(CommandCall commandCall, Evaluator eval, ResultRecorder resultRecorder) {
         Html root = new Html(commandCall.getElement()).style("table table-condensed");
         try {
-            expectedTable = TableData.filled(root.takeAwayAttr("table"), parseRows(root, evaluator), parseCols(root, evaluator));
+            expectedTable = TableData.filled(
+                    root.takeAwayAttr("table", eval), parseRows(root, eval), parseCols(root, eval));
         } catch (DataSetException e) {
             throw new RuntimeException(e);
         }

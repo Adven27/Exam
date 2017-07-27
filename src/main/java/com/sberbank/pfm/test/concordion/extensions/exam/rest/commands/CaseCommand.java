@@ -1,7 +1,6 @@
 package com.sberbank.pfm.test.concordion.extensions.exam.rest.commands;
 
 import com.jayway.restassured.response.Response;
-import com.sberbank.pfm.test.concordion.extensions.exam.PlaceholdersResolver;
 import com.sberbank.pfm.test.concordion.extensions.exam.html.Html;
 import com.sberbank.pfm.test.concordion.extensions.exam.rest.JsonPrettyPrinter;
 import org.apache.commons.collections.map.HashedMap;
@@ -27,16 +26,18 @@ public class CaseCommand extends RestVerifyCommand {
     private static final String DESC = "desc";
     private static final String URL_PARAMS = "urlParams";
     private static final String COOKIES = "cookies";
+    private static final String VARIABLES = "variables";
+    private static final String VALUES = "values";
     private final JsonPrettyPrinter jsonPrinter = new JsonPrettyPrinter();
     List<Map<String, Object>> cases = new ArrayList<>();
     private int number = 0;
 
     @Override
-    public void setUp(CommandCall commandCall, Evaluator evaluator, ResultRecorder resultRecorder) {
+    public void setUp(CommandCall commandCall, Evaluator eval, ResultRecorder resultRecorder) {
         cases.clear();
         Html caseRoot = new Html(commandCall.getElement());
-        String params = caseRoot.takeAwayAttr("params");
-        String values = caseRoot.takeAwayAttr("values");
+        String params = caseRoot.takeAwayAttr(VARIABLES, eval);
+        String values = caseRoot.takeAwayAttr(VALUES, eval);
         if (!isNullOrEmpty(params)) {
             String[] names = params.split(":");
             String[] vals = values.split(",");
@@ -71,15 +72,10 @@ public class CaseCommand extends RestVerifyCommand {
         CommandCallList childCommands = cmd.getChildren();
         Html root = new Html(cmd.getElement());
 
-        final RequestExecutor executor = fromEvaluator(eval);
-        String urlParams = root.takeAwayAttr(URL_PARAMS);
-        if (urlParams != null) {
-            executor.urlParams(PlaceholdersResolver.resolve(urlParams, eval));
-        }
+        final RequestExecutor executor = fromEvaluator(eval).urlParams(root.takeAwayAttr(URL_PARAMS, eval));
 
-        String cookies = root.takeAwayAttr(COOKIES);
+        String cookies = root.takeAwayAttr(COOKIES, eval);
         if (cookies != null) {
-            cookies = resolve(cookies, eval);
             executor.cookies(cookies);
         }
 

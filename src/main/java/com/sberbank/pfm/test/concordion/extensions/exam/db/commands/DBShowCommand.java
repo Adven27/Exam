@@ -23,7 +23,8 @@ public class DBShowCommand extends DBCommand {
         IDatabaseConnection conn = null;
         try {
             conn = dbTester.getConnection();
-            renderTable(el, includedColumnsTable(conn.createTable(el.takeAwayAttr("table")), parseCols(el, eval).cols()));
+            renderTable(el, includedColumnsTable(
+                    conn.createTable(el.takeAwayAttr("table", eval)), parseCols(el, eval).cols()));
         } catch (Exception e) {
             throw new RuntimeException(e);
         } finally {

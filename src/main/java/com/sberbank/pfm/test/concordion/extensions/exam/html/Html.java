@@ -1,6 +1,8 @@
 package com.sberbank.pfm.test.concordion.extensions.exam.html;
 
+import com.sberbank.pfm.test.concordion.extensions.exam.PlaceholdersResolver;
 import org.concordion.api.Element;
+import org.concordion.api.Evaluator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,6 +65,22 @@ public class Html {
         return new Html(new Element("a").appendText(txt));
     }
 
+    public static Html h4(String title) {
+        return new Html(new Element("h4").appendText(title));
+    }
+
+    public static Html caption(String txt) {
+        return new Html(new Element("caption").appendText(txt));
+    }
+
+    public static Html pre() {
+        return new Html(new Element("pre"));
+    }
+
+    public static Html tag(String tag) {
+        return new Html(tag);
+    }
+
     public Html childs(Html... htmls) {
         for (Html html : htmls) {
             if (html != null) {
@@ -110,12 +128,26 @@ public class Html {
         return this;
     }
 
+    public String takeAwayAttr(String name, Evaluator eval) {
+        String val = attr(name);
+        if (val != null) {
+            val = PlaceholdersResolver.resolve(val, eval);
+            el.removeAttribute(name);
+        }
+        return val;
+    }
+
     public String takeAwayAttr(String name) {
         String val = attr(name);
         if (val != null) {
             el.removeAttribute(name);
         }
         return val;
+    }
+
+    public String takeAwayAttr(String attrName, String defaultValue, Evaluator eval) {
+        String val = takeAwayAttr(attrName, eval);
+        return val == null ? defaultValue : val;
     }
 
     public Element el() {
@@ -127,11 +159,6 @@ public class Html {
         return this;
     }
 
-    public String takeAwayAttr(String attrName, String defaultValue) {
-        String val = takeAwayAttr(attrName);
-        return val == null ? defaultValue : val;
-    }
-
     public Html panel(String header) {
         el.addStyleClass("panel panel-info table-responsive");
         Html body = div().style("panel-body");
@@ -141,19 +168,6 @@ public class Html {
         );
         el.appendChild(body.el);
         return this;
-    }
-
-
-    public static Html h4(String title) {
-        return new Html(new Element("h4").appendText(title));
-    }
-
-    public static Html caption(String txt) {
-        return new Html(new Element("caption").appendText(txt));
-    }
-
-    public String text() {
-        return el.getText();
     }
 
     public void remove(Html html) {
@@ -178,8 +192,8 @@ public class Html {
         return this;
     }
 
-    public static Html pre() {
-        return new Html(new Element("pre"));
+    public String text() {
+        return el.getText();
     }
 
     public Html text(String txt) {
@@ -201,7 +215,7 @@ public class Html {
 
     public Html first(String tag) {
         Element first = this.el.getFirstChildElement(tag);
-        return first == null? null : new Html(first);
+        return first == null ? null : new Html(first);
     }
 
     public Html removeChildren() {
@@ -216,9 +230,5 @@ public class Html {
             }
         }
         return this;
-    }
-
-    public static Html tag(String tag) {
-        return new Html(tag);
     }
 }

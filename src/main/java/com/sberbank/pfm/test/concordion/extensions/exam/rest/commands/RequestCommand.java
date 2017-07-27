@@ -1,6 +1,5 @@
 package com.sberbank.pfm.test.concordion.extensions.exam.rest.commands;
 
-import com.sberbank.pfm.test.concordion.extensions.exam.PlaceholdersResolver;
 import com.sberbank.pfm.test.concordion.extensions.exam.commands.ExamCommand;
 import com.sberbank.pfm.test.concordion.extensions.exam.html.Html;
 import org.concordion.api.CommandCall;
@@ -29,7 +28,7 @@ public abstract class RequestCommand extends ExamCommand {
         String url = attr(root, URL, "/", evaluator);
         String type = attr(root, TYPE, "application/json", evaluator);
         String cookies = cookies(evaluator, root);
-        Map<String, String> headersMap = headers(root);
+        Map<String, String> headersMap = headers(root, evaluator);
 
         addRequestDescTo(root, url, type, cookies);
         startTable(root, executor.hasRequestBody());
@@ -53,8 +52,8 @@ public abstract class RequestCommand extends ExamCommand {
         html.dropAllTo(table);
     }
 
-    private Map<String, String> headers(Html html) {
-        String headers = html.takeAwayAttr(HEADERS);
+    private Map<String, String> headers(Html html, Evaluator eval) {
+        String headers = html.takeAwayAttr(HEADERS, eval);
         Map<String, String> headersMap = new HashMap<>();
         if (headers != null) {
             String[] headersArray = headers.split(",");
@@ -67,12 +66,9 @@ public abstract class RequestCommand extends ExamCommand {
         return headersMap;
     }
 
-    private String cookies(Evaluator evaluator, Html html) {
-        String cookies = html.takeAwayAttr(COOKIES);
-        if (cookies != null) {
-            cookies = PlaceholdersResolver.resolve(cookies, evaluator);
-        }
-        evaluator.setVariable("#cookies", cookies);
+    private String cookies(Evaluator eval, Html html) {
+        String cookies = html.takeAwayAttr(COOKIES, eval);
+        eval.setVariable("#cookies", cookies);
         return cookies;
     }
 
@@ -93,7 +89,7 @@ public abstract class RequestCommand extends ExamCommand {
     }
 
     private String attr(Html html, String attrName, String defaultValue, Evaluator evaluator) {
-        String attr = html.takeAwayAttr(attrName, defaultValue);
+        String attr = html.takeAwayAttr(attrName, defaultValue, evaluator);
         evaluator.setVariable("#" + attrName, attr);
         return attr;
     }

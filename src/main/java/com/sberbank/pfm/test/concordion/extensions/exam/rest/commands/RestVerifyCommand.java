@@ -22,14 +22,14 @@ public class RestVerifyCommand extends AbstractCommand {
         listeners.addListener(new RestResultRenderer());
     }
 
-    protected void failure(ResultRecorder resultRecorder, Element element, String actual, String expected) {
-        resultRecorder.record(FAILURE);
-        listeners.announce().failureReported(new AssertFailureEvent(element, expected, actual));
-    }
-
     protected void success(ResultRecorder resultRecorder, Element element) {
         resultRecorder.record(SUCCESS);
         listeners.announce().successReported(new AssertSuccessEvent(element));
+    }
+
+    protected void failure(ResultRecorder resultRecorder, Element element, String actual, String expected) {
+        resultRecorder.record(FAILURE);
+        listeners.announce().failureReported(new AssertFailureEvent(element, expected, actual));
     }
 
     protected void failure(ResultRecorder resultRecorder, Html element, String actual, String expected) {
