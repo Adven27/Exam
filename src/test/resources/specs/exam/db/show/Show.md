@@ -25,3 +25,26 @@
         <e:db-show table="PERSON" caption="Caption" cols="NAME, *AGE, **BIRTHDAY"/>
     </e:then>
 </div>
+
+### [**Фильтрация не пустой таблицы**](-)
+Допустим запись в таблице PERSON находятся следующие записи: 
+
+<div>
+    <e:given>
+        <e:db-set table="PERSON" cols="NAME, AGE">
+            <row>Bob,45</row>
+            <row>Waldo,45</row>
+            <row>Coby,50</row>
+        </e:db-set>
+    </e:given>
+</div>
+
+Результат вывода 
+   
+    <e:db-show table="PERSON" caption="Caption" cols="NAME, *AGE" where="AGE=45;NAME=Waldo"/>
+
+<div>
+    <e:then>
+        <e:db-show table="PERSON" caption="Caption" cols="NAME, *AGE" where="AGE=45;NAME=Waldo"/>
+    </e:then>
+</div>
