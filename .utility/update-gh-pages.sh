@@ -1,7 +1,7 @@
 if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
   echo -e "Starting to update gh-pages\n"
 
-  cp -R specs $HOME/specs
+  cp -R specs $HOME/build/Adven27/Exam/build/reports/specs
 
   cd $HOME
   git config --global user.email "travis@travis-ci.org"
