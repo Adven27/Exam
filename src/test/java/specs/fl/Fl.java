@@ -1,8 +1,8 @@
-package specs.exam.fl;
+package specs.fl;
 
 import org.concordion.api.BeforeSpecification;
 import org.junit.rules.TemporaryFolder;
-import specs.exam.Exam;
+import specs.Exam;
 
 import java.io.IOException;
 

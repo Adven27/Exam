@@ -1,4 +1,4 @@
-package specs.exam;
+package specs;
 
 import com.jayway.restassured.RestAssured;
 import com.sberbank.pfm.test.concordion.extensions.exam.ExamExtension;

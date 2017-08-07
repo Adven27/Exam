@@ -1,10 +1,10 @@
-package specs.exam.db;
+package specs.db;
 
 import com.sberbank.pfm.test.TableData;
 import org.concordion.api.BeforeSpecification;
 import org.dbunit.JdbcDatabaseTester;
 import org.joda.time.LocalDateTime;
-import specs.exam.Exam;
+import specs.Exam;
 
 import java.util.Date;
 
