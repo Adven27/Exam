@@ -1,6 +1,7 @@
 package com.sberbank.pfm.test.concordion.extensions.exam;
 
 import org.concordion.api.Evaluator;
+import org.joda.time.LocalDateTime;
 
 import java.util.Date;
 
@@ -36,6 +37,10 @@ public class PlaceholdersResolver {
     }
 
     private static Object constants(String var) {
+        if (var.startsWith("date(")) {
+            String date = var.substring("date(".length(), var.indexOf(")"));
+            return LocalDateTime.parse(date, forPattern("dd.MM.yyyy")).toDate();
+        }
         switch (var) {
             case "yesterday":
                 return now().minusDays(1).toDate();

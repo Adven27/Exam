@@ -43,19 +43,19 @@
 Результат вывода 
    
     <div>Добавляемые записи</div>
-    <e:db-set table="PERSON" cols="NAME, AGE">
-        <row>Andrew,30</row>
-        <row>Carl,20</row>
+    <e:db-set table="PERSON" cols="NAME, AGE, BIRTHDAY">
+        <row>' Andrew ', 30 , ${exam.date(10.10.1990)}</row>
+        <row>Carl      , 20 , ${exam.date(01.02.1980)}</row>
     </e:db-set>
     <div>Новое содержимое таблицы</div>
-    <e:db-show table="PERSON" />
+    <e:db-show table="PERSON"/>
 
 <div>
     <e:then>
         <div>Добавляемые записи</div>
-        <e:db-set table="PERSON" cols="NAME, AGE">
-            <row>Andrew,30</row>
-            <row>Carl,20</row>
+        <e:db-set table="PERSON" cols="NAME, AGE, BIRTHDAY">
+            <row>' Andrew ', 30 , ${exam.date(10.10.1990)}</row>
+            <row>Carl      , 20 , ${exam.date(01.02.1980)}</row>
         </e:db-set>
         <div>Новое содержимое таблицы</div>
         <e:db-show table="PERSON"/>

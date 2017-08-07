@@ -139,6 +139,10 @@ public class DBCommand extends AbstractCommand {
         String comaSeparatedValues = text;
         if (!isNullOrEmpty(comaSeparatedValues)) {
             for (String val : comaSeparatedValues.split(",")) {
+                val = val.trim();
+                if (val.startsWith("'") && val.endsWith("'")) {
+                    val = val.substring(1, val.length()-1);
+                }
                 values.add(PlaceholdersResolver.resolveToObj(val, eval));
             }
         }
