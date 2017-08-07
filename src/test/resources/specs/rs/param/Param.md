@@ -5,7 +5,7 @@
 ### [**Пример параметризованных кейсов**](- "response body check c:status=ExpectedToFail")
 
     <e:rs-post url="relative/url">
-        <e:rs-case desc="Неверный ответ" params="p1:p2" values="value of p1:value of p2,second variant for p1: second variant for p2">
+        <e:rs-case desc="Неверный ответ" variables="p1:p2" values="value of p1:value of p2,second variant for p1: second variant for p2">
             <body>
                 {"exact": "${var.p1}", "template": 1}
             </body>
@@ -17,7 +17,7 @@
 
 <div>
     <e:rs-post url="relative/url">
-        <e:rs-case desc="Неверный ответ" params="p1:p2" values="value of p1:value of p2,second variant for p1: second variant for p2">
+        <e:rs-case desc="Неверный ответ" variables="p1:p2" values="value of p1:value of p2,second variant for p1: second variant for p2">
             <body>
                 {"exact": "${var.p1}", "template": 1}
             </body>
