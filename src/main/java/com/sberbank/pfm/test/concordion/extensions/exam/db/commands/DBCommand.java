@@ -106,9 +106,7 @@ public class DBCommand extends AbstractCommand {
             }
 
             String title = root.takeAwayAttr("caption");
-            if (!isNullOrEmpty(title)) {
-                root.childs(caption(title));
-            }
+            root.childs(caption(isNullOrEmpty(title) ? t.getTableMetaData().getTableName() : title));
 
             Html header = tr();
             for (Column col : cols) {
