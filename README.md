@@ -2,4 +2,4 @@
 # Exam
 concordion extension
 
-Specs https://adven27.github.io/Exam/Exam.html
+Specs https://adven27.github.io/Exam/specs/Exam.html
