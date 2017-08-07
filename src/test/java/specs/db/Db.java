@@ -4,14 +4,14 @@ import com.sberbank.pfm.test.TableData;
 import org.concordion.api.BeforeSpecification;
 import org.dbunit.JdbcDatabaseTester;
 import org.joda.time.LocalDateTime;
-import specs.Exam;
+import specs.Specs;
 
 import java.util.Date;
 
 import static org.joda.time.format.DateTimeFormat.forPattern;
 
 
-public class Db extends Exam {
+public class Db extends Specs {
     private static final String CREATE_TABLES =
             "CREATE TABLE IF NOT EXISTS PERSON (NAME VARCHAR2(255 CHAR), AGE NUMBER, BIRTHDAY TIMESTAMP)\\;" +
                     "CREATE TABLE IF NOT EXISTS EMPTY (NAME VARCHAR2(255 CHAR), VALUE NUMBER)";

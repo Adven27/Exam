@@ -28,7 +28,7 @@ import static org.simpleframework.http.Status.OK;
 
 @RunWith(ConcordionRunner.class)
 @ConcordionOptions(declareNamespaces = {"c", "http://www.concordion.org/2007/concordion", "e", ExamExtension.NS})
-public class Exam {
+public class Specs {
     private static Server server;
     @SuppressFBWarnings(value = "URF_UNREAD_FIELD", justification = "особенности подключения расширений в concordion")
     @Extension

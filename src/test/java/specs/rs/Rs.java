@@ -1,7 +1,7 @@
 package specs.rs;
 
-import specs.Exam;
+import specs.Specs;
 
-public class Rs extends Exam {
+public class Rs extends Specs {
 
 }

@@ -1,6 +1,6 @@
 package specs.rs.param;
 
-import specs.Exam;
+import specs.Specs;
 
-public class Param extends Exam {
+public class Param extends Specs {
 }

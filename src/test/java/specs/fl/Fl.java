@@ -2,11 +2,11 @@ package specs.fl;
 
 import org.concordion.api.BeforeSpecification;
 import org.junit.rules.TemporaryFolder;
-import specs.Exam;
+import specs.Specs;
 
 import java.io.IOException;
 
-public class Fl extends Exam {
+public class Fl extends Specs {
     private static final TemporaryFolder TEMP_FOLDER = new TemporaryFolder();
 
     @BeforeSpecification

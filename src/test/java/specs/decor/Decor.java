@@ -1,6 +1,6 @@
 package specs.decor;
 
-import specs.Exam;
+import specs.Specs;
 
-public class Decor extends Exam {
+public class Decor extends Specs {
 }
