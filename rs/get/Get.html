@@ -1,0 +1,298 @@
+<?xml version="1.0" encoding="UTF-8"?><html xmlns:concordion="http://www.concordion.org/2007/concordion" xmlns:c="http://www.concordion.org/2007/concordion" xmlns:e="http://exam.extension.io"><head><style>* {
+  font-family: Arial;
+}
+body {
+  padding: 32px;  
+}
+pre {
+  padding: 6px 28px 6px 28px;
+  background-color: #E8EEF7;
+}
+pre, pre *, code, code *, kbd {
+  font-family: Courier New, Courier;
+  font-size: 10pt;
+}
+h1, h1 * {
+  font-size: 24pt;	
+}
+p, td, th, li, .breadcrumbs {
+  font-size: 10pt;
+}
+p, li {
+  line-height: 140%;
+  max-width: 720px;
+}
+table {
+  border-collapse: collapse;
+  empty-cells: show;
+  margin: 8px 0px 8px 0px;
+}
+th, td {
+  border: 1px solid black;
+  padding: 3px;
+}
+td {
+  background-color: white;
+  vertical-align: top;
+}
+th {
+  background-color: #C3D9FF;
+}
+li {
+  margin-top: 6px;
+  margin-bottom: 6px; 
+}
+
+.example, :not(th)[concordion\:example] {
+  padding: 6px 16px 6px 16px;
+  border: 1px solid #C3D9FF;
+  margin: 6px 0px 28px 0px;
+  background-color: #F5F9FD;
+}
+.example h3, [concordion\:example] h3 {
+  margin-top: 8px;
+  margin-bottom: 8px;
+  font-size: 12pt;
+}
+
+p.success {
+  padding: 2px;
+}
+.success, .success * {
+  background-color: #afa !important;
+}
+.success pre {
+  background-color: #bbffbb;
+}
+.failure, .failure * {
+  background-color: #ffb0b0;
+  padding: 1px;
+}
+.failure .expected {
+  text-decoration: line-through;
+  color: #bb5050;
+}
+.ignored, .ignored * {
+  background-color: #f0f0f0 !important;	
+}
+
+ins {
+  text-decoration: none;	
+}
+
+.exceptionMessage {
+  background-color: #fdd;
+  font-family: Courier New, Courier, Monospace;
+  font-size: 10pt;
+  display: block;
+  font-weight: normal;
+  padding: 4px;
+  text-decoration: none !important;
+}
+.stackTrace, .stackTrace * {
+  font-weight: normal;
+}
+.stackTrace {
+  display: none;
+  padding: 1px 4px 4px 4px;
+  background-color: #fdd;
+  border-top: 1px dotted black;
+}
+.stackTraceExceptionMessage {
+  display: block;
+  font-family: Courier New, Courier, Monospace;
+  font-size: 8pt;
+  white-space: wrap;
+  padding: 1px 0px 1px 0px;
+}
+.stackTraceEntry {
+  white-space: nowrap;
+  font-family: Courier New, Courier, Monospace;
+  display: block;
+  font-size: 8pt;
+  padding: 1px 0px 1px 32px;
+}
+.stackTraceButton {
+  font-size: 8pt;
+  margin: 2px 8px 2px 0px;
+  font-weight: normal;
+  font-family: Arial;
+}
+
+.special {
+  font-style: italic;
+}
+.missing, .missing * {
+  background-color: #ff9999;
+  color:#bb5050;
+  text-decoration: line-through;
+}
+.surplus, .surplus * {
+  background-color: #ff9999;
+}
+.footer {
+  text-align: right;
+  margin-top: 40px;
+  font-size: 8pt;
+  width: 100%;
+  color: #999;
+}
+.footer .testTime {
+  padding: 2px 10px 0px 0px;
+}
+
+.idea {
+  font-size: 9pt;
+  color: #888;
+  font-style: italic;	
+}
+.tight li {
+  margin-top: 1px;
+  margin-bottom: 1px; 
+}
+.commentary {
+  float: right;
+  width: 200px;
+  background-color: #ffffd0;
+  padding:8px;
+  border: 3px solid #eeeeb0;	 
+  margin: 10px 0px 10px 10px;	 
+}
+.commentary, .commentary * {
+  font-size: 8pt;
+}
+</style><meta http-equiv="content-type" content="text/html; charset=UTF-8" /><link type="text/css" rel="stylesheet" href="../../../codemirror/codemirror.css" /><link type="text/css" rel="stylesheet" href="../../../codemirror/merge.css" /><link type="text/css" rel="stylesheet" href="../../../codemirror/enable-codemirror.css" /><script type="text/javascript" src="../../../codemirror/codemirror.js"></script><script type="text/javascript" src="../../../codemirror/javascript.js"></script><script type="text/javascript" src="../../../codemirror/xml.js"></script><script type="text/javascript" src="../../../codemirror/diff_match_patch.js"></script><script type="text/javascript" src="../../../codemirror/merge.js"></script><script type="text/javascript" src="../../../codemirror/enable-codemirror.js"></script><link type="text/css" rel="stylesheet" href="../../../bootstrap/bootstrap.css" /><link type="text/css" rel="stylesheet" href="../../../bootstrap/enable-bootstrap.css" /></head><body><span class="breadcrumbs"><a href="../Rs.html">Тестирование Rest-запросов</a> &gt; <a href="Get.html">GET-запрос: &lt;e:rs-get url="..." type="&lt;optional&gt;"&gt;</a> &gt;</span><h1>GET-запрос: <code>&lt;e:rs-get url="..." type="&lt;optional&gt;"&gt;</code></h1>
+<p>Допустим имеется сервер, который в ответ на <code>GET</code> присылает в теле ответа строку запроса</p>
+<div concordion:example="response body check" concordion:status="ExpectedToFail" id="response body check"><p>   &lt;-- Note: This example has been marked as EXPECTED_TO_FAIL</p>
+<h3><strong>Пример проверок тела ответа</strong></h3>
+<pre><code>&lt;e:rs-get url="relative/url"&gt;
+    &lt;e:rs-case desc="Запрос с параметрами (все проверки успешны)" urlParams="param1=1&amp;amp;param2=2"&gt;        
+        &lt;expected&gt;
+            { "get": "/relative/url?param1=1&amp;amp;param2=2" }
+        &lt;/expected&gt;
+    &lt;/e:rs-case&gt;
+    &lt;e:rs-case desc="Запрос без параметров (с неверным телом ответа)"&gt;        
+        &lt;expected&gt;
+            { "get": "/relative/url?noparams" }
+        &lt;/expected&gt;
+        &lt;e:check&gt;
+            &lt;span c:assertTrue="true"&gt;Произвольный блок, где можно сделать дополнительные проверки, относящиеся к данному кейсу&lt;/span&gt;
+        &lt;/e:check&gt;
+    &lt;/e:rs-case&gt;
+&lt;/e:rs-get&gt;
+</code></pre>
+<div>
+    <div e:rs-get="" class="bs-callout bs-callout-success" /><table class="table table-condensed"><tr><th>Expected response</th><th>Status code</th></tr>
+        <tr desc="Запрос с параметрами (все проверки успешны)" e:rs-case=""><td colspan="2" class="text-muted">1) Запрос с параметрами (все проверки успешны)</td></tr><tr><td colspan="2"><div><i>GET </i><code>relative/url?param1=1&amp;param2=2</code></div></td></tr><tr>        
+            
+        <tr><td class="json rest-success">{
+  "get": "/relative/url?param1=1&amp;param2=2"
+}</td><td class="rest-success">HTTP/1.1 200 OK</td></tr></tr>
+        <tr desc="Запрос без параметров (с неверным телом ответа)" e:rs-case=""><td colspan="2" class="text-muted">2) Запрос без параметров (с неверным телом ответа)</td></tr><tr><td colspan="2"><div><i>GET </i><code>relative/url</code></div></td></tr><tr>        
+            
+            <check e:check="" />
+        <tr><td class="json rest-failure"><del class="expected">{
+  "get": "/relative/url?noparams"
+}</del>
+<ins class="actual">{
+  "get": "/relative/url"
+}</ins></td><td class="rest-success">HTTP/1.1 200 OK</td></tr></tr><tr><td colspan="3">
+                <span c:assertTrue="true" class="success">Произвольный блок, где можно сделать дополнительные проверки, относящиеся к данному кейсу</span>
+            </td></tr>
+    <div><span>GET </span><code>relative/url</code><span>  Content-Type  </span><code>application/json</code></div></table>
+</div></div>
+<div concordion:example="wrong status code" concordion:status="ExpectedToFail" id="wrong status code"><p>   &lt;-- Note: This example has been marked as EXPECTED_TO_FAIL</p>
+<h3><strong>Пример проверки кода ответа</strong></h3>
+<pre><code>&lt;e:rs-get url="status/400"&gt;
+    &lt;e:rs-case desc="Неверный код ответа"&gt;        
+        &lt;expected&gt;
+            {"get": "/status/400"}
+        &lt;/expected&gt;
+    &lt;/e:rs-case&gt;
+&lt;/e:rs-get&gt;   
+</code></pre>
+<div>
+    <div e:rs-get="" class="bs-callout bs-callout-success" /><table class="table table-condensed"><tr><th>Expected response</th><th>Status code</th></tr>
+        <tr desc="Неверный код ответа" e:rs-case=""><td colspan="2" class="text-muted">3) Неверный код ответа</td></tr><tr><td colspan="2"><div><i>GET </i><code>status/400</code></div></td></tr><tr>        
+            
+        <tr><td class="json rest-success">{
+  "get": "/status/400"
+}</td><td class="rest-failure"><del class="expected">HTTP/1.1 200 OK</del>
+<ins class="actual">HTTP/1.1 400 Bad Request</ins></td></tr></tr>
+    <div><span>GET </span><code>status/400</code><span>  Content-Type  </span><code>application/json</code></div></table>   
+</div></div>
+<div concordion:example="cookies" id="cookies">
+<h3><strong>Пример работы с куками</strong></h3>
+<pre><code>&lt;e:rs-get url="relative/url" cookies="cook=from_command"&gt;
+    &lt;e:rs-case desc="Если у кейса не указаны - используются заданные в команде"&gt;        
+        &lt;expected&gt;
+            {
+              "get": "/relative/url",
+              "cookies": { "cook": "from_command"}
+            }
+        &lt;/expected&gt;
+    &lt;/e:rs-case&gt;
+    &lt;e:rs-case cookies="cook=from_case" desc="Иначе, те что у кейса"&gt;        
+        &lt;expected&gt;
+            {
+              "get": "/relative/url",
+              "cookies": { "cook": "from_case"}
+            }
+        &lt;/expected&gt;
+    &lt;/e:rs-case&gt;
+    &lt;e:rs-case cookies="cook=${var.url}" desc="Можно использовать плейсхолдеры для вызова переменных и методов"&gt;        
+        &lt;expected&gt;
+            {
+              "get": "/relative/url",
+              "cookies": {"cook": "relative/url" }
+            }
+        &lt;/expected&gt;
+    &lt;/e:rs-case&gt;
+&lt;/e:rs-get&gt;
+</code></pre>
+<div>
+    <div e:rs-get="" class="bs-callout bs-callout-success" /><table class="table table-condensed"><tr><th>Expected response</th><th>Status code</th></tr>
+        <tr desc="Если у кейса не указаны - используются заданные в команде" e:rs-case=""><td colspan="2" class="text-muted">4) Если у кейса не указаны - используются заданные в команде</td></tr><tr><td colspan="2"><div><i>GET </i><code>relative/url</code><i> Cookies </i><code>cook=from_command</code></div></td></tr><tr>        
+            
+        <tr><td class="json rest-success">{
+  "get": "/relative/url",
+  "cookies": {
+    "cook": "from_command"
+  }
+}</td><td class="rest-success">HTTP/1.1 200 OK</td></tr></tr>
+        <tr desc="Иначе, те что у кейса" e:rs-case=""><td colspan="2" class="text-muted">5) Иначе, те что у кейса</td></tr><tr><td colspan="2"><div><i>GET </i><code>relative/url</code><i> Cookies </i><code>cook=from_case</code></div></td></tr><tr>        
+            
+        <tr><td class="json rest-success">{
+  "get": "/relative/url",
+  "cookies": {
+    "cook": "from_case"
+  }
+}</td><td class="rest-success">HTTP/1.1 200 OK</td></tr></tr>
+        <tr desc="Можно использовать плейсхолдеры для вызова переменных и методов" e:rs-case=""><td colspan="2" class="text-muted">6) Можно использовать плейсхолдеры для вызова переменных и методов</td></tr><tr><td colspan="2"><div><i>GET </i><code>relative/url</code><i> Cookies </i><code>cook=relative/url,anotherCook=asd</code></div></td></tr><tr>
+            
+            <check e:check="" />
+        <tr><td class="json rest-success">{
+  "get": "/relative/url",
+  "cookies": {
+    "cook": "relative/url",
+    "anotherCook": "asd"
+  }
+}</td><td class="rest-success">HTTP/1.1 200 OK</td></tr></tr><tr><td colspan="3">
+                Последний респонс лежит в #exam_response<br />
+                <ol>
+                <li><code c:execute="#ck = #exam_response.cookies()">c:execute="#ck = #exam_response.cookies()</code></li>
+                <li>echo #exam_response.cookies() =&gt; <code c:echo="#exam_response.cookies()">{cook=relative/url, anotherCook=asd}</code></li>
+                <li>echo #ck =&gt; <code c:echo="#ck">{cook=relative/url, anotherCook=asd}</code></li>
+                </ol>
+            </td></tr>
+        <tr desc="Можно использовать поля предыдущего респонса, например ${var.exam_response.cookies()}, если пометить спеку @FullOGNL" e:rs-case=""><td colspan="2" class="text-muted">7) Можно использовать поля предыдущего респонса, например ${var.exam_response.cookies()}, если пометить спеку @FullOGNL</td></tr><tr><td colspan="2"><div><i>GET </i><code>relative/url</code><i> Cookies </i><code>cook=relative/url, anotherCook=asd</code></div></td></tr><tr>
+            
+        <tr><td class="json rest-success">{
+  "get": "/relative/url",
+  "cookies": {
+    "cook": "relative/url",
+    "anotherCook": "asd"
+  }
+}</td><td class="rest-success">HTTP/1.1 200 OK</td></tr></tr>
+    <div><span>GET </span><code>relative/url</code><span>  Content-Type  </span><code>application/json</code><span>  Cookies  </span><code>cook=from_command</code></div></table>
+</div></div><div class="footer">Results generated by <a href="http://www.concordion.org" style="font-weight: bold; text-decoration: none; color: #89C;">Concordion</a><div class="testTime">in 290 ms on 07-Aug-2017 at 20:38:58 UTC</div></div></body></html>
