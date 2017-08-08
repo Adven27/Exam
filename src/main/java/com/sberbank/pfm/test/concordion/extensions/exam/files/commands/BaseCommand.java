@@ -1,9 +1,12 @@
 package com.sberbank.pfm.test.concordion.extensions.exam.files.commands;
 
+import com.sberbank.pfm.test.concordion.extensions.exam.html.Html;
 import org.concordion.api.AbstractCommand;
 import org.concordion.api.Element;
 
 import java.io.File;
+
+import static com.sberbank.pfm.test.concordion.extensions.exam.html.Html.tr;
 
 class BaseCommand extends AbstractCommand {
     protected static final String EMPTY = "<EMPTY>";
@@ -11,6 +14,10 @@ class BaseCommand extends AbstractCommand {
     protected static final String FILE_CONTENT = "FILE CONTENT";
 
     protected void addHeader(Element element, String... texts) {
+        addInTR(element, "th", texts);
+    }
+
+    protected void addHeader(Html element, String... texts) {
         addInTR(element, "th", texts);
     }
 
@@ -28,6 +35,14 @@ class BaseCommand extends AbstractCommand {
             tr.appendChild(new Element(cell).appendText(text));
         }
         element.appendChild(tr);
+    }
+
+    private void addInTR(Html element, String cell, String... texts) {
+        Html tr = tr();
+        for (String text : texts) {
+            tr.childs(new Html(cell).text(text));
+        }
+        element.childs(tr);
     }
 
     private void addInTR(Element element, String cell, Element... els) {

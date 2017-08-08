@@ -15,20 +15,16 @@
 
     <e:fl-set dir="dir">
         <file name="empty_file"/>
-        <file name="not_empty_file">
-            содержимое файла
-        </file>
-        <file name="not_empty_file2">${exam.now} or formated ${exam.now:dd.MM.yyyy'T'HH:mm:ss}</file>
+        <file name="content_from_external_file" from="data/test.xml"/>
+        <file name="inline_content">${exam.now} or formated ${exam.now:dd.MM.yyyy'T'HH:mm:ss}</file>
     </e:fl-set>
 
 <div>
     <e:then>
         <e:fl-set dir="dir">
             <file name="empty_file"/>
-            <file name="not_empty_file">
-                содержимое файла
-            </file>
-            <file name="not_empty_file2">${exam.now} or formated ${exam.now:dd.MM.yyyy'T'HH:mm:ss}</file>
+            <file name="content_from_external_file" from="data/test.xml"/>
+            <file name="inline_content">${exam.now} or formated ${exam.now:dd.MM.yyyy'T'HH:mm:ss}</file>
         </e:fl-set>
     </e:then>
 </div>
