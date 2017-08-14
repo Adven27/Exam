@@ -4,11 +4,13 @@ import com.jayway.restassured.response.Response;
 import com.sberbank.pfm.test.concordion.extensions.exam.PlaceholdersResolver;
 import com.sberbank.pfm.test.concordion.extensions.exam.html.Html;
 import com.sberbank.pfm.test.concordion.extensions.exam.rest.JsonPrettyPrinter;
+import net.javacrumbs.jsonunit.core.Configuration;
 import org.apache.commons.collections.map.HashedMap;
 import org.concordion.api.CommandCall;
 import org.concordion.api.CommandCallList;
 import org.concordion.api.Evaluator;
 import org.concordion.api.ResultRecorder;
+import org.hamcrest.Matcher;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,8 +32,13 @@ public class CaseCommand extends RestVerifyCommand {
     private static final String VARIABLES = "variables";
     private static final String VALUES = "values";
     private final JsonPrettyPrinter jsonPrinter = new JsonPrettyPrinter();
+    private final Map<String, Matcher> jsonUnitMatchers;
     List<Map<String, Object>> cases = new ArrayList<>();
     private int number = 0;
+
+    public CaseCommand(Map<String, Matcher> jsonUnitMatchers) {
+        this.jsonUnitMatchers = jsonUnitMatchers;
+    }
 
     @Override
     public void setUp(CommandCall commandCall, Evaluator eval, ResultRecorder resultRecorder) {
@@ -187,7 +194,11 @@ public class CaseCommand extends RestVerifyCommand {
 
     private boolean areEqual(String prettyActual, String expected) {
         try {
-            assertJsonEquals(expected, prettyActual, when(IGNORING_ARRAY_ORDER));
+            Configuration cfg = when(IGNORING_ARRAY_ORDER);
+            for (Map.Entry<String, Matcher> e : jsonUnitMatchers.entrySet()) {
+                cfg = cfg.withMatcher(e.getKey(), e.getValue());
+            }
+            assertJsonEquals(expected, prettyActual, cfg);
         } catch (AssertionError e) {
             e.printStackTrace();
             return false;

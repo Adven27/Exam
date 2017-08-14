@@ -17,13 +17,18 @@ import org.concordion.api.extension.ConcordionExtender;
 import org.concordion.api.extension.ConcordionExtension;
 import org.concordion.api.listener.DocumentParsingListener;
 import org.dbunit.JdbcDatabaseTester;
+import org.hamcrest.BaseMatcher;
+import org.hamcrest.Description;
+import org.hamcrest.Matcher;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
 public class ExamExtension implements ConcordionExtension {
     public static final String NS = "http://exam.extension.io";
+    public Map<String, Matcher> jsonUnitMatchers = new HashMap<>();
 
     private JdbcDatabaseTester dbTester;
 
@@ -72,7 +77,7 @@ public class ExamExtension implements ConcordionExtension {
 
         ex.withCommand(NS, "rs-post", new PostCommand());
         ex.withCommand(NS, "rs-get", new GetCommand());
-        ex.withCommand(NS, "rs-case", new CaseCommand());
+        ex.withCommand(NS, "rs-case", new CaseCommand(jsonUnitMatchers));
         ex.withCommand(NS, "rs-echoJson", new EchoJsonCommand());
         ex.withCommand(NS, "rs-status", new ExpectedStatusCommand());
 
@@ -128,5 +133,23 @@ public class ExamExtension implements ConcordionExtension {
         });
 
         ex.withSpecificationProcessingListener(new SpecSummaryListener());
+    }
+
+    public ExamExtension withJsonUnitMatcher(String matcherName, Matcher<?> matcher) {
+        jsonUnitMatchers.put(matcherName, matcher);
+        return this;
+    }
+
+    public static class DateMatcher extends BaseMatcher<Date> {
+
+        @Override
+        public boolean matches(Object item) {
+            return false;
+        }
+
+        @Override
+        public void describeTo(Description description) {
+
+        }
     }
 }

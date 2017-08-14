@@ -2,9 +2,11 @@ package com.sberbank.pfm.test.concordion.extensions.exam;
 
 import org.concordion.api.Evaluator;
 import org.joda.time.LocalDateTime;
+import org.joda.time.Period;
 
 import java.util.Date;
 
+import static java.lang.Integer.parseInt;
 import static org.joda.time.LocalDateTime.fromDateFields;
 import static org.joda.time.LocalDateTime.now;
 import static org.joda.time.format.DateTimeFormat.forPattern;
@@ -21,6 +23,10 @@ public class PlaceholdersResolver {
                     (variable == null ? eval.evaluate(var.contains(".") ? "#" + var : var) : variable).toString());
             body = original;
         }
+        return resolve(body);
+    }
+
+    public static String resolve(String body) {
         while (body.contains("${exam.")) {
             String original = body;
             String var = extractVarFrom(original, "exam");
@@ -40,6 +46,10 @@ public class PlaceholdersResolver {
         if (var.startsWith("date(")) {
             String date = var.substring("date(".length(), var.indexOf(")"));
             return LocalDateTime.parse(date, forPattern("dd.MM.yyyy")).toDate();
+        } else if (var.startsWith("now+")) {
+            return now().plus(parsePeriod(var)).toDate();
+        } else if (var.startsWith("now-")) {
+            return now().minus(parsePeriod(var)).toDate();
         }
         switch (var) {
             case "yesterday":
@@ -52,6 +62,61 @@ public class PlaceholdersResolver {
             default:
                 return null;
         }
+    }
+
+    private static Period parsePeriod(String var) {
+        Period p = Period.ZERO;
+        String[] periods = var.substring(5, var.indexOf("]")).split(",");
+        for (String period : periods) {
+            String[] parts = period.trim().split(" ");
+            if (isValue(parts[0])) {
+                p = addTo(p, parseInt(parts[0]), parts[1]);
+            } else {
+                p = addTo(p, parseInt(parts[1]), parts[0]);
+            }
+        }
+        return p;
+    }
+
+    private static Period addTo(Period p, int val, String type) {
+        switch (type) {
+            case "d":
+            case "day":
+            case "days":
+                return p.plusDays(val);
+            case "M":
+            case "month":
+            case "months":
+                return p.plusMonths(val);
+            case "y":
+            case "year":
+            case "years":
+                return p.plusYears(val);
+            case "h":
+            case "hour":
+            case "hours":
+                return p.plusHours(val);
+            case "m":
+            case "min":
+            case "minute":
+            case "minutes":
+                return p.plusMinutes(val);
+            case "s":
+            case "sec":
+            case "second":
+            case "seconds":
+                return p.plusSeconds(val);
+        }
+        return p;
+    }
+
+    private static boolean isValue(String part) {
+        try {
+            parseInt(part);
+        } catch (NumberFormatException e) {
+            return false;
+        }
+        return true;
     }
 
     public static Object resolveToObj(String placeholder, Evaluator evaluator) {

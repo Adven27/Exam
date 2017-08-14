@@ -8,6 +8,8 @@ import org.concordion.api.BeforeSuite;
 import org.concordion.api.extension.Extension;
 import org.concordion.api.option.ConcordionOptions;
 import org.concordion.integration.junit4.ConcordionRunner;
+import org.hamcrest.CustomMatcher;
+import org.joda.time.DateTime;
 import org.junit.runner.RunWith;
 import org.simpleframework.http.Cookie;
 import org.simpleframework.http.Request;
@@ -23,6 +25,7 @@ import java.io.PrintStream;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 
+import static org.joda.time.format.DateTimeFormat.forPattern;
 import static org.simpleframework.http.Status.BAD_REQUEST;
 import static org.simpleframework.http.Status.OK;
 
@@ -33,7 +36,37 @@ public class Specs {
     @SuppressFBWarnings(value = "URF_UNREAD_FIELD", justification = "особенности подключения расширений в concordion")
     @Extension
     private final ExamExtension exam = new ExamExtension().
-            dbTester("org.h2.Driver", "jdbc:h2:mem:test;INIT=CREATE SCHEMA IF NOT EXISTS SA\\;SET SCHEMA SA", "sa", "");
+            dbTester("org.h2.Driver", "jdbc:h2:mem:test;INIT=CREATE SCHEMA IF NOT EXISTS SA\\;SET SCHEMA SA", "sa", "").
+            withJsonUnitMatcher("dd.MM.yyyy'T'hh:mm:ss", new CustomMatcher<String>("a date in format dd.MM.yyyy'T'hh:mm:ss") {
+                public boolean matches(Object object) {
+                    try {
+                        DateTime.parse((String) object, forPattern("dd.MM.yyyy'T'hh:mm:ss"));
+                    } catch (Exception e) {
+                        return false;
+                    }
+                    return true;
+                }
+            }).
+            withJsonUnitMatcher("dd.MM.yyyy", new CustomMatcher<String>("a date in format dd.MM.yyyy") {
+                public boolean matches(Object object) {
+                    try {
+                        DateTime.parse((String) object, forPattern("dd.MM.yyyy"));
+                    } catch (Exception e) {
+                        return false;
+                    }
+                    return true;
+                }
+            }).
+            withJsonUnitMatcher("yyyy-MM-dd", new CustomMatcher<String>("a date in format yyyy-MM-dd") {
+                public boolean matches(Object object) {
+                    try {
+                        DateTime.parse((String) object, forPattern("yyyy-MM-dd"));
+                    } catch (Exception e) {
+                        return false;
+                    }
+                    return true;
+                }
+            });
 
     @BeforeSuite
     public static void startServer() throws Exception {
