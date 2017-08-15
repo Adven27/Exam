@@ -182,13 +182,13 @@ ins {
 &lt;/e:rs-get&gt;
 </code></pre>
 <div>
-    <div e:rs-get="" class="bs-callout bs-callout-success" /><table class="table table-condensed"><tr><th>Expected response</th><th>Status code</th></tr>
-        <tr desc="Запрос с параметрами (все проверки успешны)" e:rs-case=""><td colspan="2" class="text-muted">1) Запрос с параметрами (все проверки успешны)</td></tr><tr><td colspan="2"><div><i>GET </i><code>relative/url?param1=1&amp;param2=2</code></div></td></tr><tr>        
+    <div e:rs-get="" class="bs-callout bs-callout-success"><table class="table table-condensed"><tr><th>Expected response</th><th>Status code</th></tr>
+        <tr desc="Запрос с параметрами (все проверки успешны)" e:rs-case=""><tr><td colspan="2"><div><i>GET </i><code>relative/url?param1=1&amp;param2=2</code></div></td></tr><tr><td colspan="2" class="text-muted">1) Запрос с параметрами (все проверки успешны)</td></tr>        
             
         <tr><td class="json rest-success">{
   "get": "/relative/url?param1=1&amp;param2=2"
 }</td><td class="rest-success">HTTP/1.1 200 OK</td></tr></tr>
-        <tr desc="Запрос без параметров (с неверным телом ответа)" e:rs-case=""><td colspan="2" class="text-muted">2) Запрос без параметров (с неверным телом ответа)</td></tr><tr><td colspan="2"><div><i>GET </i><code>relative/url</code></div></td></tr><tr>        
+        <tr desc="Запрос без параметров (с неверным телом ответа)" e:rs-case=""><tr><td colspan="2"><div><i>GET </i><code>relative/url</code></div></td></tr><tr><td colspan="2" class="text-muted">2) Запрос без параметров (с неверным телом ответа)</td></tr>        
             
             <check e:check="" />
         <tr><td class="json rest-failure"><del class="expected">{
@@ -199,7 +199,7 @@ ins {
 }</ins></td><td class="rest-success">HTTP/1.1 200 OK</td></tr></tr><tr><td colspan="3">
                 <span c:assertTrue="true" class="success">Произвольный блок, где можно сделать дополнительные проверки, относящиеся к данному кейсу</span>
             </td></tr>
-    <div><span>GET </span><code>relative/url</code><span>  Content-Type  </span><code>application/json</code></div></table>
+    <div><span>GET </span><code>relative/url</code><span>  Content-Type  </span><code>application/json</code></div></table></div>
 </div></div>
 <div concordion:example="wrong status code" concordion:status="ExpectedToFail" id="wrong status code"><p>   &lt;-- Note: This example has been marked as EXPECTED_TO_FAIL</p>
 <h3><strong>Пример проверки кода ответа</strong></h3>
@@ -212,14 +212,14 @@ ins {
 &lt;/e:rs-get&gt;   
 </code></pre>
 <div>
-    <div e:rs-get="" class="bs-callout bs-callout-success" /><table class="table table-condensed"><tr><th>Expected response</th><th>Status code</th></tr>
-        <tr desc="Неверный код ответа" e:rs-case=""><td colspan="2" class="text-muted">3) Неверный код ответа</td></tr><tr><td colspan="2"><div><i>GET </i><code>status/400</code></div></td></tr><tr>        
+    <div e:rs-get="" class="bs-callout bs-callout-success"><table class="table table-condensed"><tr><th>Expected response</th><th>Status code</th></tr>
+        <tr desc="Неверный код ответа" e:rs-case=""><tr><td colspan="2"><div><i>GET </i><code>status/400</code></div></td></tr><tr><td colspan="2" class="text-muted">3) Неверный код ответа</td></tr>        
             
         <tr><td class="json rest-success">{
   "get": "/status/400"
 }</td><td class="rest-failure"><del class="expected">HTTP/1.1 200 OK</del>
 <ins class="actual">HTTP/1.1 400 Bad Request</ins></td></tr></tr>
-    <div><span>GET </span><code>status/400</code><span>  Content-Type  </span><code>application/json</code></div></table>   
+    <div><span>GET </span><code>status/400</code><span>  Content-Type  </span><code>application/json</code></div></table></div>   
 </div></div>
 <div concordion:example="cookies" id="cookies">
 <h3><strong>Пример работы с куками</strong></h3>
@@ -251,8 +251,8 @@ ins {
 &lt;/e:rs-get&gt;
 </code></pre>
 <div>
-    <div e:rs-get="" class="bs-callout bs-callout-success" /><table class="table table-condensed"><tr><th>Expected response</th><th>Status code</th></tr>
-        <tr desc="Если у кейса не указаны - используются заданные в команде" e:rs-case=""><td colspan="2" class="text-muted">4) Если у кейса не указаны - используются заданные в команде</td></tr><tr><td colspan="2"><div><i>GET </i><code>relative/url</code><i> Cookies </i><code>cook=from_command</code></div></td></tr><tr>        
+    <div e:rs-get="" class="bs-callout bs-callout-success"><table class="table table-condensed"><tr><th>Expected response</th><th>Status code</th></tr>
+        <tr desc="Если у кейса не указаны - используются заданные в команде" e:rs-case=""><tr><td colspan="2"><div><i>GET </i><code>relative/url</code><i> Cookies </i><code>cook=from_command</code></div></td></tr><tr><td colspan="2" class="text-muted">4) Если у кейса не указаны - используются заданные в команде</td></tr>        
             
         <tr><td class="json rest-success">{
   "get": "/relative/url",
@@ -260,7 +260,7 @@ ins {
     "cook": "from_command"
   }
 }</td><td class="rest-success">HTTP/1.1 200 OK</td></tr></tr>
-        <tr desc="Иначе, те что у кейса" e:rs-case=""><td colspan="2" class="text-muted">5) Иначе, те что у кейса</td></tr><tr><td colspan="2"><div><i>GET </i><code>relative/url</code><i> Cookies </i><code>cook=from_case</code></div></td></tr><tr>        
+        <tr desc="Иначе, те что у кейса" e:rs-case=""><tr><td colspan="2"><div><i>GET </i><code>relative/url</code><i> Cookies </i><code>cook=from_case</code></div></td></tr><tr><td colspan="2" class="text-muted">5) Иначе, те что у кейса</td></tr>        
             
         <tr><td class="json rest-success">{
   "get": "/relative/url",
@@ -268,7 +268,7 @@ ins {
     "cook": "from_case"
   }
 }</td><td class="rest-success">HTTP/1.1 200 OK</td></tr></tr>
-        <tr desc="Можно использовать плейсхолдеры для вызова переменных и методов" e:rs-case=""><td colspan="2" class="text-muted">6) Можно использовать плейсхолдеры для вызова переменных и методов</td></tr><tr><td colspan="2"><div><i>GET </i><code>relative/url</code><i> Cookies </i><code>cook=relative/url,anotherCook=asd</code></div></td></tr><tr>
+        <tr desc="Можно использовать плейсхолдеры для вызова переменных и методов" e:rs-case=""><tr><td colspan="2"><div><i>GET </i><code>relative/url</code><i> Cookies </i><code>cook=relative/url,anotherCook=asd</code></div></td></tr><tr><td colspan="2" class="text-muted">6) Можно использовать плейсхолдеры для вызова переменных и методов</td></tr>
             
             <check e:check="" />
         <tr><td class="json rest-success">{
@@ -285,7 +285,7 @@ ins {
                 <li>echo #ck =&gt; <code c:echo="#ck">{cook=relative/url, anotherCook=asd}</code></li>
                 </ol>
             </td></tr>
-        <tr desc="Можно использовать поля предыдущего респонса, например ${var.exam_response.cookies()}, если пометить спеку @FullOGNL" e:rs-case=""><td colspan="2" class="text-muted">7) Можно использовать поля предыдущего респонса, например ${var.exam_response.cookies()}, если пометить спеку @FullOGNL</td></tr><tr><td colspan="2"><div><i>GET </i><code>relative/url</code><i> Cookies </i><code>cook=relative/url, anotherCook=asd</code></div></td></tr><tr>
+        <tr desc="Можно использовать поля предыдущего респонса, например ${var.exam_response.cookies()}, если пометить спеку @FullOGNL" e:rs-case=""><tr><td colspan="2"><div><i>GET </i><code>relative/url</code><i> Cookies </i><code>cook=relative/url, anotherCook=asd</code></div></td></tr><tr><td colspan="2" class="text-muted">7) Можно использовать поля предыдущего респонса, например ${var.exam_response.cookies()}, если пометить спеку @FullOGNL</td></tr>
             
         <tr><td class="json rest-success">{
   "get": "/relative/url",
@@ -294,5 +294,5 @@ ins {
     "anotherCook": "asd"
   }
 }</td><td class="rest-success">HTTP/1.1 200 OK</td></tr></tr>
-    <div><span>GET </span><code>relative/url</code><span>  Content-Type  </span><code>application/json</code><span>  Cookies  </span><code>cook=from_command</code></div></table>
-</div></div><div class="footer">Results generated by <a href="http://www.concordion.org" style="font-weight: bold; text-decoration: none; color: #89C;">Concordion</a><div class="testTime">in 270 ms on 14-Aug-2017 at 19:43:18 UTC</div></div></body></html>
+    <div><span>GET </span><code>relative/url</code><span>  Content-Type  </span><code>application/json</code><span>  Cookies  </span><code>cook=from_command</code></div></table></div>
+</div></div><div class="footer">Results generated by <a href="http://www.concordion.org" style="font-weight: bold; text-decoration: none; color: #89C;">Concordion</a><div class="testTime">in 734 ms on 15-Aug-2017 at 12:30:49 UTC</div></div></body></html>
