@@ -27,6 +27,10 @@ public class RestVerifyCommand extends AbstractCommand {
         listeners.announce().successReported(new AssertSuccessEvent(element));
     }
 
+    protected void success(ResultRecorder resultRecorder, Html element) {
+        success(resultRecorder, element.el());
+    }
+
     protected void failure(ResultRecorder resultRecorder, Element element, String actual, String expected) {
         resultRecorder.record(FAILURE);
         listeners.announce().failureReported(new AssertFailureEvent(element, expected, actual));
@@ -34,9 +38,5 @@ public class RestVerifyCommand extends AbstractCommand {
 
     protected void failure(ResultRecorder resultRecorder, Html element, String actual, String expected) {
         failure(resultRecorder, element.el(), actual, expected);
-    }
-
-    protected void success(ResultRecorder resultRecorder, Html element) {
-        success(resultRecorder, element.el());
     }
 }

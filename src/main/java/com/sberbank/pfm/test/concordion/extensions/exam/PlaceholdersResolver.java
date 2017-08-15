@@ -106,8 +106,9 @@ public class PlaceholdersResolver {
             case "second":
             case "seconds":
                 return p.plusSeconds(val);
+            default:
+                return p;
         }
-        return p;
     }
 
     private static boolean isValue(String part) {

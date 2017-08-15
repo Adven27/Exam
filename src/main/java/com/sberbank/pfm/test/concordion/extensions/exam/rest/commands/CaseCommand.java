@@ -128,9 +128,7 @@ public class CaseCommand extends RestVerifyCommand {
     @Override
     public void verify(CommandCall cmd, Evaluator evaluator, ResultRecorder resultRecorder) {
         RequestExecutor executor = fromEvaluator(evaluator);
-        final String colspan = executor.hasRequestBody() ? "3" : "2";
 
-        Html root = new Html(cmd.getElement()).dropAllTo(tr());
         Html div = div().childs(
                 italic(executor.requestMethod() + " "),
                 code(executor.requestUrlWithParams())
@@ -153,9 +151,13 @@ public class CaseCommand extends RestVerifyCommand {
             }
         }
 
-        root.childs(
-                td(caseDesc(root)).attr("colspan", colspan).muted()
-        ).below(
+        final String colspan = executor.hasRequestBody() ? "3" : "2";
+        Html rt = new Html(cmd.getElement());
+        rt.above(
+                tr().childs(
+                        td(caseDesc(rt.attr(DESC))).attr("colspan", colspan).muted()
+                )
+        ).above(
                 tr().childs(
                         td().attr("colspan", colspan).childs(
                                 div
@@ -164,8 +166,7 @@ public class CaseCommand extends RestVerifyCommand {
         );
     }
 
-    private String caseDesc(Html element) {
-        String desc = element.attr(DESC);
+    private String caseDesc(String desc) {
         return ++number + ") " + (desc == null ? "" : desc);
     }
 

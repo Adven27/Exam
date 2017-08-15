@@ -119,7 +119,12 @@ public class Html {
 
     public Html dropAllTo(Html element) {
         el.moveChildrenTo(element.el);
-        el.appendSister(element.el);
+        el.appendChild(element.el);
+        return this;
+    }
+
+    public Html above(Html html) {
+        el.prependChild(html.el);
         return this;
     }
 
@@ -163,8 +168,10 @@ public class Html {
         el.addStyleClass("panel panel-info table-responsive");
         Html body = div().style("panel-body");
         el.moveChildrenTo(body.el);
-        this.childs(div().style("panel-heading").childs(
-                Html.a(header).attr("data-type", "example").attr("name", header))
+        this.childs(
+                div().style("panel-heading").childs(
+                        Html.a(header).attr("data-type", "example").attr("name", header)
+                )
         );
         el.appendChild(body.el);
         return this;

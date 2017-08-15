@@ -12,8 +12,8 @@ public class PlaceholdersResolverTest {
     public void canAddSimplePeriodToNow() throws Exception {
         String value1 = "${exam.now+[1 day]:dd.MM.yyyy}";
         String value2 = "${exam.now+[day 1]:dd.MM.yyyy}";
-        String value3= "${exam.now+[1 d]:dd.MM.yyyy}";
-        String value4= "${exam.now+[1 days]:dd.MM.yyyy}";
+        String value3 = "${exam.now+[1 d]:dd.MM.yyyy}";
+        String value4 = "${exam.now+[1 days]:dd.MM.yyyy}";
 
         String expected = now().plusDays(1).toString("dd.MM.yyyy");
 

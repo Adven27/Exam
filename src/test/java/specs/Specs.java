@@ -37,49 +37,22 @@ public class Specs {
     @Extension
     private final ExamExtension exam = new ExamExtension().
             dbTester("org.h2.Driver", "jdbc:h2:mem:test;INIT=CREATE SCHEMA IF NOT EXISTS SA\\;SET SCHEMA SA", "sa", "").
-            withJsonUnitMatcher("dd.MM.yyyy'T'hh:mm:ss", new CustomMatcher<String>("a date in format dd.MM.yyyy'T'hh:mm:ss") {
-                public boolean matches(Object object) {
-                    try {
-                        DateTime.parse((String) object, forPattern("dd.MM.yyyy'T'hh:mm:ss"));
-                    } catch (Exception e) {
-                        return false;
-                    }
-                    return true;
-                }
-            }).
-            withJsonUnitMatcher("dd.MM.yyyy", new CustomMatcher<String>("a date in format dd.MM.yyyy") {
-                public boolean matches(Object object) {
-                    try {
-                        DateTime.parse((String) object, forPattern("dd.MM.yyyy"));
-                    } catch (Exception e) {
-                        return false;
-                    }
-                    return true;
-                }
-            }).
-            withJsonUnitMatcher("yyyy-MM-dd", new CustomMatcher<String>("a date in format yyyy-MM-dd") {
-                public boolean matches(Object object) {
-                    try {
-                        DateTime.parse((String) object, forPattern("yyyy-MM-dd"));
-                    } catch (Exception e) {
-                        return false;
-                    }
-                    return true;
-                }
-            });
-
-    @BeforeSuite
-    public static void startServer() throws Exception {
-        if (server == null) {
-            server = startServer(8081);
-        }
-    }
+            withJsonUnitMatcher("dd.MM.yyyy'T'hh:mm:ss", new DateMatcher("dd.MM.yyyy'T'hh:mm:ss")).
+            withJsonUnitMatcher("dd.MM.yyyy", new DateMatcher("dd.MM.yyyy")).
+            withJsonUnitMatcher("yyyy-MM-dd", new DateMatcher("yyyy-MM-dd"));
 
     @AfterSuite
     public static void stopServer() throws Exception {
         if (server != null) {
             server.stop();
             server = null;
+        }
+    }
+
+    @BeforeSuite
+    public static void startServer() throws Exception {
+        if (server == null) {
+            server = startServer(8081);
         }
     }
 
@@ -133,6 +106,24 @@ public class Specs {
                 sb.append(",\"" + c.getName() + "\":\"" + c.getValue() + "\"");
             }
             return sb.toString().substring(1);
+        }
+    }
+
+    private static class DateMatcher extends CustomMatcher<String> {
+        private final String pattern;
+
+        public DateMatcher(String pattern) {
+            super("a date in format " + pattern);
+            this.pattern = pattern;
+        }
+
+        public boolean matches(Object object) {
+            try {
+                DateTime.parse((String) object, forPattern(pattern));
+            } catch (Exception e) {
+                return false;
+            }
+            return true;
         }
     }
 }

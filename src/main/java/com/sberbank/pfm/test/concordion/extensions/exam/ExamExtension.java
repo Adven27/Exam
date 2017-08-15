@@ -17,11 +17,8 @@ import org.concordion.api.extension.ConcordionExtender;
 import org.concordion.api.extension.ConcordionExtension;
 import org.concordion.api.listener.DocumentParsingListener;
 import org.dbunit.JdbcDatabaseTester;
-import org.hamcrest.BaseMatcher;
-import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -41,12 +38,12 @@ public class ExamExtension implements ConcordionExtension {
         return this;
     }
 
-    public ExamExtension dbTester(Properties properties) {
+    public ExamExtension dbTester(Properties props) {
         return dbTester(
-                properties.getProperty("hibernate.connection.driver_class"),
-                properties.getProperty("connection.url"),
-                properties.getProperty("hibernate.connection.username"),
-                properties.getProperty("hibernate.connection.password")
+                props.getProperty("hibernate.connection.driver_class"),
+                props.getProperty("connection.url"),
+                props.getProperty("hibernate.connection.username"),
+                props.getProperty("hibernate.connection.password")
         );
     }
 
@@ -138,18 +135,5 @@ public class ExamExtension implements ConcordionExtension {
     public ExamExtension withJsonUnitMatcher(String matcherName, Matcher<?> matcher) {
         jsonUnitMatchers.put(matcherName, matcher);
         return this;
-    }
-
-    public static class DateMatcher extends BaseMatcher<Date> {
-
-        @Override
-        public boolean matches(Object item) {
-            return false;
-        }
-
-        @Override
-        public void describeTo(Description description) {
-
-        }
     }
 }

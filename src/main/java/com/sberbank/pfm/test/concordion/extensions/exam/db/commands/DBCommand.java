@@ -3,7 +3,10 @@ package com.sberbank.pfm.test.concordion.extensions.exam.db.commands;
 import com.sberbank.pfm.test.TableData;
 import com.sberbank.pfm.test.concordion.extensions.exam.PlaceholdersResolver;
 import com.sberbank.pfm.test.concordion.extensions.exam.html.Html;
-import org.concordion.api.*;
+import org.concordion.api.AbstractCommand;
+import org.concordion.api.CommandCall;
+import org.concordion.api.Evaluator;
+import org.concordion.api.ResultRecorder;
 import org.dbunit.JdbcDatabaseTester;
 import org.dbunit.dataset.Column;
 import org.dbunit.dataset.DataSetException;
@@ -141,7 +144,7 @@ public class DBCommand extends AbstractCommand {
             for (String val : comaSeparatedValues.split(",")) {
                 val = val.trim();
                 if (val.startsWith("'") && val.endsWith("'")) {
-                    val = val.substring(1, val.length()-1);
+                    val = val.substring(1, val.length() - 1);
                 }
                 values.add(PlaceholdersResolver.resolveToObj(val, eval));
             }

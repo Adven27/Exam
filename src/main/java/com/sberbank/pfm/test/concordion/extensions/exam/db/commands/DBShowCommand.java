@@ -34,8 +34,8 @@ public class DBShowCommand extends DBCommand {
                                                                parseCols(el, eval).cols());
 
             String rowFilter = el.takeAwayAttr("where", eval);
-            renderTable(el, isNullOrEmpty(rowFilter) ? filteredColumnsTable
-                                                     : new RowFilterTable(filteredColumnsTable, getRowFilter(rowFilter)));
+            renderTable(el, isNullOrEmpty(rowFilter) ?
+                    filteredColumnsTable : new RowFilterTable(filteredColumnsTable, getRowFilter(rowFilter)));
         } catch (Exception e) {
             throw new RuntimeException(e);
         } finally {
