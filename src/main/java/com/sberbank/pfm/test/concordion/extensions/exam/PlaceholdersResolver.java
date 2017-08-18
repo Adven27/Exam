@@ -1,8 +1,8 @@
 package com.sberbank.pfm.test.concordion.extensions.exam;
 
 import org.concordion.api.Evaluator;
-import org.joda.time.LocalDateTime;
-import org.joda.time.Period;
+import org.joda.time.*;
+import org.joda.time.base.BaseSingleFieldPeriod;
 
 import java.util.Date;
 
@@ -70,44 +70,44 @@ public class PlaceholdersResolver {
         for (String period : periods) {
             String[] parts = period.trim().split(" ");
             if (isValue(parts[0])) {
-                p = addTo(p, parseInt(parts[0]), parts[1]);
+                p.plus(periodBy(parseInt(parts[0]), parts[1]));
             } else {
-                p = addTo(p, parseInt(parts[1]), parts[0]);
+                p.plus(periodBy(parseInt(parts[1]), parts[0]));
             }
         }
         return p;
     }
 
-    private static Period addTo(Period p, int val, String type) {
+    public static BaseSingleFieldPeriod periodBy(int val, String type) {
         switch (type) {
             case "d":
             case "day":
             case "days":
-                return p.plusDays(val);
+                return Days.days(val);
             case "M":
             case "month":
             case "months":
-                return p.plusMonths(val);
+                return Months.months(val);
             case "y":
             case "year":
             case "years":
-                return p.plusYears(val);
+                return Years.years(val);
             case "h":
             case "hour":
             case "hours":
-                return p.plusHours(val);
+                return Hours.hours(val);
             case "m":
             case "min":
             case "minute":
             case "minutes":
-                return p.plusMinutes(val);
+                return Minutes.minutes(val);
             case "s":
             case "sec":
             case "second":
             case "seconds":
-                return p.plusSeconds(val);
+                return Seconds.seconds(val);
             default:
-                return p;
+                throw new UnsupportedOperationException("Unsupported period type " + type);
         }
     }
 

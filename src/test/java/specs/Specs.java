@@ -8,8 +8,6 @@ import org.concordion.api.BeforeSuite;
 import org.concordion.api.extension.Extension;
 import org.concordion.api.option.ConcordionOptions;
 import org.concordion.integration.junit4.ConcordionRunner;
-import org.hamcrest.CustomMatcher;
-import org.joda.time.DateTime;
 import org.junit.runner.RunWith;
 import org.simpleframework.http.Cookie;
 import org.simpleframework.http.Request;
@@ -25,7 +23,6 @@ import java.io.PrintStream;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 
-import static org.joda.time.format.DateTimeFormat.forPattern;
 import static org.simpleframework.http.Status.BAD_REQUEST;
 import static org.simpleframework.http.Status.OK;
 
@@ -36,10 +33,7 @@ public class Specs {
     @SuppressFBWarnings(value = "URF_UNREAD_FIELD", justification = "особенности подключения расширений в concordion")
     @Extension
     private final ExamExtension exam = new ExamExtension().
-            dbTester("org.h2.Driver", "jdbc:h2:mem:test;INIT=CREATE SCHEMA IF NOT EXISTS SA\\;SET SCHEMA SA", "sa", "").
-            withJsonUnitMatcher("dd.MM.yyyy'T'hh:mm:ss", new DateMatcher("dd.MM.yyyy'T'hh:mm:ss")).
-            withJsonUnitMatcher("dd.MM.yyyy", new DateMatcher("dd.MM.yyyy")).
-            withJsonUnitMatcher("yyyy-MM-dd", new DateMatcher("yyyy-MM-dd"));
+            dbTester("org.h2.Driver", "jdbc:h2:mem:test;INIT=CREATE SCHEMA IF NOT EXISTS SA\\;SET SCHEMA SA", "sa", "");
 
     @AfterSuite
     public static void stopServer() throws Exception {
@@ -109,21 +103,5 @@ public class Specs {
         }
     }
 
-    private static class DateMatcher extends CustomMatcher<String> {
-        private final String pattern;
 
-        public DateMatcher(String pattern) {
-            super("a date in format " + pattern);
-            this.pattern = pattern;
-        }
-
-        public boolean matches(Object object) {
-            try {
-                DateTime.parse((String) object, forPattern(pattern));
-            } catch (Exception e) {
-                return false;
-            }
-            return true;
-        }
-    }
 }

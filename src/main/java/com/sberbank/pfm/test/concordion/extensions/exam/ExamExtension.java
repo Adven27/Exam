@@ -9,6 +9,7 @@ import com.sberbank.pfm.test.concordion.extensions.exam.files.commands.FilesChec
 import com.sberbank.pfm.test.concordion.extensions.exam.files.commands.FilesSetCommand;
 import com.sberbank.pfm.test.concordion.extensions.exam.files.commands.FilesShowCommand;
 import com.sberbank.pfm.test.concordion.extensions.exam.rest.commands.*;
+import net.javacrumbs.jsonunit.core.ParametrizedMatcher;
 import nu.xom.Attribute;
 import nu.xom.Document;
 import nu.xom.Element;
@@ -17,17 +18,30 @@ import org.concordion.api.extension.ConcordionExtender;
 import org.concordion.api.extension.ConcordionExtension;
 import org.concordion.api.listener.DocumentParsingListener;
 import org.dbunit.JdbcDatabaseTester;
+import org.hamcrest.BaseMatcher;
+import org.hamcrest.Description;
 import org.hamcrest.Matcher;
+import org.joda.time.DateTime;
+import org.joda.time.base.BaseSingleFieldPeriod;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+
+import static java.lang.Character.isDigit;
+import static java.lang.Integer.parseInt;
+import static org.joda.time.format.DateTimeFormat.forPattern;
 
 public class ExamExtension implements ConcordionExtension {
     public static final String NS = "http://exam.extension.io";
     public Map<String, Matcher> jsonUnitMatchers = new HashMap<>();
 
     private JdbcDatabaseTester dbTester;
+
+    public ExamExtension() {
+        jsonUnitMatchers.put("formattedAs", new DateFormatMatcher());
+        jsonUnitMatchers.put("formattedAndWithin", new DateWithinMatcher());
+    }
 
     public ExamExtension dbTester(String driver, String url, String user, String password) {
         try {
@@ -81,6 +95,7 @@ public class ExamExtension implements ConcordionExtension {
         ex.withDocumentParsingListener(new DocumentParsingListener() {
 
             private Map<String, String> tags = new HashMap<>();
+
             {
                 tags.put("given", "div");
                 tags.put("when", "div");
@@ -135,5 +150,72 @@ public class ExamExtension implements ConcordionExtension {
     public ExamExtension withJsonUnitMatcher(String matcherName, Matcher<?> matcher) {
         jsonUnitMatchers.put(matcherName, matcher);
         return this;
+    }
+
+    private static class DateFormatMatcher extends BaseMatcher<Object> implements ParametrizedMatcher {
+        private String param;
+
+        public boolean matches(Object item) {
+            try {
+                DateTime.parse((String) item, forPattern(param));
+            } catch (Exception e) {
+                return false;
+            }
+            return true;
+        }
+
+        public void describeTo(Description description) {
+            description.appendValue(param);
+        }
+
+        @Override
+        public void describeMismatch(Object item, Description description) {
+            description.appendText("The date is not properly formatted ").appendValue(param);
+        }
+
+        public void setParameter(String parameter) {
+            this.param = parameter;
+        }
+    }
+
+    private static class DateWithinMatcher extends BaseMatcher<Object> implements ParametrizedMatcher {
+        private BaseSingleFieldPeriod period;
+        private DateTime expected;
+        private String pattern;
+
+        public boolean matches(Object item) {
+            DateTime actual = DateTime.parse((String) item, forPattern(pattern));
+            return isBetweenInclusive(expected.minus(period), expected.plus(period), actual);
+        }
+
+        boolean isBetweenInclusive(DateTime start, DateTime end, DateTime target) {
+            return !target.isBefore(start) && !target.isAfter(end);
+        }
+
+        public void describeTo(Description description) {
+            description.appendValue(period);
+        }
+
+        @Override
+        public void describeMismatch(Object item, Description description) {
+            description.appendText("The date should be within ").appendValue(period);
+        }
+
+        public void setParameter(String param) {
+            pattern = param.substring(1, param.indexOf("]"));
+            param = param.substring(pattern.length() + 2);
+            String p2 = param.substring(1, param.indexOf("]"));
+            param = param.substring(p2.length() + 2);
+            String p3 = param.substring(1, param.indexOf("]"));
+
+            expected = DateTime.parse(p2, forPattern(pattern));
+
+            int i = 0;
+            while (i < p3.length() && isDigit(p3.charAt(i))) {
+                i++;
+            }
+            this.period = PlaceholdersResolver.periodBy(
+                    parseInt(p3.substring(0, i)), p3.substring(i, p3.length()));
+        }
     }
 }

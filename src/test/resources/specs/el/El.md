@@ -44,9 +44,9 @@
                 </body>
                 <expected>
                     {
-                     "exam.yesterday:dd.MM.yyyy'T'hh:mm:ss": "${json-unit.matches:dd.MM.yyyy'T'hh:mm:ss}",
-                     "exam.now:dd.MM.yyyy":       "${json-unit.matches:dd.MM.yyyy}",
-                     "exam.tomorrow:yyyy-MM-dd":  "${json-unit.matches:yyyy-MM-dd}"
+                     "exam.yesterday:dd.MM.yyyy'T'hh:mm:ss": "${json-unit.matches:formattedAs}dd.MM.yyyy'T'hh:mm:ss",
+                     "exam.now:dd.MM.yyyy":       "${json-unit.matches:formattedAs}dd.MM.yyyy",
+                     "exam.tomorrow:yyyy-MM-dd":  "${json-unit.matches:formattedAs}yyyy-MM-dd"
                     }
                 </expected>
             </e:rs-case>
@@ -59,8 +59,8 @@
                 </body>
                 <expected>
                     {
-                     "exam.now+[day 1, 2 months, 3 y]": "${json-unit.matches:dd.MM.yyyy}",
-                     "exam.now-[day 1, 2 months, 3 y]": "${json-unit.matches:dd.MM.yyyy}"
+                     "exam.now+[day 1, 2 months, 3 y]": "${json-unit.matches:formattedAs}dd.MM.yyyy",
+                     "exam.now-[day 1, 2 months, 3 y]": "${json-unit.matches:formattedAs}dd.MM.yyyy"
                     }
                 </expected>
             </e:rs-case>
@@ -74,7 +74,7 @@
                 <expected>
                     {
                      "exam.date(dd.MM.YYY)": "${json-unit.any-string}",
-                     "exam.date(dd.MM.YYY):yyyy-MM-dd": "${json-unit.matches:yyyy-MM-dd}"
+                     "exam.date(dd.MM.YYY):yyyy-MM-dd": "${json-unit.matches:formattedAndWithin}[yyyy-MM-dd][1951-05-13][1d]"
                     }
                 </expected>
             </e:rs-case>
