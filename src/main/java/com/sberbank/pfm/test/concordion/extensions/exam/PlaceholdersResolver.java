@@ -69,11 +69,8 @@ public class PlaceholdersResolver {
         String[] periods = var.substring(5, var.indexOf("]")).split(",");
         for (String period : periods) {
             String[] parts = period.trim().split(" ");
-            if (isValue(parts[0])) {
-                p.plus(periodBy(parseInt(parts[0]), parts[1]));
-            } else {
-                p.plus(periodBy(parseInt(parts[1]), parts[0]));
-            }
+            p = isValue(parts[0]) ? p.plus(periodBy(parseInt(parts[0]), parts[1]))
+                                  : p.plus(periodBy(parseInt(parts[1]), parts[0]));
         }
         return p;
     }

@@ -204,18 +204,18 @@ public class ExamExtension implements ConcordionExtension {
         public void setParameter(String param) {
             pattern = param.substring(1, param.indexOf("]"));
             param = param.substring(pattern.length() + 2);
-            String p2 = param.substring(1, param.indexOf("]"));
-            param = param.substring(p2.length() + 2);
-            String p3 = param.substring(1, param.indexOf("]"));
+            String within = param.substring(1, param.indexOf("]"));
+            param = param.substring(within.length() + 2);
+            String date = param.substring(1, param.indexOf("]"));
 
-            expected = DateTime.parse(p2, forPattern(pattern));
+            expected = DateTime.parse(date, forPattern(pattern));
 
             int i = 0;
-            while (i < p3.length() && isDigit(p3.charAt(i))) {
+            while (i < within.length() && isDigit(within.charAt(i))) {
                 i++;
             }
             this.period = PlaceholdersResolver.periodBy(
-                    parseInt(p3.substring(0, i)), p3.substring(i, p3.length()));
+                    parseInt(within.substring(0, i)), within.substring(i, within.length()));
         }
     }
 }

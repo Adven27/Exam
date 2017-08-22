@@ -67,14 +67,14 @@
             <e:rs-case desc="You can set arbitrary date with ">
                 <body>
                     {
-                     "exam.date(dd.MM.YYY)": "${exam.date(14.05.1951)}",
-                     "exam.date(dd.MM.YYY):yyyy-MM-dd": "${exam.date(14.05.1951):yyyy-MM-dd}"
+                     "exam.date(dd.MM.YYYY)": "${exam.date(14.05.1951)}",
+                     "exam.date(dd.MM.YYYY):yyyy-MM-dd": "${exam.date(14.05.1951):yyyy-MM-dd}"
                     }
                 </body>
                 <expected>
                     {
-                     "exam.date(dd.MM.YYY)": "${json-unit.any-string}",
-                     "exam.date(dd.MM.YYY):yyyy-MM-dd": "${json-unit.matches:formattedAndWithin}[yyyy-MM-dd][1951-05-13][1d]"
+                     "exam.date(dd.MM.YYYY)": "${json-unit.any-string}",
+                     "exam.date(dd.MM.YYYY):yyyy-MM-dd": "${json-unit.matches:formattedAndWithin}[yyyy-MM-dd][1d][1951-05-13]"
                     }
                 </expected>
             </e:rs-case>
