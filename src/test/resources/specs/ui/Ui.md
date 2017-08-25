@@ -1,4 +1,4 @@
-# Ui testing
+# UI testing
 
 <div>
     <e:example name="UI">

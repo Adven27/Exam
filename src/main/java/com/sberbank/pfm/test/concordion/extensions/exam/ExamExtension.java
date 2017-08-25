@@ -73,9 +73,13 @@ public class ExamExtension implements ConcordionExtension {
 
     @SuppressWarnings("unused")
     public ExamExtension webDriver() {
+        setUpChromeDriver();
+        return this;
+    }
+
+    private static void setUpChromeDriver() {
         Configuration.browser = "chrome";
         ChromeDriverManager.getInstance().setup();
-        return this;
     }
 
     @Override
