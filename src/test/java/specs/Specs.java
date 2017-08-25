@@ -29,10 +29,12 @@ import static org.simpleframework.http.Status.OK;
 @RunWith(ConcordionRunner.class)
 @ConcordionOptions(declareNamespaces = {"c", "http://www.concordion.org/2007/concordion", "e", ExamExtension.NS})
 public class Specs {
+    public static final int PORT = 8081;
     private static Server server;
     @SuppressFBWarnings(value = "URF_UNREAD_FIELD", justification = "особенности подключения расширений в concordion")
     @Extension
     private final ExamExtension exam = new ExamExtension().
+            webDriver().
             dbTester("org.h2.Driver", "jdbc:h2:mem:test;INIT=CREATE SCHEMA IF NOT EXISTS SA\\;SET SCHEMA SA", "sa", "");
 
     @AfterSuite
@@ -46,7 +48,7 @@ public class Specs {
     @BeforeSuite
     public static void startServer() throws Exception {
         if (server == null) {
-            server = startServer(8081);
+            server = startServer(PORT);
         }
     }
 
@@ -76,9 +78,13 @@ public class Specs {
                     String content = req.getContent().trim();
                     body.println(mirrorRequestBodyAndAddCookiesIfPresent(req, content));
                 } else if ("GET".equals(req.getMethod())) {
-                    String cookies = cookies(req);
-                    body.println("{\"get\":\"" + req.getAddress().toString() + "\"" +
-                            ("".equals(cookies) ? "" : ", " + cookies) + "}");
+                    if ("/ui".equals(req.getAddress().toString())) {
+                        body.println("<html><head></head><body><span>Dummy page</span></body></html>");
+                    } else {
+                        String cookies = cookies(req);
+                        body.println("{\"get\":\"" + req.getAddress().toString() + "\"" +
+                                ("".equals(cookies) ? "" : ", " + cookies) + "}");
+                    }
                 }
                 body.close();
             } catch (Exception e) {
@@ -102,6 +108,4 @@ public class Specs {
             return sb.toString().substring(1);
         }
     }
-
-
 }

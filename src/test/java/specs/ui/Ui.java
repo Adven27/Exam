@@ -1,22 +1,23 @@
 package specs.ui;
 
-import com.codeborne.selenide.Configuration;
-import io.github.bonigarcia.wdm.ChromeDriverManager;
 import org.concordion.api.Unimplemented;
-import org.junit.BeforeClass;
+import org.junit.Test;
+import org.openqa.selenium.By;
 import specs.Specs;
 
-import static com.codeborne.selenide.Selenide.open;
+import static com.codeborne.selenide.Condition.exist;
+import static com.codeborne.selenide.Condition.text;
+import static com.codeborne.selenide.Selenide.$;
 
 @Unimplemented
 public class Ui extends Specs {
-    @BeforeClass
-    public static void setupClass() {
-        Configuration.browser = "chrome";
-        ChromeDriverManager.getInstance().setup();
+
+    public void hasText(String text) throws Exception {
+        $(By.tagName("span")).shouldHave(text(text));
     }
 
-    public void name() throws Exception {
-        open("http://localhost:8080/");
+    @Test
+    public void noParamsCheck() throws Exception {
+        $(By.tagName("span")).should(exist);
     }
 }

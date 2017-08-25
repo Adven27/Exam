@@ -3,7 +3,10 @@
 <div>
     <e:example name="UI">
         <e:when>
-            <code c:execute="name()"></code>
+            <e:browser url=":8081/ui">
+                <step name="hasText">Dummy page</step>
+                <step name="noParamsCheck"/>
+            </e:browser>
         </e:when>
     </e:example>
 </div>
