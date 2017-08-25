@@ -13,7 +13,7 @@ public class Ui extends Specs {
     @BeforeClass
     public static void setupClass() {
         Configuration.browser = "chrome";
-        ChromeDriverManager.setup();
+        ChromeDriverManager.getInstance().version("2.29").setup();
     }
 
     public void name() throws Exception {
