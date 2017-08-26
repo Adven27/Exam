@@ -72,14 +72,19 @@ public class ExamExtension implements ConcordionExtension {
     }
 
     @SuppressWarnings("unused")
-    public ExamExtension webDriver() {
-        setUpChromeDriver();
+    public ExamExtension webDriver(String version) {
+        setUpChromeDriver(version);
         return this;
     }
 
-    private static void setUpChromeDriver() {
+    @SuppressWarnings("unused")
+    public ExamExtension webDriver() {
+        return webDriver(null);
+    }
+
+    private static void setUpChromeDriver(String version) {
         Configuration.browser = "chrome";
-        ChromeDriverManager.getInstance().setup();
+        ChromeDriverManager.getInstance().version(version).setup();
     }
 
     @Override

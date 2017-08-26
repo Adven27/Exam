@@ -61,8 +61,30 @@ public class Html {
         return new Html(new Element("th").appendText(txt));
     }
 
-    private static Html a(String txt) {
+    public static Html link(String txt) {
         return new Html(new Element("a").appendText(txt));
+    }
+
+    public static Html link(String txt, String src) {
+        return link(txt).attr("href", src);
+    }
+
+    public static Html thumbnail(String src){
+        return thumbnail(src, 360);
+    }
+
+    public static Html thumbnail(String src, int size){
+        return link("", src).childs(
+                image(src, size, size)
+        );
+    }
+
+    public static Html image(String src) {
+        return new Html(new Element("image").addAttribute("src", src));
+    }
+
+    public static Html image(String src, int width, int height) {
+        return image(src).style("img-thumbnail").attr("width", String.valueOf(width)).attr("height", String.valueOf(height));
     }
 
     public static Html h4(String title) {
@@ -170,7 +192,7 @@ public class Html {
         el.moveChildrenTo(body.el);
         this.childs(
                 div().style("panel-heading").childs(
-                        Html.a(header).attr("data-type", "example").attr("name", header)
+                        link(header).attr("data-type", "example").attr("name", header)
                 )
         );
         el.appendChild(body.el);
