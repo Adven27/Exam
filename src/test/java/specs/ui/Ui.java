@@ -9,7 +9,6 @@ import static com.codeborne.selenide.Condition.exist;
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Selenide.$;
 
-@Unimplemented
 public class Ui extends Specs {
 
     public void hasText(String text) throws Exception {

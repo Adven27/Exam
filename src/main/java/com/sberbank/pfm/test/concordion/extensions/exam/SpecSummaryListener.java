@@ -25,6 +25,12 @@ public class SpecSummaryListener implements SpecificationProcessingListener {
                     Element div = new Element("div");
                     div.appendChild(example);
                     summary.appendChild(div);
+
+                    Element p = a.getParentElement().getParentElement().getFirstChildElement("p");
+                    if (p != null) {
+                        p.moveChildrenTo(a);
+                        p.getParentElement().removeChild(p);
+                    }
                 }
             }
             Element menu = body.getElementById("summary");

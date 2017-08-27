@@ -6,11 +6,7 @@ import com.sberbank.pfm.test.concordion.extensions.exam.html.Html;
 import com.sberbank.pfm.test.concordion.extensions.exam.rest.JsonPrettyPrinter;
 import net.javacrumbs.jsonunit.core.Configuration;
 import org.apache.commons.collections.map.HashedMap;
-import org.concordion.api.CommandCall;
-import org.concordion.api.CommandCallList;
-import org.concordion.api.Evaluator;
-import org.concordion.api.ResultRecorder;
-import org.hamcrest.Matcher;
+import org.concordion.api.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,8 +17,6 @@ import static com.sberbank.pfm.test.concordion.extensions.exam.PlaceholdersResol
 import static com.sberbank.pfm.test.concordion.extensions.exam.html.Html.*;
 import static com.sberbank.pfm.test.concordion.extensions.exam.rest.commands.RequestExecutor.fromEvaluator;
 import static net.javacrumbs.jsonunit.JsonAssert.assertJsonEquals;
-import static net.javacrumbs.jsonunit.JsonAssert.when;
-import static net.javacrumbs.jsonunit.core.Option.IGNORING_ARRAY_ORDER;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 
 public class CaseCommand extends RestVerifyCommand {
@@ -32,18 +26,18 @@ public class CaseCommand extends RestVerifyCommand {
     private static final String VARIABLES = "variables";
     private static final String VALUES = "values";
     private final JsonPrettyPrinter jsonPrinter = new JsonPrettyPrinter();
-    private final Map<String, Matcher> jsonUnitMatchers;
-    List<Map<String, Object>> cases = new ArrayList<>();
+    private List<Map<String, Object>> cases = new ArrayList<>();
     private int number = 0;
+    private Configuration cfg;
 
-    public CaseCommand(Map<String, Matcher> jsonUnitMatchers) {
-        this.jsonUnitMatchers = jsonUnitMatchers;
+    public CaseCommand(Configuration cfg) {
+        this.cfg = cfg;
     }
 
     @Override
     public void setUp(CommandCall commandCall, Evaluator eval, ResultRecorder resultRecorder) {
-        cases.clear();
         Html caseRoot = new Html(commandCall.getElement());
+        cases.clear();
         String params = caseRoot.takeAwayAttr(VARIABLES, eval);
         String values = caseRoot.takeAwayAttr(VALUES, eval);
         if (!isNullOrEmpty(params)) {
@@ -117,6 +111,7 @@ public class CaseCommand extends RestVerifyCommand {
             vf(td().insteadOf(caseTR.first("expected")), eval, resultRecorder);
 
             String actualStatus = executor.statusLine();
+            //resultRecorder.setForExample(true);
             if (expectedStatus.equals(actualStatus)) {
                 success(resultRecorder, statusTd.el());
             } else {
@@ -182,28 +177,12 @@ public class CaseCommand extends RestVerifyCommand {
 
         String prettyActual = printer.prettyPrint(actual);
         try {
-            if (areEqual(prettyActual, expected)) {
-                success(resultRecorder, root);
-            } else {
-                failure(resultRecorder, root, prettyActual, expected);
-            }
-        } catch (Exception e) {
+            assertJsonEquals(expected, prettyActual, cfg);
+            success(resultRecorder, root);
+        } catch (AssertionError | Exception e) {
             e.printStackTrace();
             failure(resultRecorder, root, prettyActual, expected);
         }
     }
 
-    private boolean areEqual(String prettyActual, String expected) {
-        try {
-            Configuration cfg = when(IGNORING_ARRAY_ORDER);
-            for (Map.Entry<String, Matcher> e : jsonUnitMatchers.entrySet()) {
-                cfg = cfg.withMatcher(e.getKey(), e.getValue());
-            }
-            assertJsonEquals(expected, prettyActual, cfg);
-        } catch (AssertionError e) {
-            e.printStackTrace();
-            return false;
-        }
-        return true;
-    }
 }

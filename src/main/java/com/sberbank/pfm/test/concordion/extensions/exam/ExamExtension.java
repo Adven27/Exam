@@ -3,12 +3,14 @@ package com.sberbank.pfm.test.concordion.extensions.exam;
 import com.codeborne.selenide.Configuration;
 import com.sberbank.pfm.test.concordion.extensions.exam.bootstrap.BootstrapExtension;
 import com.sberbank.pfm.test.concordion.extensions.exam.commands.*;
+import com.sberbank.pfm.test.concordion.extensions.exam.db.DummyTester;
 import com.sberbank.pfm.test.concordion.extensions.exam.db.commands.DBCheckCommand;
 import com.sberbank.pfm.test.concordion.extensions.exam.db.commands.DBSetCommand;
 import com.sberbank.pfm.test.concordion.extensions.exam.db.commands.DBShowCommand;
 import com.sberbank.pfm.test.concordion.extensions.exam.files.commands.FilesCheckCommand;
 import com.sberbank.pfm.test.concordion.extensions.exam.files.commands.FilesSetCommand;
 import com.sberbank.pfm.test.concordion.extensions.exam.files.commands.FilesShowCommand;
+import com.sberbank.pfm.test.concordion.extensions.exam.html.Html;
 import com.sberbank.pfm.test.concordion.extensions.exam.rest.DateFormatMatcher;
 import com.sberbank.pfm.test.concordion.extensions.exam.rest.DateWithinMatcher;
 import com.sberbank.pfm.test.concordion.extensions.exam.rest.commands.*;
@@ -28,21 +30,35 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
+import static com.google.common.base.Strings.isNullOrEmpty;
+import static net.javacrumbs.jsonunit.JsonAssert.when;
+import static net.javacrumbs.jsonunit.core.Option.IGNORING_ARRAY_ORDER;
+
 public class ExamExtension implements ConcordionExtension {
     public static final String NS = "http://exam.extension.io";
-    private Map<String, Matcher> jsonUnitMatchers = new HashMap<>();
+    private net.javacrumbs.jsonunit.core.Configuration jsonUnitCfg;
 
     private JdbcDatabaseTester dbTester;
 
     public ExamExtension() {
-        jsonUnitMatchers.put("formattedAs", new DateFormatMatcher());
-        jsonUnitMatchers.put("formattedAndWithin", new DateWithinMatcher());
+        jsonUnitCfg = when(IGNORING_ARRAY_ORDER).
+                withMatcher("formattedAs", new DateFormatMatcher()).
+                withMatcher("formattedAndWithin", new DateWithinMatcher());
     }
 
     @SuppressWarnings("unused")
     public ExamExtension dbTester(String driver, String url, String user, String password) {
         try {
             dbTester = new JdbcDatabaseTester(driver, url, user, password);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        return this;
+    }
+
+    public ExamExtension dbTester(DummyTester tester) {
+        try {
+            this.dbTester = tester.instance();
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
@@ -67,7 +83,7 @@ public class ExamExtension implements ConcordionExtension {
 
     @SuppressWarnings("unused")
     public ExamExtension withJsonUnitMatcher(String matcherName, Matcher<?> matcher) {
-        jsonUnitMatchers.put(matcherName, matcher);
+        jsonUnitCfg = jsonUnitCfg.withMatcher(matcherName, matcher);
         return this;
     }
 
@@ -96,7 +112,6 @@ public class ExamExtension implements ConcordionExtension {
         ex.withCommand(NS, "when", new WhenCommand());
         ex.withCommand(NS, "then", new ThenCommand());
         ex.withCommand(NS, "check", new CaseCheckCommand());
-        ex.withCommand(NS, "example", new ExampleCommand());
         ex.withCommand(NS, "summary", new ExamplesSummaryCommand());
 
         ex.withCommand(NS, "db-show", new DBShowCommand(dbTester));
@@ -109,7 +124,7 @@ public class ExamExtension implements ConcordionExtension {
 
         ex.withCommand(NS, "rs-post", new PostCommand());
         ex.withCommand(NS, "rs-get", new GetCommand());
-        ex.withCommand(NS, "rs-case", new CaseCommand(jsonUnitMatchers));
+        ex.withCommand(NS, "rs-case", new CaseCommand(jsonUnitCfg));
         ex.withCommand(NS, "rs-echoJson", new EchoJsonCommand());
         ex.withCommand(NS, "rs-status", new ExpectedStatusCommand());
 
@@ -148,6 +163,7 @@ public class ExamExtension implements ConcordionExtension {
             }
 
             private void visit(Element elem) {
+                log(elem);
                 Elements children = elem.getChildElements();
                 for (int i = 0; i < children.size(); i++) {
                     visit(children.get(i));
@@ -157,10 +173,46 @@ public class ExamExtension implements ConcordionExtension {
                     Attribute attr = new Attribute(elem.getLocalName(), "");
                     attr.setNamespace("e", NS);
                     elem.addAttribute(attr);
+                    if (elem.getLocalName().equals("example")) {
+                        transformToConcordionExample(elem);
+                    }
+
                     elem.setNamespacePrefix("");
                     elem.setNamespaceURI(null);
                     elem.setLocalName(translateTag(elem.getLocalName()));
                 }
+            }
+
+            private void log(Element elem) {
+                if (Boolean.valueOf(elem.getAttributeValue("log"))) {
+                    Element pre = new Element("pre");
+                    pre.appendChild(elem.toXML());
+                    elem.insertChild(pre, 0);
+                }
+            }
+
+            private String toXml(Element elem) {
+                StringBuilder sb = new StringBuilder();
+                for (int i = 0; i < elem.getChildCount(); i++) {
+                    sb.append(elem.getChild(i).toXML());
+                }
+                return sb.toString();
+            }
+
+            private void transformToConcordionExample(Element elem) {
+                String name = elem.getAttributeValue("name");
+                Attribute exampleAttr = new Attribute("example", name);
+                exampleAttr.setNamespace("c", "http://www.concordion.org/2007/concordion");
+                elem.addAttribute(exampleAttr);
+
+                String val = elem.getAttributeValue("status");
+                if (!isNullOrEmpty(val)) {
+                    Attribute statusAttr = new Attribute("status", val);
+                    statusAttr.setNamespace("c", "http://www.concordion.org/2007/concordion");
+                    elem.addAttribute(statusAttr);
+                }
+
+                new Html(new org.concordion.api.Element(elem)).panel(name);
             }
 
             private String translateTag(String localName) {

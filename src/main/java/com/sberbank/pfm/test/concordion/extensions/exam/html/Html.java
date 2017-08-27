@@ -69,11 +69,11 @@ public class Html {
         return link(txt).attr("href", src);
     }
 
-    public static Html thumbnail(String src){
+    public static Html thumbnail(String src) {
         return thumbnail(src, 360);
     }
 
-    public static Html thumbnail(String src, int size){
+    public static Html thumbnail(String src, int size) {
         return link("", src).childs(
                 image(src, size, size)
         );
@@ -84,7 +84,9 @@ public class Html {
     }
 
     public static Html image(String src, int width, int height) {
-        return image(src).style("img-thumbnail").attr("width", String.valueOf(width)).attr("height", String.valueOf(height));
+        return image(src).style("img-thumbnail").
+                attr("width", String.valueOf(width)).
+                attr("height", String.valueOf(height));
     }
 
     public static Html h4(String title) {
