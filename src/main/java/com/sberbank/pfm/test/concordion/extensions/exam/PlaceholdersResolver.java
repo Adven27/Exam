@@ -12,34 +12,80 @@ import static org.joda.time.LocalDateTime.now;
 import static org.joda.time.format.DateTimeFormat.forPattern;
 
 public class PlaceholdersResolver {
+    private static final String PREFIX_JSON_UNIT_ALIAS = "!{";
+    private static final String PREFIX_EXAM = "${exam.";
+    private static final String PREFIX_VAR = "${var.";
+    private static final char POSTFIX = '}';
 
     public static String resolve(String body, Evaluator eval) {
-        while (body.contains("${var.")) {
+        return resolveJsonUnitAliases(
+                resolveExamCommands(
+                        resolveVars(body, eval)
+                )
+        );
+    }
+
+    private static String resolveVars(String body, Evaluator eval) {
+        while (body.contains(PREFIX_VAR)) {
             String original = body;
             String var = extractVarFrom(original, "var");
             Object variable = eval.getVariable("#" + var);
 
-            original = original.replace("${var." + var + "}",
+            original = original.replace(PREFIX_VAR + var + POSTFIX,
                     (variable == null ? eval.evaluate(var.contains(".") ? "#" + var : var) : variable).toString());
             body = original;
         }
-        return resolve(body);
+        return body;
     }
 
-    public static String resolve(String body) {
-        while (body.contains("${exam.")) {
+    private static String resolveExamCommands(String body) {
+        while (body.contains(PREFIX_EXAM)) {
             String original = body;
             String var = extractVarFrom(original, "exam");
             if (var.contains(":")) {
                 String[] varAndFormat = var.split(":", 2);
                 String date = forPattern(varAndFormat[1]).print(fromDateFields((Date) constants(varAndFormat[0])));
-                original = original.replace("${exam." + var + "}", date);
+                original = original.replace(PREFIX_EXAM + var + POSTFIX, date);
             } else {
-                original = original.replace("${exam." + var + "}", constants(var).toString());
+                original = original.replace(PREFIX_EXAM + var + POSTFIX, constants(var).toString());
             }
             body = original;
         }
         return body;
+    }
+
+    private static String resolveJsonUnitAliases(String body) {
+        while (body.contains(PREFIX_JSON_UNIT_ALIAS)) {
+            String original = body;
+            String alias = extractFromAlias(original);
+            original = original.replace(PREFIX_JSON_UNIT_ALIAS + alias + POSTFIX, toJsonUnit(alias));
+            body = original;
+        }
+        return body;
+    }
+
+    private static String toJsonUnit(String alias) {
+        String result;
+        switch (alias.toLowerCase()) {
+            case "any-string":
+            case "string":
+            case "str":
+                result = "${json-unit.any-string}";
+                break;
+            case "any-number":
+            case "number":
+            case "num":
+                result = "${json-unit.any-number}";
+                break;
+            case "any-boolean":
+            case "boolean":
+            case "bool":
+                result = "${json-unit.any-boolean}";
+                break;
+            default:
+                result = String.format("${json-unit.matches:%s}%s", alias.split(" "));
+        }
+        return result;
     }
 
     private static Object constants(String var) {
@@ -130,6 +176,11 @@ public class PlaceholdersResolver {
 
     private static String extractVarFrom(String placeholder, final String namespace) {
         String s = placeholder.substring(placeholder.indexOf("${" + namespace + "."));
-        return s.substring(s.indexOf('.') + 1, s.indexOf('}'));
+        return s.substring(s.indexOf('.') + 1, s.indexOf(POSTFIX));
+    }
+
+    private static String extractFromAlias(String placeholder) {
+        String s = placeholder.substring(placeholder.indexOf(PREFIX_JSON_UNIT_ALIAS));
+        return s.substring(2, s.indexOf(POSTFIX));
     }
 }

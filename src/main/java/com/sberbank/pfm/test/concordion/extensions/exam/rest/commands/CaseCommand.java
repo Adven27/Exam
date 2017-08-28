@@ -6,7 +6,10 @@ import com.sberbank.pfm.test.concordion.extensions.exam.html.Html;
 import com.sberbank.pfm.test.concordion.extensions.exam.rest.JsonPrettyPrinter;
 import net.javacrumbs.jsonunit.core.Configuration;
 import org.apache.commons.collections.map.HashedMap;
-import org.concordion.api.*;
+import org.concordion.api.CommandCall;
+import org.concordion.api.CommandCallList;
+import org.concordion.api.Evaluator;
+import org.concordion.api.ResultRecorder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -111,7 +114,6 @@ public class CaseCommand extends RestVerifyCommand {
             vf(td().insteadOf(caseTR.first("expected")), eval, resultRecorder);
 
             String actualStatus = executor.statusLine();
-            //resultRecorder.setForExample(true);
             if (expectedStatus.equals(actualStatus)) {
                 success(resultRecorder, statusTd.el());
             } else {
@@ -124,10 +126,13 @@ public class CaseCommand extends RestVerifyCommand {
     public void verify(CommandCall cmd, Evaluator evaluator, ResultRecorder resultRecorder) {
         RequestExecutor executor = fromEvaluator(evaluator);
 
-        Html div = div().childs(
-                italic(executor.requestMethod() + " "),
-                code(executor.requestUrlWithParams())
-        );
+        Html div = div();
+        if (executor.isGET()) {
+            div.childs(
+                    italic(executor.requestMethod() + " "),
+                    code(executor.requestUrlWithParams())
+            );
+        }
         String cookies = executor.cookies();
         if (!isNullOrEmpty(cookies)) {
             div.childs(

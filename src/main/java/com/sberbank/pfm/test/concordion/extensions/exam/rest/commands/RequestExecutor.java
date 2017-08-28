@@ -141,6 +141,10 @@ public class RequestExecutor {
         return method;
     }
 
+    public boolean isGET(){
+        return "GET".equals(method);
+    }
+
     public String requestHeader(String header) {
         return headers.get(header);
     }
