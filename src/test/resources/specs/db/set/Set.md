@@ -37,7 +37,7 @@
         <e:given>
             Дана пустая таблица:
             <e:db-set table="PERSON"/>
-            <e:db-show table="PERSON" cols="NAME, AGE"/>
+            <e:db-show table="PERSON"/>
         </e:given>
         <e:then log="true">
             <e:db-set caption="Добавляемые записи" table="PERSON" cols="NAME, AGE=20, BIRTHDAY=${exam.yesterday}">

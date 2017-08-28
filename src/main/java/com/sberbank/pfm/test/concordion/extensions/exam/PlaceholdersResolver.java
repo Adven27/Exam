@@ -29,13 +29,14 @@ public class PlaceholdersResolver {
         while (body.contains(PREFIX_VAR)) {
             String original = body;
             String var = extractVarFrom(original, "var");
-            Object variable = eval.getVariable("#" + var);
-
-            original = original.replace(PREFIX_VAR + var + POSTFIX,
-                    (variable == null ? eval.evaluate(var.contains(".") ? "#" + var : var) : variable).toString());
-            body = original;
+            body = original.replace(PREFIX_VAR + var + POSTFIX, getObject(eval, var).toString());
         }
         return body;
+    }
+
+    private static Object getObject(Evaluator eval, String var) {
+        Object variable = eval.getVariable("#" + var);
+        return variable == null ? eval.evaluate(var.contains(".") ? "#" + var : var) : variable;
     }
 
     private static String resolveExamCommands(String body) {
@@ -58,8 +59,7 @@ public class PlaceholdersResolver {
         while (body.contains(PREFIX_JSON_UNIT_ALIAS)) {
             String original = body;
             String alias = extractFromAlias(original);
-            original = original.replace(PREFIX_JSON_UNIT_ALIAS + alias + POSTFIX, toJsonUnit(alias));
-            body = original;
+            body = original.replace(PREFIX_JSON_UNIT_ALIAS + alias + POSTFIX, toJsonUnit(alias));
         }
         return body;
     }
@@ -164,11 +164,9 @@ public class PlaceholdersResolver {
     }
 
     public static Object resolveToObj(String placeholder, Evaluator evaluator) {
-        if (placeholder.contains("${var.")) {
-            final String var = extractVarFrom(placeholder, "var");
-            Object variable = evaluator.getVariable("#" + var);
-            return variable == null ? evaluator.evaluate(var) : variable;
-        } else if (placeholder.contains("${exam.")) {
+        if (placeholder.contains(PREFIX_VAR)) {
+            return getObject(evaluator, extractVarFrom(placeholder, "var"));
+        } else if (placeholder.contains(PREFIX_EXAM)) {
             return constants(extractVarFrom(placeholder, "exam"));
         }
         return placeholder;

@@ -30,6 +30,7 @@ public class DBCommand extends AbstractCommand {
     public void setUp(CommandCall commandCall, Evaluator eval, ResultRecorder resultRecorder) {
         Html root = new Html(commandCall.getElement()).style("table table-condensed");
         try {
+            remarks.clear();
             expectedTable = TableData.filled(
                     root.takeAwayAttr("table", eval), parseRows(root, eval), parseCols(root, eval));
         } catch (DataSetException e) {
@@ -82,7 +83,8 @@ public class DBCommand extends AbstractCommand {
     protected void renderTable(Html root, ITable t) {
         try {
             List<List<String>> rows = new ArrayList<>();
-            Column[] cols = t.getTableMetaData().getColumns();
+            final Column[] columns = t.getTableMetaData().getColumns();
+            Column[] cols = Arrays.copyOf(columns, columns.length);
 
             Arrays.sort(cols, new Comparator<Column>() {
                 @Override

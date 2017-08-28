@@ -4,3 +4,5 @@
 - [Вставка в таблицу]( set/Set.md "c:run")
 - [Проверка содержимого таблицы]( check/Check.md "c:run")
 
+- [Bugs regress]( bugs/Bugs.md "c:run")
+

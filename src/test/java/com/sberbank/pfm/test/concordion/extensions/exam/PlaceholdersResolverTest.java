@@ -9,9 +9,17 @@ import static org.hamcrest.Matchers.is;
 import static org.joda.time.LocalDateTime.now;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class PlaceholdersResolverTest {
     Evaluator eval = mock(Evaluator.class);
+
+    @Test
+    public void canUseConcordionVars() throws Exception {
+        when(eval.getVariable("#value")).thenReturn(3);
+
+        assertThat(resolve("${var.value}", eval), is("3"));
+    }
 
     @Test
     public void canUseJsonUnitStringAliases() throws Exception {
@@ -20,7 +28,6 @@ public class PlaceholdersResolverTest {
         assertThat(resolve("!{aNy-stRiNG}", eval), is(expected));
         assertThat(resolve("!{string}", eval), is(expected));
         assertThat(resolve("!{str}", eval), is(expected));
-
     }
 
     @Test
@@ -30,7 +37,6 @@ public class PlaceholdersResolverTest {
         assertThat(resolve("!{aNy-nuMBeR}", eval), is(expected));
         assertThat(resolve("!{number}", eval), is(expected));
         assertThat(resolve("!{num}", eval), is(expected));
-
     }
 
     @Test
@@ -40,7 +46,6 @@ public class PlaceholdersResolverTest {
         assertThat(resolve("!{aNy-bOOlean}", eval), is(expected));
         assertThat(resolve("!{boolean}", eval), is(expected));
         assertThat(resolve("!{bool}", eval), is(expected));
-
     }
 
     @Test
