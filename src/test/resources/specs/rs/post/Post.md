@@ -11,7 +11,7 @@
                 {"exact": "ok", "template": 1}
             </body>
             <expected>
-                {"exact": "ok", "template": "${json-unit.any-number}"}
+                {"exact": "ok", "template": "!{number}"}
             </expected>
             <e:check>
               <span c:assertTrue="true">Произвольный блок, где можно сделать дополнительные проверки, относящиеся к данному кейсу</span>
@@ -22,7 +22,7 @@
                 {"exact": "not ok", "template": "not number"}
             </body>
             <expected>
-                {"exact": "ok", "template": "${json-unit.any-number}"}
+                {"exact": "ok", "template": "!{number}"}
             </expected>
         </e:rs-case>
     </e:rs-post>
@@ -34,7 +34,7 @@
                 {"url": "${var.url}", "template": 1}
             </body>
             <expected>
-                {"url": "status/400", "template": "${json-unit.any-number}"}
+                {"url": "status/400", "template": "!{number}"}
             </expected>
         </e:rs-case>
     </e:rs-post>

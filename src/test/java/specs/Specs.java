@@ -1,8 +1,8 @@
 package specs;
 
 import com.jayway.restassured.RestAssured;
-import com.sberbank.pfm.test.concordion.extensions.exam.ExamExtension;
-import com.sberbank.pfm.test.concordion.extensions.exam.db.DummyTester;
+import com.adven.concordion.extensions.exam.ExamExtension;
+import com.adven.concordion.extensions.exam.db.DummyTester;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.concordion.api.AfterSuite;
 import org.concordion.api.BeforeSuite;

@@ -1,6 +1,6 @@
 package specs.db;
 
-import com.sberbank.pfm.test.TableData;
+import com.adven.concordion.extensions.exam.db.TableData;
 import org.concordion.api.BeforeSpecification;
 import org.dbunit.JdbcDatabaseTester;
 import org.joda.time.LocalDateTime;
