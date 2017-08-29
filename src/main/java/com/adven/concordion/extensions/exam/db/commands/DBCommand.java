@@ -1,7 +1,7 @@
 package com.adven.concordion.extensions.exam.db.commands;
 
-import com.adven.concordion.extensions.exam.db.TableData;
 import com.adven.concordion.extensions.exam.PlaceholdersResolver;
+import com.adven.concordion.extensions.exam.db.TableData;
 import com.adven.concordion.extensions.exam.html.Html;
 import org.concordion.api.AbstractCommand;
 import org.concordion.api.CommandCall;
@@ -31,8 +31,16 @@ public class DBCommand extends AbstractCommand {
         Html root = new Html(commandCall.getElement()).style("table table-condensed");
         try {
             remarks.clear();
+            String ignoreBeforeStr = root.takeAwayAttr("ignoreRowsBefore", eval);
+            String ignoreAfterStr = root.takeAwayAttr("ignoreRowsAfter", eval);
+            int ignoreBefore = ignoreBeforeStr != null ? Integer.parseInt(ignoreBeforeStr) : 1;
+            int ignoreAfter = ignoreAfterStr != null ? Integer.parseInt(ignoreAfterStr) : 0;
+
             expectedTable = TableData.filled(
-                    root.takeAwayAttr("table", eval), parseRows(root, eval), parseCols(root, eval));
+                    root.takeAwayAttr("table", eval),
+                    parseRows(root, eval, ignoreBefore, ignoreAfter),
+                    parseCols(root, eval)
+            );
         } catch (DataSetException e) {
             throw new RuntimeException(e);
         }
@@ -69,12 +77,16 @@ public class DBCommand extends AbstractCommand {
     }
 
 
-    protected List<List<Object>> parseRows(Html el, Evaluator evaluator) {
+    protected List<List<Object>> parseRows(Html el, Evaluator evaluator, int ignoreBefore, int ignoreAfter) {
         List<List<Object>> result = new ArrayList<>();
+        int i = 1;
         for (Html r : el.childs()) {
             if ("row".equals(r.localName())) {
-                result.add(parseValues(evaluator, r.text()));
+                if (i >= ignoreBefore && (ignoreAfter == 0 || i <= ignoreAfter)) {
+                    result.add(parseValues(evaluator, r.text()));
+                }
                 el.remove(r);
+                i++;
             }
         }
         return result;

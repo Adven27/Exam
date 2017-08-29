@@ -40,7 +40,7 @@ public class BrowserCommand extends ExamCommand {
             if ("step".equals(s.localName())) {
                 String name = s.attr("name");
                 String text = s.text();
-                File file = eval(evaluator, name, text);
+                File file = eval(evaluator, name, text, s.attr("set"));
                 el.remove(s);
                 el.childs(
                         tr().childs(
@@ -56,13 +56,16 @@ public class BrowserCommand extends ExamCommand {
         return result;
     }
 
-    private File eval(Evaluator ev, String name, String text) {
+    private File eval(Evaluator ev, String name, String text, String var) {
         String exp = name + "()";
         if (!"".equals(text)) {
             exp = name + "(#TEXT)";
             ev.setVariable("#TEXT", text);
         }
-        ev.evaluate(exp);
+        Object res = ev.evaluate(exp);
+        if (var != null) {
+            ev.setVariable("#" + var, res);
+        }
         return $(By.tagName("html")).screenshot();
     }
 
