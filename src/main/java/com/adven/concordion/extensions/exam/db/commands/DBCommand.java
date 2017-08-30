@@ -28,7 +28,7 @@ public class DBCommand extends AbstractCommand {
 
     @Override
     public void setUp(CommandCall commandCall, Evaluator eval, ResultRecorder resultRecorder) {
-        Html root = new Html(commandCall.getElement()).style("table table-condensed");
+        Html root = table(new Html(commandCall.getElement()));
         try {
             remarks.clear();
             expectedTable = TableData.filled(
@@ -113,14 +113,14 @@ public class DBCommand extends AbstractCommand {
             String title = root.takeAwayAttr("caption");
             root.childs(caption(isNullOrEmpty(title) ? t.getTableMetaData().getTableName() : title));
 
-            Html header = tr();
+            Html header = thead();
             for (Column col : cols) {
                 header.childs(
                         th(col.getColumnName()).style(markedColumn(col))
                 );
             }
             root.childs(header);
-
+            Html tbody = tbody();
             for (List<String> row : rows) {
                 Html tr = tr();
                 for (int i = 0; i < row.size(); i++) {
@@ -128,15 +128,16 @@ public class DBCommand extends AbstractCommand {
                             td(row.get(i)).style(markedColumn(cols[i]))
                     );
                 }
-                root.childs(tr);
+                tbody.childs(tr);
             }
+            root.childs(tbody);
         } catch (DataSetException e) {
             throw new RuntimeException(e);
         }
     }
 
     private String markedColumn(Column col) {
-        return remarks.containsKey(col.getColumnName()) ? "bg-info" : "text-muted";
+        return remarks.containsKey(col.getColumnName()) ? "table-info" : "";
     }
 
     private List<Object> parseValues(Evaluator eval, String text) {

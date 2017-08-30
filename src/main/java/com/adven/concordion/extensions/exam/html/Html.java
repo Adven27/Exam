@@ -40,6 +40,13 @@ public class Html {
         return new Html(new Element("tr"));
     }
 
+    public static Html thead() {
+        return new Html(new Element("thead")).childs(tr());
+    }
+
+    public static Html tbody() {
+        return new Html(new Element("tbody"));
+    }
 
     public static Html italic(String txt) {
         return new Html(new Element("i").appendText(txt));
@@ -55,6 +62,10 @@ public class Html {
 
     public static Html table() {
         return new Html(new Element("table")).style("table table-condensed");
+    }
+
+    public static Html table(Html el) {
+        return el.style("table table-condensed");
     }
 
     public static Html th(String txt) {
@@ -189,11 +200,11 @@ public class Html {
     }
 
     public Html panel(String header) {
-        el.addStyleClass("panel panel-info table-responsive");
-        Html body = div().style("panel-body");
+        el.addStyleClass("card bg-light mb-3");
+        Html body = div().style("card-body");
         el.moveChildrenTo(body.el);
         this.childs(
-                div().style("panel-heading").childs(
+                div().style("card-header").childs(
                         link(header).attr("data-type", "example").attr("name", header)
                 )
         );

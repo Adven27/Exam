@@ -9,6 +9,6 @@ public class GivenCommand extends ExamCommand {
     @Override
     public void setUp(CommandCall commandCall, Evaluator evaluator, ResultRecorder resultRecorder) {
         Element element = commandCall.getElement();
-        element.addStyleClass("bs-callout bs-callout-info");
+        element.addStyleClass("bd-callout bd-callout-info");
     }
 }

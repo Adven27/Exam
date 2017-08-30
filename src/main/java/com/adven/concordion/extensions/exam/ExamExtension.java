@@ -194,14 +194,6 @@ public class ExamExtension implements ConcordionExtension {
                 }
             }
 
-            private String toXml(Element elem) {
-                StringBuilder sb = new StringBuilder();
-                for (int i = 0; i < elem.getChildCount(); i++) {
-                    sb.append(elem.getChild(i).toXML());
-                }
-                return sb.toString();
-            }
-
             private void transformToConcordionExample(Element elem) {
                 String name = elem.getAttributeValue("name");
                 Attribute exampleAttr = new Attribute("example", name);
