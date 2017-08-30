@@ -161,22 +161,21 @@ ins {
 .commentary, .commentary * {
   font-size: 8pt;
 }
-</style><meta http-equiv="content-type" content="text/html; charset=UTF-8" /><link type="text/css" rel="stylesheet" href="../../codemirror/codemirror.css" /><link type="text/css" rel="stylesheet" href="../../codemirror/merge.css" /><link type="text/css" rel="stylesheet" href="../../codemirror/enable-codemirror.css" /><script type="text/javascript" src="../../codemirror/codemirror.js"></script><script type="text/javascript" src="../../codemirror/javascript.js"></script><script type="text/javascript" src="../../codemirror/xml.js"></script><script type="text/javascript" src="../../codemirror/diff_match_patch.js"></script><script type="text/javascript" src="../../codemirror/merge.js"></script><script type="text/javascript" src="../../codemirror/enable-codemirror.js"></script><link type="text/css" rel="stylesheet" href="../../bootstrap/bootstrap.min.js" /><link type="text/css" rel="stylesheet" href="../../bootstrap/co.scss" /><link type="text/css" rel="stylesheet" href="../../bootstrap/bootstrap.min.css" /><link type="text/css" rel="stylesheet" href="../../bootstrap/enable-bootstrap.css" /></head><body><span class="breadcrumbs"><a href="../Specs.html">Exam</a> &gt; <a href="El.html">Exam expression language: ${...}</a> &gt;</span><h1>Exam expression language: ${...}</h1>
+</style><meta http-equiv="content-type" content="text/html; charset=UTF-8" /><link type="text/css" rel="stylesheet" href="../../codemirror/codemirror.css" /><link type="text/css" rel="stylesheet" href="../../codemirror/merge.css" /><link type="text/css" rel="stylesheet" href="../../codemirror/enable-codemirror.css" /><script type="text/javascript" src="../../codemirror/codemirror.js"></script><script type="text/javascript" src="../../codemirror/javascript.js"></script><script type="text/javascript" src="../../codemirror/xml.js"></script><script type="text/javascript" src="../../codemirror/diff_match_patch.js"></script><script type="text/javascript" src="../../codemirror/merge.js"></script><script type="text/javascript" src="../../codemirror/enable-codemirror.js"></script><link type="text/css" rel="stylesheet" href="../../bootstrap/enable-bootstrap.css" /><link type="text/css" rel="stylesheet" href="../../bootstrap/bootstrap.min.js" /><link type="text/css" rel="stylesheet" href="../../bootstrap/bootstrap.min.css" /><link type="text/css" rel="stylesheet" href="../../bootstrap/callout.css" /></head><body><span class="breadcrumbs"><a href="../Specs.html">Exam</a> &gt; <a href="El.html">Exam expression language: ${...}</a> &gt;</span><h1>Exam expression language: ${...}</h1>
 <div>
-    <div name="Access to concordion variables" e:example="" c:example="Access to concordion variables" class="card bg-light mb-3" id="Access to concordion variables"><div class="card-header"><a data-type="example" name="Access to concordion variables" href="#summary">Access to concordion variables</a></div><div class="card-body">
+    <div name="Access to concordion variables" e:example="" c:example="Access to concordion variables" class="card mb-3" id="Access to concordion variables"><div class="card-header"><a data-type="example" name="Access to concordion variables">Access to concordion variables<span class="badge badge-success ml-2 mr-2">Success</span></a></div><div class="card-body">
         <div e:given="" class="bd-callout bd-callout-info">
             <code c:set="#someVar">someValue</code>
         </div>
-        <div log="true" e:rs-post="" class="bs-callout bs-callout-success"><table class="table table-condensed"><tr><th>Request</th><th>Expected response</th><th>Status code</th></tr><pre>&lt;e:rs-post url="some/url" type="text/plain" log="true"&gt;
-            &lt;e:rs-case desc="You can have access to concordion variables with "&gt;
+        <div print="true" e:rs-post="" class="bd-callout bd-callout-success"><table class="table"><thead class="thead-default"><tr /><th>Request</th><th>Expected response</th><th>Status code</th></thead><pre class="xml card bg-light">
+&lt;e:rs-case desc="You can have access to concordion variables with "&gt;
                 &lt;body&gt;
                     {"var": "${var.someVar}"}
                 &lt;/body&gt;
                 &lt;expected&gt;
                     {"var": "someValue"}
                 &lt;/expected&gt;
-            &lt;/e:rs-case&gt;
-        &lt;/e:rs-post&gt;</pre>
+            &lt;/e:rs-case&gt;</pre>
             <tr desc="You can have access to concordion variables with " e:rs-case=""><tr><td colspan="3"><div /></td></tr><tr><td colspan="3" class="text-muted">1) You can have access to concordion variables with </td></tr>
                 
                 
@@ -185,11 +184,11 @@ ins {
 }</td><td class="json rest-success">{
   "var": "someValue"
 }</td><td class="rest-success">HTTP/1.1 200 OK</td></tr></tr>
-        <div><span>POST </span><code>some/url</code><span>  Content-Type  </span><code>text/plain</code></div></table></div>
+        <div><var>POST </var><code>some/url</code><var>  Content-Type  </var><code>text/plain</code></div></table></div>
     </div></div>
-    <div name="DateTime support" e:example="" c:example="DateTime support" class="card bg-light mb-3" id="DateTime support"><div class="card-header"><a data-type="example" name="DateTime support" href="#summary">DateTime support</a></div><div class="card-body">
-        <div log="true" e:rs-post="" class="bs-callout bs-callout-success"><table class="table table-condensed"><tr><th>Request</th><th>Expected response</th><th>Status code</th></tr><pre>&lt;e:rs-post url="some/url" type="text/plain" log="true"&gt;
-            &lt;e:rs-case desc="There are constants of Date type for yesterday/now/tomorrow"&gt;
+    <div name="DateTime support" e:example="" c:example="DateTime support" class="card mb-3" id="DateTime support"><div class="card-header"><a data-type="example" name="DateTime support">DateTime support<span class="badge badge-success ml-2 mr-2">Success</span></a></div><div class="card-body">
+        <div print="true" e:rs-post="" class="bd-callout bd-callout-success"><table class="table"><thead class="thead-default"><tr /><th>Request</th><th>Expected response</th><th>Status code</th></thead><pre class="xml card bg-light">
+&lt;e:rs-case desc="There are constants of Date type for yesterday/now/tomorrow"&gt;
                 &lt;body&gt;
                     {
                      "yesterday": "${exam.yesterday}",
@@ -205,7 +204,7 @@ ins {
                     }
                 &lt;/expected&gt;
             &lt;/e:rs-case&gt;
-            &lt;e:rs-case desc="You can format the output of this constants"&gt;
+&lt;e:rs-case desc="You can format the output of this constants"&gt;
                 &lt;body&gt;
                     {
                      "yesterday": "${exam.yesterday:dd.MM.yyyy'T'hh:mm:ss}",
@@ -221,7 +220,7 @@ ins {
                     }
                 &lt;/expected&gt;
             &lt;/e:rs-case&gt;
-            &lt;e:rs-case desc="You can get any time from now with +/- period"&gt;
+&lt;e:rs-case desc="You can get any time from now with +/- period"&gt;
                 &lt;body&gt;
                     {
                      "endFromNow": "${exam.now+[day 1, 2 months, 3 y]:dd.MM.yyyy}",
@@ -235,7 +234,7 @@ ins {
                     }
                 &lt;/expected&gt;
             &lt;/e:rs-case&gt;
-            &lt;e:rs-case desc="You can set arbitrary date"&gt;
+&lt;e:rs-case desc="You can set arbitrary date"&gt;
                 &lt;body&gt;
                     {
                      "date": "${exam.date(14.05.1951)}",
@@ -248,15 +247,14 @@ ins {
                      "formattedDate": "!{formattedAndWithin [yyyy-MM-dd][1d][1951-05-13]}"
                     }
                 &lt;/expected&gt;
-            &lt;/e:rs-case&gt;
-        &lt;/e:rs-post&gt;</pre>
+            &lt;/e:rs-case&gt;</pre>
             <tr desc="There are constants of Date type for yesterday/now/tomorrow" e:rs-case=""><tr><td colspan="3"><div /></td></tr><tr><td colspan="3" class="text-muted">2) There are constants of Date type for yesterday/now/tomorrow</td></tr>
                 
                 
             <tr><td class="json">{
-  "yesterday": "Tue Aug 29 09:38:09 UTC 2017",
-  "now": "Wed Aug 30 09:38:09 UTC 2017",
-  "tomorrow": "Thu Aug 31 09:38:09 UTC 2017"
+  "yesterday": "Tue Aug 29 18:45:42 UTC 2017",
+  "now": "Wed Aug 30 18:45:42 UTC 2017",
+  "tomorrow": "Thu Aug 31 18:45:42 UTC 2017"
 }</td><td class="json rest-success">{
   "yesterday": "${json-unit.any-string}",
   "now": "${json-unit.any-string}",
@@ -266,7 +264,7 @@ ins {
                 
                 
             <tr><td class="json">{
-  "yesterday": "29.08.2017T09:38:09",
+  "yesterday": "29.08.2017T06:45:42",
   "now": "30.08.2017",
   "tomorrow": "2017-08-31"
 }</td><td class="json rest-success">{
@@ -294,6 +292,6 @@ ins {
   "date": "${json-unit.any-string}",
   "formattedDate": "${json-unit.matches:formattedAndWithin}[yyyy-MM-dd][1d][1951-05-13]"
 }</td><td class="rest-success">HTTP/1.1 200 OK</td></tr></tr>
-        <div><span>POST </span><code>some/url</code><span>  Content-Type  </span><code>text/plain</code></div></table></div>
+        <div><var>POST </var><code>some/url</code><var>  Content-Type  </var><code>text/plain</code></div></table></div>
     </div></div>
-</div><div class="footer">Results generated by <a href="http://www.concordion.org" style="font-weight: bold; text-decoration: none; color: #89C;">Concordion</a><div class="testTime">in 327 ms on 30-Aug-2017 at 09:38:09 UTC</div></div></body></html>
+</div><div class="footer">Results generated by <a href="http://www.concordion.org" style="font-weight: bold; text-decoration: none; color: #89C;">Concordion</a><div class="testTime">in 294 ms on 30-Aug-2017 at 18:45:42 UTC</div></div></body></html>
