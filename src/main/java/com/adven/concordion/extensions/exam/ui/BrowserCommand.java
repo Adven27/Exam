@@ -8,10 +8,8 @@ import org.concordion.api.ResultRecorder;
 import org.openqa.selenium.By;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
-import static com.adven.concordion.extensions.exam.html.Html.*;
+import static com.adven.concordion.extensions.exam.html.Html.imageOverlay;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.open;
 
@@ -21,39 +19,36 @@ public class BrowserCommand extends ExamCommand {
 
     @Override
     public void setUp(CommandCall commandCall, Evaluator evaluator, ResultRecorder resultRecorder) {
-        Html root = new Html(commandCall.getElement()).style("table table-condensed");
+        Html root = new Html(commandCall.getElement());
         url = attr(root, URL, "/", evaluator);
-        root.childs(tr().childs(th("Steps"), th("[" + url + "]"), th("")));
     }
 
     @Override
     public void execute(CommandCall commandCall, Evaluator evaluator, ResultRecorder resultRecorder) {
         open(url);
-        evalSteps(new Html(commandCall.getElement()), evaluator);
+        Html root = new Html(commandCall.getElement()).css("card-group");
+        //Html group = div().css("card-group");
+        evalSteps(root, evaluator);
+        /*root.childs(
+                div().css("card-header").text(url),
+                div().css("card-body").childs(
+                        group
+                )
+        );*/
     }
 
-    protected List<List<Object>> evalSteps(Html el, Evaluator evaluator) {
-        List<List<Object>> result = new ArrayList<>();
-        int i = 0;
+    protected void evalSteps(Html el, Evaluator evaluator) {
         for (Html s : el.childs()) {
-            i++;
             if ("step".equals(s.localName())) {
                 String name = s.attr("name");
                 String text = s.text();
                 File file = eval(evaluator, name, text, s.attr("set"));
                 el.remove(s);
                 el.childs(
-                        tr().childs(
-                                td("Step " + i),
-                                td(name + " [" + text + "]"),
-                                td().childs(
-                                        thumbnail(file.getAbsolutePath())
-                                )
-                        )
+                        imageOverlay(file.getAbsolutePath(), 360, name, "Step desc")
                 );
             }
         }
-        return result;
     }
 
     private File eval(Evaluator ev, String name, String text, String var) {

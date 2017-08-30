@@ -128,7 +128,7 @@ public class DBCommand extends AbstractCommand {
             Html header = thead();
             for (Column col : cols) {
                 header.childs(
-                        th(col.getColumnName()).style(markedColumn(col))
+                        th(col.getColumnName()).css(markedColumn(col))
                 );
             }
             root.childs(header);
@@ -137,7 +137,7 @@ public class DBCommand extends AbstractCommand {
                 Html tr = tr();
                 for (int i = 0; i < row.size(); i++) {
                     tr.childs(
-                            td(row.get(i)).style(markedColumn(cols[i]))
+                            td(row.get(i)).css(markedColumn(cols[i]))
                     );
                 }
                 tbody.childs(tr);

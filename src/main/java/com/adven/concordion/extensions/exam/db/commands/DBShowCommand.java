@@ -14,6 +14,7 @@ import org.dbunit.dataset.filter.IRowFilter;
 
 import java.sql.SQLException;
 
+import static com.adven.concordion.extensions.exam.html.Html.table;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static java.lang.String.valueOf;
 import static org.dbunit.dataset.filter.DefaultColumnFilter.includedColumnsTable;
@@ -26,7 +27,7 @@ public class DBShowCommand extends DBCommand {
 
     @Override
     public void setUp(CommandCall commandCall, Evaluator eval, ResultRecorder resultRecorder) {
-        Html el = new Html(commandCall.getElement()).style("table table-condensed");
+        Html el = table(commandCall.getElement());
         IDatabaseConnection conn = null;
         try {
             conn = dbTester.getConnection();

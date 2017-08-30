@@ -23,9 +23,13 @@ import nu.xom.Attribute;
 import nu.xom.Document;
 import nu.xom.Element;
 import nu.xom.Elements;
+import org.concordion.api.ImplementationStatus;
+import org.concordion.api.ResultSummary;
 import org.concordion.api.extension.ConcordionExtender;
 import org.concordion.api.extension.ConcordionExtension;
 import org.concordion.api.listener.DocumentParsingListener;
+import org.concordion.api.listener.ExampleEvent;
+import org.concordion.api.listener.ExampleListener;
 import org.dbunit.JdbcDatabaseTester;
 import org.hamcrest.Matcher;
 
@@ -33,9 +37,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
+import static com.adven.concordion.extensions.exam.html.Html.badge;
+import static com.adven.concordion.extensions.exam.html.Html.codemirror;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static net.javacrumbs.jsonunit.JsonAssert.when;
 import static net.javacrumbs.jsonunit.core.Option.IGNORING_ARRAY_ORDER;
+import static org.concordion.api.ImplementationStatus.*;
 
 public class ExamExtension implements ConcordionExtension {
     public static final String NS = "http://exam.extension.io";
@@ -47,6 +54,11 @@ public class ExamExtension implements ConcordionExtension {
         jsonUnitCfg = when(IGNORING_ARRAY_ORDER).
                 withMatcher("formattedAs", new DateFormatMatcher()).
                 withMatcher("formattedAndWithin", new DateWithinMatcher());
+    }
+
+    private static void setUpChromeDriver(String version) {
+        Configuration.browser = "chrome";
+        ChromeDriverManager.getInstance().version(version).setup();
     }
 
     @SuppressWarnings("unused")
@@ -101,11 +113,6 @@ public class ExamExtension implements ConcordionExtension {
         return webDriver(null);
     }
 
-    private static void setUpChromeDriver(String version) {
-        Configuration.browser = "chrome";
-        ChromeDriverManager.getInstance().version(version).setup();
-    }
-
     @Override
     public void addTo(ConcordionExtender ex) {
         new CodeMirrorExtension().addTo(ex);
@@ -157,7 +164,7 @@ public class ExamExtension implements ConcordionExtension {
                 tags.put("rs-case", "tr");
                 tags.put("rs-status", "code");
 
-                tags.put("browser", "table");
+                tags.put("browser", "div");
             }
 
             @Override
@@ -166,7 +173,7 @@ public class ExamExtension implements ConcordionExtension {
             }
 
             private void visit(Element elem) {
-                log(elem);
+                log(new org.concordion.api.Element(elem));
                 Elements children = elem.getChildElements();
                 for (int i = 0; i < children.size(); i++) {
                     visit(children.get(i));
@@ -186,11 +193,13 @@ public class ExamExtension implements ConcordionExtension {
                 }
             }
 
-            private void log(Element elem) {
-                if (Boolean.valueOf(elem.getAttributeValue("log"))) {
-                    Element pre = new Element("pre");
-                    pre.appendChild(elem.toXML());
-                    elem.insertChild(pre, 0);
+            private void log(org.concordion.api.Element elem) {
+                if (Boolean.valueOf(elem.getAttributeValue("print"))) {
+                    StringBuilder sb = new StringBuilder();
+                    for (org.concordion.api.Element e : elem.getChildElements()) {
+                        sb.append("\n" + e.toXML());
+                    }
+                    elem.prependChild(codemirror("xml").text(sb.toString()).el());
                 }
             }
 
@@ -217,5 +226,41 @@ public class ExamExtension implements ConcordionExtension {
         });
 
         ex.withSpecificationProcessingListener(new SpecSummaryListener());
+        ex.withExampleListener(new ExampleListener() {
+            @Override
+            public void beforeExample(ExampleEvent event) {
+
+            }
+
+            @Override
+            public void afterExample(ExampleEvent event) {
+                ResultSummary resultSummary = event.getResultSummary();
+                ImplementationStatus status = resultSummary.getImplementationStatus();
+                org.concordion.api.Element header = event.getElement().getFirstChildElement("div").getFirstChildElement("a");
+                if (header != null) {
+                    if (status != null) {
+                        header.appendChild(badgeFor(status));
+                    } else {
+                        if (resultSummary.hasExceptions()) {
+                            header.appendChild(badge("Fail", "danger").el());
+                        } else {
+                            header.appendChild(badge("Success", "success").el());
+                        }
+                    }
+                }
+            }
+
+            private org.concordion.api.Element badgeFor(ImplementationStatus status) {
+                switch (status) {
+                    case EXPECTED_TO_PASS:
+                        return badge(EXPECTED_TO_PASS.getTag(), "info").el();
+                    case EXPECTED_TO_FAIL:
+                        return badge(EXPECTED_TO_FAIL.getTag(), "warning").el();
+                    case UNIMPLEMENTED:
+                        return badge(UNIMPLEMENTED.getTag(), "default").el();
+                }
+                throw new UnsupportedOperationException("Unsupported spec implementation status " + status);
+            }
+        });
     }
 }

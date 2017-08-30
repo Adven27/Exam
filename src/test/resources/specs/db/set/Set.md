@@ -1,6 +1,7 @@
 # Вставка в таблицу: `<e:db-set mode="<optional>" table="..." cols="..."/>`
 
 <div>
+    <e:summary/>
     <e:example name="Добавление записи (INSERT)">
         <e:given>
             Допустим запись <b c:set="#name">Bob</b>
@@ -9,7 +10,7 @@
             <span c:assertTrue="addRecord(#name, #age, #bd)">добавлена</span> в таблицу PERSON
             <e:db-show table="PERSON"/>
         </e:given>
-        <e:then log="true">
+        <e:then print="true">
             <e:db-set mode="add" caption="Добавляемые записи" table="PERSON" cols="NAME, AGE">
                 <row>Andrew,30</row>
                 <row>Carl,20</row>
@@ -25,7 +26,7 @@
             <span c:assertTrue="addRecord(#name, #age, #bd)">добавлена</span> в таблицу PERSON
             <e:db-show table="PERSON"/>
         </e:given>
-        <e:then log="true">
+        <e:then print="true">
             <e:db-set caption="Добавляемые записи" table="PERSON" cols="NAME, AGE, BIRTHDAY">
                 <row>' Andrew ', 30 , ${exam.date(10.10.1990)}</row>
                 <row>Carl      , 20 , ${exam.date(01.02.1980)}</row>
@@ -35,11 +36,9 @@
     </e:example>
     <e:example name="Значения по умолчанию">
         <e:given>
-            Дана пустая таблица:
-            <e:db-set table="PERSON"/>
-            <e:db-show table="PERSON"/>
+            <e:db-set caption="Дана пустая таблица" table="PERSON"/>
         </e:given>
-        <e:then log="true">
+        <e:then print="true">
             <e:db-set caption="Добавляемые записи" table="PERSON" cols="NAME, AGE=20, BIRTHDAY=${exam.yesterday}">
                 <row>Andrew</row>
                 <row>Carl</row>

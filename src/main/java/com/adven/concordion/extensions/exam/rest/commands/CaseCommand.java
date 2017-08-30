@@ -60,7 +60,7 @@ public class CaseCommand extends RestVerifyCommand {
 
         Html body = caseRoot.first("body");
         Html expected = caseRoot.first("expected");
-        caseRoot.removeChilds(body, expected);
+        caseRoot.remove(body, expected);
         for (Map<String, Object> ignored : cases) {
             caseRoot.childs(
                     tag("case").childs(
@@ -95,9 +95,9 @@ public class CaseCommand extends RestVerifyCommand {
             Html caseTR = tr().insteadOf(root.first("case"));
             Html body = caseTR.first("body");
             if (body != null) {
-                Html td = td().insteadOf(body).style("json");
+                Html td = td().insteadOf(body).css("json");
                 String bodyStr = resolve(td.text(), eval);
-                td.removeChildren().text(jsonPrinter.prettyPrint(bodyStr));
+                td.removeAllChild().text(jsonPrinter.prettyPrint(bodyStr));
                 executor.body(bodyStr);
             }
 
@@ -172,7 +172,7 @@ public class CaseCommand extends RestVerifyCommand {
 
     private void vf(Html root, Evaluator eval, ResultRecorder resultRecorder) {
         final String expected = printer.prettyPrint(resolve(root.text(), eval));
-        root.removeChildren().text(expected).style("json");
+        root.removeAllChild().text(expected).css("json");
 
         String actual = fromEvaluator(eval).responseBody();
         if (isEmpty(actual)) {

@@ -1,13 +1,15 @@
 package com.adven.concordion.extensions.exam.rest.commands;
 
-import com.adven.concordion.extensions.exam.html.Html;
 import com.adven.concordion.extensions.exam.commands.ExamCommand;
+import com.adven.concordion.extensions.exam.html.Html;
 import org.concordion.api.CommandCall;
 import org.concordion.api.Evaluator;
 import org.concordion.api.ResultRecorder;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static com.adven.concordion.extensions.exam.html.Html.*;
 
 public abstract class RequestCommand extends ExamCommand {
     private static final String HEADERS = "headers";
@@ -34,16 +36,16 @@ public abstract class RequestCommand extends ExamCommand {
     }
 
     private void startTable(Html html, boolean hasRequestBody) {
-        Html table = Html.table();
-        Html header = Html.tr();
+        Html table = table();
+        Html header = thead();
         if (hasRequestBody) {
             header.childs(
-                    Html.th("Request")
+                    th("Request")
             );
         }
         header.childs(
-                Html.th("Expected response"),
-                Html.th("Status code")
+                th("Expected response"),
+                th("Status code")
         );
         table.childs(header);
         html.dropAllTo(table);
@@ -70,16 +72,16 @@ public abstract class RequestCommand extends ExamCommand {
     }
 
     private void addRequestDescTo(Html root, String url, String type, String cookies) {
-        final Html div = Html.div().childs(
-                Html.span(method() + " "),
-                Html.code(url),
-                Html.span("  Content-Type  "),
-                Html.code(type)
+        final Html div = div().childs(
+                var(method() + " "),
+                code(url),
+                var("  Content-Type  "),
+                code(type)
         );
         if (cookies != null) {
             div.childs(
-                    Html.span("  Cookies  "),
-                    Html.code(cookies)
+                    var("  Cookies  "),
+                    code(cookies)
             );
         }
         root.childs(div);

@@ -1,7 +1,7 @@
 # Декоративные команды
 
-<div log="true">
-    <e:summary title="Summary"/>
+<div print="true">
+    <e:summary title="Custom title"/>
     <e:given>Given</e:given>
     <e:when>When</e:when>
     <e:then>Then</e:then>

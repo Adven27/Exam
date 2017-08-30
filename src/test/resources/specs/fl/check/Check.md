@@ -2,9 +2,8 @@
 
 ***!!! Пока поддерживается только сравнение XML !!!*** 
 
-Имеется директория
-
 <div>
+    <e:summary/>
     <e:given>
         <e:fl-set dir="dir">
             <file name="empty_file"/>
@@ -16,106 +15,54 @@
             </file>
         </e:fl-set>
     </e:given>
-</div>
-
-### [**Успешный сценарий**](-)
-
-Результат работы 
-
-    <e:fl-check dir="dir">
-        <file name="empty_file"/>
-        <file name="not_empty_file">
-            <data>some file content</data>
-        </file>
-    </e:fl-check>
-
-<div>
-    <e:then>
-        <e:fl-check dir="dir">
-            <file name="empty_file"/>
-            <file name="not_empty_file">
-                <data>some file content</data>
-            </file>
-        </e:fl-check>
-    </e:then>
-</div>
-
-### [**Лишний файл**](- "surplus c:status=ExpectedToFail")
-
-    <e:fl-check dir="dir">
-        <file name="not_empty_file">
-            <data>some file content</data>
-        </file>
-    </e:fl-check>
-
-<div>
-    <e:then>
-        <e:fl-check dir="dir">
-            <file name="not_empty_file">
-                <data>some file content</data>
-            </file>
-        </e:fl-check>
-    </e:then>
-</div>
-
-### [**Недостающий файл**](- "missing c:status=ExpectedToFail")
-
-    <e:fl-check dir="dir">
-        <file name="empty_file"/>
-        <file name="missing_file"/>
-        <file name="not_empty_file">
-            <data>some file content</data>
-        </file>
-    </e:fl-check>
-
-<div>
-    <e:then>
-        <e:fl-check dir="dir">
-            <file name="empty_file"/>
-            <file name="missing_file"/>
-            <file name="not_empty_file">
-                <data>some file content</data>
-            </file>
-        </e:fl-check>
-    </e:then>
-</div>
-
-### [**Не совпал контент**](- "wrong content c:status=ExpectedToFail")
-
-    <e:fl-check dir="dir">
-        <file name="empty_file"/>
-        <file name="not_empty_file">
-            <data>another content was expected</data>
-        </file>
-    </e:fl-check>
-
-<div>
-    <e:then>
-        <e:fl-check dir="dir">
-            <file name="empty_file"/>
-            <file name="not_empty_file">
-                <data>another content was expected</data>
-            </file>
-        </e:fl-check>
-    </e:then>
-</div>
-
-### [**Все предыдущие проверки вместе**](- "all c:status=ExpectedToFail")
-
-    <e:fl-check dir="dir">
-        <file name="missing_file"/>
-        <file name="not_empty_file">
-            <data>another content was expected</data>
-        </file>
-    </e:fl-check>
-
-<div>
-    <e:then>
-        <e:fl-check dir="dir">
-            <file name="missing_file"/>
-            <file name="not_empty_file">
-                <data>another content was expected</data>
-            </file>
-        </e:fl-check>
-    </e:then>
+    <e:example name="Успешный сценарий">
+        <e:then print="true">
+            <e:fl-check dir="dir">
+                <file name="empty_file"/>
+                <file name="not_empty_file">
+                    <data>some file content</data>
+                </file>
+            </e:fl-check>
+        </e:then>
+    </e:example>
+    <e:example name="Лишний файл" status="ExpectedToFail">
+        <e:then print="true">
+            <e:fl-check dir="dir">
+                <file name="not_empty_file">
+                    <data>some file content</data>
+                </file>
+            </e:fl-check>
+        </e:then>
+    </e:example>
+    <e:example name="Недостающий файл" status="ExpectedToFail">
+        <e:then print="true">
+            <e:fl-check dir="dir">
+                <file name="empty_file"/>
+                <file name="missing_file"/>
+                <file name="not_empty_file">
+                    <data>some file content</data>
+                </file>
+            </e:fl-check>
+        </e:then>
+    </e:example>
+    <e:example name="Не совпал контент" status="ExpectedToFail">
+        <e:then print="true">
+            <e:fl-check dir="dir">
+                <file name="empty_file"/>
+                <file name="not_empty_file">
+                    <data>another content was expected</data>
+                </file>
+            </e:fl-check>
+        </e:then>
+    </e:example>
+    <e:example name="Все предыдущие проверки вместе" status="ExpectedToFail">
+        <e:then print="true">
+            <e:fl-check dir="dir">
+                <file name="missing_file"/>
+                <file name="not_empty_file">
+                    <data>another content was expected</data>
+                </file>
+            </e:fl-check>
+        </e:then>
+    </e:example>
 </div>

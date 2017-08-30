@@ -3,8 +3,8 @@
 Допустим имеется сервер, который в ответ на `POST` присылает в теле ответа ровно то же, что было в теле запроса
 
 <div>
-    <e:example name="Пример параметризованных кейсов" status="ExpectedToFail">
-        <e:rs-post url="relative/url" log="true">
+    <e:example name="Пример параметризованных кейсов" status="ExpectedToFail" print="true">
+        <e:rs-post url="relative/url">
             <e:rs-case desc="Неверный ответ" variables="p1:p2" values="value of p1:value of p2,second variant for p1: second variant for p2">
                 <body>
                     {"exact": "${var.p1}", "template": 1}

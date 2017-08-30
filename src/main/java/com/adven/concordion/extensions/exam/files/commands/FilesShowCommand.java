@@ -1,7 +1,7 @@
 package com.adven.concordion.extensions.exam.files.commands;
 
+import com.adven.concordion.extensions.exam.html.Html;
 import org.concordion.api.CommandCall;
-import org.concordion.api.Element;
 import org.concordion.api.Evaluator;
 import org.concordion.api.ResultRecorder;
 
@@ -12,11 +12,9 @@ public class FilesShowCommand extends BaseCommand {
 
     @Override
     public void setUp(CommandCall commandCall, Evaluator evaluator, ResultRecorder resultRecorder) {
-        Element element = commandCall.getElement();
-        element.addStyleClass("table table-condensed");
+        Html element = Html.tableSlim(commandCall.getElement());
 
-        final String path = element.getAttributeValue("dir");
-        element.removeAttribute("dir");
+        final String path = element.takeAwayAttr("dir");
         if (path != null) {
             final File dir = new File(evaluator.evaluate(path).toString());
 
@@ -24,10 +22,10 @@ public class FilesShowCommand extends BaseCommand {
 
             File[] files = dir.listFiles();
             if (files == null || files.length == 0) {
-                addRow(element, EMPTY);
+                addRow(element.el(), EMPTY);
             } else {
                 for (File f : files) {
-                    addRow(element, f.getName());
+                    addRow(element.el(), f.getName());
                 }
             }
         }

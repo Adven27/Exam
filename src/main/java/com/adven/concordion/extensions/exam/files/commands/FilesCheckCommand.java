@@ -46,7 +46,7 @@ public class FilesCheckCommand extends BaseCommand {
      * @param resultRecorder - result
      */
     public void verify(CommandCall commandCall, Evaluator evaluator, ResultRecorder resultRecorder) {
-        Html root = new Html(commandCall.getElement()).style("table table-condensed");
+        Html root = Html.tableSlim(commandCall.getElement());
 
         final String path = root.takeAwayAttr("dir", evaluator);
         if (path != null) {

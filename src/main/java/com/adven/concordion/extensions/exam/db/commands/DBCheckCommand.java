@@ -22,9 +22,7 @@ import org.dbunit.dataset.SortedTable;
 
 import java.util.List;
 
-import static com.adven.concordion.extensions.exam.html.Html.caption;
-import static com.adven.concordion.extensions.exam.html.Html.span;
-import static com.adven.concordion.extensions.exam.html.Html.table;
+import static com.adven.concordion.extensions.exam.html.Html.*;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static org.concordion.api.Result.FAILURE;
 import static org.concordion.api.Result.SUCCESS;
@@ -71,14 +69,14 @@ public class DBCheckCommand extends DBCommand {
         } catch (DbComparisonFailure f) {
             //TODO move to ResultRenderer
             resultRecorder.record(FAILURE);
-            Html div = Html.div().style("rest-failure bs-callout bs-callout-danger").childs(Html.div(f.getMessage()));
+            Html div = div().css("rest-failure bd-callout bd-callout-danger").childs(div(f.getMessage()));
             root.below(div);
 
-            Html exp = table();
+            Html exp = tableSlim();
             div.childs(span("Expected: "), exp);
             root = exp;
 
-            Html act = table();
+            Html act = tableSlim();
             renderTable(act, actual);
             div.childs(span("but was: "), act);
         }
@@ -88,21 +86,21 @@ public class DBCheckCommand extends DBCommand {
         checkResult(root.el(), expectedTable, diffHandler.getDiffList(), resultRecorder);
     }
 
-    private void checkResult(Element element, ITable expected, List<Difference> diffs, ResultRecorder resultRecorder) {
+    private void checkResult(Element el, ITable expected, List<Difference> diffs, ResultRecorder resultRecorder) {
         try {
-            String title = element.getAttributeValue("caption");
-            element.appendChild(caption(isNullOrEmpty(title) ? expected.getTableMetaData().getTableName() : title).el());
+            String title = el.getAttributeValue("caption");
+            el.appendChild(caption(isNullOrEmpty(title) ? expected.getTableMetaData().getTableName() : title).el());
 
             Column[] cols = expected.getTableMetaData().getColumns();
             Element headerRow = new Element("tr");
             for (Column col : cols) {
                 headerRow.appendChild(new Element("th").appendText(col.getColumnName()));
             }
-            element.appendChild(headerRow);
+            el.appendChild(headerRow);
 
             if (expected.getRowCount() == 0) {
                 Element tr = new Element("tr");
-                element.appendChild(tr);
+                el.appendChild(tr);
                 Element td = new Element("td").
                         appendText("<EMPTY>").addAttribute("colspan", String.valueOf(cols.length));
                 tr.appendChild(td);
@@ -122,7 +120,7 @@ public class DBCheckCommand extends DBCommand {
                             success(resultRecorder, td);
                         }
                     }
-                    element.appendChild(tr);
+                    el.appendChild(tr);
                 }
             }
         } catch (DataSetException e) {

@@ -23,57 +23,79 @@ public class Html {
     }
 
     public static Html div(String txt) {
-        return new Html(new Element("div").appendText(txt));
+        return new Html(new Element("div")).text(txt);
     }
 
-
-    public static Html td() {
-        return new Html(new Element("td"));
+    public static Html table() {
+        return table(new Element("table"));
     }
 
-    public static Html td(String txt) {
-        return new Html(new Element("td").appendText(txt));
+    public static Html table(Element el) {
+        return table(new Html(el));
     }
 
+    public static Html table(Html el) {
+        return el.css("table");
+    }
 
-    public static Html tr() {
-        return new Html(new Element("tr"));
+    public static Html tableSlim() {
+        return tableSlim(new Element("table"));
+    }
+
+    public static Html tableSlim(Element el) {
+        return tableSlim(new Html(el));
+    }
+
+    public static Html tableSlim(Html el) {
+        return el.css("table table-sm");
     }
 
     public static Html thead() {
-        return new Html(new Element("thead")).childs(tr());
+        return new Html(new Element("thead")).css("thead-default").childs(tr());
+    }
+
+    public static Html th(String txt) {
+        return new Html(new Element("th")).text(txt);
     }
 
     public static Html tbody() {
         return new Html(new Element("tbody"));
     }
 
+    public static Html tr() {
+        return new Html(new Element("tr"));
+    }
+
+    public static Html td() {
+        return new Html(new Element("td"));
+    }
+
+    public static Html td(String txt) {
+        return td().text(txt);
+    }
+
     public static Html italic(String txt) {
-        return new Html(new Element("i").appendText(txt));
+        return new Html(new Element("i")).text(txt);
     }
 
     public static Html code(String txt) {
-        return new Html(new Element("code").appendText(txt));
+        return new Html(new Element("code")).text(txt);
     }
 
     public static Html span(String txt) {
-        return new Html(new Element("span").appendText(txt));
+        return new Html(new Element("span")).text(txt);
     }
 
-    public static Html table() {
-        return new Html(new Element("table")).style("table table-condensed");
+    public static Html badge(String txt, String style) {
+        return span(txt).css("badge badge-" + style + " ml-2 mr-2");
     }
 
-    public static Html table(Html el) {
-        return el.style("table table-condensed");
-    }
-
-    public static Html th(String txt) {
-        return new Html(new Element("th").appendText(txt));
+    public static Html var(String txt) {
+        return new Html(new Element("var")).text(txt);
     }
 
     public static Html link(String txt) {
-        return new Html(new Element("a").appendText(txt));
+        return new Html(new Element("a")).text(txt);
     }
 
     public static Html link(String txt, String src) {
@@ -90,30 +112,67 @@ public class Html {
         );
     }
 
+    public static Html imageOverlay(String src, int size, String title, String txt) {
+        return div().css("card bg-light").childs(
+                link("", src).childs(
+                        image(src, size, size)
+                ),
+                div().css("card-img-top").childs(
+                        h4(title),
+                        p(txt).css("card-text")
+
+                )
+        );
+    }
+
     public static Html image(String src) {
-        return new Html(new Element("image").addAttribute("src", src));
+        return new Html(new Element("image")).attr("src", src);
     }
 
     public static Html image(String src, int width, int height) {
-        return image(src).style("img-thumbnail").
+        return image(src).css("img-thumbnail").
                 attr("width", String.valueOf(width)).
                 attr("height", String.valueOf(height));
     }
 
     public static Html h4(String title) {
-        return new Html(new Element("h4").appendText(title));
+        return new Html(new Element("h4")).text(title);
     }
 
     public static Html caption(String txt) {
-        return new Html(new Element("caption").appendText(txt));
+        return new Html(new Element("caption")).text(txt);
     }
 
     public static Html pre() {
         return new Html(new Element("pre"));
     }
 
+    public static Html p(String txt) {
+        return new Html(new Element("p")).text(txt);
+    }
+
+    public static Html codemirror(String lang) {
+        return pre().css(lang + " card bg-light");
+    }
+
     public static Html tag(String tag) {
         return new Html(tag);
+    }
+
+    public static Html ul() {
+        return new Html(new Element("ul"));
+    }
+
+    public static Html list() {
+        return new Html(new Element("ul")).css("list-group");
+    }
+
+    public static Html li(String text) {
+        return li().text(text);
+    }
+
+    public static Html li() {
+        return new Html(new Element("li"));
     }
 
     public Html childs(Html... htmls) {
@@ -142,18 +201,23 @@ public class Html {
         return el.getAttributeValue(name);
     }
 
+    public Html css(String classes) {
+        el.addStyleClass(classes);
+        return this;
+    }
+
     public Html style(String style) {
-        el.addStyleClass(style);
+        attr("style", style);
         return this;
     }
 
     public Html muted() {
-        el.addStyleClass("text-muted");
+        css("text-muted");
         return this;
     }
 
     public Html dropAllTo(Html element) {
-        el.moveChildrenTo(element.el);
+        moveChildrenTo(element);
         el.appendChild(element.el);
         return this;
     }
@@ -195,16 +259,16 @@ public class Html {
     }
 
     public Html success() {
-        el.addStyleClass("bs-callout bs-callout-success");
+        css("bd-callout bd-callout-success");
         return this;
     }
 
     public Html panel(String header) {
-        el.addStyleClass("card bg-light mb-3");
-        Html body = div().style("card-body");
-        el.moveChildrenTo(body.el);
+        css("card mb-3");
+        Html body = div().css("card-body");
+        moveChildrenTo(body);
         this.childs(
-                div().style("card-header").childs(
+                div().css("card-header").childs(
                         link(header).attr("data-type", "example").attr("name", header)
                 )
         );
@@ -260,12 +324,12 @@ public class Html {
         return first == null ? null : new Html(first);
     }
 
-    public Html removeChildren() {
+    public Html removeAllChild() {
         this.moveChildrenTo(new Html(new Element("tmp")));
         return this;
     }
 
-    public Html removeChilds(Html... childs) {
+    public Html remove(Html... childs) {
         for (Html child : childs) {
             if (child != null) {
                 this.remove(child);

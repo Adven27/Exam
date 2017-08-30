@@ -5,7 +5,7 @@
         <e:given>
             <code c:set="#someVar">someValue</code>
         </e:given>
-        <e:rs-post url="some/url" type="text/plain" log="true">
+        <e:rs-post url="some/url" type="text/plain" print="true">
             <e:rs-case desc="You can have access to concordion variables with ">
                 <body>
                     {"var": "${var.someVar}"}
@@ -17,7 +17,7 @@
         </e:rs-post>
     </e:example>
     <e:example name="DateTime support">
-        <e:rs-post url="some/url" type="text/plain" log="true">
+        <e:rs-post url="some/url" type="text/plain" print="true">
             <e:rs-case desc="There are constants of Date type for yesterday/now/tomorrow">
                 <body>
                     {

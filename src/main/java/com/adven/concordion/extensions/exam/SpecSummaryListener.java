@@ -1,8 +1,11 @@
 package com.adven.concordion.extensions.exam;
 
+import com.adven.concordion.extensions.exam.html.Html;
 import org.concordion.api.Element;
 import org.concordion.api.listener.SpecificationProcessingEvent;
 import org.concordion.api.listener.SpecificationProcessingListener;
+
+import static com.adven.concordion.extensions.exam.html.Html.*;
 
 public class SpecSummaryListener implements SpecificationProcessingListener {
 
@@ -15,28 +18,34 @@ public class SpecSummaryListener implements SpecificationProcessingListener {
         Element body = event.getRootElement().getFirstChildElement("body");
 
         if (body != null) {
-            Element summary = new Element("div");
-            for (Element a : body.getDescendantElements("a")) {
-                if ("example".equals(a.getAttributeValue("data-type"))) {
-                    String anchor = a.getAttributeValue("name");
-                    a.addAttribute("href", "#summary");
-                    Element example = new Element("a").addAttribute("href", "#" + anchor);
-                    example.appendText(anchor);
-                    Element div = new Element("div");
-                    div.appendChild(example);
-                    summary.appendChild(div);
-
-                    Element p = a.getParentElement().getParentElement().getFirstChildElement("p");
-                    if (p != null) {
-                        p.moveChildrenTo(a);
-                        p.getParentElement().removeChild(p);
-                    }
-                }
-            }
             Element menu = body.getElementById("summary");
             if (menu != null) {
-                menu.appendChild(new Element("a").addAttribute("name", "summary"));
-                menu.appendChild(summary);
+                Html summary = ul();
+                for (Element a : body.getDescendantElements("a")) {
+                    if ("example".equals(a.getAttributeValue("data-type"))) {
+                        String anchor = a.getAttributeValue("name");
+                        a.addAttribute("href", "#summary");
+
+                        Element badge = a.getFirstChildElement("span");
+                        a.removeChild(badge);
+
+                        summary.childs(
+                                li().childs(
+                                        link(anchor).attr("href", "#" + anchor),
+                                        new Html(badge)
+                                )
+                        );
+
+                        Element p = a.getParentElement().getParentElement().getFirstChildElement("p");
+                        if (p != null) {
+                            //p.addStyleClass("alert alert-warning");
+                            //p.addAttribute("role", "alert");
+                            p.getParentElement().removeChild(p);
+                            //a.appendChild(p);
+                        }
+                    }
+                }
+                menu.appendChild(summary.el());
             }
         }
     }

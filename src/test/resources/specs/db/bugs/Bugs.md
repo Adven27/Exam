@@ -1,6 +1,7 @@
 # Bugs
 
 <div>
+    <e:summary/>
     <e:example name="Every db command has independent(from other commands) column order">
         <e:given>
             <e:db-set table="PERSON" cols="*NAME, *AGE, BIRTHDAY=${exam.date(10.10.2010)}">
