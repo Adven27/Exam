@@ -1,9 +1,9 @@
 package com.adven.concordion.extensions.exam.rest.commands;
 
-import com.adven.concordion.extensions.exam.html.Html;
-import com.jayway.restassured.response.Response;
 import com.adven.concordion.extensions.exam.PlaceholdersResolver;
+import com.adven.concordion.extensions.exam.html.Html;
 import com.adven.concordion.extensions.exam.rest.JsonPrettyPrinter;
+import com.jayway.restassured.response.Response;
 import net.javacrumbs.jsonunit.core.Configuration;
 import org.apache.commons.collections.map.HashedMap;
 import org.concordion.api.CommandCall;
@@ -15,9 +15,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.adven.concordion.extensions.exam.PlaceholdersResolver.resolve;
+import static com.adven.concordion.extensions.exam.html.Html.*;
 import static com.adven.concordion.extensions.exam.rest.commands.RequestExecutor.fromEvaluator;
+import static com.google.common.base.Strings.isNullOrEmpty;
 import static net.javacrumbs.jsonunit.JsonAssert.assertJsonEquals;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 
@@ -62,9 +63,9 @@ public class CaseCommand extends RestVerifyCommand {
         caseRoot.removeChilds(body, expected);
         for (Map<String, Object> ignored : cases) {
             caseRoot.childs(
-                    Html.tag("case").childs(
-                            body == null ? null : Html.tag("body").text(body.text()),
-                            Html.tag("expected").text(expected.text())
+                    tag("case").childs(
+                            body == null ? null : tag("body").text(body.text()),
+                            tag("expected").text(expected.text())
                     )
             );
         }
@@ -91,17 +92,17 @@ public class CaseCommand extends RestVerifyCommand {
 
             executor.urlParams(urlParams == null ? null : PlaceholdersResolver.resolve(urlParams, eval));
 
-            Html caseTR = Html.tr().insteadOf(root.first("case"));
+            Html caseTR = tr().insteadOf(root.first("case"));
             Html body = caseTR.first("body");
             if (body != null) {
-                Html td = Html.td().insteadOf(body).style("json");
+                Html td = td().insteadOf(body).style("json");
                 String bodyStr = resolve(td.text(), eval);
                 td.removeChildren().text(jsonPrinter.prettyPrint(bodyStr));
                 executor.body(bodyStr);
             }
 
             final String expectedStatus = "HTTP/1.1 200 OK";
-            Html statusTd = Html.td(expectedStatus);
+            Html statusTd = td(expectedStatus);
             caseTR.childs(statusTd);
 
             childCommands.setUp(eval, resultRecorder);
@@ -110,7 +111,7 @@ public class CaseCommand extends RestVerifyCommand {
             childCommands.execute(eval, resultRecorder);
             childCommands.verify(eval, resultRecorder);
 
-            vf(Html.td().insteadOf(caseTR.first("expected")), eval, resultRecorder);
+            vf(td().insteadOf(caseTR.first("expected")), eval, resultRecorder);
 
             String actualStatus = executor.statusLine();
             if (expectedStatus.equals(actualStatus)) {
@@ -125,18 +126,18 @@ public class CaseCommand extends RestVerifyCommand {
     public void verify(CommandCall cmd, Evaluator evaluator, ResultRecorder resultRecorder) {
         RequestExecutor executor = fromEvaluator(evaluator);
 
-        Html div = Html.div();
+        Html div = div();
         if (executor.isGET()) {
             div.childs(
-                    Html.italic(executor.requestMethod() + " "),
-                    Html.code(executor.requestUrlWithParams())
+                    italic(executor.requestMethod() + " "),
+                    code(executor.requestUrlWithParams())
             );
         }
         String cookies = executor.cookies();
         if (!isNullOrEmpty(cookies)) {
             div.childs(
-                    Html.italic(" Cookies "),
-                    Html.code(cookies)
+                    italic(" Cookies "),
+                    code(cookies)
             );
         }
 
@@ -144,8 +145,8 @@ public class CaseCommand extends RestVerifyCommand {
             Map<String, Object> aCase = cases.get(i);
             if (!aCase.isEmpty()) {
                 div.childs(
-                        Html.italic(i == 0 ? " Варианты " : "/"),
-                        Html.code(aCase.values().toString())
+                        italic(i == 0 ? " Варианты " : "/"),
+                        code(aCase.values().toString())
                 );
             }
         }
@@ -153,12 +154,12 @@ public class CaseCommand extends RestVerifyCommand {
         final String colspan = executor.hasRequestBody() ? "3" : "2";
         Html rt = new Html(cmd.getElement());
         rt.above(
-                Html.tr().childs(
-                        Html.td(caseDesc(rt.attr(DESC))).attr("colspan", colspan).muted()
+                tr().childs(
+                        td(caseDesc(rt.attr(DESC))).attr("colspan", colspan).muted()
                 )
         ).above(
-                Html.tr().childs(
-                        Html.td().attr("colspan", colspan).childs(
+                tr().childs(
+                        td().attr("colspan", colspan).childs(
                                 div
                         )
                 )
@@ -188,5 +189,4 @@ public class CaseCommand extends RestVerifyCommand {
             failure(resultRecorder, root, prettyActual, expected);
         }
     }
-
 }

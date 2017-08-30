@@ -22,6 +22,10 @@ import org.dbunit.dataset.SortedTable;
 
 import java.util.List;
 
+import static com.adven.concordion.extensions.exam.html.Html.caption;
+import static com.adven.concordion.extensions.exam.html.Html.span;
+import static com.adven.concordion.extensions.exam.html.Html.table;
+import static com.google.common.base.Strings.isNullOrEmpty;
 import static org.concordion.api.Result.FAILURE;
 import static org.concordion.api.Result.SUCCESS;
 import static org.dbunit.Assertion.assertEquals;
@@ -70,14 +74,13 @@ public class DBCheckCommand extends DBCommand {
             Html div = Html.div().style("rest-failure bs-callout bs-callout-danger").childs(Html.div(f.getMessage()));
             root.below(div);
 
-            Html exp = Html.table();
-            div.childs(Html.span("Expected: "), exp);
+            Html exp = table();
+            div.childs(span("Expected: "), exp);
             root = exp;
 
-            Html act = Html.table();
+            Html act = table();
             renderTable(act, actual);
-            div.childs(Html.span("but was: "), act);
-
+            div.childs(span("but was: "), act);
         }
         for (Difference diff : (List<Difference>) diffHandler.getDiffList()) {
             System.err.println("***** DIFF " + diff.toString());
@@ -87,6 +90,9 @@ public class DBCheckCommand extends DBCommand {
 
     private void checkResult(Element element, ITable expected, List<Difference> diffs, ResultRecorder resultRecorder) {
         try {
+            String title = element.getAttributeValue("caption");
+            element.appendChild(caption(isNullOrEmpty(title) ? expected.getTableMetaData().getTableName() : title).el());
+
             Column[] cols = expected.getTableMetaData().getColumns();
             Element headerRow = new Element("tr");
             for (Column col : cols) {

@@ -141,7 +141,7 @@ public class RequestExecutor {
         return method;
     }
 
-    public boolean isGET(){
+    public boolean isGET() {
         return "GET".equals(method);
     }
 

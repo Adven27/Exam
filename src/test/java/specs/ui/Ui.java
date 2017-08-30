@@ -1,7 +1,5 @@
 package specs.ui;
 
-import org.concordion.api.Unimplemented;
-import org.junit.Test;
 import org.openqa.selenium.By;
 import specs.Specs;
 
@@ -15,8 +13,12 @@ public class Ui extends Specs {
         $(By.tagName("span")).shouldHave(text(text));
     }
 
-    @Test
-    public void noParamsCheck() throws Exception {
+    public String noParamsCheck() throws Exception {
         $(By.tagName("span")).should(exist);
+        return "valueFromMethodCall";
+    }
+
+    public boolean areEqual(String s1, String s2) {
+        return s1.equals(s2);
     }
 }
