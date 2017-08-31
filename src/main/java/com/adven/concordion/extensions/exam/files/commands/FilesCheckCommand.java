@@ -34,7 +34,8 @@ import static org.xmlunit.builder.Input.fromString;
 public class FilesCheckCommand extends BaseCommand {
     private Announcer<AssertEqualsListener> listeners = Announcer.to(AssertEqualsListener.class);
 
-    public FilesCheckCommand() {
+    public FilesCheckCommand(String name, String tag) {
+        super(name, tag);
         listeners.addListener(new FilesResultRenderer());
     }
 

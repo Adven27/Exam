@@ -18,6 +18,10 @@ import static java.nio.charset.Charset.defaultCharset;
 
 public class FilesSetCommand extends BaseCommand {
 
+    public FilesSetCommand(String name, String tag) {
+        super(name, tag);
+    }
+
     @Override
     public void setUp(CommandCall commandCall, Evaluator evaluator, ResultRecorder resultRecorder) {
         Html element = new Html(commandCall.getElement()).css("table table-condensed");

@@ -10,6 +10,10 @@ import java.io.File;
 public class FilesShowCommand extends BaseCommand {
     private static final String EMPTY = "<EMPTY>";
 
+    public FilesShowCommand(String name, String tag) {
+        super(name, tag);
+    }
+
     @Override
     public void setUp(CommandCall commandCall, Evaluator evaluator, ResultRecorder resultRecorder) {
         Html element = Html.tableSlim(commandCall.getElement());

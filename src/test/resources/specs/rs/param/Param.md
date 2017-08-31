@@ -4,15 +4,15 @@
 
 <div>
     <e:example name="Пример параметризованных кейсов" status="ExpectedToFail" print="true">
-        <e:rs-post url="relative/url">
-            <e:rs-case desc="Неверный ответ" variables="p1:p2" values="value of p1:value of p2,second variant for p1: second variant for p2">
+        <e:post url="relative/url">
+            <e:case desc="Неверный ответ" variables="p1:p2" values="value of p1:value of p2,second variant for p1: second variant for p2">
                 <body>
                     {"exact": "${var.p1}", "template": 1}
                 </body>
                 <expected>
                     {"exact": "${var.p2}", "template": "!{number}"}
                 </expected>
-            </e:rs-case>
-        </e:rs-post>
+            </e:case>
+        </e:post>
     </e:example>
 </div>

@@ -17,6 +17,10 @@ public class BrowserCommand extends ExamCommand {
     private static final String URL = "url";
     private String url;
 
+    public BrowserCommand(String tag) {
+        super("browser", tag);
+    }
+
     @Override
     public void setUp(CommandCall commandCall, Evaluator evaluator, ResultRecorder resultRecorder) {
         Html root = new Html(commandCall.getElement());

@@ -14,8 +14,8 @@ import static org.dbunit.operation.DatabaseOperation.CLEAN_INSERT;
 import static org.dbunit.operation.DatabaseOperation.INSERT;
 
 public class DBSetCommand extends DBCommand {
-    public DBSetCommand(JdbcDatabaseTester dbTester) {
-        super(dbTester);
+    public DBSetCommand(String name, String tag, JdbcDatabaseTester dbTester) {
+        super(name, tag, dbTester);
     }
 
     @Override

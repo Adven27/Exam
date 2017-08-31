@@ -32,8 +32,8 @@ import static org.dbunit.dataset.filter.DefaultColumnFilter.includedColumnsTable
 public class DBCheckCommand extends DBCommand {
     private Announcer<AssertEqualsListener> listeners = Announcer.to(AssertEqualsListener.class);
 
-    public DBCheckCommand(JdbcDatabaseTester dbTester) {
-        super(dbTester);
+    public DBCheckCommand(String name, String tag, JdbcDatabaseTester dbTester) {
+        super(name, tag, dbTester);
         listeners.addListener(new DbResultRenderer());
     }
 

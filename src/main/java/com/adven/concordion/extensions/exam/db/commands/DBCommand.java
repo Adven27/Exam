@@ -1,6 +1,7 @@
 package com.adven.concordion.extensions.exam.db.commands;
 
 import com.adven.concordion.extensions.exam.PlaceholdersResolver;
+import com.adven.concordion.extensions.exam.commands.ExamCommand;
 import com.adven.concordion.extensions.exam.db.TableData;
 import com.adven.concordion.extensions.exam.html.Html;
 import org.concordion.api.AbstractCommand;
@@ -17,12 +18,13 @@ import java.util.*;
 import static com.adven.concordion.extensions.exam.html.Html.*;
 import static com.google.common.base.Strings.isNullOrEmpty;
 
-public class DBCommand extends AbstractCommand {
+public class DBCommand extends ExamCommand {
     protected final JdbcDatabaseTester dbTester;
     private final Map<String, String> remarks = new HashMap<>();
     protected ITable expectedTable;
 
-    public DBCommand(JdbcDatabaseTester dbTester) {
+    public DBCommand(String name, String tag, JdbcDatabaseTester dbTester) {
+        super(name, tag);
         this.dbTester = dbTester;
     }
 

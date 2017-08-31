@@ -9,7 +9,11 @@ import org.concordion.api.ResultRecorder;
 import static com.adven.concordion.extensions.exam.html.Html.h4;
 import static com.google.common.base.Strings.isNullOrEmpty;
 
-public class ExamplesSummaryCommand extends AbstractCommand {
+public class ExamplesSummaryCommand extends ExamCommand {
+    public ExamplesSummaryCommand(String name, String tag) {
+        super(name, tag);
+    }
+
     @Override
     public void setUp(CommandCall cmd, Evaluator evaluator, ResultRecorder resultRecorder) {
         Html el = new Html(cmd.getElement()).attr("id", "summary");

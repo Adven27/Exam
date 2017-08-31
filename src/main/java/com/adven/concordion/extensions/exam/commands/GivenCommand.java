@@ -6,6 +6,10 @@ import org.concordion.api.Evaluator;
 import org.concordion.api.ResultRecorder;
 
 public class GivenCommand extends ExamCommand {
+    public GivenCommand(String tag) {
+        super("given", tag);
+    }
+
     @Override
     public void setUp(CommandCall commandCall, Evaluator evaluator, ResultRecorder resultRecorder) {
         Element element = commandCall.getElement();

@@ -17,6 +17,10 @@ public abstract class RequestCommand extends ExamCommand {
     private static final String TYPE = "type";
     private static final String URL = "url";
 
+    public RequestCommand(String name, String tag) {
+        super(name, tag);
+    }
+
     protected abstract String method();
 
     @Override

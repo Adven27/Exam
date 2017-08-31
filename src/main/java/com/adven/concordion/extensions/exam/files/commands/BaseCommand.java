@@ -1,15 +1,20 @@
 package com.adven.concordion.extensions.exam.files.commands;
 
+import com.adven.concordion.extensions.exam.commands.ExamCommand;
 import com.adven.concordion.extensions.exam.html.Html;
 import org.concordion.api.AbstractCommand;
 import org.concordion.api.Element;
 
 import java.io.File;
 
-class BaseCommand extends AbstractCommand {
+class BaseCommand extends ExamCommand {
     protected static final String EMPTY = "<EMPTY>";
     protected static final String HEADER = "FILES IN FOLDER: ";
     protected static final String FILE_CONTENT = "FILE CONTENT";
+
+    public BaseCommand(String name, String tag) {
+        super(name, tag);
+    }
 
     protected void addHeader(Element element, String... texts) {
         addInTR(element, "th", texts);

@@ -8,6 +8,10 @@ import org.concordion.internal.util.Check;
 
 public class ExpectedStatusCommand extends RestVerifyCommand {
 
+    public ExpectedStatusCommand(String name, String tag) {
+        super(name, tag);
+    }
+
     @Override
     public void verify(CommandCall commandCall, Evaluator evaluator, ResultRecorder resultRecorder) {
         Check.isFalse(commandCall.hasChildCommands(), "Nesting commands inside an 'assertEquals' is not supported");

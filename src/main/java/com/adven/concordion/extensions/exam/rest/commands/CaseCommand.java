@@ -33,7 +33,8 @@ public class CaseCommand extends RestVerifyCommand {
     private int number = 0;
     private Configuration cfg;
 
-    public CaseCommand(Configuration cfg) {
+    public CaseCommand(String tag, Configuration cfg) {
+        super("case", tag);
         this.cfg = cfg;
     }
 
@@ -63,9 +64,9 @@ public class CaseCommand extends RestVerifyCommand {
         caseRoot.remove(body, expected);
         for (Map<String, Object> ignored : cases) {
             caseRoot.childs(
-                    tag("case").childs(
-                            body == null ? null : tag("body").text(body.text()),
-                            tag("expected").text(expected.text())
+                    Html.tag("case").childs(
+                            body == null ? null : Html.tag("body").text(body.text()),
+                            Html.tag("expected").text(expected.text())
                     )
             );
         }

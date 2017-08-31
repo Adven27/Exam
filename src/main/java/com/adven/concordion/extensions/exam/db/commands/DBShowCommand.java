@@ -21,8 +21,8 @@ import static org.dbunit.dataset.filter.DefaultColumnFilter.includedColumnsTable
 
 public class DBShowCommand extends DBCommand {
 
-    public DBShowCommand(JdbcDatabaseTester dbTester) {
-        super(dbTester);
+    public DBShowCommand(String name, String tag, JdbcDatabaseTester dbTester) {
+        super(name, tag, dbTester);
     }
 
     @Override

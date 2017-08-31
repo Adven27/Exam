@@ -6,6 +6,10 @@ import org.concordion.api.Evaluator;
 import org.concordion.api.ResultRecorder;
 
 public class ThenCommand extends ExamCommand {
+    public ThenCommand(String tag) {
+        super("then", tag);
+    }
+
     @Override
     public void setUp(CommandCall commandCall, Evaluator evaluator, ResultRecorder resultRecorder) {
         Element element = commandCall.getElement();

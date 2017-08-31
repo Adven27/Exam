@@ -8,6 +8,10 @@ import org.concordion.api.ResultRecorder;
 
 public class CaseCheckCommand extends ExamCommand {
 
+    public CaseCheckCommand(String name, String tag) {
+        super(name, tag);
+    }
+
     @Override
     public void setUp(CommandCall commandCall, Evaluator evaluator, ResultRecorder resultRecorder) {
         Element element = commandCall.getElement();

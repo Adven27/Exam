@@ -1,8 +1,6 @@
 package specs;
 
-import com.jayway.restassured.RestAssured;
 import com.adven.concordion.extensions.exam.ExamExtension;
-import com.adven.concordion.extensions.exam.db.DummyTester;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.concordion.api.AfterSuite;
 import org.concordion.api.BeforeSuite;
@@ -27,8 +25,10 @@ public class Specs {
     @SuppressFBWarnings(value = "URF_UNREAD_FIELD", justification = "особенности подключения расширений в concordion")
     @Extension
     private final ExamExtension exam = new ExamExtension().
-            webDriver().
-            dbTester(DummyTester.H2);
+            rest().port(PORT).end().
+            db().end().
+            webDriver();
+
 
     @AfterSuite
     public static void stopServer() throws Exception {
@@ -41,19 +41,15 @@ public class Specs {
     @BeforeSuite
     public static void startServer() throws Exception {
         if (server == null) {
-            server = startServer(PORT);
+            server = startSrv();
         }
     }
 
-
-    private static Server startServer(int port) throws IOException {
+    private static Server startSrv() throws IOException {
         if (server == null) {
-            RestAssured.baseURI = "http://localhost";
-            RestAssured.port = port;
-            RestAssured.basePath = "/";
             server = new ContainerServer(new TestContainer());
             Connection connection = new SocketConnection(server);
-            SocketAddress address = new InetSocketAddress(port);
+            SocketAddress address = new InetSocketAddress(PORT);
             connection.connect(address);
         }
         return server;

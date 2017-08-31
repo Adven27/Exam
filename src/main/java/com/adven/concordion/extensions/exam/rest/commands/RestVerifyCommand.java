@@ -1,5 +1,6 @@
 package com.adven.concordion.extensions.exam.rest.commands;
 
+import com.adven.concordion.extensions.exam.commands.ExamCommand;
 import com.adven.concordion.extensions.exam.html.Html;
 import com.adven.concordion.extensions.exam.rest.JsonPrettyPrinter;
 import com.adven.concordion.extensions.exam.rest.RestResultRenderer;
@@ -9,16 +10,18 @@ import org.concordion.api.ResultRecorder;
 import org.concordion.api.listener.AssertEqualsListener;
 import org.concordion.api.listener.AssertFailureEvent;
 import org.concordion.api.listener.AssertSuccessEvent;
+import org.concordion.internal.command.ExampleCommand;
 import org.concordion.internal.util.Announcer;
 
 import static org.concordion.api.Result.FAILURE;
 import static org.concordion.api.Result.SUCCESS;
 
-public class RestVerifyCommand extends AbstractCommand {
+public class RestVerifyCommand extends ExamCommand {
     protected final JsonPrettyPrinter printer = new JsonPrettyPrinter();
     private Announcer<AssertEqualsListener> listeners = Announcer.to(AssertEqualsListener.class);
 
-    public RestVerifyCommand() {
+    public RestVerifyCommand(String name, String tag) {
+        super(name, tag);
         listeners.addListener(new RestResultRenderer());
     }
 
