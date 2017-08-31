@@ -7,14 +7,19 @@ import com.adven.concordion.extensions.exam.db.commands.DBShowCommand;
 import com.adven.concordion.extensions.exam.files.commands.FilesCheckCommand;
 import com.adven.concordion.extensions.exam.files.commands.FilesSetCommand;
 import com.adven.concordion.extensions.exam.files.commands.FilesShowCommand;
+import com.adven.concordion.extensions.exam.html.Html;
 import com.adven.concordion.extensions.exam.rest.commands.*;
 import com.adven.concordion.extensions.exam.ui.BrowserCommand;
 import net.javacrumbs.jsonunit.core.Configuration;
+import nu.xom.Attribute;
+import nu.xom.Element;
+import org.concordion.internal.command.ExampleCommand;
 import org.dbunit.JdbcDatabaseTester;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.google.common.base.Strings.isNullOrEmpty;
 import static java.util.Arrays.asList;
 
 public class CommandRegistry {
@@ -25,7 +30,10 @@ public class CommandRegistry {
                 new GivenCommand("div"),
                 new WhenCommand("div"),
                 new ThenCommand("div"),
+
+                new ExamExampleCommand("div"),
                 new ExamplesSummaryCommand("summary", "div"),
+
                 new CaseCheckCommand("check", "div"),
 
                 new DBShowCommand("db-show", "table", dbTester),
@@ -56,10 +64,5 @@ public class CommandRegistry {
 
     public List<ExamCommand> commands() {
         return new ArrayList<>(commands);
-    }
-
-    public String tagFor(String cmd) {
-        ExamCommand command = getBy(cmd);
-        return command == null ? null : command.tag();
     }
 }

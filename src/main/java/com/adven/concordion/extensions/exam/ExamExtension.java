@@ -1,7 +1,7 @@
 package com.adven.concordion.extensions.exam;
 
 import com.adven.concordion.extensions.exam.bootstrap.BootstrapExtension;
-import com.adven.concordion.extensions.exam.commands.*;
+import com.adven.concordion.extensions.exam.commands.ExamCommand;
 import com.adven.concordion.extensions.exam.rest.DateFormatMatcher;
 import com.adven.concordion.extensions.exam.rest.DateWithinMatcher;
 import com.codeborne.selenide.Configuration;
@@ -69,8 +69,10 @@ public class ExamExtension implements ConcordionExtension {
 
         final CommandRegistry registry = new CommandRegistry(dbTester, jsonUnitCfg);
 
-        for (ExamCommand с : registry.commands()) {
-            ex.withCommand(NS, с.name(), с);
+        for (ExamCommand cmd : registry.commands()) {
+            if (!"example".equals(cmd.name())) {
+                ex.withCommand(NS, cmd.name(), cmd);
+            }
         }
 
         ex.withDocumentParsingListener(new ExamDocumentParsingListener(registry));

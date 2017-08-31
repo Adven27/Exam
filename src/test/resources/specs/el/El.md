@@ -5,20 +5,20 @@
         <e:given>
             <code c:set="#someVar">someValue</code>
         </e:given>
-        <e:rs-post url="some/url" type="text/plain" print="true">
-            <e:rs-case desc="You can have access to concordion variables with ">
+        <e:post url="some/url" type="text/plain" print="true">
+            <e:case desc="You can have access to concordion variables with ">
                 <body>
                     {"var": "${var.someVar}"}
                 </body>
                 <expected>
                     {"var": "someValue"}
                 </expected>
-            </e:rs-case>
-        </e:rs-post>
+            </e:case>
+        </e:post>
     </e:example>
     <e:example name="DateTime support">
-        <e:rs-post url="some/url" type="text/plain" print="true">
-            <e:rs-case desc="There are constants of Date type for yesterday/now/tomorrow">
+        <e:post url="some/url" type="text/plain" print="true">
+            <e:case desc="There are constants of Date type for yesterday/now/tomorrow">
                 <body>
                     {
                      "yesterday": "${exam.yesterday}",
@@ -33,8 +33,8 @@
                      "tomorrow":  "!{str}"
                     }
                 </expected>
-            </e:rs-case>
-            <e:rs-case desc="You can format the output of this constants">
+            </e:case>
+            <e:case desc="You can format the output of this constants">
                 <body>
                     {
                      "yesterday": "${exam.yesterday:dd.MM.yyyy'T'hh:mm:ss}",
@@ -49,8 +49,8 @@
                      "tomorrow":  "!{formattedAs yyyy-MM-dd}"
                     }
                 </expected>
-            </e:rs-case>
-            <e:rs-case desc="You can get any time from now with +/- period">
+            </e:case>
+            <e:case desc="You can get any time from now with +/- period">
                 <body>
                     {
                      "endFromNow": "${exam.now+[day 1, 2 months, 3 y]:dd.MM.yyyy}",
@@ -63,8 +63,8 @@
                      "startFromNow": "!{formattedAs dd.MM.yyyy}"
                     }
                 </expected>
-            </e:rs-case>
-            <e:rs-case desc="You can set arbitrary date">
+            </e:case>
+            <e:case desc="You can set arbitrary date">
                 <body>
                     {
                      "date": "${exam.date(14.05.1951)}",
@@ -77,7 +77,7 @@
                      "formattedDate": "!{formattedAndWithin [yyyy-MM-dd][1d][1951-05-13]}"
                     }
                 </expected>
-            </e:rs-case>
-        </e:rs-post>
+            </e:case>
+        </e:post>
     </e:example>
 </div>

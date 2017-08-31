@@ -1,5 +1,7 @@
 package com.adven.concordion.extensions.exam.commands;
 
+import com.adven.concordion.extensions.exam.ExamExtension;
+import nu.xom.Attribute;
 import org.concordion.api.*;
 import org.concordion.api.listener.ExecuteEvent;
 import org.concordion.api.listener.ExecuteListener;
@@ -31,5 +33,15 @@ public class ExamCommand extends AbstractCommand {
 
     public String name() {
         return name;
+    }
+
+    public void beforeParse(nu.xom.Element elem) {
+        Attribute attr = new Attribute(elem.getLocalName(), "");
+        attr.setNamespace("e", ExamExtension.NS);
+        elem.addAttribute(attr);
+
+        elem.setNamespacePrefix("");
+        elem.setNamespaceURI(null);
+        elem.setLocalName(tag);
     }
 }
