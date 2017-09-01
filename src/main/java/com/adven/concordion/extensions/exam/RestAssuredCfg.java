@@ -4,27 +4,43 @@ import com.jayway.restassured.RestAssured;
 
 public class RestAssuredCfg {
     private final ExamExtension extension;
+    private String uri;
+    private String context;
+    private Integer port;
 
     RestAssuredCfg(ExamExtension extension) {
         this.extension = extension;
     }
 
     public RestAssuredCfg baseUri(String uri) {
-        RestAssured.baseURI = uri;
+        this.uri = uri;
         return this;
     }
 
     public RestAssuredCfg port(int port) {
-        RestAssured.port = port;
+        this.port = port;
         return this;
     }
 
     public RestAssuredCfg basePath(String context) {
-        RestAssured.basePath = context;
+        this.context = context;
         return this;
     }
 
     public ExamExtension end() {
+        setUpRestAssured(uri, context, port);
         return extension;
+    }
+
+    private static void setUpRestAssured(String uri, String context, Integer port) {
+        if (uri != null) {
+            RestAssured.baseURI = uri;
+        }
+        if (context != null) {
+            RestAssured.basePath = context;
+        }
+        if (port != null) {
+            RestAssured.port = port;
+        }
     }
 }
