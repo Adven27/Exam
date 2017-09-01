@@ -119,7 +119,7 @@ public class Html {
                 ),
                 div().css("card-img-top").childs(
                         h4(title),
-                        p(txt).css("card-text")
+                        paragraph(txt).css("card-text")
 
                 )
         );
@@ -147,7 +147,7 @@ public class Html {
         return new Html(new Element("pre"));
     }
 
-    public static Html p(String txt) {
+    public static Html paragraph(String txt) {
         return new Html(new Element("p")).text(txt);
     }
 
@@ -276,10 +276,6 @@ public class Html {
         return this;
     }
 
-    public void remove(Html html) {
-        el.removeChild(html.el);
-    }
-
     public String localName() {
         return el.getLocalName();
     }
@@ -327,6 +323,10 @@ public class Html {
     public Html removeAllChild() {
         this.moveChildrenTo(new Html(new Element("tmp")));
         return this;
+    }
+
+    public void remove(Html html) {
+        el.removeChild(html.el);
     }
 
     public Html remove(Html... childs) {
