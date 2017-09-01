@@ -3,7 +3,7 @@
 [Concordion](https://github.com/concordion/concordion) extension 
 
 ## Getting started
-1) Install
+### 1) Install
 
 Add to build.gradle
 ```
@@ -15,7 +15,7 @@ dependencies {
   testCompile ('com.github.Adven27:Exam:master-SNAPSHOT')
 }
 ```
-2) Use
+### 2) Use
 
 For detailed info, [see original tutorial](http://concordion.org/tutorial/java/markdown/)
 
