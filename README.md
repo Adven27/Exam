@@ -27,8 +27,7 @@ public class Specs {
     @Extension
     private final ExamExtension exam = new ExamExtension().
             rest().end().
-            db().end().
-            webDriver();
+            db().end();
 }
 ```
 
