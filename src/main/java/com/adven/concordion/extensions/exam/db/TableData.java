@@ -17,6 +17,7 @@ public class TableData {
     private final Map<String, Object> defaults;
     private final List<String> columns;
     private DataSetBuilder dataSetBuilder = getDataSetBuilder();
+    private int currentRow = 0;
 
     public TableData(String table, String... columns) {
         this(table, new HashedMap(), columns);
@@ -54,10 +55,19 @@ public class TableData {
             dataRowBuilder.with(columns.get(i), values[i]);
         }
         for (Map.Entry<String, Object> def : defaults.entrySet()) {
-            dataRowBuilder.with(def.getKey(), def.getValue());
+            dataRowBuilder.with(def.getKey(), resolveValue(def.getValue()));
         }
         dataSetBuilder = dataRowBuilder.add();
+        currentRow++;
         return this;
+    }
+
+    private Object resolveValue(Object value) {
+        if (value instanceof Range) {
+            Range range = (Range) value;
+            value = range.get(currentRow);
+        }
+        return value;
     }
 
     public TableData row(List<Object> values) throws DataSetException {

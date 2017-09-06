@@ -46,10 +46,10 @@
         </e:given>
         <e:then print="true">
             <e:db-check table="PERSON" cols="NAME, AGE" ignoreRowsBefore="2" ignoreRowsAfter="${var.someVar}">
-                <row>Will be, ignored</row>
+                <row>Will be ignored</row>
                 <row>Andrew,30</row>
                 <row>Carl,20</row>
-                <row>Will be, ignored</row>
+                <row>Will be ignored</row>
             </e:db-check>
         </e:then>
     </e:example>

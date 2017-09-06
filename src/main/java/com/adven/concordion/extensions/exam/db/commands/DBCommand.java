@@ -4,7 +4,6 @@ import com.adven.concordion.extensions.exam.PlaceholdersResolver;
 import com.adven.concordion.extensions.exam.commands.ExamCommand;
 import com.adven.concordion.extensions.exam.db.TableData;
 import com.adven.concordion.extensions.exam.html.Html;
-import org.concordion.api.AbstractCommand;
 import org.concordion.api.CommandCall;
 import org.concordion.api.Evaluator;
 import org.concordion.api.ResultRecorder;
@@ -15,6 +14,7 @@ import org.dbunit.dataset.ITable;
 
 import java.util.*;
 
+import static com.adven.concordion.extensions.exam.PlaceholdersResolver.resolveToObj;
 import static com.adven.concordion.extensions.exam.html.Html.*;
 import static com.google.common.base.Strings.isNullOrEmpty;
 
@@ -156,16 +156,18 @@ public class DBCommand extends ExamCommand {
 
     private List<Object> parseValues(Evaluator eval, String text) {
         List<Object> values = new ArrayList<>();
-        String comaSeparatedValues = text;
-        if (!isNullOrEmpty(comaSeparatedValues)) {
-            for (String val : comaSeparatedValues.split(",")) {
-                val = val.trim();
-                if (val.startsWith("'") && val.endsWith("'")) {
-                    val = val.substring(1, val.length() - 1);
-                }
-                values.add(PlaceholdersResolver.resolveToObj(val, eval));
+        if (!isNullOrEmpty(text)) {
+            for (String val : text.split(",")) {
+                values.add(resolveToObj(preservePaddingInside("'", val.trim()), eval));
             }
         }
         return values;
+    }
+
+    private String preservePaddingInside(String bound, String val) {
+        if (val.startsWith(bound) && val.endsWith(bound)) {
+            val = val.substring(1, val.length() - 1);
+        }
+        return val;
     }
 }

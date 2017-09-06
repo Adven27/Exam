@@ -1,10 +1,12 @@
 package com.adven.concordion.extensions.exam;
 
+import com.adven.concordion.extensions.exam.db.Range;
 import org.concordion.api.Evaluator;
 import org.joda.time.Period;
 import org.junit.Test;
 
 import static com.adven.concordion.extensions.exam.PlaceholdersResolver.resolve;
+import static com.adven.concordion.extensions.exam.PlaceholdersResolver.resolveToObj;
 import static org.hamcrest.Matchers.is;
 import static org.joda.time.LocalDateTime.now;
 import static org.junit.Assert.assertThat;
@@ -13,6 +15,22 @@ import static org.mockito.Mockito.when;
 
 public class PlaceholdersResolverTest {
     Evaluator eval = mock(Evaluator.class);
+
+    @Test
+    public void rangeAscent() throws Exception {
+        Range actual = (Range) resolveToObj("1..5", eval);
+        assertThat(actual.get(0), is(1));
+        assertThat(actual.get(2), is(3));
+        assertThat(actual.get(5), is(1));
+    }
+
+    @Test
+    public void rangeDescent() throws Exception {
+        Range actual = (Range) resolveToObj("5..1", eval);
+        assertThat(actual.get(0), is(5));
+        assertThat(actual.get(2), is(3));
+        assertThat(actual.get(5), is(5));
+    }
 
     @Test
     public void canUseConcordionVars() throws Exception {

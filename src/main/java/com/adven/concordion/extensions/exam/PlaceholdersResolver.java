@@ -1,5 +1,6 @@
 package com.adven.concordion.extensions.exam;
 
+import com.adven.concordion.extensions.exam.db.Range;
 import org.concordion.api.Evaluator;
 import org.joda.time.*;
 import org.joda.time.base.BaseSingleFieldPeriod;
@@ -168,6 +169,8 @@ public class PlaceholdersResolver {
             return getObject(evaluator, extractVarFrom(placeholder, "var"));
         } else if (placeholder.contains(PREFIX_EXAM)) {
             return constants(extractVarFrom(placeholder, "exam"));
+        } else if (Range.isRange(placeholder)) {
+            return Range.from(placeholder);
         }
         return placeholder;
     }

@@ -46,4 +46,25 @@
             <e:db-show caption="Новое содержимое таблицы" table="PERSON"/>
         </e:then>
     </e:example>
+    <e:example name="Диапазоны">
+        <e:given>
+            <e:db-set caption="Дана пустая таблица" table="PERSON"/>
+        </e:given>
+        <e:then print="true">
+            <e:db-set caption="Добавляемые записи" table="PERSON" cols="NAME, *AGE=2..4, *IQ=4..2, BIRTHDAY=${exam.yesterday}">
+                <row>age 2 iq 4</row>
+                <row>age 3 iq 3</row>
+                <row>age 4 iq 2</row>
+                <row>again 2 4</row>
+                <row>again 3 3</row>
+            </e:db-set>
+            <e:db-check caption="Новое содержимое таблицы" table="PERSON" cols="NAME, *AGE=2..4, *IQ=4..2">
+                <row>age 2 iq 4</row>
+                <row>age 3 iq 3</row>
+                <row>age 4 iq 2</row>
+                <row>again 2 4</row>
+                <row>again 3 3</row>
+            </e:db-check>
+        </e:then>
+    </e:example>
 </div>
