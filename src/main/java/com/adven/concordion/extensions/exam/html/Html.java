@@ -87,7 +87,11 @@ public class Html {
     }
 
     public static Html badge(String txt, String style) {
-        return span(txt).css("badge badge-" + style + " ml-2 mr-2");
+        return span(txt).css("badge badge-" + style + " ml-1 mr-1");
+    }
+
+    public static Html pill(Object txt, String style) {
+        return span(String.valueOf(txt)).css("badge badge-pill badge-" + style);
     }
 
     public static Html var(String txt) {
@@ -118,7 +122,7 @@ public class Html {
                         image(src, size, size)
                 ),
                 div().css("card-img-top").childs(
-                        h4(title),
+                        h(4, title),
                         paragraph(txt).css("card-text")
 
                 )
@@ -135,8 +139,8 @@ public class Html {
                 attr("height", String.valueOf(height));
     }
 
-    public static Html h4(String title) {
-        return new Html(new Element("h4")).text(title);
+    public static Html h(int n, String text) {
+        return new Html(new Element("h" + n)).text(text);
     }
 
     public static Html caption(String txt) {
@@ -173,6 +177,10 @@ public class Html {
 
     public static Html li() {
         return new Html(new Element("li"));
+    }
+
+    public static Html button(String txt) {
+        return new Html(new Element("button")).text(txt).css("btn btn-light btn-sm text-muted ml-1").attr("type", "button");
     }
 
     public Html childs(Html... htmls) {
@@ -273,14 +281,25 @@ public class Html {
 
     public Html panel(String header) {
         css("card mb-3");
-        Html body = div().css("card-body");
+        String id = String.valueOf(header.hashCode());
+        Html body = div().css("card-body collapse show").attr("id", id);
         moveChildrenTo(body);
         this.childs(
                 div().css("card-header").childs(
-                        link(header).attr("data-type", "example").attr("name", header)
+                        link(header).attr("data-type", "example").attr("name", header),
+                        button("collapse").
+                                attr("data-toggle", "collapse").
+                                attr("data-target", "#" + id).
+                                attr("aria-expanded", "true").
+                                attr("aria-controls", id)
                 )
         );
+        Html footer = div().css("card-footer text-muted").attr("data-toggle", "collapse").
+                attr("data-target", "#" + id).
+                attr("aria-expanded", "true").
+                attr("aria-controls", id);
         el.appendChild(body.el);
+        el.appendChild(footer.el());
         return this;
     }
 

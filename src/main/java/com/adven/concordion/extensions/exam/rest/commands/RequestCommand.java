@@ -77,15 +77,18 @@ public abstract class RequestCommand extends ExamCommand {
 
     private void addRequestDescTo(Html root, String url, String type, String cookies) {
         final Html div = div().childs(
-                var(method() + " "),
-                code(url),
-                var("  Content-Type  "),
-                code(type)
+                h(4, "").childs(
+                        badge(method(), "success"),
+                        badge(type, "info"),
+                        code(url)
+                )
         );
         if (cookies != null) {
             div.childs(
-                    var("  Cookies  "),
-                    code(cookies)
+                    h(6, "").childs(
+                            badge("Cookies", "info"),
+                            code(cookies)
+                    )
             );
         }
         root.childs(div);
