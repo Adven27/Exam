@@ -4,13 +4,14 @@ import com.adven.concordion.extensions.exam.PlaceholdersResolver;
 import com.adven.concordion.extensions.exam.html.Html;
 import com.google.common.io.Files;
 import org.concordion.api.CommandCall;
-import org.concordion.api.Element;
 import org.concordion.api.Evaluator;
 import org.concordion.api.ResultRecorder;
 
 import java.io.File;
 import java.io.IOException;
 
+import static com.adven.concordion.extensions.exam.html.Html.codeXml;
+import static com.adven.concordion.extensions.exam.html.Html.span;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.io.Resources.getResource;
 import static java.io.File.separator;
@@ -39,12 +40,12 @@ public class FilesSetCommand extends BaseCommand {
                     String content = PlaceholdersResolver.resolve(getContentFor(f), evaluator).trim();
                     createFileWith(new File(dir.getPath() + separator + name), content);
                     element.remove(f);
-                    addRow(element.el(), new Element("span").appendText(name), new Element("pre").appendText(content));
+                    addRow(element.el(), span(name), codeXml(content));
                     empty = false;
                 }
             }
             if (empty) {
-                addRow(element.el(), EMPTY, "");
+                addRow(element, EMPTY, "");
             }
         }
     }

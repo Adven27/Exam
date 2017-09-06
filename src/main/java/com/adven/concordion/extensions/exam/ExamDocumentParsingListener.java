@@ -6,7 +6,7 @@ import nu.xom.Element;
 import nu.xom.Elements;
 import org.concordion.api.listener.DocumentParsingListener;
 
-import static com.adven.concordion.extensions.exam.html.Html.codemirror;
+import static com.adven.concordion.extensions.exam.html.Html.codeXml;
 
 class ExamDocumentParsingListener implements DocumentParsingListener {
     private final CommandRegistry registry;
@@ -41,7 +41,7 @@ class ExamDocumentParsingListener implements DocumentParsingListener {
             for (org.concordion.api.Element e : elem.getChildElements()) {
                 sb.append("\n" + e.toXML());
             }
-            elem.prependChild(codemirror("xml").text(sb.toString()).el());
+            elem.prependChild(codeXml(sb.toString()).el());
         }
     }
 }

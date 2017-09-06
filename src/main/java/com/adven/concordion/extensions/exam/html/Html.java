@@ -90,8 +90,8 @@ public class Html {
         return span(txt).css("badge badge-" + style + " ml-1 mr-1");
     }
 
-    public static Html pill(Object txt, String style) {
-        return span(String.valueOf(txt)).css("badge badge-pill badge-" + style);
+    public static Html pill(long count, String style) {
+        return span(count == 0 ? "" : String.valueOf(count)).css("badge badge-pill badge-" + style);
     }
 
     public static Html var(String txt) {
@@ -151,12 +151,16 @@ public class Html {
         return new Html(new Element("pre"));
     }
 
+    public static Html pre(String txt) {
+        return pre().text(txt);
+    }
+
     public static Html paragraph(String txt) {
         return new Html(new Element("p")).text(txt);
     }
 
-    public static Html codemirror(String lang) {
-        return pre().css(lang + " card bg-light");
+    public static Html codeXml(String text) {
+        return pre(text).css("xml card");
     }
 
     public static Html tag(String tag) {

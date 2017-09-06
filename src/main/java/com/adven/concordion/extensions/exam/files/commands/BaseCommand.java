@@ -2,57 +2,46 @@ package com.adven.concordion.extensions.exam.files.commands;
 
 import com.adven.concordion.extensions.exam.commands.ExamCommand;
 import com.adven.concordion.extensions.exam.html.Html;
-import org.concordion.api.AbstractCommand;
 import org.concordion.api.Element;
 
 import java.io.File;
 
+import static com.adven.concordion.extensions.exam.html.Html.*;
+
 class BaseCommand extends ExamCommand {
     protected static final String EMPTY = "<EMPTY>";
-    protected static final String HEADER = "FILES IN FOLDER: ";
-    protected static final String FILE_CONTENT = "FILE CONTENT";
+    protected static final String HEADER = "";
+    protected static final String FILE_CONTENT = "";
 
     public BaseCommand(String name, String tag) {
         super(name, tag);
     }
 
-    protected void addHeader(Element element, String... texts) {
-        addInTR(element, "th", texts);
-    }
-
     protected void addHeader(Html element, String... texts) {
-        addInTR(element, "th", texts);
-    }
-
-    protected void addRow(Element element, String... texts) {
-        addInTR(element, "td", texts);
-    }
-
-    protected void addRow(Element element, Element... els) {
-        addInTR(element, "td", els);
-    }
-
-    private void addInTR(Element element, String cell, String... texts) {
-        Element tr = new Element("tr");
+        Html tr = thead();
         for (String text : texts) {
-            tr.appendChild(new Element(cell).appendText(text));
-        }
-        element.appendChild(tr);
-    }
-
-    private void addInTR(Html element, String cell, String... texts) {
-        Html tr = Html.tr();
-        for (String text : texts) {
-            tr.childs(new Html(cell).text(text));
+            tr.childs(th(text));
         }
         element.childs(tr);
     }
 
-    private void addInTR(Element element, String cell, Element... els) {
+    protected void addRow(Html element, String... texts) {
+        Html tr = tr();
+        for (String text : texts) {
+            tr.childs(td(text));
+        }
+        element.childs(tr);
+    }
+
+    protected void addRow(Element element, Html... els) {
+        addInTR(element, "td", els);
+    }
+
+    private void addInTR(Element element, String cell, Html... els) {
         Element tr = new Element("tr");
-        for (Element e : els) {
+        for (Html e : els) {
             Element c = new Element(cell);
-            c.appendChild(e);
+            c.appendChild(e.el());
             tr.appendChild(c);
         }
         element.appendChild(tr);

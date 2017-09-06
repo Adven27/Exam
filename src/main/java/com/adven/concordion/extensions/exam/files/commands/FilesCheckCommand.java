@@ -1,11 +1,11 @@
 package com.adven.concordion.extensions.exam.files.commands;
 
-import com.google.common.base.Charsets;
-import com.google.common.io.CharSource;
-import com.google.common.io.Files;
 import com.adven.concordion.extensions.exam.PlaceholdersResolver;
 import com.adven.concordion.extensions.exam.files.FilesResultRenderer;
 import com.adven.concordion.extensions.exam.html.Html;
+import com.google.common.base.Charsets;
+import com.google.common.io.CharSource;
+import com.google.common.io.Files;
 import nu.xom.Builder;
 import nu.xom.Document;
 import nu.xom.ParsingException;
@@ -57,7 +57,7 @@ public class FilesCheckCommand extends BaseCommand {
             List<String> surplusFiles = names == null || names.length == 0 ?
                     new ArrayList<String>() : new ArrayList<>(asList(names));
 
-            addHeader(root.el(), HEADER + dir.getPath(), FILE_CONTENT);
+            addHeader(root, HEADER + dir.getPath(), FILE_CONTENT);
             boolean empty = true;
             for (Html f : root.childs()) {
                 if ("file".equals(f.localName())) {
@@ -66,7 +66,7 @@ public class FilesCheckCommand extends BaseCommand {
                     Html tr = tr();
                     Html fileNameTD = td(expectedName);
                     tr.childs(fileNameTD);
-                    Html pre = pre();
+                    Html pre = codeXml("");
                     if (!actual.exists()) {
                         resultRecorder.record(Result.FAILURE);
                         announceFailure(fileNameTD.el(), expectedName, null);
@@ -95,14 +95,14 @@ public class FilesCheckCommand extends BaseCommand {
                 Html tr = tr().childs(
                         td,
                         td().childs(
-                                pre().text(readFile(dir, file))
+                                codeXml(readFile(dir, file))
                         )
                 );
                 root.childs(tr);
                 announceFailure(td.el(), null, file);
             }
             if (empty) {
-                addRow(root.el(), EMPTY, "");
+                addRow(root, EMPTY, "");
             }
         }
     }

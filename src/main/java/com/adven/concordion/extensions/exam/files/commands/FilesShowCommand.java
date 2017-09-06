@@ -26,10 +26,10 @@ public class FilesShowCommand extends BaseCommand {
 
             File[] files = dir.listFiles();
             if (files == null || files.length == 0) {
-                addRow(element.el(), EMPTY);
+                addRow(element, EMPTY);
             } else {
                 for (File f : files) {
-                    addRow(element.el(), f.getName());
+                    addRow(element, f.getName());
                 }
             }
         }
