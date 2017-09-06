@@ -165,13 +165,13 @@ ins {
 <div>
     <div e:summary="" id="summary"><h4>Summary</h4><ul><li><a href="#Пустая таблица">Пустая таблица</a><span class="badge badge-success ml-1 mr-1">Success</span></li><li><a href="#Не пустая таблица">Не пустая таблица</a><span class="badge badge-success ml-1 mr-1">Success</span></li><li><a href="#Фильтрация таблицы">Фильтрация таблицы</a><span class="badge badge-success ml-1 mr-1">Success</span></li></ul></div>
     <div name="Пустая таблица" c:example="Пустая таблица" class="card mb-3" e:example="" id="Пустая таблица"><div class="card-header"><a data-type="example" name="Пустая таблица" href="#summary">Пустая таблица</a><button class="btn btn-light btn-sm text-muted ml-1" type="button" data-toggle="collapse" data-target="#1526880494" aria-expanded="true" aria-controls="1526880494">collapse</button></div><div class="card-body collapse show" id="1526880494">
-        <div print="true" e:then="" class="bd-callout bd-callout-success"><pre class="xml card bg-light">
+        <div print="true" e:then="" class="bd-callout bd-callout-success"><pre class="xml card">
 &lt;e:db-show table="PERSON" cols="NAME" /&gt;
 &lt;e:db-show table="PERSON" /&gt;</pre>
             <table e:db-show="" class="table"><caption>PERSON</caption><thead class="thead-default"><tr /><th class="">NAME</th></thead><tbody /></table>
             <table e:db-show="" class="table"><caption>PERSON</caption><thead class="thead-default"><tr /><th class="">NAME</th><th class="">AGE</th><th class="">IQ</th><th class="">BIRTHDAY</th></thead><tbody /></table>
         </div>
-    </div><div class="card-footer text-muted" data-toggle="collapse" data-target="#1526880494" aria-expanded="true" aria-controls="1526880494"><span class="badge badge-pill badge-success">0</span><span class="badge badge-pill badge-secondary">0</span><span class="badge badge-pill badge-warning">0</span><span class="badge badge-pill badge-danger">0</span></div></div>
+    </div><div class="card-footer text-muted" data-toggle="collapse" data-target="#1526880494" aria-expanded="true" aria-controls="1526880494"><span class="badge badge-pill badge-success"></span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></div></div>
     <div name="Не пустая таблица" c:example="Не пустая таблица" class="card mb-3" e:example="" id="Не пустая таблица"><div class="card-header"><a data-type="example" name="Не пустая таблица" href="#summary">Не пустая таблица</a><button class="btn btn-light btn-sm text-muted ml-1" type="button" data-toggle="collapse" data-target="#-1752602058" aria-expanded="true" aria-controls="-1752602058">collapse</button></div><div class="card-body collapse show" id="-1752602058">
         <div e:given="" class="bd-callout bd-callout-info">
             Допустим запись <b c:set="#name">Bob</b>
@@ -179,11 +179,11 @@ ins {
                             <b c:set="#bd">10.10.2000</b>
             <span c:assertTrue="addRecord(#name, #age, #bd)" class="success">добавлена</span> в таблицу PERSON
         </div>
-        <div print="true" e:then="" class="bd-callout bd-callout-success"><pre class="xml card bg-light">
+        <div print="true" e:then="" class="bd-callout bd-callout-success"><pre class="xml card">
 &lt;e:db-show table="PERSON" cols="NAME, *AGE, **BIRTHDAY" /&gt;</pre>
             <table e:db-show="" class="table"><caption>PERSON</caption><thead class="thead-default"><tr /><th class="table-info">BIRTHDAY</th><th class="table-info">AGE</th><th class="">NAME</th></thead><tbody><tr><td class="table-info">2000-10-10 00:00:00.0</td><td class="table-info">50</td><td class="">Bob</td></tr></tbody></table>
         </div>
-    </div><div class="card-footer text-muted" data-toggle="collapse" data-target="#-1752602058" aria-expanded="true" aria-controls="-1752602058"><span class="badge badge-pill badge-success">1</span><span class="badge badge-pill badge-secondary">0</span><span class="badge badge-pill badge-warning">0</span><span class="badge badge-pill badge-danger">0</span></div></div>
+    </div><div class="card-footer text-muted" data-toggle="collapse" data-target="#-1752602058" aria-expanded="true" aria-controls="-1752602058"><span class="badge badge-pill badge-success">1</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></div></div>
     <div name="Фильтрация таблицы" c:example="Фильтрация таблицы" class="card mb-3" e:example="" id="Фильтрация таблицы"><div class="card-header"><a data-type="example" name="Фильтрация таблицы" href="#summary">Фильтрация таблицы</a><button class="btn btn-light btn-sm text-muted ml-1" type="button" data-toggle="collapse" data-target="#2070755637" aria-expanded="true" aria-controls="2070755637">collapse</button></div><div class="card-body collapse show" id="2070755637">
         <div e:given="" class="bd-callout bd-callout-info">
             <table e:db-set="" class="table">
@@ -192,9 +192,9 @@ ins {
                 
             <caption>Содержимое таблицы PERSON</caption><thead class="thead-default"><tr /><th class="">NAME</th><th class="">AGE</th></thead><tbody><tr><td class="">Bob</td><td class="">45</td></tr><tr><td class="">Waldo</td><td class="">45</td></tr><tr><td class="">Coby</td><td class="">50</td></tr></tbody></table>
         </div>
-        <div print="true" e:then="" class="bd-callout bd-callout-success"><pre class="xml card bg-light">
+        <div print="true" e:then="" class="bd-callout bd-callout-success"><pre class="xml card">
 &lt;e:db-show table="PERSON" caption="Caption" cols="NAME, *AGE" where="AGE=45;NAME=Waldo" /&gt;</pre>
             <table e:db-show="" class="table"><caption>Caption</caption><thead class="thead-default"><tr /><th class="table-info">AGE</th><th class="">NAME</th></thead><tbody><tr><td class="table-info">45</td><td class="">Waldo</td></tr></tbody></table>
         </div>
-    </div><div class="card-footer text-muted" data-toggle="collapse" data-target="#2070755637" aria-expanded="true" aria-controls="2070755637"><span class="badge badge-pill badge-success">0</span><span class="badge badge-pill badge-secondary">0</span><span class="badge badge-pill badge-warning">0</span><span class="badge badge-pill badge-danger">0</span></div></div>
-</div><div class="footer">Results generated by <a href="http://www.concordion.org" style="font-weight: bold; text-decoration: none; color: #89C;">Concordion</a><div class="testTime">in 1066 ms on 06-Sep-2017 at 16:30:22 UTC</div></div></body></html>
+    </div><div class="card-footer text-muted" data-toggle="collapse" data-target="#2070755637" aria-expanded="true" aria-controls="2070755637"><span class="badge badge-pill badge-success"></span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></div></div>
+</div><div class="footer">Results generated by <a href="http://www.concordion.org" style="font-weight: bold; text-decoration: none; color: #89C;">Concordion</a><div class="testTime">in 1248 ms on 06-Sep-2017 at 17:19:29 UTC</div></div></body></html>
