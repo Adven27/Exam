@@ -22,6 +22,7 @@ public class DBCommand extends ExamCommand {
     protected final JdbcDatabaseTester dbTester;
     private final Map<String, String> remarks = new HashMap<>();
     protected ITable expectedTable;
+    private String valuesSeparator = ",";
 
     public DBCommand(String name, String tag, JdbcDatabaseTester dbTester) {
         super(name, tag);
@@ -37,6 +38,8 @@ public class DBCommand extends ExamCommand {
             String ignoreAfterStr = root.takeAwayAttr("ignoreRowsAfter", eval);
             int ignoreBefore = ignoreBeforeStr != null ? Integer.parseInt(ignoreBeforeStr) : 1;
             int ignoreAfter = ignoreAfterStr != null ? Integer.parseInt(ignoreAfterStr) : 0;
+
+            valuesSeparator = root.takeAwayAttr("separator", ",");
 
             expectedTable = TableData.filled(
                     root.takeAwayAttr("table", eval),
@@ -157,7 +160,7 @@ public class DBCommand extends ExamCommand {
     private List<Object> parseValues(Evaluator eval, String text) {
         List<Object> values = new ArrayList<>();
         if (!isNullOrEmpty(text)) {
-            for (String val : text.split(",")) {
+            for (String val : text.split("[" + valuesSeparator+ "]")) {
                 values.add(resolveToObj(preservePaddingInside("'", val.trim()), eval));
             }
         }

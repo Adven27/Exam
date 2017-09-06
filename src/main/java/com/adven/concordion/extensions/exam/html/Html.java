@@ -249,6 +249,14 @@ public class Html {
         return val;
     }
 
+    public String takeAwayAttr(String name, String def) {
+        String val = takeAwayAttr(name);
+        if (val == null) {
+            val = def;
+        }
+        return val;
+    }
+
     public String takeAwayAttr(String attrName, String defaultValue, Evaluator eval) {
         String val = takeAwayAttr(attrName, eval);
         return val == null ? defaultValue : val;
