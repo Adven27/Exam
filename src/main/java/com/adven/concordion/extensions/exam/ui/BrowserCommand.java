@@ -10,8 +10,7 @@ import org.openqa.selenium.By;
 import java.io.File;
 
 import static com.adven.concordion.extensions.exam.html.Html.imageOverlay;
-import static com.codeborne.selenide.Selenide.$;
-import static com.codeborne.selenide.Selenide.open;
+import static com.codeborne.selenide.Selenide.*;
 
 public class BrowserCommand extends ExamCommand {
     private static final String URL = "url";
@@ -49,7 +48,7 @@ public class BrowserCommand extends ExamCommand {
                 File file = eval(evaluator, name, text, s.attr("set"));
                 el.remove(s);
                 el.childs(
-                        imageOverlay(file.getAbsolutePath(), 360, name, "Step desc")
+                        imageOverlay("../../screenshots/" + file.getName(), 360, name, "Step desc")
                 );
             }
         }
