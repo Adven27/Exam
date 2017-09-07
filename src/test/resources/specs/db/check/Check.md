@@ -1,4 +1,5 @@
-#Проверка содержимого таблицы: `<e:db-check table="..." cols="..."/>`
+# Check table
+## `<e:db-check table="..." cols="..."/>`
 
 <div>
     <e:summary/>
@@ -8,7 +9,7 @@
             <row>Carl,20</row>
         </e:db-set>
     </e:given>
-    <e:example name="Успешный сценарий (порядок записей не важен)">
+    <e:example name="Happy-path">
         <e:then print="true">
             <e:db-check table="PERSON" cols="NAME, AGE">
                 <row>Carl,20</row>
@@ -16,14 +17,14 @@
             </e:db-check>
         </e:then>
     </e:example>
-    <e:example name="Лишняя запись" status="ExpectedToFail">
+    <e:example name="Surplus" status="ExpectedToFail">
         <e:then print="true">
             <e:db-check table="PERSON" cols="NAME, AGE">
                 <row>Carl,20</row>
             </e:db-check>
         </e:then>
     </e:example>
-    <e:example name="Недостающая запись" status="ExpectedToFail">
+    <e:example name="Missing" status="ExpectedToFail">
         <e:then print="true">
             <e:db-check table="PERSON" cols="NAME, AGE">
                 <row>Carl,20</row>
@@ -32,7 +33,7 @@
             </e:db-check>
         </e:then>
     </e:example>
-    <e:example name="Не совпали поля" status="ExpectedToFail">
+    <e:example name="Wrong fields" status="ExpectedToFail">
         <e:then print="true">
             <e:db-check table="PERSON" cols="NAME, AGE">
                 <row>Carl,30</row>

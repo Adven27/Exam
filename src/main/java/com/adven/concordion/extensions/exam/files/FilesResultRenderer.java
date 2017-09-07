@@ -7,7 +7,7 @@ public class FilesResultRenderer implements AssertEqualsListener, AssertTrueList
 
     public void failureReported(AssertFailureEvent event) {
         Element element = event.getElement();
-        element.addStyleClass("rest-failure");
+        element.addStyleClass("table-danger");
 
         Element expected = new Element("del");
         expected.addStyleClass("expected");
@@ -26,7 +26,7 @@ public class FilesResultRenderer implements AssertEqualsListener, AssertTrueList
     }
 
     public void successReported(AssertSuccessEvent event) {
-        event.getElement().addStyleClass("rest-success").appendNonBreakingSpaceIfBlank();
+        event.getElement().addStyleClass("table-success").appendNonBreakingSpaceIfBlank();
     }
 
     private String convertToString(Object object) {

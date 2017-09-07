@@ -1,5 +1,5 @@
-# Работа с файлами
+# Working with files
 
-- [Вывод содержимого директории]( show/Show.md "c:run")
-- [Установка содержимого директории]( set/Set.md "c:run")
-- [Проверка содержимого директории]( check/Check.md "c:run")
+- [Show directory content]( show/Show.md "c:run")
+- [Setting directory content]( set/Set.md "c:run")
+- [Check directory content]( check/Check.md "c:run")

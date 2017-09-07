@@ -1,4 +1,5 @@
-# Table setting: `<e:db-set mode="<optional>" table="..." cols="..."/>`
+# Table setting
+## `<e:db-set mode="<optional>" table="..." cols="..."/>`
 
 <div>
     <e:summary/>
@@ -7,7 +8,7 @@
             Given record <b c:set="#name">Bob</b>
                          <b c:set="#age">50</b>
                          <b c:set="#bd">10.10.2000</b>
-            <span c:assertTrue="addRecord(#name, #age, #bd)">added</span> in table PERSON
+            <span c:assertTrue="addRecord(#name, #age, #bd)">present</span> in PERSON
             <e:db-show table="PERSON"/>
         </e:given>
         <e:then print="true">
@@ -23,7 +24,7 @@
             Given record <b c:set="#name">Bob</b>
                             <b c:set="#age">50</b>
                             <b c:set="#bd">10.10.2000</b>
-            <span c:assertTrue="addRecord(#name, #age, #bd)">added</span> in table PERSON
+            <span c:assertTrue="addRecord(#name, #age, #bd)">present</span> in PERSON
             <e:db-show table="PERSON"/>
         </e:given>
         <e:then print="true">

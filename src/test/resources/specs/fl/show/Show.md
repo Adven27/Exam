@@ -1,15 +1,19 @@
-# Вывод содержимого директории: `<e:fl-show dir="dir"/>`
-
-Например, имеется директория **[ ](- "c:echo=dir")**
+# Show directory content
+## `<e:fl-show dir="dir"/>`
 
 <div>
     <e:summary/>
-    <e:example name="Пустая директория" print="true">
-        <e:fl-show dir="dir"/>
+    <e:given>
+        Given dir <code c:echo="dir"/>
+    </e:given>
+    <e:example name="Empty dir">
+        <e:then print="true">
+            <e:fl-show dir="dir"/>
+        </e:then>
     </e:example>
-    <e:example name="Не пустая директория">
+    <e:example name="Not empty dir">
         <e:given>
-            Допустим файл <code c:set="#name">some_file</code> <span c:assertTrue="addFile(#name)">добавлен в директорию.</span>
+            Given file <code c:set="#name">some_file</code> <span c:assertTrue="addFile(#name)">add to dir.</span>
         </e:given>
         <e:then print="true">
             <e:fl-show dir="dir"/>

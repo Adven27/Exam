@@ -1,6 +1,7 @@
-# Проверка содержимого директории: `<e:fl-check dir="dir"/>`
+# Check directory content
+## `<e:fl-check dir="dir"/>`
 
-***!!! Пока поддерживается только сравнение XML !!!*** 
+***!!! Only XML comparing are supported !!!***
 
 <div>
     <e:summary/>
@@ -15,7 +16,7 @@
             </file>
         </e:fl-set>
     </e:given>
-    <e:example name="Успешный сценарий">
+    <e:example name="Happy-path">
         <e:then print="true">
             <e:fl-check dir="dir">
                 <file name="empty_file"/>
@@ -25,7 +26,7 @@
             </e:fl-check>
         </e:then>
     </e:example>
-    <e:example name="Лишний файл" status="ExpectedToFail">
+    <e:example name="Surplus file" status="ExpectedToFail">
         <e:then print="true">
             <e:fl-check dir="dir">
                 <file name="not_empty_file">
@@ -34,7 +35,7 @@
             </e:fl-check>
         </e:then>
     </e:example>
-    <e:example name="Недостающий файл" status="ExpectedToFail">
+    <e:example name="Missing file" status="ExpectedToFail">
         <e:then print="true">
             <e:fl-check dir="dir">
                 <file name="empty_file"/>
@@ -45,7 +46,7 @@
             </e:fl-check>
         </e:then>
     </e:example>
-    <e:example name="Не совпал контент" status="ExpectedToFail">
+    <e:example name="Wrong file content" status="ExpectedToFail">
         <e:then print="true">
             <e:fl-check dir="dir">
                 <file name="empty_file"/>
@@ -55,7 +56,7 @@
             </e:fl-check>
         </e:then>
     </e:example>
-    <e:example name="Все предыдущие проверки вместе" status="ExpectedToFail">
+    <e:example name="All previous checks together" status="ExpectedToFail">
         <e:then print="true">
             <e:fl-check dir="dir">
                 <file name="missing_file"/>

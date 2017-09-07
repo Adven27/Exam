@@ -25,7 +25,7 @@ public class FilesSetCommand extends BaseCommand {
 
     @Override
     public void setUp(CommandCall commandCall, Evaluator evaluator, ResultRecorder resultRecorder) {
-        Html element = new Html(commandCall.getElement()).css("table table-condensed");
+        Html element = Html.tableSlim(commandCall.getElement());
 
         final String path = element.takeAwayAttr("dir");
         if (path != null) {
