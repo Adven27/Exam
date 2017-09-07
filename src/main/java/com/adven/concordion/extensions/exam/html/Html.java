@@ -91,7 +91,11 @@ public class Html {
     }
 
     public static Html pill(long count, String style) {
-        return span(count == 0 ? "" : String.valueOf(count)).css("badge badge-pill badge-" + style);
+        return pill(count == 0 ? "" : String.valueOf(count), style);
+    }
+
+    public static Html pill(String txt, String style) {
+        return span(txt).css("badge badge-pill badge-" + style);
     }
 
     public static Html var(String txt) {
@@ -183,8 +187,29 @@ public class Html {
         return new Html(new Element("li"));
     }
 
+    public static Html menuItem() {
+        return li().css("list-group-item list-group-item-action d-flex justify-content-between align-items-center");
+    }
+
     public static Html button(String txt) {
-        return new Html(new Element("button")).text(txt).css("btn btn-light btn-sm text-muted ml-1").attr("type", "button");
+        return new Html(new Element("button")).
+                text(txt).css("btn btn-light btn-sm text-muted ml-1").attr("type", "button");
+    }
+
+    public static Html buttonCollapse(String txt, String target) {
+        return button(txt).
+                attr("data-toggle", "collapse").
+                attr("data-target", "#" + target).
+                attr("aria-expanded", "true").
+                attr("aria-controls", target);
+    }
+
+    public static Html footerOf(Element card) {
+        return new Html(card.getChildElements("div")[2]);
+    }
+
+    public static Html stat() {
+        return new Html("small");
     }
 
     public Html childs(Html... htmls) {
@@ -291,11 +316,7 @@ public class Html {
         this.childs(
                 div().css("card-header").childs(
                         link(header).attr("data-type", "example").attr("name", header),
-                        button("collapse").
-                                attr("data-toggle", "collapse").
-                                attr("data-target", "#" + id).
-                                attr("aria-expanded", "true").
-                                attr("aria-controls", id)
+                        buttonCollapse("collapse", id)
                 )
         );
         Html footer = div().css("card-footer text-muted").attr("data-toggle", "collapse").
@@ -367,5 +388,9 @@ public class Html {
             }
         }
         return this;
+    }
+
+    public Html deepClone() {
+        return new Html(el.deepClone());
     }
 }

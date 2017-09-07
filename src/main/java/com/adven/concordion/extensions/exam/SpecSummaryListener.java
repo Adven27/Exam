@@ -20,29 +20,20 @@ public class SpecSummaryListener implements SpecificationProcessingListener {
         if (body != null) {
             Element menu = body.getElementById("summary");
             if (menu != null) {
-                Html summary = ul();
+                menu.getParentElement().addStyleClass("pin");
+                Html summary = ul().css("list-group");
                 for (Element a : body.getDescendantElements("a")) {
                     if ("example".equals(a.getAttributeValue("data-type"))) {
                         String anchor = a.getAttributeValue("name");
                         a.addAttribute("href", "#summary");
 
-                        Element badge = a.getFirstChildElement("span");
-                        a.removeChild(badge);
-
                         summary.childs(
-                                li().childs(
+                                menuItem().childs(
                                         link(anchor).attr("href", "#" + anchor),
-                                        new Html(badge)
+                                        footerOf(a.getParentElement().getParentElement()).first("small").deepClone().
+                                                css("card-img-overlay m-1").style("padding:0; left:inherit;")
                                 )
                         );
-
-                        Element p = a.getParentElement().getParentElement().getFirstChildElement("p");
-                        if (p != null) {
-                            //p.addStyleClass("alert alert-warning");
-                            //p.addAttribute("role", "alert");
-                            p.getParentElement().removeChild(p);
-                            //a.appendChild(p);
-                        }
                     }
                 }
                 menu.appendChild(summary.el());

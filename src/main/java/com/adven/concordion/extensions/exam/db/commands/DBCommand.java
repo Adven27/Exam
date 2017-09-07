@@ -160,7 +160,7 @@ public class DBCommand extends ExamCommand {
     private List<Object> parseValues(Evaluator eval, String text) {
         List<Object> values = new ArrayList<>();
         if (!isNullOrEmpty(text)) {
-            for (String val : text.split("[" + valuesSeparator+ "]")) {
+            for (String val : text.split("[" + valuesSeparator + "]")) {
                 values.add(resolveToObj(preservePaddingInside("'", val.trim()), eval));
             }
         }

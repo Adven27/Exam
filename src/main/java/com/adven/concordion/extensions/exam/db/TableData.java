@@ -49,6 +49,14 @@ public class TableData {
         return new TableData(table, cols).rows(rows).table();
     }
 
+    private Object resolveValue(Object value) {
+        if (value instanceof Range) {
+            Range range = (Range) value;
+            value = range.get(currentRow);
+        }
+        return value;
+    }
+
     public TableData row(Object... values) throws DataSetException {
         DataRowBuilder dataRowBuilder = dataSetBuilder.newRow(table);
         for (int i = 0; i < values.length; i++) {
@@ -60,14 +68,6 @@ public class TableData {
         dataSetBuilder = dataRowBuilder.add();
         currentRow++;
         return this;
-    }
-
-    private Object resolveValue(Object value) {
-        if (value instanceof Range) {
-            Range range = (Range) value;
-            value = range.get(currentRow);
-        }
-        return value;
     }
 
     public TableData row(List<Object> values) throws DataSetException {

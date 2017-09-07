@@ -5,6 +5,8 @@ import org.concordion.api.CommandCall;
 import org.concordion.api.Evaluator;
 import org.concordion.api.ResultRecorder;
 
+import static com.adven.concordion.extensions.exam.html.Html.buttonCollapse;
+import static com.adven.concordion.extensions.exam.html.Html.div;
 import static com.adven.concordion.extensions.exam.html.Html.h;
 import static com.google.common.base.Strings.isNullOrEmpty;
 
@@ -15,8 +17,14 @@ public class ExamplesSummaryCommand extends ExamCommand {
 
     @Override
     public void setUp(CommandCall cmd, Evaluator evaluator, ResultRecorder resultRecorder) {
-        Html el = new Html(cmd.getElement()).attr("id", "summary");
+        String id = "summary";
+        Html el = new Html(cmd.getElement());
         final String title = el.takeAwayAttr("title", evaluator);
-        el.childs(h(4, isNullOrEmpty(title) ? "Summary" : title));
+        el.childs(
+                h(4, isNullOrEmpty(title) ? "Summary" : title).childs(
+                        buttonCollapse("collapse", id)
+                ),
+                div().css("collapse show").attr("id", id)
+        );
     }
 }
