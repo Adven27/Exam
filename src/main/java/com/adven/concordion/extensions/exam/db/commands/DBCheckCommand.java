@@ -1,7 +1,7 @@
 package com.adven.concordion.extensions.exam.db.commands;
 
-import com.adven.concordion.extensions.exam.html.Html;
 import com.adven.concordion.extensions.exam.db.DbResultRenderer;
+import com.adven.concordion.extensions.exam.html.Html;
 import org.concordion.api.CommandCall;
 import org.concordion.api.Element;
 import org.concordion.api.Evaluator;
@@ -83,44 +83,43 @@ public class DBCheckCommand extends DBCommand {
         for (Difference diff : (List<Difference>) diffHandler.getDiffList()) {
             System.err.println("***** DIFF " + diff.toString());
         }
-        checkResult(root.el(), expectedTable, diffHandler.getDiffList(), resultRecorder);
+        checkResult(root, expectedTable, diffHandler.getDiffList(), resultRecorder);
     }
 
-    private void checkResult(Element el, ITable expected, List<Difference> diffs, ResultRecorder resultRecorder) {
+    private void checkResult(Html el, ITable expected, List<Difference> diffs, ResultRecorder resultRecorder) {
         try {
-            String title = el.getAttributeValue("caption");
-            el.appendChild(caption(isNullOrEmpty(title) ? expected.getTableMetaData().getTableName() : title).el());
+            String title = el.attr("caption");
+            el.childs(caption(isNullOrEmpty(title) ? expected.getTableMetaData().getTableName() : title));
 
             Column[] cols = expected.getTableMetaData().getColumns();
-            Element headerRow = new Element("tr");
+            Html header = thead();
+            Html thr = tr();
             for (Column col : cols) {
-                headerRow.appendChild(new Element("th").appendText(col.getColumnName()));
+                thr.childs(th(col.getColumnName()));
             }
-            el.appendChild(headerRow);
+            el.childs(header.childs(thr));
 
             if (expected.getRowCount() == 0) {
-                Element tr = new Element("tr");
-                el.appendChild(tr);
-                Element td = new Element("td").
-                        appendText("<EMPTY>").addAttribute("colspan", String.valueOf(cols.length));
-                tr.appendChild(td);
-                success(resultRecorder, td);
+                Html td = td("<EMPTY>").attr("colspan", String.valueOf(cols.length));
+                Html tr = tr().childs(td);
+                el.childs(tr);
+                success(resultRecorder, td.el());
             } else {
                 for (int i = 0; i < expected.getRowCount(); i++) {
-                    Element tr = new Element("tr");
+                    Html tr = tr();
                     for (Column col : cols) {
                         Object expectedValue = expected.getValue(i, col.getColumnName());
                         String displayedExpected = expectedValue == null ? "(null)" : expectedValue.toString();
-                        Element td = new Element("td").appendText(displayedExpected);
-                        tr.appendChild(td);
+                        Html td = td(displayedExpected);
+                        tr.childs(td);
                         Difference fail = findFail(diffs, i, col);
                         if (fail != null) {
-                            failure(resultRecorder, td, fail.getActualValue(), displayedExpected);
+                            failure(resultRecorder, td.el(), fail.getActualValue(), displayedExpected);
                         } else {
-                            success(resultRecorder, td);
+                            success(resultRecorder, td.el());
                         }
                     }
-                    el.appendChild(tr);
+                    el.childs(tr);
                 }
             }
         } catch (DataSetException e) {

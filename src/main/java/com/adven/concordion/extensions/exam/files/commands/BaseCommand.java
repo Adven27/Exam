@@ -18,11 +18,12 @@ class BaseCommand extends ExamCommand {
     }
 
     protected void addHeader(Html element, String... texts) {
+        Html header = thead();
         Html tr = thead();
         for (String text : texts) {
             tr.childs(th(text));
         }
-        element.childs(tr);
+        element.childs(header.childs(tr));
     }
 
     protected void addRow(Html element, String... texts) {

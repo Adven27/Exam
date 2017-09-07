@@ -1,9 +1,9 @@
 "use strict";
 
 //config vars
-var lagAmount = 50;
+var lagAmount = 0;
 var maxSpeed = 100;
-var frameRate = 20;
+var frameRate = 0;
 var selector = ".pin";
 //code
 var scrollTop = 0;

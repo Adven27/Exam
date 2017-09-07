@@ -31,7 +31,7 @@ public class DBCommand extends ExamCommand {
 
     @Override
     public void setUp(CommandCall commandCall, Evaluator eval, ResultRecorder resultRecorder) {
-        Html root = table(new Html(commandCall.getElement()));
+        Html root = tableSlim(new Html(commandCall.getElement()));
         try {
             remarks.clear();
             String ignoreBeforeStr = root.takeAwayAttr("ignoreRowsBefore", eval);
@@ -131,12 +131,13 @@ public class DBCommand extends ExamCommand {
             root.childs(caption(isNullOrEmpty(title) ? t.getTableMetaData().getTableName() : title));
 
             Html header = thead();
+            Html trh = tr();
             for (Column col : cols) {
-                header.childs(
+                trh.childs(
                         th(col.getColumnName()).css(markedColumn(col))
                 );
             }
-            root.childs(header);
+            root.childs(header.childs(trh));
             Html tbody = tbody();
             for (List<String> row : rows) {
                 Html tr = tr();

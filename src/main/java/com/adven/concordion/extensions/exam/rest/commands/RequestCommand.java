@@ -42,16 +42,17 @@ public abstract class RequestCommand extends ExamCommand {
     private void startTable(Html html, boolean hasRequestBody) {
         Html table = table();
         Html header = thead();
+        Html tr = thead();
         if (hasRequestBody) {
-            header.childs(
+            tr.childs(
                     th("Request")
             );
         }
-        header.childs(
+        tr.childs(
                 th("Expected response"),
                 th("Status code")
         );
-        table.childs(header);
+        table.childs(header.childs(tr));
         html.dropAllTo(table);
     }
 

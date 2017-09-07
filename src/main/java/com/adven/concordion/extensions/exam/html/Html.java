@@ -51,7 +51,7 @@ public class Html {
     }
 
     public static Html thead() {
-        return new Html(new Element("thead")).css("thead-default").childs(tr());
+        return new Html("thead").css("thead-default");
     }
 
     public static Html th(String txt) {
@@ -206,10 +206,6 @@ public class Html {
 
     public static Html footerOf(Element card) {
         return new Html(card.getChildElements("div")[2]);
-    }
-
-    public static Html stat() {
-        return new Html("small");
     }
 
     public Html childs(Html... htmls) {
@@ -392,5 +388,9 @@ public class Html {
 
     public Html deepClone() {
         return new Html(el.deepClone());
+    }
+
+    public static Html stat() {
+        return new Html("small");
     }
 }
