@@ -19,11 +19,11 @@ public class Html {
     }
 
     public static Html div() {
-        return new Html(new Element("div"));
+        return new Html("div");
     }
 
     public static Html div(String txt) {
-        return new Html(new Element("div")).text(txt);
+        return div().text(txt);
     }
 
     public static Html table() {
@@ -55,19 +55,19 @@ public class Html {
     }
 
     public static Html th(String txt) {
-        return new Html(new Element("th")).text(txt);
+        return new Html("th").text(txt);
     }
 
     public static Html tbody() {
-        return new Html(new Element("tbody"));
+        return new Html("tbody");
     }
 
     public static Html tr() {
-        return new Html(new Element("tr"));
+        return new Html("tr");
     }
 
     public static Html td() {
-        return new Html(new Element("td"));
+        return new Html("td");
     }
 
     public static Html td(String txt) {
@@ -75,15 +75,15 @@ public class Html {
     }
 
     public static Html italic(String txt) {
-        return new Html(new Element("i")).text(txt);
+        return new Html("i").text(txt);
     }
 
     public static Html code(String txt) {
-        return new Html(new Element("code")).text(txt);
+        return new Html("code").text(txt);
     }
 
     public static Html span(String txt) {
-        return new Html(new Element("span")).text(txt);
+        return new Html("span").text(txt);
     }
 
     public static Html badge(String txt, String style) {
@@ -99,11 +99,11 @@ public class Html {
     }
 
     public static Html var(String txt) {
-        return new Html(new Element("var")).text(txt);
+        return new Html("var").text(txt);
     }
 
     public static Html link(String txt) {
-        return new Html(new Element("a")).text(txt);
+        return new Html("a").text(txt);
     }
 
     public static Html link(String txt, String src) {
@@ -134,7 +134,7 @@ public class Html {
     }
 
     public static Html image(String src) {
-        return new Html(new Element("image")).attr("src", src);
+        return new Html("image").attr("src", src);
     }
 
     public static Html image(String src, int width, int height) {
@@ -144,15 +144,15 @@ public class Html {
     }
 
     public static Html h(int n, String text) {
-        return new Html(new Element("h" + n)).text(text);
+        return new Html("h" + n).text(text);
     }
 
     public static Html caption(String txt) {
-        return new Html(new Element("caption")).text(txt);
+        return new Html("caption").text(txt);
     }
 
     public static Html pre() {
-        return new Html(new Element("pre"));
+        return new Html("pre");
     }
 
     public static Html pre(String txt) {
@@ -160,7 +160,7 @@ public class Html {
     }
 
     public static Html paragraph(String txt) {
-        return new Html(new Element("p")).text(txt);
+        return new Html("p").text(txt);
     }
 
     public static Html codeXml(String text) {
@@ -172,11 +172,11 @@ public class Html {
     }
 
     public static Html ul() {
-        return new Html(new Element("ul"));
+        return new Html("ul");
     }
 
     public static Html list() {
-        return new Html(new Element("ul")).css("list-group");
+        return ul().css("list-group");
     }
 
     public static Html li(String text) {
@@ -184,7 +184,7 @@ public class Html {
     }
 
     public static Html li() {
-        return new Html(new Element("li"));
+        return new Html("li");
     }
 
     public static Html menuItem() {
@@ -192,20 +192,20 @@ public class Html {
     }
 
     public static Html button(String txt) {
-        return new Html(new Element("button")).
+        return new Html("button").
                 text(txt).css("btn btn-light btn-sm text-muted ml-1").attr("type", "button");
     }
 
     public static Html buttonCollapse(String txt, String target) {
-        return button(txt).
-                attr("data-toggle", "collapse").
-                attr("data-target", "#" + target).
-                attr("aria-expanded", "true").
-                attr("aria-controls", target);
+        return button(txt).collapse(target);
     }
 
     public static Html footerOf(Element card) {
         return new Html(card.getChildElements("div")[2]);
+    }
+
+    public static Html stat() {
+        return new Html("small");
     }
 
     public Html childs(Html... htmls) {
@@ -228,6 +228,13 @@ public class Html {
     public Html attr(String attr, String val) {
         el.addAttribute(attr, val);
         return this;
+    }
+
+    public Html collapse(String target) {
+        return attr("data-toggle", "collapse").
+                attr("data-target", "#" + target).
+                attr("aria-expanded", "true").
+                attr("aria-controls", target);
     }
 
     public String attr(String name) {
@@ -311,14 +318,10 @@ public class Html {
         moveChildrenTo(body);
         this.childs(
                 div().css("card-header").childs(
-                        link(header).attr("data-type", "example").attr("name", header),
-                        buttonCollapse("collapse", id)
-                )
+                        link(header).attr("name", header).attr("data-type", "example")
+                ).collapse(id)
         );
-        Html footer = div().css("card-footer text-muted").attr("data-toggle", "collapse").
-                attr("data-target", "#" + id).
-                attr("aria-expanded", "true").
-                attr("aria-controls", id);
+        Html footer = div().css("card-footer text-muted").collapse(id);
         el.appendChild(body.el);
         el.appendChild(footer.el());
         return this;
@@ -369,7 +372,7 @@ public class Html {
     }
 
     public Html removeAllChild() {
-        this.moveChildrenTo(new Html(new Element("tmp")));
+        this.moveChildrenTo(new Html("tmp"));
         return this;
     }
 
@@ -388,9 +391,5 @@ public class Html {
 
     public Html deepClone() {
         return new Html(el.deepClone());
-    }
-
-    public static Html stat() {
-        return new Html("small");
     }
 }
