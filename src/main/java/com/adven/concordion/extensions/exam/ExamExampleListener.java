@@ -48,7 +48,8 @@ class ExamExampleListener implements ExampleListener {
                 return pill(EXPECTED_TO_FAIL.getTag(), "warning");
             case UNIMPLEMENTED:
                 return pill(UNIMPLEMENTED.getTag(), "default");
+            default:
+                throw new UnsupportedOperationException("Unsupported spec implementation status " + status);
         }
-        throw new UnsupportedOperationException("Unsupported spec implementation status " + status);
     }
 }

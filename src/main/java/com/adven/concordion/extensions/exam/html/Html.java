@@ -187,8 +187,12 @@ public class Html {
         return new Html("li");
     }
 
-    public static Html menuItem() {
+    public static Html menuItemLi() {
         return li().css("list-group-item list-group-item-action d-flex justify-content-between align-items-center");
+    }
+
+    public static Html menuItemA(String txt) {
+        return link(txt).css("list-group-item list-group-item-action");
     }
 
     public static Html button(String txt) {
@@ -225,6 +229,10 @@ public class Html {
         return result;
     }
 
+    public String attr(String name) {
+        return el.getAttributeValue(name);
+    }
+
     public Html attr(String attr, String val) {
         el.addAttribute(attr, val);
         return this;
@@ -235,10 +243,6 @@ public class Html {
                 attr("data-target", "#" + target).
                 attr("aria-expanded", "true").
                 attr("aria-controls", target);
-    }
-
-    public String attr(String name) {
-        return el.getAttributeValue(name);
     }
 
     public Html css(String classes) {

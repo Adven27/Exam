@@ -21,15 +21,14 @@ public class SpecSummaryListener implements SpecificationProcessingListener {
             Element menu = body.getElementById("summary");
             if (menu != null) {
                 menu.getParentElement().addStyleClass("pin");
-                Html summary = ul().css("list-group");
+                Html summary = div().css("list-group");
                 for (Element a : body.getDescendantElements("a")) {
                     if ("example".equals(a.getAttributeValue("data-type"))) {
                         String anchor = a.getAttributeValue("name");
                         a.addAttribute("href", "#summary");
 
                         summary.childs(
-                                menuItem().childs(
-                                        link(anchor).attr("href", "#" + anchor),
+                                menuItemA(anchor).attr("href", "#" + anchor).childs(
                                         footerOf(a.getParentElement().getParentElement()).first("small").deepClone().
                                                 css("card-img-overlay m-1").style("padding:0; left:inherit;")
                                 )
