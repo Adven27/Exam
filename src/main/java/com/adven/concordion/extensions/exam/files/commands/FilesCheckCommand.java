@@ -25,6 +25,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import static com.adven.concordion.extensions.exam.html.Html.*;
 import static java.io.File.separator;
@@ -57,7 +58,8 @@ public class FilesCheckCommand extends BaseCommand {
             List<String> surplusFiles = names == null || names.length == 0 ?
                     new ArrayList<String>() : new ArrayList<>(asList(names));
 
-            addHeader(root, HEADER + dir.getPath(), FILE_CONTENT);
+            root.childs(caption(dir.getPath()));
+            addHeader(root, HEADER, FILE_CONTENT);
             boolean empty = true;
             for (Html f : root.childs()) {
                 if ("file".equals(f.localName())) {
@@ -79,10 +81,15 @@ public class FilesCheckCommand extends BaseCommand {
                             f.moveAttributesTo(pre);
                             checkContent(actual, evaluator, resultRecorder, pre.el());
                         } else {
-                            pre.text(readFile(dir, expectedName));
+                            String id = UUID.randomUUID().toString();
+                            pre = div().childs(
+                                    buttonCollapse("show", id).style("width:100%"),
+                                    div().attr("id", id).css("file collapse").childs(
+                                            pre.text(readFile(dir, expectedName))
+                                    )
+                            );
                         }
                     }
-
                     Html td = td().childs(pre);
                     tr.childs(td);
                     root.childs(tr).remove(f);
@@ -148,7 +155,7 @@ public class FilesCheckCommand extends BaseCommand {
         try {
             return new Builder().build(CharSource.wrap(xml).openStream());
         } catch (ParsingException | IOException e) {
-            throw new RuntimeException("invlaid xml", e);
+            throw new RuntimeException("invalid xml", e);
         }
     }
 
@@ -156,7 +163,7 @@ public class FilesCheckCommand extends BaseCommand {
         try {
             return new Builder().build(xml);
         } catch (ParsingException | IOException e) {
-            throw new RuntimeException("invlaid xml", e);
+            throw new RuntimeException("invalid xml", e);
         }
     }
 
@@ -169,7 +176,7 @@ public class FilesCheckCommand extends BaseCommand {
             String pretty = out.toString("UTF-8");
             return pretty.substring(pretty.indexOf('\n') + 1); // replace first line
         } catch (Exception e) {
-            throw new RuntimeException("invlaid xml", e);
+            throw new RuntimeException("invalid xml", e);
         }
     }
 

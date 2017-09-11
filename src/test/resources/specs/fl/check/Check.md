@@ -7,6 +7,7 @@
     <e:summary/>
     <e:given>
         <e:fl-set dir="dir">
+            <file name="relatively_big_file" from="data/test.xml"/>
             <file name="empty_file"/>
             <file name="not_empty_file">
             <![CDATA[
@@ -20,6 +21,7 @@
         <e:then print="true">
             <e:fl-check dir="dir">
                 <file name="empty_file"/>
+                <file name="relatively_big_file"/>
                 <file name="not_empty_file">
                     <data>some file content</data>
                 </file>
@@ -39,6 +41,7 @@
         <e:then print="true">
             <e:fl-check dir="dir">
                 <file name="empty_file"/>
+                <file name="relatively_big_file"/>
                 <file name="missing_file"/>
                 <file name="not_empty_file">
                     <data>some file content</data>
@@ -50,6 +53,7 @@
         <e:then print="true">
             <e:fl-check dir="dir">
                 <file name="empty_file"/>
+                <file name="relatively_big_file"/>
                 <file name="not_empty_file">
                     <data>another content was expected</data>
                 </file>
@@ -59,6 +63,7 @@
     <e:example name="All previous checks together" status="ExpectedToFail">
         <e:then print="true">
             <e:fl-check dir="dir">
+                <file name="relatively_big_file"/>
                 <file name="missing_file"/>
                 <file name="not_empty_file">
                     <data>another content was expected</data>

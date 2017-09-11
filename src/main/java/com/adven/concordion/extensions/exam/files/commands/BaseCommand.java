@@ -10,20 +10,20 @@ import static com.adven.concordion.extensions.exam.html.Html.*;
 
 class BaseCommand extends ExamCommand {
     protected static final String EMPTY = "<EMPTY>";
-    protected static final String HEADER = "";
-    protected static final String FILE_CONTENT = "";
+    protected static final String HEADER = "file";
+    protected static final String FILE_CONTENT = "content";
 
     public BaseCommand(String name, String tag) {
         super(name, tag);
     }
 
-    protected void addHeader(Html element, String... texts) {
-        Html header = thead();
-        Html tr = thead();
-        for (String text : texts) {
-            tr.childs(th(text));
-        }
-        element.childs(header.childs(tr));
+    protected void addHeader(Html element, String header, String content) {
+        element.childs(
+                thead().childs(
+                        th(header).style("width:20%"),
+                        th(content)
+                )
+        );
     }
 
     protected void addRow(Html element, String... texts) {

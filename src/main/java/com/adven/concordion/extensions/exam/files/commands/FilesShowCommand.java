@@ -7,6 +7,9 @@ import org.concordion.api.ResultRecorder;
 
 import java.io.File;
 
+import static com.adven.concordion.extensions.exam.html.Html.th;
+import static com.adven.concordion.extensions.exam.html.Html.thead;
+
 public class FilesShowCommand extends BaseCommand {
     private static final String EMPTY = "<EMPTY>";
 
@@ -21,8 +24,11 @@ public class FilesShowCommand extends BaseCommand {
         final String path = element.takeAwayAttr("dir");
         if (path != null) {
             final File dir = new File(evaluator.evaluate(path).toString());
-
-            addHeader(element, dir.getPath());
+            element.childs(
+                    thead().childs(
+                            th(dir.getPath())
+                    )
+            );
 
             File[] files = dir.listFiles();
             if (files == null || files.length == 0) {

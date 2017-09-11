@@ -10,6 +10,7 @@ import org.concordion.api.ResultRecorder;
 import java.io.File;
 import java.io.IOException;
 
+import static com.adven.concordion.extensions.exam.html.Html.caption;
 import static com.adven.concordion.extensions.exam.html.Html.codeXml;
 import static com.adven.concordion.extensions.exam.html.Html.span;
 import static com.google.common.base.Strings.isNullOrEmpty;
@@ -25,27 +26,28 @@ public class FilesSetCommand extends BaseCommand {
 
     @Override
     public void setUp(CommandCall commandCall, Evaluator evaluator, ResultRecorder resultRecorder) {
-        Html element = Html.tableSlim(commandCall.getElement());
+        Html root = Html.tableSlim(commandCall.getElement());
 
-        final String path = element.takeAwayAttr("dir");
+        final String path = root.takeAwayAttr("dir");
         if (path != null) {
             final File dir = new File(evaluator.evaluate(path).toString());
             clearFolder(dir);
 
-            addHeader(element, HEADER + dir.getPath(), FILE_CONTENT);
+            root.childs(caption(dir.getPath()));
+            addHeader(root, HEADER, FILE_CONTENT);
             boolean empty = true;
-            for (Html f : element.childs()) {
+            for (Html f : root.childs()) {
                 if ("file".equals(f.localName())) {
                     String name = f.attr("name");
                     String content = PlaceholdersResolver.resolve(getContentFor(f), evaluator).trim();
                     createFileWith(new File(dir.getPath() + separator + name), content);
-                    element.remove(f);
-                    addRow(element.el(), span(name), codeXml(content));
+                    root.remove(f);
+                    addRow(root.el(), span(name), codeXml(content));
                     empty = false;
                 }
             }
             if (empty) {
-                addRow(element, EMPTY, "");
+                addRow(root, EMPTY, "");
             }
         }
     }
