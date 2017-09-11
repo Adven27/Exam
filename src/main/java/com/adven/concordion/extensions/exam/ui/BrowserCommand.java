@@ -6,13 +6,10 @@ import com.codeborne.selenide.Configuration;
 import org.concordion.api.CommandCall;
 import org.concordion.api.Evaluator;
 import org.concordion.api.ResultRecorder;
-import org.openqa.selenium.By;
-
-import java.io.File;
 
 import static com.adven.concordion.extensions.exam.html.Html.imageOverlay;
-import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.open;
+import static com.codeborne.selenide.Selenide.screenshot;
 
 public class BrowserCommand extends ExamCommand {
     private static final String URL = "url";
@@ -53,16 +50,16 @@ public class BrowserCommand extends ExamCommand {
             if ("step".equals(s.localName())) {
                 String name = s.attr("name");
                 String text = s.text();
-                File file = eval(evaluator, name, text, s.attr("set"));
+                String file = eval(evaluator, name, text, s.attr("set"));
                 el.remove(s);
                 el.childs(
-                        imageOverlay(file.getName(), 360, name, "Step desc")
+                        imageOverlay(file, 360, name, "Step desc")
                 );
             }
         }
     }
 
-    private File eval(Evaluator ev, String name, String text, String var) {
+    private String eval(Evaluator ev, String name, String text, String var) {
         String exp = name + "()";
         if (!"".equals(text)) {
             exp = name + "(#TEXT)";
@@ -72,7 +69,7 @@ public class BrowserCommand extends ExamCommand {
         if (var != null) {
             ev.setVariable("#" + var, res);
         }
-        return $(By.tagName("html")).screenshot();
+        return screenshot(name);
     }
 
     private String attr(Html html, String attrName, String defaultValue, Evaluator evaluator) {
