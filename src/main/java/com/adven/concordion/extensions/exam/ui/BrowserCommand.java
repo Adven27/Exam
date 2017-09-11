@@ -32,26 +32,23 @@ public class BrowserCommand extends ExamCommand {
     @Override
     public void execute(CommandCall commandCall, Evaluator evaluator, ResultRecorder resultRecorder) {
         originalSelenideReportsFolder = Configuration.reportsFolder;
-        Configuration.reportsFolder = screenshotFolder(commandCall);
+        saveScreenshotsTo(currentFolder(commandCall));
 
         open(url);
         Html root = new Html(commandCall.getElement()).css("card-group");
-        //Html group = div().css("card-group");
         evalSteps(root, evaluator);
-        /*root.childs(
-                div().css("card-header").text(url),
-                div().css("card-body").childs(
-                        group
-                )
-        );*/
-        Configuration.reportsFolder = originalSelenideReportsFolder;
+        saveScreenshotsTo(originalSelenideReportsFolder);
     }
 
-    private String screenshotFolder(CommandCall commandCall) {
+    private static void saveScreenshotsTo(String path) {
+        Configuration.reportsFolder = path;
+    }
+
+    private String currentFolder(CommandCall commandCall) {
         return System.getProperty("concordion.output.dir") + commandCall.getResource().getParent().getPath();
     }
 
-    protected void evalSteps(Html el, Evaluator evaluator) {
+    private void evalSteps(Html el, Evaluator evaluator) {
         for (Html s : el.childs()) {
             if ("step".equals(s.localName())) {
                 String name = s.attr("name");

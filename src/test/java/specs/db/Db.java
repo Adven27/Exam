@@ -10,13 +10,12 @@ import java.util.Date;
 
 import static org.joda.time.format.DateTimeFormat.forPattern;
 
-
 public class Db extends Specs {
-    private static final String CREATE_TABLES =
-            "CREATE TABLE IF NOT EXISTS PERSON (NAME VARCHAR2(255 CHAR), AGE NUMBER, IQ NUMBER, BIRTHDAY TIMESTAMP)\\;" +
-                    "CREATE TABLE IF NOT EXISTS EMPTY (NAME VARCHAR2(255 CHAR), VALUE NUMBER)";
+    private static final String CREATE_TABLES = "CREATE TABLE IF NOT EXISTS PERSON " +
+            "(NAME VARCHAR2(255 CHAR), AGE NUMBER, IQ NUMBER, BIRTHDAY TIMESTAMP)\\;" +
+            "CREATE TABLE IF NOT EXISTS EMPTY (NAME VARCHAR2(255 CHAR), VALUE NUMBER)";
 
-    protected final JdbcDatabaseTester dbTester = dbTester();
+    private final JdbcDatabaseTester dbTester = dbTester();
 
     private static JdbcDatabaseTester dbTester() {
         try {

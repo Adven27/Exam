@@ -43,11 +43,11 @@ class ExamExampleListener implements ExampleListener {
     private Html badgeFor(ImplementationStatus status) {
         switch (status) {
             case EXPECTED_TO_PASS:
-                return pill(EXPECTED_TO_PASS.getTag(), "info");
+                return pill(EXPECTED_TO_PASS.getTag(), "success");
             case EXPECTED_TO_FAIL:
                 return pill(EXPECTED_TO_FAIL.getTag(), "warning");
             case UNIMPLEMENTED:
-                return pill(UNIMPLEMENTED.getTag(), "default");
+                return pill(UNIMPLEMENTED.getTag(), "primary");
             default:
                 throw new UnsupportedOperationException("Unsupported spec implementation status " + status);
         }
