@@ -2,6 +2,7 @@ package com.adven.concordion.extensions.exam.ui;
 
 import com.adven.concordion.extensions.exam.commands.ExamCommand;
 import com.adven.concordion.extensions.exam.html.Html;
+import com.codeborne.selenide.Configuration;
 import org.concordion.api.CommandCall;
 import org.concordion.api.Evaluator;
 import org.concordion.api.ResultRecorder;
@@ -10,11 +11,13 @@ import org.openqa.selenium.By;
 import java.io.File;
 
 import static com.adven.concordion.extensions.exam.html.Html.imageOverlay;
-import static com.codeborne.selenide.Selenide.*;
+import static com.codeborne.selenide.Selenide.$;
+import static com.codeborne.selenide.Selenide.open;
 
 public class BrowserCommand extends ExamCommand {
     private static final String URL = "url";
     private String url;
+    private String originalSelenideReportsFolder;
 
     public BrowserCommand(String tag) {
         super("browser", tag);
@@ -28,6 +31,9 @@ public class BrowserCommand extends ExamCommand {
 
     @Override
     public void execute(CommandCall commandCall, Evaluator evaluator, ResultRecorder resultRecorder) {
+        originalSelenideReportsFolder = Configuration.reportsFolder;
+        Configuration.reportsFolder = screenshotFolder(commandCall);
+
         open(url);
         Html root = new Html(commandCall.getElement()).css("card-group");
         //Html group = div().css("card-group");
@@ -38,6 +44,11 @@ public class BrowserCommand extends ExamCommand {
                         group
                 )
         );*/
+        Configuration.reportsFolder = originalSelenideReportsFolder;
+    }
+
+    private String screenshotFolder(CommandCall commandCall) {
+        return System.getProperty("concordion.output.dir") + commandCall.getResource().getParent().getPath();
     }
 
     protected void evalSteps(Html el, Evaluator evaluator) {
@@ -48,7 +59,7 @@ public class BrowserCommand extends ExamCommand {
                 File file = eval(evaluator, name, text, s.attr("set"));
                 el.remove(s);
                 el.childs(
-                        imageOverlay("../../screenshots/" + file.getName(), 360, name, "Step desc")
+                        imageOverlay(file.getName(), 360, name, "Step desc")
                 );
             }
         }
