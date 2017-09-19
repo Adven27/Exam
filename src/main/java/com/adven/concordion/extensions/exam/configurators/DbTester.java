@@ -1,5 +1,6 @@
-package com.adven.concordion.extensions.exam;
+package com.adven.concordion.extensions.exam.configurators;
 
+import com.adven.concordion.extensions.exam.ExamExtension;
 import org.dbunit.JdbcDatabaseTester;
 
 import java.util.Properties;
@@ -12,7 +13,7 @@ public class DbTester {
 
     private final ExamExtension extension;
 
-    DbTester(ExamExtension extension) {
+    public DbTester(ExamExtension extension) {
         this.extension = extension;
     }
 

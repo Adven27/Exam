@@ -2,10 +2,11 @@ package com.adven.concordion.extensions.exam;
 
 import com.adven.concordion.extensions.exam.bootstrap.BootstrapExtension;
 import com.adven.concordion.extensions.exam.commands.ExamCommand;
+import com.adven.concordion.extensions.exam.configurators.DbTester;
+import com.adven.concordion.extensions.exam.configurators.RestAssuredCfg;
+import com.adven.concordion.extensions.exam.configurators.WebDriverCfg;
 import com.adven.concordion.extensions.exam.rest.DateFormatMatcher;
 import com.adven.concordion.extensions.exam.rest.DateWithinMatcher;
-import com.codeborne.selenide.Configuration;
-import io.github.bonigarcia.wdm.ChromeDriverManager;
 import org.concordion.api.extension.ConcordionExtender;
 import org.concordion.api.extension.ConcordionExtension;
 import org.dbunit.JdbcDatabaseTester;
@@ -16,7 +17,6 @@ import static net.javacrumbs.jsonunit.core.Option.IGNORING_ARRAY_ORDER;
 
 public class ExamExtension implements ConcordionExtension {
     public static final String NS = "http://exam.extension.io";
-    private static boolean webDriverInited = false;
     private net.javacrumbs.jsonunit.core.Configuration jsonUnitCfg;
 
     private JdbcDatabaseTester dbTester;
@@ -33,23 +33,9 @@ public class ExamExtension implements ConcordionExtension {
         return this;
     }
 
-    private static void setUpChromeDriver(String version) {
-        if (!webDriverInited) {
-            Configuration.browser = "chrome";
-            ChromeDriverManager.getInstance().version(version).setup();
-            webDriverInited = true;
-        }
-    }
-
     @SuppressWarnings("unused")
-    public ExamExtension webDriver(String version) {
-        setUpChromeDriver(version);
-        return this;
-    }
-
-    @SuppressWarnings("unused")
-    public ExamExtension webDriver() {
-        return webDriver(null);
+    public WebDriverCfg webDriver() {
+        return new WebDriverCfg(this);
     }
 
     public RestAssuredCfg rest() {

@@ -1,5 +1,6 @@
-package com.adven.concordion.extensions.exam;
+package com.adven.concordion.extensions.exam.configurators;
 
+import com.adven.concordion.extensions.exam.ExamExtension;
 import com.jayway.restassured.RestAssured;
 
 public class RestAssuredCfg {
@@ -8,7 +9,7 @@ public class RestAssuredCfg {
     private String context;
     private Integer port;
 
-    RestAssuredCfg(ExamExtension extension) {
+    public RestAssuredCfg(ExamExtension extension) {
         this.extension = extension;
     }
 
