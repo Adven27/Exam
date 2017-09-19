@@ -16,6 +16,7 @@ import static net.javacrumbs.jsonunit.core.Option.IGNORING_ARRAY_ORDER;
 
 public class ExamExtension implements ConcordionExtension {
     public static final String NS = "http://exam.extension.io";
+    private static boolean webDriverInited = false;
     private net.javacrumbs.jsonunit.core.Configuration jsonUnitCfg;
 
     private JdbcDatabaseTester dbTester;
@@ -33,8 +34,11 @@ public class ExamExtension implements ConcordionExtension {
     }
 
     private static void setUpChromeDriver(String version) {
-        Configuration.browser = "chrome";
-        ChromeDriverManager.getInstance().version(version).setup();
+        if (!webDriverInited) {
+            Configuration.browser = "chrome";
+            ChromeDriverManager.getInstance().version(version).setup();
+            webDriverInited = true;
+        }
     }
 
     @SuppressWarnings("unused")

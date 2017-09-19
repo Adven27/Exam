@@ -1,29 +1,35 @@
 package com.adven.concordion.extensions.exam.ui;
 
-import com.adven.concordion.extensions.exam.commands.ExamCommand;
+import com.adven.concordion.extensions.exam.commands.ExamVerifyCommand;
 import com.adven.concordion.extensions.exam.html.Html;
 import com.codeborne.selenide.Configuration;
+import com.codeborne.selenide.ex.UIAssertionError;
 import org.concordion.api.CommandCall;
 import org.concordion.api.Evaluator;
 import org.concordion.api.ResultRecorder;
 
-import static com.adven.concordion.extensions.exam.html.Html.imageOverlay;
 import static com.codeborne.selenide.Selenide.open;
-import static com.codeborne.selenide.Selenide.screenshot;
 
-public class BrowserCommand extends ExamCommand {
+public class BrowserCommand extends ExamVerifyCommand {
+    public static final String FAIL_FAST = "failFast";
     private static final String URL = "url";
     private String url;
+    private boolean failFast;
     private String originalSelenideReportsFolder;
 
     public BrowserCommand(String tag) {
-        super("browser", tag);
+        super("browser", tag, new UiResultRenderer());
+    }
+
+    private static void saveScreenshotsTo(String path) {
+        Configuration.reportsFolder = path;
     }
 
     @Override
     public void setUp(CommandCall commandCall, Evaluator evaluator, ResultRecorder resultRecorder) {
         Html root = new Html(commandCall.getElement());
         url = attr(root, URL, "/", evaluator);
+        failFast = Boolean.valueOf(root.takeAwayAttr(FAIL_FAST, "true"));
     }
 
     @Override
@@ -33,43 +39,52 @@ public class BrowserCommand extends ExamCommand {
 
         open(url);
         Html root = new Html(commandCall.getElement()).css("card-group");
-        evalSteps(root, evaluator);
+        evalSteps(root, evaluator, resultRecorder);
         saveScreenshotsTo(originalSelenideReportsFolder);
-    }
-
-    private static void saveScreenshotsTo(String path) {
-        Configuration.reportsFolder = path;
     }
 
     private String currentFolder(CommandCall commandCall) {
         return System.getProperty("concordion.output.dir") + commandCall.getResource().getParent().getPath();
     }
 
-    private void evalSteps(Html el, Evaluator evaluator) {
+    private void evalSteps(Html el, Evaluator evaluator, ResultRecorder resultRecorder) {
+        boolean failed = false;
         for (Html s : el.childs()) {
             if ("step".equals(s.localName())) {
-                String name = s.attr("name");
-                String text = s.text();
-                String file = eval(evaluator, name, text, s.attr("set"));
-                el.remove(s);
-                el.childs(
-                        imageOverlay(file, 360, name, "Step desc")
-                );
+                if (failed) {
+                    el.remove(s);
+                } else if (!eval(evaluator, resultRecorder, s)) {
+                    failed = true;
+                }
             }
         }
     }
 
-    private String eval(Evaluator ev, String name, String text, String var) {
+    private boolean eval(Evaluator ev, ResultRecorder resultRecorder, Html el) {
+        final String name = el.attr("name");
+        final String var = el.attr("set");
         String exp = name + "()";
+        String text = el.text();
         if (!"".equals(text)) {
             exp = name + "(#TEXT)";
             ev.setVariable("#TEXT", text);
         }
-        Object res = ev.evaluate(exp);
-        if (var != null) {
-            ev.setVariable("#" + var, res);
+        try {
+            Object res = ev.evaluate(exp);
+            if (var != null) {
+                ev.setVariable("#" + var, res);
+            }
+            success(resultRecorder, el);
+        } catch (Throwable e) {
+            if (e.getCause() instanceof UIAssertionError) {
+                UIAssertionError err = (UIAssertionError) e.getCause();
+                failure(resultRecorder, el, err, name);
+                if (failFast) {
+                    return false;
+                }
+            }
         }
-        return screenshot(name);
+        return true;
     }
 
     private String attr(Html html, String attrName, String defaultValue, Evaluator evaluator) {

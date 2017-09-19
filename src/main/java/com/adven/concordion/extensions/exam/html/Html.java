@@ -120,14 +120,14 @@ public class Html {
         );
     }
 
-    public static Html imageOverlay(String src, int size, String title, String txt) {
+    public static Html imageOverlay(String src, int size, String title, String desc, String descStyle) {
         return div().css("card bg-light").childs(
                 link("", src).childs(
                         image(src, size, size)
                 ),
-                div().css("card-img-top").childs(
+                div().css("card-img-top " + descStyle).childs(
                         h(4, title),
-                        paragraph(txt).css("card-text")
+                        paragraph(desc).css("card-text")
 
                 )
         );
@@ -395,5 +395,9 @@ public class Html {
 
     public Html deepClone() {
         return new Html(el.deepClone());
+    }
+
+    public Html parent() {
+        return new Html(el.getParentElement());
     }
 }
