@@ -4,6 +4,8 @@ import com.adven.concordion.extensions.exam.html.Html;
 import com.codeborne.selenide.ex.UIAssertionError;
 import org.concordion.api.listener.*;
 
+import java.io.File;
+
 import static com.adven.concordion.extensions.exam.html.Html.imageOverlay;
 import static com.codeborne.selenide.Selenide.screenshot;
 
@@ -15,7 +17,7 @@ public class UiResultRenderer implements AssertEqualsListener, AssertTrueListene
         UIAssertionError error = (UIAssertionError) event.getActual();
         el.remove(s);
         el.childs(
-                imageOverlay(error.getScreenshot(), 360, event.getExpected(), error.getMessage(), "rest-failure")
+                imageOverlay(getPath(error.getScreenshot()), 360, event.getExpected(), error.getMessage(), "rest-failure")
         );
     }
 
@@ -25,7 +27,11 @@ public class UiResultRenderer implements AssertEqualsListener, AssertTrueListene
         String name = s.attr("name");
         el.remove(s);
         el.childs(
-                imageOverlay(screenshot(name), 360, name, "Step desc", "rest-success")
+                imageOverlay(getPath(screenshot(name)), 360, name, "Step desc", "rest-success")
         );
+    }
+
+    private String getPath(String screenshot) {
+        return new File(screenshot).getName();
     }
 }
