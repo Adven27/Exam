@@ -279,7 +279,7 @@ public class Html {
     public String takeAwayAttr(String name, Evaluator eval) {
         String val = attr(name);
         if (val != null) {
-            val = PlaceholdersResolver.resolve(val, eval);
+            val = PlaceholdersResolver.resolveJson(val, eval);
             el.removeAttribute(name);
         }
         return val;

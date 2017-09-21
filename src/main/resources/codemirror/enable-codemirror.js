@@ -1,12 +1,10 @@
 window.addEventListener('load', ready, false);
 
 function ready() {
-
     enableCodeMirror('.json:not(.rest-failure)', {name: 'javascript', json: true});
     enableCodeMirrorMerge('.json.rest-failure', {name: 'javascript', json: true});
     enableCodeMirror('.xml:not(.rest-failure)', 'application/xml');
     enableCodeMirrorMerge('.xml.rest-failure', 'application/xml');
-
 }
 
 function unescape(input) {
@@ -16,12 +14,10 @@ function unescape(input) {
 }
 
 function enableCodeMirror(selector, mode) {
-
-    var i, value, editor,
+    var value, editor,
         jsons = document.querySelectorAll(selector);
 
-    for (i = 0; i < jsons.length; i++) {
-
+    for (var i = 0; i < jsons.length; i++) {
         value = unescape(jsons[i].innerHTML);
         jsons[i].innerHTML = "";
 
@@ -31,23 +27,19 @@ function enableCodeMirror(selector, mode) {
             value: value,
             readOnly: true
         });
+        autoFormat(editor);
     }
 }
 
 function enableCodeMirrorMerge(selector, mode) {
-
     var jsons = document.querySelectorAll(selector);
-    var i;
-
-    for (i = 0; i < jsons.length; i++) {
+    for (var i = 0; i < jsons.length; i++) {
         mergeView(jsons[i], mode);
     }
 
 }
 function mergeView(target, mode) {
-
-    var editor,
-        expectedValue, actualValue,
+    var expectedValue, actualValue,
         expected = target.querySelector('.expected'),
         actual = target.querySelector('.actual');
 
@@ -58,15 +50,18 @@ function mergeView(target, mode) {
     expected.parentNode.removeChild(expected);
     target.innerHTML = '';
 
-    editor = CodeMirror.MergeView(target, {
+    CodeMirror.MergeView(target, {
         value: expectedValue,
         origLeft: null,
         orig: actualValue,
         lineNumbers: false,
-        revertButtons: false,
         mode: mode,
         highlightDifferences: true,
         collapseIdentical: false
-//		connect: "align"
     });
+}
+
+function autoFormat(editor) {
+    var range = {from: {line: 0, ch: 0}, to: {line: editor.lineCount(), ch: editor.getValue().length}};
+    editor.autoFormatRange(range.from, range.to);
 }

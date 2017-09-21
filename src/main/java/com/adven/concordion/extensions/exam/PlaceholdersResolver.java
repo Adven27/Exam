@@ -18,11 +18,15 @@ public class PlaceholdersResolver {
     private static final String PREFIX_VAR = "${var.";
     private static final char POSTFIX = '}';
 
-    public static String resolve(String body, Evaluator eval) {
+    public static String resolveJson(String body, Evaluator eval) {
         return resolve(body, "json", eval);
     }
 
-    public static String resolve(String body, String type, Evaluator eval) {
+    public static String resolveXml(String body, Evaluator eval) {
+        return resolve(body, "xml", eval);
+    }
+
+    private static String resolve(String body, String type, Evaluator eval) {
         return resolveAliases(
                 type,
                 resolveExamCommands(

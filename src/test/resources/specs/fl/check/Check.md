@@ -24,7 +24,6 @@
                                     <num>!{num}</num>
                                     <float>!{num}</float>
                                     <str>!{str}</str>
-                                    <blank>!{str}</blank>
                                     <regex>!{regex}\d\d\d</regex>
                                     <ignore>!{ignore}</ignore>
                                 </item>
