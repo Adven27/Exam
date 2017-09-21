@@ -6,7 +6,7 @@ import com.adven.concordion.extensions.exam.configurators.DbTester;
 import com.adven.concordion.extensions.exam.configurators.RestAssuredCfg;
 import com.adven.concordion.extensions.exam.configurators.WebDriverCfg;
 import com.adven.concordion.extensions.exam.rest.DateFormatMatcher;
-import com.adven.concordion.extensions.exam.rest.DateWithinMatcher;
+import com.adven.concordion.extensions.exam.rest.DateWithin;
 import org.concordion.api.extension.ConcordionExtender;
 import org.concordion.api.extension.ConcordionExtension;
 import org.dbunit.JdbcDatabaseTester;
@@ -24,7 +24,8 @@ public class ExamExtension implements ConcordionExtension {
     public ExamExtension() {
         jsonUnitCfg = when(IGNORING_ARRAY_ORDER).
                 withMatcher("formattedAs", new DateFormatMatcher()).
-                withMatcher("formattedAndWithin", new DateWithinMatcher());
+                withMatcher("formattedAndWithin", DateWithin.param()).
+                withMatcher("formattedAndWithinNow", DateWithin.now());
     }
 
     @SuppressWarnings("unused")

@@ -19,7 +19,12 @@ public class PlaceholdersResolver {
     private static final char POSTFIX = '}';
 
     public static String resolve(String body, Evaluator eval) {
-        return resolveJsonUnitAliases(
+        return resolve(body, "json", eval);
+    }
+
+    public static String resolve(String body, String type, Evaluator eval) {
+        return resolveAliases(
+                type,
                 resolveExamCommands(
                         resolveVars(body, eval)
                 )
@@ -56,35 +61,43 @@ public class PlaceholdersResolver {
         return body;
     }
 
-    private static String resolveJsonUnitAliases(String body) {
+    private static String resolveAliases(String type, String body) {
         while (body.contains(PREFIX_JSON_UNIT_ALIAS)) {
             String original = body;
             String alias = extractFromAlias(original);
-            body = original.replace(PREFIX_JSON_UNIT_ALIAS + alias + POSTFIX, toJsonUnit(alias));
+            body = original.replace(PREFIX_JSON_UNIT_ALIAS + alias + POSTFIX, toPlaceholder(alias, type));
         }
         return body;
     }
 
-    private static String toJsonUnit(String alias) {
+    private static String toPlaceholder(String alias, String type) {
         String result;
         switch (alias.toLowerCase()) {
             case "any-string":
             case "string":
             case "str":
-                result = "${json-unit.any-string}";
+                result = "${" + type + "-unit.any-string}";
                 break;
             case "any-number":
             case "number":
             case "num":
-                result = "${json-unit.any-number}";
+                result = "${" + type + "-unit.any-number}";
                 break;
             case "any-boolean":
             case "boolean":
             case "bool":
-                result = "${json-unit.any-boolean}";
+                result = "${" + type + "-unit.any-boolean}";
+                break;
+            case "regexp":
+            case "regex":
+                result = "${" + type + "-unit.regex}";
+                break;
+            case "ignored":
+            case "ignore":
+                result = "${" + type + "-unit.ignore}";
                 break;
             default:
-                result = String.format("${json-unit.matches:%s}%s", (Object[]) alias.split(" "));
+                result = String.format("${" + type + "-unit.matches:%s}%s", (Object[]) alias.split(" "));
         }
         return result;
     }
@@ -116,8 +129,9 @@ public class PlaceholdersResolver {
         String[] periods = var.substring(5, var.indexOf("]")).split(",");
         for (String period : periods) {
             String[] parts = period.trim().split(" ");
-            p = isValue(parts[0]) ? p.plus(periodBy(parseInt(parts[0]), parts[1]))
-                                  : p.plus(periodBy(parseInt(parts[1]), parts[0]));
+            p = isValue(parts[0])
+                    ? p.plus(periodBy(parseInt(parts[0]), parts[1]))
+                    : p.plus(periodBy(parseInt(parts[1]), parts[0]));
         }
         return p;
     }

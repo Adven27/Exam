@@ -14,10 +14,10 @@ public class UiResultRenderer implements AssertEqualsListener, AssertTrueListene
     public void failureReported(AssertFailureEvent event) {
         Html s = new Html(event.getElement());
         Html el = s.parent();
-        UIAssertionError error = (UIAssertionError) event.getActual();
+        UIAssertionError err = (UIAssertionError) event.getActual();
         el.remove(s);
         el.childs(
-                imageOverlay(getPath(error.getScreenshot()), 360, event.getExpected(), error.getMessage(), "rest-failure")
+                imageOverlay(getPath(err.getScreenshot()), 360, event.getExpected(), err.getMessage(), "rest-failure")
         );
     }
 

@@ -11,10 +11,23 @@ import static java.lang.Character.isDigit;
 import static java.lang.Integer.parseInt;
 import static org.joda.time.format.DateTimeFormat.forPattern;
 
-public class DateWithinMatcher extends BaseMatcher<Object> implements ParametrizedMatcher {
+public class DateWithin extends BaseMatcher<Object> implements ParametrizedMatcher {
+    private final boolean now;
     private BaseSingleFieldPeriod period;
     private DateTime expected;
     private String pattern;
+
+    private DateWithin(boolean now) {
+        this.now = now;
+    }
+
+    public static DateWithin param() {
+        return new DateWithin(false);
+    }
+
+    public static DateWithin now() {
+        return new DateWithin(true);
+    }
 
     public boolean matches(Object item) {
         DateTime actual = DateTime.parse((String) item, forPattern(pattern));
@@ -38,16 +51,20 @@ public class DateWithinMatcher extends BaseMatcher<Object> implements Parametriz
         pattern = param.substring(1, param.indexOf("]"));
         param = param.substring(pattern.length() + 2);
         String within = param.substring(1, param.indexOf("]"));
-        param = param.substring(within.length() + 2);
-        String date = param.substring(1, param.indexOf("]"));
 
-        expected = DateTime.parse(date, forPattern(pattern));
+        if (now) {
+            expected = DateTime.now();
+        } else {
+            param = param.substring(within.length() + 2);
+            String date = param.substring(1, param.indexOf("]"));
+            expected = DateTime.parse(date, forPattern(pattern));
+        }
 
         int i = 0;
         while (i < within.length() && isDigit(within.charAt(i))) {
             i++;
         }
         this.period = PlaceholdersResolver.periodBy(
-                parseInt(within.substring(0, i)), within.substring(i, within.length()));
+                parseInt(within.substring(0, i)), within.substring(i, within.length()).trim());
     }
 }

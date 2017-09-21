@@ -6,6 +6,7 @@ import com.adven.concordion.extensions.exam.html.Html;
 import com.google.common.base.Charsets;
 import com.google.common.io.CharSource;
 import com.google.common.io.Files;
+import net.javacrumbs.jsonunit.core.Configuration;
 import nu.xom.Builder;
 import nu.xom.Document;
 import nu.xom.ParsingException;
@@ -15,27 +16,30 @@ import org.concordion.api.listener.AssertEqualsListener;
 import org.concordion.api.listener.AssertFailureEvent;
 import org.concordion.api.listener.AssertSuccessEvent;
 import org.concordion.internal.util.Announcer;
-import org.xml.sax.SAXException;
 import org.xmlunit.builder.DiffBuilder;
 import org.xmlunit.diff.Diff;
-import org.xmlunit.diff.Difference;
+import org.xmlunit.diff.DifferenceEvaluators;
 
-import javax.xml.transform.TransformerException;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 import static com.adven.concordion.extensions.exam.html.Html.*;
 import static java.io.File.separator;
 import static java.util.Arrays.asList;
-import static org.xmlunit.builder.Input.fromString;
+import static org.xmlunit.diff.DifferenceEvaluators.chain;
 
 public class FilesCheckCommand extends BaseCommand {
+    //FIXME temporary(HA!) reuse json-unit cfg for matchers retrieving
+    private final Configuration jsonUnitCfg;
     private Announcer<AssertEqualsListener> listeners = Announcer.to(AssertEqualsListener.class);
 
-    public FilesCheckCommand(String name, String tag) {
+    public FilesCheckCommand(String name, String tag, Configuration jsonUnitCfg) {
         super(name, tag);
+        this.jsonUnitCfg = jsonUnitCfg;
         listeners.addListener(new FilesResultRenderer());
     }
 
@@ -129,7 +133,7 @@ public class FilesCheckCommand extends BaseCommand {
             xml.append(aChild.toXML());
         }
         element.moveChildrenTo(new Element("tmp"));
-        String expected = prettyPrint(documentFrom(PlaceholdersResolver.resolve(xml.toString(), evaluator)));
+        String expected = prettyPrint(documentFrom(PlaceholdersResolver.resolve(xml.toString(), "xml", evaluator)));
         element.appendText(expected);
 
         if (!actual.exists()) {
@@ -179,31 +183,25 @@ public class FilesCheckCommand extends BaseCommand {
         }
     }
 
-    private boolean assertEqualsXml(String actual, String expected)
-            throws TransformerException, SAXException, IOException {
-        Diff diff = DiffBuilder.compare(fromString(expected)).withTest(fromString(actual)).
-                ignoreComments().ignoreWhitespace().build();
-        if (!diff.hasDifferences()) {
-            return true;
-        }
+    private boolean assertEqualsXml(String actual, String expected) {
+        Diff diff = DiffBuilder.compare(expected).
+                withTest(actual).
+                withDifferenceEvaluator(
+                        chain(
+                                DifferenceEvaluators.Default,
+                                new PlaceholderSupportDiffEvaluator(jsonUnitCfg)
+                        )
+                ).
+                //withNodeMatcher(new DefaultNodeMatcher(ElementSelectors.byName)).
+                        ignoreComments().
+                //ignoreWhitespace().
+                        build();
 
-        Iterable<Difference> differencies = diff.getDifferences();
-        int size = ((Collection<?>) differencies).size();
-        int repaired = 0;
-        for (Iterator<Difference> it = differencies.iterator(); it.hasNext();){
-            Difference unit = it.next();
-            if (unit.getComparison().getTestDetails().getValue().toString().matches(
-                    unit.getComparison().getControlDetails().getValue().toString())
-                    ){
-                repaired++;
-            }
+        //FIXME Reports are visible only on logs, show them in spec too
+        if (diff.hasDifferences()) {
+            throw new RuntimeException(diff.toString());
         }
-
-        if (repaired==size){
-            return true;
-        }
-
-        throw new RuntimeException(diff.toString());
+        return true;
     }
 
     private void xmlEquals(ResultRecorder resultRecorder, Element element) {
