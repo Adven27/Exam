@@ -18,14 +18,13 @@ import org.concordion.internal.util.Announcer;
 import org.xml.sax.SAXException;
 import org.xmlunit.builder.DiffBuilder;
 import org.xmlunit.diff.Diff;
+import org.xmlunit.diff.Difference;
 
 import javax.xml.transform.TransformerException;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 import static com.adven.concordion.extensions.exam.html.Html.*;
 import static java.io.File.separator;
@@ -187,6 +186,23 @@ public class FilesCheckCommand extends BaseCommand {
         if (!diff.hasDifferences()) {
             return true;
         }
+
+        Iterable<Difference> differencies = diff.getDifferences();
+        int size = ((Collection<?>) differencies).size();
+        int repaired = 0;
+        for (Iterator<Difference> it = differencies.iterator(); it.hasNext();){
+            Difference unit = it.next();
+            if (unit.getComparison().getTestDetails().getValue().toString().matches(
+                    unit.getComparison().getControlDetails().getValue().toString())
+                    ){
+                repaired++;
+            }
+        }
+
+        if (repaired==size){
+            return true;
+        }
+
         throw new RuntimeException(diff.toString());
     }
 
