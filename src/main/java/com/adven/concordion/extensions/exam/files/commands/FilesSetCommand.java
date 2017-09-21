@@ -39,7 +39,7 @@ public class FilesSetCommand extends BaseCommand {
             for (Html f : root.childs()) {
                 if ("file".equals(f.localName())) {
                     String name = f.attr("name");
-                    String content = PlaceholdersResolver.resolve(getContentFor(f), evaluator).trim();
+                    String content = PlaceholdersResolver.resolveJson(getContentFor(f), evaluator).trim();
                     createFileWith(new File(dir.getPath() + separator + name), content);
                     root.remove(f);
                     addRow(root.el(), span(name), codeXml(content));
@@ -64,13 +64,6 @@ public class FilesSetCommand extends BaseCommand {
 
     private String getContentFor(Html f) {
         String from = f.attr("from");
-        if (from != null) {
-            try {
-                return Files.toString(new File(getResource(from).getFile()), defaultCharset());
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }
-        return f.text();
+        return from != null ? readFile(new File(getResource(from).getFile())) : f.text();
     }
 }

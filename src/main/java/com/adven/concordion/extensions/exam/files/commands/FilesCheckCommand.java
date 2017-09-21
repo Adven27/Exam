@@ -1,11 +1,8 @@
 package com.adven.concordion.extensions.exam.files.commands;
 
-import com.adven.concordion.extensions.exam.PlaceholdersResolver;
 import com.adven.concordion.extensions.exam.files.FilesResultRenderer;
 import com.adven.concordion.extensions.exam.html.Html;
-import com.google.common.base.Charsets;
 import com.google.common.io.CharSource;
-import com.google.common.io.Files;
 import net.javacrumbs.jsonunit.core.Configuration;
 import nu.xom.Builder;
 import nu.xom.Document;
@@ -27,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import static com.adven.concordion.extensions.exam.PlaceholdersResolver.resolveXml;
 import static com.adven.concordion.extensions.exam.html.Html.*;
 import static java.io.File.separator;
 import static java.util.Arrays.asList;
@@ -43,13 +41,6 @@ public class FilesCheckCommand extends BaseCommand {
         listeners.addListener(new FilesResultRenderer());
     }
 
-    /**
-     * verify stage.
-     *
-     * @param commandCall    - command
-     * @param evaluator      - evaluator
-     * @param resultRecorder - result
-     */
     public void verify(CommandCall commandCall, Evaluator evaluator, ResultRecorder resultRecorder) {
         Html root = Html.tableSlim(commandCall.getElement());
 
@@ -117,14 +108,6 @@ public class FilesCheckCommand extends BaseCommand {
         }
     }
 
-    private String readFile(File dir, String file) {
-        try {
-            return Files.toString(new File(dir + separator + file), Charsets.UTF_8);
-        } catch (IOException e) {
-            return "ERROR WHILE FILE READING";
-        }
-    }
-
     private void checkContent(File actual, Evaluator evaluator, ResultRecorder resultRecorder, Element element) {
         StringBuilder xml = new StringBuilder();
 
@@ -133,7 +116,7 @@ public class FilesCheckCommand extends BaseCommand {
             xml.append(aChild.toXML());
         }
         element.moveChildrenTo(new Element("tmp"));
-        String expected = prettyPrint(documentFrom(PlaceholdersResolver.resolve(xml.toString(), "xml", evaluator)));
+        String expected = prettyPrint(documentFrom(resolveXml(xml.toString(), evaluator)));
         element.appendText(expected);
 
         if (!actual.exists()) {
@@ -192,10 +175,8 @@ public class FilesCheckCommand extends BaseCommand {
                                 new PlaceholderSupportDiffEvaluator(jsonUnitCfg)
                         )
                 ).
-                //withNodeMatcher(new DefaultNodeMatcher(ElementSelectors.byName)).
-                        ignoreComments().
-                //ignoreWhitespace().
-                        build();
+                ignoreComments().
+                build();
 
         //FIXME Reports are visible only on logs, show them in spec too
         if (diff.hasDifferences()) {

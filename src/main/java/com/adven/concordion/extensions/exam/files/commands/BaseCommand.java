@@ -2,16 +2,21 @@ package com.adven.concordion.extensions.exam.files.commands;
 
 import com.adven.concordion.extensions.exam.commands.ExamCommand;
 import com.adven.concordion.extensions.exam.html.Html;
+import com.google.common.base.Charsets;
+import com.google.common.io.Files;
 import org.concordion.api.Element;
 
 import java.io.File;
+import java.io.IOException;
 
 import static com.adven.concordion.extensions.exam.html.Html.*;
+import static java.io.File.separator;
 
 class BaseCommand extends ExamCommand {
     protected static final String EMPTY = "<EMPTY>";
     protected static final String HEADER = "file";
     protected static final String FILE_CONTENT = "content";
+    private XmlFormatter xmlFormatter = new XmlFormatter();
 
     public BaseCommand(String name, String tag) {
         super(name, tag);
@@ -58,4 +63,17 @@ class BaseCommand extends ExamCommand {
             }
         }
     }
+
+    protected String readFile(File dir, String file) {
+        return readFile(new File(dir + separator + file));
+    }
+
+    protected String readFile(File file) {
+        try {
+            return xmlFormatter.format(Files.toString(file, Charsets.UTF_8));
+        } catch (IOException e) {
+            return "ERROR WHILE FILE READING";
+        }
+    }
+
 }

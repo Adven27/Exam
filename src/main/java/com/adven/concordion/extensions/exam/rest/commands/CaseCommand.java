@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static com.adven.concordion.extensions.exam.PlaceholdersResolver.resolve;
 import static com.adven.concordion.extensions.exam.html.Html.*;
 import static com.adven.concordion.extensions.exam.rest.commands.RequestExecutor.fromEvaluator;
 import static com.google.common.base.Strings.isNullOrEmpty;
@@ -88,16 +87,16 @@ public class CaseCommand extends RestVerifyCommand {
             }
 
             if (cookies != null) {
-                executor.cookies(PlaceholdersResolver.resolve(cookies, eval));
+                executor.cookies(PlaceholdersResolver.resolveJson(cookies, eval));
             }
 
-            executor.urlParams(urlParams == null ? null : PlaceholdersResolver.resolve(urlParams, eval));
+            executor.urlParams(urlParams == null ? null : PlaceholdersResolver.resolveJson(urlParams, eval));
 
             Html caseTR = tr().insteadOf(root.first("case"));
             Html body = caseTR.first("body");
             if (body != null) {
                 Html td = td().insteadOf(body).css("json");
-                String bodyStr = resolve(td.text(), eval);
+                String bodyStr = PlaceholdersResolver.resolveJson(td.text(), eval);
                 td.removeAllChild().text(jsonPrinter.prettyPrint(bodyStr));
                 executor.body(bodyStr);
             }
@@ -172,7 +171,7 @@ public class CaseCommand extends RestVerifyCommand {
     }
 
     private void vf(Html root, Evaluator eval, ResultRecorder resultRecorder) {
-        final String expected = printer.prettyPrint(resolve(root.text(), eval));
+        final String expected = printer.prettyPrint(PlaceholdersResolver.resolveJson(root.text(), eval));
         root.removeAllChild().text(expected).css("json");
 
         String actual = fromEvaluator(eval).responseBody();
