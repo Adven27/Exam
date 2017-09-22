@@ -66,8 +66,20 @@ public class Html {
         return new Html("tr");
     }
 
+    public static Html trWithTDs(Html... cellElements) {
+        Html tr = tr();
+        for (Html e : cellElements) {
+            tr.childs(td(e));
+        }
+        return tr;
+    }
+
     public static Html td() {
         return new Html("td");
+    }
+
+    public static Html td(Html... childs) {
+        return new Html("td").childs(childs);
     }
 
     public static Html td(String txt) {

@@ -1,22 +1,17 @@
 package com.adven.concordion.extensions.exam.files.commands;
 
-import com.adven.concordion.extensions.exam.PlaceholdersResolver;
 import com.adven.concordion.extensions.exam.html.Html;
-import com.google.common.io.Files;
 import org.concordion.api.CommandCall;
 import org.concordion.api.Evaluator;
 import org.concordion.api.ResultRecorder;
 
 import java.io.File;
-import java.io.IOException;
 
-import static com.adven.concordion.extensions.exam.html.Html.caption;
-import static com.adven.concordion.extensions.exam.html.Html.codeXml;
-import static com.adven.concordion.extensions.exam.html.Html.span;
-import static com.google.common.base.Strings.isNullOrEmpty;
+import static com.adven.concordion.extensions.exam.PlaceholdersResolver.resolveJson;
+import static com.adven.concordion.extensions.exam.html.Html.*;
 import static com.google.common.io.Resources.getResource;
 import static java.io.File.separator;
-import static java.nio.charset.Charset.defaultCharset;
+import static java.lang.Boolean.parseBoolean;
 
 public class FilesSetCommand extends BaseCommand {
 
@@ -39,26 +34,25 @@ public class FilesSetCommand extends BaseCommand {
             for (Html f : root.childs()) {
                 if ("file".equals(f.localName())) {
                     String name = f.attr("name");
-                    String content = PlaceholdersResolver.resolveJson(getContentFor(f), evaluator).trim();
+                    String content = resolveJson(getContentFor(f), evaluator).trim();
                     createFileWith(new File(dir.getPath() + separator + name), content);
                     root.remove(f);
-                    addRow(root.el(), span(name), codeXml(content));
+                    Boolean autoFormat = parseBoolean(f.attr("autoFormat"));
+                    Boolean lineNumbers = parseBoolean(f.attr("lineNumbers"));
+
+                    root.childs(trWithTDs(
+                            span(name),
+                            codeXml(content).
+                                    attr("autoFormat", autoFormat.toString()).
+                                    attr("lineNumbers", lineNumbers.toString())
+                    ));
+
                     empty = false;
                 }
             }
             if (empty) {
                 addRow(root, EMPTY, "");
             }
-        }
-    }
-
-    private void createFileWith(File to, String content) {
-        try {
-            if (to.createNewFile() && !isNullOrEmpty(content)) {
-                Files.append(content, to, defaultCharset());
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
         }
     }
 

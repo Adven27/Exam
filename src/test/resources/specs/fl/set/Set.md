@@ -14,7 +14,7 @@
         <e:then print="true">
             <e:fl-set dir="dir">
                 <file name="empty_file"/>
-                <file name="content_from_external_file" from="data/test.xml"/>
+                <file name="content_from_external_file" from="data/test.xml" autoFormat="true" lineNumbers="true"/>
                 <file name="inline_content">${exam.now} or formatted ${exam.now:dd.MM.yyyy'T'HH:mm:ss}</file>
             </e:fl-set>
         </e:then>

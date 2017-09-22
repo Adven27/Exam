@@ -18,16 +18,19 @@ function enableCodeMirror(selector, mode) {
         jsons = document.querySelectorAll(selector);
 
     for (var i = 0; i < jsons.length; i++) {
-        value = unescape(jsons[i].innerHTML);
-        jsons[i].innerHTML = "";
+        var el = jsons[i];
+        value = unescape(el.innerHTML);
+        el.innerHTML = "";
 
-        editor = CodeMirror(jsons[i], {
-            lineNumbers: false,
+        editor = CodeMirror(el, {
+            lineNumbers: (el.getAttribute("lineNumbers") === 'true'),
             mode: mode,
             value: value,
             readOnly: true
         });
-        autoFormat(editor);
+        if (el.getAttribute("autoFormat") === 'true') {
+            autoFormat(editor);
+        }
     }
 }
 
