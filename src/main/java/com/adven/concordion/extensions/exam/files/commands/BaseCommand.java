@@ -2,12 +2,12 @@ package com.adven.concordion.extensions.exam.files.commands;
 
 import com.adven.concordion.extensions.exam.commands.ExamCommand;
 import com.adven.concordion.extensions.exam.html.Html;
-import com.google.common.base.Charsets;
 import com.google.common.io.Files;
 import org.concordion.api.Element;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.Charset;
 
 import static com.adven.concordion.extensions.exam.html.Html.*;
 import static java.io.File.separator;
@@ -69,7 +69,7 @@ class BaseCommand extends ExamCommand {
 
     protected String readFile(File file) {
         try {
-            return Files.toString(file, Charsets.UTF_8);
+            return Files.toString(file, Charset.defaultCharset());
         } catch (IOException e) {
             return "ERROR WHILE FILE READING";
         }
