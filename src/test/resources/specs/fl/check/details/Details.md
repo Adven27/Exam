@@ -21,7 +21,7 @@
                     <?xml version="1.0" encoding="UTF-8"?>
                     <list>
                         <item>two</item>
-                        <item>one</item>
+                        <item>!{str}</item>
                     </list>
                     ]]>
                 </file>
@@ -47,7 +47,7 @@
                     <?xml version="1.0" encoding="UTF-8"?>
                     <data>
                         <two>two</two>
-                        <one>one</one>
+                        <one>!{str}</one>
                     </data>
                     ]]>
                 </file>

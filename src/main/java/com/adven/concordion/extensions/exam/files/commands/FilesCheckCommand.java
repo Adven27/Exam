@@ -160,7 +160,7 @@ public class FilesCheckCommand extends BaseCommand {
 
     private boolean assertEqualsXml(String actual, String expected) {
         Diff diff = DiffBuilder.compare(expected.trim()).
-                checkForSimilar().withNodeMatcher(new DefaultNodeMatcher(ElementSelectors.byNameAndText)).
+                checkForSimilar().withNodeMatcher(new DefaultNodeMatcher(ElementSelectors.byNameAndText, ElementSelectors.byName)).
                 withTest(actual.trim()).
                 withDifferenceEvaluator(
                         chain(
