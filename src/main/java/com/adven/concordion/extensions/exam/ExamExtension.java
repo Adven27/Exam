@@ -11,26 +11,37 @@ import org.concordion.api.extension.ConcordionExtender;
 import org.concordion.api.extension.ConcordionExtension;
 import org.dbunit.JdbcDatabaseTester;
 import org.hamcrest.Matcher;
+import org.xmlunit.diff.DefaultNodeMatcher;
+import org.xmlunit.diff.NodeMatcher;
 
 import static net.javacrumbs.jsonunit.JsonAssert.when;
 import static net.javacrumbs.jsonunit.core.Option.IGNORING_ARRAY_ORDER;
+import static org.xmlunit.diff.ElementSelectors.byName;
+import static org.xmlunit.diff.ElementSelectors.byNameAndText;
 
 public class ExamExtension implements ConcordionExtension {
     public static final String NS = "http://exam.extension.io";
     private net.javacrumbs.jsonunit.core.Configuration jsonUnitCfg;
 
     private JdbcDatabaseTester dbTester;
+    private NodeMatcher nodeMatcher;
 
     public ExamExtension() {
         jsonUnitCfg = when(IGNORING_ARRAY_ORDER).
                 withMatcher("formattedAs", new DateFormatMatcher()).
                 withMatcher("formattedAndWithin", DateWithin.param()).
                 withMatcher("formattedAndWithinNow", DateWithin.now());
+        nodeMatcher = new DefaultNodeMatcher(byNameAndText, byName);
     }
 
     @SuppressWarnings("unused")
     public ExamExtension withJsonUnitMatcher(String matcherName, Matcher<?> matcher) {
         jsonUnitCfg = jsonUnitCfg.withMatcher(matcherName, matcher);
+        return this;
+    }
+
+    public ExamExtension withXmlUnitNodeMatcher(NodeMatcher nodeMatcher) {
+        this.nodeMatcher = nodeMatcher;
         return this;
     }
 
@@ -58,7 +69,7 @@ public class ExamExtension implements ConcordionExtension {
         new CodeMirrorExtension().addTo(ex);
         new BootstrapExtension().addTo(ex);
 
-        final CommandRegistry registry = new CommandRegistry(dbTester, jsonUnitCfg);
+        final CommandRegistry registry = new CommandRegistry(dbTester, jsonUnitCfg, nodeMatcher);
 
         for (ExamCommand cmd : registry.commands()) {
             if (!"example".equals(cmd.name())) {

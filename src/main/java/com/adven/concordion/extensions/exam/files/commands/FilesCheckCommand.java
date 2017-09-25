@@ -13,10 +13,7 @@ import org.concordion.api.listener.AssertFailureEvent;
 import org.concordion.api.listener.AssertSuccessEvent;
 import org.concordion.internal.util.Announcer;
 import org.xmlunit.builder.DiffBuilder;
-import org.xmlunit.diff.DefaultNodeMatcher;
-import org.xmlunit.diff.Diff;
-import org.xmlunit.diff.DifferenceEvaluators;
-import org.xmlunit.diff.ElementSelectors;
+import org.xmlunit.diff.*;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -34,11 +31,13 @@ import static org.xmlunit.diff.DifferenceEvaluators.chain;
 public class FilesCheckCommand extends BaseCommand {
     //FIXME temporary(HA!) reuse json-unit cfg for matchers retrieving
     private final Configuration jsonUnitCfg;
+    private final NodeMatcher nodeMatcher;
     private Announcer<AssertEqualsListener> listeners = Announcer.to(AssertEqualsListener.class);
 
-    public FilesCheckCommand(String name, String tag, Configuration jsonUnitCfg) {
+    public FilesCheckCommand(String name, String tag, Configuration jsonUnitCfg, NodeMatcher nodeMatcher) {
         super(name, tag);
         this.jsonUnitCfg = jsonUnitCfg;
+        this.nodeMatcher = nodeMatcher;
         listeners.addListener(new FilesResultRenderer());
     }
 
@@ -160,7 +159,7 @@ public class FilesCheckCommand extends BaseCommand {
 
     private boolean assertEqualsXml(String actual, String expected) {
         Diff diff = DiffBuilder.compare(expected.trim()).
-                checkForSimilar().withNodeMatcher(new DefaultNodeMatcher(ElementSelectors.byNameAndText, ElementSelectors.byName)).
+                checkForSimilar().withNodeMatcher(nodeMatcher).
                 withTest(actual.trim()).
                 withDifferenceEvaluator(
                         chain(
