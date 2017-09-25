@@ -3,14 +3,21 @@ package com.adven.concordion.extensions.exam.files.commands;
 import com.adven.concordion.extensions.exam.commands.ExamCommand;
 import com.adven.concordion.extensions.exam.html.Html;
 import com.google.common.io.Files;
+import lombok.Builder;
+import lombok.Data;
+import lombok.experimental.Accessors;
+import org.concordion.api.Evaluator;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 
+import static com.adven.concordion.extensions.exam.PlaceholdersResolver.resolveXml;
 import static com.adven.concordion.extensions.exam.html.Html.*;
 import static com.google.common.base.Strings.isNullOrEmpty;
+import static com.google.common.io.Resources.getResource;
 import static java.io.File.separator;
+import static java.lang.Boolean.parseBoolean;
 
 class BaseCommand extends ExamCommand {
     protected static final String EMPTY = "<EMPTY>";
@@ -72,4 +79,29 @@ class BaseCommand extends ExamCommand {
         }
     }
 
+    private String getContentFor(Html f) {
+        final String from = f.attr("from");
+        return from == null
+                ? f.hasChildren() ? f.text() : null
+                : readFile(new File(getResource(from).getFile()));
+    }
+
+    protected FileTag readFileTag(Html f, Evaluator eval) {
+        final String content = getContentFor(f);
+        return FileTag.builder().
+                name(f.attr("name")).
+                content(content == null ? null : resolveXml(content, eval).trim()).
+                autoFormat(parseBoolean(f.attr("autoFormat"))).
+                lineNumbers(parseBoolean(f.attr("lineNumbers"))).build();
+    }
+
+    @Data
+    @Builder
+    @Accessors(fluent = true)
+    static class FileTag {
+        private String name;
+        private String content;
+        private boolean autoFormat;
+        private boolean lineNumbers;
+    }
 }

@@ -12,74 +12,58 @@
         </e:fl-set>
     </e:given>
     <e:example name="Happy-path">
-            <e:then print="true">
-                <e:fl-check dir="dir">
-                    <file name="empty_file"/>
-                    <file name="not_empty_file">
-                        <data>
-                            <date>!{formattedAndWithinNow [yyyy-MM-dd'T'HH:mm:ss][1min]}</date>
-                            <list>
-                                <item>
-                                    <bool>!{bool}</bool>
-                                    <num>!{num}</num>
-                                    <float>!{num}</float>
-                                    <str>!{str}</str>
-                                    <regex>!{regex}\d\d\d</regex>
-                                    <ignore>!{ignore}</ignore>
-                                </item>
-                            </list>
-                        </data>
-                    </file>
-                </e:fl-check>
-            </e:then>
-        </e:example>
-        <e:example name="Surplus file" status="ExpectedToFail">
-            <e:then print="true">
-                <e:fl-check dir="dir">
-                    <file name="not_empty_file"/>
-                </e:fl-check>
-            </e:then>
-        </e:example>
-        <e:example name="Missing file" status="ExpectedToFail">
-            <e:then print="true">
-                <e:fl-check dir="dir">
-                    <file name="empty_file"/>
-                    <file name="missing_file"/>
-                    <file name="not_empty_file"/>
-                </e:fl-check>
-            </e:then>
-        </e:example>
-        <e:example name="Wrong file content" status="ExpectedToFail">
-            <e:then print="true">
-                <e:fl-check dir="dir">
-                    <file name="empty_file"/>
-                    <file name="not_empty_file">
-                        <data>
-                            <date>!{formattedAndWithinNow [yyyy-MM-dd'T'HH:mm:ss][1min]}</date>
-                            <list>
-                                <item>
-                                    <bool>true</bool>
-                                    <num>42</num>
-                                    <float>!{num}</float>
-                                    <str>!{str}</str>
-                                    <blank> </blank>
-                                    <regex>!{regex}\d\d</regex>
-                                    <ignore>!{ignore}</ignore>
-                                </item>
-                            </list>
-                        </data>
-                    </file>
-                </e:fl-check>
-            </e:then>
-        </e:example>
-        <e:example name="All previous checks together" status="ExpectedToFail">
-            <e:then print="true">
-                <e:fl-check dir="dir">
-                    <file name="missing_file"/>
-                    <file name="not_empty_file">
-                        <data>another content was expected</data>
-                    </file>
-                </e:fl-check>
-            </e:then>
-        </e:example>
+        <e:then print="true">
+            <e:fl-check dir="dir">
+                <file name="empty_file"/>
+                <file name="not_empty_file"><![CDATA[
+                    <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+                    <data>
+                        <date>!{formattedAndWithinNow [yyyy-MM-dd'T'HH:mm:ss][1min]}</date>
+                        <list>
+                            <item>
+                                <bool>!{bool}</bool>
+                                <num>!{num}</num>
+                                <float>!{num}</float>
+                                <str>!{str}</str>
+                                <regex>!{regex}\d\d\d</regex>
+                                <ignore>!{ignore}</ignore>
+                            </item>
+                        </list>
+                    </data>]]>
+                </file>
+            </e:fl-check>
+        </e:then>
+    </e:example>
+    <e:example name="Surplus file" status="ExpectedToFail">
+        <e:then print="true">
+            <e:fl-check dir="dir">
+                <file name="not_empty_file"/>
+            </e:fl-check>
+        </e:then>
+    </e:example>
+    <e:example name="Missing file" status="ExpectedToFail">
+        <e:then print="true">
+            <e:fl-check dir="dir">
+                <file name="empty_file"/>
+                <file name="missing_file"/>
+                <file name="not_empty_file"/>
+            </e:fl-check>
+        </e:then>
+    </e:example>
+    <e:example name="Wrong file content" status="ExpectedToFail">
+        <e:then print="true">
+            <e:fl-check dir="dir">
+                <file name="empty_file"/>
+                <file name="not_empty_file">another content was expected</file>
+            </e:fl-check>
+        </e:then>
+    </e:example>
+    <e:example name="All previous checks together" status="ExpectedToFail">
+        <e:then print="true">
+            <e:fl-check dir="dir">
+                <file name="missing_file"/>
+                <file name="not_empty_file">another content was expected</file>
+            </e:fl-check>
+        </e:then>
+    </e:example>
 </div>

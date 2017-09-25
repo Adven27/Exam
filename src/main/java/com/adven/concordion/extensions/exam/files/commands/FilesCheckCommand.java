@@ -2,7 +2,6 @@ package com.adven.concordion.extensions.exam.files.commands;
 
 import com.adven.concordion.extensions.exam.files.FilesResultRenderer;
 import com.adven.concordion.extensions.exam.html.Html;
-import com.google.common.io.CharSource;
 import net.javacrumbs.jsonunit.core.Configuration;
 import nu.xom.Builder;
 import nu.xom.Document;
@@ -24,8 +23,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import static com.adven.concordion.extensions.exam.PlaceholdersResolver.resolveXml;
 import static com.adven.concordion.extensions.exam.html.Html.*;
+import static com.google.common.base.Strings.isNullOrEmpty;
 import static java.io.File.separator;
 import static java.util.Arrays.asList;
 import static org.xmlunit.diff.DifferenceEvaluators.chain;
@@ -57,11 +56,10 @@ public class FilesCheckCommand extends BaseCommand {
             boolean empty = true;
             for (Html f : root.childs()) {
                 if ("file".equals(f.localName())) {
-                    final String expectedName = f.attr("name");
+                    final FileTag fileTag = readFileTag(f, evaluator);
+                    final String expectedName = fileTag.name();
                     File actual = new File(dir + separator + expectedName);
-                    Html tr = tr();
                     Html fileNameTD = td(expectedName);
-                    tr.childs(fileNameTD);
                     Html pre = codeXml("");
                     if (!actual.exists()) {
                         resultRecorder.record(Result.FAILURE);
@@ -70,23 +68,30 @@ public class FilesCheckCommand extends BaseCommand {
                         resultRecorder.record(Result.SUCCESS);
                         announceSuccess(fileNameTD.el());
                         surplusFiles.remove(expectedName);
-                        if (f.hasChildren()) {
-                            f.moveChildrenTo(pre);
-                            f.moveAttributesTo(pre);
-                            checkContent(actual, evaluator, resultRecorder, pre.el());
-                        } else {
+
+                        if (fileTag.content() == null) {
                             String id = UUID.randomUUID().toString();
-                            pre = div().childs(
-                                    buttonCollapse("show", id).style("width:100%"),
-                                    div().attr("id", id).css("file collapse").childs(
-                                            pre.text(readFile(dir, expectedName))
-                                    )
-                            );
+                            final String content = readFile(dir, expectedName);
+                            if (!isNullOrEmpty(content)) {
+                                pre = div().childs(
+                                        buttonCollapse("show", id).style("width:100%"),
+                                        div().attr("id", id).css("file collapse").childs(
+                                                pre.text(content)
+                                        )
+                                );
+                            }
+                        } else {
+                            checkContent(actual, fileTag.content(), resultRecorder, pre.text(fileTag.content()).el());
                         }
                     }
-                    Html td = td().childs(pre);
-                    tr.childs(td);
-                    root.childs(tr).remove(f);
+                    root.childs(
+                            tr().childs(
+                                    fileNameTD,
+                                    td(pre.
+                                            attr("autoFormat", String.valueOf(fileTag.autoFormat())).
+                                            attr("lineNumbers", String.valueOf(fileTag.lineNumbers())))
+                            )
+                    ).remove(f);
                     empty = false;
                 }
             }
@@ -108,17 +113,7 @@ public class FilesCheckCommand extends BaseCommand {
         }
     }
 
-    private void checkContent(File actual, Evaluator evaluator, ResultRecorder resultRecorder, Element element) {
-        StringBuilder xml = new StringBuilder();
-
-        Element[] child = element.getChildElements();
-        for (Element aChild : child) {
-            xml.append(aChild.toXML());
-        }
-        element.moveChildrenTo(new Element("tmp"));
-        String expected = prettyPrint(documentFrom(resolveXml(xml.toString(), evaluator)));
-        element.appendText(expected);
-
+    private void checkContent(File actual, String expected, ResultRecorder resultRecorder, Element element) {
         if (!actual.exists()) {
             xmlDoesNotEqual(resultRecorder, element, "(not set)", expected);
             return;
@@ -137,14 +132,6 @@ public class FilesCheckCommand extends BaseCommand {
         }
     }
 
-    private Document documentFrom(String xml) {
-        try {
-            return new Builder().build(CharSource.wrap(xml).openStream());
-        } catch (ParsingException | IOException e) {
-            throw new RuntimeException("invalid xml", e);
-        }
-    }
-
     private Document documentFrom(File xml) {
         try {
             return new Builder().build(xml);
@@ -160,22 +147,22 @@ public class FilesCheckCommand extends BaseCommand {
             serializer.setIndent(4);
             serializer.write(document);
             String pretty = out.toString("UTF-8");
-            return pretty.substring(pretty.indexOf('\n') + 1); // replace first line
+            return pretty;
         } catch (Exception e) {
             throw new RuntimeException("invalid xml", e);
         }
     }
 
     private boolean assertEqualsXml(String actual, String expected) {
-        Diff diff = DiffBuilder.compare(expected).
-                withTest(actual).
+        Diff diff = DiffBuilder.compare(expected.trim()).
+                withTest(actual.trim()).
                 withDifferenceEvaluator(
                         chain(
                                 DifferenceEvaluators.Default,
                                 new PlaceholderSupportDiffEvaluator(jsonUnitCfg)
                         )
                 ).
-                ignoreComments().
+                ignoreComments().ignoreWhitespace().
                 build();
 
         //FIXME Reports are visible only on logs, show them in spec too

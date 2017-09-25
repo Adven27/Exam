@@ -245,7 +245,7 @@
         if (dv.svg) {
             clear(dv.svg);
             var w = dv.gap.offsetWidth;
-            attrs(dv.svg, "width", w, "height", dv.gap.offsetHeight);
+            attrs(dv.svg, "width", w, "height", dv.gap.nextSibling.offsetHeight);
         }
         clear(dv.copyButtons);
 
