@@ -15,22 +15,7 @@
         <e:then print="true">
             <e:fl-check dir="dir">
                 <file name="empty_file"/>
-                <file name="not_empty_file"><![CDATA[
-                    <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-                    <data>
-                        <date>!{formattedAndWithinNow [yyyy-MM-dd'T'HH:mm:ss][1min]}</date>
-                        <list>
-                            <item>
-                                <bool>!{bool}</bool>
-                                <num>!{num}</num>
-                                <float>!{num}</float>
-                                <str>!{str}</str>
-                                <regex>!{regex}\d\d\d</regex>
-                                <ignore>!{ignore}</ignore>
-                            </item>
-                        </list>
-                    </data>]]>
-                </file>
+                <file name="not_empty_file" from="data/actual.xml"/>
             </e:fl-check>
         </e:then>
     </e:example>
@@ -65,5 +50,10 @@
                 <file name="not_empty_file">another content was expected</file>
             </e:fl-check>
         </e:then>
+    </e:example>
+    <e:example name="Details">
+        <ol>
+            <li><a c:run="concordion" href="details/Details.html">File comparing details</a></li>
+        </ol>
     </e:example>
 </div>
