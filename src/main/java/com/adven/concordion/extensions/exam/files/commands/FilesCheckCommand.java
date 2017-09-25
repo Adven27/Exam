@@ -13,8 +13,10 @@ import org.concordion.api.listener.AssertFailureEvent;
 import org.concordion.api.listener.AssertSuccessEvent;
 import org.concordion.internal.util.Announcer;
 import org.xmlunit.builder.DiffBuilder;
+import org.xmlunit.diff.DefaultNodeMatcher;
 import org.xmlunit.diff.Diff;
 import org.xmlunit.diff.DifferenceEvaluators;
+import org.xmlunit.diff.ElementSelectors;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -40,6 +42,9 @@ public class FilesCheckCommand extends BaseCommand {
         listeners.addListener(new FilesResultRenderer());
     }
 
+    /**
+     * {@inheritDoc}.
+     */
     public void verify(CommandCall commandCall, Evaluator evaluator, ResultRecorder resultRecorder) {
         Html root = Html.tableSlim(commandCall.getElement());
 
@@ -155,6 +160,7 @@ public class FilesCheckCommand extends BaseCommand {
 
     private boolean assertEqualsXml(String actual, String expected) {
         Diff diff = DiffBuilder.compare(expected.trim()).
+                checkForSimilar().withNodeMatcher(new DefaultNodeMatcher(ElementSelectors.byNameAndText)).
                 withTest(actual.trim()).
                 withDifferenceEvaluator(
                         chain(
@@ -178,8 +184,6 @@ public class FilesCheckCommand extends BaseCommand {
     }
 
     private void xmlDoesNotEqual(ResultRecorder resultRecorder, Element element, String actual, String expected) {
-        //FIXME если добавлять всегда, то в случае успешной проверки блок с ожидаемым результатом почему-то пропадает
-        element.addStyleClass("xml");
         resultRecorder.record(Result.FAILURE);
         announceFailure(element, expected, actual);
     }
