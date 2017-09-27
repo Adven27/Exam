@@ -5,10 +5,14 @@ import org.concordion.api.Evaluator;
 import org.joda.time.Period;
 import org.junit.Test;
 
+import java.util.Date;
+
 import static com.adven.concordion.extensions.exam.PlaceholdersResolver.resolveJson;
 import static com.adven.concordion.extensions.exam.PlaceholdersResolver.resolveToObj;
 import static org.hamcrest.Matchers.is;
+import static org.joda.time.LocalDateTime.fromDateFields;
 import static org.joda.time.LocalDateTime.now;
+import static org.joda.time.format.DateTimeFormat.forPattern;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -37,6 +41,15 @@ public class PlaceholdersResolverTest {
         when(eval.getVariable("#value")).thenReturn(3);
 
         assertThat(resolveJson("${#value}", eval), is("3"));
+    }
+
+    @Test
+    public void canFormatConcordionVars() throws Exception {
+        Date date = new Date();
+        when(eval.getVariable("#value")).thenReturn(date);
+
+        String expected = forPattern("dd.MM.yyyy").print(fromDateFields(date));
+        assertThat(resolveJson("${#value:dd.MM.yyyy}", eval), is(expected));
     }
 
     @Test
