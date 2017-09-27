@@ -28,6 +28,7 @@ public class CommandRegistry {
                 new ThenCommand("div"),
 
                 new ExamExampleCommand("div"),
+                new ExamBeforeExampleCommand("div"),
                 new ExamplesSummaryCommand("summary", "div"),
 
                 new CaseCheckCommand("check", "div"),
@@ -45,7 +46,9 @@ public class CommandRegistry {
                 new CaseCommand("tr", jsonUnitCfg),
                 new ExpectedStatusCommand("rs-status", "code"),
 
-                new BrowserCommand("div")
+                new BrowserCommand("div"),
+
+                new SetVarCommand("div")
         );
     }
 

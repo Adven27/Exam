@@ -2,13 +2,22 @@
 
 <div print="true">
     <e:summary title="Custom title"/>
-    <e:given>Given</e:given>
+    <e:given>
+        <e:set var="myOuterVar" value="${exam.now}"/>
+    </e:given>
     <e:when>When</e:when>
     <e:then>Then</e:then>
     <e:example name="Some example 1">
-        <e:given>Given</e:given>
+        <e:given>
+            <e:set var="myInnerVar" value="${exam.now}"/>
+        </e:given>
         <e:when>When</e:when>
-        <e:then>Then</e:then>
+        <e:then>
+            <var>#myOuterVar</var><code c:echo="#myOuterVar"/>
+            <var>#myInnerVar</var><code c:echo="#myInnerVar"/>
+        </e:then>
     </e:example>
     <e:example name="Some example 2"/>
+    <var>#myOuterVar</var><code c:echo="#myOuterVar"/>
+    <var>#myInnerVar</var><code c:echo="#myInnerVar"/>
 </div>

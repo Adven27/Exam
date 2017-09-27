@@ -7,6 +7,7 @@ import com.adven.concordion.extensions.exam.configurators.RestAssuredCfg;
 import com.adven.concordion.extensions.exam.configurators.WebDriverCfg;
 import com.adven.concordion.extensions.exam.rest.DateFormatMatcher;
 import com.adven.concordion.extensions.exam.rest.DateWithin;
+import net.javacrumbs.jsonunit.core.Configuration;
 import org.concordion.api.extension.ConcordionExtender;
 import org.concordion.api.extension.ConcordionExtension;
 import org.dbunit.JdbcDatabaseTester;
@@ -21,17 +22,19 @@ import static org.xmlunit.diff.ElementSelectors.byNameAndText;
 
 public class ExamExtension implements ConcordionExtension {
     public static final String NS = "http://exam.extension.io";
+    public static final DefaultNodeMatcher DEFAULT_NODE_MATCHER = new DefaultNodeMatcher(byNameAndText, byName);
+    public static final Configuration DEFAULT_JSON_UNIT_CFG = when(IGNORING_ARRAY_ORDER).
+            withMatcher("formattedAs", new DateFormatMatcher()).
+            withMatcher("formattedAndWithin", DateWithin.param()).
+            withMatcher("formattedAndWithinNow", DateWithin.now());
     private net.javacrumbs.jsonunit.core.Configuration jsonUnitCfg;
 
     private JdbcDatabaseTester dbTester;
     private NodeMatcher nodeMatcher;
 
     public ExamExtension() {
-        jsonUnitCfg = when(IGNORING_ARRAY_ORDER).
-                withMatcher("formattedAs", new DateFormatMatcher()).
-                withMatcher("formattedAndWithin", DateWithin.param()).
-                withMatcher("formattedAndWithinNow", DateWithin.now());
-        nodeMatcher = new DefaultNodeMatcher(byNameAndText, byName);
+        jsonUnitCfg = DEFAULT_JSON_UNIT_CFG;
+        nodeMatcher = DEFAULT_NODE_MATCHER;
     }
 
     @SuppressWarnings("unused")
