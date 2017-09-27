@@ -39,19 +39,16 @@ public class PlaceholdersResolver {
         while (body.contains(PREFIX_VAR)) {
             String original = body;
             String var = extractVarFrom(original, PREFIX_VAR);
-            if (var.contains(":")) {
-                String[] varAndFormat = var.split(":", 2);
-                String date = forPattern(varAndFormat[1]).print(fromDateFields((Date) getObject(eval, varAndFormat[0])));
-                original = original.replace(PREFIX_VAR + var + POSTFIX, date);
-            } else {
-                original = original.replace(PREFIX_VAR + var + POSTFIX, getObject(eval, var).toString());
-            }
-            body = original;
+            body = original.replace(PREFIX_VAR + var + POSTFIX, getObject(eval, var).toString());
         }
         return body;
     }
 
     private static Object getObject(Evaluator eval, String var) {
+        if (var.contains(":")) {
+            String[] varAndFormat = var.split(":", 2);
+            return forPattern(varAndFormat[1]).print(fromDateFields((Date) getObject(eval, varAndFormat[0])));
+        }
         Object variable = eval.getVariable("#" + var);
         return variable == null ? eval.evaluate(var.contains(".") ? "#" + var : var) : variable;
     }

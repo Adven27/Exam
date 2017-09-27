@@ -48,8 +48,17 @@ public class PlaceholdersResolverTest {
         Date date = new Date();
         when(eval.getVariable("#value")).thenReturn(date);
 
-        String expected = forPattern("dd.MM.yyyy").print(fromDateFields(date));
-        assertThat(resolveJson("${#value:dd.MM.yyyy}", eval), is(expected));
+        String expected = forPattern("dd.MM.yyyy HH:mm:ss").print(fromDateFields(date));
+        assertThat(resolveJson("${#value:dd.MM.yyyy HH:mm:ss}", eval), is(expected));
+    }
+
+    @Test
+    public void resolveToObj_shouldResolveFormattedConcordionVarToString() throws Exception {
+        Date date = new Date();
+        when(eval.getVariable("#value")).thenReturn(date);
+
+        String expected = forPattern("dd.MM.yyyy HH:mm:ss").print(fromDateFields(date));
+        assertThat(resolveToObj("${#value:dd.MM.yyyy HH:mm:ss}", eval).toString(), is(expected));
     }
 
     @Test
