@@ -36,7 +36,7 @@ public class PlaceholdersResolverTest {
     public void canUseConcordionVars() throws Exception {
         when(eval.getVariable("#value")).thenReturn(3);
 
-        assertThat(resolveJson("${var.value}", eval), is("3"));
+        assertThat(resolveJson("${#value}", eval), is("3"));
     }
 
     @Test

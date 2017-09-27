@@ -15,7 +15,7 @@ import static org.joda.time.format.DateTimeFormat.forPattern;
 public class PlaceholdersResolver {
     private static final String PREFIX_JSON_UNIT_ALIAS = "!{";
     private static final String PREFIX_EXAM = "${exam.";
-    private static final String PREFIX_VAR = "${var.";
+    private static final String PREFIX_VAR = "${#";
     private static final char POSTFIX = '}';
 
     public static String resolveJson(String body, Evaluator eval) {
@@ -38,7 +38,7 @@ public class PlaceholdersResolver {
     private static String resolveVars(String body, Evaluator eval) {
         while (body.contains(PREFIX_VAR)) {
             String original = body;
-            String var = extractVarFrom(original, "var");
+            String var = extractVarFrom(original, PREFIX_VAR);
             body = original.replace(PREFIX_VAR + var + POSTFIX, getObject(eval, var).toString());
         }
         return body;
@@ -52,7 +52,7 @@ public class PlaceholdersResolver {
     private static String resolveExamCommands(String body) {
         while (body.contains(PREFIX_EXAM)) {
             String original = body;
-            String var = extractVarFrom(original, "exam");
+            String var = extractVarFrom(original, PREFIX_EXAM);
             if (var.contains(":")) {
                 String[] varAndFormat = var.split(":", 2);
                 String date = forPattern(varAndFormat[1]).print(fromDateFields((Date) constants(varAndFormat[0])));
@@ -184,9 +184,9 @@ public class PlaceholdersResolver {
 
     public static Object resolveToObj(String placeholder, Evaluator evaluator) {
         if (placeholder.contains(PREFIX_VAR)) {
-            return getObject(evaluator, extractVarFrom(placeholder, "var"));
+            return getObject(evaluator, extractVarFrom(placeholder, PREFIX_VAR));
         } else if (placeholder.contains(PREFIX_EXAM)) {
-            return constants(extractVarFrom(placeholder, "exam"));
+            return constants(extractVarFrom(placeholder, PREFIX_EXAM));
         } else if (Range.isRange(placeholder)) {
             return Range.from(placeholder);
         }
@@ -194,8 +194,8 @@ public class PlaceholdersResolver {
     }
 
     private static String extractVarFrom(String placeholder, final String namespace) {
-        String s = placeholder.substring(placeholder.indexOf("${" + namespace + "."));
-        return s.substring(s.indexOf('.') + 1, s.indexOf(POSTFIX));
+        String s = placeholder.substring(placeholder.indexOf(namespace));
+        return s.substring(namespace.length(), s.indexOf(POSTFIX));
     }
 
     private static String extractFromAlias(String placeholder) {

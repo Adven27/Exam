@@ -50,7 +50,7 @@
                     }
                 </expected>
             </e:case>
-            <e:case cookies="cook=${var.url},anotherCook=asd" desc="Placeholders can be used">
+            <e:case cookies="cook=${#url},anotherCook=asd" desc="Placeholders can be used">
                 <expected>
                     {
                       "get": "/relative/url",
@@ -69,7 +69,7 @@
                     </ol>
                 </e:check>
             </e:case>
-            <e:case cookies="${var.exam_response.cookies()}" desc="If @FullOGNL is enabled, response fields can be accessed, e.g. ${var.exam_response.cookies()}">
+            <e:case cookies="${#exam_response.cookies()}" desc="If @FullOGNL is enabled, response fields can be accessed, e.g. ${#exam_response.cookies()}">
                 <expected>
                     {
                       "get": "/relative/url",

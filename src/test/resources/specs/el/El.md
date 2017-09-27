@@ -8,7 +8,7 @@
         <e:post url="some/url" type="text/plain" print="true">
             <e:case desc="You can have access to concordion variables with ">
                 <body>
-                    {"var": "${var.someVar}"}
+                    {"var": "${#someVar}"}
                 </body>
                 <expected>
                     {"var": "someValue"}

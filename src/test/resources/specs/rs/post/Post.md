@@ -33,7 +33,7 @@
         <e:post url="status/400" type="text/plain">
             <e:case desc="Placeholders can be used inside body block">
                 <body>
-                    {"url": "${var.url}", "template": 1}
+                    {"url": "${#url}", "template": 1}
                 </body>
                 <expected>
                     {"url": "status/400", "template": "!{number}"}
@@ -59,7 +59,7 @@
                     }
                 </expected>
             </e:case>
-            <e:case cookies="cook=${var.url}" desc="Placeholders can be used">
+            <e:case cookies="cook=${#url}" desc="Placeholders can be used">
                 <body/>
                 <expected>
                     {
