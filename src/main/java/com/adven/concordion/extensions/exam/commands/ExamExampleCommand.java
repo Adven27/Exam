@@ -1,12 +1,12 @@
-package com.adven.concordion.extensions.exam;
+package com.adven.concordion.extensions.exam.commands;
 
-import com.adven.concordion.extensions.exam.commands.ExamCommand;
 import com.adven.concordion.extensions.exam.html.Html;
 import nu.xom.Attribute;
 import nu.xom.Element;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static org.concordion.api.ImplementationStatus.*;
+import static org.concordion.internal.ConcordionBuilder.NAMESPACE_CONCORDION_2007;
 
 public class ExamExampleCommand extends ExamCommand {
     public ExamExampleCommand(String tag) {
@@ -22,7 +22,7 @@ public class ExamExampleCommand extends ExamCommand {
     private void transformToConcordionExample(Element elem) {
         String name = elem.getAttributeValue("name");
         Attribute exampleAttr = new Attribute("example", name);
-        exampleAttr.setNamespace("c", "http://www.concordion.org/2007/concordion");
+        exampleAttr.setNamespace("c", NAMESPACE_CONCORDION_2007);
         elem.addAttribute(exampleAttr);
 
         String status = UNIMPLEMENTED.getTag();
@@ -54,7 +54,7 @@ public class ExamExampleCommand extends ExamCommand {
     private void addStatus(Element elem, String val) {
         if (!isNullOrEmpty(val)) {
             Attribute statusAttr = new Attribute("status", val);
-            statusAttr.setNamespace("c", "http://www.concordion.org/2007/concordion");
+            statusAttr.setNamespace("c", NAMESPACE_CONCORDION_2007);
             elem.addAttribute(statusAttr);
         }
     }

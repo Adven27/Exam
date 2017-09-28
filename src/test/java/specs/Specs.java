@@ -17,8 +17,10 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 
+import static org.concordion.internal.ConcordionBuilder.NAMESPACE_CONCORDION_2007;
+
 @RunWith(ConcordionRunner.class)
-@ConcordionOptions(declareNamespaces = {"c", "http://www.concordion.org/2007/concordion", "e", ExamExtension.NS})
+@ConcordionOptions(declareNamespaces = {"c", NAMESPACE_CONCORDION_2007, "e", ExamExtension.NS})
 public class Specs {
     private static final int PORT = 8081;
     private static Server server;
