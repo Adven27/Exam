@@ -7,13 +7,17 @@ import com.adven.concordion.extensions.exam.configurators.RestAssuredCfg;
 import com.adven.concordion.extensions.exam.configurators.WebDriverCfg;
 import com.adven.concordion.extensions.exam.rest.DateFormatMatcher;
 import com.adven.concordion.extensions.exam.rest.DateWithin;
+import com.adven.concordion.extensions.exam.rest.XMLDateWithin;
 import net.javacrumbs.jsonunit.core.Configuration;
 import org.concordion.api.extension.ConcordionExtender;
 import org.concordion.api.extension.ConcordionExtension;
-import org.dbunit.JdbcDatabaseTester;
+import org.dbunit.DataSourceDatabaseTester;
+import org.dbunit.IDatabaseTester;
 import org.hamcrest.Matcher;
 import org.xmlunit.diff.DefaultNodeMatcher;
 import org.xmlunit.diff.NodeMatcher;
+
+import javax.sql.DataSource;
 
 import static net.javacrumbs.jsonunit.JsonAssert.when;
 import static net.javacrumbs.jsonunit.core.Option.IGNORING_ARRAY_ORDER;
@@ -26,10 +30,11 @@ public class ExamExtension implements ConcordionExtension {
     public static final Configuration DEFAULT_JSON_UNIT_CFG = when(IGNORING_ARRAY_ORDER).
             withMatcher("formattedAs", new DateFormatMatcher()).
             withMatcher("formattedAndWithin", DateWithin.param()).
-            withMatcher("formattedAndWithinNow", DateWithin.now());
+            withMatcher("formattedAndWithinNow", DateWithin.now()).
+            withMatcher("xmlDateWithinNow", new XMLDateWithin());
     private net.javacrumbs.jsonunit.core.Configuration jsonUnitCfg;
 
-    private JdbcDatabaseTester dbTester;
+    private IDatabaseTester dbTester;
     private NodeMatcher nodeMatcher;
 
     public ExamExtension() {
@@ -38,7 +43,14 @@ public class ExamExtension implements ConcordionExtension {
     }
 
     @SuppressWarnings("unused")
-    public ExamExtension withJsonUnitMatcher(String matcherName, Matcher<?> matcher) {
+    /**
+     * matcherName - name to reference in placeholder
+     * matcher - implementation
+     * usage example:
+     *              matcherName↓    ↓parameter
+     * <datetime>!{xmlDateWithinNow 1min}</datetime>
+     */
+    public ExamExtension addPlaceholderMatcher(String matcherName, Matcher<?> matcher) {
         jsonUnitCfg = jsonUnitCfg.withMatcher(matcherName, matcher);
         return this;
     }
@@ -53,16 +65,28 @@ public class ExamExtension implements ConcordionExtension {
         return new WebDriverCfg(this);
     }
 
+    @SuppressWarnings("unused")
     public RestAssuredCfg rest() {
         return new RestAssuredCfg(this);
     }
 
+    @SuppressWarnings("unused")
+    public RestAssuredCfg rest(String url) {
+        return new RestAssuredCfg(this, url);
+    }
+
+    @SuppressWarnings("unused")
     public DbTester db() {
         return new DbTester(this);
     }
 
     @SuppressWarnings("unused")
-    public ExamExtension dbTester(JdbcDatabaseTester dbTester) {
+    public ExamExtension db(DataSource dataSource) {
+        return dbTester(new DataSourceDatabaseTester(dataSource));
+    }
+
+    @SuppressWarnings("unused")
+    public ExamExtension dbTester(IDatabaseTester dbTester) {
         this.dbTester = dbTester;
         return this;
     }

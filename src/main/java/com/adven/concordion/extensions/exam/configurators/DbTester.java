@@ -6,10 +6,10 @@ import org.dbunit.JdbcDatabaseTester;
 import java.util.Properties;
 
 public class DbTester {
-    String driver = "org.h2.Driver";
-    String url = "jdbc:h2:mem:test;INIT=CREATE SCHEMA IF NOT EXISTS SA\\;SET SCHEMA SA";
-    String user = "sa";
-    String password = "";
+    private String driver = "org.h2.Driver";
+    private String url = "jdbc:h2:mem:test;INIT=CREATE SCHEMA IF NOT EXISTS SA\\;SET SCHEMA SA";
+    private String user = "sa";
+    private String password = "";
 
     private final ExamExtension extension;
 
@@ -49,7 +49,7 @@ public class DbTester {
         try {
             extension.dbTester(new JdbcDatabaseTester(driver, url, user, password));
         } catch (ClassNotFoundException e) {
-            throw new RuntimeException("Failure while initializing JdbcDatabaseTester", e);
+            throw new RuntimeException("Failure while initializing IDatabaseTester", e);
         }
         return extension;
     }

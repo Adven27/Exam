@@ -3,6 +3,9 @@ package com.adven.concordion.extensions.exam.configurators;
 import com.adven.concordion.extensions.exam.ExamExtension;
 import com.jayway.restassured.RestAssured;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+
 public class RestAssuredCfg {
     private final ExamExtension extension;
     private String uri;
@@ -10,6 +13,16 @@ public class RestAssuredCfg {
     private Integer port;
 
     public RestAssuredCfg(ExamExtension extension) {
+        this(extension, null);
+    }
+
+    public RestAssuredCfg(ExamExtension extension, String url) {
+        if (url != null) {
+            URI uri = fromUri(url);
+            this.uri = "http://" + uri.getHost();
+            this.port = uri.getPort();
+            this.context = uri.getPath();
+        }
         this.extension = extension;
     }
 
@@ -42,6 +55,14 @@ public class RestAssuredCfg {
         }
         if (port != null) {
             RestAssured.port = port;
+        }
+    }
+
+    private URI fromUri(String url) {
+        try {
+            return new URI(url);
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
         }
     }
 }

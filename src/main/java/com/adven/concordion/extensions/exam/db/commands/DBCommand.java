@@ -7,7 +7,7 @@ import com.adven.concordion.extensions.exam.html.Html;
 import org.concordion.api.CommandCall;
 import org.concordion.api.Evaluator;
 import org.concordion.api.ResultRecorder;
-import org.dbunit.JdbcDatabaseTester;
+import org.dbunit.IDatabaseTester;
 import org.dbunit.dataset.Column;
 import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.ITable;
@@ -19,12 +19,12 @@ import static com.adven.concordion.extensions.exam.html.Html.*;
 import static com.google.common.base.Strings.isNullOrEmpty;
 
 public class DBCommand extends ExamCommand {
-    protected final JdbcDatabaseTester dbTester;
+    protected final IDatabaseTester dbTester;
     private final Map<String, String> remarks = new HashMap<>();
     protected ITable expectedTable;
     private String valuesSeparator = ",";
 
-    public DBCommand(String name, String tag, JdbcDatabaseTester dbTester) {
+    public DBCommand(String name, String tag, IDatabaseTester dbTester) {
         super(name, tag);
         this.dbTester = dbTester;
     }

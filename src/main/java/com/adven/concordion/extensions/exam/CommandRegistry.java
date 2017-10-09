@@ -10,7 +10,7 @@ import com.adven.concordion.extensions.exam.files.commands.FilesShowCommand;
 import com.adven.concordion.extensions.exam.rest.commands.*;
 import com.adven.concordion.extensions.exam.ui.BrowserCommand;
 import net.javacrumbs.jsonunit.core.Configuration;
-import org.dbunit.JdbcDatabaseTester;
+import org.dbunit.IDatabaseTester;
 import org.xmlunit.diff.NodeMatcher;
 
 import java.util.ArrayList;
@@ -21,7 +21,7 @@ import static java.util.Arrays.asList;
 public class CommandRegistry {
     private final List<ExamCommand> commands;
 
-    public CommandRegistry(JdbcDatabaseTester dbTester, Configuration jsonUnitCfg, NodeMatcher nodeMatcher) {
+    public CommandRegistry(IDatabaseTester dbTester, Configuration jsonUnitCfg, NodeMatcher nodeMatcher) {
         commands = asList(
                 new GivenCommand("div"),
                 new WhenCommand("div"),

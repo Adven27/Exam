@@ -4,7 +4,7 @@ import com.adven.concordion.extensions.exam.html.Html;
 import org.concordion.api.CommandCall;
 import org.concordion.api.Evaluator;
 import org.concordion.api.ResultRecorder;
-import org.dbunit.JdbcDatabaseTester;
+import org.dbunit.IDatabaseTester;
 import org.dbunit.database.IDatabaseConnection;
 import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.IRowValueProvider;
@@ -21,7 +21,7 @@ import static org.dbunit.dataset.filter.DefaultColumnFilter.includedColumnsTable
 
 public class DBShowCommand extends DBCommand {
 
-    public DBShowCommand(String name, String tag, JdbcDatabaseTester dbTester) {
+    public DBShowCommand(String name, String tag, IDatabaseTester dbTester) {
         super(name, tag, dbTester);
     }
 

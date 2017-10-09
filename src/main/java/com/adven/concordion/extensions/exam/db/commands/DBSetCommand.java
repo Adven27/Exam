@@ -4,7 +4,7 @@ import com.adven.concordion.extensions.exam.html.Html;
 import org.concordion.api.CommandCall;
 import org.concordion.api.Evaluator;
 import org.concordion.api.ResultRecorder;
-import org.dbunit.JdbcDatabaseTester;
+import org.dbunit.IDatabaseTester;
 import org.dbunit.database.IDatabaseConnection;
 import org.dbunit.dataset.DefaultDataSet;
 import org.dbunit.dataset.ITable;
@@ -14,7 +14,7 @@ import static org.dbunit.operation.DatabaseOperation.CLEAN_INSERT;
 import static org.dbunit.operation.DatabaseOperation.INSERT;
 
 public class DBSetCommand extends DBCommand {
-    public DBSetCommand(String name, String tag, JdbcDatabaseTester dbTester) {
+    public DBSetCommand(String name, String tag, IDatabaseTester dbTester) {
         super(name, tag, dbTester);
     }
 

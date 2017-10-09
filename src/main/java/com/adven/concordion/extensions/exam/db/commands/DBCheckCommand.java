@@ -11,7 +11,7 @@ import org.concordion.api.listener.AssertFailureEvent;
 import org.concordion.api.listener.AssertSuccessEvent;
 import org.concordion.internal.util.Announcer;
 import org.dbunit.DatabaseUnitException;
-import org.dbunit.JdbcDatabaseTester;
+import org.dbunit.IDatabaseTester;
 import org.dbunit.assertion.DbComparisonFailure;
 import org.dbunit.assertion.DiffCollectingFailureHandler;
 import org.dbunit.assertion.Difference;
@@ -32,7 +32,7 @@ import static org.dbunit.dataset.filter.DefaultColumnFilter.includedColumnsTable
 public class DBCheckCommand extends DBCommand {
     private Announcer<AssertEqualsListener> listeners = Announcer.to(AssertEqualsListener.class);
 
-    public DBCheckCommand(String name, String tag, JdbcDatabaseTester dbTester) {
+    public DBCheckCommand(String name, String tag, IDatabaseTester dbTester) {
         super(name, tag, dbTester);
         listeners.addListener(new DbResultRenderer());
     }
