@@ -2,6 +2,7 @@ package com.adven.concordion.extensions.exam.rest.commands;
 
 import com.adven.concordion.extensions.exam.PlaceholdersResolver;
 import com.adven.concordion.extensions.exam.html.Html;
+import com.adven.concordion.extensions.exam.html.RowParser;
 import com.adven.concordion.extensions.exam.rest.JsonPrettyPrinter;
 import com.jayway.restassured.response.Response;
 import net.javacrumbs.jsonunit.core.Configuration;
@@ -25,8 +26,12 @@ public class CaseCommand extends RestVerifyCommand {
     private static final String DESC = "desc";
     private static final String URL_PARAMS = "urlParams";
     private static final String COOKIES = "cookies";
-    private static final String VARIABLES = "variables";
-    private static final String VALUES = "values";
+    private static final String VARIABLES = "vars";
+    private static final String VALUES = "vals";
+    private static final String BODY = "body";
+    private static final String EXPECTED = "expected";
+    private static final String WHERE = "where";
+
     private final JsonPrettyPrinter jsonPrinter = new JsonPrettyPrinter();
     private List<Map<String, Object>> cases = new ArrayList<>();
     private int number = 0;
@@ -41,16 +46,13 @@ public class CaseCommand extends RestVerifyCommand {
     public void setUp(CommandCall commandCall, Evaluator eval, ResultRecorder resultRecorder) {
         Html caseRoot = new Html(commandCall.getElement());
         cases.clear();
-        String params = caseRoot.takeAwayAttr(VARIABLES, eval);
-        String values = caseRoot.takeAwayAttr(VALUES, eval);
-        if (!isNullOrEmpty(params)) {
-            String[] names = params.split(":");
-            String[] vals = values.split(",");
-            for (String val : vals) {
-                String[] vals4Name = val.split(":");
+        final Html where = caseRoot.first(WHERE);
+        if (where != null) {
+            String[] names = where.takeAwayAttr(VARIABLES, eval).split(",");
+            for (List<Object> val : new RowParser(where, VALUES, eval).parse()) {
                 Map<String, Object> caseParams = new HashedMap();
                 for (int j = 0; j < names.length; j++) {
-                    caseParams.put("#" + names[j], vals4Name[j]);
+                    caseParams.put("#" + names[j].trim(), val.get(j));
                 }
                 cases.add(caseParams);
             }
@@ -58,8 +60,8 @@ public class CaseCommand extends RestVerifyCommand {
             cases.add(new HashedMap());
         }
 
-        Html body = caseRoot.first("body");
-        Html expected = caseRoot.first("expected");
+        Html body = caseRoot.first(BODY);
+        Html expected = caseRoot.first(EXPECTED);
         caseRoot.remove(body, expected);
         for (Map<String, Object> ignored : cases) {
             caseRoot.childs(
@@ -69,7 +71,6 @@ public class CaseCommand extends RestVerifyCommand {
                     )
             );
         }
-
     }
 
     @Override

@@ -4,6 +4,7 @@ import com.adven.concordion.extensions.exam.PlaceholdersResolver;
 import com.adven.concordion.extensions.exam.commands.ExamCommand;
 import com.adven.concordion.extensions.exam.db.TableData;
 import com.adven.concordion.extensions.exam.html.Html;
+import com.adven.concordion.extensions.exam.html.RowParser;
 import org.concordion.api.CommandCall;
 import org.concordion.api.Evaluator;
 import org.concordion.api.ResultRecorder;
@@ -14,7 +15,6 @@ import org.dbunit.dataset.ITable;
 
 import java.util.*;
 
-import static com.adven.concordion.extensions.exam.PlaceholdersResolver.resolveToObj;
 import static com.adven.concordion.extensions.exam.html.Html.*;
 import static com.google.common.base.Strings.isNullOrEmpty;
 
@@ -22,7 +22,6 @@ public class DBCommand extends ExamCommand {
     protected final IDatabaseTester dbTester;
     private final Map<String, String> remarks = new HashMap<>();
     protected ITable expectedTable;
-    private String valuesSeparator = ",";
 
     public DBCommand(String name, String tag, IDatabaseTester dbTester) {
         super(name, tag);
@@ -34,16 +33,9 @@ public class DBCommand extends ExamCommand {
         Html root = tableSlim(new Html(commandCall.getElement()));
         try {
             remarks.clear();
-            String ignoreBeforeStr = root.takeAwayAttr("ignoreRowsBefore", eval);
-            String ignoreAfterStr = root.takeAwayAttr("ignoreRowsAfter", eval);
-            int ignoreBefore = ignoreBeforeStr != null ? Integer.parseInt(ignoreBeforeStr) : 1;
-            int ignoreAfter = ignoreAfterStr != null ? Integer.parseInt(ignoreAfterStr) : 0;
-
-            valuesSeparator = root.takeAwayAttr("separator", ",");
-
             expectedTable = TableData.filled(
                     root.takeAwayAttr("table", eval),
-                    parseRows(root, eval, ignoreBefore, ignoreAfter),
+                    new RowParser(root, "row", eval).parse(),
                     parseCols(root, eval)
             );
         } catch (DataSetException e) {
@@ -79,22 +71,6 @@ public class DBCommand extends ExamCommand {
             }
         }
         return new TableData.Cols(defaults, cols.toArray(new String[cols.size()]));
-    }
-
-
-    protected List<List<Object>> parseRows(Html el, Evaluator evaluator, int ignoreBefore, int ignoreAfter) {
-        List<List<Object>> result = new ArrayList<>();
-        int i = 1;
-        for (Html r : el.childs()) {
-            if ("row".equals(r.localName())) {
-                if (i >= ignoreBefore && (ignoreAfter == 0 || i <= ignoreAfter)) {
-                    result.add(parseValues(evaluator, r.text()));
-                }
-                el.remove(r);
-                i++;
-            }
-        }
-        return result;
     }
 
     protected void renderTable(Html root, ITable t) {
@@ -156,22 +132,5 @@ public class DBCommand extends ExamCommand {
 
     private String markedColumn(Column col) {
         return remarks.containsKey(col.getColumnName()) ? "table-info" : "";
-    }
-
-    private List<Object> parseValues(Evaluator eval, String text) {
-        List<Object> values = new ArrayList<>();
-        if (!isNullOrEmpty(text)) {
-            for (String val : text.split("[" + valuesSeparator + "]")) {
-                values.add(resolveToObj(preservePaddingInside("'", val.trim()), eval));
-            }
-        }
-        return values;
-    }
-
-    private String preservePaddingInside(String bound, String val) {
-        if (val.startsWith(bound) && val.endsWith(bound)) {
-            val = val.substring(1, val.length() - 1);
-        }
-        return val;
     }
 }
