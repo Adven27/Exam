@@ -17,6 +17,8 @@ import org.hamcrest.Matcher;
 import org.xmlunit.diff.DefaultNodeMatcher;
 import org.xmlunit.diff.NodeMatcher;
 
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import javax.sql.DataSource;
 
 import static net.javacrumbs.jsonunit.JsonAssert.when;
@@ -40,6 +42,14 @@ public class ExamExtension implements ConcordionExtension {
     public ExamExtension() {
         jsonUnitCfg = DEFAULT_JSON_UNIT_CFG;
         nodeMatcher = DEFAULT_NODE_MATCHER;
+    }
+
+    private static DataSource lookUp(String jndi) {
+        try {
+            return (DataSource) new InitialContext().lookup(jndi);
+        } catch (NamingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @SuppressWarnings("unused")
@@ -83,6 +93,11 @@ public class ExamExtension implements ConcordionExtension {
     @SuppressWarnings("unused")
     public ExamExtension db(DataSource dataSource) {
         return dbTester(new DataSourceDatabaseTester(dataSource));
+    }
+
+    @SuppressWarnings("unused")
+    public ExamExtension db(String jndi) {
+        return dbTester(new DataSourceDatabaseTester(lookUp(jndi)));
     }
 
     @SuppressWarnings("unused")
