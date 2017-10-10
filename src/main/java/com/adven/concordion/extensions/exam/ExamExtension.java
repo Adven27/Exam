@@ -96,8 +96,18 @@ public class ExamExtension implements ConcordionExtension {
     }
 
     @SuppressWarnings("unused")
+    public ExamExtension db(DataSource dataSource, String schema) {
+        return dbTester(new DataSourceDatabaseTester(dataSource, schema));
+    }
+
+    @SuppressWarnings("unused")
+    public ExamExtension db(String jndi, String schema) {
+        return db(lookUp(jndi), schema);
+    }
+
+    @SuppressWarnings("unused")
     public ExamExtension db(String jndi) {
-        return dbTester(new DataSourceDatabaseTester(lookUp(jndi)));
+        return db(lookUp(jndi));
     }
 
     @SuppressWarnings("unused")
