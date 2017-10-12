@@ -5,7 +5,6 @@ import org.concordion.api.CommandCall;
 import org.concordion.api.Evaluator;
 import org.concordion.api.ResultRecorder;
 import org.dbunit.IDatabaseTester;
-import org.dbunit.database.IDatabaseConnection;
 import org.dbunit.dataset.DefaultDataSet;
 import org.dbunit.dataset.ITable;
 import org.dbunit.operation.DatabaseOperation;
@@ -31,22 +30,9 @@ public class DBSetCommand extends DBCommand {
     }
 
     private void setUpDB(ITable iTable, DatabaseOperation insertMode) throws Exception {
-        IDatabaseConnection connection = null;
-        try {
-            connection = dbTester.getConnection();
-            dbTester.setSetUpOperation(insertMode);
-            dbTester.setDataSet(new DefaultDataSet(iTable));
-            dbTester.onSetup();
-        } finally {
-            if (connection != null) {
-                try {
-                    dbTester.closeConnection(connection);
-                } catch (Exception e) {
-                    System.err.println("Could not close connection " + e);
-                    e.printStackTrace();
-                }
-            }
-        }
+        dbTester.setSetUpOperation(insertMode);
+        dbTester.setDataSet(new DefaultDataSet(iTable));
+        dbTester.onSetup();
     }
 
     private DatabaseOperation parseInsertMode(Html el) {

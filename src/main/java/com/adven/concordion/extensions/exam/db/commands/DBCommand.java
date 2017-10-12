@@ -9,14 +9,19 @@ import org.concordion.api.CommandCall;
 import org.concordion.api.Evaluator;
 import org.concordion.api.ResultRecorder;
 import org.dbunit.IDatabaseTester;
+import org.dbunit.database.DatabaseConfig;
+import org.dbunit.database.IDatabaseConnection;
 import org.dbunit.dataset.Column;
 import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.ITable;
+import org.dbunit.ext.hsqldb.HsqldbDataTypeFactory;
+import org.dbunit.ext.oracle.OracleDataTypeFactory;
 
 import java.util.*;
 
 import static com.adven.concordion.extensions.exam.html.Html.*;
 import static com.google.common.base.Strings.isNullOrEmpty;
+import static org.dbunit.database.DatabaseConfig.PROPERTY_DATATYPE_FACTORY;
 
 public class DBCommand extends ExamCommand {
     protected final IDatabaseTester dbTester;
@@ -26,6 +31,28 @@ public class DBCommand extends ExamCommand {
     public DBCommand(String name, String tag, IDatabaseTester dbTester) {
         super(name, tag);
         this.dbTester = dbTester;
+        getRidOfDbUnitWarning();
+    }
+
+    //Fix for warning "Potential problem found: The configured data type factory 'class org.dbunit.dataset.datatype.DefaultDataTypeFactory'"
+    private void getRidOfDbUnitWarning() {
+        try {
+            IDatabaseConnection connection = dbTester.getConnection();
+            final String dbName = connection.getConnection().getMetaData().getDatabaseProductName();
+            DatabaseConfig dbConfig = connection.getConfig();
+            switch (dbName) {
+                case "HSQL Database Engine":
+                    dbConfig.setProperty(PROPERTY_DATATYPE_FACTORY, new HsqldbDataTypeFactory());
+                    break;
+                case "Oracle":
+                    dbConfig.setProperty(PROPERTY_DATATYPE_FACTORY, new OracleDataTypeFactory());
+                    break;
+                default:
+                    System.err.println("No matching database product found " + dbName);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
