@@ -9,12 +9,12 @@ import static com.adven.concordion.extensions.exam.PlaceholdersResolver.resolveT
 import static com.google.common.base.Strings.isNullOrEmpty;
 
 public class RowParser {
-    final private String tag;
+    private final String tag;
     private final Evaluator eval;
-    final private int ignoreBefore;
-    final private int ignoreAfter;
-    final private String separator;
-    final private Html el;
+    private final int ignoreBefore;
+    private final int ignoreAfter;
+    private final String separator;
+    private final Html el;
 
     public RowParser(Html el, String tag, Evaluator eval) {
         String ignoreBeforeStr = el.takeAwayAttr("ignoreRowsBefore", eval);

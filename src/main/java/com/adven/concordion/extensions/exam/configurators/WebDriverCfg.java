@@ -6,6 +6,12 @@ import com.codeborne.selenide.WebDriverRunner;
 import io.github.bonigarcia.wdm.ChromeDriverManager;
 import io.github.bonigarcia.wdm.FirefoxDriverManager;
 import io.github.bonigarcia.wdm.InternetExplorerDriverManager;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.remote.DesiredCapabilities;
+
+import static java.util.Collections.singletonMap;
+import static org.openqa.selenium.chrome.ChromeOptions.CAPABILITY;
 
 public class WebDriverCfg {
     private static boolean webDriverInited = false;
@@ -14,12 +20,13 @@ public class WebDriverCfg {
     private String browser;
     private String baseUrl;
     private String version;
+    private boolean headless;
 
     public WebDriverCfg(ExamExtension extension) {
         this.extension = extension;
     }
 
-    private static void setUp(Long timeout, String browser, String version, String baseUrl) {
+    private static void setUp(Long timeout, String browser, String version, String baseUrl, boolean headless) {
         if (!webDriverInited) {
             if (timeout != null) {
                 Configuration.timeout = timeout;
@@ -40,9 +47,18 @@ public class WebDriverCfg {
                     break;
                 default:
                     ChromeDriverManager.getInstance().version(version).setup();
+                    if (headless) {
+                        setHeadlessChromeOptions();
+                    }
             }
             webDriverInited = true;
         }
+    }
+
+    private static void setHeadlessChromeOptions() {
+        final ChromeOptions opt = new ChromeOptions();
+        opt.addArguments("no-sandbox", "headless", "disable-gpu", "disable-extensions", "window-size=1366x768");
+        WebDriverRunner.setWebDriver(new ChromeDriver(new DesiredCapabilities(singletonMap(CAPABILITY, opt))));
     }
 
     public WebDriverCfg timeout(long timeout) {
@@ -65,8 +81,18 @@ public class WebDriverCfg {
         return this;
     }
 
+    /**
+     * FIXME.
+     *
+     * Only chrome is supported
+     */
+    public WebDriverCfg headless() {
+        this.headless = true;
+        return this;
+    }
+
     public ExamExtension end() {
-        setUp(timeout, browser, version, baseUrl);
+        setUp(timeout, browser, version, baseUrl, headless);
         return extension;
     }
 }
