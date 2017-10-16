@@ -7,8 +7,7 @@ import org.concordion.api.ResultRecorder;
 
 import java.io.File;
 
-import static com.adven.concordion.extensions.exam.html.Html.th;
-import static com.adven.concordion.extensions.exam.html.Html.thead;
+import static com.adven.concordion.extensions.exam.html.Html.*;
 
 public class FilesShowCommand extends BaseCommand {
     private static final String EMPTY = "<EMPTY>";
@@ -26,7 +25,9 @@ public class FilesShowCommand extends BaseCommand {
             final File dir = new File(evaluator.evaluate(path).toString());
             element.childs(
                     thead().childs(
-                            th(dir.getPath())
+                            th().childs(
+                                    italic("").css("fa fa-folder-open fa-pull-left fa-border")
+                            ).text(dir.getPath())
                     )
             );
 

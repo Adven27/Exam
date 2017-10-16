@@ -12,6 +12,8 @@ public class BootstrapExtension implements ConcordionExtension {
     private static final String BOOTSTRAP_SIDEBAR = "/bootstrap/sidebar.js";
     private static final String BOOTSTRAP_CSS = "/bootstrap/bootstrap.min.css";
     private static final String BOOTSTRAP_CALLOUT_CSS = "/bootstrap/callout.css";
+    private static final String BOOTSTRAP_FA_CSS = "/bootstrap/font-awesome.min.css";
+    private static final String BOOTSTRAP_FA_FONT = "/bootstrap/fonts/fontawesome-webfont.woff2";
 
     @Override
     public void addTo(ConcordionExtender e) {
@@ -22,5 +24,7 @@ public class BootstrapExtension implements ConcordionExtension {
         e.withLinkedCSS(ENABLE_BOOTSTRAP_CSS, new Resource(ENABLE_BOOTSTRAP_CSS));
         e.withLinkedCSS(BOOTSTRAP_CSS, new Resource(BOOTSTRAP_CSS));
         e.withLinkedCSS(BOOTSTRAP_CALLOUT_CSS, new Resource(BOOTSTRAP_CALLOUT_CSS));
+        e.withLinkedCSS(BOOTSTRAP_FA_CSS, new Resource(BOOTSTRAP_FA_CSS));
+        e.withResource(BOOTSTRAP_FA_FONT, new Resource(BOOTSTRAP_FA_FONT));
     }
 }

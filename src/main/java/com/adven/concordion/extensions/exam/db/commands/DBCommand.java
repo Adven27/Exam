@@ -14,6 +14,7 @@ import org.dbunit.database.IDatabaseConnection;
 import org.dbunit.dataset.Column;
 import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.ITable;
+import org.dbunit.ext.h2.H2DataTypeFactory;
 import org.dbunit.ext.hsqldb.HsqldbDataTypeFactory;
 import org.dbunit.ext.oracle.OracleDataTypeFactory;
 
@@ -31,7 +32,6 @@ public class DBCommand extends ExamCommand {
     public DBCommand(String name, String tag, IDatabaseTester dbTester) {
         super(name, tag);
         this.dbTester = dbTester;
-        getRidOfDbUnitWarning();
     }
 
     //Fix for warning "Potential problem found: The configured data type factory 'class org.dbunit.dataset.datatype.DefaultDataTypeFactory'"
@@ -43,6 +43,9 @@ public class DBCommand extends ExamCommand {
             switch (dbName) {
                 case "HSQL Database Engine":
                     dbConfig.setProperty(PROPERTY_DATATYPE_FACTORY, new HsqldbDataTypeFactory());
+                    break;
+                case "H2":
+                    dbConfig.setProperty(PROPERTY_DATATYPE_FACTORY, new H2DataTypeFactory());
                     break;
                 case "Oracle":
                     dbConfig.setProperty(PROPERTY_DATATYPE_FACTORY, new OracleDataTypeFactory());
@@ -57,6 +60,7 @@ public class DBCommand extends ExamCommand {
 
     @Override
     public void setUp(CommandCall commandCall, Evaluator eval, ResultRecorder resultRecorder) {
+        getRidOfDbUnitWarning();
         Html root = tableSlim(new Html(commandCall.getElement()));
         try {
             remarks.clear();
@@ -131,7 +135,7 @@ public class DBCommand extends ExamCommand {
             }
 
             String title = root.takeAwayAttr("caption");
-            root.childs(caption(isNullOrEmpty(title) ? t.getTableMetaData().getTableName() : title));
+            root.childs(dbCaption(t, title));
 
             Html header = thead();
             Html trh = tr();
@@ -155,6 +159,12 @@ public class DBCommand extends ExamCommand {
         } catch (DataSetException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    protected Html dbCaption(ITable t, String title) {
+        return Html.caption().childs(
+                italic("").css("fa fa-database fa-pull-left fa-border")
+        ).text(isNullOrEmpty(title) ? t.getTableMetaData().getTableName() : title);
     }
 
     private String markedColumn(Column col) {

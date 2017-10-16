@@ -23,7 +23,6 @@ import org.dbunit.dataset.SortedTable;
 import java.util.List;
 
 import static com.adven.concordion.extensions.exam.html.Html.*;
-import static com.google.common.base.Strings.isNullOrEmpty;
 import static org.concordion.api.Result.FAILURE;
 import static org.concordion.api.Result.SUCCESS;
 import static org.dbunit.Assertion.assertEquals;
@@ -89,7 +88,7 @@ public class DBCheckCommand extends DBCommand {
     private void checkResult(Html el, ITable expected, List<Difference> diffs, ResultRecorder resultRecorder) {
         try {
             String title = el.attr("caption");
-            el.childs(caption(isNullOrEmpty(title) ? expected.getTableMetaData().getTableName() : title));
+            el.childs(dbCaption(expected, title));
 
             Column[] cols = expected.getTableMetaData().getColumns();
             Html header = thead();

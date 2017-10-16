@@ -104,4 +104,10 @@ class BaseCommand extends ExamCommand {
         private boolean autoFormat;
         private boolean lineNumbers;
     }
+
+    protected Html flCaption(File dir) {
+        return Html.caption().childs(
+                italic("").css("fa fa-folder-open fa-pull-left fa-border")
+        ).text(dir.getPath());
+    }
 }

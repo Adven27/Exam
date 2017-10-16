@@ -55,7 +55,11 @@ public class Html {
     }
 
     public static Html th(String txt) {
-        return new Html("th").text(txt);
+        return th().text(txt);
+    }
+
+    public static Html th() {
+        return new Html("th");
     }
 
     public static Html tbody() {
@@ -87,7 +91,11 @@ public class Html {
     }
 
     public static Html italic(String txt) {
-        return new Html("i").text(txt);
+        return italic().text(txt);
+    }
+
+    public static Html italic() {
+        return new Html("i");
     }
 
     public static Html code(String txt) {
@@ -160,7 +168,11 @@ public class Html {
     }
 
     public static Html caption(String txt) {
-        return new Html("caption").text(txt);
+        return caption().text(txt);
+    }
+
+    public static Html caption() {
+        return new Html("caption");
     }
 
     public static Html pre() {

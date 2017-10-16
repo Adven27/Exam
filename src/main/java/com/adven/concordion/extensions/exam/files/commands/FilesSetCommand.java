@@ -25,7 +25,7 @@ public class FilesSetCommand extends BaseCommand {
             final File dir = new File(evaluator.evaluate(path).toString());
             clearFolder(dir);
 
-            root.childs(caption(dir.getPath()));
+            root.childs(flCaption(dir));
             addHeader(root, HEADER, FILE_CONTENT);
             boolean empty = true;
             for (Html f : root.childs()) {

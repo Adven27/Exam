@@ -55,7 +55,7 @@ public class FilesCheckCommand extends BaseCommand {
             List<String> surplusFiles = names == null || names.length == 0 ?
                     new ArrayList<String>() : new ArrayList<>(asList(names));
 
-            root.childs(caption(dir.getPath()));
+            root.childs(flCaption(dir));
             addHeader(root, HEADER, FILE_CONTENT);
             boolean empty = true;
             for (Html f : root.childs()) {
