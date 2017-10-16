@@ -11,6 +11,7 @@ import com.adven.concordion.extensions.exam.rest.commands.*;
 import com.adven.concordion.extensions.exam.ui.BrowserCommand;
 import net.javacrumbs.jsonunit.core.Configuration;
 import org.dbunit.IDatabaseTester;
+import org.openqa.selenium.remote.DesiredCapabilities;
 import org.xmlunit.diff.NodeMatcher;
 
 import java.util.ArrayList;
@@ -21,7 +22,7 @@ import static java.util.Arrays.asList;
 public class CommandRegistry {
     private final List<ExamCommand> commands;
 
-    public CommandRegistry(IDatabaseTester dbTester, Configuration jsonUnitCfg, NodeMatcher nodeMatcher) {
+    public CommandRegistry(IDatabaseTester dbTester, Configuration jsonUnitCfg, NodeMatcher nodeMatcher, DesiredCapabilities capabilities) {
         commands = asList(
                 new GivenCommand("div"),
                 new WhenCommand("div"),
@@ -46,7 +47,7 @@ public class CommandRegistry {
                 new CaseCommand("tr", jsonUnitCfg),
                 new ExpectedStatusCommand("rs-status", "code"),
 
-                new BrowserCommand("div"),
+                new BrowserCommand("div", capabilities),
 
                 new SetVarCommand("span")
         );

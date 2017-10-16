@@ -3,22 +3,27 @@ package com.adven.concordion.extensions.exam.ui;
 import com.adven.concordion.extensions.exam.commands.ExamVerifyCommand;
 import com.adven.concordion.extensions.exam.html.Html;
 import com.codeborne.selenide.Configuration;
+import com.codeborne.selenide.WebDriverRunner;
 import com.codeborne.selenide.ex.UIAssertionError;
 import org.concordion.api.CommandCall;
 import org.concordion.api.Evaluator;
 import org.concordion.api.ResultRecorder;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.remote.DesiredCapabilities;
 
 import static com.codeborne.selenide.Selenide.open;
 
 public class BrowserCommand extends ExamVerifyCommand {
-    public static final String FAIL_FAST = "failFast";
+    private static final String FAIL_FAST = "failFast";
     private static final String URL = "url";
+    private final DesiredCapabilities capabilities;
     private String url;
     private boolean failFast;
     private String originalSelenideReportsFolder;
 
-    public BrowserCommand(String tag) {
+    public BrowserCommand(String tag, DesiredCapabilities capabilities) {
         super("browser", tag, new UiResultRenderer());
+        this.capabilities = capabilities;
     }
 
     private static void saveScreenshotsTo(String path) {
@@ -36,6 +41,10 @@ public class BrowserCommand extends ExamVerifyCommand {
     public void execute(CommandCall commandCall, Evaluator evaluator, ResultRecorder resultRecorder) {
         originalSelenideReportsFolder = Configuration.reportsFolder;
         saveScreenshotsTo(currentFolder(commandCall));
+
+        if (capabilities != null) {
+            WebDriverRunner.setWebDriver(new ChromeDriver(capabilities));
+        }
 
         open(url);
         Html root = new Html(commandCall.getElement()).css("card-group");

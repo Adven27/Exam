@@ -29,7 +29,7 @@ public class Specs {
     private final ExamExtension exam = new ExamExtension().
             rest().port(PORT).end().
             db().end().
-            webDriver().headless().end();
+            ui().headless().end();
 
 
     @AfterSuite

@@ -6,7 +6,6 @@ import com.codeborne.selenide.WebDriverRunner;
 import io.github.bonigarcia.wdm.ChromeDriverManager;
 import io.github.bonigarcia.wdm.FirefoxDriverManager;
 import io.github.bonigarcia.wdm.InternetExplorerDriverManager;
-import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
@@ -26,7 +25,7 @@ public class WebDriverCfg {
         this.extension = extension;
     }
 
-    private static void setUp(Long timeout, String browser, String version, String baseUrl, boolean headless) {
+    private static void setUp(ExamExtension extension, Long timeout, String browser, String version, String baseUrl, boolean headless) {
         if (!webDriverInited) {
             if (timeout != null) {
                 Configuration.timeout = timeout;
@@ -48,17 +47,17 @@ public class WebDriverCfg {
                 default:
                     ChromeDriverManager.getInstance().version(version).setup();
                     if (headless) {
-                        setHeadlessChromeOptions();
+                        setHeadlessChromeOptions(extension);
                     }
             }
             webDriverInited = true;
         }
     }
 
-    private static void setHeadlessChromeOptions() {
+    private static void setHeadlessChromeOptions(ExamExtension extension) {
         final ChromeOptions opt = new ChromeOptions();
         opt.addArguments("no-sandbox", "headless", "disable-gpu", "disable-extensions", "window-size=1366x768");
-        WebDriverRunner.setWebDriver(new ChromeDriver(new DesiredCapabilities(singletonMap(CAPABILITY, opt))));
+        extension.webDriverCapabilities(new DesiredCapabilities(singletonMap(CAPABILITY, opt)));
     }
 
     public WebDriverCfg timeout(long timeout) {
@@ -92,7 +91,7 @@ public class WebDriverCfg {
     }
 
     public ExamExtension end() {
-        setUp(timeout, browser, version, baseUrl, headless);
+        setUp(extension, timeout, browser, version, baseUrl, headless);
         return extension;
     }
 }

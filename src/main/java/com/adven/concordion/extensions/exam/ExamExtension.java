@@ -14,6 +14,7 @@ import org.concordion.api.extension.ConcordionExtension;
 import org.dbunit.DataSourceDatabaseTester;
 import org.dbunit.IDatabaseTester;
 import org.hamcrest.Matcher;
+import org.openqa.selenium.remote.DesiredCapabilities;
 import org.xmlunit.diff.DefaultNodeMatcher;
 import org.xmlunit.diff.NodeMatcher;
 
@@ -37,6 +38,7 @@ public class ExamExtension implements ConcordionExtension {
     private net.javacrumbs.jsonunit.core.Configuration jsonUnitCfg;
 
     private IDatabaseTester dbTester;
+    private DesiredCapabilities capabilities;
     private NodeMatcher nodeMatcher;
 
     public ExamExtension() {
@@ -71,8 +73,14 @@ public class ExamExtension implements ConcordionExtension {
     }
 
     @SuppressWarnings("unused")
-    public WebDriverCfg webDriver() {
+    public WebDriverCfg ui() {
         return new WebDriverCfg(this);
+    }
+
+    @SuppressWarnings("unused")
+    public ExamExtension webDriverCapabilities(DesiredCapabilities capabilities) {
+        this.capabilities = capabilities;
+        return this;
     }
 
     @SuppressWarnings("unused")
@@ -121,7 +129,7 @@ public class ExamExtension implements ConcordionExtension {
         new CodeMirrorExtension().addTo(ex);
         new BootstrapExtension().addTo(ex);
 
-        final CommandRegistry registry = new CommandRegistry(dbTester, jsonUnitCfg, nodeMatcher);
+        final CommandRegistry registry = new CommandRegistry(dbTester, jsonUnitCfg, nodeMatcher, capabilities);
 
         for (ExamCommand cmd : registry.commands()) {
             if (!"example".equals(cmd.name())) {
