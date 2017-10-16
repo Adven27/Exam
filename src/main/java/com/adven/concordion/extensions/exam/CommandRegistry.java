@@ -48,7 +48,7 @@ public class CommandRegistry {
 
                 new BrowserCommand("div"),
 
-                new SetVarCommand("div")
+                new SetVarCommand("span")
         );
     }
 
