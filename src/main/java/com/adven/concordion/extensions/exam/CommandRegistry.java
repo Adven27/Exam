@@ -30,6 +30,7 @@ public class CommandRegistry {
 
                 new ExamExampleCommand("div"),
                 new ExamBeforeExampleCommand("div"),
+                new InlineBeforeExampleCommand("div"),
                 new ExamplesSummaryCommand("summary", "div"),
 
                 new CaseCheckCommand("check", "div"),
