@@ -8,6 +8,7 @@ import org.simpleframework.http.core.Container;
 import java.io.IOException;
 import java.io.PrintStream;
 
+import static com.adven.concordion.extensions.exam.rest.Method.*;
 import static org.simpleframework.http.Status.BAD_REQUEST;
 import static org.simpleframework.http.Status.OK;
 
@@ -20,14 +21,10 @@ class TestContainer implements Container {
             }
             resp.setStatus("/status/400".equals(req.getAddress().toString()) ? BAD_REQUEST : OK);
             PrintStream body = resp.getPrintStream();
-            if ("POST".equals(req.getMethod())) {
-                restPOST(req, body);
-            } else if ("GET".equals(req.getMethod())) {
-                if ("/ui".equals(req.getAddress().toString())) {
-                    uiPage(body);
-                } else {
-                    restGET(req, body);
-                }
+            if ("/ui".equals(req.getAddress().toString())) {
+                uiPage(body);
+            } else {
+                body.println(createBody(cookies(req), getContent(req)));
             }
             body.close();
         } catch (Exception e) {
@@ -35,23 +32,25 @@ class TestContainer implements Container {
         }
     }
 
-    private void restPOST(Request req, PrintStream body) throws IOException {
-        String content = req.getContent().trim();
-        body.println(mirrorRequestBodyAndAddCookiesIfPresent(req, content));
-    }
-
     private void uiPage(PrintStream body) {
         body.println("<html><head></head><body><span>Dummy page</span></body></html>");
     }
 
-    private void restGET(Request req, PrintStream body) {
-        String cookies = cookies(req);
-        body.println("{\"get\":\"" + req.getAddress().toString() + "\"" +
-                ("".equals(cookies) ? "" : ", " + cookies) + "}");
+    private String createBody(String cookies, String content) {
+        return "{" + ("".equals(content) ? "" : content.substring(1, content.length() - 1))
+                + (!"".equals(content) && !"".equals(cookies) ? ", " : "")
+                + cookies
+                + "}";
     }
 
-    private String mirrorRequestBodyAndAddCookiesIfPresent(Request req, String content) {
-        return ("".equals(content) ? "{" : content.substring(0, content.length() - 1)) + cookies(req) + "}";
+    private String getContent(Request req) throws IOException {
+        return isRequestWithBody(req) ? req.getContent().trim()
+                                      : "{\"" + req.getMethod().toLowerCase() + "\":\"" + req.getAddress().toString() + "\"" + "}";
+    }
+
+    private boolean isRequestWithBody(Request req) {
+        String method = req.getMethod();
+        return POST.name().equals(method) || PUT.name().equals(method);
     }
 
     private String cookies(Request req) {

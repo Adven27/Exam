@@ -2,6 +2,7 @@ package com.adven.concordion.extensions.exam.rest.commands;
 
 import com.adven.concordion.extensions.exam.commands.ExamCommand;
 import com.adven.concordion.extensions.exam.html.Html;
+import com.adven.concordion.extensions.exam.rest.Method;
 import org.concordion.api.CommandCall;
 import org.concordion.api.Evaluator;
 import org.concordion.api.ResultRecorder;
@@ -21,7 +22,7 @@ public abstract class RequestCommand extends ExamCommand {
         super(name, tag);
     }
 
-    protected abstract String method();
+    protected abstract Method method();
 
     @Override
     public void setUp(CommandCall commandCall, Evaluator evaluator, ResultRecorder resultRecorder) {
@@ -79,7 +80,7 @@ public abstract class RequestCommand extends ExamCommand {
     private void addRequestDescTo(Html root, String url, String type, String cookies) {
         final Html div = div().childs(
                 h(4, "").childs(
-                        badge(method(), "success"),
+                        badge(method().name(), "success"),
                         badge(type, "info"),
                         code(url)
                 )

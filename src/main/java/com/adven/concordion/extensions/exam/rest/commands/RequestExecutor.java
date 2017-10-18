@@ -1,5 +1,6 @@
 package com.adven.concordion.extensions.exam.rest.commands;
 
+import com.adven.concordion.extensions.exam.rest.Method;
 import com.google.common.base.Splitter;
 import com.jayway.restassured.response.Response;
 import com.jayway.restassured.specification.RequestSpecification;
@@ -8,13 +9,15 @@ import org.concordion.api.Evaluator;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.adven.concordion.extensions.exam.rest.Method.DELETE;
+import static com.adven.concordion.extensions.exam.rest.Method.GET;
 import static com.jayway.restassured.RestAssured.given;
 
 public class RequestExecutor {
     private static final String REQUEST_EXECUTOR_VARIABLE = "#request";
 
     private Response response;
-    private String method;
+    private Method method;
     private String url;
     private String body;
     private String type;
@@ -35,7 +38,7 @@ public class RequestExecutor {
         return variable;
     }
 
-    RequestExecutor method(String method) {
+    RequestExecutor method(Method method) {
         this.method = method;
         return this;
     }
@@ -76,23 +79,23 @@ public class RequestExecutor {
         }
 
         switch (method) {
-            case "GET":
+            case GET:
                 response = request.get(requestUrlWithParams());
                 break;
-            case "POST":
+            case POST:
                 response = request.post(url);
                 break;
-            case "PUT":
+            case PUT:
                 response = request.put(url);
                 break;
-            case "DELETE":
-                response = request.delete(url);
+            case DELETE:
+                response = request.delete(requestUrlWithParams());
                 break;
-            case "PATCH":
+            case PATCH:
                 response = request.patch(url);
                 break;
             default:
-                throw new UnsupportedOperationException(method);
+                throw new UnsupportedOperationException(method.name());
         }
         return response;
     }
@@ -138,11 +141,11 @@ public class RequestExecutor {
     }
 
     public String requestMethod() {
-        return method;
+        return method.name();
     }
 
     public boolean isGET() {
-        return "GET".equals(method);
+        return GET.equals(method) || DELETE.equals(method);
     }
 
     public String requestHeader(String header) {

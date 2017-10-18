@@ -45,6 +45,8 @@ public class CommandRegistry {
 
                 new PostCommand("post", "div"),
                 new GetCommand("get", "div"),
+                new PutCommand("put", "div"),
+                new DeleteCommand("delete", "div"),
                 new CaseCommand("tr", jsonUnitCfg),
                 new ExpectedStatusCommand("rs-status", "code"),
 
