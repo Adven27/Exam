@@ -16,6 +16,7 @@ import static com.codeborne.selenide.Selenide.open;
 public class BrowserCommand extends ExamVerifyCommand {
     private static final String FAIL_FAST = "failFast";
     private static final String URL = "url";
+    private static boolean alreadyRunning = false;
     private final DesiredCapabilities capabilities;
     private String url;
     private boolean failFast;
@@ -42,14 +43,19 @@ public class BrowserCommand extends ExamVerifyCommand {
         originalSelenideReportsFolder = Configuration.reportsFolder;
         saveScreenshotsTo(currentFolder(commandCall));
 
-        if (capabilities != null) {
-            WebDriverRunner.setWebDriver(new ChromeDriver(capabilities));
-        }
+        runCustomDriverIfSet(capabilities);
 
         open(url);
         Html root = new Html(commandCall.getElement()).css("card-group");
         evalSteps(root, evaluator, resultRecorder);
         saveScreenshotsTo(originalSelenideReportsFolder);
+    }
+
+    private static void runCustomDriverIfSet(DesiredCapabilities capabilities) {
+        if (!(capabilities == null || alreadyRunning)) {
+            WebDriverRunner.setWebDriver(new ChromeDriver(capabilities));
+            alreadyRunning = true;
+        }
     }
 
     private String currentFolder(CommandCall commandCall) {

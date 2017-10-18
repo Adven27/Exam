@@ -78,8 +78,12 @@ public class ExamExtension implements ConcordionExtension {
 
     @SuppressWarnings("unused")
     public ExamExtension webDriverCapabilities(DesiredCapabilities capabilities) {
-        this.capabilities = capabilities;
+        capabilities(capabilities);
         return this;
+    }
+
+    private static void capabilities(DesiredCapabilities c) {
+        capabilities = c;
     }
 
     @SuppressWarnings("unused")

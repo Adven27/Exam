@@ -22,7 +22,11 @@ import static java.util.Arrays.asList;
 public class CommandRegistry {
     private final List<ExamCommand> commands;
 
-    public CommandRegistry(IDatabaseTester dbTester, Configuration jsonUnitCfg, NodeMatcher nodeMatcher, DesiredCapabilities capabilities) {
+    public CommandRegistry(
+            IDatabaseTester dbTester,
+            Configuration jsonUnitCfg,
+            NodeMatcher nodeMatcher,
+            DesiredCapabilities capabilities) {
         commands = asList(
                 new GivenCommand("div"),
                 new WhenCommand("div"),
