@@ -35,10 +35,9 @@ public class ExamExtension implements ConcordionExtension {
             withMatcher("formattedAndWithin", DateWithin.param()).
             withMatcher("formattedAndWithinNow", DateWithin.now()).
             withMatcher("xmlDateWithinNow", new XMLDateWithin());
+    private static DesiredCapabilities capabilities;
     private net.javacrumbs.jsonunit.core.Configuration jsonUnitCfg;
-
     private IDatabaseTester dbTester;
-    private DesiredCapabilities capabilities;
     private NodeMatcher nodeMatcher;
 
     public ExamExtension() {
