@@ -42,10 +42,10 @@ public class DBShowCommand extends DBCommand {
         return new IRowFilter() {
             @Override
             public boolean accept(IRowValueProvider rowValue) {
-                for (String pair : filter.split(";")) {
+                for (String pair: filter.split(";")) {
                     String[] expression = pair.split("=");
                     Object columnValue = getColumnValue(rowValue, expression[0]);
-                    if (!valueOf(columnValue).equalsIgnoreCase(expression[1])) {
+                    if (!valueOf(columnValue).matches(expression[1].replace("%", ".*"))) {
                         return false;
                     }
                 }
