@@ -9,8 +9,6 @@ import org.concordion.api.Evaluator;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.adven.concordion.extensions.exam.rest.Method.DELETE;
-import static com.adven.concordion.extensions.exam.rest.Method.GET;
 import static com.jayway.restassured.RestAssured.given;
 
 public class RequestExecutor {
@@ -142,10 +140,6 @@ public class RequestExecutor {
 
     public String requestMethod() {
         return method.name();
-    }
-
-    public boolean isGET() {
-        return GET.equals(method) || DELETE.equals(method);
     }
 
     public String requestHeader(String header) {

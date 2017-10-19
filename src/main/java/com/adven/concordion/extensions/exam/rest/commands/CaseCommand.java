@@ -127,13 +127,10 @@ public class CaseCommand extends RestVerifyCommand {
     public void verify(CommandCall cmd, Evaluator evaluator, ResultRecorder resultRecorder) {
         RequestExecutor executor = fromEvaluator(evaluator);
 
-        Html div = div();
-        if (executor.isGET()) {
-            div.childs(
+        Html div = div().childs(
                     italic(executor.requestMethod() + " "),
                     code(executor.requestUrlWithParams())
             );
-        }
         String cookies = executor.cookies();
         if (!isNullOrEmpty(cookies)) {
             div.childs(
