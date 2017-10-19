@@ -154,7 +154,7 @@ public class CaseCommand extends RestVerifyCommand {
 
         final String colspan = executor.hasRequestBody() ? "3" : "2";
         Html rt = new Html(cmd.getElement());
-        rt.above(
+        rt.attr("data-type", "case").attr("id", rt.attr(DESC)).above(
                 tr().childs(
                         td(caseDesc(rt.attr(DESC))).attr("colspan", colspan).muted()
                 )

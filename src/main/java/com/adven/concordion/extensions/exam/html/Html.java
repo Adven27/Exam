@@ -126,6 +126,10 @@ public class Html {
         return new Html("a").text(txt);
     }
 
+    public static Html link(String txt, Html... childs) {
+        return new Html("a").childs(childs).text(txt);
+    }
+
     public static Html link(String txt, String src) {
         return link(txt).attr("href", src);
     }
@@ -217,6 +221,10 @@ public class Html {
 
     public static Html menuItemA(String txt) {
         return link(txt).css("list-group-item list-group-item-action");
+    }
+
+    public static Html menuItemA(String txt, Html... childs) {
+        return link(txt, childs).css("list-group-item list-group-item-action");
     }
 
     public static Html button(String txt) {
