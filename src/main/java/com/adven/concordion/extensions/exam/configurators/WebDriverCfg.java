@@ -25,7 +25,12 @@ public class WebDriverCfg {
         this.extension = extension;
     }
 
-    private static void setUp(ExamExtension extension, Long timeout, String browser, String version, String baseUrl, boolean headless) {
+    private static void setUp(ExamExtension extension,
+                              Long timeout,
+                              String browser,
+                              String version,
+                              String baseUrl,
+                              boolean headless) {
         if (!webDriverInited) {
             if (timeout != null) {
                 Configuration.timeout = timeout;
@@ -56,7 +61,8 @@ public class WebDriverCfg {
 
     private static void setHeadlessChromeOptions(ExamExtension extension) {
         final ChromeOptions opt = new ChromeOptions();
-        opt.addArguments("no-sandbox", "headless", "disable-gpu", "disable-extensions", "window-size=1366x768");
+        opt.addArguments(
+                "no-sandbox", "headless", "disable-gpu", "disable-extensions", "window-size=1366x768");
         extension.webDriverCapabilities(new DesiredCapabilities(singletonMap(CAPABILITY, opt)));
     }
 
@@ -80,11 +86,7 @@ public class WebDriverCfg {
         return this;
     }
 
-    /**
-     * FIXME.
-     *
-     * Only chrome is supported
-     */
+    //FIXME Only chrome is supported
     public WebDriverCfg headless() {
         this.headless = true;
         return this;

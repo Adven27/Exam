@@ -35,10 +35,9 @@ public class ExamExtension implements ConcordionExtension {
             withMatcher("formattedAndWithin", DateWithin.param()).
             withMatcher("formattedAndWithinNow", DateWithin.now()).
             withMatcher("xmlDateWithinNow", new XMLDateWithin());
+    private static DesiredCapabilities capabilities;
     private net.javacrumbs.jsonunit.core.Configuration jsonUnitCfg;
-
     private IDatabaseTester dbTester;
-    private DesiredCapabilities capabilities;
     private NodeMatcher nodeMatcher;
 
     public ExamExtension() {
@@ -79,8 +78,12 @@ public class ExamExtension implements ConcordionExtension {
 
     @SuppressWarnings("unused")
     public ExamExtension webDriverCapabilities(DesiredCapabilities capabilities) {
-        this.capabilities = capabilities;
+        capabilities(capabilities);
         return this;
+    }
+
+    private static void capabilities(DesiredCapabilities c) {
+        capabilities = c;
     }
 
     @SuppressWarnings("unused")

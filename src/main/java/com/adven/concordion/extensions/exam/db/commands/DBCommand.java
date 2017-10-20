@@ -34,7 +34,8 @@ public class DBCommand extends ExamCommand {
         this.dbTester = dbTester;
     }
 
-    //Fix for warning "Potential problem found: The configured data type factory 'class org.dbunit.dataset.datatype.DefaultDataTypeFactory'"
+    //Fix for warning "Potential problem found:
+    // The configured data type factory 'class org.dbunit.dataset.datatype.DefaultDataTypeFactory'"
     private void getRidOfDbUnitWarning() {
         try {
             IDatabaseConnection connection = dbTester.getConnection();
