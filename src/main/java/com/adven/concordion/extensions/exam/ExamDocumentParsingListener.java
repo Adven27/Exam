@@ -1,12 +1,15 @@
 package com.adven.concordion.extensions.exam;
 
 import com.adven.concordion.extensions.exam.commands.ExamCommand;
+import com.adven.concordion.extensions.exam.html.Html;
 import nu.xom.Document;
 import nu.xom.Element;
 import nu.xom.Elements;
 import org.concordion.api.listener.DocumentParsingListener;
 
+import static com.adven.concordion.extensions.exam.html.Html.button;
 import static com.adven.concordion.extensions.exam.html.Html.codeXml;
+import static com.adven.concordion.extensions.exam.html.Html.italic;
 
 class ExamDocumentParsingListener implements DocumentParsingListener {
     private final CommandRegistry registry;
@@ -18,6 +21,11 @@ class ExamDocumentParsingListener implements DocumentParsingListener {
     @Override
     public void beforeParsing(Document document) {
         visit(document.getRootElement());
+
+        Html el = new Html(new org.concordion.api.Element(document.getRootElement()));
+        el.childs(button("").attr("id", "btnToTop").attr("onclick", "topFunction()").childs(
+                italic("").css("fa fa-arrow-up fa-3x")
+        ));
     }
 
     private void visit(Element elem) {

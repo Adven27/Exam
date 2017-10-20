@@ -27,14 +27,14 @@ public class SpecSummaryListener implements SpecificationProcessingListener {
                 for (Element a : body.getDescendantElements("a")) {
                     if ("example".equals(a.getAttributeValue("data-type"))) {
                         String anchor = a.getAttributeValue("name");
-                        a.addAttribute("href", "#summary");
                         String id = UUID.randomUUID().toString();
 
+                        Element rootExampleEl = a.getParentElement().getParentElement();
                         Html item = menuItemA(anchor).attr("href", "#" + anchor).childs(
-                                footerOf(a.getParentElement().getParentElement()).first("small").deepClone().
+                                footerOf(rootExampleEl).first("small").deepClone().
                                         css("card-img-overlay m-1").style("padding:0; left:inherit;")
                         );
-                        Html cases = getCase(a, id);
+                        Html cases = getCase(rootExampleEl, id);
                         if (cases == null || cases.childs().isEmpty()) {
                             summary.childs(item);
                         } else {
@@ -47,9 +47,9 @@ public class SpecSummaryListener implements SpecificationProcessingListener {
         }
     }
 
-    private Html getCase(Element a, String id) {
+    private Html getCase(Element rootExampleEl, String id) {
         Html div = div().css("collapse").attr("id", id);
-        for (Element tr: a.getParentElement().getParentElement().getDescendantElements("tr")) {
+        for (Element tr: rootExampleEl.getDescendantElements("tr")) {
             if ("case".equals(tr.getAttributeValue("data-type"))) {
                 String anchor = tr.getAttributeValue("desc");
                 div.childs(

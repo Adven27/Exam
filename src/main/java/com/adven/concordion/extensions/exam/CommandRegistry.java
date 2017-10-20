@@ -32,6 +32,7 @@ public class CommandRegistry {
                 new ExamBeforeExampleCommand("div"),
                 new InlineBeforeExampleCommand("div"),
                 new ExamplesSummaryCommand("summary", "div"),
+                new ScrollToTopCommand("scrollToTop", "div"),
 
                 new CaseCheckCommand("check", "div"),
 

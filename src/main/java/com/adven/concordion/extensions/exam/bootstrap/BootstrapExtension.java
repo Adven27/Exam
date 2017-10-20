@@ -14,6 +14,8 @@ public class BootstrapExtension implements ConcordionExtension {
     private static final String BOOTSTRAP_CALLOUT_CSS = "/bootstrap/callout.css";
     private static final String BOOTSTRAP_FA_CSS = "/bootstrap/font-awesome.min.css";
     private static final String BOOTSTRAP_FA_FONT = "/bootstrap/fonts/fontawesome-webfont.woff2";
+    private static final String SCROLL_TO_TOP_CSS = "/bootstrap/scrollToTop.css";
+    private static final String SCROLL_TO_TOP_JS = "/bootstrap/scrollToTop.js";
 
     @Override
     public void addTo(ConcordionExtender e) {
@@ -26,5 +28,7 @@ public class BootstrapExtension implements ConcordionExtension {
         e.withLinkedCSS(BOOTSTRAP_CALLOUT_CSS, new Resource(BOOTSTRAP_CALLOUT_CSS));
         e.withLinkedCSS(BOOTSTRAP_FA_CSS, new Resource(BOOTSTRAP_FA_CSS));
         e.withResource(BOOTSTRAP_FA_FONT, new Resource(BOOTSTRAP_FA_FONT));
+        e.withLinkedCSS(SCROLL_TO_TOP_CSS, new Resource(SCROLL_TO_TOP_CSS));
+        e.withLinkedJavaScript(SCROLL_TO_TOP_JS, new Resource(SCROLL_TO_TOP_JS));
     }
 }
