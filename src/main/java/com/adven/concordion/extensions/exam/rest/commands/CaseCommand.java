@@ -127,39 +127,11 @@ public class CaseCommand extends RestVerifyCommand {
     public void verify(CommandCall cmd, Evaluator evaluator, ResultRecorder resultRecorder) {
         RequestExecutor executor = fromEvaluator(evaluator);
 
-        Html div = div().childs(
-                    italic(executor.requestMethod() + " "),
-                    code(executor.requestUrlWithParams())
-            );
-        String cookies = executor.cookies();
-        if (!isNullOrEmpty(cookies)) {
-            div.childs(
-                    italic(" Cookies "),
-                    code(cookies)
-            );
-        }
-
-        for (int i = 0; i < cases.size(); i++) {
-            Map<String, Object> aCase = cases.get(i);
-            if (!aCase.isEmpty()) {
-                div.childs(
-                        italic(i == 0 ? " Варианты " : "/"),
-                        code(aCase.values().toString())
-                );
-            }
-        }
-
         final String colspan = executor.hasRequestBody() ? "3" : "2";
         Html rt = new Html(cmd.getElement());
         rt.attr("data-type", "case").attr("id", rt.attr(DESC)).above(
                 tr().childs(
                         td(caseDesc(rt.attr(DESC))).attr("colspan", colspan).muted()
-                )
-        ).above(
-                tr().childs(
-                        td().attr("colspan", colspan).childs(
-                                div
-                        )
                 )
         );
     }
@@ -172,7 +144,11 @@ public class CaseCommand extends RestVerifyCommand {
         final String expected = printer.prettyPrint(PlaceholdersResolver.resolveJson(root.text(), eval));
         root.removeAllChild().text(expected).css("json");
 
-        String actual = fromEvaluator(eval).responseBody();
+        RequestExecutor executor = fromEvaluator(eval);
+
+        fillCaseContext(root, executor);
+
+        String actual = executor.responseBody();
         if (isEmpty(actual)) {
             failure(resultRecorder, root, "(not set)", expected);
             return;
@@ -186,5 +162,22 @@ public class CaseCommand extends RestVerifyCommand {
             e.printStackTrace();
             failure(resultRecorder, root, prettyActual, expected);
         }
+    }
+
+    private void fillCaseContext(Html root, RequestExecutor executor) {
+        Html div = div().childs(
+                italic(executor.requestMethod() + " "),
+                code(executor.requestUrlWithParams())
+        );
+
+        String cookies = executor.cookies();
+        if (!isNullOrEmpty(cookies)) {
+            div.childs(
+                    italic(" Cookies "),
+                    code(cookies)
+            );
+        }
+
+        root.parent().above(tr().childs(td().attr("colspan", executor.hasRequestBody() ? "3" : "2").childs(div)));
     }
 }
