@@ -2,7 +2,7 @@ package com.adven.concordion.extensions.exam.rest.commands;
 
 import com.adven.concordion.extensions.exam.commands.ExamCommand;
 import com.adven.concordion.extensions.exam.html.Html;
-import com.adven.concordion.extensions.exam.rest.Method;
+import com.jayway.restassured.http.Method;
 import org.concordion.api.CommandCall;
 import org.concordion.api.Evaluator;
 import org.concordion.api.ResultRecorder;

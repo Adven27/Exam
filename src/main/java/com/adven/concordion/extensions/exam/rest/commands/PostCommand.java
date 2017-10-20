@@ -1,8 +1,8 @@
 package com.adven.concordion.extensions.exam.rest.commands;
 
-import com.adven.concordion.extensions.exam.rest.Method;
+import com.jayway.restassured.http.Method;
 
-import static com.adven.concordion.extensions.exam.rest.Method.POST;
+import static com.jayway.restassured.http.Method.POST;
 
 public class PostCommand extends RequestCommand {
     public PostCommand(String name, String tag) {
