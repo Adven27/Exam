@@ -57,13 +57,7 @@ public class PlaceholdersResolver {
         while (body.contains(PREFIX_EXAM)) {
             String original = body;
             String var = extractVarFrom(original, PREFIX_EXAM);
-            if (var.contains(":")) {
-                String[] varAndFormat = var.split(":", 2);
-                String date = forPattern(varAndFormat[1]).print(fromDateFields((Date) constants(varAndFormat[0])));
-                original = original.replace(PREFIX_EXAM + var + POSTFIX, date);
-            } else {
-                original = original.replace(PREFIX_EXAM + var + POSTFIX, constants(var).toString());
-            }
+            original = original.replace(PREFIX_EXAM + var + POSTFIX, resolveDate(var).toString());
             body = original;
         }
         return body;
@@ -190,7 +184,7 @@ public class PlaceholdersResolver {
         if (placeholder.contains(PREFIX_VAR)) {
             return getObject(evaluator, extractVarFrom(placeholder, PREFIX_VAR));
         } else if (placeholder.contains(PREFIX_EXAM)) {
-            return constants(extractVarFrom(placeholder, PREFIX_EXAM));
+            return resolveDate(extractVarFrom(placeholder, PREFIX_EXAM));
         } else if (Range.isRange(placeholder)) {
             return Range.from(placeholder);
         }
@@ -205,5 +199,14 @@ public class PlaceholdersResolver {
     private static String extractFromAlias(String placeholder) {
         String s = placeholder.substring(placeholder.indexOf(PREFIX_JSON_UNIT_ALIAS));
         return s.substring(2, s.indexOf(POSTFIX));
+    }
+
+    private static Object resolveDate(String var) {
+        return var.contains(":") ? getDateFromPattern(var) : constants(var);
+    }
+
+    private static String getDateFromPattern(String var) {
+        String[] varAndFormat = var.split(":", 2);
+        return forPattern(varAndFormat[1]).print(fromDateFields((Date) constants(varAndFormat[0])));
     }
 }
