@@ -6,7 +6,7 @@
 ### 1) Install
 
 Add to build.gradle
-```
+```groovy
 repositories {
   maven { url "https://jitpack.io" }
 }    
@@ -20,7 +20,7 @@ dependencies {
 For detailed info, [see original tutorial](http://concordion.org/tutorial/java/markdown/)
 
 Specs.java
-```
+```java
 @RunWith(ConcordionRunner.class)
 @ConcordionOptions(declareNamespaces = {"c", "http://www.concordion.org/2007/concordion", "e", ExamExtension.NS})
 public class Specs {
@@ -32,7 +32,7 @@ public class Specs {
 ```
 
 Specs.md
-```
+```html
 #Some markdown header
 
 <div>

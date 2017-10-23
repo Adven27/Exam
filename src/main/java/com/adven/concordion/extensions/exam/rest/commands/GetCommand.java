@@ -1,8 +1,8 @@
 package com.adven.concordion.extensions.exam.rest.commands;
 
-import com.adven.concordion.extensions.exam.rest.Method;
+import com.jayway.restassured.http.Method;
 
-import static com.adven.concordion.extensions.exam.rest.Method.GET;
+import static com.jayway.restassured.http.Method.GET;
 
 public class GetCommand extends RequestCommand {
     public GetCommand(String name, String tag) {

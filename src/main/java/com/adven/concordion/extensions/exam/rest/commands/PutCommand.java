@@ -1,8 +1,8 @@
 package com.adven.concordion.extensions.exam.rest.commands;
 
-import com.adven.concordion.extensions.exam.rest.Method;
+import com.jayway.restassured.http.Method;
 
-import static com.adven.concordion.extensions.exam.rest.Method.PUT;
+import static com.jayway.restassured.http.Method.PUT;
 
 public class PutCommand extends RequestCommand {
     public PutCommand(String name, String tag) {

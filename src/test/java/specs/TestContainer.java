@@ -8,7 +8,9 @@ import org.simpleframework.http.core.Container;
 import java.io.IOException;
 import java.io.PrintStream;
 
-import static com.adven.concordion.extensions.exam.rest.Method.*;
+import static com.jayway.restassured.http.Method.POST;
+import static com.jayway.restassured.http.Method.PUT;
+import static java.lang.String.format;
 import static org.simpleframework.http.Status.BAD_REQUEST;
 import static org.simpleframework.http.Status.OK;
 
@@ -45,7 +47,7 @@ class TestContainer implements Container {
 
     private String getContent(Request req) throws IOException {
         return isRequestWithBody(req) ? req.getContent().trim()
-                                      : "{\"" + req.getMethod().toLowerCase() + "\":\"" + req.getAddress().toString() + "\"" + "}";
+                                      : format("{\"%s\":\"%s\"}", req.getMethod().toLowerCase(), req.getAddress());
     }
 
     private boolean isRequestWithBody(Request req) {

@@ -36,7 +36,7 @@ public class DBCommand extends ExamCommand {
 
     //Fix for warning "Potential problem found:
     // The configured data type factory 'class org.dbunit.dataset.datatype.DefaultDataTypeFactory'"
-    private void getRidOfDbUnitWarning() {
+    protected void getRidOfDbUnitWarning() {
         try {
             IDatabaseConnection connection = dbTester.getConnection();
             final String dbName = connection.getConnection().getMetaData().getDatabaseProductName();

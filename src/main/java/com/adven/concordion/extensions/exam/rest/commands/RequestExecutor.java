@@ -1,7 +1,7 @@
 package com.adven.concordion.extensions.exam.rest.commands;
 
-import com.adven.concordion.extensions.exam.rest.Method;
 import com.google.common.base.Splitter;
+import com.jayway.restassured.http.Method;
 import com.jayway.restassured.response.Response;
 import com.jayway.restassured.specification.RequestSpecification;
 import org.concordion.api.Evaluator;
@@ -10,6 +10,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.jayway.restassured.RestAssured.given;
+import static com.jayway.restassured.http.Method.POST;
+import static com.jayway.restassured.http.Method.PUT;
 
 public class RequestExecutor {
     private static final String REQUEST_EXECUTOR_VARIABLE = "#request";
@@ -135,7 +137,7 @@ public class RequestExecutor {
     }
 
     public boolean hasRequestBody() {
-        return method.equals("POST") || method.equals("PUT");
+        return method == POST || method == PUT;
     }
 
     public String requestMethod() {
