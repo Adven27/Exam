@@ -19,6 +19,7 @@
                     <vals>first value of p1| first value of p2</vals>
                     <vals>second value of p1| second value of p2</vals>
                     <vals>${exam.now-[2 months, 1 y]:dd.MM.yyyy}| ${exam.now-[2 months, 2 y]:dd.MM.yyyy}</vals>
+                    <vals>|value is not empty</vals>
                 </where>
             </e:case>
         </e:post>

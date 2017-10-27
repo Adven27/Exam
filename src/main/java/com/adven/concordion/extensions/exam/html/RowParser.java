@@ -44,8 +44,10 @@ public class RowParser {
 
     private List<Object> parseValues(Evaluator eval, String text, String separator) {
         List<Object> values = new ArrayList<>();
-        if (!isNullOrEmpty(text)) {
-            for (String val : text.split("[" + separator + "]")) {
+        if (isNullOrEmpty(text)) {
+            values.add(text);
+        } else {
+            for (String val : text.split("[" + separator + "]", -1)) {
                 values.add(resolveToObj(preservePaddingInside("'", val.trim()), eval));
             }
         }
