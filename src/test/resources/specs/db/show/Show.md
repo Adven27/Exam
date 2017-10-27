@@ -29,8 +29,8 @@
             </e:db-set>
         </e:given>
         <e:then print="true">
-            <e:db-show table="PERSON" caption="Filtering for equality" cols="NAME, *AGE" where="AGE=45;NAME=Waldo"/>
-            <e:db-show table="PERSON" caption="Filtering on an occurrence" cols="NAME, *AGE" where="AGE=%5"/>
+            <e:db-show table="PERSON" caption="Filtering for equality" cols="NAME, *AGE" where="AGE=45 AND NAME='Waldo'"/>
+            <e:db-show table="PERSON" caption="Filtering on an occurrence" cols="NAME, *AGE" where="AGE like '%5'"/>
         </e:then>
     </e:example>
 </div>
