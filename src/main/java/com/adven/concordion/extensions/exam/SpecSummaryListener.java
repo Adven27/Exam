@@ -51,7 +51,7 @@ public class SpecSummaryListener implements SpecificationProcessingListener {
         Html div = div().css("collapse").attr("id", id);
         for (Element tr: rootExampleEl.getDescendantElements("tr")) {
             if ("case".equals(tr.getAttributeValue("data-type"))) {
-                String anchor = tr.getAttributeValue("desc");
+                String anchor = tr.getAttributeValue("id");
                 div.childs(
                         menuItemA(anchor, italic("").css("fa fa-circle fa-fw")).attr("href", "#" + anchor).muted()
                 );

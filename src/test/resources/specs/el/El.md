@@ -1,12 +1,13 @@
 # Exam expression language: ${...}
 
 <div>
+    <e:summary/>
     <e:example name="Access to concordion variables">
         <e:given>
             <code c:set="#someVar">someValue</code>
         </e:given>
         <e:post url="some/url" type="text/plain" print="true">
-            <e:case desc="You can have access to concordion variables with ">
+            <e:case desc="You can have access to concordion variables with ${#someVar}">
                 <body>
                     {"var": "${#someVar}"}
                 </body>

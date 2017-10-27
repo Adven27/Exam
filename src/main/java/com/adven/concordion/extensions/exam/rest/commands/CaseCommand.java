@@ -129,15 +129,16 @@ public class CaseCommand extends RestVerifyCommand {
 
         final String colspan = executor.hasRequestBody() ? "3" : "2";
         Html rt = new Html(cmd.getElement());
-        rt.attr("data-type", "case").attr("id", rt.attr(DESC)).above(
+        String caseDesc = caseDesc(rt.attr(DESC), evaluator);
+        rt.attr("data-type", "case").attr("id", caseDesc).above(
                 tr().childs(
-                        td(caseDesc(rt.attr(DESC))).attr("colspan", colspan).muted()
+                        td(caseDesc).attr("colspan", colspan).muted()
                 )
         );
     }
 
-    private String caseDesc(String desc) {
-        return ++number + ") " + (desc == null ? "" : desc);
+    private String caseDesc(String desc, Evaluator eval) {
+        return ++number + ") " + (desc == null ? "" : PlaceholdersResolver.resolveJson(desc, eval));
     }
 
     private void vf(Html root, Evaluator eval, ResultRecorder resultRecorder) {
