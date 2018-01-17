@@ -15,14 +15,17 @@ import org.dbunit.IDatabaseTester;
 import org.dbunit.assertion.DbComparisonFailure;
 import org.dbunit.assertion.DiffCollectingFailureHandler;
 import org.dbunit.assertion.Difference;
+import org.dbunit.database.IDatabaseConnection;
 import org.dbunit.dataset.Column;
 import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.ITable;
 import org.dbunit.dataset.SortedTable;
+import org.dbunit.util.QualifiedTableName;
 
 import java.util.List;
 
 import static com.adven.concordion.extensions.exam.html.Html.*;
+import static com.google.common.base.Strings.isNullOrEmpty;
 import static org.concordion.api.Result.FAILURE;
 import static org.concordion.api.Result.SUCCESS;
 import static org.dbunit.Assertion.assertEquals;
@@ -49,13 +52,25 @@ public class DBCheckCommand extends DBCommand {
     @Override
     public void verify(CommandCall commandCall, Evaluator evaluator, ResultRecorder resultRecorder) {
         try {
-            final ITable actual = dbTester.getConnection().createTable(expectedTable.getTableMetaData().getTableName());
+            final ITable actual = getActualTable();
             final ITable filteredActual = includedColumnsTable(actual, expectedTable.getTableMetaData().getColumns());
 
             assertEq(new Html(commandCall.getElement()), resultRecorder, expectedTable, filteredActual);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private ITable getActualTable() throws Exception {
+        IDatabaseConnection conn = dbTester.getConnection();
+        String tableName = expectedTable.getTableMetaData().getTableName();
+        String qualifiedName = new QualifiedTableName(tableName, conn.getSchema()).getQualifiedName();
+
+        return conn.createQueryTable(qualifiedName, "select * from " + qualifiedName + where());
+    }
+
+    private String where() {
+        return isNullOrEmpty(where) ? "" : " WHERE " + where;
     }
 
     private void assertEq(Html root, ResultRecorder resultRecorder, ITable expected, ITable actual)

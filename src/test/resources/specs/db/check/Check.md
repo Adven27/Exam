@@ -54,4 +54,11 @@
             </e:db-check>
         </e:then>
     </e:example>
+    <e:example name="Subset check">
+        <e:then print="true">
+            <e:db-check table="PERSON" cols="NAME, AGE" where="NAME='Andrew'">
+                <row>Andrew,30</row>
+            </e:db-check>
+        </e:then>
+    </e:example>
 </div>
