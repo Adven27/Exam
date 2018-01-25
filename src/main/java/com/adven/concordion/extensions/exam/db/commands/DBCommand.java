@@ -28,6 +28,7 @@ public class DBCommand extends ExamCommand {
     protected final IDatabaseTester dbTester;
     private final Map<String, String> remarks = new HashMap<>();
     protected ITable expectedTable;
+    protected String where;
 
     public DBCommand(String name, String tag, IDatabaseTester dbTester) {
         super(name, tag);
@@ -65,6 +66,7 @@ public class DBCommand extends ExamCommand {
         Html root = tableSlim(new Html(commandCall.getElement()));
         try {
             remarks.clear();
+            where = root.takeAwayAttr("where", eval);
             expectedTable = TableData.filled(
                     root.takeAwayAttr("table", eval),
                     new RowParser(root, "row", eval).parse(),

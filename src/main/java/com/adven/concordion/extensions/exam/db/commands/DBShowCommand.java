@@ -25,13 +25,14 @@ public class DBShowCommand extends DBCommand {
     public void setUp(CommandCall commandCall, Evaluator eval, ResultRecorder resultRecorder) {
         Html el = table(commandCall.getElement());
         try {
-            IDatabaseConnection connection = dbTester.getConnection();
             String tableName = el.takeAwayAttr("table", eval);
-            String rowFilter = el.takeAwayAttr("where", eval);
+            String where = el.takeAwayAttr("where", eval);
+            IDatabaseConnection conn = dbTester.getConnection();
             ITable filteredColumnsTable =
-                    includedColumnsTable(isNullOrEmpty(rowFilter) ? connection.createTable(tableName)
-                                                                  : getFilteredTable(connection, tableName, rowFilter),
-                                         parseCols(el, eval).cols());
+                    includedColumnsTable(isNullOrEmpty(where) ? conn.createTable(tableName)
+                                                              : getFilteredTable(conn, tableName, where),
+                                         parseCols(el, eval).cols()
+                    );
 
             renderTable(el, filteredColumnsTable);
         } catch (Exception e) {
