@@ -5,6 +5,8 @@ import com.adven.concordion.extensions.exam.commands.ExamCommand;
 import com.adven.concordion.extensions.exam.configurators.DbTester;
 import com.adven.concordion.extensions.exam.configurators.RestAssuredCfg;
 import com.adven.concordion.extensions.exam.configurators.WebDriverCfg;
+import com.adven.concordion.extensions.exam.files.DefaultFilesLoader;
+import com.adven.concordion.extensions.exam.files.FilesLoader;
 import com.adven.concordion.extensions.exam.rest.DateFormatMatcher;
 import com.adven.concordion.extensions.exam.rest.DateWithin;
 import com.adven.concordion.extensions.exam.rest.XMLDateWithin;
@@ -35,14 +37,17 @@ public class ExamExtension implements ConcordionExtension {
             withMatcher("formattedAndWithin", DateWithin.param()).
             withMatcher("formattedAndWithinNow", DateWithin.now()).
             withMatcher("xmlDateWithinNow", new XMLDateWithin());
+    public static final FilesLoader DEFAULT_FILES_LOADER = new DefaultFilesLoader();
     private static DesiredCapabilities capabilities;
     private net.javacrumbs.jsonunit.core.Configuration jsonUnitCfg;
     private IDatabaseTester dbTester;
     private NodeMatcher nodeMatcher;
+    private FilesLoader filesLoader;
 
     public ExamExtension() {
         jsonUnitCfg = DEFAULT_JSON_UNIT_CFG;
         nodeMatcher = DEFAULT_NODE_MATCHER;
+        filesLoader = DEFAULT_FILES_LOADER;
     }
 
     private static DataSource lookUp(String jndi) {
@@ -68,6 +73,11 @@ public class ExamExtension implements ConcordionExtension {
 
     public ExamExtension withXmlUnitNodeMatcher(NodeMatcher nodeMatcher) {
         this.nodeMatcher = nodeMatcher;
+        return this;
+    }
+
+    public ExamExtension withFilesLoader(FilesLoader customFilesLoader){
+        this.filesLoader = customFilesLoader;
         return this;
     }
 
@@ -132,7 +142,7 @@ public class ExamExtension implements ConcordionExtension {
         new CodeMirrorExtension().addTo(ex);
         new BootstrapExtension().addTo(ex);
 
-        final CommandRegistry registry = new CommandRegistry(dbTester, jsonUnitCfg, nodeMatcher, capabilities);
+        final CommandRegistry registry = new CommandRegistry(dbTester, jsonUnitCfg, nodeMatcher, capabilities, filesLoader);
 
         for (ExamCommand cmd : registry.commands()) {
             if (!"example".equals(cmd.name())) {

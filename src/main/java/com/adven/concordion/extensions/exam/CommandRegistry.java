@@ -4,6 +4,7 @@ import com.adven.concordion.extensions.exam.commands.*;
 import com.adven.concordion.extensions.exam.db.commands.DBCheckCommand;
 import com.adven.concordion.extensions.exam.db.commands.DBSetCommand;
 import com.adven.concordion.extensions.exam.db.commands.DBShowCommand;
+import com.adven.concordion.extensions.exam.files.FilesLoader;
 import com.adven.concordion.extensions.exam.files.commands.FilesCheckCommand;
 import com.adven.concordion.extensions.exam.files.commands.FilesSetCommand;
 import com.adven.concordion.extensions.exam.files.commands.FilesShowCommand;
@@ -26,7 +27,8 @@ public class CommandRegistry {
             IDatabaseTester dbTester,
             Configuration jsonUnitCfg,
             NodeMatcher nodeMatcher,
-            DesiredCapabilities capabilities) {
+            DesiredCapabilities capabilities,
+            FilesLoader filesLoader) {
         commands = asList(
                 new GivenCommand("div"),
                 new WhenCommand("div"),
@@ -44,9 +46,9 @@ public class CommandRegistry {
                 new DBCheckCommand("db-check", "table", dbTester),
                 new DBSetCommand("db-set", "table", dbTester),
 
-                new FilesShowCommand("fl-show", "table"),
-                new FilesSetCommand("fl-set", "table"),
-                new FilesCheckCommand("fl-check", "table", jsonUnitCfg, nodeMatcher),
+                new FilesShowCommand("fl-show", "table", filesLoader),
+                new FilesSetCommand("fl-set", "table", filesLoader),
+                new FilesCheckCommand("fl-check", "table", jsonUnitCfg, nodeMatcher, filesLoader),
 
                 new PostCommand("post", "div"),
                 new GetCommand("get", "div"),

@@ -1,19 +1,21 @@
 package com.adven.concordion.extensions.exam.files.commands;
 
+import com.adven.concordion.extensions.exam.files.FilesLoader;
 import com.adven.concordion.extensions.exam.html.Html;
 import org.concordion.api.CommandCall;
 import org.concordion.api.Evaluator;
 import org.concordion.api.ResultRecorder;
-
-import java.io.File;
 
 import static com.adven.concordion.extensions.exam.html.Html.*;
 
 public class FilesShowCommand extends BaseCommand {
     private static final String EMPTY = "<EMPTY>";
 
-    public FilesShowCommand(String name, String tag) {
+    FilesLoader filesLoader;
+
+    public FilesShowCommand(String name, String tag, FilesLoader filesLoader) {
         super(name, tag);
+        this.filesLoader = filesLoader;
     }
 
     @Override
@@ -21,22 +23,26 @@ public class FilesShowCommand extends BaseCommand {
         Html element = Html.tableSlim(commandCall.getElement());
 
         final String path = element.takeAwayAttr("dir");
+
         if (path != null) {
-            final File dir = new File(evaluator.evaluate(path).toString());
+
+            String evalPath = evaluator.evaluate(path).toString();
+
             element.childs(
                     thead().childs(
                             th().childs(
                                     italic("").css("fa fa-folder-open fa-pull-left fa-border")
-                            ).text(dir.getPath())
+                            ).text(evalPath)
                     )
             );
 
-            File[] files = dir.listFiles();
-            if (files == null || files.length == 0) {
+            String fileNames[] = filesLoader.getFileNames(evalPath);
+
+            if (fileNames == null || fileNames.length == 0) {
                 addRow(element, EMPTY);
             } else {
-                for (File f : files) {
-                    addRow(element, f.getName());
+                for (String fName : fileNames) {
+                    addRow(element, fName);
                 }
             }
         }

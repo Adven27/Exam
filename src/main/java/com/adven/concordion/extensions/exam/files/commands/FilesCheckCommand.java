@@ -1,11 +1,10 @@
 package com.adven.concordion.extensions.exam.files.commands;
 
+import com.adven.concordion.extensions.exam.files.FilesLoader;
 import com.adven.concordion.extensions.exam.files.FilesResultRenderer;
 import com.adven.concordion.extensions.exam.html.Html;
 import net.javacrumbs.jsonunit.core.Configuration;
-import nu.xom.Builder;
 import nu.xom.Document;
-import nu.xom.ParsingException;
 import nu.xom.Serializer;
 import org.concordion.api.*;
 import org.concordion.api.listener.AssertEqualsListener;
@@ -16,8 +15,6 @@ import org.xmlunit.builder.DiffBuilder;
 import org.xmlunit.diff.*;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -33,12 +30,14 @@ public class FilesCheckCommand extends BaseCommand {
     private final Configuration jsonUnitCfg;
     private final NodeMatcher nodeMatcher;
     private Announcer<AssertEqualsListener> listeners = Announcer.to(AssertEqualsListener.class);
+    private FilesLoader filesLoader;
 
-    public FilesCheckCommand(String name, String tag, Configuration jsonUnitCfg, NodeMatcher nodeMatcher) {
+    public FilesCheckCommand(String name, String tag, Configuration jsonUnitCfg, NodeMatcher nodeMatcher, FilesLoader filesLoader) {
         super(name, tag);
         this.jsonUnitCfg = jsonUnitCfg;
         this.nodeMatcher = nodeMatcher;
         listeners.addListener(new FilesResultRenderer());
+        this.filesLoader = filesLoader;
     }
 
     /**
@@ -49,23 +48,26 @@ public class FilesCheckCommand extends BaseCommand {
 
         final String path = root.takeAwayAttr("dir", evaluator);
         if (path != null) {
-            final File dir = new File(evaluator.evaluate(path).toString());
 
-            String[] names = dir.list();
+            String evalPath = evaluator.evaluate(path).toString();
+
+            String[] names = filesLoader.getFileNames(evalPath);
+
             List<String> surplusFiles = names == null || names.length == 0 ?
                     new ArrayList<String>() : new ArrayList<>(asList(names));
 
-            root.childs(flCaption(dir));
+            root.childs(flCaption(evalPath));
             addHeader(root, HEADER, FILE_CONTENT);
             boolean empty = true;
             for (Html f : root.childs()) {
                 if ("file".equals(f.localName())) {
-                    final FileTag fileTag = readFileTag(f, evaluator);
+                    final FilesLoader.FileTag fileTag = filesLoader.readFileTag(f, evaluator);
                     final String expectedName = fileTag.name();
-                    File actual = new File(dir + separator + expectedName);
+
                     Html fileNameTD = td(expectedName);
                     Html pre = codeXml("");
-                    if (!actual.exists()) {
+
+                    if (!filesLoader.fileExists(evalPath + separator + expectedName)) {
                         resultRecorder.record(Result.FAILURE);
                         announceFailure(fileNameTD.el(), expectedName, null);
                     } else {
@@ -75,7 +77,7 @@ public class FilesCheckCommand extends BaseCommand {
 
                         if (fileTag.content() == null) {
                             String id = UUID.randomUUID().toString();
-                            final String content = readFile(dir, expectedName);
+                            final String content = filesLoader.readFile(evalPath, expectedName);
                             if (!isNullOrEmpty(content)) {
                                 pre = div().childs(
                                         buttonCollapse("show", id).style("width:100%"),
@@ -85,7 +87,7 @@ public class FilesCheckCommand extends BaseCommand {
                                 );
                             }
                         } else {
-                            checkContent(actual, fileTag.content(), resultRecorder, pre.text(fileTag.content()).el());
+                            checkContent(evalPath + separator + expectedName, fileTag.content(), resultRecorder, pre.text(fileTag.content()).el());
                         }
                     }
                     root.childs(
@@ -105,7 +107,7 @@ public class FilesCheckCommand extends BaseCommand {
                 Html tr = tr().childs(
                         td,
                         td().childs(
-                                codeXml(readFile(dir, file))
+                                codeXml(filesLoader.readFile(evalPath, file))
                         )
                 );
                 root.childs(tr);
@@ -117,13 +119,13 @@ public class FilesCheckCommand extends BaseCommand {
         }
     }
 
-    private void checkContent(File actual, String expected, ResultRecorder resultRecorder, Element element) {
-        if (!actual.exists()) {
+    private void checkContent(String path, String expected, ResultRecorder resultRecorder, Element element) {
+        if (!filesLoader.fileExists(path)) {
             xmlDoesNotEqual(resultRecorder, element, "(not set)", expected);
             return;
         }
 
-        String prettyPrintedActual = prettyPrint(documentFrom(actual));
+        String prettyPrintedActual = prettyPrint(filesLoader.documentFrom(path));
         try {
             if (assertEqualsXml(prettyPrintedActual, expected)) {
                 xmlEquals(resultRecorder, element);
@@ -133,14 +135,6 @@ public class FilesCheckCommand extends BaseCommand {
         } catch (Exception e) {
             e.printStackTrace();
             xmlDoesNotEqual(resultRecorder, element, prettyPrintedActual, expected);
-        }
-    }
-
-    private Document documentFrom(File xml) {
-        try {
-            return new Builder().build(xml);
-        } catch (ParsingException | IOException e) {
-            throw new RuntimeException("invalid xml", e);
         }
     }
 

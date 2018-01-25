@@ -1,19 +1,21 @@
 package com.adven.concordion.extensions.exam.files.commands;
 
+import com.adven.concordion.extensions.exam.files.FilesLoader;
 import com.adven.concordion.extensions.exam.html.Html;
 import org.concordion.api.CommandCall;
 import org.concordion.api.Evaluator;
 import org.concordion.api.ResultRecorder;
-
-import java.io.File;
 
 import static com.adven.concordion.extensions.exam.html.Html.*;
 import static java.io.File.separator;
 
 public class FilesSetCommand extends BaseCommand {
 
-    public FilesSetCommand(String name, String tag) {
+    FilesLoader filesLoader;
+
+    public FilesSetCommand(String name, String tag, FilesLoader filesLoader) {
         super(name, tag);
+        this.filesLoader = filesLoader;
     }
 
     @Override
@@ -22,16 +24,18 @@ public class FilesSetCommand extends BaseCommand {
 
         final String path = root.takeAwayAttr("dir");
         if (path != null) {
-            final File dir = new File(evaluator.evaluate(path).toString());
-            clearFolder(dir);
 
-            root.childs(flCaption(dir));
+            String evalPath = evaluator.evaluate(path).toString();
+
+            filesLoader.clearFolder(evalPath);
+
+            root.childs(flCaption(evalPath));
             addHeader(root, HEADER, FILE_CONTENT);
             boolean empty = true;
             for (Html f : root.childs()) {
                 if ("file".equals(f.localName())) {
-                    final FileTag fileTag = readFileTag(f, evaluator);
-                    createFileWith(new File(dir.getPath() + separator + fileTag.name()), fileTag.content());
+                    final FilesLoader.FileTag fileTag = filesLoader.readFileTag(f, evaluator);
+                    filesLoader.createFileWith(evalPath + separator + fileTag.name(), fileTag.content());
                     root.childs(trWithTDs(
                             span(fileTag.name()),
                             codeXml(fileTag.content()).
