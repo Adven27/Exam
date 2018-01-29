@@ -11,6 +11,8 @@ import org.concordion.api.ResultRecorder;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
+import java.io.File;
+
 import static com.codeborne.selenide.Selenide.open;
 
 public class BrowserCommand extends ExamVerifyCommand {
@@ -59,7 +61,11 @@ public class BrowserCommand extends ExamVerifyCommand {
     }
 
     private String currentFolder(CommandCall commandCall) {
-        return System.getProperty("concordion.output.dir") + commandCall.getResource().getParent().getPath();
+        String outputPath = System.getProperty("concordion.output.dir");
+        if (outputPath == null) {
+            outputPath =  new File(System.getProperty("java.io.tmpdir"), "concordion").getPath();
+        }
+        return outputPath + commandCall.getResource().getParent().getPath();
     }
 
     private void evalSteps(Html el, Evaluator evaluator, ResultRecorder resultRecorder) {
