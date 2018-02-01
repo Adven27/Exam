@@ -62,7 +62,7 @@ public class WebDriverCfg {
     private static void setHeadlessChromeOptions(ExamExtension extension) {
         final ChromeOptions opt = new ChromeOptions();
         opt.addArguments(
-                "no-sandbox", "headless", "disable-gpu", "disable-extensions", "window-size=1366x768");
+                "no-sandbox", "headless", "disable-gpu", "disable-extensions", "window-size=1366,768");
         extension.webDriverCapabilities(new DesiredCapabilities(singletonMap(CAPABILITY, opt)));
     }
 
