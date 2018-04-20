@@ -1,3 +1,6 @@
+plugins {
+    id "org.jetbrains.kotlin.jvm" version "1.2.40"
+}
 group 'com.adven.concordion'
 version = 0.4
 
@@ -8,10 +11,12 @@ apply plugin: 'jacoco'
 apply plugin: 'findbugs'
 apply plugin: 'checkstyle'
 
+
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
 compileJava.options.encoding = 'utf-8'
 compileTestJava.options.encoding = 'utf-8'
+
 
 repositories {
     mavenCentral()
@@ -36,6 +41,11 @@ dependencies {
     compileOnly 'org.projectlombok:lombok:1.16.18'
     testCompile 'com.h2database:h2:1.4.195'
     testCompile 'org.simpleframework:simple:5.1.6'
+
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk7"
+    testCompile "org.jetbrains.kotlin:kotlin-test"
+    testCompile "org.jetbrains.kotlin:kotlin-test-junit"
+//    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 }
 
 test {

@@ -26,13 +26,42 @@ public interface FilesLoader {
 
     FileTag readFileTag(Html f, Evaluator eval);
 
-    @Data
-    @Builder
-    @Accessors(fluent = true)
-    static class FileTag {
+    class FileTag {
         private String name;
         private String content;
         private boolean autoFormat;
         private boolean lineNumbers;
+
+        public String name() {
+            return name;
+        }
+
+        public boolean lineNumbers() {
+            return lineNumbers;
+        }
+
+        public String content() {
+            return content;
+        }
+
+        public boolean autoFormat() {
+            return autoFormat;
+        }
+
+        public void name(String name) {
+            this.name = name;
+        }
+
+        public void content(String cnt) {
+            this.content = cnt;
+        }
+
+        public void autoFormat(boolean autoFormat) {
+            this.autoFormat = autoFormat;
+        }
+
+        public void lineNumbers(boolean lineNumbers) {
+            this.lineNumbers = lineNumbers;
+        }
     }
 }

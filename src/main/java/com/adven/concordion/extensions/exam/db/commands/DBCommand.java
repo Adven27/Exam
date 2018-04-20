@@ -92,7 +92,7 @@ public class DBCommand extends ExamCommand {
                 }
                 if (c.contains("=")) {
                     String[] colDefault = c.split("=");
-                    defaults.put(colDefault[0], PlaceholdersResolver.resolveToObj(colDefault[1], eval));
+                    defaults.put(colDefault[0], PlaceholdersResolver.INSTANCE.resolveToObj(colDefault[1], eval));
                     if (remark != null) {
                         remarks.put(colDefault[0], remark);
                     }

@@ -41,7 +41,7 @@ public class XMLDateWithin extends BaseMatcher<Object> implements ParametrizedMa
         while (i < within.length() && isDigit(within.charAt(i))) {
             i++;
         }
-        this.period = PlaceholdersResolver.periodBy(
+        this.period = PlaceholdersResolver.INSTANCE.periodBy(
                 parseInt(within.substring(0, i)), within.substring(i, within.length()).trim());
     }
 }

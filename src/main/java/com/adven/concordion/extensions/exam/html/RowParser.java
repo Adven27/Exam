@@ -1,11 +1,11 @@
 package com.adven.concordion.extensions.exam.html;
 
+import com.adven.concordion.extensions.exam.PlaceholdersResolver;
 import org.concordion.api.Evaluator;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.adven.concordion.extensions.exam.PlaceholdersResolver.resolveToObj;
 import static com.google.common.base.Strings.isNullOrEmpty;
 
 public class RowParser {
@@ -48,7 +48,7 @@ public class RowParser {
             values.add(text);
         } else {
             for (String val : text.split("[" + separator + "]", -1)) {
-                values.add(resolveToObj(preservePaddingInside("'", val.trim()), eval));
+                values.add(PlaceholdersResolver.INSTANCE.resolveToObj(preservePaddingInside("'", val.trim()), eval));
             }
         }
         return values;
