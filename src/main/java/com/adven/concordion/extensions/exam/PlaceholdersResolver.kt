@@ -13,10 +13,10 @@ import org.joda.time.LocalDateTime.now
 import org.joda.time.format.DateTimeFormat.forPattern
 
 object PlaceholdersResolver {
-    private const val PREFIX_JSON_UNIT_ALIAS = "!{"
-    private const val PREFIX_EXAM = "\${exam."
-    private const val PREFIX_VAR = "\${#"
-    private const val POSTFIX = '}'
+    public const val PREFIX_JSON_UNIT_ALIAS = "!{"
+    public const val PREFIX_EXAM = "\${exam."
+    public const val PREFIX_VAR = "\${#"
+    public const val POSTFIX = '}'
 
     fun resolveJson(body: String, eval: Evaluator): String {
         return resolve(body, "json", eval)
@@ -47,11 +47,10 @@ object PlaceholdersResolver {
 
     private fun getObject(eval: Evaluator, v: String): Any? {
         if (v.contains(":")) {
-            val varAndFormat = v.split(":".toRegex(), 2).toTypedArray()
+            val varAndFormat = v.split(":".toRegex(), 2)
             return forPattern(varAndFormat[1]).print(fromDateFields(getObject(eval, varAndFormat[0]) as Date))
         }
-        val variable = eval.getVariable("#$v")
-        return variable ?: eval.evaluate(if (v.contains(".")) "#$v" else v)
+        return eval.getVariable("#$v") ?: eval.evaluate(if (v.contains(".")) "#$v" else v)
     }
 
     private fun resolveExamCommands(body: String): String {
@@ -82,7 +81,7 @@ object PlaceholdersResolver {
             "any-boolean", "boolean", "bool" -> "\${$type-unit.any-boolean}"
             "regexp", "regex" -> "\${$type-unit.regex}"
             "ignored", "ignore" -> "\${$type-unit.ignore}"
-            else -> String.format("\${$type-unit.matches:%s}%s", *alias.split(" ".toRegex()).dropLastWhile({ it.isEmpty() }).toTypedArray() as Array<*>)
+            else -> String.format("\${$type-unit.matches:%s}%s", *alias.split(" ").toTypedArray() as Array<*>)
         }
     }
 
@@ -105,9 +104,9 @@ object PlaceholdersResolver {
 
     private fun parsePeriod(v: String): Period {
         var p = Period.ZERO
-        val periods = v.substring(5, v.indexOf("]")).split(",".toRegex()).dropLastWhile({ it.isEmpty() }).toTypedArray()
+        val periods = v.substring(5, v.indexOf("]")).split(",")
         for (period in periods) {
-            val parts = period.trim({ it <= ' ' }).split(" ".toRegex()).dropLastWhile({ it.isEmpty() }).toTypedArray()
+            val parts = period.trim({ it <= ' ' }).split(" ")
             p = if (isValue(parts[0]))
                 p.plus(periodBy(parseInt(parts[0]), parts[1]))
             else
@@ -138,10 +137,12 @@ object PlaceholdersResolver {
         return true
     }
 
-    fun resolveToObj(placeholder: String, evaluator: Evaluator): Any? {
+    fun resolveToObj(placeholder: String?, evaluator: Evaluator): Any? {
         return when {
-            placeholder.contains(PREFIX_VAR) -> getObject(evaluator, extractVarFrom(placeholder, PREFIX_VAR))
-            placeholder.contains(PREFIX_EXAM) -> resolveDate(extractVarFrom(placeholder, PREFIX_EXAM))
+            placeholder == null -> null
+            placeholder.startsWith("'") && placeholder.endsWith("'") -> placeholder.substring(1, placeholder.lastIndex)
+            placeholder.startsWith(PREFIX_VAR) -> getObject(evaluator, extractVarFrom(placeholder, PREFIX_VAR))
+            placeholder.startsWith(PREFIX_EXAM) -> resolveDate(extractVarFrom(placeholder, PREFIX_EXAM))
             Range.isRange(placeholder) -> Range.from(placeholder)
             else -> placeholder
         }
@@ -162,7 +163,7 @@ object PlaceholdersResolver {
     }
 
     private fun getDateFromPattern(v: String): String {
-        val varAndFormat = v.split(":".toRegex(), 2).toTypedArray()
+        val varAndFormat = v.split(":".toRegex(), 2)
         return forPattern(varAndFormat[1]).print(fromDateFields((constants(varAndFormat[0]) as Date?)!!))
     }
 }
