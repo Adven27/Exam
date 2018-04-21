@@ -1,5 +1,4 @@
-# Check table
-## `<e:db-check table="..." cols="..."/>`
+# More examples with tables
 
 <div>
     <e:summary/>
