@@ -1,3 +1,12 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.5'
+    }
+}
+
 plugins {
     id "org.jetbrains.kotlin.jvm" version "1.2.40"
 }
@@ -10,7 +19,14 @@ apply plugin: 'idea'
 apply plugin: 'jacoco'
 apply plugin: 'findbugs'
 apply plugin: 'checkstyle'
+apply plugin: 'com.google.protobuf'
 
+protobuf {
+    generatedFilesBaseDir = "$projectDir/src"
+    protoc {
+        artifact = 'com.google.protobuf:protoc:3.5.1-1'
+    }
+}
 
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
@@ -38,6 +54,8 @@ dependencies {
     compile 'joda-time:joda-time:2.9.9'
     compile 'com.codeborne:selenide:3.11'
     compile 'io.github.bonigarcia:webdrivermanager:1.7.1'
+    compile 'com.google.protobuf:protobuf-java:3.5.1'
+    compile 'com.google.protobuf:protobuf-java-util:3.5.1'
     compileOnly 'org.projectlombok:lombok:1.16.18'
     testCompile 'com.h2database:h2:1.4.195'
     testCompile 'org.simpleframework:simple:5.1.6'
