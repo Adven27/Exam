@@ -8,6 +8,9 @@ import com.adven.concordion.extensions.exam.files.FilesLoader;
 import com.adven.concordion.extensions.exam.files.commands.FilesCheckCommand;
 import com.adven.concordion.extensions.exam.files.commands.FilesSetCommand;
 import com.adven.concordion.extensions.exam.files.commands.FilesShowCommand;
+import com.adven.concordion.extensions.exam.kafka.EventProcessor;
+import com.adven.concordion.extensions.exam.kafka.commands.EventCheckCommand;
+import com.adven.concordion.extensions.exam.kafka.commands.EventReplyCommand;
 import com.adven.concordion.extensions.exam.rest.commands.*;
 import com.adven.concordion.extensions.exam.ui.BrowserCommand;
 import net.javacrumbs.jsonunit.core.Configuration;
@@ -28,7 +31,8 @@ public class CommandRegistry {
             Configuration jsonUnitCfg,
             NodeMatcher nodeMatcher,
             DesiredCapabilities capabilities,
-            FilesLoader filesLoader) {
+            FilesLoader filesLoader,
+            EventProcessor eventProcessor) {
         commands = asList(
                 new GivenCommand("div"),
                 new WhenCommand("div"),
@@ -59,7 +63,11 @@ public class CommandRegistry {
 
                 new BrowserCommand("div", capabilities),
 
-                new SetVarCommand("span")
+                new SetVarCommand("span"),
+
+                new EventReplyCommand("event-check", "div", eventProcessor),
+
+                new EventCheckCommand("event-reply", "div", eventProcessor)
         );
     }
 

@@ -142,7 +142,8 @@ public class ExamExtension implements ConcordionExtension {
         new CodeMirrorExtension().addTo(ex);
         new BootstrapExtension().addTo(ex);
 
-        final CommandRegistry registry = new CommandRegistry(dbTester, jsonUnitCfg, nodeMatcher, capabilities, filesLoader);
+        // TODO: подставить ивент процессор
+        final CommandRegistry registry = new CommandRegistry(dbTester, jsonUnitCfg, nodeMatcher, capabilities, filesLoader, null);
 
         for (ExamCommand cmd : registry.commands()) {
             if (!"example".equals(cmd.name())) {
