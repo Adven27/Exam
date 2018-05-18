@@ -7,6 +7,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
 
 /**
  * @author Ruslan Ustits
@@ -15,11 +16,13 @@ public class DefaultEventProcessorTest {
 
     private DefaultEventProcessor processor;
     private DummyEventConsumer eventConsumer;
+    private DummyEventProducer eventProducer;
 
     @Before
     public void setUp() throws Exception {
         eventConsumer = DummyEventConsumer.defaultInstance();
-        processor = new DefaultEventProcessor("localhost:9092", eventConsumer);
+        eventProducer = DummyEventProducer.defaultInstance();
+        processor = new DefaultEventProcessor("localhost:9092", eventConsumer, eventProducer);
     }
 
     @Test
@@ -109,6 +112,38 @@ public class DefaultEventProcessorTest {
     public void testConsumeWithBlankTopic() {
         final Event event = processor.consume("");
         assertThat(event).isNull();
+    }
+
+    @Test
+    public void testSuccessSend() {
+        eventProducer.mustReturnTrue();
+        final boolean result = processor.send("123", "321", mock(Message.class));
+        assertThat(result).isTrue();
+    }
+
+    @Test
+    public void testFailedSend() {
+        eventProducer.mustReturnFalse();
+        final boolean result = processor.send("123", "321", mock(Message.class));
+        assertThat(result).isFalse();
+    }
+
+    @Test
+    public void testSendWithNullTopic() {
+        final boolean result = processor.send(null, null, mock(Message.class));
+        assertThat(result).isFalse();
+    }
+
+    @Test
+    public void testSendWithEmptyTopic() {
+        final boolean result = processor.send("", null, mock(Message.class));
+        assertThat(result).isFalse();
+    }
+
+    @Test
+    public void testSendWithNullMessage() {
+        final boolean result = processor.send("123", null, null);
+        assertThat(result).isFalse();
     }
 
     private String goodMessage() {
