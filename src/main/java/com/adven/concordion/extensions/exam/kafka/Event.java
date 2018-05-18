@@ -11,6 +11,11 @@ import lombok.Value;
 public class Event {
 
     String topicName;
+    String key;
     String message;
+
+    public static Event empty() {
+        return Event.builder().build();
+    }
 
 }
