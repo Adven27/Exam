@@ -121,6 +121,24 @@ public class DefaultEventProcessorTest {
     }
 
     @Test
+    public void testSendWithNullEvent() {
+        final boolean result = processor.send(null, "event");
+        assertThat(result).isFalse();
+    }
+
+    @Test
+    public void testSendWithNullClassName() {
+        final boolean result = processor.send(Event.<String>empty(), null);
+        assertThat(result).isFalse();
+    }
+
+    @Test
+    public void testSendWithBlankClassName() {
+        final boolean result = processor.send(Event.<String>empty(), "");
+        assertThat(result).isFalse();
+    }
+
+    @Test
     public void testSuccessSend() {
         eventProducer.mustReturnTrue();
         final boolean result = processor.send("123", "321", mock(Message.class));

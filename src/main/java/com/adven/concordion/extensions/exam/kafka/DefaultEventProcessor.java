@@ -90,8 +90,9 @@ public final class DefaultEventProcessor implements EventProcessor {
     }
 
     @Override
-    public boolean send(final Event<String> event) {
-        return false;
+    public boolean send(final Event<String> event, final String eventClass) {
+        final boolean isConfigured = configureReply(event, eventClass);
+        return isConfigured && reply();
     }
 
     protected boolean send(final String topic, final String key, final Message message) {

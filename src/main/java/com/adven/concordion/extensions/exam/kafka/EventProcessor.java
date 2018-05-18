@@ -11,6 +11,6 @@ public interface EventProcessor {
 
     boolean reply();
 
-    boolean send(final Event<String> event);
+    boolean send(final Event<String> event, final String eventClass);
 
 }
