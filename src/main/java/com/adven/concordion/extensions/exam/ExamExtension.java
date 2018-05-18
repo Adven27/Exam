@@ -3,10 +3,13 @@ package com.adven.concordion.extensions.exam;
 import com.adven.concordion.extensions.exam.bootstrap.BootstrapExtension;
 import com.adven.concordion.extensions.exam.commands.ExamCommand;
 import com.adven.concordion.extensions.exam.configurators.DbTester;
+import com.adven.concordion.extensions.exam.configurators.KafkaTester;
 import com.adven.concordion.extensions.exam.configurators.RestAssuredCfg;
 import com.adven.concordion.extensions.exam.configurators.WebDriverCfg;
 import com.adven.concordion.extensions.exam.files.DefaultFilesLoader;
 import com.adven.concordion.extensions.exam.files.FilesLoader;
+import com.adven.concordion.extensions.exam.kafka.DefaultEventProcessor;
+import com.adven.concordion.extensions.exam.kafka.EventProcessor;
 import com.adven.concordion.extensions.exam.rest.DateFormatMatcher;
 import com.adven.concordion.extensions.exam.rest.DateWithin;
 import com.adven.concordion.extensions.exam.rest.XMLDateWithin;
@@ -43,11 +46,13 @@ public class ExamExtension implements ConcordionExtension {
     private IDatabaseTester dbTester;
     private NodeMatcher nodeMatcher;
     private FilesLoader filesLoader;
+    private EventProcessor eventProcessor;
 
     public ExamExtension() {
         jsonUnitCfg = DEFAULT_JSON_UNIT_CFG;
         nodeMatcher = DEFAULT_NODE_MATCHER;
         filesLoader = DEFAULT_FILES_LOADER;
+        eventProcessor = new DefaultEventProcessor("localhost:9092");
     }
 
     private static DataSource lookUp(String jndi) {
@@ -112,6 +117,17 @@ public class ExamExtension implements ConcordionExtension {
     }
 
     @SuppressWarnings("unused")
+    public KafkaTester kafka() {
+        return new KafkaTester(this);
+    }
+
+    @SuppressWarnings("unused")
+    public ExamExtension kafka(final EventProcessor eventProcessor) {
+        this.eventProcessor = eventProcessor;
+        return this;
+    }
+
+    @SuppressWarnings("unused")
     public ExamExtension db(DataSource dataSource) {
         return dbTester(new DataSourceDatabaseTester(dataSource));
     }
@@ -142,8 +158,8 @@ public class ExamExtension implements ConcordionExtension {
         new CodeMirrorExtension().addTo(ex);
         new BootstrapExtension().addTo(ex);
 
-        // TODO: подставить ивент процессор
-        final CommandRegistry registry = new CommandRegistry(dbTester, jsonUnitCfg, nodeMatcher, capabilities, filesLoader, null);
+        final CommandRegistry registry = new CommandRegistry(dbTester, jsonUnitCfg, nodeMatcher,
+                capabilities, filesLoader, eventProcessor);
 
         for (ExamCommand cmd : registry.commands()) {
             if (!"example".equals(cmd.name())) {

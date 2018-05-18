@@ -29,7 +29,8 @@ public class Specs {
     private final ExamExtension exam = new ExamExtension().
             rest().port(PORT).end().
             db().end().
-            ui().headless().end();
+            ui().headless().end().
+            kafka().brokers("localhost:9092").end();
 
 
     @AfterSuite
