@@ -8,14 +8,14 @@ import lombok.Value;
  */
 @Value
 @Builder
-public class Event {
+public class Event<T> {
 
     String topicName;
     String key;
-    String message;
+    T message;
 
-    public static Event empty() {
-        return Event.builder().build();
+    public static <T> Event<T> empty() {
+        return Event.<T>builder().build();
     }
 
 }

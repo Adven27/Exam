@@ -28,7 +28,7 @@ public class DefaultEventProcessorTest {
     @Test
     public void testConfigureReply() {
         final String json = "{ \"name\": \"test\", \"number\": 123 }";
-        final Event event = Event.builder()
+        final Event<String> event = Event.<String>builder()
                 .topicName("someTopic")
                 .message(json)
                 .build();
@@ -38,7 +38,7 @@ public class DefaultEventProcessorTest {
 
     @Test
     public void testConfigureWithNullClass() {
-        final boolean result = processor.configureReply(Event.empty(), null);
+        final boolean result = processor.configureReply(Event.<String>empty(), null);
         assertThat(result).isFalse();
     }
 
@@ -53,7 +53,7 @@ public class DefaultEventProcessorTest {
         final Class<?> expectedClass = goodClass();
         final String name = "test";
         final int number = 123;
-        final Event event = Event.builder()
+        final Event<String> event = Event.<String>builder()
                 .topicName("someTopic")
                 .message(goodMessage(name, number))
                 .build();
@@ -67,7 +67,7 @@ public class DefaultEventProcessorTest {
     @Test
     public void testConvertToProtoWithBadMessage() {
         final String json = "123";
-        final Event event = Event.builder()
+        final Event<String> event = Event.<String>builder()
                 .topicName("someTopic")
                 .message(json)
                 .build();
@@ -78,7 +78,7 @@ public class DefaultEventProcessorTest {
     @Test
     public void testConvertToProtoWithBadClassName() {
         final String json = goodMessage();
-        final Event event = Event.builder()
+        final Event<String> event = Event.<String>builder()
                 .topicName("someTopic")
                 .message(json)
                 .build();
@@ -112,6 +112,12 @@ public class DefaultEventProcessorTest {
     public void testConsumeWithBlankTopic() {
         final Event event = processor.consume("");
         assertThat(event).isNull();
+    }
+
+    @Test
+    public void testReplyWithEmptyReplyQueue() {
+        final boolean result = processor.reply();
+        assertThat(result).isFalse();
     }
 
     @Test

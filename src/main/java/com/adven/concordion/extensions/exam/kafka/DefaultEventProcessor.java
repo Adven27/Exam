@@ -11,6 +11,7 @@ import org.apache.kafka.common.serialization.BytesSerializer;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 
+import java.util.ArrayDeque;
 import java.util.List;
 import java.util.Properties;
 
@@ -33,9 +34,7 @@ public final class DefaultEventProcessor implements EventProcessor {
     private final Properties consumerProperties;
     private final Properties producerProperties;
 
-    private String replyTopic;
-    private String replyKey;
-    private Message replyMessage;
+    private ArrayDeque<Event<Message>> replyEvents;
 
     public DefaultEventProcessor(final String kafkaBrokers) {
         this(kafkaBrokers, new DefaultEventConsumer(DEFAULT_CONSUME_TIMEOUT),
@@ -59,6 +58,8 @@ public final class DefaultEventProcessor implements EventProcessor {
         producerProperties.put(CLIENT_ID_CONFIG, "exam-test-producer");
         producerProperties.put(KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
         producerProperties.put(VALUE_SERIALIZER_CLASS_CONFIG, BytesSerializer.class.getName());
+
+        replyEvents = new ArrayDeque<>();
     }
 
     public DefaultEventProcessor withConsumerProperty(final Object key, final Object value) {
@@ -72,7 +73,7 @@ public final class DefaultEventProcessor implements EventProcessor {
     }
 
     @Override
-    public boolean configureReply(final Event event, final String eventClass) {
+    public boolean configureReply(final Event<String> event, final String eventClass) {
         if (StringUtils.isBlank(eventClass) || event == null) {
             log.warn("Able to convert only when event and eventClass are specified. Got event={} and class={}",
                     event, eventClass);
@@ -80,16 +81,19 @@ public final class DefaultEventProcessor implements EventProcessor {
         }
         final Optional<? extends Message> message = convertToProto(event, eventClass);
         if (message.isPresent()) {
-            replyTopic = event.getTopicName();
-            replyKey = event.getKey();
-            replyMessage = message.get();
+            replyEvents.push(
+                    Event.<Message>builder()
+                            .topicName(event.getTopicName())
+                            .key(event.getKey())
+                            .message(message.get())
+                            .build());
             return true;
         } else {
             return false;
         }
     }
 
-    protected Optional<Message> convertToProto(final Event event, final String eventClass) {
+    protected Optional<Message> convertToProto(final Event<String> event, final String eventClass) {
         try {
             final Class<Message> clazz = (Class<Message>) Class.forName(eventClass);
             final JsonToProto<Message> proto = new JsonToProto<>(clazz);
@@ -116,11 +120,19 @@ public final class DefaultEventProcessor implements EventProcessor {
 
     @Override
     public boolean reply() {
-        return send(replyTopic, replyKey, replyMessage);
+        final Event<Message> reply = replyEvents.poll();
+        final boolean result;
+        if (reply == null) {
+            log.warn("No reply event message specified, unable to reply");
+            result = false;
+        } else {
+            result = send(reply.getTopicName(), reply.getKey(), reply.getMessage());
+        }
+        return result;
     }
 
     @Override
-    public boolean send(final Event event) {
+    public boolean send(final Event<String> event) {
         return false;
     }
 
@@ -133,14 +145,7 @@ public final class DefaultEventProcessor implements EventProcessor {
         } else {
             result = eventProducer.produce(topic, key, message, producerProperties);
         }
-        clearReply();
         return result;
-    }
-
-    private void clearReply() {
-        replyKey = null;
-        replyTopic = null;
-        replyMessage = null;
     }
 
 }
