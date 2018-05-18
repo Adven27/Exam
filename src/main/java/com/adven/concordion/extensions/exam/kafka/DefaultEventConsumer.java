@@ -6,12 +6,18 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.apache.kafka.common.serialization.BytesDeserializer;
+import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.utils.Bytes;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
+
+import static org.apache.kafka.clients.consumer.ConsumerConfig.*;
+import static org.apache.kafka.clients.consumer.ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG;
+import static org.apache.kafka.clients.consumer.ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG;
 
 /**
  * @author Ruslan Ustits
@@ -22,8 +28,27 @@ public final class DefaultEventConsumer implements EventConsumer {
 
     private final long consumeTimeout;
 
+    @NonNull
+    private final Properties properties;
+
+    public DefaultEventConsumer(final long consumeTimeout, final String kafkaBrokers) {
+        this.consumeTimeout = consumeTimeout;
+        properties = new Properties();
+        properties.put(BOOTSTRAP_SERVERS_CONFIG, kafkaBrokers);
+        properties.put(GROUP_ID_CONFIG, "exam-test-consumer-group");
+        properties.put(CLIENT_ID_CONFIG, "exam-test-consumer");
+        properties.put(AUTO_OFFSET_RESET_CONFIG, "earliest");
+        properties.put(KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
+        properties.put(VALUE_DESERIALIZER_CLASS_CONFIG, BytesDeserializer.class.getName());
+    }
+
+    public DefaultEventConsumer withProperty(final Object key, final Object value) {
+        properties.put(key, value);
+        return this;
+    }
+
     @Override
-    public List<Event> consume(@NonNull final String fromTopic, @NonNull final Properties properties) {
+    public List<Event<String>> consume(@NonNull final String fromTopic) {
         try (KafkaConsumer<String, Bytes> consumer = new KafkaConsumer<>(properties)) {
             consumer.subscribe(Collections.singleton(fromTopic));
             final ConsumerRecords<String, Bytes> records = consumer.poll(consumeTimeout);
@@ -31,20 +56,20 @@ public final class DefaultEventConsumer implements EventConsumer {
         }
     }
 
-    private List<Event> toEvents(final ConsumerRecords<String, Bytes> records) {
-        final List<Event> events = new ArrayList<>();
+    private List<Event<String>> toEvents(final ConsumerRecords<String, Bytes> records) {
+        final List<Event<String>> events = new ArrayList<>();
         for (ConsumerRecord<String, Bytes> record : records) {
-            final Event event = toEvent(record);
+            final Event<String> event = toEvent(record);
             events.add(event);
         }
         return events;
     }
 
-    protected Event toEvent(@NonNull final ConsumerRecord<String, Bytes> record) {
+    protected Event<String> toEvent(@NonNull final ConsumerRecord<String, Bytes> record) {
         final String key = record.key();
         final byte[] value = record.value().get();
         final String topic = record.topic();
-        return Event.builder()
+        return Event.<String>builder()
                 .topicName(topic)
                 .key(key)
                 .message(new String(value))

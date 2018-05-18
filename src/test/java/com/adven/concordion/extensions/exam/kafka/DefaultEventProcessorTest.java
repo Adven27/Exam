@@ -22,7 +22,7 @@ public class DefaultEventProcessorTest {
     public void setUp() throws Exception {
         eventConsumer = DummyEventConsumer.defaultInstance();
         eventProducer = DummyEventProducer.defaultInstance();
-        processor = new DefaultEventProcessor("localhost:9092", eventConsumer, eventProducer);
+        processor = new DefaultEventProcessor(eventConsumer, eventProducer);
     }
 
     @Test

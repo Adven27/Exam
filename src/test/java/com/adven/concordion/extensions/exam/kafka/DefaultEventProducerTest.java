@@ -17,22 +17,21 @@ public class DefaultEventProducerTest {
 
     @Before
     public void setUp() throws Exception {
-        producer = new DefaultEventProducer(1000L);
+        producer = new DefaultEventProducer(1000L, new Properties());
     }
 
     @Test(expected = NullPointerException.class)
     public void testProduceWithNullTopic() {
-        producer.produce(null, "123", mock(Message.class), new Properties());
+        producer.produce(null, "123", mock(Message.class));
     }
 
     @Test(expected = NullPointerException.class)
     public void testProduceWithNullMessage() {
-        producer.produce("123", "123", null, new Properties());
+        producer.produce("123", "123", null);
     }
 
     @Test(expected = NullPointerException.class)
-    public void testProduceWithNullProperties() {
-        producer.produce("123", "123", mock(Message.class), null);
+    public void testCreateInstanceWithNullProperty() {
+        new DefaultEventProducer(10L, (Properties) null);
     }
-
 }

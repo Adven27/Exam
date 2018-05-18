@@ -7,7 +7,7 @@ public interface EventProcessor {
 
     boolean configureReply(final Event<String> event, final String eventClass);
 
-    Event consume(final String fromTopic);
+    Event<String> consume(final String fromTopic);
 
     boolean reply();
 

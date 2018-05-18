@@ -6,18 +6,9 @@ import com.google.protobuf.Message;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.kafka.common.serialization.BytesDeserializer;
-import org.apache.kafka.common.serialization.BytesSerializer;
-import org.apache.kafka.common.serialization.StringDeserializer;
-import org.apache.kafka.common.serialization.StringSerializer;
 
 import java.util.ArrayDeque;
 import java.util.List;
-import java.util.Properties;
-
-import static org.apache.kafka.clients.consumer.ConsumerConfig.*;
-import static org.apache.kafka.clients.producer.ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG;
-import static org.apache.kafka.clients.producer.ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG;
 
 /**
  * @author Ruslan Ustits
@@ -31,45 +22,12 @@ public final class DefaultEventProcessor implements EventProcessor {
 
     private final EventConsumer eventConsumer;
     private final EventProducer eventProducer;
-    private final Properties consumerProperties;
-    private final Properties producerProperties;
 
-    private ArrayDeque<Event<Message>> replyEvents;
+    private ArrayDeque<Event<Message>> replyEvents = new ArrayDeque<>();
 
     public DefaultEventProcessor(final String kafkaBrokers) {
-        this(kafkaBrokers, new DefaultEventConsumer(DEFAULT_CONSUME_TIMEOUT),
-                new DefaultEventProducer(DEFAULT_PRODUCER_TIMEOUT));
-    }
-
-    public DefaultEventProcessor(final String kafkaBrokers, final EventConsumer eventConsumer,
-                                 final EventProducer eventProducer) {
-        this.eventConsumer = eventConsumer;
-        this.eventProducer = eventProducer;
-        consumerProperties = new Properties();
-        consumerProperties.put(BOOTSTRAP_SERVERS_CONFIG, kafkaBrokers);
-        consumerProperties.put(GROUP_ID_CONFIG, "exam-test-consumer-group");
-        consumerProperties.put(CLIENT_ID_CONFIG, "exam-test-consumer");
-        consumerProperties.put(AUTO_OFFSET_RESET_CONFIG, "earliest");
-        consumerProperties.put(KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
-        consumerProperties.put(VALUE_DESERIALIZER_CLASS_CONFIG, BytesDeserializer.class.getName());
-
-        producerProperties = new Properties();
-        producerProperties.put(BOOTSTRAP_SERVERS_CONFIG, kafkaBrokers);
-        producerProperties.put(CLIENT_ID_CONFIG, "exam-test-producer");
-        producerProperties.put(KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
-        producerProperties.put(VALUE_SERIALIZER_CLASS_CONFIG, BytesSerializer.class.getName());
-
-        replyEvents = new ArrayDeque<>();
-    }
-
-    public DefaultEventProcessor withConsumerProperty(final Object key, final Object value) {
-        consumerProperties.put(key, value);
-        return this;
-    }
-
-    public DefaultEventProcessor withProducerProperty(final Object key, final Object value) {
-        producerProperties.put(key, value);
-        return this;
+        this(new DefaultEventConsumer(DEFAULT_CONSUME_TIMEOUT, kafkaBrokers),
+                new DefaultEventProducer(DEFAULT_PRODUCER_TIMEOUT, kafkaBrokers));
     }
 
     @Override
@@ -105,12 +63,12 @@ public final class DefaultEventProcessor implements EventProcessor {
     }
 
     @Override
-    public Event consume(final String fromTopic) {
+    public Event<String> consume(final String fromTopic) {
         if (StringUtils.isBlank(fromTopic)) {
             log.warn("Unable to consume records from topic={}", fromTopic);
             return null;
         }
-        final List<Event> events = eventConsumer.consume(fromTopic, consumerProperties);
+        final List<Event<String>> events = eventConsumer.consume(fromTopic);
         if (!events.isEmpty()) {
             return events.get(0);
         } else {
@@ -143,7 +101,7 @@ public final class DefaultEventProcessor implements EventProcessor {
                     topic, key, message);
             result = false;
         } else {
-            result = eventProducer.produce(topic, key, message, producerProperties);
+            result = eventProducer.produce(topic, key, message);
         }
         return result;
     }

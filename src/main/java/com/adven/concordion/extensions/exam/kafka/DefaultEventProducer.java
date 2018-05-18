@@ -6,12 +6,19 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.common.serialization.BytesSerializer;
+import org.apache.kafka.common.serialization.StringSerializer;
 import org.apache.kafka.common.utils.Bytes;
 
 import java.util.Properties;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+
+import static org.apache.kafka.clients.consumer.ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG;
+import static org.apache.kafka.clients.consumer.ConsumerConfig.CLIENT_ID_CONFIG;
+import static org.apache.kafka.clients.producer.ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG;
+import static org.apache.kafka.clients.producer.ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG;
 
 /**
  * @author Ruslan Ustits
@@ -22,9 +29,25 @@ public final class DefaultEventProducer implements EventProducer {
 
     private final long produceTimeout;
 
+    @NonNull
+    private final Properties properties;
+
+    public DefaultEventProducer(final long produceTimeout, final String kafkaBrokers) {
+        this.produceTimeout = produceTimeout;
+        properties = new Properties();
+        properties.put(BOOTSTRAP_SERVERS_CONFIG, kafkaBrokers);
+        properties.put(CLIENT_ID_CONFIG, "exam-test-producer");
+        properties.put(KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
+        properties.put(VALUE_SERIALIZER_CLASS_CONFIG, BytesSerializer.class.getName());
+    }
+
+    public DefaultEventProducer withProperty(final Object key, final Object value) {
+        properties.put(key, value);
+        return this;
+    }
+
     @Override
-    public boolean produce(@NonNull final String topic, final String key, @NonNull final Message message,
-                           @NonNull final Properties properties) {
+    public boolean produce(@NonNull final String topic, final String key, @NonNull final Message message) {
         try (KafkaProducer<String, Bytes> producer = new KafkaProducer<>(properties)) {
             final ProducerRecord<String, Bytes> record =
                     new ProducerRecord<>(topic, key, Bytes.wrap(message.toByteArray()));
