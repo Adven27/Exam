@@ -77,6 +77,11 @@ public final class DefaultEventProcessor implements EventProcessor {
     }
 
     @Override
+    public boolean hasReply() {
+        return !replyEvents.isEmpty();
+    }
+
+    @Override
     public boolean reply() {
         final Event<Message> reply = replyEvents.poll();
         final boolean result;

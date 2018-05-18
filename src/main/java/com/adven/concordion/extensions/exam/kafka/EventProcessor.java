@@ -13,4 +13,5 @@ public interface EventProcessor {
 
     boolean send(final Event<String> event, final String eventClass);
 
+    boolean hasReply();
 }
