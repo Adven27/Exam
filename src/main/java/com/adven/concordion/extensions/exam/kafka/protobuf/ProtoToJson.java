@@ -15,6 +15,9 @@ import lombok.extern.slf4j.Slf4j;
 public final class ProtoToJson<T extends Message> extends ProtoConverter<T, String> {
 
     public Optional<String> convert(final T from) {
+        if (from == null) {
+            return Optional.absent();
+        }
         final Descriptors.Descriptor descriptor = from.getDescriptorForType();
         addDescriptor(descriptor);
 

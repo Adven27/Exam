@@ -4,7 +4,9 @@ import com.google.common.base.Optional;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Message;
 import com.google.protobuf.util.JsonFormat;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -19,11 +21,15 @@ public final class JsonToProto<T extends Message> extends ProtoConverter<String,
 
     private final Class<T> protoClass;
 
-    public JsonToProto(final Class<T> protoClass) {
+    public JsonToProto(@NonNull final Class<T> protoClass) {
         this.protoClass = protoClass;
     }
 
     public Optional<T> convert(final String from) {
+        if (StringUtils.isBlank(from)) {
+            log.warn("Unable to convert from blank string");
+            return Optional.absent();
+        }
         final Optional<T.Builder> builder = buildMessageBuilder();
         if (builder.isPresent()) {
             return Optional.fromNullable(buildProtoObject(from, builder.get()));
