@@ -6,9 +6,7 @@ import com.adven.concordion.extensions.exam.kafka.EventProcessor;
 import lombok.AccessLevel;
 import lombok.Getter;
 
-import static com.adven.concordion.extensions.exam.html.Html.table;
-import static com.adven.concordion.extensions.exam.html.Html.th;
-import static com.adven.concordion.extensions.exam.html.Html.thead;
+import static com.adven.concordion.extensions.exam.html.Html.*;
 
 abstract class BaseEventCommand extends ExamCommand {
 
@@ -20,16 +18,15 @@ abstract class BaseEventCommand extends ExamCommand {
         this.eventProcessor = eventProcessor;
     }
 
-    protected void drawEventTable(Html html, String eventJson) {
-        Html table = table();
-        Html header = thead();
-        Html tr = Html.tr().text(eventJson);
-
+    protected final Html eventTable() {
+        final Html table = table();
+        final Html header = thead();
+        final Html tr = Html.tr();
         tr.childs(
                 th("Event header"),
-                th("Event json")
+                th("Event body")
         );
-        table.childs(header.childs(tr));
-        html.dropAllTo(table);
+        return table.childs(header.childs(tr));
     }
+
 }
