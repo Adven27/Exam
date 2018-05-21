@@ -1,6 +1,5 @@
 package com.adven.concordion.extensions.exam.kafka.commands;
 
-import com.adven.concordion.extensions.exam.commands.ExamCommand;
 import com.adven.concordion.extensions.exam.html.Html;
 import com.adven.concordion.extensions.exam.kafka.Event;
 import com.adven.concordion.extensions.exam.kafka.EventProcessor;
@@ -13,13 +12,10 @@ import org.concordion.api.ResultRecorder;
  * @author Ruslan Ustits
  */
 @Slf4j
-public final class EventSendCommand extends ExamCommand {
-
-    private final EventProcessor eventProcessor;
+public final class EventSendCommand extends BaseEventCommand {
 
     public EventSendCommand(final String name, final String tag, final EventProcessor eventProcessor) {
-        super(name, tag);
-        this.eventProcessor = eventProcessor;
+        super(name, tag, eventProcessor);
     }
 
     @Override
