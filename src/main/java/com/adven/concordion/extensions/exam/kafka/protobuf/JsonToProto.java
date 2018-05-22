@@ -4,25 +4,17 @@ import com.google.common.base.Optional;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Message;
 import com.google.protobuf.util.JsonFormat;
-import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 
 /**
  * @author Ruslan Ustits
  */
 @Slf4j
-public final class JsonToProto<T extends Message> extends ProtoConverter<String, T> {
+public final class JsonToProto<T extends Message> extends ProtoClassAware<String, T> {
 
-    private static final String GET_INSTANCE_METHOD_NAME = "getDefaultInstance";
-
-    private final Class<T> protoClass;
-
-    public JsonToProto(@NonNull final Class<T> protoClass) {
-        this.protoClass = protoClass;
+    public JsonToProto(final Class<T> protoClass) {
+        super(protoClass);
     }
 
     public Optional<T> convert(final String from) {
@@ -38,19 +30,12 @@ public final class JsonToProto<T extends Message> extends ProtoConverter<String,
     }
 
     protected Optional<T.Builder> buildMessageBuilder() {
-        T.Builder builder = null;
-        try {
-            final Method method = protoClass.getMethod(GET_INSTANCE_METHOD_NAME);
-            final T message = protoClass.cast(method.invoke(null));
-            builder = message.newBuilderForType();
-        } catch (NoSuchMethodException e) {
-            log.error("Unable to find method with name={}", GET_INSTANCE_METHOD_NAME);
-        } catch (IllegalAccessException e) {
-            log.error("Has no access to initializing object of class={}", protoClass);
-        } catch (InvocationTargetException e) {
-            log.error("Failed to invoke method={} of class={}", GET_INSTANCE_METHOD_NAME, protoClass);
+        final Optional<T> entity = protoInstance();
+        if (entity.isPresent()) {
+            return Optional.of(entity.get().newBuilderForType());
+        } else {
+            return Optional.absent();
         }
-        return Optional.fromNullable(builder);
     }
 
     protected T buildProtoObject(final String json, final T.Builder messageBuilder) {
@@ -65,9 +50,9 @@ public final class JsonToProto<T extends Message> extends ProtoConverter<String,
         try {
             parser.usingTypeRegistry(typeRegistry)
                     .merge(json, messageBuilder);
-            return protoClass.cast(messageBuilder.build());
+            return castToProto(messageBuilder.build());
         } catch (InvalidProtocolBufferException e) {
-            log.error("Unable to parse json file={} to object={}", json, protoClass);
+            log.error("Unable to parse json file={} to object={}", json, getProtoClass());
         }
         return null;
     }

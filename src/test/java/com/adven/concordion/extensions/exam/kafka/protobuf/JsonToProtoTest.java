@@ -49,9 +49,4 @@ public class JsonToProtoTest {
         assertThat(result).isNull();
     }
 
-    @Test(expected = NullPointerException.class)
-    public void testCreateInstanceWithNullClass() {
-        new JsonToProto<Entity>(null);
-    }
-
 }
