@@ -27,17 +27,6 @@ public final class EventCheckCommand extends BaseEventCommand {
                 .message(eventJson)
                 .build();
         final String topic = eventReplyRoot.takeAwayAttr("topic");
-        // получаю ивент из очереди
-        Event eventToCheck = getEventProcessor().consume(topic);
-        if (eventVerifier.verify(checkEvent, eventToCheck)) {
-            if (getEventProcessor().hasReply()) {
-                // отправляю
-                getEventProcessor().reply();
-            }
-            resultRecorder.record(Result.SUCCESS);
-        } else {
-            resultRecorder.record(Result.FAILURE);
-        }
     }
 
 }

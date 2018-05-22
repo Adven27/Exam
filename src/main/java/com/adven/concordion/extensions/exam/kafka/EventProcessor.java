@@ -5,13 +5,12 @@ package com.adven.concordion.extensions.exam.kafka;
  */
 public interface EventProcessor {
 
-    boolean configureReply(final Event<String> event, final String eventClass);
+    boolean check(final Event<String> eventToCheck, final String eventToCheckClass, final boolean isAsync);
 
-    Event<String> consume(final String fromTopic);
-
-    boolean reply();
+    boolean checkWithReply(final Event<String> eventToCheck, final String eventToCheckClass,
+                           final Event<String> replyEvent, final String replyEventClass,
+                           final boolean isAsync);
 
     boolean send(final Event<String> event, final String eventClass);
 
-    boolean hasReply();
 }

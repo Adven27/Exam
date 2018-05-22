@@ -21,7 +21,6 @@ public final class EventReplyCommand extends BaseEventCommand {
         final Event<String> replyEvent = Event.<String>builder()
                 .message(eventJson)
                 .build();
-        getEventProcessor().configureReply(replyEvent, protoClass);
     }
 
 }

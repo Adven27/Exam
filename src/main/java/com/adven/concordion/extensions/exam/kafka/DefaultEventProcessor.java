@@ -1,14 +1,15 @@
 package com.adven.concordion.extensions.exam.kafka;
 
+import com.adven.concordion.extensions.exam.kafka.check.AsyncMock;
+import com.adven.concordion.extensions.exam.kafka.check.CheckMessageMock;
+import com.adven.concordion.extensions.exam.kafka.check.SyncMock;
+import com.adven.concordion.extensions.exam.kafka.check.WithReply;
 import com.adven.concordion.extensions.exam.kafka.protobuf.JsonToProto;
 import com.google.common.base.Optional;
 import com.google.protobuf.Message;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-
-import java.util.ArrayDeque;
-import java.util.List;
 
 /**
  * @author Ruslan Ustits
@@ -23,39 +24,45 @@ public final class DefaultEventProcessor implements EventProcessor {
     private final EventConsumer eventConsumer;
     private final EventProducer eventProducer;
 
-    private ArrayDeque<Event<Message>> replyEvents = new ArrayDeque<>();
-
     public DefaultEventProcessor(final String kafkaBrokers) {
         this(new DefaultEventConsumer(DEFAULT_CONSUME_TIMEOUT, kafkaBrokers),
                 new DefaultEventProducer(DEFAULT_PRODUCER_TIMEOUT, kafkaBrokers));
     }
 
     @Override
-    public boolean configureReply(final Event<String> event, final String eventClass) {
-        if (StringUtils.isBlank(eventClass) || event == null) {
-            log.warn("Able to convert only when event and eventClass are specified. Got event={} and class={}",
-                    event, eventClass);
-            return false;
-        }
-        final Optional<? extends Message> message = convertToProto(event, eventClass);
-        if (message.isPresent()) {
-            replyEvents.push(
-                    Event.<Message>builder()
-                            .topicName(event.getTopicName())
-                            .key(event.getKey())
-                            .message(message.get())
-                            .build());
-            return true;
-        } else {
-            return false;
-        }
+    public boolean check(final Event<String> eventToCheck, final String eventToCheckClass, final boolean isAsync) {
+        return checkWithReply(eventToCheck, eventToCheckClass, null, null, isAsync);
     }
 
-    protected Optional<Message> convertToProto(final Event<String> event, final String eventClass) {
+    @Override
+    public boolean checkWithReply(final Event<String> eventToCheck, final String eventToCheckClass,
+                                  final Event<String> replyEvent, final String replyEventClass,
+                                  final boolean isAsync) {
+        CheckMessageMock mock = new SyncMock(eventToCheck, eventConsumer);
+        if (replyEvent != null) {
+            final Optional<Message> protoMessage = convertToProto(replyEvent.getMessage(), replyEventClass);
+            if (protoMessage.isPresent()) {
+                final Event<Message> reply = Event.<Message>builder()
+                        .topicName(replyEvent.getTopicName())
+                        .key(replyEvent.getKey())
+                        .message(protoMessage.get())
+                        .build();
+                mock = new WithReply(reply, eventProducer, mock);
+            } else {
+                return false;
+            }
+        }
+        if (isAsync) {
+            mock = new AsyncMock(mock);
+        }
+        return mock.verify();
+    }
+
+    protected Optional<Message> convertToProto(final String message, final String eventClass) {
         try {
             final Class<Message> clazz = (Class<Message>) Class.forName(eventClass);
             final JsonToProto<Message> proto = new JsonToProto<>(clazz);
-            return proto.convert(event.getMessage());
+            return proto.convert(message);
         } catch (ClassNotFoundException e) {
             log.error("Unable to find class for string={}", eventClass, e);
         }
@@ -63,41 +70,20 @@ public final class DefaultEventProcessor implements EventProcessor {
     }
 
     @Override
-    public Event<String> consume(final String fromTopic) {
-        if (StringUtils.isBlank(fromTopic)) {
-            log.warn("Unable to consume records from topic={}", fromTopic);
-            return null;
+    public boolean send(final Event<String> event, final String eventClass) {
+        if (StringUtils.isBlank(eventClass) || event == null) {
+            log.warn("Able to convert only when event and eventClass are specified. Got event={} and class={}",
+                    event, eventClass);
+            return false;
         }
-        final List<Event<String>> events = eventConsumer.consume(fromTopic);
-        if (!events.isEmpty()) {
-            return events.get(0);
-        } else {
-            return null;
-        }
-    }
-
-    @Override
-    public boolean hasReply() {
-        return !replyEvents.isEmpty();
-    }
-
-    @Override
-    public boolean reply() {
-        final Event<Message> reply = replyEvents.poll();
         final boolean result;
-        if (reply == null) {
-            log.warn("No reply event message specified, unable to reply");
-            result = false;
+        final Optional<Message> protoMessage = convertToProto(event.getMessage(), eventClass);
+        if (protoMessage.isPresent()) {
+            result = send(event.getTopicName(), event.getKey(), protoMessage.get());
         } else {
-            result = send(reply.getTopicName(), reply.getKey(), reply.getMessage());
+            result = false;
         }
         return result;
-    }
-
-    @Override
-    public boolean send(final Event<String> event, final String eventClass) {
-        final boolean isConfigured = configureReply(event, eventClass);
-        return isConfigured && reply();
     }
 
     protected boolean send(final String topic, final String key, final Message message) {
