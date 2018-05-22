@@ -17,6 +17,16 @@ public final class EventCheckCommand extends BaseEventCommand {
         super(name, tag, eventProcessor);
     }
 
+    @Override
+    public void setUp(final CommandCall commandCall, final Evaluator evaluator, final ResultRecorder resultRecorder) {
+        Html eventReplyRoot = Html.tableSlim(commandCall.getElement());
+        final String protoClass = eventReplyRoot.takeAwayAttr("protobufClass");
+        final String eventJson = eventReplyRoot.text();
+        final Event<String> replyEvent = Event.<String>builder()
+                .message(eventJson)
+                .build();
+    }
+
     /**
      * {@inheritDoc}.
      */
