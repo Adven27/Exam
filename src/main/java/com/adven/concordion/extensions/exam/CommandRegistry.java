@@ -9,8 +9,7 @@ import com.adven.concordion.extensions.exam.files.commands.FilesCheckCommand;
 import com.adven.concordion.extensions.exam.files.commands.FilesSetCommand;
 import com.adven.concordion.extensions.exam.files.commands.FilesShowCommand;
 import com.adven.concordion.extensions.exam.kafka.EventProcessor;
-import com.adven.concordion.extensions.exam.kafka.commands.EventCheckCommand;
-import com.adven.concordion.extensions.exam.kafka.commands.EventReplyCommand;
+import com.adven.concordion.extensions.exam.kafka.commands.EventCheckReplyCommand;
 import com.adven.concordion.extensions.exam.kafka.commands.EventSendCommand;
 import com.adven.concordion.extensions.exam.rest.commands.*;
 import com.adven.concordion.extensions.exam.ui.BrowserCommand;
@@ -66,8 +65,7 @@ public class CommandRegistry {
 
                 new SetVarCommand("span"),
 
-                new EventReplyCommand("event-check", "div", eventProcessor),
-                new EventCheckCommand("event-reply", "div", eventProcessor),
+                new EventCheckReplyCommand("event-reply", "div", eventProcessor),
                 new EventSendCommand("event-send", "div", eventProcessor)
         );
     }

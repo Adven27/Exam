@@ -31,20 +31,20 @@ public final class DefaultEventProcessor implements EventProcessor {
 
     @Override
     public boolean check(final Event<String> eventToCheck, final String eventToCheckClass, final boolean isAsync) {
-        return checkWithReply(eventToCheck, eventToCheckClass, null, null, isAsync);
+        return checkWithReply(eventToCheck, eventToCheckClass, null, null, null, isAsync);
     }
 
     @Override
     public boolean checkWithReply(final Event<String> eventToCheck, final String eventToCheckClass,
-                                  final Event<String> replyEvent, final String replyEventClass,
+                                  final Event<String> replySuccessEvent, final Event<String> replyFailEvent, final String replyEventClass,
                                   final boolean isAsync) {
         CheckMessageMock mock = new SyncMock(eventToCheck, eventConsumer);
-        if (replyEvent != null) {
-            final Optional<Message> protoMessage = convertToProto(replyEvent.getMessage(), replyEventClass);
+        if (replySuccessEvent != null) {
+            final Optional<Message> protoMessage = convertToProto(replySuccessEvent.getMessage(), replyEventClass);
             if (protoMessage.isPresent()) {
                 final Event<Message> reply = Event.<Message>builder()
-                        .topicName(replyEvent.getTopicName())
-                        .key(replyEvent.getKey())
+                        .topicName(replySuccessEvent.getTopicName())
+                        .key(replySuccessEvent.getKey())
                         .message(protoMessage.get())
                         .build();
                 mock = new WithReply(reply, eventProducer, mock);
