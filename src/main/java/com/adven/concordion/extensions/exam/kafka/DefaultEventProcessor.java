@@ -31,23 +31,20 @@ public final class DefaultEventProcessor implements EventProcessor {
 
     @Override
     public boolean check(final Event<String> eventToCheck, final String eventToCheckClass, final boolean isAsync) {
-        return checkWithReply(eventToCheck, eventToCheckClass, null, null, null, isAsync);
+        return checkWithReply(eventToCheck, eventToCheckClass, null,
+                null, null, isAsync);
     }
 
     @Override
     public boolean checkWithReply(final Event<String> eventToCheck, final String eventToCheckClass,
-                                  final Event<String> replySuccessEvent, final Event<String> replyFailEvent, final String replyEventClass,
-                                  final boolean isAsync) {
+                                  final Event<String> replySuccessEvent, final Event<String> replyFailEvent,
+                                  final String replyEventClass, final boolean isAsync) {
         CheckMessageMock mock = new SyncMock(eventToCheck, eventToCheckClass, eventConsumer);
         if (replySuccessEvent != null) {
-            final Optional<Message> protoMessage = convertToProto(replySuccessEvent.getMessage(), replyEventClass);
-            if (protoMessage.isPresent()) {
-                final Event<Message> reply = Event.<Message>builder()
-                        .topicName(replySuccessEvent.getTopicName())
-                        .key(replySuccessEvent.getKey())
-                        .message(protoMessage.get())
-                        .build();
-                mock = new WithReply(reply, eventProducer, mock);
+            final Optional<WithReply> withReplyMock = mockWithReply(replySuccessEvent, replyFailEvent,
+                    replyEventClass, mock);
+            if (withReplyMock.isPresent()) {
+                mock = withReplyMock.get();
             } else {
                 return false;
             }
@@ -56,6 +53,32 @@ public final class DefaultEventProcessor implements EventProcessor {
             mock = new AsyncMock(mock);
         }
         return mock.verify();
+    }
+
+    protected Optional<WithReply> mockWithReply(final Event<String> replySuccessEvent, final Event<String> replyFailEvent,
+                                                final String replyEventClass, final CheckMessageMock mock) {
+        final Optional<Event<Message>> successEvent = convertToProto(replySuccessEvent, replyEventClass);
+        final Optional<Event<Message>> failEvent = convertToProto(replyFailEvent, replyEventClass);
+        if (successEvent.isPresent() && failEvent.isPresent()) {
+            return Optional.of(new WithReply(successEvent.get(), failEvent.get(), eventProducer, mock));
+        } else {
+            log.warn("Unable to convert reply messages");
+            return Optional.absent();
+        }
+    }
+
+    protected Optional<Event<Message>> convertToProto(final Event<String> event, final String eventClass) {
+        final Optional<Message> message = convertToProto(event.getMessage(), eventClass);
+        if (message.isPresent()) {
+            final Event<Message> convertedEvent = Event.<Message>builder()
+                    .topicName(event.getTopicName())
+                    .key(event.getKey())
+                    .message(message.get())
+                    .build();
+            return Optional.of(convertedEvent);
+        } else {
+            return Optional.absent();
+        }
     }
 
     protected Optional<Message> convertToProto(final String message, final String eventClass) {
