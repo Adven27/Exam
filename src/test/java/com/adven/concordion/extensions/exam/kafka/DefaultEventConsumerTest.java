@@ -28,10 +28,10 @@ public class DefaultEventConsumerTest {
         final String message = "test";
         final Bytes messageInBytes = new Bytes("test".getBytes());
         final ConsumerRecord<String, Bytes> record = new ConsumerRecord<>(topic, 1, 1L, key, messageInBytes);
-        final Event event = consumer.toEvent(record);
+        final Event<Bytes> event = consumer.toEvent(record);
         assertThat(event.getKey()).isEqualTo(key);
         assertThat(event.getTopicName()).isEqualTo(topic);
-        assertThat(event.getMessage()).isEqualTo(message);
+        assertThat(event.getMessage()).isEqualTo(Bytes.wrap(message.getBytes()));
     }
 
     @Test(expected = NullPointerException.class)
