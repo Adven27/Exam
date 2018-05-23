@@ -38,7 +38,7 @@ public final class DefaultEventProcessor implements EventProcessor {
     public boolean checkWithReply(final Event<String> eventToCheck, final String eventToCheckClass,
                                   final Event<String> replySuccessEvent, final Event<String> replyFailEvent, final String replyEventClass,
                                   final boolean isAsync) {
-        CheckMessageMock mock = new SyncMock(eventToCheck, eventConsumer);
+        CheckMessageMock mock = new SyncMock(eventToCheck, eventToCheckClass, eventConsumer);
         if (replySuccessEvent != null) {
             final Optional<Message> protoMessage = convertToProto(replySuccessEvent.getMessage(), replyEventClass);
             if (protoMessage.isPresent()) {

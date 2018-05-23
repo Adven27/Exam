@@ -1,6 +1,7 @@
 package com.adven.concordion.extensions.exam.kafka;
 
 import lombok.NonNull;
+import org.apache.kafka.common.utils.Bytes;
 
 import java.util.List;
 
@@ -9,6 +10,6 @@ import java.util.List;
  */
 public interface EventConsumer {
 
-    List<Event<String>> consume(@NonNull final String fromTopic);
+    List<Event<Bytes>> consume(@NonNull final String fromTopic);
 
 }

@@ -48,7 +48,7 @@ public final class DefaultEventConsumer implements EventConsumer {
     }
 
     @Override
-    public List<Event<String>> consume(@NonNull final String fromTopic) {
+    public List<Event<Bytes>> consume(@NonNull final String fromTopic) {
         try (KafkaConsumer<String, Bytes> consumer = new KafkaConsumer<>(properties)) {
             consumer.subscribe(Collections.singleton(fromTopic));
             final ConsumerRecords<String, Bytes> records = consumer.poll(consumeTimeout);
@@ -56,23 +56,23 @@ public final class DefaultEventConsumer implements EventConsumer {
         }
     }
 
-    private List<Event<String>> toEvents(final ConsumerRecords<String, Bytes> records) {
-        final List<Event<String>> events = new ArrayList<>();
+    private List<Event<Bytes>> toEvents(final ConsumerRecords<String, Bytes> records) {
+        final List<Event<Bytes>> events = new ArrayList<>();
         for (ConsumerRecord<String, Bytes> record : records) {
-            final Event<String> event = toEvent(record);
+            final Event<Bytes> event = toEvent(record);
             events.add(event);
         }
         return events;
     }
 
-    protected Event<String> toEvent(@NonNull final ConsumerRecord<String, Bytes> record) {
+    protected Event<Bytes> toEvent(@NonNull final ConsumerRecord<String, Bytes> record) {
         final String key = record.key();
-        final byte[] value = record.value().get();
+        final Bytes value = record.value();
         final String topic = record.topic();
-        return Event.<String>builder()
+        return Event.<Bytes>builder()
                 .topicName(topic)
                 .key(key)
-                .message(new String(value))
+                .message(value)
                 .build();
     }
 

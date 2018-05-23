@@ -20,6 +20,16 @@ public final class ProtoBytesToJson<T extends Message> extends ProtoConverter<By
         bytesToProto = new BytesToProto<>(protoClass);
     }
 
+    public static <T extends Message> ProtoBytesToJson<T> forProtoClass(final String className) {
+        try {
+            final Class<T> clazz = (Class<T>) Class.forName(className);
+            return new ProtoBytesToJson<>(clazz);
+        } catch (ClassNotFoundException e) {
+            log.error("Unable to instantiate converter for class={}", className, e);
+        }
+        return null;
+    }
+
     @Override
     public Optional<String> convert(final Bytes from) {
         final Optional<T> proto = bytesToProto.convert(from);
