@@ -2,9 +2,10 @@ package com.adven.concordion.extensions.exam.kafka.check;
 
 import com.adven.concordion.extensions.exam.kafka.Event;
 import com.adven.concordion.extensions.exam.kafka.EventConsumer;
-import com.adven.concordion.extensions.exam.kafka.protobuf.ProtoBytesToJson;
-import com.google.common.base.Optional;
-import com.google.protobuf.Message;
+import com.adven.concordion.extensions.exam.kafka.check.verify.CompositeVerifier;
+import com.adven.concordion.extensions.exam.kafka.check.verify.MessageVerifier;
+import com.adven.concordion.extensions.exam.kafka.check.verify.NullAwareVerifier;
+import com.adven.concordion.extensions.exam.kafka.check.verify.Verifier;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -20,8 +21,16 @@ import java.util.List;
 public final class SyncMock implements CheckMessageMock {
 
     private final Event<String> messageToCheck;
-    private final String protobufClass;
     private final EventConsumer eventConsumer;
+    private final Verifier verifier;
+
+    public SyncMock(final Event<String> messageToCheck, final String protobufClass,
+                    final EventConsumer eventConsumer) {
+        this(messageToCheck, eventConsumer,
+                new CompositeVerifier(
+                        new NullAwareVerifier(),
+                        new MessageVerifier(protobufClass)));
+    }
 
     @Override
     public boolean verify() {
@@ -29,8 +38,7 @@ public final class SyncMock implements CheckMessageMock {
         if (consumedEvent == null) {
             return false;
         } else {
-            final Optional<String> message = convertToJson(consumedEvent.getMessage());
-            return message.isPresent() && message.get().equals(messageToCheck.getMessage());
+            return verifier.verify(consumedEvent, messageToCheck);
         }
     }
 
@@ -44,15 +52,6 @@ public final class SyncMock implements CheckMessageMock {
             return events.get(0);
         } else {
             return null;
-        }
-    }
-
-    private Optional<String> convertToJson(final Bytes message) {
-        final ProtoBytesToJson<? extends Message> converter = ProtoBytesToJson.forProtoClass(protobufClass);
-        if (converter != null) {
-            return converter.convert(message);
-        } else {
-            return Optional.absent();
         }
     }
 

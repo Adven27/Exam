@@ -2,14 +2,12 @@ package com.adven.concordion.extensions.exam.kafka.check;
 
 import com.adven.concordion.extensions.exam.kafka.DummyEventConsumer;
 import com.adven.concordion.extensions.exam.kafka.Event;
-import com.adven.concordion.extensions.exam.kafka.protobuf.TestEntity;
-import org.apache.commons.lang3.RandomStringUtils;
-import org.apache.commons.lang3.RandomUtils;
+import com.adven.concordion.extensions.exam.kafka.check.verify.MockVerifier;
 import org.apache.kafka.common.utils.Bytes;
 import org.junit.Before;
 import org.junit.Test;
 
-import static com.adven.concordion.extensions.exam.kafka.protobuf.TestEntity.*;
+import static com.adven.concordion.extensions.exam.RandomUtils.anyString;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -20,36 +18,17 @@ public class SyncMockTest {
     private DummyEventConsumer eventConsumer;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         eventConsumer = DummyEventConsumer.defaultInstance();
     }
 
     @Test
     public void testVerify() {
-        final String name = anyString();
-        final int number = RandomUtils.nextInt();
-        final Entity entity = Entity.newBuilder()
-                .setName(name)
-                .setNumber(number)
+        eventConsumer.addEventToReturn(Event.<Bytes>empty());
+        final Event<String> event = Event.<String>builder()
+                .topicName(anyString())
                 .build();
-        final Bytes bytes = Bytes.wrap(entity.toByteArray());
-        final String expected = "{\n" +
-                "  \"name\": \"" + name + "\",\n" +
-                "  \"number\": " + number + "\n" +
-                "}";
-
-        final String topicName = anyString();
-        final Event<Bytes> bytesEvent = Event.<Bytes>builder()
-                .topicName(topicName)
-                .message(bytes)
-                .build();
-        final Event<String> stringEvent = Event.<String>builder()
-                .topicName(topicName)
-                .message(expected)
-                .build();
-
-        eventConsumer.addEventToReturn(bytesEvent);
-        final SyncMock syncMock = new SyncMock(stringEvent, TestEntity.Entity.class.getName(), eventConsumer);
+        final SyncMock syncMock = new SyncMock(event, eventConsumer, MockVerifier.returningTrue());
         assertThat(syncMock.verify()).isTrue();
     }
 
@@ -57,13 +36,23 @@ public class SyncMockTest {
     public void testVerifyWithNullMessage() {
         final Event<String> event = Event.empty();
         eventConsumer.addStringEventToReturn(event);
-        final SyncMock syncMock = new SyncMock(event, anyString(), eventConsumer);
+        final SyncMock syncMock = new SyncMock(event, eventConsumer, MockVerifier.returningTrue());
         assertThat(syncMock.verify()).isFalse();
     }
 
     @Test
     public void testVerifyWhenNoMessageWasConsumed() {
-        final SyncMock syncMock = new SyncMock(Event.<String>empty(), anyString(), eventConsumer);
+        final SyncMock syncMock = new SyncMock(Event.<String>empty(), eventConsumer, MockVerifier.returningTrue());
+        assertThat(syncMock.verify()).isFalse();
+    }
+
+    @Test
+    public void testFailedVerify() {
+        eventConsumer.addEventToReturn(Event.<Bytes>empty());
+        final Event<String> event = Event.<String>builder()
+                .topicName(anyString())
+                .build();
+        final SyncMock syncMock = new SyncMock(event, eventConsumer, MockVerifier.returningFalse());
         assertThat(syncMock.verify()).isFalse();
     }
 
@@ -114,10 +103,6 @@ public class SyncMockTest {
         final SyncMock syncMock = new SyncMock(Event.<String>empty(), anyString(), eventConsumer);
         final Event event = syncMock.consume("");
         assertThat(event).isNull();
-    }
-
-    private String anyString() {
-        return RandomStringUtils.random(10);
     }
 
 }
