@@ -4,7 +4,7 @@ import com.adven.concordion.extensions.exam.kafka.check.AsyncMock;
 import com.adven.concordion.extensions.exam.kafka.check.CheckMessageMock;
 import com.adven.concordion.extensions.exam.kafka.check.SyncMock;
 import com.adven.concordion.extensions.exam.kafka.check.WithReply;
-import com.adven.concordion.extensions.exam.kafka.protobuf.JsonToProto;
+import com.adven.concordion.extensions.exam.kafka.protobuf.ProtoUtils;
 import com.google.common.base.Optional;
 import com.google.protobuf.Message;
 import lombok.RequiredArgsConstructor;
@@ -57,39 +57,14 @@ public final class DefaultEventProcessor implements EventProcessor {
 
     protected Optional<WithReply> mockWithReply(final Event<String> replySuccessEvent, final Event<String> replyFailEvent,
                                                 final String replyEventClass, final CheckMessageMock mock) {
-        final Optional<Event<Message>> successEvent = convertToProto(replySuccessEvent, replyEventClass);
-        final Optional<Event<Message>> failEvent = convertToProto(replyFailEvent, replyEventClass);
+        final Optional<Event<Message>> successEvent = ProtoUtils.fromJsonToProto(replySuccessEvent, replyEventClass);
+        final Optional<Event<Message>> failEvent = ProtoUtils.fromJsonToProto(replyFailEvent, replyEventClass);
         if (successEvent.isPresent() && failEvent.isPresent()) {
             return Optional.of(new WithReply(successEvent.get(), failEvent.get(), eventProducer, mock));
         } else {
             log.warn("Unable to convert reply messages");
             return Optional.absent();
         }
-    }
-
-    protected Optional<Event<Message>> convertToProto(final Event<String> event, final String eventClass) {
-        final Optional<Message> message = convertToProto(event.getMessage(), eventClass);
-        if (message.isPresent()) {
-            final Event<Message> convertedEvent = Event.<Message>builder()
-                    .topicName(event.getTopicName())
-                    .key(event.getKey())
-                    .message(message.get())
-                    .build();
-            return Optional.of(convertedEvent);
-        } else {
-            return Optional.absent();
-        }
-    }
-
-    protected Optional<Message> convertToProto(final String message, final String eventClass) {
-        try {
-            final Class<Message> clazz = (Class<Message>) Class.forName(eventClass);
-            final JsonToProto<Message> proto = new JsonToProto<>(clazz);
-            return proto.convert(message);
-        } catch (ClassNotFoundException e) {
-            log.error("Unable to find class for string={}", eventClass, e);
-        }
-        return Optional.absent();
     }
 
     @Override
@@ -100,7 +75,7 @@ public final class DefaultEventProcessor implements EventProcessor {
             return false;
         }
         final boolean result;
-        final Optional<Message> protoMessage = convertToProto(event.getMessage(), eventClass);
+        final Optional<Message> protoMessage = ProtoUtils.fromJsonToProto(event.getMessage(), eventClass);
         if (protoMessage.isPresent()) {
             result = send(event.getTopicName(), event.getKey(), protoMessage.get());
         } else {
