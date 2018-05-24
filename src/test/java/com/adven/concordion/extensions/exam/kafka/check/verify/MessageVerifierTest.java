@@ -3,6 +3,7 @@ package com.adven.concordion.extensions.exam.kafka.check.verify;
 import com.adven.concordion.extensions.exam.kafka.Event;
 import com.adven.concordion.extensions.exam.kafka.EventUtils;
 import org.apache.kafka.common.utils.Bytes;
+import org.assertj.core.api.ThrowableAssert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -12,6 +13,7 @@ import static com.adven.concordion.extensions.exam.RandomUtils.anyInt;
 import static com.adven.concordion.extensions.exam.RandomUtils.anyString;
 import static com.adven.concordion.extensions.exam.kafka.protobuf.TestEntity.Entity;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 /**
  * @author Ruslan Ustits
@@ -74,6 +76,13 @@ public class MessageVerifierTest {
                 .build();
         final boolean result = verifier.verify(first, second);
         assertThat(result).isFalse();
+    }
+
+    @Test
+    public void testCleanup() {
+        final String expected = anyString();
+        final String result = verifier.cleanup("\n" + expected + "\t");
+        assertThat(result).isEqualTo(expected);
     }
 
 }
