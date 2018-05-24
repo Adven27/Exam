@@ -7,7 +7,7 @@ public interface EventProcessor {
 
     boolean check(final Event<String> eventToCheck, final String eventToCheckClass, final boolean isAsync);
 
-    boolean checkWithReply(final Event<String> eventToCheck, final String eventToCheckClass, final String topicName,
+    boolean checkWithReply(final Event<String> eventToCheck, final String eventToCheckClass,
                            final Event<String> replySuccessEvent, final Event<String> replyFailEvent, final String replyEventClass,
                            final boolean isAsync);
 

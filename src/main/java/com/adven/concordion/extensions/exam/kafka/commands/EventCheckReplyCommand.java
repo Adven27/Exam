@@ -40,6 +40,7 @@ public final class EventCheckReplyCommand extends BaseEventCommand {
         final String expectedTopicName = expected.takeAwayAttr("topicName");
         final String expectedEventJson = expected.text();
         Event<String> checkEvent = Event.<String>builder()
+                .topicName(expectedTopicName)
                 .message(expectedEventJson)
                 .build();
 
@@ -63,7 +64,7 @@ public final class EventCheckReplyCommand extends BaseEventCommand {
                 .build();
 
         // произвожу проверку и ответ
-        final boolean result = getEventProcessor().checkWithReply(checkEvent, expectedProtoClass, expectedTopicName, successReplyEvent, failReplyEvent, replyProtoClass, true);
+        final boolean result = getEventProcessor().checkWithReply(checkEvent, expectedProtoClass, successReplyEvent, failReplyEvent, replyProtoClass, true);
 
         eventCheckReplyRoot.removeAllChild();
 
@@ -74,12 +75,12 @@ public final class EventCheckReplyCommand extends BaseEventCommand {
         eventCheckReplyRoot.childs(eventCheckInfo)
                 .dropAllTo(expEventTable);
 
-        if(result) {
+        if (result) {
             final Html eventSuccessInfo = eventInfo("Success reply", "", replyProtoClass);
             final Html successEventTable = tableResult(successReplyEventJson);
             eventCheckReplyRoot.childs(eventSuccessInfo)
                     .dropAllTo(successEventTable);
-        }else{
+        } else {
             final Html failSuccessInfo = eventInfo("Fails reply", "", replyProtoClass);
             final Html failEventTable = tableResult(failReplyEventJson);
             eventCheckReplyRoot.childs(failSuccessInfo)
