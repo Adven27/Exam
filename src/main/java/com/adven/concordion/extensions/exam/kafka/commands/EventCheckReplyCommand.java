@@ -22,18 +22,17 @@ public final class EventCheckReplyCommand extends BaseEventCommand {
 
         // получаю событие и класс, требующее проверки
         final Html expected = eventCheckReplyRoot.first("expected");
-        final String expectedProtoClass = expected.takeAwayAttr("protobufClass");
-        final String expectedTopicName = expected.takeAwayAttr("topicName");
+        final String expectedProtoClass = expected.takeAwayAttr(PROTO_CLASS);
+        final String expectedTopicName = expected.takeAwayAttr(TOPIC_NAME);
         final String expectedEventJson = expected.text();
         Event<String> checkEvent = Event.<String>builder()
                 .topicName(expectedTopicName)
                 .message(expectedEventJson)
                 .build();
 
-        //final String topic = eventCheckReplyRoot.takeAwayAttr("topic");
         final Html reply = eventCheckReplyRoot.first("reply");
         // получаю класс события-ответа
-        final String replyProtoClass = reply.takeAwayAttr("protobufClass");
+        final String replyProtoClass = reply.takeAwayAttr(PROTO_CLASS);
 
         // получаю событие успешного ответа
         final Html replySuccess = reply.first("success");
@@ -52,29 +51,28 @@ public final class EventCheckReplyCommand extends BaseEventCommand {
         eventCheckReplyRoot.removeAllChild();
 
         // рисую результирующую таблицу
-        final Html eventCheckInfo = eventInfo("Message expected", expectedTopicName, expectedProtoClass);
+        final Html eventCheckInfo = eventInfo("Expected event", expectedTopicName, expectedProtoClass);
         final Html expEventTable = tableResult(expectedEventJson);
-
-        eventCheckReplyRoot.childs(eventCheckInfo)
-                .dropAllTo(expEventTable);
+        eventCheckInfo.dropAllTo(expEventTable);
 
         final Html eventSuccessInfo = eventInfo("Success reply", "", replyProtoClass);
         final Html successEventTable = tableResult(successReplyEventJson);
-        eventCheckReplyRoot.childs(eventSuccessInfo)
-                .dropAllTo(successEventTable);
+        eventSuccessInfo.dropAllTo(successEventTable);
 
-        final Html failSuccessInfo = eventInfo("Fails reply", "", replyProtoClass);
+        final Html failSuccessInfo = eventInfo("Fail reply", "", replyProtoClass);
         final Html failEventTable = tableResult(failReplyEventJson);
-        eventCheckReplyRoot.childs(failSuccessInfo)
-                .dropAllTo(failEventTable);
+        failSuccessInfo.dropAllTo(failEventTable);
+
+        eventCheckReplyRoot.childs(eventCheckInfo, eventSuccessInfo, failSuccessInfo);
 
         // произвожу проверку и ответ
-        final boolean result = getEventProcessor().checkWithReply(checkEvent, expectedProtoClass, successReplyEvent, failReplyEvent, replyProtoClass, true);
+        final boolean result = getEventProcessor()
+                .checkWithReply(checkEvent, expectedProtoClass, successReplyEvent, failReplyEvent, replyProtoClass, true);
 
         if (!result) {
             eventCheckReplyRoot.parent().attr("class", "")
                     .css("rest-failure bd-callout bd-callout-danger");
-            eventCheckReplyRoot.text("Failed to send message to kafka");
+            eventCheckReplyRoot.text("Failed to start kafka listener mock");
             resultRecorder.record(Result.EXCEPTION);
         }
     }

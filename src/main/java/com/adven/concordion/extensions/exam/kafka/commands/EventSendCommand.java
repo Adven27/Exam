@@ -15,10 +15,6 @@ import org.concordion.api.ResultRecorder;
 @Slf4j
 public final class EventSendCommand extends BaseEventCommand {
 
-    private static final String PROTO_CLASS = "protobufClass";
-    private static final String TOPIC_NAME = "topicName";
-    private static final String EVENT_KEY = "key";
-
     public EventSendCommand(final String name, final String tag, final EventProcessor eventProcessor) {
         super(name, tag, eventProcessor);
     }

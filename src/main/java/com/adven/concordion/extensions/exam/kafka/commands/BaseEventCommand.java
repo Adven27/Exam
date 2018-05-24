@@ -11,6 +11,10 @@ import static com.adven.concordion.extensions.exam.html.Html.*;
 
 abstract class BaseEventCommand extends ExamCommand {
 
+    protected static final String PROTO_CLASS = "protobufClass";
+    protected static final String TOPIC_NAME = "topicName";
+    protected static final String EVENT_KEY = "key";
+
     @Getter(AccessLevel.PROTECTED)
     private final EventProcessor eventProcessor;
 

@@ -27,7 +27,7 @@
             </e:event-check>
         </e:given>
         <e:when>
-            <span c:assertTrue="isCorrectResult()">Received event was success</span>
+            <span c:assertTrue="isCorrectResult()">Received event is equal to expected and response is equal to succes reply</span>
         </e:when>
     </e:example>
 </div>
