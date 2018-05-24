@@ -3,17 +3,12 @@ package com.adven.concordion.extensions.exam.kafka.commands;
 import com.adven.concordion.extensions.exam.html.Html;
 import com.adven.concordion.extensions.exam.kafka.Event;
 import com.adven.concordion.extensions.exam.kafka.EventProcessor;
-import com.adven.concordion.extensions.exam.kafka.EventVerifier;
-import com.adven.concordion.extensions.exam.rest.JsonPrettyPrinter;
 import org.concordion.api.CommandCall;
 import org.concordion.api.Evaluator;
+import org.concordion.api.Result;
 import org.concordion.api.ResultRecorder;
 
-import static com.adven.concordion.extensions.exam.html.Html.*;
-
 public final class EventCheckReplyCommand extends BaseEventCommand {
-
-    private EventVerifier eventVerifier;
 
     public EventCheckReplyCommand(final String name, final String tag, final EventProcessor eventProcessor) {
         super(name, tag, eventProcessor);
@@ -54,9 +49,6 @@ public final class EventCheckReplyCommand extends BaseEventCommand {
                 .message(failReplyEventJson)
                 .build();
 
-        // произвожу проверку и ответ
-        final boolean result = getEventProcessor().checkWithReply(checkEvent, expectedProtoClass, successReplyEvent, failReplyEvent, replyProtoClass, true);
-
         eventCheckReplyRoot.removeAllChild();
 
         // рисую результирующую таблицу
@@ -66,41 +58,24 @@ public final class EventCheckReplyCommand extends BaseEventCommand {
         eventCheckReplyRoot.childs(eventCheckInfo)
                 .dropAllTo(expEventTable);
 
-        if (result) {
-            final Html eventSuccessInfo = eventInfo("Success reply", "", replyProtoClass);
-            final Html successEventTable = tableResult(successReplyEventJson);
-            eventCheckReplyRoot.childs(eventSuccessInfo)
-                    .dropAllTo(successEventTable);
-        } else {
-            final Html failSuccessInfo = eventInfo("Fails reply", "", replyProtoClass);
-            final Html failEventTable = tableResult(failReplyEventJson);
-            eventCheckReplyRoot.childs(failSuccessInfo)
-                    .dropAllTo(failEventTable);
+        final Html eventSuccessInfo = eventInfo("Success reply", "", replyProtoClass);
+        final Html successEventTable = tableResult(successReplyEventJson);
+        eventCheckReplyRoot.childs(eventSuccessInfo)
+                .dropAllTo(successEventTable);
+
+        final Html failSuccessInfo = eventInfo("Fails reply", "", replyProtoClass);
+        final Html failEventTable = tableResult(failReplyEventJson);
+        eventCheckReplyRoot.childs(failSuccessInfo)
+                .dropAllTo(failEventTable);
+
+        // произвожу проверку и ответ
+        final boolean result = getEventProcessor().checkWithReply(checkEvent, expectedProtoClass, successReplyEvent, failReplyEvent, replyProtoClass, true);
+
+        if (!result) {
+            eventCheckReplyRoot.parent().attr("class", "")
+                    .css("rest-failure bd-callout bd-callout-danger");
+            eventCheckReplyRoot.text("Failed to send message to kafka");
+            resultRecorder.record(Result.EXCEPTION);
         }
     }
-
-    private Html eventInfo(String text, final String topicName, final String protobufClass) {
-        return div().childs(
-                h(4, text),
-                h(5, "").childs(
-                        badge(topicName, "primary"),
-                        badge(protobufClass, "secondary"),
-                        code("protobuf")));
-    }
-
-    private Html tableResult(final String message) {
-        return tableResult("", message);
-    }
-
-
-    private Html tableResult(final String header, final String message) {
-        final Html table = eventTable();
-        final JsonPrettyPrinter printer = new JsonPrettyPrinter();
-        table.childs(
-                tbody().childs(
-                        td(code(header)),
-                        td(printer.prettyPrint(message)).css("json")));
-        return table;
-    }
-
 }

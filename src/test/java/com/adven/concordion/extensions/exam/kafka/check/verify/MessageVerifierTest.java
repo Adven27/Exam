@@ -6,6 +6,8 @@ import org.apache.kafka.common.utils.Bytes;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.nio.charset.Charset;
+
 import static com.adven.concordion.extensions.exam.RandomUtils.anyInt;
 import static com.adven.concordion.extensions.exam.RandomUtils.anyString;
 import static com.adven.concordion.extensions.exam.kafka.protobuf.TestEntity.Entity;
@@ -47,7 +49,7 @@ public class MessageVerifierTest {
     @Test
     public void testVerifyWithBadFirstMessage() {
         final Event<Bytes> first = Event.<Bytes>builder()
-                .message(Bytes.wrap(anyString().getBytes()))
+                .message(Bytes.wrap(anyString().getBytes(Charset.forName("UTF-8"))))
                 .build();
         final Event<String> second = Event.<String>builder()
                 .message(anyString())

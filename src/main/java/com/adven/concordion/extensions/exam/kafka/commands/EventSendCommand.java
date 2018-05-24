@@ -3,14 +3,11 @@ package com.adven.concordion.extensions.exam.kafka.commands;
 import com.adven.concordion.extensions.exam.html.Html;
 import com.adven.concordion.extensions.exam.kafka.Event;
 import com.adven.concordion.extensions.exam.kafka.EventProcessor;
-import com.adven.concordion.extensions.exam.rest.JsonPrettyPrinter;
 import lombok.extern.slf4j.Slf4j;
 import org.concordion.api.CommandCall;
 import org.concordion.api.Evaluator;
 import org.concordion.api.Result;
 import org.concordion.api.ResultRecorder;
-
-import static com.adven.concordion.extensions.exam.html.Html.*;
 
 /**
  * @author Ruslan Ustits
@@ -35,7 +32,7 @@ public final class EventSendCommand extends BaseEventCommand {
         final String message = html.text();
 
         html.removeAllChild();
-        final Html eventInfo = eventInfo(topicName, protobufClass);
+        final Html eventInfo = eventInfo("Send message to", topicName, protobufClass);
         final Html eventTable = tableResult(key, message);
 
         html.childs(eventInfo)
@@ -46,8 +43,7 @@ public final class EventSendCommand extends BaseEventCommand {
                 .key(key)
                 .message(message)
                 .build();
-        //        final boolean result = getEventProcessor().send(event, protobufClass);
-        final boolean result = true;
+        final boolean result = getEventProcessor().send(event, protobufClass);
         if (!result) {
             html.parent().attr("class", "")
                     .css("rest-failure bd-callout bd-callout-danger");
@@ -55,25 +51,4 @@ public final class EventSendCommand extends BaseEventCommand {
             resultRecorder.record(Result.EXCEPTION);
         }
     }
-
-    private Html eventInfo(final String topicName, final String protobufClass) {
-        return div().childs(
-                h(4, "Send message to"),
-                h(5, "").childs(
-                        badge(topicName, "primary"),
-                        badge(protobufClass, "secondary"),
-                        code("protobuf")));
-    }
-
-    private Html tableResult(final String key, final String message) {
-        final Html table = eventTable();
-        final String header = "key=" + key;
-        final JsonPrettyPrinter printer = new JsonPrettyPrinter();
-        table.childs(
-                tbody().childs(
-                        td(code(header)),
-                        td(printer.prettyPrint(message)).css("json")));
-        return table;
-    }
-
 }

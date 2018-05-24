@@ -4,7 +4,6 @@ import com.google.common.base.Optional;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.*;
 
 /**
  * @author Ruslan Ustits
@@ -20,7 +19,7 @@ public class ProtoClassAwareTest {
 
     @Test(expected = NullPointerException.class)
     public void testCreateConverterInstanceWithNullClass() {
-        final ProtoClassAware<?, ?> converter = new MockConverter(null);
+        new MockConverter(null);
     }
 
 }
