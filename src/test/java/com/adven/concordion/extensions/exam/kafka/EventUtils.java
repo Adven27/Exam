@@ -19,6 +19,12 @@ public final class EventUtils {
                 .build();
     }
 
+    public static Event<String> goodEvent(final String name, final int number) {
+        return Event.<String>builder()
+                .message(goodMessage(name, number))
+                .build();
+    }
+
     public static Event<String> badEvent() {
         return Event.<String>builder()
                 .message(anyString())
@@ -30,7 +36,10 @@ public final class EventUtils {
     }
 
     public static String goodMessage(final String name, final int number) {
-        return "{ \"name\": \"" + name + "\", \"number\":" + number + " }";
+        return "{\n" +
+                "  \"name\": \"" + name + "\",\n" +
+                "  \"number\": " + number + "\n" +
+                "}";
     }
 
     public static Class<TestEntity.Entity> goodClass() {

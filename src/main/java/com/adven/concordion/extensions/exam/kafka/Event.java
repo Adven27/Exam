@@ -7,7 +7,7 @@ import lombok.Value;
  * @author Ruslan Ustits
  */
 @Value
-@Builder
+@Builder(toBuilder = true)
 public class Event<T> {
 
     String topicName;

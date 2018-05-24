@@ -51,9 +51,26 @@ public final class DefaultEventConsumer implements EventConsumer {
     public List<Event<Bytes>> consume(@NonNull final String fromTopic) {
         try (KafkaConsumer<String, Bytes> consumer = new KafkaConsumer<>(properties)) {
             consumer.subscribe(Collections.singleton(fromTopic));
-            final ConsumerRecords<String, Bytes> records = consumer.poll(consumeTimeout);
+            final ConsumerRecords<String, Bytes> records = consumeBy(consumer);
             return toEvents(records);
         }
+    }
+
+    protected ConsumerRecords<String, Bytes> consumeBy(final KafkaConsumer<String, Bytes> consumer) {
+        ConsumerRecords<String, Bytes> records = null;
+        for (int i = 0; i < consumeTimeout; i += 100) {
+            records = consumer.poll(consumeTimeout);
+            if (!records.isEmpty()) {
+                break;
+            }
+            try {
+                Thread.sleep(100L);
+            } catch (InterruptedException e) {
+                log.error("Thread was interrupted", e);
+                Thread.currentThread().interrupt();
+            }
+        }
+        return records;
     }
 
     private List<Event<Bytes>> toEvents(final ConsumerRecords<String, Bytes> records) {

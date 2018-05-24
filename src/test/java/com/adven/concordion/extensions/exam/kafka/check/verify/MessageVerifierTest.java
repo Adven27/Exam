@@ -1,6 +1,7 @@
 package com.adven.concordion.extensions.exam.kafka.check.verify;
 
 import com.adven.concordion.extensions.exam.kafka.Event;
+import com.adven.concordion.extensions.exam.kafka.EventUtils;
 import org.apache.kafka.common.utils.Bytes;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,10 +32,7 @@ public class MessageVerifierTest {
                 .setNumber(number)
                 .build();
         final Bytes bytes = Bytes.wrap(entity.toByteArray());
-        final String expected = "{\n" +
-                "  \"name\": \"" + name + "\",\n" +
-                "  \"number\": " + number + "\n" +
-                "}";
+        final String expected = EventUtils.goodMessage(name, number);
 
         final Event<Bytes> first = Event.<Bytes>builder()
                 .message(bytes)

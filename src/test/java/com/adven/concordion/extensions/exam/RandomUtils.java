@@ -16,7 +16,7 @@ public final class RandomUtils {
     }
 
     public static String anyString() {
-        return RandomStringUtils.random(10);
+        return RandomStringUtils.randomAlphabetic(10);
     }
 
 }
