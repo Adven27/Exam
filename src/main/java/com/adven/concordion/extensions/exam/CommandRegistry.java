@@ -65,7 +65,7 @@ public class CommandRegistry {
 
                 new SetVarCommand("span"),
 
-                new EventCheckReplyCommand("event-reply", "div", eventProcessor),
+                new EventCheckReplyCommand("event-check", "div", eventProcessor),
                 new EventSendCommand("event-send", "div", eventProcessor)
         );
     }
