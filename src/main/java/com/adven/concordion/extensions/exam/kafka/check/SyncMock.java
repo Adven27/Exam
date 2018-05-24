@@ -34,12 +34,16 @@ public final class SyncMock implements CheckMessageMock {
 
     @Override
     public boolean verify() {
-        final Event<Bytes> consumedEvent = consume(messageToCheck.getTopicName());
+        final Event<Bytes> consumedEvent = consume();
         if (consumedEvent == null) {
             return false;
         } else {
-            return verifier.verify(consumedEvent, messageToCheck);
+            return verify(consumedEvent);
         }
+    }
+
+    protected Event<Bytes> consume() {
+        return consume(messageToCheck.getTopicName());
     }
 
     protected Event<Bytes> consume(final String fromTopic) {
@@ -53,6 +57,10 @@ public final class SyncMock implements CheckMessageMock {
         } else {
             return null;
         }
+    }
+
+    protected boolean verify(final Event<Bytes> event) {
+        return verifier.verify(event, messageToCheck);
     }
 
 }

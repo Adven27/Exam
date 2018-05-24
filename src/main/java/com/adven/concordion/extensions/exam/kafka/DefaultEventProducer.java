@@ -10,11 +10,14 @@ import org.apache.kafka.common.serialization.BytesSerializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.apache.kafka.common.utils.Bytes;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Properties;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import static com.adven.concordion.extensions.exam.kafka.EventHeader.CORRELATION_ID;
+import static com.adven.concordion.extensions.exam.kafka.EventHeader.REPLY_TOPIC;
 import static org.apache.kafka.clients.consumer.ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG;
 import static org.apache.kafka.clients.consumer.ConsumerConfig.CLIENT_ID_CONFIG;
 import static org.apache.kafka.clients.producer.ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG;
@@ -48,19 +51,45 @@ public final class DefaultEventProducer implements EventProducer {
 
     @Override
     public boolean produce(@NonNull final String topic, final String key, @NonNull final Message message) {
-        try (KafkaProducer<String, Bytes> producer = new KafkaProducer<>(properties)) {
+        final ProducerRecord<String, Bytes> record =
+                new ProducerRecord<>(topic, key, Bytes.wrap(message.toByteArray()));
+        return produce(record);
+    }
+
+    @Override
+    public boolean produce(@NonNull final String topic, final String key, final EventHeader eventHeader,
+                           @NonNull final Message message) {
+        if (eventHeader == null) {
+            return produce(topic, key, message);
+        } else {
             final ProducerRecord<String, Bytes> record =
                     new ProducerRecord<>(topic, key, Bytes.wrap(message.toByteArray()));
+            return addHeaders(record, eventHeader) && produce(record);
+        }
+    }
+
+    protected boolean addHeaders(final ProducerRecord<String, Bytes> record, final EventHeader eventHeader) {
+        try {
+            record.headers().add(REPLY_TOPIC, eventHeader.getReplyToTopic().getBytes("UTF-8"));
+            record.headers().add(CORRELATION_ID, eventHeader.getCorrelationId().getBytes("UTF-8"));
+            return true;
+        } catch (UnsupportedEncodingException e) {
+            log.error("Encoding is not supported", e);
+        }
+        return false;
+    }
+
+    protected boolean produce(final ProducerRecord<String, Bytes> record) {
+        try (KafkaProducer<String, Bytes> producer = new KafkaProducer<>(properties)) {
             producer.send(record).get(produceTimeout, TimeUnit.MILLISECONDS);
             return true;
         } catch (InterruptedException e) {
             log.warn("Thread was interrupted", e);
             Thread.currentThread().interrupt();
         } catch (ExecutionException e) {
-            log.error("Failed to retrieve execution result after sending message={} with key={} to topic={}",
-                    message, key, topic, e);
+            log.error("Failed to retrieve execution result after sending record={}", record, e);
         } catch (TimeoutException e) {
-            log.warn("Sending message={} with key={} to topic={} ended due to timeout", message, key, topic, e);
+            log.warn("Sending record={} ended due to timeout", record, e);
         }
         return false;
     }

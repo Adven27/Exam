@@ -41,4 +41,9 @@ public final class DummyEventProducer implements EventProducer {
         return result;
     }
 
+    @Override
+    public boolean produce(String topic, String key, EventHeader eventHeader, Message message) {
+        return produce(topic, key, message);
+    }
+
 }

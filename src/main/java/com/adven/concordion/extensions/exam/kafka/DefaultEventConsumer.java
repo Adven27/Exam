@@ -6,15 +6,19 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.apache.kafka.common.header.Header;
+import org.apache.kafka.common.header.Headers;
 import org.apache.kafka.common.serialization.BytesDeserializer;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.utils.Bytes;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 
+import static com.adven.concordion.extensions.exam.kafka.EventHeader.*;
 import static org.apache.kafka.clients.consumer.ConsumerConfig.*;
 import static org.apache.kafka.clients.consumer.ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG;
 import static org.apache.kafka.clients.consumer.ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG;
@@ -90,7 +94,29 @@ public final class DefaultEventConsumer implements EventConsumer {
                 .topicName(topic)
                 .key(key)
                 .message(value)
+                .header(eventHeader(record))
                 .build();
+    }
+
+    protected EventHeader eventHeader(@NonNull final ConsumerRecord<String, Bytes> record) {
+        try {
+            final Headers headers = record.headers();
+            final String replyTopic = headerToString(headers.lastHeader(REPLY_TOPIC));
+            final String corId = headerToString(headers.lastHeader(CORRELATION_ID));
+            return new EventHeader(replyTopic, corId);
+        } catch (UnsupportedEncodingException e) {
+            log.error("Encoding is not supported", e);
+        }
+        return EventHeader.empty();
+
+    }
+
+    protected String headerToString(final Header header) throws UnsupportedEncodingException {
+        if (header == null) {
+            return "";
+        } else {
+            return new String(header.value(), "UTF-8");
+        }
     }
 
 }

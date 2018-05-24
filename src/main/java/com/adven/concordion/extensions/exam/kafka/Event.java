@@ -13,6 +13,7 @@ public class Event<T> {
     String topicName;
     String key;
     T message;
+    EventHeader header;
 
     public static <T> Event<T> empty() {
         return Event.<T>builder().build();

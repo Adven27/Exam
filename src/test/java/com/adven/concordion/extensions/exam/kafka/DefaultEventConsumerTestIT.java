@@ -32,6 +32,7 @@ public class DefaultEventConsumerTestIT extends KafkaAwareTest {
         final Event<Bytes> expected = Event.<Bytes>builder()
                 .message(bytes)
                 .topicName(CONSUME_TOPIC)
+                .header(EventHeader.empty())
                 .build();
         assertThat(events).containsOnly(expected);
     }

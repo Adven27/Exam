@@ -10,4 +10,7 @@ public interface EventProducer {
 
     boolean produce(@NonNull final String topic, final String key, @NonNull final Message message);
 
+    boolean produce(@NonNull final String topic, final String key, final EventHeader eventHeader,
+                    @NonNull final Message message);
+
 }

@@ -1,9 +1,6 @@
 package com.adven.concordion.extensions.exam.kafka;
 
-import com.adven.concordion.extensions.exam.kafka.check.AsyncMock;
-import com.adven.concordion.extensions.exam.kafka.check.CheckMessageMock;
-import com.adven.concordion.extensions.exam.kafka.check.SyncMock;
-import com.adven.concordion.extensions.exam.kafka.check.WithReply;
+import com.adven.concordion.extensions.exam.kafka.check.*;
 import com.adven.concordion.extensions.exam.kafka.protobuf.ProtoUtils;
 import com.google.common.base.Optional;
 import com.google.protobuf.Message;
@@ -39,12 +36,13 @@ public final class DefaultEventProcessor implements EventProcessor {
     public boolean checkWithReply(final Event<String> eventToCheck, final String eventToCheckClass,
                                   final Event<String> replySuccessEvent, final Event<String> replyFailEvent,
                                   final String replyEventClass, final boolean isAsync) {
-        CheckMessageMock mock = new SyncMock(eventToCheck, eventToCheckClass, eventConsumer);
+        final SyncMock syncMock = new SyncMock(eventToCheck, eventToCheckClass, eventConsumer);
+        CheckMessageMock mock = syncMock;
         if (replySuccessEvent != null) {
             final Optional<WithReply> withReplyMock = mockWithReply(replySuccessEvent, replyFailEvent,
-                    replyEventClass, mock);
+                    replyEventClass, syncMock);
             if (withReplyMock.isPresent()) {
-                mock = withReplyMock.get();
+                mock = new ReplyWithTopicFromHeader(syncMock, withReplyMock.get());
             } else {
                 return false;
             }
