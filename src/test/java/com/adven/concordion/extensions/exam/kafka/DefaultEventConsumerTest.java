@@ -61,16 +61,16 @@ public class DefaultEventConsumerTest {
 
     @Test
     public void testHeaderToString() throws UnsupportedEncodingException {
-        final String value = anyString();
-        final Header header = new RecordHeader(anyString(), value.getBytes("UTF-8"));
-        final String result = consumer.headerToString(header);
+        final byte[] value = anyString().getBytes("UTF-8");
+        final Header header = new RecordHeader(anyString(), value);
+        final byte[] result = consumer.headerToString(header);
         assertThat(result).isEqualTo(value);
     }
 
     @Test
-    public void testHeaderToStringWithNullHeader() throws UnsupportedEncodingException {
-        final String result = consumer.headerToString(null);
-        assertThat(result).isEqualTo("");
+    public void testHeaderToStringWithNullHeader() {
+        final byte[] result = consumer.headerToString(null);
+        assertThat(result).isEqualTo(new byte[]{});
     }
 
 }

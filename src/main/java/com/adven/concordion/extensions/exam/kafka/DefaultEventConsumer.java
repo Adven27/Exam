@@ -12,16 +12,14 @@ import org.apache.kafka.common.serialization.BytesDeserializer;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.utils.Bytes;
 
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 
-import static com.adven.concordion.extensions.exam.kafka.EventHeader.*;
+import static com.adven.concordion.extensions.exam.kafka.EventHeader.CORRELATION_ID;
+import static com.adven.concordion.extensions.exam.kafka.EventHeader.REPLY_TOPIC;
 import static org.apache.kafka.clients.consumer.ConsumerConfig.*;
-import static org.apache.kafka.clients.consumer.ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG;
-import static org.apache.kafka.clients.consumer.ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG;
 
 /**
  * @author Ruslan Ustits
@@ -63,7 +61,7 @@ public final class DefaultEventConsumer implements EventConsumer {
     protected ConsumerRecords<String, Bytes> consumeBy(final KafkaConsumer<String, Bytes> consumer) {
         ConsumerRecords<String, Bytes> records = null;
         for (int i = 0; i < consumeTimeout; i += 100) {
-            records = consumer.poll(consumeTimeout);
+            records = consumer.poll(10L);
             if (!records.isEmpty()) {
                 break;
             }
@@ -99,23 +97,17 @@ public final class DefaultEventConsumer implements EventConsumer {
     }
 
     protected EventHeader eventHeader(@NonNull final ConsumerRecord<String, Bytes> record) {
-        try {
-            final Headers headers = record.headers();
-            final String replyTopic = headerToString(headers.lastHeader(REPLY_TOPIC));
-            final String corId = headerToString(headers.lastHeader(CORRELATION_ID));
-            return new EventHeader(replyTopic, corId);
-        } catch (UnsupportedEncodingException e) {
-            log.error("Encoding is not supported", e);
-        }
-        return EventHeader.empty();
-
+        final Headers headers = record.headers();
+        final byte[] replyTopic = headerToString(headers.lastHeader(REPLY_TOPIC));
+        final byte[] corId = headerToString(headers.lastHeader(CORRELATION_ID));
+        return new EventHeader(replyTopic, corId);
     }
 
-    protected String headerToString(final Header header) throws UnsupportedEncodingException {
+    protected byte[] headerToString(final Header header) {
         if (header == null) {
-            return "";
+            return new byte[]{};
         } else {
-            return new String(header.value(), "UTF-8");
+            return header.value();
         }
     }
 

@@ -10,7 +10,6 @@ import org.apache.kafka.common.serialization.BytesSerializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.apache.kafka.common.utils.Bytes;
 
-import java.io.UnsupportedEncodingException;
 import java.util.Properties;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -64,19 +63,14 @@ public final class DefaultEventProducer implements EventProducer {
         } else {
             final ProducerRecord<String, Bytes> record =
                     new ProducerRecord<>(topic, key, Bytes.wrap(message.toByteArray()));
-            return addHeaders(record, eventHeader) && produce(record);
+            addHeaders(record, eventHeader);
+            return produce(record);
         }
     }
 
-    protected boolean addHeaders(final ProducerRecord<String, Bytes> record, final EventHeader eventHeader) {
-        try {
-            record.headers().add(REPLY_TOPIC, eventHeader.getReplyToTopic().getBytes("UTF-8"));
-            record.headers().add(CORRELATION_ID, eventHeader.getCorrelationId().getBytes("UTF-8"));
-            return true;
-        } catch (UnsupportedEncodingException e) {
-            log.error("Encoding is not supported", e);
-        }
-        return false;
+    protected void addHeaders(final ProducerRecord<String, Bytes> record, final EventHeader eventHeader) {
+        record.headers().add(REPLY_TOPIC, eventHeader.getReplyToTopic());
+        record.headers().add(CORRELATION_ID, eventHeader.getCorrelationId());
     }
 
     protected boolean produce(final ProducerRecord<String, Bytes> record) {
