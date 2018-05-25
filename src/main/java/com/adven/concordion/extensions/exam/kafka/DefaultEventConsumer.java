@@ -28,6 +28,8 @@ import static org.apache.kafka.clients.consumer.ConsumerConfig.*;
 @RequiredArgsConstructor
 public final class DefaultEventConsumer implements EventConsumer {
 
+    private static final long POLL_TIMEOUT = 100L;
+
     private final long consumeTimeout;
 
     @NonNull
@@ -60,16 +62,10 @@ public final class DefaultEventConsumer implements EventConsumer {
 
     protected ConsumerRecords<String, Bytes> consumeBy(final KafkaConsumer<String, Bytes> consumer) {
         ConsumerRecords<String, Bytes> records = null;
-        for (int i = 0; i < consumeTimeout; i += 100) {
-            records = consumer.poll(10L);
+        for (int i = 0; i < consumeTimeout; i += POLL_TIMEOUT) {
+            records = consumer.poll(POLL_TIMEOUT);
             if (!records.isEmpty()) {
                 break;
-            }
-            try {
-                Thread.sleep(100L);
-            } catch (InterruptedException e) {
-                log.error("Thread was interrupted", e);
-                Thread.currentThread().interrupt();
             }
         }
         return records;
