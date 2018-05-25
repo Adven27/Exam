@@ -4,12 +4,15 @@
     <e:summary/>
     <e:example name="Kafka test send">
         <e:when>
-            <e:event-send topicName="test.topic" key="messageKey" protobufClass="com.adven.concordion.extensions.exam.kafka.protobuf.TestEntity$Entity">
+            <e:event-send topicName="test.produce.topic" key="messageKey" protobufClass="com.adven.concordion.extensions.exam.kafka.protobuf.TestEntity$Entity">
             {
-                "name": "test name",
-                "number": 123
+                "name": "happy little name",
+                "number": 12
             }
             </e:event-send>
         </e:when>
+        <e:then>
+            <span c:assertTrue="hasReceivedEvent()">Successfuly received event</span>
+        </e:then>
     </e:example>
 </div>    

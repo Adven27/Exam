@@ -1,4 +1,4 @@
-package specs.kafka.send;
+package specs.kafka.check;
 
 import com.google.protobuf.InvalidProtocolBufferException;
 import org.apache.kafka.clients.consumer.ConsumerRecord;

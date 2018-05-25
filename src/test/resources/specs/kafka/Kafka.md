@@ -1,3 +1,4 @@
 # Working with Kafka
 
-- [Check message from kafka and reply back](send/CheckAndReply.md "c:run")
+- [Send event](send/Send.md "c:run")
+- [Check message from kafka and reply back](check/CheckAndReply.md "c:run")

@@ -1,5 +1,6 @@
 ### Check event and reply
-<div>
+
+<div print="true">
     <e:summary/>
     <e:example name="Event must be received and then a success event must be send back">
         <e:given>        
