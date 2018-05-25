@@ -66,14 +66,19 @@ public class CaseCommand extends RestVerifyCommand {
         Html body = caseRoot.first(BODY);
         Html expected = caseRoot.first(EXPECTED);
         caseRoot.remove(body, expected);
-        for (Map<String, Object> ignored : cases) {
-            caseRoot.childs(
-                    Html.tag(CASE).childs(
-                            body == null ? null : Html.tag(BODY).text(body.text()),
-                            Html.tag(EXPECTED).text(expected.text())
-                    )
-            );
+        caseRoot.childs(
+                caseTags(body, expected));
+    }
+
+    private Html[] caseTags(final Html body, final Html expected) {
+        final List<Html> caseTags = new ArrayList<>();
+        for (int i = 0; i < cases.size(); i++) {
+            final Html bodyToAdd = body == null ? null : Html.tag(BODY).text(body.text());
+            final Html expectedToAdd = Html.tag(EXPECTED).text(expected.text());
+            final Html caseTag = Html.tag(CASE).childs(bodyToAdd, expectedToAdd);
+            caseTags.add(caseTag);
         }
+        return caseTags.toArray(new Html[]{});
     }
 
     @Override
