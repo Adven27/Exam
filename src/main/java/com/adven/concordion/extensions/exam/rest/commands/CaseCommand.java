@@ -4,6 +4,7 @@ import com.adven.concordion.extensions.exam.PlaceholdersResolver;
 import com.adven.concordion.extensions.exam.html.Html;
 import com.adven.concordion.extensions.exam.html.RowParser;
 import com.adven.concordion.extensions.exam.rest.JsonPrettyPrinter;
+import com.adven.concordion.extensions.exam.rest.StatusBuilder;
 import com.jayway.restassured.response.Response;
 import lombok.extern.slf4j.Slf4j;
 import net.javacrumbs.jsonunit.core.Configuration;
@@ -25,6 +26,7 @@ import static org.apache.commons.lang3.StringUtils.isEmpty;
 
 @Slf4j
 public class CaseCommand extends RestVerifyCommand {
+
     private static final String DESC = "desc";
     private static final String URL_PARAMS = "urlParams";
     private static final String COOKIES = "cookies";
@@ -34,6 +36,9 @@ public class CaseCommand extends RestVerifyCommand {
     private static final String EXPECTED = "expected";
     private static final String WHERE = "where";
     private static final String CASE = "case";
+    private static final String PROTOCOL = "protocol";
+    private static final String STATUS_CODE = "statusCode";
+    private static final String REASON_PHRASE = "reasonPhrase";
 
     private final JsonPrettyPrinter jsonPrinter = new JsonPrettyPrinter();
     private List<Map<String, Object>> cases = new ArrayList<>();
@@ -75,6 +80,20 @@ public class CaseCommand extends RestVerifyCommand {
         for (int i = 0; i < cases.size(); i++) {
             final Html bodyToAdd = body == null ? null : Html.tag(BODY).text(body.text());
             final Html expectedToAdd = Html.tag(EXPECTED).text(expected.text());
+
+            final String protocol = expected.attr(PROTOCOL);
+            if (protocol != null) {
+                expectedToAdd.attr(PROTOCOL, protocol);
+            }
+            final String statusCode = expected.attr(STATUS_CODE);
+            if (statusCode != null) {
+                expectedToAdd.attr(STATUS_CODE, statusCode);
+            }
+            final String reasonPhrase = expected.attr(REASON_PHRASE);
+            if (reasonPhrase != null) {
+                expectedToAdd.attr(REASON_PHRASE, reasonPhrase);
+            }
+
             final Html caseTag = Html.tag(CASE).childs(bodyToAdd, expectedToAdd);
             caseTags.add(caseTag);
         }
@@ -110,7 +129,8 @@ public class CaseCommand extends RestVerifyCommand {
                 executor.body(bodyStr);
             }
 
-            final String expectedStatus = "HTTP/1.1 200 OK";
+            final Html expected = caseTR.first(EXPECTED);
+            final String expectedStatus = expectedStatus(expected);
             Html statusTd = td(expectedStatus);
             caseTR.childs(statusTd);
 
@@ -120,7 +140,7 @@ public class CaseCommand extends RestVerifyCommand {
             childCommands.execute(eval, resultRecorder);
             childCommands.verify(eval, resultRecorder);
 
-            vf(td().insteadOf(caseTR.first(EXPECTED)), eval, resultRecorder);
+            vf(td().insteadOf(expected), eval, resultRecorder);
 
             String actualStatus = executor.statusLine();
             if (expectedStatus.equals(actualStatus)) {
@@ -129,6 +149,13 @@ public class CaseCommand extends RestVerifyCommand {
                 failure(resultRecorder, statusTd.el(), actualStatus, expectedStatus);
             }
         }
+    }
+
+    private String expectedStatus(final Html expected) {
+        final String protocol = expected.takeAwayAttr(PROTOCOL);
+        final String statusCode = expected.takeAwayAttr(STATUS_CODE);
+        final String reasonPhrase = expected.takeAwayAttr(REASON_PHRASE);
+        return new StatusBuilder(protocol, statusCode, reasonPhrase).build();
     }
 
     @Override
