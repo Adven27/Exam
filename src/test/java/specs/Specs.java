@@ -12,6 +12,7 @@ import org.simpleframework.http.core.ContainerServer;
 import org.simpleframework.transport.Server;
 import org.simpleframework.transport.connect.Connection;
 import org.simpleframework.transport.connect.SocketConnection;
+import org.springframework.kafka.test.rule.KafkaEmbedded;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -22,14 +23,30 @@ import static org.concordion.internal.ConcordionBuilder.NAMESPACE_CONCORDION_200
 @RunWith(ConcordionRunner.class)
 @ConcordionOptions(declareNamespaces = {"c", NAMESPACE_CONCORDION_2007, "e", ExamExtension.NS})
 public class Specs {
+
+    protected static final String CONSUME_TOPIC = "test.consume.topic";
+    protected static final String PRODUCE_TOPIC = "test.produce.topic";
+
     private static final int PORT = 8081;
     private static Server server;
+
+    protected static final KafkaEmbedded kafka = new KafkaEmbedded(1, true, CONSUME_TOPIC);
+
+    static {
+        try {
+            kafka.before();
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to start kafka", e);
+        }
+    }
+
     @SuppressFBWarnings(value = "URF_UNREAD_FIELD", justification = "особенности подключения расширений в concordion")
     @Extension
     private final ExamExtension exam = new ExamExtension().
             rest().port(PORT).end().
             db().end().
-            ui().headless().end();
+            ui().headless().end().
+            kafka().brokers(kafka.getBrokersAsString()).end();
 
 
     @AfterSuite
@@ -38,6 +55,7 @@ public class Specs {
             server.stop();
             server = null;
         }
+        kafka.after();
     }
 
     @BeforeSuite
