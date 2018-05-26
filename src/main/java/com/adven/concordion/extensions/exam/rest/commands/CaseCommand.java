@@ -4,7 +4,9 @@ import com.adven.concordion.extensions.exam.PlaceholdersResolver;
 import com.adven.concordion.extensions.exam.html.Html;
 import com.adven.concordion.extensions.exam.html.RowParser;
 import com.adven.concordion.extensions.exam.rest.JsonPrettyPrinter;
+import com.adven.concordion.extensions.exam.rest.StatusBuilder;
 import com.jayway.restassured.response.Response;
+import lombok.extern.slf4j.Slf4j;
 import net.javacrumbs.jsonunit.core.Configuration;
 import org.apache.commons.collections.map.HashedMap;
 import org.concordion.api.CommandCall;
@@ -22,7 +24,9 @@ import static com.google.common.base.Strings.isNullOrEmpty;
 import static net.javacrumbs.jsonunit.JsonAssert.assertJsonEquals;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 
+@Slf4j
 public class CaseCommand extends RestVerifyCommand {
+
     private static final String DESC = "desc";
     private static final String URL_PARAMS = "urlParams";
     private static final String COOKIES = "cookies";
@@ -31,6 +35,10 @@ public class CaseCommand extends RestVerifyCommand {
     private static final String BODY = "body";
     private static final String EXPECTED = "expected";
     private static final String WHERE = "where";
+    private static final String CASE = "case";
+    private static final String PROTOCOL = "protocol";
+    private static final String STATUS_CODE = "statusCode";
+    private static final String REASON_PHRASE = "reasonPhrase";
 
     private final JsonPrettyPrinter jsonPrinter = new JsonPrettyPrinter();
     private List<Map<String, Object>> cases = new ArrayList<>();
@@ -38,7 +46,7 @@ public class CaseCommand extends RestVerifyCommand {
     private Configuration cfg;
 
     public CaseCommand(String tag, Configuration cfg) {
-        super("case", tag);
+        super(CASE, tag);
         this.cfg = cfg;
     }
 
@@ -63,14 +71,33 @@ public class CaseCommand extends RestVerifyCommand {
         Html body = caseRoot.first(BODY);
         Html expected = caseRoot.first(EXPECTED);
         caseRoot.remove(body, expected);
-        for (Map<String, Object> ignored : cases) {
-            caseRoot.childs(
-                    Html.tag("case").childs(
-                            body == null ? null : Html.tag("body").text(body.text()),
-                            Html.tag("expected").text(expected.text())
-                    )
-            );
+        caseRoot.childs(
+                caseTags(body, expected));
+    }
+
+    private Html[] caseTags(final Html body, final Html expected) {
+        final List<Html> caseTags = new ArrayList<>();
+        for (int i = 0; i < cases.size(); i++) {
+            final Html bodyToAdd = body == null ? null : Html.tag(BODY).text(body.text());
+            final Html expectedToAdd = Html.tag(EXPECTED).text(expected.text());
+
+            final String protocol = expected.attr(PROTOCOL);
+            if (protocol != null) {
+                expectedToAdd.attr(PROTOCOL, protocol);
+            }
+            final String statusCode = expected.attr(STATUS_CODE);
+            if (statusCode != null) {
+                expectedToAdd.attr(STATUS_CODE, statusCode);
+            }
+            final String reasonPhrase = expected.attr(REASON_PHRASE);
+            if (reasonPhrase != null) {
+                expectedToAdd.attr(REASON_PHRASE, reasonPhrase);
+            }
+
+            final Html caseTag = Html.tag(CASE).childs(bodyToAdd, expectedToAdd);
+            caseTags.add(caseTag);
         }
+        return caseTags.toArray(new Html[]{});
     }
 
     @Override
@@ -93,8 +120,8 @@ public class CaseCommand extends RestVerifyCommand {
 
             executor.urlParams(urlParams == null ? null : PlaceholdersResolver.INSTANCE.resolveJson(urlParams, eval));
 
-            Html caseTR = tr().insteadOf(root.first("case"));
-            Html body = caseTR.first("body");
+            Html caseTR = tr().insteadOf(root.first(CASE));
+            Html body = caseTR.first(BODY);
             if (body != null) {
                 Html td = td().insteadOf(body).css("json");
                 String bodyStr = PlaceholdersResolver.INSTANCE.resolveJson(td.text(), eval);
@@ -102,7 +129,8 @@ public class CaseCommand extends RestVerifyCommand {
                 executor.body(bodyStr);
             }
 
-            final String expectedStatus = "HTTP/1.1 200 OK";
+            final Html expected = caseTR.first(EXPECTED);
+            final String expectedStatus = expectedStatus(expected);
             Html statusTd = td(expectedStatus);
             caseTR.childs(statusTd);
 
@@ -112,7 +140,7 @@ public class CaseCommand extends RestVerifyCommand {
             childCommands.execute(eval, resultRecorder);
             childCommands.verify(eval, resultRecorder);
 
-            vf(td().insteadOf(caseTR.first("expected")), eval, resultRecorder);
+            vf(td().insteadOf(expected), eval, resultRecorder);
 
             String actualStatus = executor.statusLine();
             if (expectedStatus.equals(actualStatus)) {
@@ -123,6 +151,13 @@ public class CaseCommand extends RestVerifyCommand {
         }
     }
 
+    private String expectedStatus(final Html expected) {
+        final String protocol = expected.takeAwayAttr(PROTOCOL);
+        final String statusCode = expected.takeAwayAttr(STATUS_CODE);
+        final String reasonPhrase = expected.takeAwayAttr(REASON_PHRASE);
+        return new StatusBuilder(protocol, statusCode, reasonPhrase).build();
+    }
+
     @Override
     public void verify(CommandCall cmd, Evaluator evaluator, ResultRecorder resultRecorder) {
         RequestExecutor executor = fromEvaluator(evaluator);
@@ -130,7 +165,7 @@ public class CaseCommand extends RestVerifyCommand {
         final String colspan = executor.hasRequestBody() ? "3" : "2";
         Html rt = new Html(cmd.getElement());
         String caseDesc = caseDesc(rt.attr(DESC), evaluator);
-        rt.attr("data-type", "case").attr("id", caseDesc).above(
+        rt.attr("data-type", CASE).attr("id", caseDesc).above(
                 tr().childs(
                         td(caseDesc).attr("colspan", colspan).muted()
                 )
@@ -160,7 +195,7 @@ public class CaseCommand extends RestVerifyCommand {
             assertJsonEquals(expected, prettyActual, cfg);
             success(resultRecorder, root);
         } catch (AssertionError | Exception e) {
-            e.printStackTrace();
+            log.warn("Failed to assert expected={} with actual={}", expected, prettyActual, e);
             failure(resultRecorder, root, prettyActual, expected);
         }
     }

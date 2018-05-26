@@ -32,6 +32,15 @@
             </e:case>
         </e:get>
     </e:example>
+    <e:example name="Check failed status code" print="true">
+        <e:get url="status/400">
+            <e:case desc="Wrong status code was expected">
+                <expected statusCode="400" reasonPhrase="Bad Request">
+                    {"get": "/status/400"}
+                </expected>
+            </e:case>
+        </e:get>
+    </e:example>
     <e:example name="Cookies" print="true">
         <e:get url="relative/url" cookies="cook=from_command">
             <e:case desc="Can be set in command">
