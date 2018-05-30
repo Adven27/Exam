@@ -6,6 +6,7 @@ import com.adven.concordion.extensions.exam.configurators.DbTester;
 import com.adven.concordion.extensions.exam.configurators.KafkaTester;
 import com.adven.concordion.extensions.exam.configurators.RestAssuredCfg;
 import com.adven.concordion.extensions.exam.configurators.WebDriverCfg;
+import com.adven.concordion.extensions.exam.db.kv.KeyValueRepository;
 import com.adven.concordion.extensions.exam.files.DefaultFilesLoader;
 import com.adven.concordion.extensions.exam.files.FilesLoader;
 import com.adven.concordion.extensions.exam.kafka.DefaultEventProcessor;
@@ -47,6 +48,7 @@ public class ExamExtension implements ConcordionExtension {
     private NodeMatcher nodeMatcher;
     private FilesLoader filesLoader;
     private EventProcessor eventProcessor;
+    private KeyValueRepository keyValueRepository;
 
     public ExamExtension() {
         jsonUnitCfg = DEFAULT_JSON_UNIT_CFG;
@@ -153,13 +155,19 @@ public class ExamExtension implements ConcordionExtension {
         return this;
     }
 
+    @SuppressWarnings("unused")
+    public ExamExtension keyValueDB(final KeyValueRepository keyValueRepository) {
+        this.keyValueRepository = keyValueRepository;
+        return this;
+    }
+
     @Override
     public void addTo(ConcordionExtender ex) {
         new CodeMirrorExtension().addTo(ex);
         new BootstrapExtension().addTo(ex);
 
         final CommandRegistry registry = new CommandRegistry(dbTester, jsonUnitCfg, nodeMatcher,
-                capabilities, filesLoader, eventProcessor);
+                capabilities, filesLoader, eventProcessor, keyValueRepository);
 
         for (ExamCommand cmd : registry.commands()) {
             if (!"example".equals(cmd.name())) {
