@@ -143,7 +143,7 @@ public class CaseCommand extends RestVerifyCommand {
             vf(td().insteadOf(expected), eval, resultRecorder);
 
             String actualStatus = executor.statusLine();
-            if (expectedStatus.equals(actualStatus)) {
+            if (expectedStatus.trim().equals(actualStatus.trim())) {
                 success(resultRecorder, statusTd.el());
             } else {
                 failure(resultRecorder, statusTd.el(), actualStatus, expectedStatus);
