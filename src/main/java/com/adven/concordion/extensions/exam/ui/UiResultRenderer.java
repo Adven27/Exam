@@ -7,7 +7,7 @@ import org.concordion.api.listener.*;
 import java.io.File;
 import java.util.concurrent.atomic.AtomicLong;
 
-import static com.adven.concordion.extensions.exam.html.Html.imageOverlay;
+import static com.adven.concordion.extensions.exam.html.Html.Companion;
 import static com.codeborne.selenide.Selenide.screenshot;
 
 public class UiResultRenderer implements AssertEqualsListener, AssertTrueListener, AssertFalseListener {
@@ -21,7 +21,7 @@ public class UiResultRenderer implements AssertEqualsListener, AssertTrueListene
         UIAssertionError err = (UIAssertionError) event.getActual();
         el.remove(s);
         el.childs(
-                imageOverlay(getPath(err.getScreenshot()), 360, event.getExpected(), err.getMessage(), "rest-failure")
+                Companion.imageOverlay(getPath(err.getScreenshot()), 360, event.getExpected(), err.getMessage(), "rest-failure")
         );
     }
 
@@ -32,7 +32,7 @@ public class UiResultRenderer implements AssertEqualsListener, AssertTrueListene
         String desc = s.attr("desc");
         el.remove(s);
         el.childs(
-                imageOverlay(getPath(screenshot(getFileName(name))), 360, name, checkAndGetDesc(desc), "rest-success")
+                Companion.imageOverlay(getPath(screenshot(getFileName(name))), 360, name, checkAndGetDesc(desc), "rest-success")
         );
     }
 

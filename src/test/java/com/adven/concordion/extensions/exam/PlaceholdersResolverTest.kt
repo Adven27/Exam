@@ -20,10 +20,10 @@ import org.mockito.Mockito.mock
 import org.mockito.Mockito.`when`
 
 class PlaceholdersResolverTest {
-    internal var eval = mock<Evaluator>(Evaluator::class.java)
-    internal val y4m4d4h4 = Period().plusDays(4).plusMonths(4).plusYears(4).plusHours(4)
-    internal val y3m3d3 = Period().plusDays(3).plusMonths(3).plusYears(3)
-    internal val m1d1 = Period().plusDays(1).plusMonths(1)
+    private val eval = mock<Evaluator>(Evaluator::class.java)
+    private val y4m4d4h4 = Period().plusDays(4).plusMonths(4).plusYears(4).plusHours(4)
+    private val y3m3d3 = Period().plusDays(3).plusMonths(3).plusYears(3)
+    private val m1d1 = Period().plusDays(1).plusMonths(1)
 
     @Test
     @Throws(Exception::class)

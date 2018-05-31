@@ -41,17 +41,17 @@ public abstract class RequestCommand extends ExamCommand {
     }
 
     private void startTable(Html html, boolean hasRequestBody) {
-        Html table = table();
-        Html header = thead();
-        Html tr = thead();
+        Html table = Html.Companion.table();
+        Html header = Companion.thead();
+        Html tr = Companion.thead();
         if (hasRequestBody) {
             tr.childs(
-                    th("Request")
+                    Companion.th("Request")
             );
         }
         tr.childs(
-                th("Expected response"),
-                th("Status code")
+                Companion.th("Expected response"),
+                Companion.th("Status code")
         );
         table.childs(header.childs(tr));
         html.dropAllTo(table);
@@ -78,18 +78,18 @@ public abstract class RequestCommand extends ExamCommand {
     }
 
     private void addRequestDescTo(Html root, String url, String type, String cookies) {
-        final Html div = div().childs(
-                h(4, "").childs(
-                        badge(method().name(), "success"),
-                        badge(type, "info"),
-                        code(url)
+        final Html div = Companion.div().childs(
+                Companion.h(4, "").childs(
+                        Companion.badge(method().name(), "success"),
+                        Companion.badge(type, "info"),
+                        Companion.code(url)
                 )
         );
         if (cookies != null) {
             div.childs(
-                    h(6, "").childs(
-                            badge("Cookies", "info"),
-                            code(cookies)
+                    Companion.h(6, "").childs(
+                            Companion.badge("Cookies", "info"),
+                            Companion.code(cookies)
                     )
             );
         }

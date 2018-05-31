@@ -44,7 +44,7 @@ public class FilesCheckCommand extends BaseCommand {
      * {@inheritDoc}.
      */
     public void verify(CommandCall commandCall, Evaluator evaluator, ResultRecorder resultRecorder) {
-        Html root = Html.tableSlim(commandCall.getElement());
+        Html root = Html.Companion.tableSlim(commandCall.getElement());
 
         final String path = root.takeAwayAttr("dir", evaluator);
         if (path != null) {
@@ -64,8 +64,8 @@ public class FilesCheckCommand extends BaseCommand {
                     final FilesLoader.FileTag fileTag = filesLoader.readFileTag(f, evaluator);
                     final String expectedName = fileTag.name();
 
-                    Html fileNameTD = td(expectedName);
-                    Html pre = codeXml("");
+                    Html fileNameTD = Companion.td(expectedName);
+                    Html pre = Companion.codeXml("");
 
                     if (!filesLoader.fileExists(evalPath + separator + expectedName)) {
                         resultRecorder.record(Result.FAILURE);
@@ -79,9 +79,9 @@ public class FilesCheckCommand extends BaseCommand {
                             String id = UUID.randomUUID().toString();
                             final String content = filesLoader.readFile(evalPath, expectedName);
                             if (!isNullOrEmpty(content)) {
-                                pre = div().childs(
-                                        buttonCollapse("show", id).style("width:100%"),
-                                        div().attr("id", id).css("file collapse").childs(
+                                pre = Companion.div().childs(
+                                        Companion.buttonCollapse("show", id).style("width:100%"),
+                                        Companion.div().attr("id", id).css("file collapse").childs(
                                                 pre.text(content)
                                         )
                                 );
@@ -91,9 +91,9 @@ public class FilesCheckCommand extends BaseCommand {
                         }
                     }
                     root.childs(
-                            tr().childs(
+                            Companion.tr().childs(
                                     fileNameTD,
-                                    td(pre.
+                                    Companion.td(pre.
                                             attr("autoFormat", String.valueOf(fileTag.autoFormat())).
                                             attr("lineNumbers", String.valueOf(fileTag.lineNumbers())))
                             )
@@ -103,11 +103,11 @@ public class FilesCheckCommand extends BaseCommand {
             }
             for (String file : surplusFiles) {
                 resultRecorder.record(Result.FAILURE);
-                Html td = td();
-                Html tr = tr().childs(
+                Html td = Companion.td();
+                Html tr = Companion.tr().childs(
                         td,
-                        td().childs(
-                                codeXml(filesLoader.readFile(evalPath, file))
+                        Companion.td().childs(
+                                Companion.codeXml(filesLoader.readFile(evalPath, file))
                         )
                 );
                 root.childs(tr);

@@ -53,24 +53,24 @@ public class DBCheckCommand extends DBCommand {
     public void verify(CommandCall commandCall, Evaluator evaluator, ResultRecorder resultRecorder) {
         try {
             final ITable actual = getActualTable();
-            final ITable filteredActual = includedColumnsTable(actual, expectedTable.getTableMetaData().getColumns());
+            final ITable filteredActual = includedColumnsTable(actual, getExpectedTable().getTableMetaData().getColumns());
 
-            assertEq(new Html(commandCall.getElement()), resultRecorder, expectedTable, filteredActual);
+            assertEq(new Html(commandCall.getElement()), resultRecorder, getExpectedTable(), filteredActual);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
     private ITable getActualTable() throws Exception {
-        IDatabaseConnection conn = dbTester.getConnection();
-        String tableName = expectedTable.getTableMetaData().getTableName();
+        IDatabaseConnection conn = getDbTester().getConnection();
+        String tableName = getExpectedTable().getTableMetaData().getTableName();
         String qualifiedName = new QualifiedTableName(tableName, conn.getSchema()).getQualifiedName();
 
         return conn.createQueryTable(qualifiedName, "select * from " + qualifiedName + where());
     }
 
     private String where() {
-        return isNullOrEmpty(where) ? "" : " WHERE " + where;
+        return isNullOrEmpty(getWhere()) ? "" : " WHERE " + getWhere();
     }
 
     private void assertEq(Html root, ResultRecorder resultRecorder, ITable expected, ITable actual)
@@ -83,16 +83,16 @@ public class DBCheckCommand extends DBCommand {
         } catch (DbComparisonFailure f) {
             //TODO move to ResultRenderer
             resultRecorder.record(FAILURE);
-            Html div = div().css("rest-failure bd-callout bd-callout-danger").childs(div(f.getMessage()));
+            Html div = Companion.div().css("rest-failure bd-callout bd-callout-danger").childs(Companion.div(f.getMessage()));
             root.below(div);
 
-            Html exp = tableSlim();
-            div.childs(span("Expected: "), exp);
+            Html exp = Html.Companion.tableSlim();
+            div.childs(Companion.span("Expected: "), exp);
             root = exp;
 
-            Html act = tableSlim();
+            Html act = Html.Companion.tableSlim();
             renderTable(act, actual);
-            div.childs(span("but was: "), act);
+            div.childs(Companion.span("but was: "), act);
         }
         for (Difference diff : (List<Difference>) diffHandler.getDiffList()) {
             System.err.println("***** DIFF " + diff.toString());
@@ -106,25 +106,25 @@ public class DBCheckCommand extends DBCommand {
             el.childs(dbCaption(expected, title));
 
             Column[] cols = expected.getTableMetaData().getColumns();
-            Html header = thead();
-            Html thr = tr();
+            Html header = Companion.thead();
+            Html thr = Companion.tr();
             for (Column col : cols) {
-                thr.childs(th(col.getColumnName()));
+                thr.childs(Companion.th(col.getColumnName()));
             }
             el.childs(header.childs(thr));
 
             if (expected.getRowCount() == 0) {
-                Html td = td("<EMPTY>").attr("colspan", String.valueOf(cols.length));
-                Html tr = tr().childs(td);
+                Html td = Companion.td("<EMPTY>").attr("colspan", String.valueOf(cols.length));
+                Html tr = Companion.tr().childs(td);
                 el.childs(tr);
                 success(resultRecorder, td.el());
             } else {
                 for (int i = 0; i < expected.getRowCount(); i++) {
-                    Html tr = tr();
+                    Html tr = Companion.tr();
                     for (Column col : cols) {
                         Object expectedValue = expected.getValue(i, col.getColumnName());
                         String displayedExpected = expectedValue == null ? "(null)" : expectedValue.toString();
-                        Html td = td(displayedExpected);
+                        Html td = Companion.td(displayedExpected);
                         tr.childs(td);
                         Difference fail = findFail(diffs, i, col);
                         if (fail != null) {

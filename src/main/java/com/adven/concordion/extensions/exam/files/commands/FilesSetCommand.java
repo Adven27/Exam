@@ -20,7 +20,7 @@ public class FilesSetCommand extends BaseCommand {
 
     @Override
     public void setUp(CommandCall commandCall, Evaluator evaluator, ResultRecorder resultRecorder) {
-        Html root = Html.tableSlim(commandCall.getElement());
+        Html root = Html.Companion.tableSlim(commandCall.getElement());
 
         final String path = root.takeAwayAttr("dir");
         if (path != null) {
@@ -36,9 +36,9 @@ public class FilesSetCommand extends BaseCommand {
                 if ("file".equals(f.localName())) {
                     final FilesLoader.FileTag fileTag = filesLoader.readFileTag(f, evaluator);
                     filesLoader.createFileWith(evalPath + separator + fileTag.name(), fileTag.content());
-                    root.childs(trWithTDs(
-                            span(fileTag.name()),
-                            codeXml(fileTag.content()).
+                    root.childs(Companion.trWithTDs(
+                            Companion.span(fileTag.name()),
+                            Companion.codeXml(fileTag.content()).
                                     attr("autoFormat", String.valueOf(fileTag.autoFormat())).
                                     attr("lineNumbers", String.valueOf(fileTag.lineNumbers()))
                     )).remove(f);

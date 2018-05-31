@@ -18,10 +18,13 @@ public final class EventCheckReplyCommand extends BaseEventCommand {
      * {@inheritDoc}.
      */
     public void verify(CommandCall commandCall, Evaluator evaluator, ResultRecorder resultRecorder) {
-        Html eventCheckReplyRoot = Html.tableSlim(commandCall.getElement());
+        Html eventCheckReplyRoot = Html.Companion.tableSlim(commandCall.getElement());
 
         // получаю событие и класс, требующее проверки
         final Html expected = eventCheckReplyRoot.first("expected");
+        if (expected == null) {
+            throw new IllegalStateException("<expected> tag is required");
+        }
         final String expectedProtoClass = expected.takeAwayAttr(PROTO_CLASS);
         final String expectedTopicName = expected.takeAwayAttr(TOPIC_NAME);
         final String expectedEventJson = expected.text();
@@ -30,19 +33,20 @@ public final class EventCheckReplyCommand extends BaseEventCommand {
                 .message(expectedEventJson)
                 .build();
 
-        final Html reply = eventCheckReplyRoot.first("reply");
+        final Html reply = eventCheckReplyRoot.firstOrThrow("reply");
         // получаю класс события-ответа
-        final String replyProtoClass = reply.takeAwayAttr(PROTO_CLASS);
+        //FIXME WHAT IF NULL?
+        final String replyProtoClass = reply.takeAwayAttr(PROTO_CLASS, "WHAT IF NULL?");
 
         // получаю событие успешного ответа
-        final Html replySuccess = reply.first("success");
+        final Html replySuccess = reply.firstOrThrow("success");
         final String successReplyEventJson = replySuccess.text();
         Event<String> successReplyEvent = Event.<String>builder()
                 .message(successReplyEventJson)
                 .build();
 
         // получаю событие провального ответа
-        final Html replyFail = reply.first("fail");
+        final Html replyFail = reply.firstOrThrow("fail");
         final String failReplyEventJson = replyFail.text();
         Event<String> failReplyEvent = Event.<String>builder()
                 .message(failReplyEventJson)
