@@ -44,6 +44,10 @@ public abstract class BaseKeyValueCommand extends ExamCommand {
     }
 
     protected Html valueColumn(final String value) {
+        return td(value);
+    }
+
+    protected Html jsonValueColumn(final String value) {
         final JsonPrettyPrinter printer = new JsonPrettyPrinter();
         return td(printer.prettyPrint(value)).css("json");
     }
