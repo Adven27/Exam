@@ -5,6 +5,7 @@ import com.adven.concordion.extensions.exam.db.commands.DBCheckCommand;
 import com.adven.concordion.extensions.exam.db.commands.DBSetCommand;
 import com.adven.concordion.extensions.exam.db.commands.DBShowCommand;
 import com.adven.concordion.extensions.exam.db.kv.KVCheckCommand;
+import com.adven.concordion.extensions.exam.db.kv.KVSetCommand;
 import com.adven.concordion.extensions.exam.db.kv.KeyValueRepository;
 import com.adven.concordion.extensions.exam.files.FilesLoader;
 import com.adven.concordion.extensions.exam.files.commands.FilesCheckCommand;
@@ -74,7 +75,8 @@ public class CommandRegistry {
                 new EventCheckReplyCommand("event-check", "div", eventProcessor),
                 new EventSendCommand("event-send", "div", eventProcessor),
 
-                new KVCheckCommand("db-kv-check", "div", keyValueRepository, jsonUnitCfg)
+                new KVCheckCommand("db-kv-check", "div", keyValueRepository, jsonUnitCfg),
+                new KVSetCommand("db-kv-set", "div", keyValueRepository, jsonUnitCfg)
         );
     }
 

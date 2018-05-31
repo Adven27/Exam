@@ -5,9 +5,11 @@ import com.google.common.base.Optional;
 /**
  * @author Ruslan Ustits
  */
-public interface ValueProcessor {
+public interface ValueProcessor<T> {
 
     Optional<String> convert(final Object value);
+
+    Optional<T> convert(final String value, final String className);
 
     boolean verify(final String first, final String second);
 

@@ -11,6 +11,11 @@ import static com.adven.concordion.extensions.exam.html.Html.*;
  */
 public abstract class BaseKeyValueCommand extends ExamCommand {
 
+    protected static final String PROTOBUF = "protobuf";
+    protected static final String CACHE = "cache";
+    protected static final String KEY = "key";
+    protected static final String VALUE = "value";
+
     public BaseKeyValueCommand(final String name, final String tag) {
         super(name, tag);
     }

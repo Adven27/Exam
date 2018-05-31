@@ -34,13 +34,13 @@ public final class KVCheckCommand extends BaseKeyValueCommand {
     @Override
     public void verify(final CommandCall commandCall, final Evaluator evaluator, final ResultRecorder resultRecorder) {
         val html = new Html(commandCall.getElement());
-        val keyBlock = html.first("key");
-        val valueBlock = html.first("value");
+        val keyBlock = html.first(KEY);
+        val valueBlock = html.first(VALUE);
 
         html.removeAllChild();
 
-        final String cacheName = html.attr("cache");
-        val protobufBlock = valueBlock.first("protobuf");
+        final String cacheName = html.attr(CACHE);
+        val protobufBlock = valueBlock.first(PROTOBUF);
         val key = keyBlock.text();
         final Optional<String> actual;
         final String expectedString;

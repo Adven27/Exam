@@ -7,7 +7,7 @@ import lombok.extern.slf4j.Slf4j;
  * @author Ruslan Ustits
  */
 @Slf4j
-public final class PlainProcessor implements ValueProcessor {
+public final class PlainProcessor implements ValueProcessor<String> {
 
     @Override
     public Optional<String> convert(final Object value) {
@@ -18,6 +18,11 @@ public final class PlainProcessor implements ValueProcessor {
             log.error("Failed to cast value={} to string", value);
         }
         return Optional.fromNullable(cast);
+    }
+
+    @Override
+    public Optional<String> convert(final String value, final String className) {
+        return Optional.of(value);
     }
 
     @Override
