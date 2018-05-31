@@ -26,8 +26,8 @@ class ExamDocumentParsingListener implements DocumentParsingListener {
     private void addToTopButton(Document document) {
         Html el = new Html(new org.concordion.api.Element(document.getRootElement()));
         el.childs(
-                button("").attr("id", "btnToTop").attr("onclick", "topFunction()").childs(
-                        italic("").css("fa fa-arrow-up fa-3x")
+                Companion.button("").attr("id", "btnToTop").attr("onclick", "topFunction()").childs(
+                        Companion.italic("").css("fa fa-arrow-up fa-3x")
                 )
         );
     }
@@ -53,7 +53,7 @@ class ExamDocumentParsingListener implements DocumentParsingListener {
             for (org.concordion.api.Element e : elem.getChildElements()) {
                 sb.append("\n" + e.toXML());
             }
-            elem.prependChild(codeXml(sb.toString()).el());
+            elem.prependChild(Companion.codeXml(sb.toString()).el());
         }
     }
 }

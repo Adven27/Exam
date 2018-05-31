@@ -24,23 +24,23 @@ abstract class BaseEventCommand extends ExamCommand {
     }
 
     protected final Html eventTable() {
-        final Html table = table();
-        final Html header = thead();
-        final Html tr = Html.tr();
+        final Html table = Html.Companion.table();
+        final Html header = Companion.thead();
+        final Html tr = Html.Companion.tr();
         tr.childs(
-                th("Event header"),
-                th("Event body")
+                Companion.th("Event header"),
+                Companion.th("Event body")
         );
         return table.childs(header.childs(tr));
     }
 
     protected Html eventInfo(String text, final String topicName, final String protobufClass) {
-        return div().childs(
-                h(4, text),
-                h(5, "").childs(
-                        badge(topicName, "primary"),
-                        badge(protobufClass, "secondary"),
-                        code("protobuf")));
+        return Companion.div().childs(
+                Companion.h(4, text),
+                Companion.h(5, "").childs(
+                        Companion.badge(topicName, "primary"),
+                        Companion.badge(protobufClass, "secondary"),
+                        Companion.code("protobuf")));
     }
 
     protected Html tableResult(final String message) {
@@ -52,9 +52,9 @@ abstract class BaseEventCommand extends ExamCommand {
         final Html table = eventTable();
         final JsonPrettyPrinter printer = new JsonPrettyPrinter();
         table.childs(
-                tbody().childs(
-                        td(code(header)),
-                        td(printer.prettyPrint(message)).css("json")));
+                Companion.tbody().childs(
+                        Companion.td(Companion.code(header)),
+                        Companion.td(printer.prettyPrint(message)).css("json")));
         return table;
     }
 }

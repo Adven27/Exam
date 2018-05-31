@@ -15,24 +15,24 @@ class BaseCommand extends ExamCommand {
 
     protected void addHeader(Html element, String header, String content) {
         element.childs(
-                thead().childs(
-                        th(header).style("width:20%"),
-                        th(content)
+                Companion.thead().childs(
+                        Companion.th(header).style("width:20%"),
+                        Companion.th(content)
                 )
         );
     }
 
     protected void addRow(Html element, String... texts) {
-        Html tr = tr();
+        Html tr = Companion.tr();
         for (String text : texts) {
-            tr.childs(td(text));
+            tr.childs(Companion.td(text));
         }
         element.childs(tr);
     }
 
     protected Html flCaption(String dirPath) {
-        return Html.caption().childs(
-                italic("").css("fa fa-folder-open fa-pull-left fa-border")
+        return Html.Companion.caption().childs(
+                Companion.italic("").css("fa fa-folder-open fa-pull-left fa-border")
         ).text(dirPath);
     }
 }

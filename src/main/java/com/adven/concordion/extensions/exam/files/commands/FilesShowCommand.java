@@ -20,7 +20,7 @@ public class FilesShowCommand extends BaseCommand {
 
     @Override
     public void setUp(CommandCall commandCall, Evaluator evaluator, ResultRecorder resultRecorder) {
-        Html element = Html.tableSlim(commandCall.getElement());
+        Html element = Html.Companion.tableSlim(commandCall.getElement());
 
         final String path = element.takeAwayAttr("dir");
 
@@ -29,9 +29,9 @@ public class FilesShowCommand extends BaseCommand {
             String evalPath = evaluator.evaluate(path).toString();
 
             element.childs(
-                    thead().childs(
-                            th().childs(
-                                    italic("").css("fa fa-folder-open fa-pull-left fa-border")
+                    Companion.thead().childs(
+                            Companion.th().childs(
+                                    Companion.italic("").css("fa fa-folder-open fa-pull-left fa-border")
                             ).text(evalPath)
                     )
             );
