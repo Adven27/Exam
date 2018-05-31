@@ -28,8 +28,8 @@ public final class KVSetCommand extends BaseKeyValueCommand {
     @Override
     public void setUp(final CommandCall commandCall, final Evaluator evaluator, final ResultRecorder resultRecorder) {
         val html = new Html(commandCall.getElement());
-        val keyBlock = html.first(KEY);
-        val valueBlock = html.first(VALUE);
+        val keyBlock = html.firstOrThrow(KEY);
+        val valueBlock = html.firstOrThrow(VALUE);
 
         html.removeAllChild();
 
