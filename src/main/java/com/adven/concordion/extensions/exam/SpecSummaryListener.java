@@ -31,8 +31,8 @@ public class SpecSummaryListener implements SpecificationProcessingListener {
 
                         Element rootExampleEl = a.getParentElement().getParentElement();
                         Html item = menuItemA(anchor).attr("href", "#" + anchor).childs(
-                                footerOf(rootExampleEl).first("small").deepClone().
-                                        css("card-img-overlay m-1").style("padding:0; left:inherit;")
+                            footerOf(rootExampleEl).firstOrThrow("small").deepClone()
+                                .css("card-img-overlay m-1").style("padding:0; left:inherit;")
                         );
                         Html cases = getCase(rootExampleEl, id);
                         if (cases == null || cases.childs().isEmpty()) {
@@ -49,11 +49,11 @@ public class SpecSummaryListener implements SpecificationProcessingListener {
 
     private Html getCase(Element rootExampleEl, String id) {
         Html div = div().css("collapse").attr("id", id);
-        for (Element tr: rootExampleEl.getDescendantElements("tr")) {
+        for (Element tr : rootExampleEl.getDescendantElements("tr")) {
             if ("case".equals(tr.getAttributeValue("data-type"))) {
                 String anchor = tr.getAttributeValue("id");
                 div.childs(
-                        menuItemA(anchor, italic("").css("fa fa-circle fa-fw")).attr("href", "#" + anchor).muted()
+                    menuItemA(anchor, italic("").css("fa fa-circle fa-fw")).attr("href", "#" + anchor).muted()
                 );
             }
         }

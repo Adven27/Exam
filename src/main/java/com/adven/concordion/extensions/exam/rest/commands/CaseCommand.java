@@ -8,13 +8,13 @@ import com.adven.concordion.extensions.exam.rest.StatusBuilder;
 import com.jayway.restassured.response.Response;
 import lombok.extern.slf4j.Slf4j;
 import net.javacrumbs.jsonunit.core.Configuration;
-import org.apache.commons.collections.map.HashedMap;
 import org.concordion.api.CommandCall;
 import org.concordion.api.CommandCallList;
 import org.concordion.api.Evaluator;
 import org.concordion.api.ResultRecorder;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -56,20 +56,20 @@ public class CaseCommand extends RestVerifyCommand {
         cases.clear();
         final Html where = caseRoot.first(WHERE);
         if (where != null) {
-            String[] names = where.takeAwayAttr(VARIABLES, eval).split(",");
+            String[] names = where.takeAwayAttr(VARIABLES, "", eval).split(",");
             for (List<Object> val : new RowParser(where, VALUES, eval).parse()) {
-                Map<String, Object> caseParams = new HashedMap();
+                Map<String, Object> caseParams = new HashMap<>();
                 for (int j = 0; j < names.length; j++) {
                     caseParams.put("#" + names[j].trim(), val.get(j));
                 }
                 cases.add(caseParams);
             }
         } else {
-            cases.add(new HashedMap());
+            cases.add(new HashMap());
         }
 
         Html body = caseRoot.first(BODY);
-        Html expected = caseRoot.first(EXPECTED);
+        Html expected = caseRoot.firstOrThrow(EXPECTED);
         caseRoot.remove(body, expected);
         caseRoot.childs(
                 caseTags(body, expected));
@@ -120,7 +120,7 @@ public class CaseCommand extends RestVerifyCommand {
 
             executor.urlParams(urlParams == null ? null : PlaceholdersResolver.INSTANCE.resolveJson(urlParams, eval));
 
-            Html caseTR = tr().insteadOf(root.first(CASE));
+            Html caseTR = tr().insteadOf(root.firstOrThrow(CASE));
             Html body = caseTR.first(BODY);
             if (body != null) {
                 Html td = td().insteadOf(body).css("json");
@@ -129,7 +129,7 @@ public class CaseCommand extends RestVerifyCommand {
                 executor.body(bodyStr);
             }
 
-            final Html expected = caseTR.first(EXPECTED);
+            final Html expected = caseTR.firstOrThrow(EXPECTED);
             final String expectedStatus = expectedStatus(expected);
             Html statusTd = td(expectedStatus);
             caseTR.childs(statusTd);

@@ -5,9 +5,7 @@ import org.concordion.api.CommandCall;
 import org.concordion.api.Evaluator;
 import org.concordion.api.ResultRecorder;
 
-import static com.adven.concordion.extensions.exam.html.Html.buttonCollapse;
-import static com.adven.concordion.extensions.exam.html.Html.div;
-import static com.adven.concordion.extensions.exam.html.Html.h;
+import static com.adven.concordion.extensions.exam.html.Html.*;
 import static com.google.common.base.Strings.isNullOrEmpty;
 
 public class ExamplesSummaryCommand extends ExamCommand {

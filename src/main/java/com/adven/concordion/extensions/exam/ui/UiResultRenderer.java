@@ -12,7 +12,7 @@ import static com.codeborne.selenide.Selenide.screenshot;
 
 public class UiResultRenderer implements AssertEqualsListener, AssertTrueListener, AssertFalseListener {
 
-    private static final AtomicLong screenshotCounter = new AtomicLong();
+    private static final AtomicLong screenshotsCounter = new AtomicLong();
     private static final String DEFAULT_DESC = "No description";
 
     public void failureReported(AssertFailureEvent event) {
@@ -37,11 +37,11 @@ public class UiResultRenderer implements AssertEqualsListener, AssertTrueListene
     }
 
     private String checkAndGetDesc(String desc) {
-        return desc == null ?  DEFAULT_DESC : desc;
+        return desc == null ? DEFAULT_DESC : desc;
     }
 
     private String getFileName(String name) {
-        long increment = screenshotCounter.incrementAndGet();
+        long increment = screenshotsCounter.incrementAndGet();
         return increment + "-" + name;
     }
 

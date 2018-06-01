@@ -13,13 +13,17 @@ import net.sf.qualitycheck.Throws
 import org.hamcrest.Matchers.`is`
 import org.joda.time.LocalDateTime.fromDateFields
 import org.joda.time.LocalDateTime.now
+import org.joda.time.base.BasePeriod
 import org.joda.time.format.DateTimeFormat.forPattern
 import org.junit.Assert.assertThat
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.`when`
 
 class PlaceholdersResolverTest {
-    internal var eval = mock<Evaluator>(Evaluator::class.java)
+    private val eval = mock<Evaluator>(Evaluator::class.java)
+    private val y4m4d4h4 = Period().plusDays(4).plusMonths(4).plusYears(4).plusHours(4)
+    private val y3m3d3 = Period().plusDays(3).plusMonths(3).plusYears(3)
+    private val m1d1 = Period().plusDays(1).plusMonths(1)
 
     @Test
     @Throws(Exception::class)
@@ -120,52 +124,22 @@ class PlaceholdersResolverTest {
     @Test
     @Throws(Exception::class)
     fun canAddCompositePeriodsToNow() {
-        assertThat(
-                resolveJson(
-                        "\${exam.now+[1 day, 1 month]:dd.MM.yyyy}", eval
-                ), `is`(
-                now().plus(Period().plusDays(1).plusMonths(1)).toString("dd.MM.yyyy")
-        )
-        )
-        assertThat(
-                resolveJson(
-                        "\${exam.now+[days 3, months 3, 3 years]:dd.MM.yyyy}", eval
-                ), `is`(
-                now().plus(Period().plusDays(3).plusMonths(3).plusYears(3)).toString("dd.MM.yyyy")
-        )
-        )
-        assertThat(
-                resolveJson(
-                        "\${exam.now+[4 d, 4 M, y 4, 4 hours]:dd.MM.yyyy'T'hh}", eval
-                ), `is`(
-                now().plus(Period().plusDays(4).plusMonths(4).plusYears(4).plusHours(4)).toString("dd.MM.yyyy'T'hh")
-        )
-        )
+        assertThat(resolveJson("\${exam.now+[1 day, 1 month]:dd.MM.yyyy}", eval),
+                `is`(now().plus(m1d1).toString("dd.MM.yyyy")))
+        assertThat(resolveJson("\${exam.now+[days 3, months 3, 3 years]:dd.MM.yyyy}", eval),
+                `is`(now().plus(y3m3d3).toString("dd.MM.yyyy")))
+        assertThat(resolveJson("\${exam.now+[4 d, 4 M, y 4, 4 hours]:dd.MM.yyyy'T'hh}", eval),
+                `is`(now().plus(y4m4d4h4).toString("dd.MM.yyyy'T'hh")))
     }
 
     @Test
     @Throws(Exception::class)
     fun canSubtractCompositePeriodsFromNow() {
-        assertThat(
-                resolveJson(
-                        "\${exam.now-[1 day, 1 month]:dd.MM.yyyy}", eval
-                ), `is`(
-                now().minusDays(1).minusMonths(1).toString("dd.MM.yyyy")
-        )
-        )
-        assertThat(
-                resolveJson(
-                        "\${exam.now-[days 3, months 3, 3 years]:dd.MM.yyyy}", eval
-                ), `is`(
-                now().minusDays(3).minusMonths(3).minusYears(3).toString("dd.MM.yyyy")
-        )
-        )
-        assertThat(
-                resolveJson(
-                        "\${exam.now-[4 d, 4 M, y 4, 4 hours]:dd.MM.yyyy'T'hh}", eval
-                ), `is`(
-                now().minusDays(4).minusMonths(4).minusYears(4).minusHours(4).toString("dd.MM.yyyy'T'hh")
-        )
-        )
+        assertThat(resolveJson("\${exam.now-[1 day, 1 month]:dd.MM.yyyy}", eval),
+                `is`(now().minus(m1d1).toString("dd.MM.yyyy")))
+        assertThat(resolveJson("\${exam.now-[days 3, months 3, 3 years]:dd.MM.yyyy}", eval),
+                `is`(now().minus(y3m3d3).toString("dd.MM.yyyy")))
+        assertThat(resolveJson("\${exam.now-[4 d, 4 M, y 4, 4 hours]:dd.MM.yyyy'T'hh}", eval),
+                `is`(now().minus(y4m4d4h4).toString("dd.MM.yyyy'T'hh")))
     }
 }

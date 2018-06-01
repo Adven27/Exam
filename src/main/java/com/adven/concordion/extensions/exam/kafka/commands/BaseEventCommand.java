@@ -26,7 +26,7 @@ abstract class BaseEventCommand extends ExamCommand {
     protected final Html eventTable() {
         final Html table = table();
         final Html header = thead();
-        final Html tr = Html.tr();
+        final Html tr = tr();
         tr.childs(
                 th("Event header"),
                 th("Event body")

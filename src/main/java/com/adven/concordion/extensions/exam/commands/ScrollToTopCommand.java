@@ -16,8 +16,10 @@ public class ScrollToTopCommand extends ExamCommand {
     @Override
     public void setUp(CommandCall cmd, Evaluator evaluator, ResultRecorder resultRecorder) {
         Html el = new Html(cmd.getElement());
-        el.childs(button("").attr("id", "btnToTop").attr("onclick", "topFunction()").childs(
-                italic("").css("fa fa-arrow-up fa-3x")
-        ));
+        el.childs(
+                button("").attr("id", "btnToTop").attr("onclick", "topFunction()").childs(
+                        italic("").css("fa fa-arrow-up fa-3x")
+                )
+        );
     }
 }

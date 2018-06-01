@@ -12,9 +12,7 @@ import static com.adven.concordion.extensions.exam.kafka.EventUtils.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
-/**
- * @author Ruslan Ustits
- */
+
 public class DefaultEventProcessorTest {
 
     private DefaultEventProcessor processor;

@@ -53,24 +53,25 @@ public class DBCheckCommand extends DBCommand {
     public void verify(CommandCall commandCall, Evaluator evaluator, ResultRecorder resultRecorder) {
         try {
             final ITable actual = getActualTable();
-            final ITable filteredActual = includedColumnsTable(actual, expectedTable.getTableMetaData().getColumns());
+            final ITable filteredActual = includedColumnsTable(
+                    actual, getExpectedTable().getTableMetaData().getColumns());
 
-            assertEq(new Html(commandCall.getElement()), resultRecorder, expectedTable, filteredActual);
+            assertEq(new Html(commandCall.getElement()), resultRecorder, getExpectedTable(), filteredActual);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
     private ITable getActualTable() throws Exception {
-        IDatabaseConnection conn = dbTester.getConnection();
-        String tableName = expectedTable.getTableMetaData().getTableName();
+        IDatabaseConnection conn = getDbTester().getConnection();
+        String tableName = getExpectedTable().getTableMetaData().getTableName();
         String qualifiedName = new QualifiedTableName(tableName, conn.getSchema()).getQualifiedName();
 
         return conn.createQueryTable(qualifiedName, "select * from " + qualifiedName + where());
     }
 
     private String where() {
-        return isNullOrEmpty(where) ? "" : " WHERE " + where;
+        return isNullOrEmpty(getWhere()) ? "" : " WHERE " + getWhere();
     }
 
     private void assertEq(Html root, ResultRecorder resultRecorder, ITable expected, ITable actual)
@@ -90,7 +91,7 @@ public class DBCheckCommand extends DBCommand {
             div.childs(span("Expected: "), exp);
             root = exp;
 
-            Html act = tableSlim();
+            Html act = Html.tableSlim();
             renderTable(act, actual);
             div.childs(span("but was: "), act);
         }

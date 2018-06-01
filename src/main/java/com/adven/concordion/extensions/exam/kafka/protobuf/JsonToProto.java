@@ -7,9 +7,7 @@ import com.google.protobuf.util.JsonFormat;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
-/**
- * @author Ruslan Ustits
- */
+
 @Slf4j
 public final class JsonToProto<T extends Message> extends ProtoClassAware<String, T> {
 

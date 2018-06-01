@@ -12,7 +12,9 @@ import org.concordion.api.listener.AssertFailureEvent;
 import org.concordion.api.listener.AssertSuccessEvent;
 import org.concordion.internal.util.Announcer;
 import org.xmlunit.builder.DiffBuilder;
-import org.xmlunit.diff.*;
+import org.xmlunit.diff.Diff;
+import org.xmlunit.diff.DifferenceEvaluators;
+import org.xmlunit.diff.NodeMatcher;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
@@ -32,7 +34,8 @@ public class FilesCheckCommand extends BaseCommand {
     private Announcer<AssertEqualsListener> listeners = Announcer.to(AssertEqualsListener.class);
     private FilesLoader filesLoader;
 
-    public FilesCheckCommand(String name, String tag, Configuration jsonUnitCfg, NodeMatcher nodeMatcher, FilesLoader filesLoader) {
+    public FilesCheckCommand(
+        String name, String tag, Configuration jsonUnitCfg, NodeMatcher nodeMatcher, FilesLoader filesLoader) {
         super(name, tag);
         this.jsonUnitCfg = jsonUnitCfg;
         this.nodeMatcher = nodeMatcher;
@@ -44,7 +47,7 @@ public class FilesCheckCommand extends BaseCommand {
      * {@inheritDoc}.
      */
     public void verify(CommandCall commandCall, Evaluator evaluator, ResultRecorder resultRecorder) {
-        Html root = Html.tableSlim(commandCall.getElement());
+        Html root = tableSlim(commandCall.getElement());
 
         final String path = root.takeAwayAttr("dir", evaluator);
         if (path != null) {
@@ -53,8 +56,9 @@ public class FilesCheckCommand extends BaseCommand {
 
             String[] names = filesLoader.getFileNames(evalPath);
 
-            List<String> surplusFiles = names == null || names.length == 0 ?
-                    new ArrayList<String>() : new ArrayList<>(asList(names));
+            List<String> surplusFiles = names == null || names.length == 0
+                ? new ArrayList<String>()
+                : new ArrayList<>(asList(names));
 
             root.childs(flCaption(evalPath));
             addHeader(root, HEADER, FILE_CONTENT);
@@ -80,23 +84,29 @@ public class FilesCheckCommand extends BaseCommand {
                             final String content = filesLoader.readFile(evalPath, expectedName);
                             if (!isNullOrEmpty(content)) {
                                 pre = div().childs(
-                                        buttonCollapse("show", id).style("width:100%"),
-                                        div().attr("id", id).css("file collapse").childs(
-                                                pre.text(content)
-                                        )
+                                    buttonCollapse("show", id).style("width:100%"),
+                                    div().attr("id", id).css("file collapse").childs(
+                                        pre.text(content)
+                                    )
                                 );
                             }
                         } else {
-                            checkContent(evalPath + separator + expectedName, fileTag.content(), resultRecorder, pre.text(fileTag.content()).el());
+                            checkContent(
+                                evalPath + separator + expectedName,
+                                fileTag.content(),
+                                resultRecorder,
+                                pre.text(fileTag.content()).el()
+                            );
                         }
                     }
                     root.childs(
-                            tr().childs(
-                                    fileNameTD,
-                                    td(pre.
-                                            attr("autoFormat", String.valueOf(fileTag.autoFormat())).
-                                            attr("lineNumbers", String.valueOf(fileTag.lineNumbers())))
+                        tr().childs(
+                            fileNameTD,
+                            td(
+                                pre.attr("autoFormat", String.valueOf(fileTag.autoFormat()))
+                                    .attr("lineNumbers", String.valueOf(fileTag.lineNumbers()))
                             )
+                        )
                     ).remove(f);
                     empty = false;
                 }
@@ -105,10 +115,10 @@ public class FilesCheckCommand extends BaseCommand {
                 resultRecorder.record(Result.FAILURE);
                 Html td = td();
                 Html tr = tr().childs(
-                        td,
-                        td().childs(
-                                codeXml(filesLoader.readFile(evalPath, file))
-                        )
+                    td,
+                    td().childs(
+                        codeXml(filesLoader.readFile(evalPath, file))
+                    )
                 );
                 root.childs(tr);
                 announceFailure(td.el(), null, file);
@@ -144,25 +154,23 @@ public class FilesCheckCommand extends BaseCommand {
             Serializer serializer = new Serializer(out, "UTF-8");
             serializer.setIndent(4);
             serializer.write(document);
-            String pretty = out.toString("UTF-8");
-            return pretty;
+            return out.toString("UTF-8");
         } catch (Exception e) {
             throw new RuntimeException("invalid xml", e);
         }
     }
 
     private boolean assertEqualsXml(String actual, String expected) {
-        Diff diff = DiffBuilder.compare(expected.trim()).
-                checkForSimilar().withNodeMatcher(nodeMatcher).
-                withTest(actual.trim()).
-                withDifferenceEvaluator(
-                        chain(
-                                DifferenceEvaluators.Default,
-                                new PlaceholderSupportDiffEvaluator(jsonUnitCfg)
-                        )
-                ).
-                ignoreComments().ignoreWhitespace().
-                build();
+        Diff diff = DiffBuilder.compare(expected.trim())
+            .checkForSimilar().withNodeMatcher(nodeMatcher)
+            .withTest(actual.trim())
+            .withDifferenceEvaluator(
+                chain(
+                    DifferenceEvaluators.Default,
+                    new PlaceholderSupportDiffEvaluator(jsonUnitCfg)
+                )
+            )
+            .ignoreComments().ignoreWhitespace().build();
 
         //FIXME Reports are visible only on logs, show them in spec too
         if (diff.hasDifferences()) {

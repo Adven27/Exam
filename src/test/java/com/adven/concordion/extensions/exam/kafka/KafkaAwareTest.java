@@ -28,21 +28,17 @@ import java.util.concurrent.ExecutionException;
 import static com.adven.concordion.extensions.exam.kafka.EventUtils.goodClass;
 import static org.assertj.core.api.Assertions.assertThat;
 
-/**
- * @author Ruslan Ustits
- */
+
 public abstract class KafkaAwareTest {
 
     protected static final String CONSUME_TOPIC = "test.consume.topic";
+    @ClassRule
+    public static final KafkaEmbedded kafka = new KafkaEmbedded(1, false, CONSUME_TOPIC);
     protected static final String PRODUCE_TOPIC = "test.produce.topic";
     protected static final long DEFAULT_CONSUME_TIMEOUT = 1000L;
     protected static final long DEFAULT_PRODUCE_TIMEOUT = 1000L;
-
     protected static final TestEntity.Entity SUCCESS = TestEntity.Entity.newBuilder().setName("OK").build();
     protected static final TestEntity.Entity FAIL = TestEntity.Entity.newBuilder().setName("FAIL").build();
-
-    @ClassRule
-    public static final KafkaEmbedded kafka = new KafkaEmbedded(1, false, CONSUME_TOPIC);
 
     protected final void produceEvent(final Bytes bytes) throws ExecutionException, InterruptedException {
         final Map<String, Object> props = KafkaTestUtils.producerProps(kafka);
@@ -78,16 +74,17 @@ public abstract class KafkaAwareTest {
         return new DefaultEventProducer(DEFAULT_PRODUCE_TIMEOUT, kafka.getBrokersAsString());
     }
 
-    protected ConsumerRecord<String, Bytes> startTest(final Event<String> eventToVerify, final TestEntity.Entity entityToSend)
-            throws ExecutionException, InterruptedException {
+    protected ConsumerRecord<String, Bytes> startTest(final Event<String> eventToVerify,
+                                                      final TestEntity.Entity entityToSend)
+        throws ExecutionException, InterruptedException {
         final Event<Message> successReplyEvent = Event.<Message>builder()
-                .topicName(PRODUCE_TOPIC)
-                .message(SUCCESS)
-                .build();
+            .topicName(PRODUCE_TOPIC)
+            .message(SUCCESS)
+            .build();
         final Event<Message> failReplyEvent = Event.<Message>builder()
-                .topicName(PRODUCE_TOPIC)
-                .message(FAIL)
-                .build();
+            .topicName(PRODUCE_TOPIC)
+            .message(FAIL)
+            .build();
 
         final SyncMock mock = new SyncMock(eventToVerify, goodClass().getName(), eventConsumer());
         final WithReply withReply = new WithReply(successReplyEvent, failReplyEvent, eventProducer(), mock);

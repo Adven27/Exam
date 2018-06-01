@@ -6,6 +6,7 @@ import com.adven.concordion.extensions.exam.configurators.DbTester;
 import com.adven.concordion.extensions.exam.configurators.KafkaTester;
 import com.adven.concordion.extensions.exam.configurators.RestAssuredCfg;
 import com.adven.concordion.extensions.exam.configurators.WebDriverCfg;
+import com.adven.concordion.extensions.exam.db.kv.KeyValueRepository;
 import com.adven.concordion.extensions.exam.files.DefaultFilesLoader;
 import com.adven.concordion.extensions.exam.files.FilesLoader;
 import com.adven.concordion.extensions.exam.kafka.DefaultEventProcessor;
@@ -35,11 +36,11 @@ import static org.xmlunit.diff.ElementSelectors.byNameAndText;
 public class ExamExtension implements ConcordionExtension {
     public static final String NS = "http://exam.extension.io";
     public static final DefaultNodeMatcher DEFAULT_NODE_MATCHER = new DefaultNodeMatcher(byNameAndText, byName);
-    public static final Configuration DEFAULT_JSON_UNIT_CFG = when(IGNORING_ARRAY_ORDER).
-            withMatcher("formattedAs", new DateFormatMatcher()).
-            withMatcher("formattedAndWithin", DateWithin.param()).
-            withMatcher("formattedAndWithinNow", DateWithin.now()).
-            withMatcher("xmlDateWithinNow", new XMLDateWithin());
+    public static final Configuration DEFAULT_JSON_UNIT_CFG = when(IGNORING_ARRAY_ORDER)
+        .withMatcher("formattedAs", new DateFormatMatcher())
+        .withMatcher("formattedAndWithin", DateWithin.param())
+        .withMatcher("formattedAndWithinNow", DateWithin.now())
+        .withMatcher("xmlDateWithinNow", new XMLDateWithin());
     public static final FilesLoader DEFAULT_FILES_LOADER = new DefaultFilesLoader();
     private static DesiredCapabilities capabilities;
     private net.javacrumbs.jsonunit.core.Configuration jsonUnitCfg;
@@ -47,6 +48,7 @@ public class ExamExtension implements ConcordionExtension {
     private NodeMatcher nodeMatcher;
     private FilesLoader filesLoader;
     private EventProcessor eventProcessor;
+    private KeyValueRepository keyValueRepository;
 
     public ExamExtension() {
         jsonUnitCfg = DEFAULT_JSON_UNIT_CFG;
@@ -61,6 +63,10 @@ public class ExamExtension implements ConcordionExtension {
         } catch (NamingException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private static void capabilities(DesiredCapabilities c) {
+        capabilities = c;
     }
 
     @SuppressWarnings("unused")
@@ -81,7 +87,7 @@ public class ExamExtension implements ConcordionExtension {
         return this;
     }
 
-    public ExamExtension withFilesLoader(FilesLoader customFilesLoader){
+    public ExamExtension withFilesLoader(FilesLoader customFilesLoader) {
         this.filesLoader = customFilesLoader;
         return this;
     }
@@ -97,10 +103,6 @@ public class ExamExtension implements ConcordionExtension {
         return this;
     }
 
-    private static void capabilities(DesiredCapabilities c) {
-        capabilities = c;
-    }
-
     @SuppressWarnings("unused")
     public RestAssuredCfg rest() {
         return new RestAssuredCfg(this);
@@ -112,11 +114,6 @@ public class ExamExtension implements ConcordionExtension {
     }
 
     @SuppressWarnings("unused")
-    public DbTester db() {
-        return new DbTester(this);
-    }
-
-    @SuppressWarnings("unused")
     public KafkaTester kafka() {
         return new KafkaTester(this);
     }
@@ -125,6 +122,11 @@ public class ExamExtension implements ConcordionExtension {
     public ExamExtension kafka(final EventProcessor eventProcessor) {
         this.eventProcessor = eventProcessor;
         return this;
+    }
+
+    @SuppressWarnings("unused")
+    public DbTester db() {
+        return new DbTester(this);
     }
 
     @SuppressWarnings("unused")
@@ -153,13 +155,19 @@ public class ExamExtension implements ConcordionExtension {
         return this;
     }
 
+    @SuppressWarnings("unused")
+    public ExamExtension keyValueDB(final KeyValueRepository keyValueRepository) {
+        this.keyValueRepository = keyValueRepository;
+        return this;
+    }
+
     @Override
     public void addTo(ConcordionExtender ex) {
         new CodeMirrorExtension().addTo(ex);
         new BootstrapExtension().addTo(ex);
 
         final CommandRegistry registry = new CommandRegistry(dbTester, jsonUnitCfg, nodeMatcher,
-                capabilities, filesLoader, eventProcessor);
+            capabilities, filesLoader, eventProcessor, keyValueRepository);
 
         for (ExamCommand cmd : registry.commands()) {
             if (!"example".equals(cmd.name())) {

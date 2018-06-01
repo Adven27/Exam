@@ -8,7 +8,7 @@ buildscript {
 }
 
 plugins {
-    id "org.jetbrains.kotlin.jvm" version "1.2.40"
+    id "org.jetbrains.kotlin.jvm" version "1.2.41"
 }
 group 'com.adven.concordion'
 version = 0.4
@@ -36,6 +36,9 @@ compileTestJava.options.encoding = 'utf-8'
 
 repositories {
     mavenCentral()
+    maven {
+        url 'http://www.gridgainsystems.com/nexus/content/repositories/external'
+    }
 }
 
 dependencies {
@@ -58,6 +61,7 @@ dependencies {
     compile 'com.google.protobuf:protobuf-java-util:3.5.1'
     compile 'org.apache.kafka:kafka-clients:1.0.0'
     compileOnly 'org.projectlombok:lombok:1.16.18'
+    compileOnly 'org.gridgain:gridgain-core:8.3.2'
     testCompile 'junit:junit:4.12'
     testCompile 'com.h2database:h2:1.4.195'
     testCompile 'org.simpleframework:simple:5.1.6'
@@ -94,6 +98,7 @@ tasks.withType(Checkstyle) {
         xml.enabled false
         html.enabled true
     }
+    exclude 'com.adven.concordion.extensions.exam.kafka.protobuf'
 }
 
 findbugs {
@@ -102,9 +107,8 @@ findbugs {
 }
 
 checkstyle {
-    configFile = rootProject.file('config/checkstyle/checkstyle.xml')
-    toolVersion = "6.19"
-    ignoreFailures = true
+    toolVersion = "8.10"
+    ignoreFailures = false
 }
 
 jacocoTestReport {

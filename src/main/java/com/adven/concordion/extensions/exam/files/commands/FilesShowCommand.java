@@ -10,8 +10,7 @@ import static com.adven.concordion.extensions.exam.html.Html.*;
 
 public class FilesShowCommand extends BaseCommand {
     private static final String EMPTY = "<EMPTY>";
-
-    FilesLoader filesLoader;
+    private FilesLoader filesLoader;
 
     public FilesShowCommand(String name, String tag, FilesLoader filesLoader) {
         super(name, tag);
@@ -20,23 +19,21 @@ public class FilesShowCommand extends BaseCommand {
 
     @Override
     public void setUp(CommandCall commandCall, Evaluator evaluator, ResultRecorder resultRecorder) {
-        Html element = Html.tableSlim(commandCall.getElement());
-
+        final Html element = tableSlim(commandCall.getElement());
         final String path = element.takeAwayAttr("dir");
 
         if (path != null) {
-
             String evalPath = evaluator.evaluate(path).toString();
 
             element.childs(
-                    thead().childs(
-                            th().childs(
-                                    italic("").css("fa fa-folder-open fa-pull-left fa-border")
-                            ).text(evalPath)
-                    )
+                thead().childs(
+                    th().childs(
+                        italic("").css("fa fa-folder-open fa-pull-left fa-border")
+                    ).text(evalPath)
+                )
             );
 
-            String fileNames[] = filesLoader.getFileNames(evalPath);
+            String[] fileNames = filesLoader.getFileNames(evalPath);
 
             if (fileNames == null || fileNames.length == 0) {
                 addRow(element, EMPTY);

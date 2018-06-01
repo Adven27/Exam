@@ -2,6 +2,7 @@ package com.adven.concordion.extensions.exam.files.commands;
 
 import com.adven.concordion.extensions.exam.commands.ExamCommand;
 import com.adven.concordion.extensions.exam.html.Html;
+
 import static com.adven.concordion.extensions.exam.html.Html.*;
 
 class BaseCommand extends ExamCommand {
@@ -31,8 +32,8 @@ class BaseCommand extends ExamCommand {
     }
 
     protected Html flCaption(String dirPath) {
-        return Html.caption().childs(
+        return caption(dirPath).childs(
                 italic("").css("fa fa-folder-open fa-pull-left fa-border")
-        ).text(dirPath);
+        );
     }
 }

@@ -5,9 +5,7 @@ import com.adven.concordion.extensions.exam.kafka.protobuf.TestEntity;
 import static com.adven.concordion.extensions.exam.RandomUtils.anyInt;
 import static com.adven.concordion.extensions.exam.RandomUtils.anyString;
 
-/**
- * @author Ruslan Ustits
- */
+
 public final class EventUtils {
 
     private EventUtils() {
@@ -15,20 +13,20 @@ public final class EventUtils {
 
     public static Event<String> goodEvent() {
         return Event.<String>builder()
-                .message(goodMessage())
-                .build();
+            .message(goodMessage())
+            .build();
     }
 
     public static Event<String> goodEvent(final String name, final int number) {
         return Event.<String>builder()
-                .message(goodMessage(name, number))
-                .build();
+            .message(goodMessage(name, number))
+            .build();
     }
 
     public static Event<String> badEvent() {
         return Event.<String>builder()
-                .message(anyString())
-                .build();
+            .message(anyString())
+            .build();
     }
 
     public static String goodMessage() {
@@ -36,10 +34,10 @@ public final class EventUtils {
     }
 
     public static String goodMessage(final String name, final int number) {
-        return "{\n" +
-                "  \"name\": \"" + name + "\",\n" +
-                "  \"number\": " + number + "\n" +
-                "}";
+        return "{\n"
+            + "  \"name\": \"" + name + "\",\n"
+            + "  \"number\": " + number + "\n"
+            + "}";
     }
 
     public static Class<TestEntity.Entity> goodClass() {

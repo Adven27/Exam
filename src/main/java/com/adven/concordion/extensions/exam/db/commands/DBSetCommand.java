@@ -22,21 +22,21 @@ public class DBSetCommand extends DBCommand {
         super.setUp(commandCall, evaluator, resultRecorder);
         try {
             Html el = new Html(commandCall.getElement());
-            renderTable(el, expectedTable);
-            setUpDB(expectedTable, parseInsertMode(el));
+            renderTable(el, getExpectedTable());
+            setUpDB(getExpectedTable(), parseInsertMode(el));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    private void setUpDB(ITable iTable, DatabaseOperation insertMode) throws Exception {
-        dbTester.setSetUpOperation(insertMode);
-        dbTester.setDataSet(new DefaultDataSet(iTable));
-        dbTester.onSetup();
+    private void setUpDB(ITable table, DatabaseOperation insertMode) throws Exception {
+        getDbTester().setSetUpOperation(insertMode);
+        getDbTester().setDataSet(new DefaultDataSet(table));
+        getDbTester().onSetup();
     }
 
     private DatabaseOperation parseInsertMode(Html el) {
-        return el.attr("mode") != null && el.attr("mode").equals("add") ?
-                INSERT : CLEAN_INSERT;
+        String mode = el.attr("mode");
+        return mode != null && mode.equals("add") ? INSERT : CLEAN_INSERT;
     }
 }

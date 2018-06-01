@@ -8,20 +8,14 @@ import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.utils.Bytes;
 
-/**
- * @author Ruslan Ustits
- */
+
 @Slf4j
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ProtoUtils {
 
     public static Optional<String> fromBytesToJson(final Bytes bytes, final String className) {
         Optional<Class<Message>> clazz = safeForName(className);
-        if (clazz.isPresent()) {
-            return new ProtoBytesToJson<>(clazz.get()).convert(bytes);
-        } else {
-            return Optional.absent();
-        }
+        return clazz.isPresent() ? new ProtoBytesToJson<>(clazz.get()).convert(bytes) : Optional.<String>absent();
     }
 
     public static Optional<Event<Message>> fromJsonToProto(final Event<String> event,
@@ -29,10 +23,10 @@ public final class ProtoUtils {
         final Optional<Message> message = ProtoUtils.fromJsonToProto(event.getMessage(), eventClass);
         if (message.isPresent()) {
             final Event<Message> convertedEvent = Event.<Message>builder()
-                    .topicName(event.getTopicName())
-                    .key(event.getKey())
-                    .message(message.get())
-                    .build();
+                .topicName(event.getTopicName())
+                .key(event.getKey())
+                .message(message.get())
+                .build();
             return Optional.of(convertedEvent);
         } else {
             return Optional.absent();
@@ -41,11 +35,7 @@ public final class ProtoUtils {
 
     public static Optional<Message> fromJsonToProto(final String message, final String className) {
         Optional<Class<Message>> clazz = safeForName(className);
-        if (clazz.isPresent()) {
-            return new JsonToProto<>(clazz.get()).convert(message);
-        } else {
-            return Optional.absent();
-        }
+        return clazz.isPresent() ? new JsonToProto<>(clazz.get()).convert(message) : Optional.<Message>absent();
     }
 
     protected static Optional<Class<Message>> safeForName(final String name) {

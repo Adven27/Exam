@@ -7,12 +7,10 @@ import com.google.protobuf.Message;
 import org.junit.Before;
 import org.junit.Test;
 
-import static com.adven.concordion.extensions.exam.RandomUtils.*;
+import static com.adven.concordion.extensions.exam.RandomUtils.anyString;
 import static org.assertj.core.api.Assertions.assertThat;
 
-/**
- * @author Ruslan Ustits
- */
+
 public class WithReplyTest {
 
     private DummyEventProducer eventProducer;
@@ -33,12 +31,6 @@ public class WithReplyTest {
     }
 
     @Test
-    public void testVerify() {
-        assertThat(testVerify(true, true)).isTrue();
-        assertThat(eventProducer.popProducedMessages()).containsOnly(successEvent.getMessage());
-    }
-
-    @Test
     public void testVerifyWhenFailedToProduceEvent() {
         assertThat(testVerify(true, false)).isFalse();
     }
@@ -47,6 +39,12 @@ public class WithReplyTest {
     public void testVerifyWhenInnerMockFailed() {
         assertThat(testVerify(false, true)).isTrue();
         assertThat(eventProducer.popProducedMessages()).containsOnly(failEvent.getMessage());
+    }
+
+    @Test
+    public void testVerify() {
+        assertThat(testVerify(true, true)).isTrue();
+        assertThat(eventProducer.popProducedMessages()).containsOnly(successEvent.getMessage());
     }
 
     private boolean testVerify(final boolean isEventVerified, final boolean isEventProduced) {

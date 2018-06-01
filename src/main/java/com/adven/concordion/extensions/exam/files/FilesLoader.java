@@ -1,14 +1,11 @@
 package com.adven.concordion.extensions.exam.files;
 
 import com.adven.concordion.extensions.exam.html.Html;
-import lombok.Builder;
-import lombok.Data;
-import lombok.experimental.Accessors;
-import org.concordion.api.Evaluator;
 import nu.xom.Document;
+import org.concordion.api.Evaluator;
 
 /**
- * Интерфейс реализации работы с файлами
+ * Интерфейс реализации работы с файлами.
  */
 public interface FilesLoader {
 
@@ -36,32 +33,32 @@ public interface FilesLoader {
             return name;
         }
 
+        public void name(String name) {
+            this.name = name;
+        }
+
         public boolean lineNumbers() {
             return lineNumbers;
+        }
+
+        public void lineNumbers(boolean lineNumbers) {
+            this.lineNumbers = lineNumbers;
         }
 
         public String content() {
             return content;
         }
 
-        public boolean autoFormat() {
-            return autoFormat;
-        }
-
-        public void name(String name) {
-            this.name = name;
-        }
-
         public void content(String cnt) {
             this.content = cnt;
         }
 
-        public void autoFormat(boolean autoFormat) {
-            this.autoFormat = autoFormat;
+        public boolean autoFormat() {
+            return autoFormat;
         }
 
-        public void lineNumbers(boolean lineNumbers) {
-            this.lineNumbers = lineNumbers;
+        public void autoFormat(boolean autoFormat) {
+            this.autoFormat = autoFormat;
         }
     }
 }

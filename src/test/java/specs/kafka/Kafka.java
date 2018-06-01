@@ -21,9 +21,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-/**
- * @author Ruslan Ustits
- */
+
 public class Kafka extends Specs {
 
     protected final void produceEvent(final ProducerRecord<String, Bytes> record) throws InterruptedException,

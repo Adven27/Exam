@@ -12,9 +12,7 @@ import static com.adven.concordion.extensions.exam.kafka.EventUtils.goodMessage;
 import static com.adven.concordion.extensions.exam.kafka.protobuf.TestEntity.Entity;
 import static org.assertj.core.api.Assertions.assertThat;
 
-/**
- * @author Ruslan Ustits
- */
+
 public class JsonToProtoTest {
 
     private JsonToProto<Entity> converter;

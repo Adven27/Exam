@@ -23,7 +23,7 @@ public class XMLDateWithin extends BaseMatcher<Object> implements ParametrizedMa
         return isBetweenInclusive(expected.minus(period), expected.plus(period), actual);
     }
 
-    boolean isBetweenInclusive(DateTime start, DateTime end, DateTime target) {
+    private boolean isBetweenInclusive(DateTime start, DateTime end, DateTime target) {
         return !target.isBefore(start) && !target.isAfter(end);
     }
 

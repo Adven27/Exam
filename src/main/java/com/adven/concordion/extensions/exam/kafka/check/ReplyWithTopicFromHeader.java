@@ -10,9 +10,7 @@ import org.apache.kafka.common.utils.Bytes;
 
 import java.io.UnsupportedEncodingException;
 
-/**
- * @author Ruslan Ustits
- */
+
 @Slf4j
 @RequiredArgsConstructor
 public final class ReplyWithTopicFromHeader implements CheckMessageMock {
@@ -34,16 +32,16 @@ public final class ReplyWithTopicFromHeader implements CheckMessageMock {
         final Event<Message> eventWithNewHeader;
         if (syncMock.verify(event)) {
             eventWithNewHeader = withReply.getReplyEvent()
-                    .toBuilder()
-                    .key(event.getKey())
-                    .header(event.getHeader())
-                    .build();
+                .toBuilder()
+                .key(event.getKey())
+                .header(event.getHeader())
+                .build();
         } else {
             eventWithNewHeader = withReply.getFailEvent()
-                    .toBuilder()
-                    .key(event.getKey())
-                    .header(event.getHeader())
-                    .build();
+                .toBuilder()
+                .key(event.getKey())
+                .header(event.getHeader())
+                .build();
         }
         return eventWithNewHeader;
     }

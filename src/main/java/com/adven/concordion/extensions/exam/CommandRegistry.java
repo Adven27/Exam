@@ -4,6 +4,9 @@ import com.adven.concordion.extensions.exam.commands.*;
 import com.adven.concordion.extensions.exam.db.commands.DBCheckCommand;
 import com.adven.concordion.extensions.exam.db.commands.DBSetCommand;
 import com.adven.concordion.extensions.exam.db.commands.DBShowCommand;
+import com.adven.concordion.extensions.exam.db.kv.KVCheckCommand;
+import com.adven.concordion.extensions.exam.db.kv.KVSetCommand;
+import com.adven.concordion.extensions.exam.db.kv.KeyValueRepository;
 import com.adven.concordion.extensions.exam.files.FilesLoader;
 import com.adven.concordion.extensions.exam.files.commands.FilesCheckCommand;
 import com.adven.concordion.extensions.exam.files.commands.FilesSetCommand;
@@ -24,6 +27,9 @@ import java.util.List;
 import static java.util.Arrays.asList;
 
 public class CommandRegistry {
+
+    private static final String TABLE = "table";
+
     private final List<ExamCommand> commands;
 
     public CommandRegistry(
@@ -32,7 +38,8 @@ public class CommandRegistry {
             NodeMatcher nodeMatcher,
             DesiredCapabilities capabilities,
             FilesLoader filesLoader,
-            EventProcessor eventProcessor) {
+            EventProcessor eventProcessor,
+            KeyValueRepository keyValueRepository) {
         commands = asList(
                 new GivenCommand("div"),
                 new WhenCommand("div"),
@@ -46,13 +53,13 @@ public class CommandRegistry {
 
                 new CaseCheckCommand("check", "div"),
 
-                new DBShowCommand("db-show", "table", dbTester),
-                new DBCheckCommand("db-check", "table", dbTester),
-                new DBSetCommand("db-set", "table", dbTester),
+                new DBShowCommand("db-show", TABLE, dbTester),
+                new DBCheckCommand("db-check", TABLE, dbTester),
+                new DBSetCommand("db-set", TABLE, dbTester),
 
-                new FilesShowCommand("fl-show", "table", filesLoader),
-                new FilesSetCommand("fl-set", "table", filesLoader),
-                new FilesCheckCommand("fl-check", "table", jsonUnitCfg, nodeMatcher, filesLoader),
+                new FilesShowCommand("fl-show", TABLE, filesLoader),
+                new FilesSetCommand("fl-set", TABLE, filesLoader),
+                new FilesCheckCommand("fl-check", TABLE, jsonUnitCfg, nodeMatcher, filesLoader),
 
                 new PostCommand("post", "div"),
                 new GetCommand("get", "div"),
@@ -66,7 +73,10 @@ public class CommandRegistry {
                 new SetVarCommand("span"),
 
                 new EventCheckReplyCommand("event-check", "div", eventProcessor),
-                new EventSendCommand("event-send", "div", eventProcessor)
+                new EventSendCommand("event-send", "div", eventProcessor),
+
+                new KVCheckCommand("db-kv-check", "div", keyValueRepository, jsonUnitCfg),
+                new KVSetCommand("db-kv-set", "div", keyValueRepository, jsonUnitCfg)
         );
     }
 
