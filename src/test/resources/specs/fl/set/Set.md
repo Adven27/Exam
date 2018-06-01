@@ -28,4 +28,18 @@
             <e:fl-set dir="dir"/>
         </e:then>
     </e:example>
+    <e:example name="Files will be created in sub directories">
+        <e:given>
+            Fill directory with files and sub directories with files
+            <e:fl-set dir="dir">
+                <file name="empty_file"/>
+                <file name="subdir/file_content">${exam.now} or formatted ${exam.now:dd.MM.yyyy'T'HH:mm:ss}</file>
+                <file name="subdir/file_content2">${exam.now} or formatted ${exam.now:dd.MM.yyyy'T'HH:mm:ss}</file>
+                <file name="subdir/subsubdir/file_content">${exam.yesterday} or formatted ${exam.now:dd.MM.yyyy'T'HH:mm:ss}</file>
+            </e:fl-set>
+        </e:given>
+        <e:then print="true">
+            <e:fl-show dir="dir"/>
+        </e:then>
+    </e:example>
 </div>
