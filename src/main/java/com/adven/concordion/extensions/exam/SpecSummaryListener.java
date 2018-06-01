@@ -7,7 +7,7 @@ import org.concordion.api.listener.SpecificationProcessingListener;
 
 import java.util.UUID;
 
-import static com.adven.concordion.extensions.exam.html.Html.*;
+import static com.adven.concordion.extensions.exam.html.HtmlBuilder.*;
 
 public class SpecSummaryListener implements SpecificationProcessingListener {
 

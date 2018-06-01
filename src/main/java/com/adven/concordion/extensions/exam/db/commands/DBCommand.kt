@@ -3,15 +3,7 @@ package com.adven.concordion.extensions.exam.db.commands
 import com.adven.concordion.extensions.exam.PlaceholdersResolver
 import com.adven.concordion.extensions.exam.commands.ExamCommand
 import com.adven.concordion.extensions.exam.db.TableData
-import com.adven.concordion.extensions.exam.html.Html
-import com.adven.concordion.extensions.exam.html.Html.Companion.italic
-import com.adven.concordion.extensions.exam.html.Html.Companion.tableSlim
-import com.adven.concordion.extensions.exam.html.Html.Companion.tbody
-import com.adven.concordion.extensions.exam.html.Html.Companion.td
-import com.adven.concordion.extensions.exam.html.Html.Companion.th
-import com.adven.concordion.extensions.exam.html.Html.Companion.thead
-import com.adven.concordion.extensions.exam.html.Html.Companion.tr
-import com.adven.concordion.extensions.exam.html.RowParser
+import com.adven.concordion.extensions.exam.html.*
 import org.concordion.api.CommandCall
 import org.concordion.api.Evaluator
 import org.concordion.api.ResultRecorder
@@ -145,7 +137,7 @@ open class DBCommand(name: String, tag: String, protected val dbTester: IDatabas
     }
 
     protected fun dbCaption(t: ITable, title: String?): Html {
-        return Html.caption(if (title == null || title.isBlank()) t.tableMetaData.tableName else title).childs(
+        return caption(if (title == null || title.isBlank()) t.tableMetaData.tableName else title).childs(
                 italic("").css("fa fa-database fa-pull-left fa-border")
         )
     }

@@ -12,7 +12,7 @@ import org.dbunit.dataset.ITable;
 
 import java.sql.SQLException;
 
-import static com.adven.concordion.extensions.exam.html.Html.table;
+import static com.adven.concordion.extensions.exam.html.HtmlBuilder.table;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static org.dbunit.dataset.filter.DefaultColumnFilter.includedColumnsTable;
 

@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import static com.adven.concordion.extensions.exam.html.Html.*;
+import static com.adven.concordion.extensions.exam.html.HtmlBuilder.*;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static java.io.File.separator;
 import static java.util.Arrays.asList;

@@ -2,9 +2,10 @@ package com.adven.concordion.extensions.exam.db.kv;
 
 import com.adven.concordion.extensions.exam.commands.ExamCommand;
 import com.adven.concordion.extensions.exam.html.Html;
+import com.adven.concordion.extensions.exam.html.HtmlBuilder;
 import com.adven.concordion.extensions.exam.rest.JsonPrettyPrinter;
 
-import static com.adven.concordion.extensions.exam.html.Html.*;
+import static com.adven.concordion.extensions.exam.html.HtmlBuilder.*;
 
 
 public abstract class BaseKeyValueCommand extends ExamCommand {
@@ -25,7 +26,7 @@ public abstract class BaseKeyValueCommand extends ExamCommand {
     protected Html dbTable(final String cacheName) {
         final Html table = tableSlim();
         final Html header = thead();
-        final Html tr = Html.tr();
+        final Html tr = HtmlBuilder.tr();
         tr.childs(
                 th("Key"),
                 th("Value")

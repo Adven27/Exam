@@ -7,7 +7,7 @@ import nu.xom.Element;
 import nu.xom.Elements;
 import org.concordion.api.listener.DocumentParsingListener;
 
-import static com.adven.concordion.extensions.exam.html.Html.*;
+import static com.adven.concordion.extensions.exam.html.HtmlBuilder.*;
 
 class ExamDocumentParsingListener implements DocumentParsingListener {
     private final CommandRegistry registry;

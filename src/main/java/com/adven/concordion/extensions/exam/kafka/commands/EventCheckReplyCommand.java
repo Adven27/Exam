@@ -8,7 +8,7 @@ import org.concordion.api.Evaluator;
 import org.concordion.api.Result;
 import org.concordion.api.ResultRecorder;
 
-import static com.adven.concordion.extensions.exam.html.Html.tableSlim;
+import static com.adven.concordion.extensions.exam.html.HtmlBuilder.tableSlim;
 
 public final class EventCheckReplyCommand extends BaseEventCommand {
 

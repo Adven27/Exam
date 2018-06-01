@@ -24,7 +24,7 @@ import org.dbunit.util.QualifiedTableName;
 
 import java.util.List;
 
-import static com.adven.concordion.extensions.exam.html.Html.*;
+import static com.adven.concordion.extensions.exam.html.HtmlBuilder.*;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static org.concordion.api.Result.FAILURE;
 import static org.concordion.api.Result.SUCCESS;
@@ -91,7 +91,7 @@ public class DBCheckCommand extends DBCommand {
             div.childs(span("Expected: "), exp);
             root = exp;
 
-            Html act = Html.tableSlim();
+            Html act = tableSlim();
             renderTable(act, actual);
             div.childs(span("but was: "), act);
         }

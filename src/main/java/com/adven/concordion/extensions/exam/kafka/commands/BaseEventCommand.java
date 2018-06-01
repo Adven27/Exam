@@ -7,7 +7,7 @@ import com.adven.concordion.extensions.exam.rest.JsonPrettyPrinter;
 import lombok.AccessLevel;
 import lombok.Getter;
 
-import static com.adven.concordion.extensions.exam.html.Html.*;
+import static com.adven.concordion.extensions.exam.html.HtmlBuilder.*;
 
 abstract class BaseEventCommand extends ExamCommand {
 

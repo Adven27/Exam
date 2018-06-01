@@ -2,6 +2,7 @@ package com.adven.concordion.extensions.exam.rest.commands;
 
 import com.adven.concordion.extensions.exam.PlaceholdersResolver;
 import com.adven.concordion.extensions.exam.html.Html;
+import com.adven.concordion.extensions.exam.html.HtmlBuilder;
 import com.adven.concordion.extensions.exam.html.RowParser;
 import com.adven.concordion.extensions.exam.rest.JsonPrettyPrinter;
 import com.adven.concordion.extensions.exam.rest.StatusBuilder;
@@ -18,7 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.adven.concordion.extensions.exam.html.Html.*;
+import static com.adven.concordion.extensions.exam.html.HtmlBuilder.*;
 import static com.adven.concordion.extensions.exam.rest.commands.RequestExecutor.fromEvaluator;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static net.javacrumbs.jsonunit.JsonAssert.assertJsonEquals;
@@ -78,8 +79,8 @@ public class CaseCommand extends RestVerifyCommand {
     private Html[] caseTags(final Html body, final Html expected) {
         final List<Html> caseTags = new ArrayList<>();
         for (int i = 0; i < cases.size(); i++) {
-            final Html bodyToAdd = body == null ? null : Html.tag(BODY).text(body.text());
-            final Html expectedToAdd = Html.tag(EXPECTED).text(expected.text());
+            final Html bodyToAdd = body == null ? null : HtmlBuilder.tag(BODY).text(body.text());
+            final Html expectedToAdd = HtmlBuilder.tag(EXPECTED).text(expected.text());
 
             final String protocol = expected.attr(PROTOCOL);
             if (protocol != null) {
@@ -94,7 +95,7 @@ public class CaseCommand extends RestVerifyCommand {
                 expectedToAdd.attr(REASON_PHRASE, reasonPhrase);
             }
 
-            final Html caseTag = Html.tag(CASE).childs(bodyToAdd, expectedToAdd);
+            final Html caseTag = HtmlBuilder.tag(CASE).childs(bodyToAdd, expectedToAdd);
             caseTags.add(caseTag);
         }
         return caseTags.toArray(new Html[]{});

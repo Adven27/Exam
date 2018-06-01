@@ -7,7 +7,7 @@ import org.concordion.api.ResultSummary;
 import org.concordion.api.listener.ExampleEvent;
 import org.concordion.api.listener.ExampleListener;
 
-import static com.adven.concordion.extensions.exam.html.Html.*;
+import static com.adven.concordion.extensions.exam.html.HtmlBuilder.*;
 import static org.concordion.api.ImplementationStatus.*;
 
 class ExamExampleListener implements ExampleListener {

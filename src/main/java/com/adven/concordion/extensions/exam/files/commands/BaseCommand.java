@@ -3,7 +3,7 @@ package com.adven.concordion.extensions.exam.files.commands;
 import com.adven.concordion.extensions.exam.commands.ExamCommand;
 import com.adven.concordion.extensions.exam.html.Html;
 
-import static com.adven.concordion.extensions.exam.html.Html.*;
+import static com.adven.concordion.extensions.exam.html.HtmlBuilder.*;
 
 class BaseCommand extends ExamCommand {
     protected static final String EMPTY = "<EMPTY>";
