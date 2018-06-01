@@ -16,9 +16,7 @@ public final class EventCheckReplyCommand extends BaseEventCommand {
         super(name, tag, eventProcessor);
     }
 
-    /**
-     * {@inheritDoc}.
-     */
+    @Override
     public void verify(CommandCall commandCall, Evaluator evaluator, ResultRecorder resultRecorder) {
         Html eventCheckReplyRoot = tableSlim(commandCall.getElement());
         // получаю событие и класс, требующее проверки
@@ -31,25 +29,7 @@ public final class EventCheckReplyCommand extends BaseEventCommand {
                 .message(expectedEventJson)
                 .build();
 
-        final Html reply = eventCheckReplyRoot.firstOrThrow("reply");
-        // получаю класс события-ответа
-        //FIXME WHAT IF NULL?
-        final String replyProtoClass = reply.takeAwayAttr(PROTO_CLASS, "WHAT IF NULL?");
-
-        // получаю событие успешного ответа
-        final Html replySuccess = reply.firstOrThrow("success");
-        final String successReplyEventJson = replySuccess.text();
-        Event<String> successReplyEvent = Event.<String>builder()
-                .message(successReplyEventJson)
-                .build();
-
-        // получаю событие провального ответа
-        final Html replyFail = reply.firstOrThrow("fail");
-        final String failReplyEventJson = replyFail.text();
-        Event<String> failReplyEvent = Event.<String>builder()
-                .message(failReplyEventJson)
-                .build();
-
+        final Html reply = eventCheckReplyRoot.first("reply");
         eventCheckReplyRoot.removeAllChild();
 
         // рисую результирующую таблицу
@@ -57,19 +37,41 @@ public final class EventCheckReplyCommand extends BaseEventCommand {
         final Html expEventTable = tableResult(expectedEventJson);
         eventCheckInfo.dropAllTo(expEventTable);
 
-        final Html eventSuccessInfo = eventInfo("Success reply", "", replyProtoClass);
-        final Html successEventTable = tableResult(successReplyEventJson);
-        eventSuccessInfo.dropAllTo(successEventTable);
+        eventCheckReplyRoot.childs(eventCheckInfo);
 
-        final Html failSuccessInfo = eventInfo("Fail reply", "", replyProtoClass);
-        final Html failEventTable = tableResult(failReplyEventJson);
-        failSuccessInfo.dropAllTo(failEventTable);
+        final boolean result;
+        if (reply != null) {
+            // получаю класс события-ответа
+            final String replyProtoClass = reply.takeAwayAttr(PROTO_CLASS, "");
 
-        eventCheckReplyRoot.childs(eventCheckInfo, eventSuccessInfo, failSuccessInfo);
+            // получаю событие успешного ответа
+            final Html replySuccess = reply.firstOrThrow("success");
+            final String successReplyEventJson = replySuccess.text();
+            Event<String> successReplyEvent = Event.<String>builder()
+                    .message(successReplyEventJson)
+                    .build();
 
-        // произвожу проверку и ответ
-        final boolean result = getEventProcessor()
-                .checkWithReply(checkEvent, expectedProtoClass, successReplyEvent, failReplyEvent, replyProtoClass, true);
+            // получаю событие провального ответа
+            final Html replyFail = reply.firstOrThrow("fail");
+            final String failReplyEventJson = replyFail.text();
+            Event<String> failReplyEvent = Event.<String>builder()
+                    .message(failReplyEventJson)
+                    .build();
+
+            final Html eventSuccessInfo = eventInfo("Success reply", "", replyProtoClass);
+            final Html successEventTable = tableResult(successReplyEventJson);
+            eventSuccessInfo.dropAllTo(successEventTable);
+
+            final Html failSuccessInfo = eventInfo("Fail reply", "", replyProtoClass);
+            final Html failEventTable = tableResult(failReplyEventJson);
+            failSuccessInfo.dropAllTo(failEventTable);
+
+            eventCheckReplyRoot.childs(eventSuccessInfo, failSuccessInfo);
+            result = getEventProcessor()
+                    .checkWithReply(checkEvent, expectedProtoClass, successReplyEvent, failReplyEvent, replyProtoClass, true);
+        } else {
+            result = getEventProcessor().check(checkEvent, expectedProtoClass, false);
+        }
 
         if (!result) {
             eventCheckReplyRoot.parent().attr("class", "")
