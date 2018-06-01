@@ -26,7 +26,6 @@ import static org.concordion.internal.ConcordionBuilder.NAMESPACE_CONCORDION_200
 @RunWith(ConcordionRunner.class)
 @ConcordionOptions(declareNamespaces = {"c", NAMESPACE_CONCORDION_2007, "e", ExamExtension.NS})
 public class Specs {
-
     protected static final String CONSUME_TOPIC = "test.consume.topic";
     protected static final String PRODUCE_TOPIC = "test.produce.topic";
     protected static final KafkaEmbedded kafka = new KafkaEmbedded(1, true, CONSUME_TOPIC);
@@ -46,11 +45,11 @@ public class Specs {
     @SuppressFBWarnings(value = "URF_UNREAD_FIELD", justification = "особенности подключения расширений в concordion")
     @Extension
     private final ExamExtension exam = new ExamExtension()
-        .rest().port(PORT).end()
-        .db().end()
-        .ui().headless().end()
-        .kafka().brokers(kafka.getBrokersAsString()).end()
-        .keyValueDB(new InMemoryRepository(inMemoryKeyValueDb));
+            .rest().port(PORT).end()
+            .db().end()
+            .ui().headless().end()
+            .kafka().brokers(kafka.getBrokersAsString()).end()
+            .keyValueDB(new InMemoryRepository(inMemoryKeyValueDb));
 
     @AfterSuite
     public static void stopServer() throws Exception {

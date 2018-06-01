@@ -27,9 +27,9 @@ import static org.apache.kafka.clients.consumer.ConsumerConfig.*;
 public final class DefaultEventConsumer implements EventConsumer {
     private static final long POLL_TIMEOUT = 100L;
 
+    private final long consumeTimeout;
     @NonNull
     private final Properties properties;
-    private final long consumeTimeout;
 
     public DefaultEventConsumer(final long consumeTimeout, final String kafkaBrokers) {
         this.consumeTimeout = consumeTimeout;

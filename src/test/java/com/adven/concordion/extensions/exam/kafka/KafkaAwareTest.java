@@ -76,15 +76,15 @@ public abstract class KafkaAwareTest {
 
     protected ConsumerRecord<String, Bytes> startTest(final Event<String> eventToVerify,
                                                       final TestEntity.Entity entityToSend)
-        throws ExecutionException, InterruptedException {
+            throws ExecutionException, InterruptedException {
         final Event<Message> successReplyEvent = Event.<Message>builder()
-            .topicName(PRODUCE_TOPIC)
-            .message(SUCCESS)
-            .build();
+                .topicName(PRODUCE_TOPIC)
+                .message(SUCCESS)
+                .build();
         final Event<Message> failReplyEvent = Event.<Message>builder()
-            .topicName(PRODUCE_TOPIC)
-            .message(FAIL)
-            .build();
+                .topicName(PRODUCE_TOPIC)
+                .message(FAIL)
+                .build();
 
         final SyncMock mock = new SyncMock(eventToVerify, goodClass().getName(), eventConsumer());
         final WithReply withReply = new WithReply(successReplyEvent, failReplyEvent, eventProducer(), mock);

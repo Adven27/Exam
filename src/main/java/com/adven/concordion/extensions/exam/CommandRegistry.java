@@ -30,7 +30,7 @@ public class CommandRegistry {
 
     private static final String TABLE = "table";
 
-    private final List<ExamCommand> commands;
+    private final List<ExamCommand> commands = new ArrayList<>();
 
     public CommandRegistry(
             IDatabaseTester dbTester,
@@ -40,7 +40,8 @@ public class CommandRegistry {
             FilesLoader filesLoader,
             EventProcessor eventProcessor,
             KeyValueRepository keyValueRepository) {
-        commands = asList(
+
+        commands.addAll(asList(
                 new GivenCommand("div"),
                 new WhenCommand("div"),
                 new ThenCommand("div"),
@@ -52,10 +53,6 @@ public class CommandRegistry {
                 new ScrollToTopCommand("scrollToTop", "div"),
 
                 new CaseCheckCommand("check", "div"),
-
-                new DBShowCommand("db-show", TABLE, dbTester),
-                new DBCheckCommand("db-check", TABLE, dbTester),
-                new DBSetCommand("db-set", TABLE, dbTester),
 
                 new FilesShowCommand("fl-show", TABLE, filesLoader),
                 new FilesSetCommand("fl-set", TABLE, filesLoader),
@@ -77,7 +74,18 @@ public class CommandRegistry {
 
                 new KVCheckCommand("db-kv-check", "div", keyValueRepository, jsonUnitCfg),
                 new KVSetCommand("db-kv-set", "div", keyValueRepository, jsonUnitCfg)
-        );
+        ));
+        if (pluggedDbModule(dbTester)) {
+            commands.addAll(asList(
+                    new DBShowCommand("db-show", TABLE, dbTester),
+                    new DBCheckCommand("db-check", TABLE, dbTester),
+                    new DBSetCommand("db-set", TABLE, dbTester))
+            );
+        }
+    }
+
+    private boolean pluggedDbModule(IDatabaseTester dbTester) {
+        return dbTester != null;
     }
 
     public ExamCommand getBy(String name) {
