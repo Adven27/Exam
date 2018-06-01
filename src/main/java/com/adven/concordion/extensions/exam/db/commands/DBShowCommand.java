@@ -12,6 +12,7 @@ import org.dbunit.dataset.ITable;
 
 import java.sql.SQLException;
 
+import static com.adven.concordion.extensions.exam.html.Html.table;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static org.dbunit.dataset.filter.DefaultColumnFilter.includedColumnsTable;
 
@@ -24,7 +25,7 @@ public class DBShowCommand extends DBCommand {
     @SuppressFBWarnings("NP_PARAMETER_MUST_BE_NONNULL_BUT_MARKED_AS_NULLABLE")
     @Override
     public void setUp(CommandCall commandCall, Evaluator eval, ResultRecorder resultRecorder) {
-        Html el = Html.Companion.table(commandCall.getElement());
+        Html el = table(commandCall.getElement());
         try {
             String tableName = el.takeAwayAttr("table", eval);
             String where = el.takeAwayAttr("where", eval);

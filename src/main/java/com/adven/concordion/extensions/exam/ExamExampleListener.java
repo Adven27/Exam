@@ -21,16 +21,16 @@ class ExamExampleListener implements ExampleListener {
         ImplementationStatus status = summary.getImplementationStatus();
         Element card = event.getElement();
         removeConcordionExpectedToFailWarning(card);
-        Html stat = Companion.stat().childs(
-                Companion.pill(summary.getSuccessCount(), "success"),
-                Companion.pill(summary.getIgnoredCount(), "secondary"),
-                Companion.pill(summary.getFailureCount(), "warning"),
-                Companion.pill(summary.getExceptionCount(), "danger")
+        Html stat = stat().childs(
+                pill(summary.getSuccessCount(), "success"),
+                pill(summary.getIgnoredCount(), "secondary"),
+                pill(summary.getFailureCount(), "warning"),
+                pill(summary.getExceptionCount(), "danger")
         );
         if (status != null) {
             stat.childs(badgeFor(status));
         }
-        Companion.footerOf(card).childs(stat);
+        footerOf(card).childs(stat);
     }
 
     private void removeConcordionExpectedToFailWarning(Element card) {
@@ -43,11 +43,11 @@ class ExamExampleListener implements ExampleListener {
     private Html badgeFor(ImplementationStatus status) {
         switch (status) {
             case EXPECTED_TO_PASS:
-                return Companion.pill(EXPECTED_TO_PASS.getTag(), "success");
+                return pill(EXPECTED_TO_PASS.getTag(), "success");
             case EXPECTED_TO_FAIL:
-                return Companion.pill(EXPECTED_TO_FAIL.getTag(), "warning");
+                return pill(EXPECTED_TO_FAIL.getTag(), "warning");
             case UNIMPLEMENTED:
-                return Companion.pill(UNIMPLEMENTED.getTag(), "primary");
+                return pill(UNIMPLEMENTED.getTag(), "primary");
             default:
                 throw new UnsupportedOperationException("Unsupported spec implementation status " + status);
         }

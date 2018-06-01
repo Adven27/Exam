@@ -10,8 +10,7 @@ import static com.adven.concordion.extensions.exam.html.Html.*;
 import static java.io.File.separator;
 
 public class FilesSetCommand extends BaseCommand {
-
-    FilesLoader filesLoader;
+    private FilesLoader filesLoader;
 
     public FilesSetCommand(String name, String tag, FilesLoader filesLoader) {
         super(name, tag);
@@ -20,7 +19,7 @@ public class FilesSetCommand extends BaseCommand {
 
     @Override
     public void setUp(CommandCall commandCall, Evaluator evaluator, ResultRecorder resultRecorder) {
-        Html root = Html.Companion.tableSlim(commandCall.getElement());
+        Html root = tableSlim(commandCall.getElement());
 
         final String path = root.takeAwayAttr("dir");
         if (path != null) {
@@ -36,12 +35,13 @@ public class FilesSetCommand extends BaseCommand {
                 if ("file".equals(f.localName())) {
                     final FilesLoader.FileTag fileTag = filesLoader.readFileTag(f, evaluator);
                     filesLoader.createFileWith(evalPath + separator + fileTag.name(), fileTag.content());
-                    root.childs(Companion.trWithTDs(
-                            Companion.span(fileTag.name()),
-                            Companion.codeXml(fileTag.content()).
-                                    attr("autoFormat", String.valueOf(fileTag.autoFormat())).
-                                    attr("lineNumbers", String.valueOf(fileTag.lineNumbers()))
-                    )).remove(f);
+                    root.childs(
+                            trWithTDs(
+                                    span(fileTag.name()),
+                                    codeXml(fileTag.content()).
+                                            attr("autoFormat", String.valueOf(fileTag.autoFormat())).
+                                            attr("lineNumbers", String.valueOf(fileTag.lineNumbers()))
+                            )).remove(f);
 
                     empty = false;
                 }

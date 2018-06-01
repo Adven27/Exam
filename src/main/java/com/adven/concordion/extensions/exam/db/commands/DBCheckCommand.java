@@ -83,16 +83,16 @@ public class DBCheckCommand extends DBCommand {
         } catch (DbComparisonFailure f) {
             //TODO move to ResultRenderer
             resultRecorder.record(FAILURE);
-            Html div = Companion.div().css("rest-failure bd-callout bd-callout-danger").childs(Companion.div(f.getMessage()));
+            Html div = div().css("rest-failure bd-callout bd-callout-danger").childs(div(f.getMessage()));
             root.below(div);
 
-            Html exp = Html.Companion.tableSlim();
-            div.childs(Companion.span("Expected: "), exp);
+            Html exp = tableSlim();
+            div.childs(span("Expected: "), exp);
             root = exp;
 
-            Html act = Html.Companion.tableSlim();
+            Html act = Html.tableSlim();
             renderTable(act, actual);
-            div.childs(Companion.span("but was: "), act);
+            div.childs(span("but was: "), act);
         }
         for (Difference diff : (List<Difference>) diffHandler.getDiffList()) {
             System.err.println("***** DIFF " + diff.toString());
@@ -106,25 +106,25 @@ public class DBCheckCommand extends DBCommand {
             el.childs(dbCaption(expected, title));
 
             Column[] cols = expected.getTableMetaData().getColumns();
-            Html header = Companion.thead();
-            Html thr = Companion.tr();
+            Html header = thead();
+            Html thr = tr();
             for (Column col : cols) {
-                thr.childs(Companion.th(col.getColumnName()));
+                thr.childs(th(col.getColumnName()));
             }
             el.childs(header.childs(thr));
 
             if (expected.getRowCount() == 0) {
-                Html td = Companion.td("<EMPTY>").attr("colspan", String.valueOf(cols.length));
-                Html tr = Companion.tr().childs(td);
+                Html td = td("<EMPTY>").attr("colspan", String.valueOf(cols.length));
+                Html tr = tr().childs(td);
                 el.childs(tr);
                 success(resultRecorder, td.el());
             } else {
                 for (int i = 0; i < expected.getRowCount(); i++) {
-                    Html tr = Companion.tr();
+                    Html tr = tr();
                     for (Column col : cols) {
                         Object expectedValue = expected.getValue(i, col.getColumnName());
                         String displayedExpected = expectedValue == null ? "(null)" : expectedValue.toString();
-                        Html td = Companion.td(displayedExpected);
+                        Html td = td(displayedExpected);
                         tr.childs(td);
                         Difference fail = findFail(diffs, i, col);
                         if (fail != null) {

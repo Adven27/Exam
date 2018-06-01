@@ -8,6 +8,8 @@ import org.concordion.api.Evaluator;
 import org.concordion.api.Result;
 import org.concordion.api.ResultRecorder;
 
+import static com.adven.concordion.extensions.exam.html.Html.tableSlim;
+
 public final class EventCheckReplyCommand extends BaseEventCommand {
 
     public EventCheckReplyCommand(final String name, final String tag, final EventProcessor eventProcessor) {
@@ -18,13 +20,9 @@ public final class EventCheckReplyCommand extends BaseEventCommand {
      * {@inheritDoc}.
      */
     public void verify(CommandCall commandCall, Evaluator evaluator, ResultRecorder resultRecorder) {
-        Html eventCheckReplyRoot = Html.Companion.tableSlim(commandCall.getElement());
-
+        Html eventCheckReplyRoot = tableSlim(commandCall.getElement());
         // получаю событие и класс, требующее проверки
-        final Html expected = eventCheckReplyRoot.first("expected");
-        if (expected == null) {
-            throw new IllegalStateException("<expected> tag is required");
-        }
+        final Html expected = eventCheckReplyRoot.firstOrThrow("expected");
         final String expectedProtoClass = expected.takeAwayAttr(PROTO_CLASS);
         final String expectedTopicName = expected.takeAwayAttr(TOPIC_NAME);
         final String expectedEventJson = expected.text();

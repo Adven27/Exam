@@ -2,6 +2,7 @@ package com.adven.concordion.extensions.exam.files.commands;
 
 import com.adven.concordion.extensions.exam.commands.ExamCommand;
 import com.adven.concordion.extensions.exam.html.Html;
+
 import static com.adven.concordion.extensions.exam.html.Html.*;
 
 class BaseCommand extends ExamCommand {
@@ -15,24 +16,24 @@ class BaseCommand extends ExamCommand {
 
     protected void addHeader(Html element, String header, String content) {
         element.childs(
-                Companion.thead().childs(
-                        Companion.th(header).style("width:20%"),
-                        Companion.th(content)
+                thead().childs(
+                        th(header).style("width:20%"),
+                        th(content)
                 )
         );
     }
 
     protected void addRow(Html element, String... texts) {
-        Html tr = Companion.tr();
+        Html tr = tr();
         for (String text : texts) {
-            tr.childs(Companion.td(text));
+            tr.childs(td(text));
         }
         element.childs(tr);
     }
 
     protected Html flCaption(String dirPath) {
-        return Html.Companion.caption().childs(
-                Companion.italic("").css("fa fa-folder-open fa-pull-left fa-border")
-        ).text(dirPath);
+        return caption(dirPath).childs(
+                italic("").css("fa fa-folder-open fa-pull-left fa-border")
+        );
     }
 }

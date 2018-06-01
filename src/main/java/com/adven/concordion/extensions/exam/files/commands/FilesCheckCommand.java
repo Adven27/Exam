@@ -12,7 +12,9 @@ import org.concordion.api.listener.AssertFailureEvent;
 import org.concordion.api.listener.AssertSuccessEvent;
 import org.concordion.internal.util.Announcer;
 import org.xmlunit.builder.DiffBuilder;
-import org.xmlunit.diff.*;
+import org.xmlunit.diff.Diff;
+import org.xmlunit.diff.DifferenceEvaluators;
+import org.xmlunit.diff.NodeMatcher;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
@@ -44,7 +46,7 @@ public class FilesCheckCommand extends BaseCommand {
      * {@inheritDoc}.
      */
     public void verify(CommandCall commandCall, Evaluator evaluator, ResultRecorder resultRecorder) {
-        Html root = Html.Companion.tableSlim(commandCall.getElement());
+        Html root = tableSlim(commandCall.getElement());
 
         final String path = root.takeAwayAttr("dir", evaluator);
         if (path != null) {
@@ -64,8 +66,8 @@ public class FilesCheckCommand extends BaseCommand {
                     final FilesLoader.FileTag fileTag = filesLoader.readFileTag(f, evaluator);
                     final String expectedName = fileTag.name();
 
-                    Html fileNameTD = Companion.td(expectedName);
-                    Html pre = Companion.codeXml("");
+                    Html fileNameTD = td(expectedName);
+                    Html pre = codeXml("");
 
                     if (!filesLoader.fileExists(evalPath + separator + expectedName)) {
                         resultRecorder.record(Result.FAILURE);
@@ -79,9 +81,9 @@ public class FilesCheckCommand extends BaseCommand {
                             String id = UUID.randomUUID().toString();
                             final String content = filesLoader.readFile(evalPath, expectedName);
                             if (!isNullOrEmpty(content)) {
-                                pre = Companion.div().childs(
-                                        Companion.buttonCollapse("show", id).style("width:100%"),
-                                        Companion.div().attr("id", id).css("file collapse").childs(
+                                pre = div().childs(
+                                        buttonCollapse("show", id).style("width:100%"),
+                                        div().attr("id", id).css("file collapse").childs(
                                                 pre.text(content)
                                         )
                                 );
@@ -91,9 +93,9 @@ public class FilesCheckCommand extends BaseCommand {
                         }
                     }
                     root.childs(
-                            Companion.tr().childs(
+                            tr().childs(
                                     fileNameTD,
-                                    Companion.td(pre.
+                                    td(pre.
                                             attr("autoFormat", String.valueOf(fileTag.autoFormat())).
                                             attr("lineNumbers", String.valueOf(fileTag.lineNumbers())))
                             )
@@ -103,11 +105,11 @@ public class FilesCheckCommand extends BaseCommand {
             }
             for (String file : surplusFiles) {
                 resultRecorder.record(Result.FAILURE);
-                Html td = Companion.td();
-                Html tr = Companion.tr().childs(
+                Html td = td();
+                Html tr = tr().childs(
                         td,
-                        Companion.td().childs(
-                                Companion.codeXml(filesLoader.readFile(evalPath, file))
+                        td().childs(
+                                codeXml(filesLoader.readFile(evalPath, file))
                         )
                 );
                 root.childs(tr);
@@ -144,8 +146,7 @@ public class FilesCheckCommand extends BaseCommand {
             Serializer serializer = new Serializer(out, "UTF-8");
             serializer.setIndent(4);
             serializer.write(document);
-            String pretty = out.toString("UTF-8");
-            return pretty;
+            return out.toString("UTF-8");
         } catch (Exception e) {
             throw new RuntimeException("invalid xml", e);
         }

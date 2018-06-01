@@ -3,14 +3,12 @@ package com.adven.concordion.extensions.exam
 import com.adven.concordion.extensions.exam.db.Range
 import org.concordion.api.Evaluator
 import org.joda.time.*
-import org.joda.time.base.BaseSingleFieldPeriod
-
-import java.util.Date
-
-import java.lang.Integer.parseInt
 import org.joda.time.LocalDateTime.fromDateFields
 import org.joda.time.LocalDateTime.now
+import org.joda.time.base.BaseSingleFieldPeriod
 import org.joda.time.format.DateTimeFormat.forPattern
+import java.lang.Integer.parseInt
+import java.util.*
 
 object PlaceholdersResolver {
     public const val PREFIX_JSON_UNIT_ALIAS = "!{"
@@ -54,24 +52,24 @@ object PlaceholdersResolver {
     }
 
     private fun resolveExamCommands(body: String): String {
-        var body = body
-        while (body.contains(PREFIX_EXAM)) {
-            var original = body
+        var b = body
+        while (b.contains(PREFIX_EXAM)) {
+            var original = b
             val v = extractVarFrom(original, PREFIX_EXAM)
             original = original.replace(PREFIX_EXAM + v + POSTFIX, resolveDate(v)!!.toString())
-            body = original
+            b = original
         }
-        return body
+        return b
     }
 
     private fun resolveAliases(type: String, body: String): String {
-        var body = body
-        while (body.contains(PREFIX_JSON_UNIT_ALIAS)) {
-            val original = body
+        var b = body
+        while (b.contains(PREFIX_JSON_UNIT_ALIAS)) {
+            val original = b
             val alias = extractFromAlias(original)
-            body = original.replace(PREFIX_JSON_UNIT_ALIAS + alias + POSTFIX, toPlaceholder(alias, type))
+            b = original.replace(PREFIX_JSON_UNIT_ALIAS + alias + POSTFIX, toPlaceholder(alias, type))
         }
-        return body
+        return b
     }
 
     private fun toPlaceholder(alias: String, type: String): String {

@@ -21,16 +21,16 @@ public abstract class BaseKeyValueCommand extends ExamCommand {
     }
 
     protected Html info(final String text) {
-        return Companion.div().childs(Companion.h(4, text));
+        return div().childs(h(4, text));
     }
 
     protected Html dbTable(final String cacheName) {
-        final Html table = Companion.tableSlim();
-        final Html header = Companion.thead();
-        final Html tr = Html.Companion.tr();
+        final Html table = tableSlim();
+        final Html header = thead();
+        final Html tr = Html.tr();
         tr.childs(
-                Companion.th("Key"),
-                Companion.th("Value")
+                th("Key"),
+                th("Value")
         );
         return table.childs(
                 dbCaption(cacheName),
@@ -38,23 +38,22 @@ public abstract class BaseKeyValueCommand extends ExamCommand {
     }
 
     protected Html dbCaption(final String cacheName) {
-        return Html.Companion.caption()
-                .childs(
-                        Companion.italic("").css("fa fa-database fa-pull-left fa-border"))
-                .text(cacheName);
+        return caption(cacheName).childs(
+                italic("").css("fa fa-database fa-pull-left fa-border")
+        );
     }
 
     protected Html keyColumn(final String key) {
-        return Companion.td(Companion.code(key));
+        return td(code(key));
     }
 
     protected Html valueColumn(final String value) {
-        return Companion.td(value);
+        return td(value);
     }
 
     protected Html jsonValueColumn(final String value) {
         final JsonPrettyPrinter printer = new JsonPrettyPrinter();
-        return Companion.td(printer.prettyPrint(value)).css("json");
+        return td(printer.prettyPrint(value)).css("json");
     }
 
 }

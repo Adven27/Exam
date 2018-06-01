@@ -4,20 +4,6 @@ import com.adven.concordion.extensions.exam.PlaceholdersResolver
 import com.adven.concordion.extensions.exam.commands.ExamCommand
 import com.adven.concordion.extensions.exam.db.TableData
 import com.adven.concordion.extensions.exam.html.Html
-import com.adven.concordion.extensions.exam.html.RowParser
-import org.concordion.api.CommandCall
-import org.concordion.api.Evaluator
-import org.concordion.api.ResultRecorder
-import org.dbunit.IDatabaseTester
-import org.dbunit.dataset.Column
-import org.dbunit.dataset.DataSetException
-import org.dbunit.dataset.ITable
-import org.dbunit.ext.h2.H2DataTypeFactory
-import org.dbunit.ext.hsqldb.HsqldbDataTypeFactory
-import org.dbunit.ext.oracle.OracleDataTypeFactory
-
-import java.util.*
-
 import com.adven.concordion.extensions.exam.html.Html.Companion.italic
 import com.adven.concordion.extensions.exam.html.Html.Companion.tableSlim
 import com.adven.concordion.extensions.exam.html.Html.Companion.tbody
@@ -25,7 +11,19 @@ import com.adven.concordion.extensions.exam.html.Html.Companion.td
 import com.adven.concordion.extensions.exam.html.Html.Companion.th
 import com.adven.concordion.extensions.exam.html.Html.Companion.thead
 import com.adven.concordion.extensions.exam.html.Html.Companion.tr
+import com.adven.concordion.extensions.exam.html.RowParser
+import org.concordion.api.CommandCall
+import org.concordion.api.Evaluator
+import org.concordion.api.ResultRecorder
+import org.dbunit.IDatabaseTester
 import org.dbunit.database.DatabaseConfig.PROPERTY_DATATYPE_FACTORY
+import org.dbunit.dataset.Column
+import org.dbunit.dataset.DataSetException
+import org.dbunit.dataset.ITable
+import org.dbunit.ext.h2.H2DataTypeFactory
+import org.dbunit.ext.hsqldb.HsqldbDataTypeFactory
+import org.dbunit.ext.oracle.OracleDataTypeFactory
+import java.util.*
 import kotlin.collections.ArrayList
 
 open class DBCommand(name: String, tag: String, protected val dbTester: IDatabaseTester) : ExamCommand(name, tag) {
@@ -112,13 +110,7 @@ open class DBCommand(name: String, tag: String, protected val dbTester: IDatabas
             for (i in 0 until t.rowCount) {
                 val row = ArrayList<String>()
                 for (col in cols) {
-                    try {
-                        val value = t.getValue(i, col.columnName)
-                        row.add(value?.toString() ?: "(null)")
-                    } catch (e: DataSetException) {
-                        throw RuntimeException(e)
-                    }
-
+                    row.add(t.getValue(i, col.columnName)?.toString() ?: "(null)")
                 }
                 rows.add(row)
             }

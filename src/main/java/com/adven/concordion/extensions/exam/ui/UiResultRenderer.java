@@ -7,12 +7,12 @@ import org.concordion.api.listener.*;
 import java.io.File;
 import java.util.concurrent.atomic.AtomicLong;
 
-import static com.adven.concordion.extensions.exam.html.Html.Companion;
+import static com.adven.concordion.extensions.exam.html.Html.imageOverlay;
 import static com.codeborne.selenide.Selenide.screenshot;
 
 public class UiResultRenderer implements AssertEqualsListener, AssertTrueListener, AssertFalseListener {
 
-    private static final AtomicLong screenshotCounter = new AtomicLong();
+    private static final AtomicLong screenshotsCounter = new AtomicLong();
     private static final String DEFAULT_DESC = "No description";
 
     public void failureReported(AssertFailureEvent event) {
@@ -21,7 +21,7 @@ public class UiResultRenderer implements AssertEqualsListener, AssertTrueListene
         UIAssertionError err = (UIAssertionError) event.getActual();
         el.remove(s);
         el.childs(
-                Companion.imageOverlay(getPath(err.getScreenshot()), 360, event.getExpected(), err.getMessage(), "rest-failure")
+                imageOverlay(getPath(err.getScreenshot()), 360, event.getExpected(), err.getMessage(), "rest-failure")
         );
     }
 
@@ -32,16 +32,16 @@ public class UiResultRenderer implements AssertEqualsListener, AssertTrueListene
         String desc = s.attr("desc");
         el.remove(s);
         el.childs(
-                Companion.imageOverlay(getPath(screenshot(getFileName(name))), 360, name, checkAndGetDesc(desc), "rest-success")
+                imageOverlay(getPath(screenshot(getFileName(name))), 360, name, checkAndGetDesc(desc), "rest-success")
         );
     }
 
     private String checkAndGetDesc(String desc) {
-        return desc == null ?  DEFAULT_DESC : desc;
+        return desc == null ? DEFAULT_DESC : desc;
     }
 
     private String getFileName(String name) {
-        long increment = screenshotCounter.incrementAndGet();
+        long increment = screenshotsCounter.incrementAndGet();
         return increment + "-" + name;
     }
 
