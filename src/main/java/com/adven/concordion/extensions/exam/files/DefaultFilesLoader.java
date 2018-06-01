@@ -3,15 +3,17 @@ package com.adven.concordion.extensions.exam.files;
 import com.adven.concordion.extensions.exam.PlaceholdersResolver;
 import com.adven.concordion.extensions.exam.html.Html;
 import com.google.common.io.Files;
-import nu.xom.Document;
 import nu.xom.Builder;
+import nu.xom.Document;
 import nu.xom.ParsingException;
 import org.concordion.api.Evaluator;
-
-import java.io.IOException;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.io.Resources.getResource;
@@ -38,6 +40,7 @@ public class DefaultFilesLoader implements FilesLoader {
     public void createFileWith(String filePath, String fileContent) {
         try {
             File to = new File(filePath);
+            Files.createParentDirs(to);
             if (to.createNewFile() && !isNullOrEmpty(fileContent)) {
                 Files.append(fileContent, to, CHARSET);
             }
@@ -49,8 +52,30 @@ public class DefaultFilesLoader implements FilesLoader {
     @Override
     public String[] getFileNames(String path) {
         final File dir = new File(path);
-        String[] names = dir.list();
+        List<String> fileNames = getFileNamesForDir(dir, "");
+        String[] names = new String[fileNames.size()];
+        names = fileNames.toArray(names);
         return names;
+    }
+
+    @NotNull
+    private List<String> getFileNamesForDir(File dir, String s) {
+        List<String> fileNames = new ArrayList<>();
+        File[] files = dir.listFiles();
+        if (files == null) {
+            return fileNames;
+        }
+        for (File file : files) {
+            if (file.isFile()) {
+                String path = "".equals(s) ? "" : s + separator;
+                fileNames.add(path + file.getName());
+            }
+            if (file.isDirectory()) {
+                String path = "".equals(s) ? file.getName() : s + separator + file.getName();
+                fileNames.addAll(getFileNamesForDir(file, path));
+            }
+        }
+        return fileNames;
     }
 
     @Override
