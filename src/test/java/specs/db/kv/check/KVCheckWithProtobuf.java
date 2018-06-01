@@ -6,9 +6,6 @@ import specs.db.kv.KeyValue;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * @author Ruslan Ustits
- */
 public class KVCheckWithProtobuf extends KeyValue {
 
     public void insertValue(final String cacheName, final String key, final String name, final int number) {

@@ -8,7 +8,7 @@ buildscript {
 }
 
 plugins {
-    id "org.jetbrains.kotlin.jvm" version "1.2.40"
+    id "org.jetbrains.kotlin.jvm" version "1.2.41"
 }
 group 'com.adven.concordion'
 version = 0.4
@@ -98,6 +98,7 @@ tasks.withType(Checkstyle) {
         xml.enabled false
         html.enabled true
     }
+    exclude 'com.adven.concordion.extensions.exam.kafka.protobuf'
 }
 
 findbugs {
@@ -106,9 +107,8 @@ findbugs {
 }
 
 checkstyle {
-    configFile = rootProject.file('config/checkstyle/checkstyle.xml')
-    toolVersion = "6.19"
-    ignoreFailures = true
+    toolVersion = "8.10"
+    ignoreFailures = false
 }
 
 jacocoTestReport {

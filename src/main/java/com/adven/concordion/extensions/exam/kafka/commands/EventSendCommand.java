@@ -9,9 +9,7 @@ import org.concordion.api.Evaluator;
 import org.concordion.api.Result;
 import org.concordion.api.ResultRecorder;
 
-/**
- * @author Ruslan Ustits
- */
+
 @Slf4j
 public final class EventSendCommand extends BaseEventCommand {
 
@@ -31,18 +29,16 @@ public final class EventSendCommand extends BaseEventCommand {
         final Html eventInfo = eventInfo("Send message to", topicName, protobufClass);
         final Html eventTable = tableResult(key, message);
 
-        html.childs(eventInfo)
-                .dropAllTo(eventTable);
+        html.childs(eventInfo).dropAllTo(eventTable);
 
         final Event<String> event = Event.<String>builder()
-                .topicName(topicName)
-                .key(key)
-                .message(message)
-                .build();
+            .topicName(topicName)
+            .key(key)
+            .message(message)
+            .build();
         final boolean result = getEventProcessor().send(event, protobufClass);
         if (!result) {
-            html.parent().attr("class", "")
-                    .css("rest-failure bd-callout bd-callout-danger");
+            html.parent().attr("class", "").css("rest-failure bd-callout bd-callout-danger");
             html.text("Failed to send message to kafka");
             resultRecorder.record(Result.EXCEPTION);
         }

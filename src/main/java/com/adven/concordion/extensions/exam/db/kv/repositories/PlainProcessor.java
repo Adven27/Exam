@@ -3,9 +3,7 @@ package com.adven.concordion.extensions.exam.db.kv.repositories;
 import com.google.common.base.Optional;
 import lombok.extern.slf4j.Slf4j;
 
-/**
- * @author Ruslan Ustits
- */
+
 @Slf4j
 public final class PlainProcessor implements ValueProcessor<String> {
 

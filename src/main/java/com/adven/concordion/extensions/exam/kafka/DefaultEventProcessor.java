@@ -8,9 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
-/**
- * @author Ruslan Ustits
- */
+
 @Slf4j
 @RequiredArgsConstructor
 public final class DefaultEventProcessor implements EventProcessor {
@@ -28,8 +26,7 @@ public final class DefaultEventProcessor implements EventProcessor {
 
     @Override
     public boolean check(final Event<String> eventToCheck, final String eventToCheckClass, final boolean isAsync) {
-        return checkWithReply(eventToCheck, eventToCheckClass, null,
-                null, null, isAsync);
+        return checkWithReply(eventToCheck, eventToCheckClass, null, null, null, isAsync);
     }
 
     @Override
@@ -39,8 +36,8 @@ public final class DefaultEventProcessor implements EventProcessor {
         final SyncMock syncMock = new SyncMock(eventToCheck, eventToCheckClass, eventConsumer);
         CheckMessageMock mock = syncMock;
         if (replySuccessEvent != null) {
-            final Optional<WithReply> withReplyMock = mockWithReply(replySuccessEvent, replyFailEvent,
-                    replyEventClass, syncMock);
+            final Optional<WithReply> withReplyMock =
+                    mockWithReply(replySuccessEvent, replyFailEvent, replyEventClass, syncMock);
             if (withReplyMock.isPresent()) {
                 mock = new ReplyWithTopicFromHeader(syncMock, withReplyMock.get());
             } else {
@@ -53,8 +50,10 @@ public final class DefaultEventProcessor implements EventProcessor {
         return mock.verify();
     }
 
-    protected Optional<WithReply> mockWithReply(final Event<String> replySuccessEvent, final Event<String> replyFailEvent,
-                                                final String replyEventClass, final CheckMessageMock mock) {
+    protected Optional<WithReply> mockWithReply(final Event<String> replySuccessEvent,
+                                                final Event<String> replyFailEvent,
+                                                final String replyEventClass,
+                                                final CheckMessageMock mock) {
         final Optional<Event<Message>> successEvent = ProtoUtils.fromJsonToProto(replySuccessEvent, replyEventClass);
         final Optional<Event<Message>> failEvent = ProtoUtils.fromJsonToProto(replyFailEvent, replyEventClass);
         if (successEvent.isPresent() && failEvent.isPresent()) {
@@ -72,26 +71,16 @@ public final class DefaultEventProcessor implements EventProcessor {
                     event, eventClass);
             return false;
         }
-        final boolean result;
-        final Optional<Message> protoMessage = ProtoUtils.fromJsonToProto(event.getMessage(), eventClass);
-        if (protoMessage.isPresent()) {
-            result = send(event.getTopicName(), event.getKey(), protoMessage.get());
-        } else {
-            result = false;
-        }
-        return result;
+        Optional<Message> msg = ProtoUtils.fromJsonToProto(event.getMessage(), eventClass);
+        return msg.isPresent() && send(event.getTopicName(), event.getKey(), msg.get());
     }
 
     protected boolean send(final String topic, final String key, final Message message) {
-        final boolean result;
         if (StringUtils.isBlank(topic) || message == null) {
             log.warn("Unable to send record with topic={}, key={}, message={}. Missing required parameters",
                     topic, key, message);
-            result = false;
-        } else {
-            result = eventProducer.produce(topic, key, message);
+            return false;
         }
-        return result;
+        return eventProducer.produce(topic, key, message);
     }
-
 }

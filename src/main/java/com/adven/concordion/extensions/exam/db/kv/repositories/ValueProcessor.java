@@ -2,9 +2,7 @@ package com.adven.concordion.extensions.exam.db.kv.repositories;
 
 import com.google.common.base.Optional;
 
-/**
- * @author Ruslan Ustits
- */
+
 public interface ValueProcessor<T> {
 
     Optional<String> convert(final Object value);

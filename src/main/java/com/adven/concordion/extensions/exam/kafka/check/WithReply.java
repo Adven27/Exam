@@ -8,9 +8,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-/**
- * @author Ruslan Ustits
- */
+
 @Slf4j
 @RequiredArgsConstructor
 public final class WithReply implements CheckMessageMock {

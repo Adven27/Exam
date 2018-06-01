@@ -11,10 +11,10 @@ import java.lang.Integer.parseInt
 import java.util.*
 
 object PlaceholdersResolver {
-    public const val PREFIX_JSON_UNIT_ALIAS = "!{"
-    public const val PREFIX_EXAM = "\${exam."
-    public const val PREFIX_VAR = "\${#"
-    public const val POSTFIX = '}'
+    const val PREFIX_JSON_UNIT_ALIAS = "!{"
+    const val PREFIX_EXAM = "\${exam."
+    const val PREFIX_VAR = "\${#"
+    const val POSTFIX = '}'
 
     fun resolveJson(body: String, eval: Evaluator): String {
         return resolve(body, "json", eval)

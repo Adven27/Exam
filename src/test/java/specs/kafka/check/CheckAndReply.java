@@ -12,9 +12,6 @@ import static com.adven.concordion.extensions.exam.kafka.EventHeader.CORRELATION
 import static com.adven.concordion.extensions.exam.kafka.EventHeader.REPLY_TOPIC;
 import static com.adven.concordion.extensions.exam.kafka.protobuf.TestEntity.Entity;
 
-/**
- * @author Ruslan Ustits
- */
 public class CheckAndReply extends Kafka {
 
     @BeforeSpecification
@@ -23,10 +20,10 @@ public class CheckAndReply extends Kafka {
                 .setName("Make something good")
                 .setNumber(7)
                 .build();
-        final ProducerRecord<String, Bytes> record = new ProducerRecord<>(CONSUME_TOPIC, Bytes.wrap(message.toByteArray()));
-        record.headers().add(REPLY_TOPIC, PRODUCE_TOPIC.getBytes("UTF-8"));
-        record.headers().add(CORRELATION_ID, anyString().getBytes("UTF-8"));
-        produceEvent(record);
+        final ProducerRecord<String, Bytes> r = new ProducerRecord<>(CONSUME_TOPIC, Bytes.wrap(message.toByteArray()));
+        r.headers().add(REPLY_TOPIC, PRODUCE_TOPIC.getBytes("UTF-8"));
+        r.headers().add(CORRELATION_ID, anyString().getBytes("UTF-8"));
+        produceEvent(r);
     }
 
     public boolean isCorrectResult() throws InvalidProtocolBufferException {

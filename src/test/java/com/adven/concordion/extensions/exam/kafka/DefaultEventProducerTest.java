@@ -8,9 +8,7 @@ import java.util.Properties;
 
 import static org.mockito.Mockito.mock;
 
-/**
- * @author Ruslan Ustits
- */
+
 public class DefaultEventProducerTest {
 
     private DefaultEventProducer producer;

@@ -8,9 +8,7 @@ import org.junit.Test;
 import static com.adven.concordion.extensions.exam.kafka.protobuf.TestEntity.Entity;
 import static org.assertj.core.api.Assertions.assertThat;
 
-/**
- * @author Ruslan Ustits
- */
+
 public class BytesToProtoTest {
 
     private BytesToProto<Entity> converter;

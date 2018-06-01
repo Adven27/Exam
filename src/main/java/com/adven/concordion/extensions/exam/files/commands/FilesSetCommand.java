@@ -36,12 +36,12 @@ public class FilesSetCommand extends BaseCommand {
                     final FilesLoader.FileTag fileTag = filesLoader.readFileTag(f, evaluator);
                     filesLoader.createFileWith(evalPath + separator + fileTag.name(), fileTag.content());
                     root.childs(
-                            trWithTDs(
-                                    span(fileTag.name()),
-                                    codeXml(fileTag.content()).
-                                            attr("autoFormat", String.valueOf(fileTag.autoFormat())).
-                                            attr("lineNumbers", String.valueOf(fileTag.lineNumbers()))
-                            )).remove(f);
+                        trWithTDs(
+                            span(fileTag.name()),
+                            codeXml(fileTag.content())
+                                .attr("autoFormat", String.valueOf(fileTag.autoFormat()))
+                                .attr("lineNumbers", String.valueOf(fileTag.lineNumbers()))
+                        )).remove(f);
 
                     empty = false;
                 }

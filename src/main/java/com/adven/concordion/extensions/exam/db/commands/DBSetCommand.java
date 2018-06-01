@@ -29,9 +29,9 @@ public class DBSetCommand extends DBCommand {
         }
     }
 
-    private void setUpDB(ITable iTable, DatabaseOperation insertMode) throws Exception {
+    private void setUpDB(ITable table, DatabaseOperation insertMode) throws Exception {
         getDbTester().setSetUpOperation(insertMode);
-        getDbTester().setDataSet(new DefaultDataSet(iTable));
+        getDbTester().setDataSet(new DefaultDataSet(table));
         getDbTester().onSetup();
     }
 

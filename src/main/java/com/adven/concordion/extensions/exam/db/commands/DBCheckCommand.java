@@ -53,7 +53,8 @@ public class DBCheckCommand extends DBCommand {
     public void verify(CommandCall commandCall, Evaluator evaluator, ResultRecorder resultRecorder) {
         try {
             final ITable actual = getActualTable();
-            final ITable filteredActual = includedColumnsTable(actual, getExpectedTable().getTableMetaData().getColumns());
+            final ITable filteredActual = includedColumnsTable(
+                    actual, getExpectedTable().getTableMetaData().getColumns());
 
             assertEq(new Html(commandCall.getElement()), resultRecorder, getExpectedTable(), filteredActual);
         } catch (Exception e) {

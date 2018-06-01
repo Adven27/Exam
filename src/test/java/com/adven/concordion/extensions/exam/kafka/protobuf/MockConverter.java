@@ -2,9 +2,7 @@ package com.adven.concordion.extensions.exam.kafka.protobuf;
 
 import com.google.common.base.Optional;
 
-/**
- * @author Ruslan Ustits
- */
+
 public final class MockConverter extends ProtoClassAware<Object, TestEntity.Entity> {
 
     public MockConverter(final Class<TestEntity.Entity> protoClass) {

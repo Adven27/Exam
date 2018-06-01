@@ -7,9 +7,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.apache.kafka.common.utils.Bytes;
 
-/**
- * @author Ruslan Ustits
- */
+
 @RequiredArgsConstructor
 public final class MessageVerifier implements Verifier {
 

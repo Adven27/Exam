@@ -8,9 +8,7 @@ import java.util.Set;
 import static com.google.protobuf.Descriptors.Descriptor;
 import static com.google.protobuf.util.JsonFormat.TypeRegistry;
 
-/**
- * @author Ruslan Ustits
- */
+
 public abstract class ProtoConverter<F, T> {
 
     private final Set<Descriptor> descriptors;

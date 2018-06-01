@@ -87,8 +87,9 @@ public class TableData {
 
     public ITable table() throws DataSetException {
         IDataSet dataSet = build();
-        return dataSet.getTableNames().length == 0 ?
-                new DefaultTable(table, columns(columns)) : dataSet.getTable(table);
+        return dataSet.getTableNames().length == 0
+            ? new DefaultTable(table, columns(columns))
+            : dataSet.getTable(table);
     }
 
     private Column[] columns(List<String> c) {

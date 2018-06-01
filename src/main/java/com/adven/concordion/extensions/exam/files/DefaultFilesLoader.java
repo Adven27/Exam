@@ -3,14 +3,13 @@ package com.adven.concordion.extensions.exam.files;
 import com.adven.concordion.extensions.exam.PlaceholdersResolver;
 import com.adven.concordion.extensions.exam.html.Html;
 import com.google.common.io.Files;
-import nu.xom.Document;
 import nu.xom.Builder;
+import nu.xom.Document;
 import nu.xom.ParsingException;
 import org.concordion.api.Evaluator;
 
-import java.io.IOException;
-
 import java.io.File;
+import java.io.IOException;
 import java.nio.charset.Charset;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
@@ -79,6 +78,14 @@ public class DefaultFilesLoader implements FilesLoader {
         return readRes;
     }
 
+    protected String readFile(File file) {
+        try {
+            return Files.toString(file, CHARSET);
+        } catch (IOException e) {
+            return "ERROR WHILE FILE READING";
+        }
+    }
+
     public FileTag readFileTag(Html f, Evaluator eval) {
         final String content = getContentFor(f);
         FileTag fileTag = new FileTag();
@@ -94,13 +101,5 @@ public class DefaultFilesLoader implements FilesLoader {
         return from == null
                 ? f.hasChildren() ? f.text() : null
                 : readFile(new File(getResource(from).getFile()));
-    }
-
-    protected String readFile(File file) {
-        try {
-            return Files.toString(file, CHARSET);
-        } catch (IOException e) {
-            return "ERROR WHILE FILE READING";
-        }
     }
 }

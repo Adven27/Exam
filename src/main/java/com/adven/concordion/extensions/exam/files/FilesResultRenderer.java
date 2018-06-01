@@ -17,8 +17,7 @@ public class FilesResultRenderer implements AssertEqualsListener, AssertTrueList
 
         Element actual = new Element("ins");
         actual.addStyleClass("actual");
-        actual.appendText(convertToString(event.getActual()) +
-                (event.getExpected() == null ? " (surplus)" : ""));
+        actual.appendText(convertToString(event.getActual()) + (event.getExpected() == null ? " (surplus)" : ""));
         actual.appendNonBreakingSpaceIfBlank();
 
         element.appendText("\n");

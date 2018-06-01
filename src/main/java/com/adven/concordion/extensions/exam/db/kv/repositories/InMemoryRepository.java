@@ -8,9 +8,7 @@ import lombok.val;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * @author Ruslan Ustits
- */
+
 @RequiredArgsConstructor
 public final class InMemoryRepository implements KeyValueRepository {
 

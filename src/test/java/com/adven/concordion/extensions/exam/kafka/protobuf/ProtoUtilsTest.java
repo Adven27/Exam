@@ -10,9 +10,7 @@ import static com.adven.concordion.extensions.exam.kafka.EventUtils.goodClass;
 import static com.adven.concordion.extensions.exam.kafka.EventUtils.goodMessage;
 import static org.assertj.core.api.Assertions.assertThat;
 
-/**
- * @author Ruslan Ustits
- */
+
 public class ProtoUtilsTest {
 
     @Test

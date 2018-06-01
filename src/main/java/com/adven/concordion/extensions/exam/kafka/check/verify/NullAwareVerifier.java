@@ -3,9 +3,7 @@ package com.adven.concordion.extensions.exam.kafka.check.verify;
 import com.adven.concordion.extensions.exam.kafka.Event;
 import org.apache.kafka.common.utils.Bytes;
 
-/**
- * @author Ruslan Ustits
- */
+
 public final class NullAwareVerifier implements Verifier {
 
     @Override

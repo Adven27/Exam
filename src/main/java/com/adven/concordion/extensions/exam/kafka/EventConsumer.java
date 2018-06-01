@@ -5,9 +5,7 @@ import org.apache.kafka.common.utils.Bytes;
 
 import java.util.List;
 
-/**
- * @author Ruslan Ustits
- */
+
 public interface EventConsumer {
 
     List<Event<Bytes>> consume(@NonNull final String fromTopic);

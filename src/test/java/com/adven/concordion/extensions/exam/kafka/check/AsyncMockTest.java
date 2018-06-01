@@ -14,9 +14,7 @@ import static com.adven.concordion.extensions.exam.kafka.EventUtils.goodEvent;
 import static com.adven.concordion.extensions.exam.kafka.protobuf.TestEntity.Entity;
 import static org.assertj.core.api.Assertions.assertThat;
 
-/**
- * @author Ruslan Ustits
- */
+
 public class AsyncMockTest extends KafkaAwareTest {
 
     @Test

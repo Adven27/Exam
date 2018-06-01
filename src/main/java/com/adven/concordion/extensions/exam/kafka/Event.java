@@ -3,9 +3,7 @@ package com.adven.concordion.extensions.exam.kafka;
 import lombok.Builder;
 import lombok.Value;
 
-/**
- * @author Ruslan Ustits
- */
+
 @Value
 @Builder(toBuilder = true)
 public class Event<T> {

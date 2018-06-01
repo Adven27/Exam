@@ -26,10 +26,10 @@ public final class EventCheckReplyCommand extends BaseEventCommand {
         final String expectedProtoClass = expected.takeAwayAttr(PROTO_CLASS);
         final String expectedTopicName = expected.takeAwayAttr(TOPIC_NAME);
         final String expectedEventJson = expected.text();
-        Event<String> checkEvent = Event.<String>builder()
-                .topicName(expectedTopicName)
-                .message(expectedEventJson)
-                .build();
+        final Event<String> checkEvent = Event.<String>builder()
+            .topicName(expectedTopicName)
+            .message(expectedEventJson)
+            .build();
 
         final Html reply = eventCheckReplyRoot.firstOrThrow("reply");
         // получаю класс события-ответа
@@ -39,16 +39,12 @@ public final class EventCheckReplyCommand extends BaseEventCommand {
         // получаю событие успешного ответа
         final Html replySuccess = reply.firstOrThrow("success");
         final String successReplyEventJson = replySuccess.text();
-        Event<String> successReplyEvent = Event.<String>builder()
-                .message(successReplyEventJson)
-                .build();
+        final Event<String> successReplyEvent = Event.<String>builder().message(successReplyEventJson).build();
 
         // получаю событие провального ответа
         final Html replyFail = reply.firstOrThrow("fail");
         final String failReplyEventJson = replyFail.text();
-        Event<String> failReplyEvent = Event.<String>builder()
-                .message(failReplyEventJson)
-                .build();
+        final Event<String> failReplyEvent = Event.<String>builder().message(failReplyEventJson).build();
 
         eventCheckReplyRoot.removeAllChild();
 
@@ -68,12 +64,11 @@ public final class EventCheckReplyCommand extends BaseEventCommand {
         eventCheckReplyRoot.childs(eventCheckInfo, eventSuccessInfo, failSuccessInfo);
 
         // произвожу проверку и ответ
-        final boolean result = getEventProcessor()
-                .checkWithReply(checkEvent, expectedProtoClass, successReplyEvent, failReplyEvent, replyProtoClass, true);
+        final boolean result = getEventProcessor().checkWithReply(
+            checkEvent, expectedProtoClass, successReplyEvent, failReplyEvent, replyProtoClass, true);
 
         if (!result) {
-            eventCheckReplyRoot.parent().attr("class", "")
-                    .css("rest-failure bd-callout bd-callout-danger");
+            eventCheckReplyRoot.parent().attr("class", "").css("rest-failure bd-callout bd-callout-danger");
             eventCheckReplyRoot.text("Failed to start kafka listener mock");
             resultRecorder.record(Result.EXCEPTION);
         }

@@ -3,11 +3,9 @@ package com.adven.concordion.extensions.exam.rest;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
-/**
- * @author Ruslan Ustits
- */
+
 public class StatusBuilderTest {
 
     private StatusBuilder builder;
