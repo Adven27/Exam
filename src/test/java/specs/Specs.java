@@ -1,6 +1,7 @@
 package specs;
 
 import com.adven.concordion.extensions.exam.ExamExtension;
+import com.adven.concordion.extensions.exam.db.kv.repositories.InMemoryRepository;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.concordion.api.AfterSuite;
 import org.concordion.api.BeforeSuite;
@@ -17,6 +18,8 @@ import org.springframework.kafka.test.rule.KafkaEmbedded;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.concordion.internal.ConcordionBuilder.NAMESPACE_CONCORDION_2007;
 
@@ -40,13 +43,17 @@ public class Specs {
         }
     }
 
+    @SuppressFBWarnings(value = "MS_MUTABLE_COLLECTION", justification = "коллекция для тестов должна быть мутабельной")
+    protected static final Map<String, Map<String, Object>> inMemoryKeyValueDb = new HashMap<>();
+
     @SuppressFBWarnings(value = "URF_UNREAD_FIELD", justification = "особенности подключения расширений в concordion")
     @Extension
     private final ExamExtension exam = new ExamExtension().
             rest().port(PORT).end().
             db().end().
             ui().headless().end().
-            kafka().brokers(kafka.getBrokersAsString()).end();
+            kafka().brokers(kafka.getBrokersAsString()).end().
+            keyValueDB(new InMemoryRepository(inMemoryKeyValueDb));
 
 
     @AfterSuite
