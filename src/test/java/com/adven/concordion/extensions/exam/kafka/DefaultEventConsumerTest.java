@@ -21,7 +21,7 @@ public class DefaultEventConsumerTest {
 
     @Before
     public void setUp() {
-        consumer = new DefaultEventConsumer(1000L, new Properties());
+        consumer = new DefaultEventConsumer(new Properties(), 1000L);
     }
 
     @Test
@@ -49,7 +49,7 @@ public class DefaultEventConsumerTest {
 
     @Test(expected = NullPointerException.class)
     public void testCreateInstanceWithNullProperty() {
-        new DefaultEventConsumer(10L, (Properties) null);
+        new DefaultEventConsumer((Properties) null, 10L);
     }
 
     @Test(expected = NullPointerException.class)
