@@ -83,10 +83,7 @@ test {
 }
 
 tasks.withType(FindBugs) {
-    exclude '**/com/adven/concordion/extensions/exam/kafka/protobuf/*'
-    classes = classes.filter {
-        !it.path.contains(new File("com/adven/concordion/extensions/exam/kafka/protobuf/").path)
-    }
+    excludeFilter = file("$projectDir/config/findbugs-exclude.xml")
     reports {
         xml.enabled false
         html.enabled true

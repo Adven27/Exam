@@ -10,7 +10,6 @@ import org.concordion.api.ResultRecorder
 import org.dbunit.IDatabaseTester
 import org.dbunit.database.DatabaseConfig.PROPERTY_DATATYPE_FACTORY
 import org.dbunit.dataset.Column
-import org.dbunit.dataset.DataSetException
 import org.dbunit.dataset.ITable
 import org.dbunit.ext.h2.H2DataTypeFactory
 import org.dbunit.ext.hsqldb.HsqldbDataTypeFactory
@@ -44,19 +43,17 @@ open class DBCommand(name: String, tag: String, protected val dbTester: IDatabas
 
     override fun setUp(commandCall: CommandCall?, eval: Evaluator?, resultRecorder: ResultRecorder?) {
         getRidOfDbUnitWarning()
-        val root = tableSlim(Html(commandCall!!.element))
-        try {
-            remarks.clear()
-            where = root.takeAwayAttr("where", eval)
-            expectedTable = TableData.filled(
-                    root.takeAwayAttr("table", eval),
-                    RowParser(root, "row", eval!!).parse(),
-                    parseCols(root, eval)
-            )
-        } catch (e: DataSetException) {
-            throw RuntimeException(e)
-        }
-
+        val root = tableSlim(Html(commandCall!!.element))(
+            div(""),
+            span("")
+        )
+        remarks.clear()
+        where = root.takeAwayAttr("where", eval)
+        expectedTable = TableData.filled(
+            root.takeAwayAttr("table", eval),
+            RowParser(root, "row", eval!!).parse(),
+            parseCols(root, eval)
+        )
     }
 
     protected fun parseCols(el: Html, eval: Evaluator): TableData.Cols {
@@ -88,61 +85,42 @@ open class DBCommand(name: String, tag: String, protected val dbTester: IDatabas
     }
 
     protected fun renderTable(root: Html, t: ITable) {
-        try {
-            val rows = ArrayList<List<String>>()
-            val columns = t.tableMetaData.columns
-            val cols = Arrays.copyOf(columns, columns.size)
+        val cols = t.tableMetaData.columns.copyOf().sortedWith(Comparator { o1, o2 ->
+            compareValues(remarks[o1.columnName] ?: 0, remarks[o2.columnName] ?: 0)
+        })
 
-            Arrays.sort(cols) { o1, o2 ->
-                -1 * Integer.compare(
-                        remarks.getOrDefault(o1.columnName, 0),
-                        remarks.getOrDefault(o2.columnName, 0))
-            }
-
-            for (i in 0 until t.rowCount) {
-                val row = ArrayList<String>()
-                for (col in cols) {
-                    row.add(t.getValue(i, col.columnName)?.toString() ?: "(null)")
-                }
-                rows.add(row)
-            }
-
-            root.childs(dbCaption(t, root.takeAwayAttr("caption")))
-
-            val header = thead()
-            val trh = tr()
-
-            cols.forEach {
-                trh.childs(
-                        th(it.columnName).css(markedColumn(it))
-                )
-            }
-
-            root.childs(header.childs(trh))
-            val tbody = tbody()
-            for (row in rows) {
-                val tr = tr()
-                for (i in row.indices) {
-                    tr.childs(
-                            td(row[i]).css(markedColumn(cols[i]))
-                    )
-                }
-                tbody.childs(tr)
-            }
-            root.childs(tbody)
-        } catch (e: DataSetException) {
-            throw RuntimeException(e)
+        val rows = (0 until t.rowCount).map { i ->
+            cols.map { t.getValue(i, it.columnName)?.toString() ?: "(null)" }
         }
 
-    }
-
-    protected fun dbCaption(t: ITable, title: String?): Html {
-        return caption(if (title == null || title.isBlank()) t.tableMetaData.tableName else title).childs(
-                italic("").css("fa fa-database fa-pull-left fa-border")
+        root(
+            tableCaption(root.takeAwayAttr("caption"), t.tableMetaData.tableName),
+            thead()(
+                tr()(
+                    cols.map {
+                        th(it.columnName, CLASS to styleFor(it))
+                    }
+                )
+            ),
+            tbody()(
+                rows.map {
+                    tr()(
+                        it.withIndex().map { (i, text) ->
+                            td(text, CLASS to styleFor(cols[i]))
+                        }
+                    )
+                }
+            )
         )
     }
 
-    private fun markedColumn(col: Column): String {
+    protected fun tableCaption(title: String?, def: String?): Html {
+        return caption(if (title != null && !title.isBlank()) title else def)(
+            italic("", CLASS to "fa fa-database fa-pull-left fa-border")
+        )
+    }
+
+    private fun styleFor(col: Column): String {
         return if (remarks.containsKey(col.columnName)) "table-info" else ""
     }
 }

@@ -102,7 +102,7 @@ public class FilesCheckCommand extends BaseCommand {
                     root.childs(
                         tr().childs(
                             fileNameTD,
-                            td(
+                            td().childs(
                                 pre.attr("autoFormat", String.valueOf(fileTag.autoFormat()))
                                     .attr("lineNumbers", String.valueOf(fileTag.lineNumbers()))
                             )

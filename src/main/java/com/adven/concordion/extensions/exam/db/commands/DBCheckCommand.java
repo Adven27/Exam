@@ -104,7 +104,7 @@ public class DBCheckCommand extends DBCommand {
     private void checkResult(Html el, ITable expected, List<Difference> diffs, ResultRecorder resultRecorder) {
         try {
             String title = el.attr("caption");
-            el.childs(dbCaption(expected, title));
+            el.childs(tableCaption(title, expected.getTableMetaData().getTableName()));
 
             Column[] cols = expected.getTableMetaData().getColumns();
             Html header = thead();

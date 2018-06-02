@@ -43,7 +43,7 @@ public abstract class BaseKeyValueCommand extends ExamCommand {
     }
 
     protected Html keyColumn(final String key) {
-        return td(code(key));
+        return td().childs(code(key));
     }
 
     protected Html valueColumn(final String value) {
