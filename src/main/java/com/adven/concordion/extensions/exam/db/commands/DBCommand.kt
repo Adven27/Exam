@@ -1,9 +1,9 @@
 package com.adven.concordion.extensions.exam.db.commands
 
-import com.adven.concordion.extensions.exam.PlaceholdersResolver
 import com.adven.concordion.extensions.exam.commands.ExamCommand
 import com.adven.concordion.extensions.exam.db.TableData
 import com.adven.concordion.extensions.exam.html.*
+import com.adven.concordion.extensions.exam.resolveToObj
 import org.concordion.api.CommandCall
 import org.concordion.api.Evaluator
 import org.concordion.api.ResultRecorder
@@ -15,7 +15,6 @@ import org.dbunit.ext.h2.H2DataTypeFactory
 import org.dbunit.ext.hsqldb.HsqldbDataTypeFactory
 import org.dbunit.ext.oracle.OracleDataTypeFactory
 import java.util.*
-import kotlin.collections.ArrayList
 
 open class DBCommand(name: String, tag: String, protected val dbTester: IDatabaseTester) : ExamCommand(name, tag) {
     private val remarks = HashMap<String, Int>()
@@ -57,31 +56,19 @@ open class DBCommand(name: String, tag: String, protected val dbTester: IDatabas
     }
 
     protected fun parseCols(el: Html, eval: Evaluator): TableData.Cols {
-        val cols = ArrayList<String>()
-        val defaults = HashMap<String, Any?>()
         val attr = el.takeAwayAttr("cols")
-        attr?.split(",")?.forEach {
-            var c = it.trim()
-            var remark: String? = null
-            if (c.startsWith("*")) {
-                val endRemark = c.lastIndexOf("*")
-                remark = c.substring(0, endRemark + 1)
-                c = c.substring(endRemark + 1)
-            }
-            if (c.contains("=")) {
-                val colDefault = c.split("=")
-                defaults[colDefault[0]] = PlaceholdersResolver.resolveToObj(colDefault[1], eval)
-                if (remark != null) {
-                    remarks[colDefault[0]] = remark.length
-                }
-            } else {
-                cols.add(c)
-                if (remark != null) {
-                    remarks[c] = remark.length
-                }
-            }
+        return if (attr == null)
+            TableData.Cols(emptyMap())
+        else {
+            val remarksAndValues = parse(attr)
+            remarks.plus(remarksAndValues.first)
+            TableData.Cols(
+                remarksAndValues.second
+                    .filterValues { !it.isBlank() }
+                    .mapValues { resolveToObj(it.value, eval) },
+                *remarksAndValues.second.keys.toTypedArray()
+            )
         }
-        return TableData.Cols(defaults, *cols.toTypedArray())
     }
 
     protected fun renderTable(root: Html, t: ITable) {
@@ -123,4 +110,17 @@ open class DBCommand(name: String, tag: String, protected val dbTester: IDatabas
     private fun styleFor(col: Column): String {
         return if (remarks.containsKey(col.columnName)) "table-info" else ""
     }
+}
+
+fun parse(attr: String): Pair<Map<String, Int>, Map<String, String>> {
+    return attr.split(",")
+        .map {
+            val (r, n, v) = ("""(\**)([^=]+)=?(.*)""".toRegex()).matchEntire(it.trim())!!.destructured
+            Pair(mapOf(n to r.length), mapOf(n to v))
+        }
+        .reduce { acc, next ->
+            val (ar, av) = acc
+            val (r, v) = next
+            Pair(ar.plus(r), av.plus(v))
+        }
 }

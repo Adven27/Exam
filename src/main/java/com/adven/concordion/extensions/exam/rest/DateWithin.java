@@ -64,7 +64,7 @@ public class DateWithin extends BaseMatcher<Object> implements ParametrizedMatch
         while (i < within.length() && isDigit(within.charAt(i))) {
             i++;
         }
-        this.period = PlaceholdersResolver.INSTANCE.periodBy(
+        this.period = PlaceholdersResolver.periodBy(
                 parseInt(within.substring(0, i)), within.substring(i, within.length()).trim());
     }
 }

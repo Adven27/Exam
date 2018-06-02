@@ -2,7 +2,7 @@
 
 package com.adven.concordion.extensions.exam.html
 
-import com.adven.concordion.extensions.exam.PlaceholdersResolver
+import com.adven.concordion.extensions.exam.resolveJson
 import org.concordion.api.Element
 import org.concordion.api.Evaluator
 
@@ -83,7 +83,7 @@ class Html(internal val el: Element) {
     fun takeAwayAttr(name: String, eval: Evaluator?): String? {
         var attr = attr(name)
         if (attr != null) {
-            attr = if (eval != null) PlaceholdersResolver.resolveJson(attr, eval) else attr
+            attr = if (eval != null) resolveJson(attr, eval) else attr
             el.removeAttribute(name)
         }
         return attr

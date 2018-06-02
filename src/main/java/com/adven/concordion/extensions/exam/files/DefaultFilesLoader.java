@@ -114,7 +114,7 @@ public class DefaultFilesLoader implements FilesLoader {
         final String content = getContentFor(f);
         FileTag fileTag = new FileTag();
         fileTag.name(f.attr("name"));
-        fileTag.content(content == null ? null : PlaceholdersResolver.INSTANCE.resolveXml(content, eval).trim());
+        fileTag.content(content == null ? null : PlaceholdersResolver.resolveXml(content, eval).trim());
         fileTag.autoFormat(parseBoolean(f.attr("autoFormat")));
         fileTag.lineNumbers(parseBoolean(f.attr("lineNumbers")));
         return fileTag;

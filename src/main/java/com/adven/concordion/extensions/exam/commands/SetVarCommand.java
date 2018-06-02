@@ -14,6 +14,6 @@ public class SetVarCommand extends ExamCommand {
     @Override
     public void setUp(CommandCall commandCall, Evaluator eval, ResultRecorder resultRecorder) {
         Html el = new Html(commandCall.getElement());
-        eval.setVariable("#" + el.attr("var"), PlaceholdersResolver.INSTANCE.resolveToObj(el.attr("value"), eval));
+        eval.setVariable("#" + el.attr("var"), PlaceholdersResolver.resolveToObj(el.attr("value"), eval));
     }
 }

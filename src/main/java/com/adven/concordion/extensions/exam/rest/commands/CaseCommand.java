@@ -116,16 +116,16 @@ public class CaseCommand extends RestVerifyCommand {
             }
 
             if (cookies != null) {
-                executor.cookies(PlaceholdersResolver.INSTANCE.resolveJson(cookies, eval));
+                executor.cookies(PlaceholdersResolver.resolveJson(cookies, eval));
             }
 
-            executor.urlParams(urlParams == null ? null : PlaceholdersResolver.INSTANCE.resolveJson(urlParams, eval));
+            executor.urlParams(urlParams == null ? null : PlaceholdersResolver.resolveJson(urlParams, eval));
 
             Html caseTR = tr().insteadOf(root.firstOrThrow(CASE));
             Html body = caseTR.first(BODY);
             if (body != null) {
                 Html td = td().insteadOf(body).css("json");
-                String bodyStr = PlaceholdersResolver.INSTANCE.resolveJson(td.text(), eval);
+                String bodyStr = PlaceholdersResolver.resolveJson(td.text(), eval);
                 td.removeAllChild().text(jsonPrinter.prettyPrint(bodyStr));
                 executor.body(bodyStr);
             }
@@ -174,11 +174,11 @@ public class CaseCommand extends RestVerifyCommand {
     }
 
     private String caseDesc(String desc, Evaluator eval) {
-        return ++number + ") " + (desc == null ? "" : PlaceholdersResolver.INSTANCE.resolveJson(desc, eval));
+        return ++number + ") " + (desc == null ? "" : PlaceholdersResolver.resolveJson(desc, eval));
     }
 
     private void vf(Html root, Evaluator eval, ResultRecorder resultRecorder) {
-        final String expected = printer.prettyPrint(PlaceholdersResolver.INSTANCE.resolveJson(root.text(), eval));
+        final String expected = printer.prettyPrint(PlaceholdersResolver.resolveJson(root.text(), eval));
         root.removeAllChild().text(expected).css("json");
 
         RequestExecutor executor = fromEvaluator(eval);
