@@ -1,9 +1,11 @@
 package com.adven.concordion.extensions.exam.kafka.protobuf;
 
 import com.google.common.base.Optional;
+import lombok.AccessLevel;
+import lombok.Getter;
 
+import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import static com.google.protobuf.Descriptors.Descriptor;
@@ -14,6 +16,7 @@ import static com.google.protobuf.util.JsonFormat.TypeRegistry;
  */
 public abstract class ProtoConverter<F, T> {
 
+    @Getter(AccessLevel.PROTECTED)
     private final Set<Descriptor> descriptors;
 
     public ProtoConverter() {
@@ -26,7 +29,7 @@ public abstract class ProtoConverter<F, T> {
         descriptors.add(descriptor);
     }
 
-    public final void addAllDescriptors(final List<Descriptor> descriptors) {
+    public final void addAllDescriptors(final Collection<Descriptor> descriptors) {
         this.descriptors.addAll(descriptors);
     }
 

@@ -22,6 +22,8 @@ public final class ProtoBytesToJson<T extends Message> extends ProtoConverter<By
 
     @Override
     public Optional<String> convert(final Bytes from) {
+        bytesToProto.addAllDescriptors(getDescriptors());
+        protoToJson.addAllDescriptors(getDescriptors());
         final Optional<T> proto = bytesToProto.convert(from);
         if (proto.isPresent()) {
             return protoToJson.convert(proto.get());

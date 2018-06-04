@@ -26,7 +26,7 @@ public final class ProtoEntity {
     }
 
     public byte[] toBytes() {
-        val messageOptional = ProtoUtils.fromJsonToProto(jsonValue, className);
+        val messageOptional = ProtoUtils.fromJsonToProto(jsonValue, className, descriptors);
         if (messageOptional.isPresent()) {
             return messageOptional.get().toByteArray();
         } else {
