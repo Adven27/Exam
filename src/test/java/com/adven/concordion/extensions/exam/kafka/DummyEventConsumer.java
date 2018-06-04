@@ -8,9 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-/**
- * @author Ruslan Ustits
- */
+
 public final class DummyEventConsumer implements EventConsumer {
 
     private final List<Event<Bytes>> events;

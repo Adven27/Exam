@@ -2,13 +2,12 @@ package com.adven.concordion.extensions.exam.db.kv;
 
 import com.adven.concordion.extensions.exam.commands.ExamCommand;
 import com.adven.concordion.extensions.exam.html.Html;
+import com.adven.concordion.extensions.exam.html.HtmlBuilder;
 import com.adven.concordion.extensions.exam.rest.JsonPrettyPrinter;
 
-import static com.adven.concordion.extensions.exam.html.Html.*;
+import static com.adven.concordion.extensions.exam.html.HtmlBuilder.*;
 
-/**
- * @author Ruslan Ustits
- */
+
 public abstract class BaseKeyValueCommand extends ExamCommand {
 
     protected static final String PROTOBUF = "protobuf";
@@ -27,7 +26,7 @@ public abstract class BaseKeyValueCommand extends ExamCommand {
     protected Html dbTable(final String cacheName) {
         final Html table = tableSlim();
         final Html header = thead();
-        final Html tr = Html.tr();
+        final Html tr = HtmlBuilder.tr();
         tr.childs(
                 th("Key"),
                 th("Value")
@@ -44,7 +43,7 @@ public abstract class BaseKeyValueCommand extends ExamCommand {
     }
 
     protected Html keyColumn(final String key) {
-        return td(code(key));
+        return td().childs(code(key));
     }
 
     protected Html valueColumn(final String value) {

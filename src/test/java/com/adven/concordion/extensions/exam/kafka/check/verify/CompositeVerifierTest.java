@@ -7,9 +7,7 @@ import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-/**
- * @author Ruslan Ustits
- */
+
 public class CompositeVerifierTest {
 
     @Test

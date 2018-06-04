@@ -4,9 +4,6 @@ import specs.db.kv.KeyValue;
 
 import static com.adven.concordion.extensions.exam.kafka.protobuf.TestEntity.Entity;
 
-/**
- * @author Ruslan Ustits
- */
 public class KVSetWithProtobuf extends KeyValue {
 
     public boolean check() {

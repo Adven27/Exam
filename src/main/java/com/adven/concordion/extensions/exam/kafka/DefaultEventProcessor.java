@@ -6,9 +6,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
-/**
- * @author Ruslan Ustits
- */
 @Slf4j
 @RequiredArgsConstructor
 public final class DefaultEventProcessor implements EventProcessor {
@@ -21,7 +18,7 @@ public final class DefaultEventProcessor implements EventProcessor {
 
     public DefaultEventProcessor(final String kafkaBrokers) {
         this(new DefaultEventConsumer(DEFAULT_CONSUME_TIMEOUT, kafkaBrokers),
-                new DefaultEventProducer(DEFAULT_PRODUCER_TIMEOUT, kafkaBrokers));
+            new DefaultEventProducer(DEFAULT_PRODUCER_TIMEOUT, kafkaBrokers));
     }
 
     @Override
@@ -36,7 +33,7 @@ public final class DefaultEventProcessor implements EventProcessor {
         CheckMessageMock mock = syncMock;
         if (replySuccessEvent != null && replyFailEvent != null) {
             mock = new ReplyWithTopicFromHeader(syncMock,
-                    new WithReply(replySuccessEvent, replyFailEvent, eventProducer, syncMock));
+                new WithReply(replySuccessEvent, replyFailEvent, eventProducer, syncMock));
         }
         if (isAsync) {
             mock = new AsyncMock(mock);
@@ -54,15 +51,11 @@ public final class DefaultEventProcessor implements EventProcessor {
     }
 
     protected boolean send(final String topic, final String key, final ProtoEntity message) {
-        final boolean result;
         if (StringUtils.isBlank(topic) || message == null) {
             log.warn("Unable to send record with topic={}, key={}, message={}. Missing required parameters",
-                    topic, key, message);
-            result = false;
-        } else {
-            result = eventProducer.produce(topic, key, message);
+                topic, key, message);
+            return false;
         }
-        return result;
+        return eventProducer.produce(topic, key, message);
     }
-
 }

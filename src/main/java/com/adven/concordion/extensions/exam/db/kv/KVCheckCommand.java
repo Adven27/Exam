@@ -13,9 +13,7 @@ import org.concordion.api.CommandCall;
 import org.concordion.api.Evaluator;
 import org.concordion.api.ResultRecorder;
 
-/**
- * @author Ruslan Ustits
- */
+
 @Slf4j
 public final class KVCheckCommand extends BaseKeyValueCommand {
 

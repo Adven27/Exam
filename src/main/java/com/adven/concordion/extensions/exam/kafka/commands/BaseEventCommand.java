@@ -9,7 +9,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.val;
 
-import static com.adven.concordion.extensions.exam.html.Html.*;
+import static com.adven.concordion.extensions.exam.html.HtmlBuilder.*;
 
 abstract class BaseEventCommand extends ExamCommand {
 
@@ -54,7 +54,7 @@ abstract class BaseEventCommand extends ExamCommand {
         final JsonPrettyPrinter printer = new JsonPrettyPrinter();
         table.childs(
                 tbody().childs(
-                        td(code(header)),
+                        td().childs(code(header)),
                         td(printer.prettyPrint(message)).css("json")));
         return table;
     }

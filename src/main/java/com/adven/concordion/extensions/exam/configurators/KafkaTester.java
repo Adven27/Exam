@@ -4,9 +4,7 @@ import com.adven.concordion.extensions.exam.ExamExtension;
 import com.adven.concordion.extensions.exam.kafka.DefaultEventProcessor;
 import lombok.RequiredArgsConstructor;
 
-/**
- * @author Ruslan Ustits
- */
+
 @RequiredArgsConstructor
 public final class KafkaTester {
 

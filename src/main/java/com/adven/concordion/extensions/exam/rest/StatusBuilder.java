@@ -2,9 +2,7 @@ package com.adven.concordion.extensions.exam.rest;
 
 import org.apache.commons.lang3.StringUtils;
 
-/**
- * @author Ruslan Ustits
- */
+
 public final class StatusBuilder {
 
     private static final String DEFAULT_PROTOCOL = "HTTP/1.1";

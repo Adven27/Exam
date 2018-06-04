@@ -8,9 +8,6 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-/**
- * @author Ruslan Ustits
- */
 @Slf4j
 @RequiredArgsConstructor
 public abstract class ProtoClassAware<F, T> extends ProtoConverter<F, T> {

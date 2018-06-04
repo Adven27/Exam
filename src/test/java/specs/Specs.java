@@ -26,14 +26,13 @@ import static org.concordion.internal.ConcordionBuilder.NAMESPACE_CONCORDION_200
 @RunWith(ConcordionRunner.class)
 @ConcordionOptions(declareNamespaces = {"c", NAMESPACE_CONCORDION_2007, "e", ExamExtension.NS})
 public class Specs {
-
     protected static final String CONSUME_TOPIC = "test.consume.topic";
     protected static final String PRODUCE_TOPIC = "test.produce.topic";
-
+    protected static final KafkaEmbedded kafka = new KafkaEmbedded(1, true, CONSUME_TOPIC);
+    @SuppressFBWarnings(value = "MS_MUTABLE_COLLECTION", justification = "коллекция для тестов должна быть мутабельной")
+    protected static final Map<String, Map<String, Object>> inMemoryKeyValueDb = new HashMap<>();
     private static final int PORT = 8081;
     private static Server server;
-
-    protected static final KafkaEmbedded kafka = new KafkaEmbedded(1, true, CONSUME_TOPIC);
 
     static {
         try {
@@ -43,18 +42,14 @@ public class Specs {
         }
     }
 
-    @SuppressFBWarnings(value = "MS_MUTABLE_COLLECTION", justification = "коллекция для тестов должна быть мутабельной")
-    protected static final Map<String, Map<String, Object>> inMemoryKeyValueDb = new HashMap<>();
-
     @SuppressFBWarnings(value = "URF_UNREAD_FIELD", justification = "особенности подключения расширений в concordion")
     @Extension
-    private final ExamExtension exam = new ExamExtension().
-            rest().port(PORT).end().
-            db().end().
-            ui().headless().end().
-            kafka().brokers(kafka.getBrokersAsString()).end().
-            keyValueDB(new InMemoryRepository(inMemoryKeyValueDb));
-
+    private final ExamExtension exam = new ExamExtension()
+            .rest().port(PORT).end()
+            .db().end()
+            .ui().headless().end()
+            .kafka().brokers(kafka.getBrokersAsString()).end()
+            .keyValueDB(new InMemoryRepository(inMemoryKeyValueDb));
 
     @AfterSuite
     public static void stopServer() throws Exception {

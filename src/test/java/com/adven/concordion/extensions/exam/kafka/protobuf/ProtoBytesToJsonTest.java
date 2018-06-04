@@ -9,9 +9,7 @@ import static com.adven.concordion.extensions.exam.RandomUtils.anyString;
 import static com.adven.concordion.extensions.exam.kafka.protobuf.TestEntity.Entity;
 import static org.assertj.core.api.Assertions.assertThat;
 
-/**
- * @author Ruslan Ustits
- */
+
 public class ProtoBytesToJsonTest {
 
     @Test
@@ -19,15 +17,15 @@ public class ProtoBytesToJsonTest {
         final String name = anyString();
         final int number = anyInt();
         final Entity entity = Entity.newBuilder()
-                .setName(name)
-                .setNumber(number)
-                .build();
+            .setName(name)
+            .setNumber(number)
+            .build();
         final ProtoBytesToJson<Entity> converter = new ProtoBytesToJson<>(Entity.class);
         final Bytes bytes = Bytes.wrap(entity.toByteArray());
-        final String expected = "{\n" +
-                "  \"name\": \"" + name + "\",\n" +
-                "  \"number\": " + number + "\n" +
-                "}";
+        final String expected = "{\n"
+            + "  \"name\": \"" + name + "\",\n"
+            + "  \"number\": " + number + "\n"
+            + "}";
         assertThat(converter.convert(bytes)).isEqualTo(Optional.of(expected));
     }
 }

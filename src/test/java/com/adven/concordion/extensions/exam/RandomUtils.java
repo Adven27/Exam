@@ -2,9 +2,7 @@ package com.adven.concordion.extensions.exam;
 
 import org.apache.commons.lang3.RandomStringUtils;
 
-/**
- * @author Ruslan Ustits
- */
+
 public final class RandomUtils {
 
 

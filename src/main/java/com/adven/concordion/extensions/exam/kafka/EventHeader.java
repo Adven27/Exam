@@ -4,9 +4,7 @@ import lombok.NonNull;
 
 import java.util.Arrays;
 
-/**
- * @author Ruslan Ustits
- */
+
 public final class EventHeader {
 
     public static final String REPLY_TOPIC = "kafka_replyTopic";
@@ -20,6 +18,10 @@ public final class EventHeader {
         this.correlationId = Arrays.copyOf(correlationId, correlationId.length);
     }
 
+    public static EventHeader empty() {
+        return new EventHeader(new byte[]{}, new byte[]{});
+    }
+
     public byte[] getReplyToTopic() {
         return Arrays.copyOf(replyToTopic, replyToTopic.length);
     }
@@ -28,17 +30,16 @@ public final class EventHeader {
         return Arrays.copyOf(correlationId, correlationId.length);
     }
 
-    public static EventHeader empty() {
-        return new EventHeader(new byte[]{}, new byte[]{});
-    }
-
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         EventHeader header = (EventHeader) o;
-        return Arrays.equals(replyToTopic, header.replyToTopic) &&
-                Arrays.equals(correlationId, header.correlationId);
+        return Arrays.equals(replyToTopic, header.replyToTopic) && Arrays.equals(correlationId, header.correlationId);
     }
 
     @Override
@@ -47,5 +48,4 @@ public final class EventHeader {
         result = 31 * result + Arrays.hashCode(correlationId);
         return result;
     }
-
 }

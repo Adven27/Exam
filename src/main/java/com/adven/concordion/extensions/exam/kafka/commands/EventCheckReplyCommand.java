@@ -11,7 +11,7 @@ import org.concordion.api.Evaluator;
 import org.concordion.api.Result;
 import org.concordion.api.ResultRecorder;
 
-import static com.adven.concordion.extensions.exam.html.Html.tableSlim;
+import static com.adven.concordion.extensions.exam.html.HtmlBuilder.tableSlim;
 
 public final class EventCheckReplyCommand extends BaseEventCommand {
 
@@ -32,8 +32,7 @@ public final class EventCheckReplyCommand extends BaseEventCommand {
             result = false;
         }
         if (!result) {
-            root.parent().attr("class", "")
-                    .css("rest-failure bd-callout bd-callout-danger");
+            root.parent().attr("class", "").css("rest-failure bd-callout bd-callout-danger");
             root.text("Failed to start kafka listener mock");
             resultRecorder.record(Result.EXCEPTION);
         }
@@ -41,9 +40,9 @@ public final class EventCheckReplyCommand extends BaseEventCommand {
 
     private boolean check(final Html root, final ProtoEntity expected, final String topic) {
         val checkEvent = Event.<ProtoEntity>builder()
-                .topicName(topic)
-                .message(expected)
-                .build();
+            .topicName(topic)
+            .message(expected)
+            .build();
         val reply = root.first("reply");
         root.removeAllChild();
 
@@ -65,18 +64,13 @@ public final class EventCheckReplyCommand extends BaseEventCommand {
         val failProto = protoParser.parse(reply.firstOrThrow("fail"));
         final boolean result;
         if (successProto.isPresent() && failProto.isPresent()) {
-            val successReplyEvent = Event.<ProtoEntity>builder()
-                    .message(successProto.get())
-                    .build();
-            val failReplyEvent = Event.<ProtoEntity>builder()
-                    .message(failProto.get())
-                    .build();
+            val successReplyEvent = Event.<ProtoEntity>builder().message(successProto.get()).build();
+            val failReplyEvent = Event.<ProtoEntity>builder().message(failProto.get()).build();
             val successEventInfo = buildProtoInfo(successProto.get(), "Success reply", "");
             val failEventInfo = buildProtoInfo(failProto.get(), "Fail reply", "");
             reply.parent().childs(successEventInfo, failEventInfo);
 
-            result = getEventProcessor()
-                    .checkWithReply(checkEvent, successReplyEvent, failReplyEvent, true);
+            result = getEventProcessor().checkWithReply(checkEvent, successReplyEvent, failReplyEvent, true);
         } else {
             result = false;
         }

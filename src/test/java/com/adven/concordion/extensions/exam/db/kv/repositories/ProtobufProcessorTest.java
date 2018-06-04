@@ -11,9 +11,7 @@ import static com.adven.concordion.extensions.exam.kafka.protobuf.TestEntity.Ent
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
-/**
- * @author Ruslan Ustits
- */
+
 public class ProtobufProcessorTest {
 
     private ProtobufProcessor processor;

@@ -6,9 +6,7 @@ import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.utils.Bytes;
 
-/**
- * @author Ruslan Ustits
- */
+
 @Slf4j
 public final class ProtoBytesToJson<T extends Message> extends ProtoConverter<Bytes, String> {
 

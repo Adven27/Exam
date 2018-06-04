@@ -14,9 +14,6 @@ import static com.adven.concordion.extensions.exam.kafka.EventUtils.goodEvent;
 import static com.adven.concordion.extensions.exam.kafka.protobuf.TestEntity.Entity;
 import static org.assertj.core.api.Assertions.assertThat;
 
-/**
- * @author Ruslan Ustits
- */
 public class AsyncMockTest extends AsyncTest {
 
     @Test
@@ -24,13 +21,13 @@ public class AsyncMockTest extends AsyncTest {
         final String name = anyString();
         final int number = anyInt();
         final Event<ProtoEntity> eventToVerify = goodEvent(name, number)
-                .toBuilder()
-                .topicName(CONSUME_TOPIC)
-                .build();
+            .toBuilder()
+            .topicName(CONSUME_TOPIC)
+            .build();
         final Entity entity = Entity.newBuilder()
-                .setName(name)
-                .setNumber(number)
-                .build();
+            .setName(name)
+            .setNumber(number)
+            .build();
 
         final ConsumerRecord<String, Bytes> record = startTest(eventToVerify, entity);
         assertThat(record.value()).isEqualTo(Bytes.wrap(SUCCESS.toByteArray()));

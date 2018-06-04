@@ -15,9 +15,6 @@ import java.util.List;
 
 import static com.google.protobuf.Descriptors.Descriptor;
 
-/**
- * @author Ruslan Ustits
- */
 @Slf4j
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ProtoUtils {

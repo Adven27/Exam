@@ -10,9 +10,7 @@ import org.concordion.api.Evaluator;
 import org.concordion.api.Result;
 import org.concordion.api.ResultRecorder;
 
-/**
- * @author Ruslan Ustits
- */
+
 public final class KVSetCommand extends BaseKeyValueCommand {
 
     private final KeyValueRepository keyValueRepository;

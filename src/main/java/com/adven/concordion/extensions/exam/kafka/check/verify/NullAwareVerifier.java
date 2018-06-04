@@ -4,9 +4,7 @@ import com.adven.concordion.extensions.exam.kafka.Event;
 import com.adven.concordion.extensions.exam.kafka.protobuf.ProtoEntity;
 import org.apache.kafka.common.utils.Bytes;
 
-/**
- * @author Ruslan Ustits
- */
+
 public final class NullAwareVerifier implements Verifier {
 
     @Override

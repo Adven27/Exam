@@ -10,7 +10,7 @@ import org.concordion.api.ResultRecorder;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.adven.concordion.extensions.exam.html.Html.*;
+import static com.adven.concordion.extensions.exam.html.HtmlBuilder.*;
 
 public abstract class RequestCommand extends ExamCommand {
     private static final String HEADERS = "headers";

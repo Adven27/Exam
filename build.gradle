@@ -8,7 +8,7 @@ buildscript {
 }
 
 plugins {
-    id "org.jetbrains.kotlin.jvm" version "1.2.40"
+    id "org.jetbrains.kotlin.jvm" version "1.2.41"
 }
 group 'com.adven.concordion'
 version = 0.4
@@ -83,10 +83,7 @@ test {
 }
 
 tasks.withType(FindBugs) {
-    exclude '**/com/adven/concordion/extensions/exam/kafka/protobuf/*'
-    classes = classes.filter {
-        !it.path.contains(new File("com/adven/concordion/extensions/exam/kafka/protobuf/").path)
-    }
+    excludeFilter = file("$projectDir/config/findbugs-exclude.xml")
     reports {
         xml.enabled false
         html.enabled true
@@ -98,6 +95,7 @@ tasks.withType(Checkstyle) {
         xml.enabled false
         html.enabled true
     }
+    exclude '**/com/adven/concordion/extensions/exam/kafka/protobuf/TestEntity**'
 }
 
 findbugs {
@@ -106,9 +104,8 @@ findbugs {
 }
 
 checkstyle {
-    configFile = rootProject.file('config/checkstyle/checkstyle.xml')
-    toolVersion = "6.19"
-    ignoreFailures = true
+    toolVersion = "8.10"
+    ignoreFailures = false
 }
 
 jacocoTestReport {

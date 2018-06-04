@@ -5,9 +5,7 @@ import com.adven.concordion.extensions.exam.kafka.protobuf.ProtoEntity;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * @author Ruslan Ustits
- */
+
 public final class DummyEventProducer implements EventProducer {
 
     private boolean result;

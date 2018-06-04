@@ -2,9 +2,6 @@ package specs.db.kv.set;
 
 import specs.db.kv.KeyValue;
 
-/**
- * @author Ruslan Ustits
- */
 public class KVSet extends KeyValue {
 
     public boolean check(final String expected) {

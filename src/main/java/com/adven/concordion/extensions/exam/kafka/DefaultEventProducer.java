@@ -22,9 +22,6 @@ import static org.apache.kafka.clients.consumer.ConsumerConfig.CLIENT_ID_CONFIG;
 import static org.apache.kafka.clients.producer.ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG;
 import static org.apache.kafka.clients.producer.ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG;
 
-/**
- * @author Ruslan Ustits
- */
 @Slf4j
 @RequiredArgsConstructor
 public final class DefaultEventProducer implements EventProducer {
@@ -51,7 +48,7 @@ public final class DefaultEventProducer implements EventProducer {
     @Override
     public boolean produce(@NonNull final String topic, final String key, @NonNull final ProtoEntity message) {
         final ProducerRecord<String, Bytes> record =
-                new ProducerRecord<>(topic, key, Bytes.wrap(message.toBytes()));
+            new ProducerRecord<>(topic, key, Bytes.wrap(message.toBytes()));
         return produce(record);
     }
 
@@ -62,15 +59,10 @@ public final class DefaultEventProducer implements EventProducer {
             return produce(topic, key, message);
         } else {
             final ProducerRecord<String, Bytes> record =
-                    new ProducerRecord<>(topic, key, Bytes.wrap(message.toBytes()));
+                new ProducerRecord<>(topic, key, Bytes.wrap(message.toBytes()));
             addHeaders(record, eventHeader);
             return produce(record);
         }
-    }
-
-    protected void addHeaders(final ProducerRecord<String, Bytes> record, final EventHeader eventHeader) {
-        record.headers().add(REPLY_TOPIC, eventHeader.getReplyToTopic());
-        record.headers().add(CORRELATION_ID, eventHeader.getCorrelationId());
     }
 
     protected boolean produce(final ProducerRecord<String, Bytes> record) {
@@ -88,4 +80,8 @@ public final class DefaultEventProducer implements EventProducer {
         return false;
     }
 
+    protected void addHeaders(final ProducerRecord<String, Bytes> record, final EventHeader eventHeader) {
+        record.headers().add(REPLY_TOPIC, eventHeader.getReplyToTopic());
+        record.headers().add(CORRELATION_ID, eventHeader.getCorrelationId());
+    }
 }

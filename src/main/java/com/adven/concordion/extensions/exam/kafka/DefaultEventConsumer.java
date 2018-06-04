@@ -21,17 +21,13 @@ import static com.adven.concordion.extensions.exam.kafka.EventHeader.CORRELATION
 import static com.adven.concordion.extensions.exam.kafka.EventHeader.REPLY_TOPIC;
 import static org.apache.kafka.clients.consumer.ConsumerConfig.*;
 
-/**
- * @author Ruslan Ustits
- */
+
 @Slf4j
 @RequiredArgsConstructor
 public final class DefaultEventConsumer implements EventConsumer {
-
     private static final long POLL_TIMEOUT = 100L;
 
     private final long consumeTimeout;
-
     @NonNull
     private final Properties properties;
 
@@ -55,8 +51,7 @@ public final class DefaultEventConsumer implements EventConsumer {
     public List<Event<Bytes>> consume(@NonNull final String fromTopic) {
         try (KafkaConsumer<String, Bytes> consumer = new KafkaConsumer<>(properties)) {
             consumer.subscribe(Collections.singleton(fromTopic));
-            final ConsumerRecords<String, Bytes> records = consumeBy(consumer);
-            return toEvents(records);
+            return toEvents(consumeBy(consumer));
         }
     }
 
@@ -74,8 +69,7 @@ public final class DefaultEventConsumer implements EventConsumer {
     private List<Event<Bytes>> toEvents(final ConsumerRecords<String, Bytes> records) {
         final List<Event<Bytes>> events = new ArrayList<>();
         for (ConsumerRecord<String, Bytes> record : records) {
-            final Event<Bytes> event = toEvent(record);
-            events.add(event);
+            events.add(toEvent(record));
         }
         return events;
     }
@@ -85,26 +79,22 @@ public final class DefaultEventConsumer implements EventConsumer {
         final Bytes value = record.value();
         final String topic = record.topic();
         return Event.<Bytes>builder()
-                .topicName(topic)
-                .key(key)
-                .message(value)
-                .header(eventHeader(record))
-                .build();
+            .topicName(topic)
+            .key(key)
+            .message(value)
+            .header(eventHeader(record))
+            .build();
     }
 
     protected EventHeader eventHeader(@NonNull final ConsumerRecord<String, Bytes> record) {
         final Headers headers = record.headers();
-        final byte[] replyTopic = headerToString(headers.lastHeader(REPLY_TOPIC));
-        final byte[] corId = headerToString(headers.lastHeader(CORRELATION_ID));
-        return new EventHeader(replyTopic, corId);
+        return new EventHeader(
+            headerToString(headers.lastHeader(REPLY_TOPIC)),
+            headerToString(headers.lastHeader(CORRELATION_ID))
+        );
     }
 
     protected byte[] headerToString(final Header header) {
-        if (header == null) {
-            return new byte[]{};
-        } else {
-            return header.value();
-        }
+        return header == null ? new byte[]{} : header.value();
     }
-
 }

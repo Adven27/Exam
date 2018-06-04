@@ -1,13 +1,15 @@
 package com.adven.concordion.extensions.exam.html
 
-import com.adven.concordion.extensions.exam.PlaceholdersResolver
+import com.adven.concordion.extensions.exam.POSTFIX
+import com.adven.concordion.extensions.exam.PREFIX_EXAM
+import com.adven.concordion.extensions.exam.PREFIX_VAR
+import com.adven.concordion.extensions.exam.resolveToObj
 import com.google.common.base.Strings.isNullOrEmpty
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings
 import org.concordion.api.Evaluator
 import java.util.*
 
 class RowParser(private val el: Html, private val tag: String, private val eval: Evaluator) {
-    private val placeholdersResolver = PlaceholdersResolver
     private val ignoreBefore: Int
     private val ignoreAfter: Int
     private val separator: Char
@@ -42,19 +44,19 @@ class RowParser(private val el: Html, private val tag: String, private val eval:
             var rest = text.trim()
             do {
                 when {
-                    rest.startsWith(PlaceholdersResolver.PREFIX_EXAM) || rest.startsWith(PlaceholdersResolver.PREFIX_VAR) -> {
-                        values.add(placeholdersResolver.resolveToObj(
-                                rest.substringBefore(PlaceholdersResolver.POSTFIX) + PlaceholdersResolver.POSTFIX, eval)
+                    rest.startsWith(PREFIX_EXAM) || rest.startsWith(PREFIX_VAR) -> {
+                        values.add(resolveToObj(
+                            rest.substringBefore(POSTFIX) + POSTFIX, eval)
                         )
-                        rest = rest.substringAfter(PlaceholdersResolver.POSTFIX, "").substringAfter(separator, "").trim()
+                        rest = rest.substringAfter(POSTFIX, "").substringAfter(separator, "").trim()
                     }
                     rest.startsWith("'") -> {
                         val cell = rest.substring(1).substringBefore("'")
-                        values.add(placeholdersResolver.resolveToObj(cell, eval))
+                        values.add(resolveToObj(cell, eval))
                         rest = rest.substring(cell.length).substringAfter(separator, "").trimStart()
                     }
                     else -> {
-                        values.add(placeholdersResolver.resolveToObj(rest.substringBefore(separator).trim(), eval))
+                        values.add(resolveToObj(rest.substringBefore(separator).trim(), eval))
                         rest = rest.substringAfter(separator, "").trim()
                     }
                 }

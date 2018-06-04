@@ -36,11 +36,11 @@ import static org.xmlunit.diff.ElementSelectors.byNameAndText;
 public class ExamExtension implements ConcordionExtension {
     public static final String NS = "http://exam.extension.io";
     public static final DefaultNodeMatcher DEFAULT_NODE_MATCHER = new DefaultNodeMatcher(byNameAndText, byName);
-    public static final Configuration DEFAULT_JSON_UNIT_CFG = when(IGNORING_ARRAY_ORDER).
-            withMatcher("formattedAs", new DateFormatMatcher()).
-            withMatcher("formattedAndWithin", DateWithin.param()).
-            withMatcher("formattedAndWithinNow", DateWithin.now()).
-            withMatcher("xmlDateWithinNow", new XMLDateWithin());
+    public static final Configuration DEFAULT_JSON_UNIT_CFG = when(IGNORING_ARRAY_ORDER)
+            .withMatcher("formattedAs", new DateFormatMatcher())
+            .withMatcher("formattedAndWithin", DateWithin.param())
+            .withMatcher("formattedAndWithinNow", DateWithin.now())
+            .withMatcher("xmlDateWithinNow", new XMLDateWithin());
     public static final FilesLoader DEFAULT_FILES_LOADER = new DefaultFilesLoader();
     private static DesiredCapabilities capabilities;
     private net.javacrumbs.jsonunit.core.Configuration jsonUnitCfg;
@@ -65,6 +65,10 @@ public class ExamExtension implements ConcordionExtension {
         }
     }
 
+    private static void capabilities(DesiredCapabilities c) {
+        capabilities = c;
+    }
+
     @SuppressWarnings("unused")
     /**
      * matcherName - name to reference in placeholder
@@ -83,7 +87,7 @@ public class ExamExtension implements ConcordionExtension {
         return this;
     }
 
-    public ExamExtension withFilesLoader(FilesLoader customFilesLoader){
+    public ExamExtension withFilesLoader(FilesLoader customFilesLoader) {
         this.filesLoader = customFilesLoader;
         return this;
     }
@@ -99,10 +103,6 @@ public class ExamExtension implements ConcordionExtension {
         return this;
     }
 
-    private static void capabilities(DesiredCapabilities c) {
-        capabilities = c;
-    }
-
     @SuppressWarnings("unused")
     public RestAssuredCfg rest() {
         return new RestAssuredCfg(this);
@@ -114,11 +114,6 @@ public class ExamExtension implements ConcordionExtension {
     }
 
     @SuppressWarnings("unused")
-    public DbTester db() {
-        return new DbTester(this);
-    }
-
-    @SuppressWarnings("unused")
     public KafkaTester kafka() {
         return new KafkaTester(this);
     }
@@ -127,6 +122,11 @@ public class ExamExtension implements ConcordionExtension {
     public ExamExtension kafka(final EventProcessor eventProcessor) {
         this.eventProcessor = eventProcessor;
         return this;
+    }
+
+    @SuppressWarnings("unused")
+    public DbTester db() {
+        return new DbTester(this);
     }
 
     @SuppressWarnings("unused")
@@ -166,8 +166,9 @@ public class ExamExtension implements ConcordionExtension {
         new CodeMirrorExtension().addTo(ex);
         new BootstrapExtension().addTo(ex);
 
-        final CommandRegistry registry = new CommandRegistry(dbTester, jsonUnitCfg, nodeMatcher,
-                capabilities, filesLoader, eventProcessor, keyValueRepository);
+        final CommandRegistry registry = new CommandRegistry(
+                dbTester, jsonUnitCfg, nodeMatcher, capabilities, filesLoader, eventProcessor, keyValueRepository
+        );
 
         for (ExamCommand cmd : registry.commands()) {
             if (!"example".equals(cmd.name())) {

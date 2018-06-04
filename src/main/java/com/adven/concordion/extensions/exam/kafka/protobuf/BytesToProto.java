@@ -8,9 +8,7 @@ import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.utils.Bytes;
 
-/**
- * @author Ruslan Ustits
- */
+
 @Slf4j
 public final class BytesToProto<T extends Message> extends ProtoClassAware<Bytes, T> {
 

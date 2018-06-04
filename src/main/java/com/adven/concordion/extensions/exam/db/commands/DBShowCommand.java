@@ -12,7 +12,7 @@ import org.dbunit.dataset.ITable;
 
 import java.sql.SQLException;
 
-import static com.adven.concordion.extensions.exam.html.Html.table;
+import static com.adven.concordion.extensions.exam.html.HtmlBuilder.table;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static org.dbunit.dataset.filter.DefaultColumnFilter.includedColumnsTable;
 
@@ -32,8 +32,8 @@ public class DBShowCommand extends DBCommand {
             IDatabaseConnection conn = getDbTester().getConnection();
             ITable filteredColumnsTable =
                     includedColumnsTable(isNullOrEmpty(where) ? conn.createTable(tableName)
-                                                              : getFilteredTable(conn, tableName, where),
-                                         parseCols(el, eval).cols()
+                                    : getFilteredTable(conn, tableName, where),
+                            parseCols(el, eval).cols()
                     );
 
             renderTable(el, filteredColumnsTable);
@@ -42,7 +42,8 @@ public class DBShowCommand extends DBCommand {
         }
     }
 
-    private ITable getFilteredTable(IDatabaseConnection connection, String tableName, String rowFilter) throws SQLException, DataSetException {
+    private ITable getFilteredTable(IDatabaseConnection connection, String tableName, String rowFilter)
+            throws SQLException, DataSetException {
         return connection.createQueryTable(tableName, "SELECT * FROM " + tableName + " WHERE " + rowFilter);
     }
 }

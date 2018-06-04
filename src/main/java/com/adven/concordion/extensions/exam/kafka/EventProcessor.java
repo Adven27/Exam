@@ -2,9 +2,6 @@ package com.adven.concordion.extensions.exam.kafka;
 
 import com.adven.concordion.extensions.exam.kafka.protobuf.ProtoEntity;
 
-/**
- * @author Ruslan Ustits
- */
 public interface EventProcessor {
 
     boolean check(final Event<ProtoEntity> eventToCheck, final boolean isAsync);

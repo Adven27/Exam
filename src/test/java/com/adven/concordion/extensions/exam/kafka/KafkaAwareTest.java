@@ -20,9 +20,6 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
-/**
- * @author Ruslan Ustits
- */
 public abstract class KafkaAwareTest {
 
     protected static final String CONSUME_TOPIC = "test.consume.topic";

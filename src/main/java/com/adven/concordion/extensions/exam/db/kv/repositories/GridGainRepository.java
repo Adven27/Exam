@@ -10,9 +10,7 @@ import org.apache.ignite.IgniteCache;
 import org.apache.ignite.Ignition;
 import org.apache.ignite.configuration.IgniteConfiguration;
 
-/**
- * @author Ruslan Ustits
- */
+
 @Slf4j
 @RequiredArgsConstructor
 public final class GridGainRepository implements KeyValueRepository {

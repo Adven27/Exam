@@ -2,6 +2,7 @@ package com.adven.concordion.extensions.exam.rest.commands;
 
 import com.adven.concordion.extensions.exam.PlaceholdersResolver;
 import com.adven.concordion.extensions.exam.html.Html;
+import com.adven.concordion.extensions.exam.html.HtmlBuilder;
 import com.adven.concordion.extensions.exam.html.RowParser;
 import com.adven.concordion.extensions.exam.rest.JsonPrettyPrinter;
 import com.adven.concordion.extensions.exam.rest.StatusBuilder;
@@ -18,7 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.adven.concordion.extensions.exam.html.Html.*;
+import static com.adven.concordion.extensions.exam.html.HtmlBuilder.*;
 import static com.adven.concordion.extensions.exam.rest.commands.RequestExecutor.fromEvaluator;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static net.javacrumbs.jsonunit.JsonAssert.assertJsonEquals;
@@ -78,8 +79,8 @@ public class CaseCommand extends RestVerifyCommand {
     private Html[] caseTags(final Html body, final Html expected) {
         final List<Html> caseTags = new ArrayList<>();
         for (int i = 0; i < cases.size(); i++) {
-            final Html bodyToAdd = body == null ? null : Html.tag(BODY).text(body.text());
-            final Html expectedToAdd = Html.tag(EXPECTED).text(expected.text());
+            final Html bodyToAdd = body == null ? null : HtmlBuilder.tag(BODY).text(body.text());
+            final Html expectedToAdd = HtmlBuilder.tag(EXPECTED).text(expected.text());
 
             final String protocol = expected.attr(PROTOCOL);
             if (protocol != null) {
@@ -94,7 +95,7 @@ public class CaseCommand extends RestVerifyCommand {
                 expectedToAdd.attr(REASON_PHRASE, reasonPhrase);
             }
 
-            final Html caseTag = Html.tag(CASE).childs(bodyToAdd, expectedToAdd);
+            final Html caseTag = HtmlBuilder.tag(CASE).childs(bodyToAdd, expectedToAdd);
             caseTags.add(caseTag);
         }
         return caseTags.toArray(new Html[]{});
@@ -115,16 +116,16 @@ public class CaseCommand extends RestVerifyCommand {
             }
 
             if (cookies != null) {
-                executor.cookies(PlaceholdersResolver.INSTANCE.resolveJson(cookies, eval));
+                executor.cookies(PlaceholdersResolver.resolveJson(cookies, eval));
             }
 
-            executor.urlParams(urlParams == null ? null : PlaceholdersResolver.INSTANCE.resolveJson(urlParams, eval));
+            executor.urlParams(urlParams == null ? null : PlaceholdersResolver.resolveJson(urlParams, eval));
 
             Html caseTR = tr().insteadOf(root.firstOrThrow(CASE));
             Html body = caseTR.first(BODY);
             if (body != null) {
                 Html td = td().insteadOf(body).css("json");
-                String bodyStr = PlaceholdersResolver.INSTANCE.resolveJson(td.text(), eval);
+                String bodyStr = PlaceholdersResolver.resolveJson(td.text(), eval);
                 td.removeAllChild().text(jsonPrinter.prettyPrint(bodyStr));
                 executor.body(bodyStr);
             }
@@ -173,11 +174,11 @@ public class CaseCommand extends RestVerifyCommand {
     }
 
     private String caseDesc(String desc, Evaluator eval) {
-        return ++number + ") " + (desc == null ? "" : PlaceholdersResolver.INSTANCE.resolveJson(desc, eval));
+        return ++number + ") " + (desc == null ? "" : PlaceholdersResolver.resolveJson(desc, eval));
     }
 
     private void vf(Html root, Evaluator eval, ResultRecorder resultRecorder) {
-        final String expected = printer.prettyPrint(PlaceholdersResolver.INSTANCE.resolveJson(root.text(), eval));
+        final String expected = printer.prettyPrint(PlaceholdersResolver.resolveJson(root.text(), eval));
         root.removeAllChild().text(expected).css("json");
 
         RequestExecutor executor = fromEvaluator(eval);

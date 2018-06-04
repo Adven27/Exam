@@ -7,7 +7,7 @@ import org.concordion.api.listener.*;
 import java.io.File;
 import java.util.concurrent.atomic.AtomicLong;
 
-import static com.adven.concordion.extensions.exam.html.Html.imageOverlay;
+import static com.adven.concordion.extensions.exam.html.HtmlBuilder.imageOverlay;
 import static com.codeborne.selenide.Selenide.screenshot;
 
 public class UiResultRenderer implements AssertEqualsListener, AssertTrueListener, AssertFalseListener {

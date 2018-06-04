@@ -7,7 +7,7 @@ import org.concordion.api.listener.SpecificationProcessingListener;
 
 import java.util.UUID;
 
-import static com.adven.concordion.extensions.exam.html.Html.*;
+import static com.adven.concordion.extensions.exam.html.HtmlBuilder.*;
 
 public class SpecSummaryListener implements SpecificationProcessingListener {
 
@@ -31,8 +31,8 @@ public class SpecSummaryListener implements SpecificationProcessingListener {
 
                         Element rootExampleEl = a.getParentElement().getParentElement();
                         Html item = menuItemA(anchor).attr("href", "#" + anchor).childs(
-                                footerOf(rootExampleEl).firstOrThrow("small").deepClone().
-                                        css("card-img-overlay m-1").style("padding:0; left:inherit;")
+                            footerOf(rootExampleEl).firstOrThrow("small").deepClone()
+                                .css("card-img-overlay m-1").style("padding:0; left:inherit;")
                         );
                         Html cases = getCase(rootExampleEl, id);
                         if (cases == null || cases.childs().isEmpty()) {
@@ -53,7 +53,7 @@ public class SpecSummaryListener implements SpecificationProcessingListener {
             if ("case".equals(tr.getAttributeValue("data-type"))) {
                 String anchor = tr.getAttributeValue("id");
                 div.childs(
-                        menuItemA(anchor, italic("").css("fa fa-circle fa-fw")).attr("href", "#" + anchor).muted()
+                    menuItemA(anchor, italic("").css("fa fa-circle fa-fw")).attr("href", "#" + anchor).muted()
                 );
             }
         }

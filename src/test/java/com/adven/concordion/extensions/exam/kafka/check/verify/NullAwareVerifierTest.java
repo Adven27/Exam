@@ -8,9 +8,7 @@ import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-/**
- * @author Ruslan Ustits
- */
+
 public class NullAwareVerifierTest {
 
     private NullAwareVerifier verifier;

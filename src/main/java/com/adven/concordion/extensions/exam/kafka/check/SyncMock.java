@@ -14,9 +14,6 @@ import org.apache.kafka.common.utils.Bytes;
 
 import java.util.List;
 
-/**
- * @author Ruslan Ustits
- */
 @Slf4j
 @RequiredArgsConstructor
 public final class SyncMock implements CheckMessageMock {
@@ -42,6 +39,10 @@ public final class SyncMock implements CheckMessageMock {
         }
     }
 
+    protected boolean verify(final Event<Bytes> event) {
+        return verifier.verify(event, eventToCheck);
+    }
+
     protected Event<Bytes> consume() {
         return consume(eventToCheck.getTopicName());
     }
@@ -57,10 +58,6 @@ public final class SyncMock implements CheckMessageMock {
         } else {
             return null;
         }
-    }
-
-    protected boolean verify(final Event<Bytes> event) {
-        return verifier.verify(event, eventToCheck);
     }
 
 }

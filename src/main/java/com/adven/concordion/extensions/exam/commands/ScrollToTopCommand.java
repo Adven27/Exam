@@ -5,8 +5,8 @@ import org.concordion.api.CommandCall;
 import org.concordion.api.Evaluator;
 import org.concordion.api.ResultRecorder;
 
-import static com.adven.concordion.extensions.exam.html.Html.button;
-import static com.adven.concordion.extensions.exam.html.Html.italic;
+import static com.adven.concordion.extensions.exam.html.HtmlBuilder.button;
+import static com.adven.concordion.extensions.exam.html.HtmlBuilder.italic;
 
 public class ScrollToTopCommand extends ExamCommand {
     public ScrollToTopCommand(String name, String tag) {

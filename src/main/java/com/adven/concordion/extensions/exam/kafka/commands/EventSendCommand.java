@@ -12,9 +12,6 @@ import org.concordion.api.Evaluator;
 import org.concordion.api.Result;
 import org.concordion.api.ResultRecorder;
 
-/**
- * @author Ruslan Ustits
- */
 @Slf4j
 public final class EventSendCommand extends BaseEventCommand {
 
@@ -36,18 +33,17 @@ public final class EventSendCommand extends BaseEventCommand {
             val info = buildProtoInfo(message, "Send message to", topicName);
             root.childs(info);
             val event = Event.<ProtoEntity>builder()
-                    .topicName(topicName)
-                    .key(key)
-                    .message(message)
-                    .build();
+                .topicName(topicName)
+                .key(key)
+                .message(message)
+                .build();
             result = getEventProcessor().send(event);
         } else {
             result = false;
         }
 
         if (!result) {
-            root.parent().attr("class", "")
-                    .css("rest-failure bd-callout bd-callout-danger");
+            root.parent().attr("class", "").css("rest-failure bd-callout bd-callout-danger");
             root.text("Failed to send message to kafka");
             resultRecorder.record(Result.EXCEPTION);
         }

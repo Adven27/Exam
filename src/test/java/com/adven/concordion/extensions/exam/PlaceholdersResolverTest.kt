@@ -1,23 +1,18 @@
 package com.adven.concordion.extensions.exam
 
 import com.adven.concordion.extensions.exam.db.Range
-import org.concordion.api.Evaluator
-import org.joda.time.Period
-import org.junit.Test
-
-import java.util.Date
-
-import com.adven.concordion.extensions.exam.PlaceholdersResolver.resolveJson
-import com.adven.concordion.extensions.exam.PlaceholdersResolver.resolveToObj
 import net.sf.qualitycheck.Throws
+import org.concordion.api.Evaluator
 import org.hamcrest.Matchers.`is`
 import org.joda.time.LocalDateTime.fromDateFields
 import org.joda.time.LocalDateTime.now
-import org.joda.time.base.BasePeriod
+import org.joda.time.Period
 import org.joda.time.format.DateTimeFormat.forPattern
 import org.junit.Assert.assertThat
-import org.mockito.Mockito.mock
+import org.junit.Test
 import org.mockito.Mockito.`when`
+import org.mockito.Mockito.mock
+import java.util.*
 
 class PlaceholdersResolverTest {
     private val eval = mock<Evaluator>(Evaluator::class.java)
