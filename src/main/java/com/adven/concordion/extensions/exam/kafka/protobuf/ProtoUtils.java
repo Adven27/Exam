@@ -1,6 +1,5 @@
 package com.adven.concordion.extensions.exam.kafka.protobuf;
 
-import com.adven.concordion.extensions.exam.kafka.Event;
 import com.google.common.base.Optional;
 import com.google.protobuf.Message;
 import lombok.AccessLevel;
@@ -19,21 +18,6 @@ public final class ProtoUtils {
         Optional<Class<Message>> clazz = safeForName(className);
         if (clazz.isPresent()) {
             return new ProtoBytesToJson<>(clazz.get()).convert(bytes);
-        } else {
-            return Optional.absent();
-        }
-    }
-
-    public static Optional<Event<Message>> fromJsonToProto(final Event<String> event,
-                                                           final String eventClass) {
-        final Optional<Message> message = ProtoUtils.fromJsonToProto(event.getMessage(), eventClass);
-        if (message.isPresent()) {
-            final Event<Message> convertedEvent = Event.<Message>builder()
-                    .topicName(event.getTopicName())
-                    .key(event.getKey())
-                    .message(message.get())
-                    .build();
-            return Optional.of(convertedEvent);
         } else {
             return Optional.absent();
         }

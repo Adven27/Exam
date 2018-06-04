@@ -15,6 +15,10 @@ public final class RandomUtils {
         return org.apache.commons.lang3.RandomUtils.nextInt();
     }
 
+    public static long anyLong() {
+        return org.apache.commons.lang3.RandomUtils.nextLong();
+    }
+
     public static String anyString() {
         return RandomStringUtils.randomAlphabetic(10);
     }

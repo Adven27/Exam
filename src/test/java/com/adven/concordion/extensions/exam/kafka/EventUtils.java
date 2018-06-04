@@ -1,5 +1,6 @@
 package com.adven.concordion.extensions.exam.kafka;
 
+import com.adven.concordion.extensions.exam.kafka.protobuf.ProtoEntity;
 import com.adven.concordion.extensions.exam.kafka.protobuf.TestEntity;
 
 import static com.adven.concordion.extensions.exam.RandomUtils.anyInt;
@@ -13,26 +14,38 @@ public final class EventUtils {
     private EventUtils() {
     }
 
-    public static Event<String> goodEvent() {
-        return Event.<String>builder()
-                .message(goodMessage())
+    public static Event<ProtoEntity> goodEvent() {
+        return Event.<ProtoEntity>builder()
+                .message(new ProtoEntity(goodMessage(), goodClass().getName()))
                 .build();
     }
 
-    public static Event<String> goodEvent(final String name, final int number) {
-        return Event.<String>builder()
-                .message(goodMessage(name, number))
+    public static Event<ProtoEntity> goodEvent(final String name) {
+        return Event.<ProtoEntity>builder()
+                .message(new ProtoEntity(goodMessage(name), goodClass().getName()))
                 .build();
     }
 
-    public static Event<String> badEvent() {
-        return Event.<String>builder()
-                .message(anyString())
+    public static Event<ProtoEntity> goodEvent(final String name, final int number) {
+        return Event.<ProtoEntity>builder()
+                .message(new ProtoEntity(goodMessage(name, number), goodClass().getName()))
+                .build();
+    }
+
+    public static Event<ProtoEntity> badEvent() {
+        return Event.<ProtoEntity>builder()
+                .message(new ProtoEntity(anyString(), anyString()))
                 .build();
     }
 
     public static String goodMessage() {
         return goodMessage(anyString(), anyInt());
+    }
+
+    public static String goodMessage(final String name) {
+        return "{\n" +
+                "  \"name\": \"" + name + "\"\n" +
+                "}";
     }
 
     public static String goodMessage(final String name, final int number) {

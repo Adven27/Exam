@@ -1,10 +1,5 @@
 package com.adven.concordion.extensions.exam.kafka;
 
-import com.adven.concordion.extensions.exam.kafka.check.AsyncMock;
-import com.adven.concordion.extensions.exam.kafka.check.SyncMock;
-import com.adven.concordion.extensions.exam.kafka.check.WithReply;
-import com.adven.concordion.extensions.exam.kafka.protobuf.TestEntity;
-import com.google.protobuf.Message;
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -25,9 +20,6 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
-import static com.adven.concordion.extensions.exam.kafka.EventUtils.goodClass;
-import static org.assertj.core.api.Assertions.assertThat;
-
 /**
  * @author Ruslan Ustits
  */
@@ -37,9 +29,6 @@ public abstract class KafkaAwareTest {
     protected static final String PRODUCE_TOPIC = "test.produce.topic";
     protected static final long DEFAULT_CONSUME_TIMEOUT = 1000L;
     protected static final long DEFAULT_PRODUCE_TIMEOUT = 1000L;
-
-    protected static final TestEntity.Entity SUCCESS = TestEntity.Entity.newBuilder().setName("OK").build();
-    protected static final TestEntity.Entity FAIL = TestEntity.Entity.newBuilder().setName("FAIL").build();
 
     @ClassRule
     public static final KafkaEmbedded kafka = new KafkaEmbedded(1, false, CONSUME_TOPIC);
@@ -78,27 +67,4 @@ public abstract class KafkaAwareTest {
         return new DefaultEventProducer(DEFAULT_PRODUCE_TIMEOUT, kafka.getBrokersAsString());
     }
 
-    protected ConsumerRecord<String, Bytes> startTest(final Event<String> eventToVerify, final TestEntity.Entity entityToSend)
-            throws ExecutionException, InterruptedException {
-        final Event<Message> successReplyEvent = Event.<Message>builder()
-                .topicName(PRODUCE_TOPIC)
-                .message(SUCCESS)
-                .build();
-        final Event<Message> failReplyEvent = Event.<Message>builder()
-                .topicName(PRODUCE_TOPIC)
-                .message(FAIL)
-                .build();
-
-        final SyncMock mock = new SyncMock(eventToVerify, goodClass().getName(), eventConsumer());
-        final WithReply withReply = new WithReply(successReplyEvent, failReplyEvent, eventProducer(), mock);
-        final AsyncMock asyncMock = new AsyncMock(withReply);
-
-        final boolean result = asyncMock.verify();
-        assertThat(result).isTrue();
-
-        final Bytes bytes = Bytes.wrap(entityToSend.toByteArray());
-        produceEvent(bytes);
-
-        return consumeSingleEvent();
-    }
 }

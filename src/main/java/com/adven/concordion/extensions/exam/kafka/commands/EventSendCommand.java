@@ -3,7 +3,10 @@ package com.adven.concordion.extensions.exam.kafka.commands;
 import com.adven.concordion.extensions.exam.html.Html;
 import com.adven.concordion.extensions.exam.kafka.Event;
 import com.adven.concordion.extensions.exam.kafka.EventProcessor;
+import com.adven.concordion.extensions.exam.kafka.protobuf.ProtoBlockParser;
+import com.adven.concordion.extensions.exam.kafka.protobuf.ProtoEntity;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import org.concordion.api.CommandCall;
 import org.concordion.api.Evaluator;
 import org.concordion.api.Result;
@@ -21,30 +24,33 @@ public final class EventSendCommand extends BaseEventCommand {
 
     @Override
     public void setUp(final CommandCall commandCall, final Evaluator evaluator, final ResultRecorder resultRecorder) {
-        final Html html = new Html(commandCall.getElement());
-        final String protobufClass = html.attr(PROTO_CLASS);
-        final String topicName = html.attr(TOPIC_NAME);
-        final String key = html.attr(EVENT_KEY);
-        final String message = html.text();
+        val root = new Html(commandCall.getElement());
+        final String topicName = root.attr(TOPIC_NAME);
+        final String key = root.attr(EVENT_KEY);
+        val proto = new ProtoBlockParser().parse(root);
+        root.removeAllChild();
 
-        html.removeAllChild();
-        final Html eventInfo = eventInfo("Send message to", topicName, protobufClass);
-        final Html eventTable = tableResult(key, message);
+        final boolean result;
+        if (proto.isPresent()) {
+            val message = proto.get();
+            val info = buildProtoInfo(message, "Send message to", topicName);
+            root.childs(info);
+            val event = Event.<ProtoEntity>builder()
+                    .topicName(topicName)
+                    .key(key)
+                    .message(message)
+                    .build();
+            result = getEventProcessor().send(event);
+        } else {
+            result = false;
+        }
 
-        html.childs(eventInfo)
-                .dropAllTo(eventTable);
-
-        final Event<String> event = Event.<String>builder()
-                .topicName(topicName)
-                .key(key)
-                .message(message)
-                .build();
-        final boolean result = getEventProcessor().send(event, protobufClass);
         if (!result) {
-            html.parent().attr("class", "")
+            root.parent().attr("class", "")
                     .css("rest-failure bd-callout bd-callout-danger");
-            html.text("Failed to send message to kafka");
+            root.text("Failed to send message to kafka");
             resultRecorder.record(Result.EXCEPTION);
         }
     }
+
 }

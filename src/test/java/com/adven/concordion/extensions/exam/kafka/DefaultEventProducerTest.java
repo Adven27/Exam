@@ -1,12 +1,13 @@
 package com.adven.concordion.extensions.exam.kafka;
 
-import com.google.protobuf.Message;
+import com.adven.concordion.extensions.exam.kafka.protobuf.ProtoEntity;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Properties;
 
-import static org.mockito.Mockito.mock;
+import static com.adven.concordion.extensions.exam.RandomUtils.anyLong;
+import static com.adven.concordion.extensions.exam.RandomUtils.anyString;
 
 /**
  * @author Ruslan Ustits
@@ -16,22 +17,22 @@ public class DefaultEventProducerTest {
     private DefaultEventProducer producer;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         producer = new DefaultEventProducer(1000L, new Properties());
     }
 
     @Test(expected = NullPointerException.class)
     public void testProduceWithNullTopic() {
-        producer.produce(null, "123", mock(Message.class));
+        producer.produce(null, anyString(), new ProtoEntity(anyString(), anyString()));
     }
 
     @Test(expected = NullPointerException.class)
     public void testProduceWithNullMessage() {
-        producer.produce("123", "123", null);
+        producer.produce(anyString(), anyString(), null);
     }
 
     @Test(expected = NullPointerException.class)
     public void testCreateInstanceWithNullProperty() {
-        new DefaultEventProducer(10L, (Properties) null);
+        new DefaultEventProducer(anyLong(), (Properties) null);
     }
 }

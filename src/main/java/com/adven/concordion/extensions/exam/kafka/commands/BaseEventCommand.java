@@ -3,15 +3,16 @@ package com.adven.concordion.extensions.exam.kafka.commands;
 import com.adven.concordion.extensions.exam.commands.ExamCommand;
 import com.adven.concordion.extensions.exam.html.Html;
 import com.adven.concordion.extensions.exam.kafka.EventProcessor;
+import com.adven.concordion.extensions.exam.kafka.protobuf.ProtoEntity;
 import com.adven.concordion.extensions.exam.rest.JsonPrettyPrinter;
 import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.val;
 
 import static com.adven.concordion.extensions.exam.html.Html.*;
 
 abstract class BaseEventCommand extends ExamCommand {
 
-    protected static final String PROTO_CLASS = "protobufClass";
     protected static final String TOPIC_NAME = "topicName";
     protected static final String EVENT_KEY = "key";
 
@@ -57,4 +58,12 @@ abstract class BaseEventCommand extends ExamCommand {
                         td(printer.prettyPrint(message)).css("json")));
         return table;
     }
+
+    protected Html buildProtoInfo(final ProtoEntity proto, final String header, final String topicName) {
+        val info = eventInfo(header, topicName, proto.getClassName());
+        val table = tableResult(proto.getJsonValue());
+        info.dropAllTo(table);
+        return info;
+    }
+
 }

@@ -1,6 +1,6 @@
 package com.adven.concordion.extensions.exam.kafka;
 
-import com.google.protobuf.Message;
+import com.adven.concordion.extensions.exam.kafka.protobuf.ProtoEntity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +12,7 @@ public final class DummyEventProducer implements EventProducer {
 
     private boolean result;
 
-    private List<Message> producedMessage = new ArrayList<>();
+    private List<ProtoEntity> producedMessage = new ArrayList<>();
 
     public static DummyEventProducer defaultInstance() {
         return new DummyEventProducer();
@@ -26,14 +26,14 @@ public final class DummyEventProducer implements EventProducer {
         result = false;
     }
 
-    public List<Message> popProducedMessages() {
-        final List<Message> messageToPop = producedMessage;
+    public List<ProtoEntity> popProducedMessages() {
+        final List<ProtoEntity> messageToPop = producedMessage;
         producedMessage = new ArrayList<>();
         return messageToPop;
     }
 
     @Override
-    public boolean produce(String topic, String key, Message message) {
+    public boolean produce(String topic, String key, ProtoEntity message) {
         if (topic == null || message == null) {
             throw new NullPointerException();
         }
@@ -42,7 +42,7 @@ public final class DummyEventProducer implements EventProducer {
     }
 
     @Override
-    public boolean produce(String topic, String key, EventHeader eventHeader, Message message) {
+    public boolean produce(String topic, String key, EventHeader eventHeader, ProtoEntity message) {
         return produce(topic, key, message);
     }
 

@@ -1,6 +1,7 @@
 package com.adven.concordion.extensions.exam.kafka.check.verify;
 
 import com.adven.concordion.extensions.exam.kafka.Event;
+import com.adven.concordion.extensions.exam.kafka.protobuf.ProtoEntity;
 import org.apache.kafka.common.utils.Bytes;
 import org.junit.Test;
 
@@ -16,14 +17,14 @@ public class CompositeVerifierTest {
         final CompositeVerifier verifier = new CompositeVerifier(
                 MockVerifier.returningTrue(),
                 MockVerifier.returningTrue());
-        final boolean result = verifier.verify(Event.<Bytes>empty(), Event.<String>empty());
+        final boolean result = verifier.verify(Event.<Bytes>empty(), Event.<ProtoEntity>empty());
         assertThat(result).isTrue();
     }
 
     @Test
     public void testVerifyWithNoVerifiers() {
         final CompositeVerifier verifier = new CompositeVerifier();
-        final boolean result = verifier.verify(Event.<Bytes>empty(), Event.<String>empty());
+        final boolean result = verifier.verify(Event.<Bytes>empty(), Event.<ProtoEntity>empty());
         assertThat(result).isTrue();
     }
 
@@ -33,7 +34,7 @@ public class CompositeVerifierTest {
                 MockVerifier.returningTrue(),
                 MockVerifier.returningFalse(),
                 MockVerifier.returningTrue());
-        final boolean result = verifier.verify(Event.<Bytes>empty(), Event.<String>empty());
+        final boolean result = verifier.verify(Event.<Bytes>empty(), Event.<ProtoEntity>empty());
         assertThat(result).isFalse();
     }
 
