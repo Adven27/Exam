@@ -35,7 +35,7 @@ public final class ProtoEntity {
     }
 
     public boolean isEqualTo(final byte[] bytes) {
-        final Optional<String> valueToCheck = ProtoUtils.fromBytesToJson(Bytes.wrap(bytes), className);
+        final Optional<String> valueToCheck = ProtoUtils.fromBytesToJson(Bytes.wrap(bytes), className, descriptors);
         if (valueToCheck.isPresent()) {
             return isEqualTo(valueToCheck.get());
         }
