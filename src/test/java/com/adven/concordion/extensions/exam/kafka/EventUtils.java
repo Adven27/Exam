@@ -40,9 +40,9 @@ public final class EventUtils {
     }
 
     public static String goodMessage(final String name) {
-        return "{\n" +
-            "  \"name\": \"" + name + "\"\n" +
-            "}";
+        return "{\n"
+            + "  \"name\": \"" + name + "\"\n"
+            + "}";
     }
 
     public static String goodMessage(final String name, final int number) {

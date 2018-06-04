@@ -3,7 +3,6 @@ package com.adven.concordion.extensions.exam.kafka.check;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-
 @Slf4j
 @RequiredArgsConstructor
 public final class AsyncMock implements Runnable, CheckMessageMock {

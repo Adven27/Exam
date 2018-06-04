@@ -10,9 +10,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * @author Ruslan Ustits
- */
 public final class ProtoBlockParser {
 
     private static final String PROTOBUF = "protobuf";

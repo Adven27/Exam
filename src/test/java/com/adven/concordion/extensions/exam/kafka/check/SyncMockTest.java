@@ -13,7 +13,6 @@ import static com.adven.concordion.extensions.exam.kafka.EventUtils.goodClass;
 import static com.adven.concordion.extensions.exam.kafka.EventUtils.goodMessage;
 import static org.assertj.core.api.Assertions.assertThat;
 
-
 public class SyncMockTest {
 
     private DummyEventConsumer eventConsumer;
@@ -27,8 +26,8 @@ public class SyncMockTest {
     public void testVerify() {
         eventConsumer.addEventToReturn(Event.<Bytes>empty());
         final Event<ProtoEntity> event = Event.<ProtoEntity>builder()
-                .topicName(anyString())
-                .build();
+            .topicName(anyString())
+            .build();
         final SyncMock syncMock = new SyncMock(event, eventConsumer, MockVerifier.returningTrue());
         assertThat(syncMock.verify()).isTrue();
     }
@@ -51,8 +50,8 @@ public class SyncMockTest {
     public void testFailedVerify() {
         eventConsumer.addEventToReturn(Event.<Bytes>empty());
         final Event<ProtoEntity> event = Event.<ProtoEntity>builder()
-                .topicName(anyString())
-                .build();
+            .topicName(anyString())
+            .build();
         final SyncMock syncMock = new SyncMock(event, eventConsumer, MockVerifier.returningFalse());
         assertThat(syncMock.verify()).isFalse();
     }
@@ -60,11 +59,11 @@ public class SyncMockTest {
     @Test
     public void testVerifyWhenMessagesAreNotEqual() {
         final Event<ProtoEntity> one = Event.<ProtoEntity>builder()
-                .message(new ProtoEntity(goodMessage(), goodClass().getName()))
-                .build();
+            .message(new ProtoEntity(goodMessage(), goodClass().getName()))
+            .build();
         final Event<ProtoEntity> another = Event.<ProtoEntity>builder()
-                .message(new ProtoEntity(goodMessage(), goodClass().getName()))
-                .build();
+            .message(new ProtoEntity(goodMessage(), goodClass().getName()))
+            .build();
         eventConsumer.addProtoEventToReturn(one);
         final SyncMock syncMock = new SyncMock(another, eventConsumer);
         assertThat(syncMock.verify()).isFalse();
@@ -73,13 +72,13 @@ public class SyncMockTest {
     @Test
     public void testConsume() {
         final Event<Bytes> first = Event.<Bytes>builder()
-                .topicName(anyString())
-                .build();
+            .topicName(anyString())
+            .build();
         final Event<Bytes> second = Event.<Bytes>builder()
-                .topicName(anyString())
-                .build();
+            .topicName(anyString())
+            .build();
         eventConsumer.addEventToReturn(first)
-                .addEventToReturn(second);
+            .addEventToReturn(second);
         final SyncMock syncMock = new SyncMock(Event.<ProtoEntity>empty(), eventConsumer);
         final Event event = syncMock.consume(anyString());
         assertThat(event).isEqualTo(first);

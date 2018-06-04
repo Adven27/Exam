@@ -19,13 +19,13 @@ public class AsyncMockTestFail extends AsyncTest {
     @Test
     public void testAsyncVerifyWithFailReply() throws ExecutionException, InterruptedException {
         final Event<ProtoEntity> eventToVerify = goodEvent(anyString(), anyInt())
-                .toBuilder()
-                .topicName(CONSUME_TOPIC)
-                .build();
+            .toBuilder()
+            .topicName(CONSUME_TOPIC)
+            .build();
         final TestEntity.Entity entity = TestEntity.Entity.newBuilder()
-                .setName(anyString())
-                .setNumber(anyInt())
-                .build();
+            .setName(anyString())
+            .setNumber(anyInt())
+            .build();
 
         final ConsumerRecord<String, Bytes> record = startTest(eventToVerify, entity);
         assertThat(record.value()).isEqualTo(Bytes.wrap(FAIL.toByteArray()));

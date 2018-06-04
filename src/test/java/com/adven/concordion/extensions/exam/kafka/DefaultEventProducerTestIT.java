@@ -11,13 +11,12 @@ import static com.adven.concordion.extensions.exam.kafka.EventUtils.goodClass;
 import static com.adven.concordion.extensions.exam.kafka.EventUtils.goodMessage;
 import static org.assertj.core.api.Assertions.assertThat;
 
-
 public class DefaultEventProducerTestIT extends KafkaAwareTest {
 
     @Test
     public void testProduce() {
         final EventProducer eventProducer = new DefaultEventProducer(DEFAULT_PRODUCE_TIMEOUT,
-                kafka.getBrokersAsString());
+            kafka.getBrokersAsString());
 
         final String name = anyString();
         final int number = anyInt();

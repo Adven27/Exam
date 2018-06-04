@@ -7,14 +7,13 @@ import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-
 public class CompositeVerifierTest {
 
     @Test
     public void testVerify() {
         final CompositeVerifier verifier = new CompositeVerifier(
-                MockVerifier.returningTrue(),
-                MockVerifier.returningTrue());
+            MockVerifier.returningTrue(),
+            MockVerifier.returningTrue());
         final boolean result = verifier.verify(Event.<Bytes>empty(), Event.<ProtoEntity>empty());
         assertThat(result).isTrue();
     }
@@ -29,9 +28,9 @@ public class CompositeVerifierTest {
     @Test
     public void testFailedVerify() {
         final CompositeVerifier verifier = new CompositeVerifier(
-                MockVerifier.returningTrue(),
-                MockVerifier.returningFalse(),
-                MockVerifier.returningTrue());
+            MockVerifier.returningTrue(),
+            MockVerifier.returningFalse(),
+            MockVerifier.returningTrue());
         final boolean result = verifier.verify(Event.<Bytes>empty(), Event.<ProtoEntity>empty());
         assertThat(result).isFalse();
     }

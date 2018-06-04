@@ -12,7 +12,6 @@ import java.util.List;
 import static com.adven.concordion.extensions.exam.RandomUtils.anyString;
 import static org.assertj.core.api.Assertions.assertThat;
 
-
 public class ProtoUtilsTest {
 
     @Test

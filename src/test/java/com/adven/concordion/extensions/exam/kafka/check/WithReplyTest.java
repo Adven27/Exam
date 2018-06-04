@@ -10,7 +10,6 @@ import org.junit.Test;
 import static com.adven.concordion.extensions.exam.RandomUtils.anyString;
 import static org.assertj.core.api.Assertions.assertThat;
 
-
 public class WithReplyTest {
 
     private DummyEventProducer eventProducer;
@@ -21,13 +20,13 @@ public class WithReplyTest {
     public void setUp() {
         eventProducer = new DummyEventProducer();
         successEvent = EventUtils.goodEvent()
-                .toBuilder()
-                .topicName(anyString())
-                .build();
+            .toBuilder()
+            .topicName(anyString())
+            .build();
         failEvent = EventUtils.goodEvent()
-                .toBuilder()
-                .topicName(anyString())
-                .build();
+            .toBuilder()
+            .topicName(anyString())
+            .build();
     }
 
     @Test
@@ -54,7 +53,7 @@ public class WithReplyTest {
             eventProducer.mustReturnFalse();
         }
         final WithReply reply = new WithReply(successEvent, failEvent,
-                eventProducer, new DummyMock(isEventVerified));
+            eventProducer, new DummyMock(isEventVerified));
         return reply.verify();
     }
 

@@ -12,24 +12,21 @@ import static com.adven.concordion.extensions.exam.kafka.EventUtils.goodEvent;
 import static com.adven.concordion.extensions.exam.kafka.protobuf.TestEntity.Entity;
 import static org.assertj.core.api.Assertions.assertThat;
 
-/**
- * @author Ruslan Ustits
- */
 public abstract class AsyncTest extends KafkaAwareTest {
 
     protected static final Entity SUCCESS = Entity.newBuilder().setName("OK").build();
     protected static final Entity FAIL = Entity.newBuilder().setName("FAIL").build();
 
     protected ConsumerRecord<String, Bytes> startTest(final Event<ProtoEntity> eventToVerify, final Entity entityToSend)
-            throws ExecutionException, InterruptedException {
+        throws ExecutionException, InterruptedException {
         final Event<ProtoEntity> successReplyEvent = goodEvent("OK")
-                .toBuilder()
-                .topicName(PRODUCE_TOPIC)
-                .build();
+            .toBuilder()
+            .topicName(PRODUCE_TOPIC)
+            .build();
         final Event<ProtoEntity> failReplyEvent = goodEvent("FAIL")
-                .toBuilder()
-                .topicName(PRODUCE_TOPIC)
-                .build();
+            .toBuilder()
+            .topicName(PRODUCE_TOPIC)
+            .build();
 
         final SyncMock mock = new SyncMock(eventToVerify, eventConsumer());
         final WithReply withReply = new WithReply(successReplyEvent, failReplyEvent, eventProducer(), mock);

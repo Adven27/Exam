@@ -9,9 +9,6 @@ import static com.adven.concordion.extensions.exam.kafka.EventUtils.goodMessage;
 import static com.adven.concordion.extensions.exam.kafka.protobuf.TestEntity.Entity;
 import static org.assertj.core.api.Assertions.assertThat;
 
-/**
- * @author Ruslan Ustits
- */
 public class ProtoEntityTest {
 
     @Test
@@ -31,9 +28,9 @@ public class ProtoEntityTest {
         final String name = anyString();
         final int number = anyInt();
         final Entity entity = Entity.newBuilder()
-                .setName(name)
-                .setNumber(number)
-                .build();
+            .setName(name)
+            .setNumber(number)
+            .build();
         final String expected = goodMessage(name, number);
         final ProtoEntity protoEntity = new ProtoEntity(expected, goodClass().getName());
         final boolean result = protoEntity.isEqualTo(entity.toByteArray());
@@ -44,9 +41,9 @@ public class ProtoEntityTest {
     public void testIsNotEqualToWithBadJsonValue() {
         final ProtoEntity protoEntity = new ProtoEntity(anyString(), goodClass().getName());
         final Entity entity = Entity.newBuilder()
-                .setName(anyString())
-                .setNumber(anyInt())
-                .build();
+            .setName(anyString())
+            .setNumber(anyInt())
+            .build();
         final boolean result = protoEntity.isEqualTo(entity.toByteArray());
         assertThat(result).isFalse();
     }
@@ -55,9 +52,9 @@ public class ProtoEntityTest {
     public void testIsNotEqualTo() {
         final ProtoEntity protoEntity = new ProtoEntity(goodMessage(), goodClass().getName());
         final Entity entity = Entity.newBuilder()
-                .setName(anyString())
-                .setNumber(anyInt())
-                .build();
+            .setName(anyString())
+            .setNumber(anyInt())
+            .build();
         final boolean result = protoEntity.isEqualTo(entity.toByteArray());
         assertThat(result).isFalse();
     }

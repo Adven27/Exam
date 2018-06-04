@@ -9,7 +9,6 @@ import java.util.List;
 
 import static java.util.Arrays.asList;
 
-
 public final class CompositeVerifier implements Verifier {
 
     private final List<Verifier> verifiers = new ArrayList<>();

@@ -7,7 +7,6 @@ import org.junit.Test;
 import static com.adven.concordion.extensions.exam.kafka.protobuf.TestEntity.Entity;
 import static org.assertj.core.api.Assertions.assertThat;
 
-
 public class ProtoToJsonTest {
 
     private ProtoToJson<Entity> converter;

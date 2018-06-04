@@ -10,9 +10,6 @@ import org.apache.kafka.common.utils.Bytes;
 import java.util.Arrays;
 import java.util.List;
 
-/**
- * @author Ruslan Ustits
- */
 @Getter
 @RequiredArgsConstructor
 public final class ProtoEntity {

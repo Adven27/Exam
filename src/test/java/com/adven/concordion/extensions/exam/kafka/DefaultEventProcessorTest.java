@@ -7,7 +7,6 @@ import org.junit.Test;
 import static com.adven.concordion.extensions.exam.RandomUtils.anyString;
 import static org.assertj.core.api.Assertions.assertThat;
 
-
 public class DefaultEventProcessorTest {
 
     private DefaultEventProcessor processor;

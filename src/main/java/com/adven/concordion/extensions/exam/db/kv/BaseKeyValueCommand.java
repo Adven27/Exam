@@ -7,7 +7,6 @@ import com.adven.concordion.extensions.exam.rest.JsonPrettyPrinter;
 
 import static com.adven.concordion.extensions.exam.html.HtmlBuilder.*;
 
-
 public abstract class BaseKeyValueCommand extends ExamCommand {
 
     protected static final String PROTOBUF = "protobuf";

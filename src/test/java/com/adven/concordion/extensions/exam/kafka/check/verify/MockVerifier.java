@@ -4,7 +4,6 @@ import com.adven.concordion.extensions.exam.kafka.Event;
 import com.adven.concordion.extensions.exam.kafka.protobuf.ProtoEntity;
 import org.apache.kafka.common.utils.Bytes;
 
-
 public final class MockVerifier implements Verifier {
 
     private final boolean resultToReturn;

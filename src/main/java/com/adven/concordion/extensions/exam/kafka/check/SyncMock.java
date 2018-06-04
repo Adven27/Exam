@@ -24,9 +24,9 @@ public final class SyncMock implements CheckMessageMock {
 
     public SyncMock(final Event<ProtoEntity> eventToCheck, final EventConsumer eventConsumer) {
         this(eventToCheck, eventConsumer,
-                new CompositeVerifier(
-                        new NullAwareVerifier(),
-                        new MessageVerifier()));
+            new CompositeVerifier(
+                new NullAwareVerifier(),
+                new MessageVerifier()));
     }
 
     @Override

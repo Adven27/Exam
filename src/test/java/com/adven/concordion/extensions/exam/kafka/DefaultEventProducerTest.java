@@ -9,7 +9,6 @@ import java.util.Properties;
 import static com.adven.concordion.extensions.exam.RandomUtils.anyLong;
 import static com.adven.concordion.extensions.exam.RandomUtils.anyString;
 
-
 public class DefaultEventProducerTest {
 
     private DefaultEventProducer producer;

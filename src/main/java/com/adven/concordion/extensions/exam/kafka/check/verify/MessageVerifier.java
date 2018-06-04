@@ -5,7 +5,6 @@ import com.adven.concordion.extensions.exam.kafka.protobuf.ProtoEntity;
 import lombok.RequiredArgsConstructor;
 import org.apache.kafka.common.utils.Bytes;
 
-
 @RequiredArgsConstructor
 public final class MessageVerifier implements Verifier {
 

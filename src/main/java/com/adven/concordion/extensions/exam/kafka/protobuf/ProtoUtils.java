@@ -74,9 +74,9 @@ public final class ProtoUtils {
         Optional<Class<Descriptor>> descriptorClass = safeForName(className);
         if (descriptorClass.isPresent()) {
             return ReflectionUtils.getInstanceByStaticMethod(
-                    descriptorClass.get(),
-                    DESCRIPTOR_METHOD,
-                    Descriptor.class);
+                descriptorClass.get(),
+                DESCRIPTOR_METHOD,
+                Descriptor.class);
         } else {
             return Optional.absent();
         }

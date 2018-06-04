@@ -10,7 +10,6 @@ import org.apache.kafka.common.utils.Bytes;
 
 import java.io.UnsupportedEncodingException;
 
-
 @Slf4j
 @RequiredArgsConstructor
 public final class ReplyWithTopicFromHeader implements CheckMessageMock {

@@ -1,6 +1,5 @@
 package com.adven.concordion.extensions.exam.kafka.check;
 
-
 public final class DummyMock implements CheckMessageMock {
 
     private final boolean returnValue;

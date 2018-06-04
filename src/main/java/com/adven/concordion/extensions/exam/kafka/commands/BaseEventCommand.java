@@ -29,19 +29,19 @@ abstract class BaseEventCommand extends ExamCommand {
         final Html header = thead();
         final Html tr = tr();
         tr.childs(
-                th("Event header"),
-                th("Event body")
+            th("Event header"),
+            th("Event body")
         );
         return table.childs(header.childs(tr));
     }
 
     protected Html eventInfo(String text, final String topicName, final String protobufClass) {
         return div().childs(
-                h(4, text),
-                h(5, "").childs(
-                        badge(topicName, "primary"),
-                        badge(protobufClass, "secondary"),
-                        code("protobuf")));
+            h(4, text),
+            h(5, "").childs(
+                badge(topicName, "primary"),
+                badge(protobufClass, "secondary"),
+                code("protobuf")));
     }
 
     protected Html tableResult(final String message) {
@@ -53,9 +53,9 @@ abstract class BaseEventCommand extends ExamCommand {
         final Html table = eventTable();
         final JsonPrettyPrinter printer = new JsonPrettyPrinter();
         table.childs(
-                tbody().childs(
-                        td().childs(code(header)),
-                        td(printer.prettyPrint(message)).css("json")));
+            tbody().childs(
+                td().childs(code(header)),
+                td(printer.prettyPrint(message)).css("json")));
         return table;
     }
 

@@ -11,7 +11,6 @@ import java.util.Set;
 import static com.google.protobuf.Descriptors.Descriptor;
 import static com.google.protobuf.util.JsonFormat.TypeRegistry;
 
-
 public abstract class ProtoConverter<F, T> {
 
     @Getter(AccessLevel.PROTECTED)

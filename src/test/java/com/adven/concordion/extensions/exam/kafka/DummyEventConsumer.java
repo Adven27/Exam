@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-
 public final class DummyEventConsumer implements EventConsumer {
 
     private final List<Event<Bytes>> events;
@@ -33,10 +32,10 @@ public final class DummyEventConsumer implements EventConsumer {
     public DummyEventConsumer addProtoEventToReturn(final Event<ProtoEntity> event) {
         final ProtoEntity message = event.getMessage();
         final Event<Bytes> eventToReturn = Event.<Bytes>builder()
-                .message(message == null ? null : Bytes.wrap(message.toBytes()))
-                .topicName(event.getTopicName())
-                .key(event.getKey())
-                .build();
+            .message(message == null ? null : Bytes.wrap(message.toBytes()))
+            .topicName(event.getTopicName())
+            .key(event.getKey())
+            .build();
         return addEventToReturn(eventToReturn);
     }
 
