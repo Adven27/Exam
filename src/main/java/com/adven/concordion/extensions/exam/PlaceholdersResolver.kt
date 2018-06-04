@@ -44,12 +44,13 @@ private fun resolveVars(body: String, eval: Evaluator): String {
     return result
 }
 
-private fun getObject(eval: Evaluator, v: String): Any? {
-    if (v.contains(":")) {
-        val varAndFormat = v.split(":".toRegex(), 2)
-        return forPattern(varAndFormat[1]).print(fromDateFields(getObject(eval, varAndFormat[0]) as Date))
+private fun getObject(eval: Evaluator, value: String): Any? {
+    return if (value.contains(":")) {
+        val (v, p) = value.split(":".toRegex(), 2)
+        forPattern(p).print(fromDateFields(getObject(eval, v) as Date))
+    } else {
+        eval.getVariable("#$value") ?: eval.evaluate(if (value.contains(".")) "#$value" else value)
     }
-    return eval.getVariable("#$v") ?: eval.evaluate(if (v.contains(".")) "#$v" else v)
 }
 
 private fun resolveExamCommands(body: String): String {
@@ -102,16 +103,15 @@ private fun constants(v: String): Any? {
 }
 
 private fun parsePeriod(v: String): Period {
-    var p = Period.ZERO
-    val periods = v.substring(5, v.indexOf("]")).split(",")
-    for (period in periods) {
-        val parts = period.trim({ it <= ' ' }).split(" ")
-        p = if (isValue(parts[0]))
-            p.plus(periodBy(parseInt(parts[0]), parts[1]))
-        else
-            p.plus(periodBy(parseInt(parts[1]), parts[0]))
-    }
-    return p
+    return v.substring(5, v.indexOf("]")).split(",")
+        .map {
+            val (p1, p2) = it.trim().split(" ")
+            if (p1.isNum())
+                periodBy(parseInt(p1), p2)
+            else
+                periodBy(parseInt(p2), p1)
+        }
+        .fold(Period.ZERO) { a, n -> a.plus(n) }
 }
 
 fun periodBy(value: Int, type: String): BaseSingleFieldPeriod {
@@ -126,14 +126,13 @@ fun periodBy(value: Int, type: String): BaseSingleFieldPeriod {
     }
 }
 
-private fun isValue(part: String): Boolean {
-    try {
-        parseInt(part)
+private fun String.isNum(): Boolean {
+    return try {
+        parseInt(this)
+        true
     } catch (e: NumberFormatException) {
-        return false
+        false
     }
-
-    return true
 }
 
 fun resolveToObj(placeholder: String?, evaluator: Evaluator): Any? {
@@ -161,7 +160,7 @@ private fun resolveDate(v: String): Any? {
     return if (v.contains(":")) getDateFromPattern(v) else constants(v)
 }
 
-private fun getDateFromPattern(v: String): String {
-    val varAndFormat = v.split(":".toRegex(), 2)
-    return forPattern(varAndFormat[1]).print(fromDateFields((constants(varAndFormat[0]) as Date?)!!))
+private fun getDateFromPattern(value: String): String {
+    val (v, p) = value.split(":".toRegex(), 2)
+    return forPattern(p).print(fromDateFields((constants(v) as Date?)!!))
 }

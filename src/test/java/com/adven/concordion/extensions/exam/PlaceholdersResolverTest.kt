@@ -100,9 +100,9 @@ class PlaceholdersResolverTest {
     @Throws(Exception::class)
     fun canUseJsonUnitMatcherAliases() {
         assertThat(resolveJson("!{formattedAs dd.MM.yyyy}", eval),
-                `is`("\${json-unit.matches:formattedAs}dd.MM.yyyy"))
+            `is`("\${json-unit.matches:formattedAs}dd.MM.yyyy"))
         assertThat(resolveJson("!{formattedAndWithin [yyyy-MM-dd][1d][1951-05-13]}", eval),
-                `is`("\${json-unit.matches:formattedAndWithin}[yyyy-MM-dd][1d][1951-05-13]"))
+            `is`("\${json-unit.matches:formattedAndWithin}[yyyy-MM-dd][1d][1951-05-13]"))
     }
 
     @Test
@@ -120,21 +120,29 @@ class PlaceholdersResolverTest {
     @Throws(Exception::class)
     fun canAddCompositePeriodsToNow() {
         assertThat(resolveJson("\${exam.now+[1 day, 1 month]:dd.MM.yyyy}", eval),
-                `is`(now().plus(m1d1).toString("dd.MM.yyyy")))
+            `is`(now().plus(m1d1).toString("dd.MM.yyyy")))
         assertThat(resolveJson("\${exam.now+[days 3, months 3, 3 years]:dd.MM.yyyy}", eval),
-                `is`(now().plus(y3m3d3).toString("dd.MM.yyyy")))
+            `is`(now().plus(y3m3d3).toString("dd.MM.yyyy")))
         assertThat(resolveJson("\${exam.now+[4 d, 4 M, y 4, 4 hours]:dd.MM.yyyy'T'hh}", eval),
-                `is`(now().plus(y4m4d4h4).toString("dd.MM.yyyy'T'hh")))
+            `is`(now().plus(y4m4d4h4).toString("dd.MM.yyyy'T'hh")))
     }
 
     @Test
     @Throws(Exception::class)
     fun canSubtractCompositePeriodsFromNow() {
         assertThat(resolveJson("\${exam.now-[1 day, 1 month]:dd.MM.yyyy}", eval),
-                `is`(now().minus(m1d1).toString("dd.MM.yyyy")))
+            `is`(now().minus(m1d1).toString("dd.MM.yyyy")))
         assertThat(resolveJson("\${exam.now-[days 3, months 3, 3 years]:dd.MM.yyyy}", eval),
-                `is`(now().minus(y3m3d3).toString("dd.MM.yyyy")))
+            `is`(now().minus(y3m3d3).toString("dd.MM.yyyy")))
         assertThat(resolveJson("\${exam.now-[4 d, 4 M, y 4, 4 hours]:dd.MM.yyyy'T'hh}", eval),
-                `is`(now().minus(y4m4d4h4).toString("dd.MM.yyyy'T'hh")))
+            `is`(now().minus(y4m4d4h4).toString("dd.MM.yyyy'T'hh")))
+    }
+
+    @Test
+    fun examDateVariables() {
+        val p = "dd.MM.yyyy'T'hh:mm:ss"
+        assertThat(resolveJson("\${exam.now:$p}", eval), `is`(now().toString(p)))
+        assertThat(resolveJson("\${exam.tomorrow:$p}", eval), `is`(now().plusDays(1).toString(p)))
+        assertThat(resolveJson("\${exam.yesterday:$p}", eval), `is`(now().minusDays(1).toString(p)))
     }
 }

@@ -8,12 +8,8 @@ import org.concordion.api.CommandCall
 import org.concordion.api.Evaluator
 import org.concordion.api.ResultRecorder
 import org.dbunit.IDatabaseTester
-import org.dbunit.database.DatabaseConfig.PROPERTY_DATATYPE_FACTORY
 import org.dbunit.dataset.Column
 import org.dbunit.dataset.ITable
-import org.dbunit.ext.h2.H2DataTypeFactory
-import org.dbunit.ext.hsqldb.HsqldbDataTypeFactory
-import org.dbunit.ext.oracle.OracleDataTypeFactory
 import java.util.*
 
 open class DBCommand(name: String, tag: String, protected val dbTester: IDatabaseTester) : ExamCommand(name, tag) {
@@ -21,27 +17,7 @@ open class DBCommand(name: String, tag: String, protected val dbTester: IDatabas
     protected lateinit var expectedTable: ITable
     protected var where: String? = null
 
-    //Fix for warning "Potential problem found:
-    // The configured data type factory 'class org.dbunit.dataset.datatype.DefaultDataTypeFactory'"
-    private fun getRidOfDbUnitWarning() {
-        try {
-            val connection = dbTester.connection
-            val dbName: String = connection.connection.metaData.databaseProductName
-            val dbConfig = connection.config
-            when (dbName) {
-                "HSQL Database Engine" -> dbConfig.setProperty(PROPERTY_DATATYPE_FACTORY, HsqldbDataTypeFactory())
-                "H2" -> dbConfig.setProperty(PROPERTY_DATATYPE_FACTORY, H2DataTypeFactory())
-                "Oracle" -> dbConfig.setProperty(PROPERTY_DATATYPE_FACTORY, OracleDataTypeFactory())
-                else -> System.err.println("No matching database product found $dbName")
-            }
-        } catch (e: Exception) {
-            throw RuntimeException(e)
-        }
-
-    }
-
     override fun setUp(commandCall: CommandCall?, eval: Evaluator?, resultRecorder: ResultRecorder?) {
-        getRidOfDbUnitWarning()
         val root = tableSlim(Html(commandCall!!.element))(
             div(""),
             span("")
@@ -60,13 +36,13 @@ open class DBCommand(name: String, tag: String, protected val dbTester: IDatabas
         return if (attr == null)
             TableData.Cols(emptyMap())
         else {
-            val remarksAndValues = parse(attr)
-            remarks.plus(remarksAndValues.first)
+            val remarkAndVal = parse(attr)
+            remarks.plus(remarkAndVal.map { it.key to it.value.first })
             TableData.Cols(
-                remarksAndValues.second
-                    .filterValues { !it.isBlank() }
-                    .mapValues { resolveToObj(it.value, eval) },
-                *remarksAndValues.second.keys.toTypedArray()
+                remarkAndVal
+                    .filterValues { !it.second.isBlank() }
+                    .mapValues { resolveToObj(it.value.second, eval) },
+                *remarkAndVal.keys.toTypedArray()
             )
         }
     }
@@ -112,15 +88,11 @@ open class DBCommand(name: String, tag: String, protected val dbTester: IDatabas
     }
 }
 
-fun parse(attr: String): Pair<Map<String, Int>, Map<String, String>> {
+fun parse(attr: String): Map<String, Pair<Int, String>> {
     return attr.split(",")
         .map {
             val (r, n, v) = ("""(\**)([^=]+)=?(.*)""".toRegex()).matchEntire(it.trim())!!.destructured
-            Pair(mapOf(n to r.length), mapOf(n to v))
+            mapOf(n to (r.length to v))
         }
-        .reduce { acc, next ->
-            val (ar, av) = acc
-            val (r, v) = next
-            Pair(ar.plus(r), av.plus(v))
-        }
+        .reduce { acc, next -> acc.plus(next) }
 }
