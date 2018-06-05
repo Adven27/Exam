@@ -14,7 +14,7 @@ import com.adven.concordion.extensions.exam.files.commands.FilesShowCommand;
 import com.adven.concordion.extensions.exam.kafka.EventProcessor;
 import com.adven.concordion.extensions.exam.kafka.commands.EventCheckReplyCommand;
 import com.adven.concordion.extensions.exam.kafka.commands.EventSendCommand;
-import com.adven.concordion.extensions.exam.rest.commands.*;
+import com.adven.concordion.extensions.exam.rest.*;
 import com.adven.concordion.extensions.exam.ui.BrowserCommand;
 import net.javacrumbs.jsonunit.core.Configuration;
 import org.dbunit.IDatabaseTester;

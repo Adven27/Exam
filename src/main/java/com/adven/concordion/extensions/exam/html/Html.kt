@@ -17,7 +17,7 @@ class Html(internal val el: Element) {
         if (text != null) {
             this.text(text)
         }
-        attrs.forEach { attr(it.first, it.second) }
+        attrs(*attrs)
     }
 
     @JvmName("childs")
@@ -40,6 +40,13 @@ class Html(internal val el: Element) {
         return result
     }
 
+    fun attrs(vararg attrs: Pair<String, String>): Html {
+        attrs.forEach {
+            el.addAttribute(it.first, it.second)
+        }
+        return this
+    }
+
     fun attr(name: String): String? = el.getAttributeValue(name)
 
     fun attr(attr: String, value: String): Html {
@@ -47,7 +54,11 @@ class Html(internal val el: Element) {
         return this
     }
 
-    infix fun collapse(target: String) = attr("data-toggle", "collapse").attr("data-target", "#$target").attr("aria-expanded", "true").attr("aria-controls", target)
+    infix fun collapse(target: String) = attrs(
+        "data-toggle" to "collapse",
+        "data-target" to "#$target",
+        "aria-expanded" to "true",
+        "aria-controls" to target)
 
     infix fun css(classes: String): Html {
         el.addStyleClass(classes)
@@ -55,7 +66,7 @@ class Html(internal val el: Element) {
     }
 
     infix fun style(style: String): Html {
-        attr("style", style)
+        attrs("style" to style)
         return this
     }
 
@@ -80,7 +91,8 @@ class Html(internal val el: Element) {
         return this
     }
 
-    fun takeAwayAttr(name: String, eval: Evaluator?): String? {
+    @JvmOverloads
+    fun takeAwayAttr(name: String, eval: Evaluator? = null): String? {
         var attr = attr(name)
         if (attr != null) {
             attr = if (eval != null) resolveJson(attr, eval) else attr
@@ -88,8 +100,6 @@ class Html(internal val el: Element) {
         }
         return attr
     }
-
-    fun takeAwayAttr(name: String) = takeAwayAttr(name, null)
 
     fun takeAwayAttr(name: String, def: String): String = takeAwayAttr(name) ?: def
 
@@ -105,11 +115,11 @@ class Html(internal val el: Element) {
     fun panel(header: String): Html {
         css("card mb-3")
         val id = header.hashCode().toString()
-        val body = div().css("card-body collapse show").attr("id", id)
+        val body = div().css("card-body collapse show").attrs("id" to id)
         moveChildrenTo(body)
         this(
             div().css("card-header")(
-                link(header).attr("name", header).attr("data-type", "example")
+                link(header).attrs("name" to header, "data-type" to "example")
             ).collapse(id)
         )
         val footer = div().css("card-footer text-muted").collapse(id)
@@ -157,14 +167,12 @@ class Html(internal val el: Element) {
     fun firstOrThrow(tag: String) = first(tag) ?: throw IllegalStateException("<$tag> tag is required")
 
     fun removeAllChild(): Html {
-        this.moveChildrenTo(Html("tmp"))
+        moveChildrenTo(Html("tmp"))
         return this
     }
 
-    fun remove(html: Html) = el.removeChild(html.el)
-
     fun remove(vararg children: Html?): Html {
-        children.filterNotNull().forEach { remove(it) }
+        children.filterNotNull().forEach { el.removeChild(it.el) }
         return this
     }
 
@@ -195,7 +203,7 @@ fun th(txt: String? = null, vararg attrs: Pair<String, String>) = Html("th", txt
 
 fun tbody(vararg attrs: Pair<String, String>) = Html("tbody", *attrs)
 
-fun tr(vararg attrs: Pair<String, String>) = Html("tr")
+fun tr(vararg attrs: Pair<String, String>) = Html("tr", *attrs)
 
 fun trWithTDs(vararg cellElements: Html): Html {
     val tr = tr()
@@ -213,7 +221,7 @@ fun italic(txt: String? = null, vararg attrs: Pair<String, String>) = Html("i", 
 fun code(txt: String) = Html("code", txt)
 
 @JvmOverloads
-fun span(txt: String, vararg attrs: Pair<String, String>) = Html("span", txt, *attrs)
+fun span(txt: String? = null, vararg attrs: Pair<String, String>) = Html("span", txt, *attrs)
 
 fun badge(txt: String, style: String) = span(txt).css("badge badge-$style ml-1 mr-1")
 
@@ -227,7 +235,7 @@ fun link(txt: String) = Html("a", txt)
 
 fun link(txt: String, vararg childs: Html) = link(txt)(*childs)
 
-fun link(txt: String, src: String) = link(txt).attr("href", src)
+fun link(txt: String, src: String) = link(txt).attrs("href" to src)
 
 @JvmOverloads
 fun thumbnail(src: String, size: Int = 360) = link("", src)(image(src, size, size))
@@ -244,9 +252,10 @@ fun imageOverlay(src: String, size: Int, title: String, desc: String, descStyle:
     )
 }
 
-fun image(src: String) = Html("image").attr("src", src)
+fun image(src: String) = Html("image").attrs("src" to src)
 
-fun image(src: String, width: Int, height: Int) = image(src).css("img-thumbnail").attr("width", width.toString()).attr("height", height.toString())
+fun image(src: String, width: Int, height: Int) = image(src).css("img-thumbnail")
+    .attrs("width" to "$width", "height" to "$height")
 
 fun h(n: Int, text: String) = Html("h$n", text)
 
@@ -262,6 +271,10 @@ fun codeXml(text: String?) = pre(text ?: "") css "xml card"
 
 fun tag(tag: String) = Html(tag)
 
+fun body() = Html("body")
+
+fun body(txt: String) = Html("body", txt)
+
 fun ul() = Html("ul")
 
 fun list() = ul() css "list-group"
@@ -275,7 +288,7 @@ fun menuItemA(txt: String) = link(txt) css "list-group-item list-group-item-acti
 
 fun menuItemA(txt: String, vararg children: Html) = link(txt, *children) css "list-group-item list-group-item-action"
 
-fun button(txt: String) = Html("button", txt).attr("type", "button") css "btn btn-light btn-sm text-muted ml-1"
+fun button(txt: String = "", vararg attrs: Pair<String, String>) = Html("button", txt, *attrs).attrs("type" to "button") css "btn btn-light btn-sm text-muted ml-1"
 
 fun buttonCollapse(txt: String, target: String) = button(txt) collapse target
 

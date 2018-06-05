@@ -8,6 +8,7 @@ import org.concordion.api.ResultRecorder;
 
 import static com.adven.concordion.extensions.exam.html.HtmlBuilder.*;
 import static java.io.File.separator;
+import static kotlin.TuplesKt.to;
 
 public class FilesSetCommand extends BaseCommand {
     private FilesLoader filesLoader;
@@ -38,10 +39,10 @@ public class FilesSetCommand extends BaseCommand {
                     root.childs(
                         trWithTDs(
                             span(fileTag.name()),
-                            codeXml(fileTag.content())
-                                .attr("autoFormat", String.valueOf(fileTag.autoFormat()))
-                                .attr("lineNumbers", String.valueOf(fileTag.lineNumbers()))
-                        )).remove(f);
+                            codeXml(fileTag.content()).attrs(
+                                    to("autoFormat", String.valueOf(fileTag.autoFormat())),
+                                    to("lineNumbers", String.valueOf(fileTag.lineNumbers()))
+                            ))).remove(f);
 
                     empty = false;
                 }

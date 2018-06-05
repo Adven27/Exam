@@ -1,0 +1,119 @@
+package com.adven.concordion.extensions.exam.rest
+
+import com.jayway.restassured.RestAssured.given
+import com.jayway.restassured.http.Method
+import com.jayway.restassured.http.Method.*
+import com.jayway.restassured.response.Response
+import org.concordion.api.Evaluator
+
+class RequestExecutor private constructor() {
+
+    private lateinit var method: Method
+    private lateinit var url: String
+    private var response: Response? = null
+    private var body: String? = null
+    private var type: String? = null
+    private val headers = HashMap<String, String>()
+    private var urlParams: String? = null
+    internal var cookies: String? = null
+        private set
+
+    internal fun method(method: Method): RequestExecutor {
+        this.method = method
+        return this
+    }
+
+    fun url(url: String): RequestExecutor {
+        this.url = url
+        return this
+    }
+
+    fun urlParams(params: String?): RequestExecutor {
+        this.urlParams = params
+        return this
+    }
+
+    fun type(type: String): RequestExecutor {
+        this.type = type
+        return this
+    }
+
+    internal fun execute(): Response? {
+        val request = given()
+        request.headers(headers)
+
+        body?.let { request.body(it) }
+        type?.let { request.contentType(it) }
+        cookies?.let {
+            request.cookies(
+                (if (it.trim().startsWith("{")) it.substring(1, it.lastIndex) else it)
+                    .split(",")
+                    .map {
+                        val (n, v) = it.split("=")
+                        Pair(n.trim(), v.trim())
+                    }.toMap()
+            )
+        }
+
+        response = when (method) {
+            PUT -> request.put(url)
+            GET -> request.get(requestUrlWithParams())
+            POST -> request.post(url)
+            PATCH -> request.patch(url)
+            DELETE -> request.delete(requestUrlWithParams())
+            else -> throw UnsupportedOperationException(method.name)
+        }
+        return response
+    }
+
+    fun header(headerName: String, headerValue: String): RequestExecutor {
+        headers[headerName] = headerValue
+        return this
+    }
+
+    fun header(headersMap: Map<String, String>): RequestExecutor {
+        headers.clear()
+        headers.putAll(headersMap)
+        return this
+    }
+
+    fun body(body: String): RequestExecutor {
+        this.body = body
+        return this
+    }
+
+    fun cookies(cookies: String?): RequestExecutor {
+        this.cookies = cookies
+        return this
+    }
+
+    fun responseHeader(attributeValue: String) = response!!.getHeader(attributeValue)
+
+    fun statusLine() = response!!.statusLine()
+
+    fun statusCode() = response!!.statusCode
+
+    fun responseBody() = response!!.body().asString()
+
+    fun requestUrlWithParams() = url + if (urlParams != null) "?$urlParams" else ""
+
+    fun hasRequestBody() = method == POST || method == PUT
+
+    fun requestMethod() = method.name
+
+    fun requestHeader(header: String) = headers.get(header)
+
+    companion object {
+        private const val REQUEST_EXECUTOR_VARIABLE = "#request"
+
+        internal fun fromEvaluator(evaluator: Evaluator): RequestExecutor {
+            return evaluator.getVariable(REQUEST_EXECUTOR_VARIABLE) as RequestExecutor
+        }
+
+        internal fun newExecutor(evaluator: Evaluator): RequestExecutor {
+            val variable = RequestExecutor()
+            evaluator.setVariable(REQUEST_EXECUTOR_VARIABLE, variable)
+            return variable
+        }
+    }
+}

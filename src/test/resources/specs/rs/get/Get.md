@@ -6,7 +6,7 @@
     <e:given>
         Given server, that mirrors GET-request
     </e:given>
-    <e:example name="Body check" status="ExpectedToFail">
+    <e:example name="Body check" status="ExpectedToFail" print="true">
         <e:get url="relative/url">
             <e:case desc="Request with params (happy-path)" urlParams="param1=1&amp;param2=2">
                 <expected>

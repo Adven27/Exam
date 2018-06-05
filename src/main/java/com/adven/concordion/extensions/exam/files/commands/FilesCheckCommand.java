@@ -25,6 +25,7 @@ import static com.adven.concordion.extensions.exam.html.HtmlBuilder.*;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static java.io.File.separator;
 import static java.util.Arrays.asList;
+import static kotlin.TuplesKt.to;
 import static org.xmlunit.diff.DifferenceEvaluators.chain;
 
 public class FilesCheckCommand extends BaseCommand {
@@ -85,7 +86,7 @@ public class FilesCheckCommand extends BaseCommand {
                             if (!isNullOrEmpty(content)) {
                                 pre = div().childs(
                                     buttonCollapse("show", id).style("width:100%"),
-                                    div().attr("id", id).css("file collapse").childs(
+                                    div(to("id", id)).css("file collapse").childs(
                                         pre.text(content)
                                     )
                                 );
@@ -103,10 +104,9 @@ public class FilesCheckCommand extends BaseCommand {
                         tr().childs(
                             fileNameTD,
                             td().childs(
-                                pre.attr("autoFormat", String.valueOf(fileTag.autoFormat()))
-                                    .attr("lineNumbers", String.valueOf(fileTag.lineNumbers()))
-                            )
-                        )
+                                pre.attrs(
+                                        to("autoFormat", String.valueOf(fileTag.autoFormat())),
+                                        to("lineNumbers", String.valueOf(fileTag.lineNumbers())))))
                     ).remove(f);
                     empty = false;
                 }
