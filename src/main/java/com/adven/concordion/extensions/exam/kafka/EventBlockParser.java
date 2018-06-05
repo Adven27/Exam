@@ -15,6 +15,7 @@ public final class EventBlockParser implements HtmlBlockParser<Event<ProtoEntity
     public Optional<Event<ProtoEntity>> parse(final Html html) {
         final String topicName = html.attr(TOPIC_NAME);
         final String key = html.attr(EVENT_KEY);
+        val headers = new HeaderBlockParser().parse(html);
         val proto = new ProtoBlockParser().parse(html);
         if (proto.isPresent()) {
             val message = proto.get();
@@ -22,6 +23,7 @@ public final class EventBlockParser implements HtmlBlockParser<Event<ProtoEntity
                 .topicName(topicName)
                 .key(key)
                 .message(message)
+                .header(headers.isPresent() ? headers.get() : null)
                 .build());
         }
         return Optional.absent();
