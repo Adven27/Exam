@@ -26,13 +26,12 @@ public final class EventSendCommand extends BaseEventCommand {
         final boolean result;
         if (parsedEvent.isPresent()) {
             val event = parsedEvent.get();
-            val info = buildProtoInfo(event.getMessage(), "Send message to", event.getTopicName());
+            val info = buildProtoInfo(event, "Send message to");
             root.childs(info);
             result = getEventProcessor().send(event);
         } else {
             result = false;
         }
-
         if (!result) {
             root.parent().attr("class", "").css("rest-failure bd-callout bd-callout-danger");
             root.text("Failed to send message to kafka");
