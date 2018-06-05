@@ -13,7 +13,6 @@ public class Send extends Kafka {
         final ConsumerRecord<String, Bytes> record = consumeSingleEvent();
         final Entity entity = Entity.parseFrom(record.value().get());
         return entity.getName().equals("happy little name") && entity.getNumber() == 12;
-
     }
 
 }
