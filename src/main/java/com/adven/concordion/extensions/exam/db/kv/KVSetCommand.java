@@ -10,7 +10,6 @@ import org.concordion.api.Evaluator;
 import org.concordion.api.Result;
 import org.concordion.api.ResultRecorder;
 
-
 public final class KVSetCommand extends BaseKeyValueCommand {
 
     private final KeyValueRepository keyValueRepository;
@@ -43,7 +42,7 @@ public final class KVSetCommand extends BaseKeyValueCommand {
             valueColumn = jsonValueColumn(value);
         } else {
             val value = valueBlock.text();
-            isSaved = keyValueRepository.save(cacheName, key,value, "", new PlainProcessor());
+            isSaved = keyValueRepository.save(cacheName, key, value, "", new PlainProcessor());
             valueColumn = jsonValueColumn(value);
         }
 
@@ -51,12 +50,10 @@ public final class KVSetCommand extends BaseKeyValueCommand {
         val table = dbTable(cacheName);
         table.childs(keyColumn, valueColumn);
         val info = info("With entries in db");
-        html.childs(info)
-                .dropAllTo(table);
+        html.childs(info).dropAllTo(table);
 
         if (!isSaved) {
-            html.parent().attr("class", "")
-                    .css("rest-failure bd-callout bd-callout-danger");
+            html.parent().attr("class", "").css("rest-failure bd-callout bd-callout-danger");
             html.text("Failed to send message to kafka");
             resultRecorder.record(Result.EXCEPTION);
         }

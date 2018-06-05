@@ -10,9 +10,9 @@ public class KVCheckWithProtobuf extends KeyValue {
 
     public void insertValue(final String cacheName, final String key, final String name, final int number) {
         final TestEntity.Entity entity = TestEntity.Entity.newBuilder()
-                .setName(name)
-                .setNumber(number)
-                .build();
+            .setName(name)
+            .setNumber(number)
+            .build();
         final Map<String, Object> cache = new HashMap<>();
         cache.put(key, entity);
         inMemoryKeyValueDb.put(cacheName, cache);

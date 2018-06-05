@@ -7,7 +7,6 @@ import com.google.protobuf.util.JsonFormat;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
-
 @Slf4j
 public final class JsonToProto<T extends Message> extends ProtoClassAware<String, T> {
 
@@ -47,7 +46,7 @@ public final class JsonToProto<T extends Message> extends ProtoClassAware<String
         JsonFormat.Parser parser = JsonFormat.parser();
         try {
             parser.usingTypeRegistry(typeRegistry)
-                    .merge(json, messageBuilder);
+                .merge(json, messageBuilder);
             return castToProto(messageBuilder.build());
         } catch (InvalidProtocolBufferException e) {
             log.error("Unable to parse json file={} to object={}", json, getProtoClass());

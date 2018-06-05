@@ -5,9 +5,10 @@ import org.apache.kafka.common.utils.Bytes;
 import org.junit.Before;
 import org.junit.Test;
 
+import static com.adven.concordion.extensions.exam.RandomUtils.anyInt;
+import static com.adven.concordion.extensions.exam.RandomUtils.anyString;
 import static com.adven.concordion.extensions.exam.kafka.protobuf.TestEntity.Entity;
 import static org.assertj.core.api.Assertions.assertThat;
-
 
 public class BytesToProtoTest {
 
@@ -32,9 +33,9 @@ public class BytesToProtoTest {
     @Test
     public void testParse() {
         final Entity expected = Entity.newBuilder()
-                .setName("name")
-                .setNumber(6)
-                .build();
+            .setName(anyString())
+            .setNumber(anyInt())
+            .build();
         final byte[] bytes = expected.toByteArray();
         final Optional<Entity> entity = converter.parse(bytes);
         assertThat(entity).isEqualTo(Optional.of(expected));

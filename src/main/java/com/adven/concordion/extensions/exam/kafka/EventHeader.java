@@ -4,7 +4,6 @@ import lombok.NonNull;
 
 import java.util.Arrays;
 
-
 public final class EventHeader {
 
     public static final String REPLY_TOPIC = "kafka_replyTopic";

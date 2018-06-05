@@ -2,32 +2,31 @@ package com.adven.concordion.extensions.exam.kafka.check;
 
 import com.adven.concordion.extensions.exam.kafka.DummyEventProducer;
 import com.adven.concordion.extensions.exam.kafka.Event;
-import com.adven.concordion.extensions.exam.kafka.protobuf.TestEntity;
-import com.google.protobuf.Message;
+import com.adven.concordion.extensions.exam.kafka.EventUtils;
+import com.adven.concordion.extensions.exam.kafka.protobuf.ProtoEntity;
 import org.junit.Before;
 import org.junit.Test;
 
 import static com.adven.concordion.extensions.exam.RandomUtils.anyString;
 import static org.assertj.core.api.Assertions.assertThat;
 
-
 public class WithReplyTest {
 
     private DummyEventProducer eventProducer;
-    private Event<Message> successEvent;
-    private Event<Message> failEvent;
+    private Event<ProtoEntity> successEvent;
+    private Event<ProtoEntity> failEvent;
 
     @Before
     public void setUp() {
         eventProducer = new DummyEventProducer();
-        successEvent = Event.<Message>builder()
-                .message(TestEntity.Entity.getDefaultInstance())
-                .topicName(anyString())
-                .build();
-        failEvent = Event.<Message>builder()
-                .message(TestEntity.Entity.getDefaultInstance())
-                .topicName(anyString())
-                .build();
+        successEvent = EventUtils.goodEvent()
+            .toBuilder()
+            .topicName(anyString())
+            .build();
+        failEvent = EventUtils.goodEvent()
+            .toBuilder()
+            .topicName(anyString())
+            .build();
     }
 
     @Test
@@ -54,7 +53,7 @@ public class WithReplyTest {
             eventProducer.mustReturnFalse();
         }
         final WithReply reply = new WithReply(successEvent, failEvent,
-                eventProducer, new DummyMock(isEventVerified));
+            eventProducer, new DummyMock(isEventVerified));
         return reply.verify();
     }
 

@@ -5,25 +5,31 @@
     <e:example name="Event must be received and then a success event must be send back">
         <e:given>        
             <e:event-check>
-                <expected topicName="test.consume.topic" protobufClass="com.adven.concordion.extensions.exam.kafka.protobuf.TestEntity$Entity">
-                {
-                    "name": "Make something good",
-                    "number": 7
-                }
+                <expected topicName="test.consume.topic">
+                    <protobuf class="com.adven.concordion.extensions.exam.kafka.protobuf.TestEntity$Entity">
+                    {
+                        "name": "Make something good",
+                        "number": 7
+                    }
+                    </protobuf>
                 </expected>
-                <reply protobufClass="com.adven.concordion.extensions.exam.kafka.protobuf.TestEntity$Entity">
-                      <success>
-                      {
-                        "name": "OK",
-                        "number": 42
-                      }
-                      </success>
-                      <fail>
-                      {
-                        "name": "FAIL",
-                        "number": 13
-                      }
-                      </fail>
+                <reply>
+                    <success>
+                        <protobuf class="com.adven.concordion.extensions.exam.kafka.protobuf.TestEntity$Entity">
+                        {
+                            "name": "OK",
+                            "number": 42
+                        }
+                        </protobuf>
+                    </success>
+                    <fail>
+                        <protobuf class="com.adven.concordion.extensions.exam.kafka.protobuf.TestEntity$Entity">
+                        {
+                            "name": "FAIL",
+                            "number": 13
+                        }
+                        </protobuf>
+                    </fail>
                 </reply>
             </e:event-check>
         </e:given>

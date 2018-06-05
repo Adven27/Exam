@@ -7,7 +7,6 @@ import specs.kafka.Kafka;
 
 import static com.adven.concordion.extensions.exam.kafka.protobuf.TestEntity.Entity;
 
-
 public class Send extends Kafka {
 
     public boolean hasReceivedEvent() throws InvalidProtocolBufferException {

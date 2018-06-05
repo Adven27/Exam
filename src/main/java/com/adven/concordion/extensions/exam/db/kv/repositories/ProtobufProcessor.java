@@ -10,7 +10,6 @@ import lombok.val;
 import net.javacrumbs.jsonunit.JsonAssert;
 import net.javacrumbs.jsonunit.core.Configuration;
 
-
 @Slf4j
 @RequiredArgsConstructor
 public final class ProtobufProcessor implements ValueProcessor<Message> {

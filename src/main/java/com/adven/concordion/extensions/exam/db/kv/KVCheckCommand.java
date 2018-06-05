@@ -13,7 +13,6 @@ import org.concordion.api.CommandCall;
 import org.concordion.api.Evaluator;
 import org.concordion.api.ResultRecorder;
 
-
 @Slf4j
 public final class KVCheckCommand extends BaseKeyValueCommand {
 
@@ -60,8 +59,7 @@ public final class KVCheckCommand extends BaseKeyValueCommand {
         val table = dbTable(cacheName);
         table.childs(keyColumn, valueColumn);
         val info = info("Expected entry");
-        html.childs(info)
-                .dropAllTo(table);
+        html.childs(info).dropAllTo(table);
 
         if (actual.isPresent()) {
             announcer.success(resultRecorder, keyColumn.el());

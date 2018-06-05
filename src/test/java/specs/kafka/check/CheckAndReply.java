@@ -17,9 +17,9 @@ public class CheckAndReply extends Kafka {
     @BeforeSpecification
     public void setUp() throws Exception {
         final Entity message = Entity.newBuilder()
-                .setName("Make something good")
-                .setNumber(7)
-                .build();
+            .setName("Make something good")
+            .setNumber(7)
+            .build();
         final ProducerRecord<String, Bytes> r = new ProducerRecord<>(CONSUME_TOPIC, Bytes.wrap(message.toByteArray()));
         r.headers().add(REPLY_TOPIC, PRODUCE_TOPIC.getBytes("UTF-8"));
         r.headers().add(CORRELATION_ID, anyString().getBytes("UTF-8"));
@@ -30,9 +30,9 @@ public class CheckAndReply extends Kafka {
         final ConsumerRecord<String, Bytes> record = consumeSingleEvent();
         final Entity entity = Entity.parseFrom(record.value().get());
         final Entity expected = Entity.newBuilder()
-                .setName("OK")
-                .setNumber(42)
-                .build();
+            .setName("OK")
+            .setNumber(42)
+            .build();
         return entity.equals(expected);
     }
 

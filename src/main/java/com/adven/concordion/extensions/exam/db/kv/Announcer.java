@@ -14,7 +14,6 @@ import java.util.List;
 import static org.concordion.api.Result.FAILURE;
 import static org.concordion.api.Result.SUCCESS;
 
-
 public final class Announcer {
 
     private final List<AssertEqualsListener> listeners = new ArrayList<>();

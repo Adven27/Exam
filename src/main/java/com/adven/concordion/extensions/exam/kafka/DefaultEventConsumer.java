@@ -21,7 +21,6 @@ import static com.adven.concordion.extensions.exam.kafka.EventHeader.CORRELATION
 import static com.adven.concordion.extensions.exam.kafka.EventHeader.REPLY_TOPIC;
 import static org.apache.kafka.clients.consumer.ConsumerConfig.*;
 
-
 @Slf4j
 @RequiredArgsConstructor
 public final class DefaultEventConsumer implements EventConsumer {

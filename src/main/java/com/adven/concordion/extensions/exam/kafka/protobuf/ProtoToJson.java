@@ -6,7 +6,6 @@ import com.google.protobuf.Message;
 import com.google.protobuf.util.JsonFormat;
 import lombok.extern.slf4j.Slf4j;
 
-
 @Slf4j
 public final class ProtoToJson<T extends Message> extends ProtoConverter<T, String> {
 

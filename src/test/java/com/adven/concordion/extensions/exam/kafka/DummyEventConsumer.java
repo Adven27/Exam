@@ -1,12 +1,12 @@
 package com.adven.concordion.extensions.exam.kafka;
 
+import com.adven.concordion.extensions.exam.kafka.protobuf.ProtoEntity;
 import org.apache.kafka.common.utils.Bytes;
 
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
 
 public final class DummyEventConsumer implements EventConsumer {
 
@@ -29,13 +29,13 @@ public final class DummyEventConsumer implements EventConsumer {
         return this;
     }
 
-    public DummyEventConsumer addStringEventToReturn(final Event<String> event) {
-        final String message = event.getMessage();
+    public DummyEventConsumer addProtoEventToReturn(final Event<ProtoEntity> event) {
+        final ProtoEntity message = event.getMessage();
         final Event<Bytes> eventToReturn = Event.<Bytes>builder()
-                .message(message == null ? null : Bytes.wrap(message.getBytes(Charset.forName("UTF-8"))))
-                .topicName(event.getTopicName())
-                .key(event.getKey())
-                .build();
+            .message(message == null ? null : Bytes.wrap(message.toBytes()))
+            .topicName(event.getTopicName())
+            .key(event.getKey())
+            .build();
         return addEventToReturn(eventToReturn);
     }
 

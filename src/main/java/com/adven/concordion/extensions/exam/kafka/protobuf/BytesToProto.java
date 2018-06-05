@@ -8,7 +8,6 @@ import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.utils.Bytes;
 
-
 @Slf4j
 public final class BytesToProto<T extends Message> extends ProtoClassAware<Bytes, T> {
 
@@ -32,7 +31,7 @@ public final class BytesToProto<T extends Message> extends ProtoClassAware<Bytes
                 final T result = castToProto(parser.parseFrom(bytes));
                 return Optional.of(result);
             } catch (InvalidProtocolBufferException e) {
-                log.error("Unable to convert bytes to proto entity");
+                log.error("Unable to convert bytes to proto toBytes");
             }
         }
         return Optional.absent();

@@ -6,7 +6,6 @@ import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.utils.Bytes;
 
-
 @Slf4j
 public final class ProtoBytesToJson<T extends Message> extends ProtoConverter<Bytes, String> {
 
@@ -20,6 +19,8 @@ public final class ProtoBytesToJson<T extends Message> extends ProtoConverter<By
 
     @Override
     public Optional<String> convert(final Bytes from) {
+        bytesToProto.addAllDescriptors(getDescriptors());
+        protoToJson.addAllDescriptors(getDescriptors());
         final Optional<T> proto = bytesToProto.convert(from);
         if (proto.isPresent()) {
             return protoToJson.convert(proto.get());

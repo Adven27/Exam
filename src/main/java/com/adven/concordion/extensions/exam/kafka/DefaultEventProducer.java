@@ -1,6 +1,6 @@
 package com.adven.concordion.extensions.exam.kafka;
 
-import com.google.protobuf.Message;
+import com.adven.concordion.extensions.exam.kafka.protobuf.ProtoEntity;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +21,6 @@ import static org.apache.kafka.clients.consumer.ConsumerConfig.BOOTSTRAP_SERVERS
 import static org.apache.kafka.clients.consumer.ConsumerConfig.CLIENT_ID_CONFIG;
 import static org.apache.kafka.clients.producer.ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG;
 import static org.apache.kafka.clients.producer.ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG;
-
 
 @Slf4j
 @RequiredArgsConstructor
@@ -47,20 +46,20 @@ public final class DefaultEventProducer implements EventProducer {
     }
 
     @Override
-    public boolean produce(@NonNull final String topic, final String key, @NonNull final Message message) {
+    public boolean produce(@NonNull final String topic, final String key, @NonNull final ProtoEntity message) {
         final ProducerRecord<String, Bytes> record =
-            new ProducerRecord<>(topic, key, Bytes.wrap(message.toByteArray()));
+            new ProducerRecord<>(topic, key, Bytes.wrap(message.toBytes()));
         return produce(record);
     }
 
     @Override
     public boolean produce(@NonNull final String topic, final String key, final EventHeader eventHeader,
-                           @NonNull final Message message) {
+                           @NonNull final ProtoEntity message) {
         if (eventHeader == null) {
             return produce(topic, key, message);
         } else {
             final ProducerRecord<String, Bytes> record =
-                new ProducerRecord<>(topic, key, Bytes.wrap(message.toByteArray()));
+                new ProducerRecord<>(topic, key, Bytes.wrap(message.toBytes()));
             addHeaders(record, eventHeader);
             return produce(record);
         }

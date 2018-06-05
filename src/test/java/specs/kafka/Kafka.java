@@ -21,11 +21,10 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-
 public class Kafka extends Specs {
 
     protected final void produceEvent(final ProducerRecord<String, Bytes> record) throws InterruptedException,
-            ExecutionException, TimeoutException {
+        ExecutionException, TimeoutException {
         final Map<String, Object> props = KafkaTestUtils.producerProps(kafka);
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, BytesSerializer.class);
         try (Producer<String, Bytes> producer = new KafkaProducer<>(props)) {
@@ -34,7 +33,7 @@ public class Kafka extends Specs {
     }
 
     protected final void produceEvent(final Bytes bytes) throws ExecutionException, InterruptedException,
-            TimeoutException {
+        TimeoutException {
         final ProducerRecord<String, Bytes> record = new ProducerRecord<>(CONSUME_TOPIC, bytes);
         produceEvent(record);
     }
