@@ -47,15 +47,16 @@ public final class DefaultEventProcessor implements EventProcessor {
             log.warn("Can't send null event");
             return false;
         }
-        return send(event.getTopicName(), event.getKey(), event.getMessage());
+        return send(event.getTopicName(), event.getKey(), event.getMessage(), event.getHeader());
     }
 
-    protected boolean send(final String topic, final String key, final ProtoEntity message) {
+    protected boolean send(final String topic, final String key, final ProtoEntity message,
+                           final EventHeader header) {
         if (StringUtils.isBlank(topic) || message == null) {
             log.warn("Unable to send record with topic={}, key={}, message={}. Missing required parameters",
                 topic, key, message);
             return false;
         }
-        return eventProducer.produce(topic, key, message);
+        return eventProducer.produce(topic, key, header, message);
     }
 }

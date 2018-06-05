@@ -27,32 +27,32 @@ public class DefaultEventProcessorTest {
     @Test
     public void testSuccessSend() {
         eventProducer.mustReturnTrue();
-        final boolean result = processor.send(anyString(), anyString(), mockEntity());
+        final boolean result = processor.send(anyString(), anyString(), mockEntity(), EventHeader.empty());
         assertThat(result).isTrue();
     }
 
     @Test
     public void testFailedSend() {
         eventProducer.mustReturnFalse();
-        final boolean result = processor.send(anyString(), anyString(), mockEntity());
+        final boolean result = processor.send(anyString(), anyString(), mockEntity(), EventHeader.empty());
         assertThat(result).isFalse();
     }
 
     @Test
     public void testSendWithNullTopic() {
-        final boolean result = processor.send(null, null, mockEntity());
+        final boolean result = processor.send(null, null, mockEntity(), EventHeader.empty());
         assertThat(result).isFalse();
     }
 
     @Test
     public void testSendWithEmptyTopic() {
-        final boolean result = processor.send("", null, mockEntity());
+        final boolean result = processor.send("", null, mockEntity(), EventHeader.empty());
         assertThat(result).isFalse();
     }
 
     @Test
     public void testSendWithNullMessage() {
-        final boolean result = processor.send(anyString(), null, null);
+        final boolean result = processor.send(anyString(), null, null, EventHeader.empty());
         assertThat(result).isFalse();
     }
 

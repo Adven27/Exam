@@ -37,7 +37,7 @@
             </e:event-send>
         </e:when>
         <e:then>
-            <span c:assertTrue="hasReceivedEvent()">Successfuly received event</span>
+            <span c:assertTrue="hasReceivedEventWithHeaders()">Successfuly received event with correct headers</span>
         </e:then>
     </e:example>
 </div>    
