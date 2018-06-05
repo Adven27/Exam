@@ -1,6 +1,7 @@
 package com.adven.concordion.extensions.exam.kafka.protobuf;
 
 import com.adven.concordion.extensions.exam.html.Html;
+import com.adven.concordion.extensions.exam.kafka.HtmlBlockParser;
 import com.google.common.base.Optional;
 import lombok.val;
 import org.apache.commons.lang3.StringUtils;
@@ -10,13 +11,14 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public final class ProtoBlockParser {
+public final class ProtoBlockParser implements HtmlBlockParser<ProtoEntity> {
 
     private static final String PROTOBUF = "protobuf";
     private static final String CLASS = "class";
     private static final String DESCRIPTOR = "descriptor";
     private static final String DESCRIPTORS = DESCRIPTOR + "s";
 
+    @Override
     public Optional<ProtoEntity> parse(final Html html) {
         val protoBlock = html.first(PROTOBUF);
         if (protoBlock == null) {

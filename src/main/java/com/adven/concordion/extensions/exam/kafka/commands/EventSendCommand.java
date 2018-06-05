@@ -1,10 +1,8 @@
 package com.adven.concordion.extensions.exam.kafka.commands;
 
 import com.adven.concordion.extensions.exam.html.Html;
-import com.adven.concordion.extensions.exam.kafka.Event;
+import com.adven.concordion.extensions.exam.kafka.EventBlockParser;
 import com.adven.concordion.extensions.exam.kafka.EventProcessor;
-import com.adven.concordion.extensions.exam.kafka.protobuf.ProtoBlockParser;
-import com.adven.concordion.extensions.exam.kafka.protobuf.ProtoEntity;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.concordion.api.CommandCall;
@@ -22,21 +20,14 @@ public final class EventSendCommand extends BaseEventCommand {
     @Override
     public void setUp(final CommandCall commandCall, final Evaluator evaluator, final ResultRecorder resultRecorder) {
         val root = new Html(commandCall.getElement());
-        final String topicName = root.attr(TOPIC_NAME);
-        final String key = root.attr(EVENT_KEY);
-        val proto = new ProtoBlockParser().parse(root);
+        val parsedEvent = new EventBlockParser().parse(root);
         root.removeAllChild();
 
         final boolean result;
-        if (proto.isPresent()) {
-            val message = proto.get();
-            val info = buildProtoInfo(message, "Send message to", topicName);
+        if (parsedEvent.isPresent()) {
+            val event = parsedEvent.get();
+            val info = buildProtoInfo(event.getMessage(), "Send message to", event.getTopicName());
             root.childs(info);
-            val event = Event.<ProtoEntity>builder()
-                .topicName(topicName)
-                .key(key)
-                .message(message)
-                .build();
             result = getEventProcessor().send(event);
         } else {
             result = false;
