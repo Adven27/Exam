@@ -1,9 +1,11 @@
 package com.adven.concordion.extensions.exam.kafka;
 
 import lombok.NonNull;
+import lombok.ToString;
 
 import java.util.Arrays;
 
+@ToString
 public final class EventHeader {
 
     public static final String REPLY_TOPIC = "kafka_replyTopic";
