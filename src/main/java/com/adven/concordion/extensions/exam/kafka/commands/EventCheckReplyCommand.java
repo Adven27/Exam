@@ -2,8 +2,8 @@ package com.adven.concordion.extensions.exam.kafka.commands;
 
 import com.adven.concordion.extensions.exam.html.Html;
 import com.adven.concordion.extensions.exam.kafka.Event;
+import com.adven.concordion.extensions.exam.kafka.EventBlockParser;
 import com.adven.concordion.extensions.exam.kafka.EventProcessor;
-import com.adven.concordion.extensions.exam.kafka.protobuf.ProtoBlockParser;
 import com.adven.concordion.extensions.exam.kafka.protobuf.ProtoEntity;
 import lombok.val;
 import org.concordion.api.CommandCall;
@@ -22,12 +22,10 @@ public final class EventCheckReplyCommand extends BaseEventCommand {
     @Override
     public void verify(CommandCall commandCall, Evaluator evaluator, ResultRecorder resultRecorder) {
         val root = tableSlim(commandCall.getElement());
-        val expectedBlock = root.firstOrThrow("expected");
-        val expectedTopic = expectedBlock.takeAwayAttr(TOPIC_NAME);
-        val expectedProto = new ProtoBlockParser().parse(expectedBlock);
+        val expectedProto = new EventBlockParser("expected").parse(root);
         final boolean result;
         if (expectedProto.isPresent()) {
-            result = check(root, expectedProto.get(), expectedTopic);
+            result = check(root, expectedProto.get());
         } else {
             result = false;
         }
@@ -38,39 +36,31 @@ public final class EventCheckReplyCommand extends BaseEventCommand {
         }
     }
 
-    private boolean check(final Html root, final ProtoEntity expected, final String topic) {
-        val checkEvent = Event.<ProtoEntity>builder()
-            .topicName(topic)
-            .message(expected)
-            .build();
+    private boolean check(final Html root, final Event<ProtoEntity> expected) {
         val reply = root.first("reply");
         root.removeAllChild();
 
-        val eventCheckInfo = buildProtoInfo(expected, "Expected event", topic);
+        val eventCheckInfo = buildProtoInfo(expected, "Expected event");
         root.childs(eventCheckInfo);
 
         final boolean result;
         if (reply != null) {
-            result = withReply(reply, checkEvent);
+            result = withReply(reply, expected);
         } else {
-            result = getEventProcessor().check(checkEvent, false);
+            result = getEventProcessor().check(expected, false);
         }
         return result;
     }
 
     private boolean withReply(final Html reply, final Event<ProtoEntity> checkEvent) {
-        val protoParser = new ProtoBlockParser();
-        val successProto = protoParser.parse(reply.firstOrThrow("success"));
-        val failProto = protoParser.parse(reply.firstOrThrow("fail"));
+        val successEvent = new EventBlockParser("success").parse(reply);
+        val failEvent = new EventBlockParser("fail").parse(reply);
         final boolean result;
-        if (successProto.isPresent() && failProto.isPresent()) {
-            val successReplyEvent = Event.<ProtoEntity>builder().message(successProto.get()).build();
-            val failReplyEvent = Event.<ProtoEntity>builder().message(failProto.get()).build();
-            val successEventInfo = buildProtoInfo(successProto.get(), "Success reply", "");
-            val failEventInfo = buildProtoInfo(failProto.get(), "Fail reply", "");
+        if (successEvent.isPresent() && failEvent.isPresent()) {
+            val successEventInfo = buildProtoInfo(successEvent.get(), "Success reply");
+            val failEventInfo = buildProtoInfo(failEvent.get(), "Fail reply");
             reply.parent().childs(successEventInfo, failEventInfo);
-
-            result = getEventProcessor().checkWithReply(checkEvent, successReplyEvent, failReplyEvent, true);
+            result = getEventProcessor().checkWithReply(checkEvent, successEvent.get(), failEvent.get(), true);
         } else {
             result = false;
         }
