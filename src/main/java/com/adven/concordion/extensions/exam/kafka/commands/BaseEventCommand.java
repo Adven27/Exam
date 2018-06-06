@@ -46,8 +46,8 @@ abstract class BaseEventCommand extends ExamCommand {
         return div().childs(
             h(4, text),
             h(5, "").childs(
-                badge(topicName, "primary"),
-                badge(protobufClass, "secondary"),
+                badge(topicName == null ? "" : topicName, "primary"),
+                badge(protobufClass == null ? "" : protobufClass, "secondary"),
                 code("protobuf")));
     }
 

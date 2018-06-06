@@ -4,8 +4,8 @@
     <e:summary/>
     <e:example name="Event must be received and then a success event must be send back">
         <e:given>        
-            <e:event-check>
-                <expected topicName="test.consume.topic">
+            <e:event-check topicName="test.consume.topic">
+                <expected>
                     <protobuf class="com.adven.concordion.extensions.exam.kafka.protobuf.TestEntity$Entity">
                     {
                         "name": "Make something good",
