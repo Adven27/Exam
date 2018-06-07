@@ -41,6 +41,11 @@ public class RestAssuredCfg {
         return this;
     }
 
+    public RestAssuredCfg trustAllCerts() {
+        RestAssured.useRelaxedHTTPSValidation();
+        return this;
+    }
+
     public ExamExtension end() {
         setUpRestAssured(uri, context, port);
         return extension;
