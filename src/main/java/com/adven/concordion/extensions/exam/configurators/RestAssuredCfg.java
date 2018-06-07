@@ -67,7 +67,7 @@ public class RestAssuredCfg {
         try {
             return new URI(url);
         } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
+            throw new ConfigurationException("Unable to parse uri from url", e);
         }
     }
 }
