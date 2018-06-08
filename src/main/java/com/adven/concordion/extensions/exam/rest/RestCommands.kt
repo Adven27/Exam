@@ -122,13 +122,13 @@ open class RestVerifyCommand(name: String, tag: String) : ExamVerifyCommand(name
 }
 
 class ExpectedStatusCommand(name: String, tag: String) : RestVerifyCommand(name, tag) {
-    override fun verify(commandCall: CommandCall?, evaluator: Evaluator?, resultRecorder: ResultRecorder?) {
-        Check.isFalse(commandCall!!.hasChildCommands(),
+    override fun verify(cmd: CommandCall?, evaluator: Evaluator?, resultRecorder: ResultRecorder?) {
+        Check.isFalse(cmd!!.hasChildCommands(),
             "Nesting commands inside an 'expectedStatus' is not supported")
 
-        val element = commandCall.element
-        val expected = element.text
-        val actual = evaluator!!.evaluate(commandCall.expression).toString()
+        val element = cmd.html()
+        val expected = element.text()
+        val actual = evaluator!!.evaluate(cmd.expression).toString()
 
         if (expected == actual) {
             success(resultRecorder, element)
@@ -139,8 +139,8 @@ class ExpectedStatusCommand(name: String, tag: String) : RestVerifyCommand(name,
 }
 
 class CaseCheckCommand(name: String, tag: String) : ExamCommand(name, tag) {
-    override fun setUp(commandCall: CommandCall?, evaluator: Evaluator?, resultRecorder: ResultRecorder?) {
-        val checkTag = Html(commandCall!!.element)
+    override fun setUp(cmd: CommandCall?, evaluator: Evaluator?, resultRecorder: ResultRecorder?) {
+        val checkTag = cmd.html()
         val td = td("colspan" to "3")
         checkTag.moveChildrenTo(td)
         checkTag.parent().below(
@@ -154,8 +154,8 @@ class CaseCommand(tag: String, private val cfg: Configuration) : RestVerifyComma
     private val cases = ArrayList<Map<String, Any?>>()
     private var number = 0
 
-    override fun setUp(commandCall: CommandCall, eval: Evaluator, resultRecorder: ResultRecorder) {
-        val caseRoot = Html(commandCall.element)
+    override fun setUp(cmd: CommandCall, eval: Evaluator, resultRecorder: ResultRecorder) {
+        val caseRoot = cmd.html()
         cases.clear()
         val where = caseRoot.first(WHERE)
         if (where != null) {
@@ -181,7 +181,7 @@ class CaseCommand(tag: String, private val cfg: Configuration) : RestVerifyComma
 
     override fun execute(cmd: CommandCall, eval: Evaluator, resultRecorder: ResultRecorder) {
         val childCommands = cmd.children
-        val root = Html(cmd.element)
+        val root = cmd.html()
 
         val executor = fromEvaluator(eval)
         val urlParams = root.takeAwayAttr(URL_PARAMS)
@@ -236,13 +236,11 @@ class CaseCommand(tag: String, private val cfg: Configuration) : RestVerifyComma
     override fun verify(cmd: CommandCall, evaluator: Evaluator, resultRecorder: ResultRecorder) {
         val executor = fromEvaluator(evaluator)
         val colspan = if (executor.hasRequestBody()) "3" else "2"
-        val rt = Html(cmd.element)
+        val rt = cmd.html()
         val caseDesc = caseDesc(rt.attr(DESC), evaluator)
         rt.attrs("data-type" to CASE, "id" to caseDesc).above(
             tr()(
-                td(caseDesc, "colspan" to colspan).muted()
-            )
-        )
+                td(caseDesc, "colspan" to colspan).muted()))
     }
 
     private fun caseDesc(desc: String?, eval: Evaluator): String {

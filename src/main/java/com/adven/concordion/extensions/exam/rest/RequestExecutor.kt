@@ -7,7 +7,6 @@ import com.jayway.restassured.response.Response
 import org.concordion.api.Evaluator
 
 class RequestExecutor private constructor() {
-
     private lateinit var method: Method
     private lateinit var url: String
     private var response: Response? = null
@@ -36,34 +35,6 @@ class RequestExecutor private constructor() {
     fun type(type: String): RequestExecutor {
         this.type = type
         return this
-    }
-
-    internal fun execute(): Response? {
-        val request = given()
-        request.headers(headers)
-
-        body?.let { request.body(it) }
-        type?.let { request.contentType(it) }
-        cookies?.let {
-            request.cookies(
-                (if (it.trim().startsWith("{")) it.substring(1, it.lastIndex) else it)
-                    .split(",")
-                    .map {
-                        val (n, v) = it.split("=")
-                        Pair(n.trim(), v.trim())
-                    }.toMap()
-            )
-        }
-
-        response = when (method) {
-            PUT -> request.put(url)
-            GET -> request.get(requestUrlWithParams())
-            POST -> request.post(url)
-            PATCH -> request.patch(url)
-            DELETE -> request.delete(requestUrlWithParams())
-            else -> throw UnsupportedOperationException(method.name)
-        }
-        return response
     }
 
     fun header(headerName: String, headerValue: String): RequestExecutor {
@@ -102,6 +73,34 @@ class RequestExecutor private constructor() {
     fun requestMethod() = method.name
 
     fun requestHeader(header: String) = headers.get(header)
+
+    internal fun execute(): Response? {
+        val request = given()
+        request.headers(headers)
+
+        body?.let { request.body(it) }
+        type?.let { request.contentType(it) }
+        cookies?.let {
+            request.cookies(
+                (if (it.trim().startsWith("{")) it.substring(1, it.lastIndex) else it)
+                    .split(",")
+                    .map {
+                        val (n, v) = it.split("=")
+                        Pair(n.trim(), v.trim())
+                    }.toMap()
+            )
+        }
+
+        response = when (method) {
+            PUT -> request.put(url)
+            GET -> request.get(requestUrlWithParams())
+            POST -> request.post(url)
+            PATCH -> request.patch(url)
+            DELETE -> request.delete(requestUrlWithParams())
+            else -> throw UnsupportedOperationException(method.name)
+        }
+        return response
+    }
 
     companion object {
         private const val REQUEST_EXECUTOR_VARIABLE = "#request"

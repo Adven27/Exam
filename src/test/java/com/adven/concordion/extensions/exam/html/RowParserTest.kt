@@ -2,6 +2,7 @@ package com.adven.concordion.extensions.exam.html
 
 import org.concordion.api.Evaluator
 import org.joda.time.LocalDate.now
+import org.joda.time.Period
 import org.junit.Test
 import org.mockito.Mockito.mock
 import java.text.SimpleDateFormat
@@ -12,7 +13,7 @@ class RowParserTest {
 
     @Test
     fun valuesAreCommaSeparatedAndTrimmed() {
-        val html = Html("table")(
+        val html = table()(
             Html("row", " 1 1 , 2"),
             Html("row", " 3 , 4")
         )
@@ -27,7 +28,8 @@ class RowParserTest {
             Html("row", " \${exam.now+[1 day, 2 month]:dd.MM},' 4, 5 '")
         )
 
-        val expectedDate = SimpleDateFormat("dd.MM").format(now().plusDays(1).plusMonths(2).toDate())
+        val expectedPeriod = Period().plusDays(1).plusMonths(2)
+        val expectedDate = SimpleDateFormat("dd.MM").format(now().plus(expectedPeriod).toDate())
         assertEquals(listOf(
             listOf("1'", " 2"),
             listOf(expectedDate, " 4, 5 ")

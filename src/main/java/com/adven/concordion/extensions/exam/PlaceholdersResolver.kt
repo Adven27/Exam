@@ -2,7 +2,6 @@
 
 package com.adven.concordion.extensions.exam
 
-import com.adven.concordion.extensions.exam.db.Range
 import org.concordion.api.Evaluator
 import org.joda.time.*
 import org.joda.time.LocalDateTime.fromDateFields
@@ -141,9 +140,19 @@ fun resolveToObj(placeholder: String?, evaluator: Evaluator): Any? {
         placeholder.startsWith("'") && placeholder.endsWith("'") -> placeholder.substring(1, placeholder.lastIndex)
         placeholder.startsWith(PREFIX_VAR) -> getObject(evaluator, extractVarFrom(placeholder, PREFIX_VAR))
         placeholder.startsWith(PREFIX_EXAM) -> resolveDate(extractVarFrom(placeholder, PREFIX_EXAM))
-        Range.isRange(placeholder) -> Range.from(placeholder)
+        placeholder.isRange() -> placeholder.toRange()
         else -> placeholder
     }
+}
+
+fun String.isRange() = this.matches("^[0-9]+[.]{2}[0-9]+$".toRegex())
+
+fun String.toRange(): IntProgression {
+    if (this.isRange()) {
+        val (start, end) = this.split("[.]{2}".toRegex()).map(String::toInt)
+        return IntProgression.fromClosedRange(start, end, end.compareTo(start))
+    }
+    throw IllegalArgumentException("Couldn't parse range from string $this")
 }
 
 private fun extractVarFrom(placeholder: String, namespace: String): String {

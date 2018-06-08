@@ -5,7 +5,6 @@ import com.adven.concordion.extensions.exam.PREFIX_EXAM
 import com.adven.concordion.extensions.exam.PREFIX_VAR
 import com.adven.concordion.extensions.exam.resolveToObj
 import com.google.common.base.Strings.isNullOrEmpty
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings
 import org.concordion.api.Evaluator
 import java.util.*
 
@@ -22,7 +21,6 @@ class RowParser(private val el: Html, private val tag: String, private val eval:
         separator = el.takeAwayAttr("separator", ",").first()
     }
 
-    @SuppressFBWarnings(value = ["BC_BAD_CAST_TO_ABSTRACT_COLLECTION"], justification = "no idea how to fix")
     fun parse(): List<List<Any?>> {
         val result = ArrayList<List<Any?>>()
         var i = 1
