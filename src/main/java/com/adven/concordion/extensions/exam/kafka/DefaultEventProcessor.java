@@ -1,7 +1,6 @@
 package com.adven.concordion.extensions.exam.kafka;
 
 import com.adven.concordion.extensions.exam.kafka.check.*;
-import com.adven.concordion.extensions.exam.kafka.protobuf.ProtoEntity;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -22,13 +21,15 @@ public final class DefaultEventProcessor implements EventProcessor {
     }
 
     @Override
-    public boolean check(final Event<ProtoEntity> eventToCheck, final boolean isAsync) {
+    public boolean check(final Event<? extends Entity> eventToCheck, final boolean isAsync) {
         return checkWithReply(eventToCheck, null, null, isAsync);
     }
 
     @Override
-    public boolean checkWithReply(final Event<ProtoEntity> eventToCheck, final Event<ProtoEntity> replySuccessEvent,
-                                  final Event<ProtoEntity> replyFailEvent, final boolean isAsync) {
+    public boolean checkWithReply(final Event<? extends Entity> eventToCheck,
+                                  final Event<? extends Entity> replySuccessEvent,
+                                  final Event<? extends Entity> replyFailEvent,
+                                  final boolean isAsync) {
         final SyncMock syncMock = new SyncMock(eventToCheck, eventConsumer);
         CheckMessageMock mock = syncMock;
         if (replySuccessEvent != null && replyFailEvent != null) {
@@ -42,7 +43,7 @@ public final class DefaultEventProcessor implements EventProcessor {
     }
 
     @Override
-    public boolean send(final Event<ProtoEntity> event) {
+    public boolean send(final Event<? extends Entity> event) {
         if (event == null) {
             log.warn("Can't send null event");
             return false;
@@ -50,7 +51,7 @@ public final class DefaultEventProcessor implements EventProcessor {
         return send(event.getTopicName(), event.getKey(), event.getMessage(), event.getHeader());
     }
 
-    protected boolean send(final String topic, final String key, final ProtoEntity message,
+    protected boolean send(final String topic, final String key, final Entity message,
                            final EventHeader header) {
         if (StringUtils.isBlank(topic) || message == null) {
             log.warn("Unable to send record with topic={}, key={}, message={}. Missing required parameters",

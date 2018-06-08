@@ -1,8 +1,8 @@
 package com.adven.concordion.extensions.exam.kafka.check;
 
+import com.adven.concordion.extensions.exam.kafka.Entity;
 import com.adven.concordion.extensions.exam.kafka.Event;
 import com.adven.concordion.extensions.exam.kafka.EventHeader;
-import com.adven.concordion.extensions.exam.kafka.protobuf.ProtoEntity;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -23,12 +23,12 @@ public final class ReplyWithTopicFromHeader implements CheckMessageMock {
         if (event == null) {
             return false;
         }
-        final Event<ProtoEntity> eventWithNewHeader = buildReply(event);
+        final Event<? extends Entity> eventWithNewHeader = buildReply(event);
         return reply(eventWithNewHeader);
     }
 
-    protected Event<ProtoEntity> buildReply(final Event<Bytes> event) {
-        final Event<ProtoEntity> eventWithNewHeader;
+    protected Event<? extends Entity> buildReply(final Event<Bytes> event) {
+        final Event<? extends Entity> eventWithNewHeader;
         if (syncMock.verify(event)) {
             eventWithNewHeader = withReply.getReplyEvent()
                 .toBuilder()
@@ -45,7 +45,7 @@ public final class ReplyWithTopicFromHeader implements CheckMessageMock {
         return eventWithNewHeader;
     }
 
-    protected boolean reply(final Event<ProtoEntity> event) {
+    protected boolean reply(final Event<? extends Entity> event) {
         try {
             final EventHeader header = event.getHeader();
             final String replyTopic = new String(header.getReplyToTopic(), "UTF-8");

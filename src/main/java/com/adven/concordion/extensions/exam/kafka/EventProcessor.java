@@ -1,14 +1,12 @@
 package com.adven.concordion.extensions.exam.kafka;
 
-import com.adven.concordion.extensions.exam.kafka.protobuf.ProtoEntity;
-
 public interface EventProcessor {
 
-    boolean check(final Event<ProtoEntity> eventToCheck, final boolean isAsync);
+    boolean check(final Event<? extends Entity> eventToCheck, final boolean isAsync);
 
-    boolean checkWithReply(final Event<ProtoEntity> eventToCheck, final Event<ProtoEntity> replySuccessEvent,
-                           final Event<ProtoEntity> replyFailEvent, final boolean isAsync);
+    boolean checkWithReply(final Event<? extends Entity> eventToCheck, final Event<? extends Entity> replySuccessEvent,
+                           final Event<? extends Entity> replyFailEvent, final boolean isAsync);
 
-    boolean send(final Event<ProtoEntity> event);
+    boolean send(final Event<? extends Entity> event);
 
 }

@@ -1,5 +1,6 @@
 package com.adven.concordion.extensions.exam.kafka.protobuf;
 
+import com.adven.concordion.extensions.exam.kafka.Entity;
 import com.google.common.base.Optional;
 import lombok.Getter;
 import lombok.NonNull;
@@ -12,7 +13,7 @@ import java.util.List;
 
 @Getter
 @RequiredArgsConstructor
-public final class ProtoEntity {
+public final class ProtoEntity implements Entity {
 
     private final String jsonValue;
     private final String className;
@@ -22,6 +23,7 @@ public final class ProtoEntity {
         this(jsonValue, className, Arrays.asList(descriptors));
     }
 
+    @Override
     public byte[] toBytes() {
         val messageOptional = ProtoUtils.fromJsonToProto(jsonValue, className, descriptors);
         if (messageOptional.isPresent()) {
@@ -31,6 +33,7 @@ public final class ProtoEntity {
         }
     }
 
+    @Override
     public boolean isEqualTo(final byte[] bytes) {
         final Optional<String> valueToCheck = ProtoUtils.fromBytesToJson(Bytes.wrap(bytes), className, descriptors);
         if (valueToCheck.isPresent()) {
