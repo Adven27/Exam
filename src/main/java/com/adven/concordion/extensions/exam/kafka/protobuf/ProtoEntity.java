@@ -1,6 +1,6 @@
 package com.adven.concordion.extensions.exam.kafka.protobuf;
 
-import com.adven.concordion.extensions.exam.kafka.Entity;
+import com.adven.concordion.extensions.exam.kafka.AbstractEntity;
 import com.google.common.base.Optional;
 import lombok.Getter;
 import lombok.NonNull;
@@ -13,7 +13,7 @@ import java.util.List;
 
 @Getter
 @RequiredArgsConstructor
-public final class ProtoEntity implements Entity {
+public final class ProtoEntity extends AbstractEntity {
 
     private final String jsonValue;
     private final String className;
@@ -48,8 +48,9 @@ public final class ProtoEntity implements Entity {
         return expected.equals(actual);
     }
 
-    protected String cleanup(@NonNull final String message) {
-        return message.replaceAll("\\s", "");
+    @Override
+    public String printable() {
+        return jsonValue;
     }
 
 }

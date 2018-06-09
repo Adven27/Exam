@@ -1,7 +1,6 @@
 package com.adven.concordion.extensions.exam.kafka;
 
 import com.adven.concordion.extensions.exam.html.Html;
-import com.adven.concordion.extensions.exam.kafka.protobuf.ProtoEntity;
 import com.google.common.base.Optional;
 import org.junit.Before;
 import org.junit.Test;
@@ -23,7 +22,7 @@ public class EventBlockParserTest {
     public void testParseWithNullValue() {
         final Html html = div().attr(EventBlockParser.TOPIC_NAME, anyString())
             .attr(EventBlockParser.EVENT_KEY, anyString());
-        final Optional<Event<ProtoEntity>> result = parser.parse(html);
+        final Optional<Event<Entity>> result = parser.parse(html);
         assertThat(result).isEqualTo(Optional.absent());
     }
 

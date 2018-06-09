@@ -1,10 +1,13 @@
 package com.adven.concordion.extensions.exam.kafka.commands;
 
 import com.adven.concordion.extensions.exam.commands.ExamCommand;
+import com.adven.concordion.extensions.exam.configurators.ConfigurationException;
 import com.adven.concordion.extensions.exam.html.Html;
 import com.adven.concordion.extensions.exam.html.HtmlBuilder;
+import com.adven.concordion.extensions.exam.kafka.Entity;
 import com.adven.concordion.extensions.exam.kafka.Event;
 import com.adven.concordion.extensions.exam.kafka.EventProcessor;
+import com.adven.concordion.extensions.exam.kafka.StringEntity;
 import com.adven.concordion.extensions.exam.kafka.protobuf.ProtoEntity;
 import com.adven.concordion.extensions.exam.rest.JsonPrettyPrinter;
 import lombok.AccessLevel;
@@ -20,7 +23,6 @@ import static com.adven.concordion.extensions.exam.html.HtmlBuilder.*;
 @Slf4j
 abstract class BaseEventCommand extends ExamCommand {
 
-    protected static final String TOPIC_NAME = "topicName";
     protected static final String EVENT_KEY = "key";
 
     @Getter(AccessLevel.PROTECTED)
@@ -51,6 +53,14 @@ abstract class BaseEventCommand extends ExamCommand {
                 code("protobuf")));
     }
 
+    protected Html eventInfo(String text, final String topicName) {
+        return div().childs(
+            h(4, text),
+            h(5, "").childs(
+                badge(topicName == null ? "" : topicName, "primary"),
+                code("string")));
+    }
+
     protected Html tableResult(final String message, final String... headers) {
         final Html table = eventTable();
         final JsonPrettyPrinter printer = new JsonPrettyPrinter();
@@ -67,7 +77,7 @@ abstract class BaseEventCommand extends ExamCommand {
         return table;
     }
 
-    protected Html buildProtoInfo(final Event<ProtoEntity> event, final String infoHeader) {
+    protected Html buildInfo(final Event<Entity> event, final String infoHeader) {
         final Map<String, String> headers = new HashMap<>();
         if (event.getKey() != null) {
             headers.put(EVENT_KEY, event.getKey());
@@ -81,7 +91,22 @@ abstract class BaseEventCommand extends ExamCommand {
                 headers.put("correlationId", bytesToString(eventHeader.getCorrelationId()));
             }
         }
-        return buildProtoInfo(event.getMessage(), infoHeader, event.getTopicName(), headers);
+        final Entity entity = event.getMessage();
+        final Html info;
+        if (entity instanceof ProtoEntity) {
+            info = eventInfo(infoHeader, event.getTopicName(), ((ProtoEntity) entity).getClassName());
+        } else if (entity instanceof StringEntity) {
+            info = eventInfo(infoHeader, event.getTopicName());
+        } else {
+            throw new ConfigurationException("No implementation for entity=" + entity.getClass());
+        }
+        final List<String> headersList = new ArrayList<>();
+        for (val entry : headers.entrySet()) {
+            headersList.add(entry.getKey() + "=" + entry.getValue());
+        }
+        val table = tableResult(entity.printable(), headersList.toArray(new String[]{}));
+        info.dropAllTo(table);
+        return info;
     }
 
     private String bytesToString(final byte[] bytes) {

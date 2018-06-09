@@ -26,7 +26,7 @@ public final class EventSendCommand extends BaseEventCommand {
         final boolean result;
         if (parsedEvent.isPresent()) {
             val event = parsedEvent.get();
-            val info = buildProtoInfo(event, "Send message to");
+            val info = buildInfo(event, "Send message to");
             root.childs(info);
             result = getEventProcessor().send(event);
         } else {

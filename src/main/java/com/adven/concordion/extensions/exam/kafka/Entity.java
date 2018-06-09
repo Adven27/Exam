@@ -6,4 +6,6 @@ public interface Entity {
 
     boolean isEqualTo(final byte[] bytes);
 
+    String printable();
+
 }
