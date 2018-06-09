@@ -41,6 +41,11 @@ public class RestAssuredCfg {
         return this;
     }
 
+    public RestAssuredCfg trustAllCerts() {
+        RestAssured.useRelaxedHTTPSValidation();
+        return this;
+    }
+
     public ExamExtension end() {
         setUpRestAssured(uri, context, port);
         return extension;
@@ -62,7 +67,7 @@ public class RestAssuredCfg {
         try {
             return new URI(url);
         } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
+            throw new ConfigurationException("Unable to parse uri from url", e);
         }
     }
 }

@@ -2,7 +2,6 @@ package com.adven.concordion.extensions.exam.db.commands
 
 import com.adven.concordion.extensions.exam.db.DbResultRenderer
 import com.adven.concordion.extensions.exam.html.*
-import com.google.common.base.Strings.isNullOrEmpty
 import org.concordion.api.CommandCall
 import org.concordion.api.Element
 import org.concordion.api.Evaluator
@@ -30,10 +29,9 @@ class DBCheckCommand(name: String, tag: String, dbTester: IDatabaseTester) : DBC
     private val actualTable: ITable
         get() {
             val conn = dbTester.connection
-            val tableName = expectedTable.tableMetaData.tableName
-            val qualifiedName = QualifiedTableName(tableName, conn.schema).qualifiedName
-
-            return conn.createQueryTable(qualifiedName, "select * from " + qualifiedName + where())
+            val qualifiedName = QualifiedTableName(expectedTable.tableName(), conn.schema).qualifiedName
+            val where = if (where.isNullOrEmpty()) "" else "WHERE " + where!!
+            return conn.createQueryTable(qualifiedName, "select * from $qualifiedName $where")
         }
 
     init {
@@ -50,16 +48,12 @@ class DBCheckCommand(name: String, tag: String, dbTester: IDatabaseTester) : DBC
         listeners.announce().successReported(AssertSuccessEvent(element))
     }
 
-    override fun verify(commandCall: CommandCall?, evaluator: Evaluator?, resultRecorder: ResultRecorder?) {
+    override fun verify(cmd: CommandCall?, evaluator: Evaluator?, resultRecorder: ResultRecorder?) {
         val actual = actualTable
         val filteredActual = includedColumnsTable(
             actual, expectedTable.tableMetaData.columns)
 
-        assertEq(Html(commandCall!!.element), resultRecorder, expectedTable, filteredActual)
-    }
-
-    private fun where(): String {
-        return if (isNullOrEmpty(where)) "" else " WHERE " + where!!
+        assertEq(cmd.html(), resultRecorder, expectedTable, filteredActual)
     }
 
     private fun assertEq(rootEl: Html, resultRecorder: ResultRecorder?, expected: ITable, actual: ITable) {

@@ -3,9 +3,12 @@
 package com.adven.concordion.extensions.exam.html
 
 import com.adven.concordion.extensions.exam.resolveJson
+import org.concordion.api.CommandCall
 import org.concordion.api.Element
 import org.concordion.api.Evaluator
 
+const val ID = "id"
+const val ONCLICK = "onclick"
 const val CLASS = "class"
 const val STYLE = "style"
 const val NAME = "name"
@@ -179,6 +182,13 @@ class Html(internal val el: Element) {
     fun deepClone() = Html(el.deepClone())
 
     fun parent() = Html(el.parentElement)
+
+    fun findBy(id: String): Html? {
+        val e = this.el.getElementById(id)
+        return if (e == null) null else Html(e)
+    }
+
+    fun descendants(tag: String) = this.el.getDescendantElements(tag).toList().map(::Html)
 }
 
 fun div(txt: String? = null, vararg attrs: Pair<String, String>) = Html("div", txt, *attrs)
@@ -292,6 +302,12 @@ fun button(txt: String = "", vararg attrs: Pair<String, String>) = Html("button"
 
 fun buttonCollapse(txt: String, target: String) = button(txt) collapse target
 
-fun footerOf(card: Element) = Html(card.getChildElements("div")[2])
+fun footerOf(card: Html) = Html(card.el.getChildElements("div")[2])
 
 fun stat() = Html("small")
+
+fun CommandCall?.htmlCss(styleClass: String) {
+    this.html().css(styleClass)
+}
+
+fun CommandCall?.html() = Html(this!!.element)

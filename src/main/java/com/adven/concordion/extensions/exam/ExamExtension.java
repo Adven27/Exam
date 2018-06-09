@@ -1,6 +1,5 @@
 package com.adven.concordion.extensions.exam;
 
-import com.adven.concordion.extensions.exam.bootstrap.BootstrapExtension;
 import com.adven.concordion.extensions.exam.commands.ExamCommand;
 import com.adven.concordion.extensions.exam.configurators.DbTester;
 import com.adven.concordion.extensions.exam.configurators.KafkaTester;
