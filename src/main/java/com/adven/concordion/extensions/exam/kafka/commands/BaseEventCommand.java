@@ -44,23 +44,6 @@ abstract class BaseEventCommand extends ExamCommand {
         return table.childs(header.childs(tr));
     }
 
-    protected Html eventInfo(String text, final String topicName, final String protobufClass) {
-        return div().childs(
-            h(4, text),
-            h(5, "").childs(
-                badge(topicName == null ? "" : topicName, "primary"),
-                badge(protobufClass == null ? "" : protobufClass, "secondary"),
-                code("protobuf")));
-    }
-
-    protected Html eventInfo(String text, final String topicName) {
-        return div().childs(
-            h(4, text),
-            h(5, "").childs(
-                badge(topicName == null ? "" : topicName, "primary"),
-                code("string")));
-    }
-
     protected Html tableResult(final String message, final String... headers) {
         final Html table = eventTable();
         final JsonPrettyPrinter printer = new JsonPrettyPrinter();
@@ -91,15 +74,8 @@ abstract class BaseEventCommand extends ExamCommand {
                 headers.put("correlationId", bytesToString(eventHeader.getCorrelationId()));
             }
         }
-        final Entity entity = event.getMessage();
-        final Html info;
-        if (entity instanceof ProtoEntity) {
-            info = eventInfo(infoHeader, event.getTopicName(), ((ProtoEntity) entity).getClassName());
-        } else if (entity instanceof StringEntity) {
-            info = eventInfo(infoHeader, event.getTopicName());
-        } else {
-            throw new ConfigurationException("No implementation for entity=" + entity.getClass());
-        }
+        val entity = event.getMessage();
+        val info = eventInfo(infoHeader, event);
         final List<String> headersList = new ArrayList<>();
         for (val entry : headers.entrySet()) {
             headersList.add(entry.getKey() + "=" + entry.getValue());
@@ -109,6 +85,36 @@ abstract class BaseEventCommand extends ExamCommand {
         return info;
     }
 
+    protected Html eventInfo(final String infoHeader, final Event<Entity> event) {
+        final Entity entity = event.getMessage();
+        final Html info;
+        if (entity instanceof ProtoEntity) {
+            info = eventInfo(infoHeader, event.getTopicName(), ((ProtoEntity) entity).getClassName());
+        } else if (entity instanceof StringEntity) {
+            info = eventInfo(infoHeader, event.getTopicName());
+        } else {
+            throw new ConfigurationException("No implementation for entity=" + entity.getClass());
+        }
+        return info;
+    }
+
+    protected Html eventInfo(String text, final String topicName, final String protobufClass) {
+        return div().childs(
+            h(4, text),
+            h(5, "").childs(
+                badge(topicName == null ? "" : topicName, "primary"),
+                badge(protobufClass == null ? "" : protobufClass, "secondary"),
+                code("protobuf")));
+    }
+
+    protected Html eventInfo(String text, final String topicName) {
+        return div().childs(
+            h(4, text),
+            h(5, "").childs(
+                badge(topicName == null ? "" : topicName, "primary"),
+                code("string")));
+    }
+
     private String bytesToString(final byte[] bytes) {
         try {
             return new String(bytes, "UTF-8");
@@ -116,22 +122,6 @@ abstract class BaseEventCommand extends ExamCommand {
             log.error("Wrong encoding", e);
         }
         return "";
-    }
-
-    protected Html buildProtoInfo(final ProtoEntity proto, final String header, final String topicName) {
-        return buildProtoInfo(proto, header, topicName, Collections.<String, String>emptyMap());
-    }
-
-    private Html buildProtoInfo(final ProtoEntity proto, final String header, final String topicName,
-                                final Map<String, String> eventHeaders) {
-        val info = eventInfo(header, topicName, proto.getClassName());
-        final List<String> headers = new ArrayList<>();
-        for (val entry : eventHeaders.entrySet()) {
-            headers.add(entry.getKey() + "=" + entry.getValue());
-        }
-        val table = tableResult(proto.getJsonValue(), headers.toArray(new String[]{}));
-        info.dropAllTo(table);
-        return info;
     }
 
 }
