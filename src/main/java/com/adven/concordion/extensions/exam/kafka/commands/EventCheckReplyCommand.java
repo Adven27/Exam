@@ -1,10 +1,10 @@
 package com.adven.concordion.extensions.exam.kafka.commands;
 
 import com.adven.concordion.extensions.exam.html.Html;
+import com.adven.concordion.extensions.exam.kafka.Entity;
 import com.adven.concordion.extensions.exam.kafka.Event;
 import com.adven.concordion.extensions.exam.kafka.EventBlockParser;
 import com.adven.concordion.extensions.exam.kafka.EventProcessor;
-import com.adven.concordion.extensions.exam.kafka.protobuf.ProtoEntity;
 import lombok.val;
 import org.concordion.api.CommandCall;
 import org.concordion.api.Evaluator;
@@ -36,11 +36,11 @@ public final class EventCheckReplyCommand extends BaseEventCommand {
         }
     }
 
-    private boolean check(final Html root, final Event<ProtoEntity> expected) {
+    private boolean check(final Html root, final Event<Entity> expected) {
         val reply = root.first("reply");
         root.removeAllChild();
 
-        val eventCheckInfo = buildProtoInfo(expected, "Expected event");
+        val eventCheckInfo = buildInfo(expected, "Expected event");
         root.childs(eventCheckInfo);
 
         final boolean result;
@@ -52,13 +52,13 @@ public final class EventCheckReplyCommand extends BaseEventCommand {
         return result;
     }
 
-    private boolean withReply(final Html reply, final Event<ProtoEntity> checkEvent) {
+    private boolean withReply(final Html reply, final Event<Entity> checkEvent) {
         val successEvent = new EventBlockParser("success").parse(reply);
         val failEvent = new EventBlockParser("fail").parse(reply);
         final boolean result;
         if (successEvent.isPresent() && failEvent.isPresent()) {
-            val successEventInfo = buildProtoInfo(successEvent.get(), "Success reply");
-            val failEventInfo = buildProtoInfo(failEvent.get(), "Fail reply");
+            val successEventInfo = buildInfo(successEvent.get(), "Success reply");
+            val failEventInfo = buildInfo(failEvent.get(), "Fail reply");
             reply.parent().childs(successEventInfo, failEventInfo);
             result = getEventProcessor().checkWithReply(checkEvent, successEvent.get(), failEvent.get(), true);
         } else {

@@ -2,13 +2,12 @@ package com.adven.concordion.extensions.exam.kafka;
 
 import com.adven.concordion.extensions.exam.html.Html;
 import com.adven.concordion.extensions.exam.kafka.protobuf.ProtoBlockParser;
-import com.adven.concordion.extensions.exam.kafka.protobuf.ProtoEntity;
 import com.google.common.base.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
 
 @RequiredArgsConstructor
-public final class EventBlockParser implements HtmlBlockParser<Event<ProtoEntity>> {
+public final class EventBlockParser implements HtmlBlockParser<Event<Entity>> {
 
     static final String TOPIC_NAME = "topicName";
     static final String EVENT_KEY = "key";
@@ -21,7 +20,7 @@ public final class EventBlockParser implements HtmlBlockParser<Event<ProtoEntity
     }
 
     @Override
-    public Optional<Event<ProtoEntity>> parse(final Html html) {
+    public Optional<Event<Entity>> parse(final Html html) {
         final String topicName = html.attr(TOPIC_NAME);
         final String key = html.attr(EVENT_KEY);
         val headers = new HeaderBlockParser().parse(html);
@@ -30,16 +29,18 @@ public final class EventBlockParser implements HtmlBlockParser<Event<ProtoEntity
             return Optional.absent();
         }
         val proto = new ProtoBlockParser().parse(value);
+
+        final Event.EventBuilder<Entity> builder = Event.<Entity>builder();
+        builder.key(key)
+            .topicName(topicName)
+            .header(headers.isPresent() ? headers.get() : null);
         if (proto.isPresent()) {
             val message = proto.get();
-            return Optional.of(Event.<ProtoEntity>builder()
-                .topicName(topicName)
-                .key(key)
-                .message(message)
-                .header(headers.isPresent() ? headers.get() : null)
-                .build());
+            builder.message(message);
+        } else {
+            builder.message(new StringEntity(value.text()));
         }
-        return Optional.absent();
+        return Optional.of(builder.build());
     }
 
 }

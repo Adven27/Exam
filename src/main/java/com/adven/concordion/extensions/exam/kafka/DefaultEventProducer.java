@@ -1,6 +1,5 @@
 package com.adven.concordion.extensions.exam.kafka;
 
-import com.adven.concordion.extensions.exam.kafka.protobuf.ProtoEntity;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -46,7 +45,7 @@ public final class DefaultEventProducer implements EventProducer {
     }
 
     @Override
-    public boolean produce(@NonNull final String topic, final String key, @NonNull final ProtoEntity message) {
+    public boolean produce(@NonNull final String topic, final String key, @NonNull final Entity message) {
         final ProducerRecord<String, Bytes> record =
             new ProducerRecord<>(topic, key, Bytes.wrap(message.toBytes()));
         return produce(record);
@@ -54,7 +53,7 @@ public final class DefaultEventProducer implements EventProducer {
 
     @Override
     public boolean produce(@NonNull final String topic, final String key, final EventHeader eventHeader,
-                           @NonNull final ProtoEntity message) {
+                           @NonNull final Entity message) {
         if (eventHeader == null) {
             return produce(topic, key, message);
         } else {

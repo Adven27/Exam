@@ -1,15 +1,17 @@
-### Check event and reply
+### Check event and reply (protobuf)
 
 <div print="true">
     <e:summary/>
-    <e:example name="Event must be received and then a success event must be send back in protobuf format">
+    <e:example name="Event must be received and then a success event must be send back">
         <e:given>        
             <e:event-check topicName="test.consume.topic">
                 <expected>
-                {
-                    "name": "Make something good",
-                    "number": 7
-                }
+                    <protobuf class="com.adven.concordion.extensions.exam.kafka.protobuf.TestEntity$Entity">
+                    {
+                        "name": "Make something good",
+                        "number": 7
+                    }
+                    </protobuf>
                 </expected>
                 <reply>
                     <success>

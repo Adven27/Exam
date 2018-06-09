@@ -1,5 +1,6 @@
 package com.adven.concordion.extensions.exam.kafka.check;
 
+import com.adven.concordion.extensions.exam.kafka.Entity;
 import com.adven.concordion.extensions.exam.kafka.Event;
 import com.adven.concordion.extensions.exam.kafka.EventConsumer;
 import com.adven.concordion.extensions.exam.kafka.check.verify.CompositeVerifier;
@@ -18,11 +19,11 @@ import java.util.List;
 @RequiredArgsConstructor
 public final class SyncMock implements CheckMessageMock {
 
-    private final Event<ProtoEntity> eventToCheck;
+    private final Event<? extends Entity> eventToCheck;
     private final EventConsumer eventConsumer;
     private final Verifier verifier;
 
-    public SyncMock(final Event<ProtoEntity> eventToCheck, final EventConsumer eventConsumer) {
+    public SyncMock(final Event<? extends Entity> eventToCheck, final EventConsumer eventConsumer) {
         this(eventToCheck, eventConsumer,
             new CompositeVerifier(
                 new NullAwareVerifier(),

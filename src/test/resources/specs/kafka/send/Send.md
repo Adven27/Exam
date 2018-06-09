@@ -2,7 +2,22 @@
 
 <div print="true">
     <e:summary/>
-    <e:example name="Send message to kafka">
+    <e:example name="Send simple message to kafka">
+        <e:when>
+            <e:event-send topicName="test.produce.topic" key="messageKey">
+                <value>
+                {
+                    "name": "happy little name",
+                    "number": 12
+                }
+                </value>
+            </e:event-send>
+        </e:when>
+        <e:then>
+            <span c:assertTrue="hasReceivedSimpleEvent()">Successfuly received event</span>
+        </e:then>
+    </e:example>
+    <e:example name="Send protobuf message to kafka">
         <e:when>
             <e:event-send topicName="test.produce.topic" key="messageKey">
                 <value>
@@ -16,10 +31,10 @@
             </e:event-send>
         </e:when>
         <e:then>
-            <span c:assertTrue="hasReceivedEvent()">Successfuly received event</span>
+            <span c:assertTrue="hasReceivedProtobufEvent()">Successfuly received event</span>
         </e:then>
     </e:example>
-    <e:example name="Send message with headers to kafka">
+    <e:example name="Send protobuf message with headers to kafka">
         <e:when>
             <e:event-send topicName="test.produce.topic" key="messageKey">
                 <headers>
@@ -37,7 +52,7 @@
             </e:event-send>
         </e:when>
         <e:then>
-            <span c:assertTrue="hasReceivedEventWithHeaders()">Successfuly received event with correct headers</span>
+            <span c:assertTrue="hasReceivedProtobufEventWithHeaders()">Successfuly received event with correct headers</span>
         </e:then>
     </e:example>
 </div>    

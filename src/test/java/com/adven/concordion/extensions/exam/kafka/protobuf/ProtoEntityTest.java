@@ -59,12 +59,4 @@ public class ProtoEntityTest {
         assertThat(result).isFalse();
     }
 
-    @Test
-    public void testCleanup() {
-        final String expected = anyString();
-        final ProtoEntity entity = new ProtoEntity(expected, anyString());
-        final String result = entity.cleanup("\n" + expected + "\t");
-        assertThat(result).isEqualTo(expected);
-    }
-
 }
