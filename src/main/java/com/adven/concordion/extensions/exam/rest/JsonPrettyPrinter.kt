@@ -3,137 +3,111 @@ package com.adven.concordion.extensions.exam.rest
 import com.adven.concordion.extensions.exam.rest.JsonPrettyPrinter.State.*
 import java.util.*
 
+private const val ESCAPE_CHARACTER = "\\"
+
 class JsonPrettyPrinter {
 
     fun prettyPrint(json: String?): String {
-        return if (json == null) "" else Parser(json).parse()
+        return if (json == null) "" else Parser().parse(json)
     }
 
-    internal enum class State {
+    private enum class State {
         UNKNOWN, OBJECT, ARRAY
     }
 
-    private class Parser(json: String) {
-        private val scanner: Scanner = Scanner(json)
-        private val result: StringBuilder
+    private class Parser {
         private var indent = 0
         private var newLine = false
         private val state = Stack<State>()
         private var token: String? = null
 
-        init {
-            scanner.useDelimiter("")
-            result = StringBuilder()
-            enterState(UNKNOWN)
-        }
-
-        internal fun parse(): String {
-            scanner.use { _ ->
-                while (hasToken()) {
-                    if (nextTokenIs("{")) {
-                        consumeToken()
-                        if (!nextTokenIs("}")) {
-                            growIndent()
-                            append("{")
-                            enterState(OBJECT)
-                        } else {
-                            append("{}")
+        internal fun parse(json: String): String {
+            state.push(UNKNOWN)
+            Scanner(json).useDelimiter("").use { scanner ->
+                return buildString {
+                    while (scanner.hasToken()) {
+                        if (scanner.nextTokenIs("{")) {
                             consumeToken()
+                            if (!scanner.nextTokenIs("}")) {
+                                growIndent()
+                                append("{")
+                                state.push(OBJECT)
+                            } else {
+                                append("{}")
+                                consumeToken()
+                            }
+                            continue
                         }
-                        continue
-                    }
-                    if (nextTokenIs("}")) {
-                        shrinkIndent()
-                    }
-                    if (nextTokenIs("[")) {
-                        enterState(ARRAY)
-                    }
-                    if (nextTokenIs("]")) {
-                        leaveState()
-                    }
-                    if (nextTokenIs(",")) {
-                        append(",")
-                        if (inState(OBJECT)) {
-                            newLine = true
-                        } else if (inState(ARRAY)) {
-                            append(" ")
+                        if (scanner.nextTokenIs("}")) shrinkIndent()
+                        if (scanner.nextTokenIs("[")) state.push(ARRAY)
+                        if (scanner.nextTokenIs("]")) state.leave()
+                        if (scanner.nextTokenIs(",")) {
+                            append(",")
+                            if (state.eq(OBJECT)) {
+                                newLine = true
+                            } else if (state.eq(ARRAY)) {
+                                append(" ")
+                            }
+                            consumeToken()
+                            continue
                         }
-                        consumeToken()
-                        continue
-                    }
-                    if (nextTokenIs(":")) {
-                        append(": ")
-                        consumeToken()
-                        continue
-                    }
+                        if (scanner.nextTokenIs(":")) {
+                            append(": ")
+                            consumeToken()
+                            continue
+                        }
 
-                    if (newLine) {
-                        append("\n")
-                        indent()
-                        newLine = false
-                    }
+                        if (newLine) {
+                            append("\n")
+                            indent(indent)
+                            newLine = false
+                        }
 
-                    if (nextTokenIs("\"")) {
-                        append("\"")
-                        eatUnit("\"")
-                        consumeToken()
-                        continue
-                    }
+                        if (scanner.nextTokenIs("\"")) {
+                            append("\"")
+                            append(scanner.eatUnit("\""))
+                            consumeToken()
+                            continue
+                        }
 
-                    if (nextTokenIs("'")) {
-                        append("'")
-                        eatUnit("'")
+                        if (scanner.nextTokenIs("'")) {
+                            append("'")
+                            append(scanner.eatUnit("'"))
+                            consumeToken()
+                            continue
+                        }
+                        append(token)
                         consumeToken()
-                        continue
                     }
-                    append(token)
-                    consumeToken()
                 }
-                return result.toString()
             }
         }
 
-        private fun inState(testState: State): Boolean {
-            return state.peek() == testState
-        }
+        private fun Stack<State>.eq(testState: State) = peek() == testState
 
-        private fun leaveState(): State {
-            return if (state.isEmpty()) UNKNOWN else state.pop()
-        }
+        private fun Stack<State>.leave() = if (isEmpty()) UNKNOWN else pop()
 
-        private fun enterState(newState: State) {
-            state.push(newState)
-        }
+        private fun StringBuilder.indent(i: Int) = append("  ".repeat(i))
 
-        private fun indent() {
-            for (i in 0 until indent) {
-                append("  ")
-            }
-        }
+        private fun Scanner.nextTokenIs(testToken: String) = hasToken() && testToken == token
 
-        private fun append(value: String?) {
-            result.append(value)
-        }
-
-        private fun nextTokenIs(testToken: String): Boolean {
-            return hasToken() && testToken == token
-        }
-
-        private fun eatUnit(desiredToken: String) {
+        private fun Scanner.eatUnit(desiredToken: String): String {
             var prev = ""
-            while (scanner.hasNext()) {
-                val x = scanner.next()
-                result.append(x)
+            var sb = ""
+            while (hasNext()) {
+                val x = next()
+                sb += x
                 if (x == desiredToken && prev != ESCAPE_CHARACTER) {
                     break
                 }
                 prev = x
             }
+            return sb
         }
 
         private fun shrinkIndent() {
             indent--
-            if (leaveState() == OBJECT) {
+            if (state.leave() == OBJECT) {
                 newLine = true
             }
         }
@@ -143,13 +117,13 @@ class JsonPrettyPrinter {
             newLine = true
         }
 
-        private fun hasToken(): Boolean {
+        private fun Scanner.hasToken(): Boolean {
             if (token != null) {
                 return true
             }
 
-            while (scanner.hasNext()) {
-                token = scanner.next().trim { it <= ' ' }
+            while (hasNext()) {
+                token = next().trim()
                 if (token!!.isEmpty()) {
                     continue
                 }
@@ -160,10 +134,6 @@ class JsonPrettyPrinter {
 
         private fun consumeToken() {
             token = null
-        }
-
-        companion object {
-            private const val ESCAPE_CHARACTER = "\\"
         }
     }
 }
