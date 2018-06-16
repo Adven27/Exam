@@ -51,7 +51,7 @@ open class DBCommand(name: String, tag: String, protected val dbTester: IDatabas
     protected fun renderTable(root: Html, t: ITable) {
         val cols = t.columnsSortedBy(remarks)
         val rows = t.mapRows { row ->
-            cols.map { col -> t.value(row, col) }
+            cols.map { col -> t[row, col] }
         }
         val classFor = { c: Column -> if (remarks.containsKey(c.columnName)) "table-info" else "" }
 
@@ -97,6 +97,6 @@ fun ITable.columnsSortedBy(remarks: Map<String, Int>): List<Column> {
         })
 }
 
-fun ITable.value(row: Int, col: Column): String = this.getValue(row, col.columnName)?.toString() ?: "(null)"
+operator fun ITable.get(row: Int, col: Column): String = this.getValue(row, col.columnName)?.toString() ?: "(null)"
 
 fun <R> ITable.mapRows(transform: (Int) -> R): List<R> = (0 until this.rowCount).map(transform)
