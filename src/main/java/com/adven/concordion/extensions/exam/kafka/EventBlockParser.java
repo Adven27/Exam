@@ -21,25 +21,26 @@ public final class EventBlockParser implements HtmlBlockParser<Event<Entity>> {
 
     @Override
     public Optional<Event<Entity>> parse(final Html html) {
-        final String topicName = html.attr(TOPIC_NAME);
-        final String key = html.attr(EVENT_KEY);
+        val topicName = html.attr(TOPIC_NAME);
+        val key = html.attr(EVENT_KEY);
         val headers = new HeaderBlockParser().parse(html);
-        val value = html.first(valueBlockName);
-        if (value == null) {
-            return Optional.absent();
-        }
-        val proto = new ProtoBlockParser().parse(value);
-
-        final Event.EventBuilder<Entity> builder = Event.<Entity>builder();
+        val valueBlock = html.first(valueBlockName);
+        val builder = Event.<Entity>builder();
         builder.key(key)
             .topicName(topicName)
             .header(headers.isPresent() ? headers.get() : null);
-        if (proto.isPresent()) {
-            val message = proto.get();
-            builder.message(message);
+        final Entity value;
+        if (valueBlock == null) {
+            value = new EmptyEntity();
         } else {
-            builder.message(new StringEntity(value.text()));
+            val proto = new ProtoBlockParser().parse(valueBlock);
+            if (proto.isPresent()) {
+                value = proto.get();
+            } else {
+                value = new StringEntity(valueBlock.text());
+            }
         }
+        builder.message(value);
         return Optional.of(builder.build());
     }
 
