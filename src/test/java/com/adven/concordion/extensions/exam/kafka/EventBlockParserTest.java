@@ -20,10 +20,13 @@ public class EventBlockParserTest {
 
     @Test
     public void testParseWithNullValue() {
-        final Html html = div().attr(EventBlockParser.TOPIC_NAME, anyString())
-            .attr(EventBlockParser.EVENT_KEY, anyString());
+        final String topicName = anyString();
+        final String key = anyString();
+        final Html html = div().attr(EventBlockParser.TOPIC_NAME, topicName)
+            .attr(EventBlockParser.EVENT_KEY, key);
         final Optional<Event<Entity>> result = parser.parse(html);
-        assertThat(result).isEqualTo(Optional.absent());
+        assertThat(result).isNotEqualTo(Optional.absent());
+        assertThat(result.get().getMessage()).isEqualTo(new EmptyEntity());
     }
 
 }

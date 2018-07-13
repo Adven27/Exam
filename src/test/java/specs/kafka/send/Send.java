@@ -41,6 +41,12 @@ public class Send extends Kafka {
             && replyToTopic.equals("test.reply.topic") && correlationId.equals("123");
     }
 
+    public boolean hasReceivedEventWithNoMessage() {
+        final ConsumerRecord<String, Bytes> record = consumeSingleEvent();
+        final Bytes value = record.value();
+        return value.get().length == 0;
+    }
+
     private String header(final Headers headers, final String headerName) throws UnsupportedEncodingException {
         final byte[] bytes = headers.headers(headerName).iterator().next().value();
         return new String(bytes, "UTF-8");

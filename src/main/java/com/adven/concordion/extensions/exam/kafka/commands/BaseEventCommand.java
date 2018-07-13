@@ -4,10 +4,7 @@ import com.adven.concordion.extensions.exam.commands.ExamCommand;
 import com.adven.concordion.extensions.exam.configurators.ConfigurationException;
 import com.adven.concordion.extensions.exam.html.Html;
 import com.adven.concordion.extensions.exam.html.HtmlBuilder;
-import com.adven.concordion.extensions.exam.kafka.Entity;
-import com.adven.concordion.extensions.exam.kafka.Event;
-import com.adven.concordion.extensions.exam.kafka.EventProcessor;
-import com.adven.concordion.extensions.exam.kafka.StringEntity;
+import com.adven.concordion.extensions.exam.kafka.*;
 import com.adven.concordion.extensions.exam.kafka.protobuf.ProtoEntity;
 import com.adven.concordion.extensions.exam.rest.JsonPrettyPrinter;
 import lombok.AccessLevel;
@@ -90,7 +87,7 @@ abstract class BaseEventCommand extends ExamCommand {
         final Html info;
         if (entity instanceof ProtoEntity) {
             info = eventInfo(infoHeader, event.getTopicName(), ((ProtoEntity) entity).getClassName());
-        } else if (entity instanceof StringEntity) {
+        } else if (entity instanceof StringEntity || entity instanceof EmptyEntity) {
             info = eventInfo(infoHeader, event.getTopicName());
         } else {
             throw new ConfigurationException("No implementation for entity=" + entity.getClass());

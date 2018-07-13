@@ -55,4 +55,12 @@
             <span c:assertTrue="hasReceivedProtobufEventWithHeaders()">Successfuly received event with correct headers</span>
         </e:then>
     </e:example>
+    <e:example name="Send empty event">
+        <e:when>
+            <e:event-send topicName="test.produce.topic"/>
+        </e:when>
+        <e:then>
+            <span c:assertTrue="hasReceivedEventWithNoMessage()">Successfuly received empty event</span>
+        </e:then>
+    </e:example>
 </div>    
