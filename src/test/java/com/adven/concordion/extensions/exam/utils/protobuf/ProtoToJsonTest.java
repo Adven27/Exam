@@ -1,10 +1,10 @@
-package com.adven.concordion.extensions.exam.kafka.protobuf;
+package com.adven.concordion.extensions.exam.utils.protobuf;
 
 import com.google.common.base.Optional;
 import org.junit.Before;
 import org.junit.Test;
 
-import static com.adven.concordion.extensions.exam.kafka.protobuf.TestEntity.Entity;
+import static com.adven.concordion.extensions.exam.utils.protobuf.TestEntity.Entity;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class ProtoToJsonTest {

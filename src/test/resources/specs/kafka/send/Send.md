@@ -21,7 +21,7 @@
         <e:when>
             <e:event-send topicName="test.produce.topic" key="messageKey">
                 <value>
-                    <protobuf class="com.adven.concordion.extensions.exam.kafka.protobuf.TestEntity$Entity">
+                    <protobuf class="com.adven.concordion.extensions.exam.utils.protobuf.TestEntity$Entity">
                     {
                         "name": "happy little name",
                         "number": 12
@@ -42,7 +42,7 @@
                     <correlationId>123</correlationId>
                 </headers>
                 <value>
-                    <protobuf class="com.adven.concordion.extensions.exam.kafka.protobuf.TestEntity$Entity">
+                    <protobuf class="com.adven.concordion.extensions.exam.utils.protobuf.TestEntity$Entity">
                     {
                         "name": "happy little name",
                         "number": 12

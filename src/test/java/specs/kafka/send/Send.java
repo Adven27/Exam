@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Map;
 
-import static com.adven.concordion.extensions.exam.kafka.protobuf.TestEntity.Entity;
+import static com.adven.concordion.extensions.exam.utils.protobuf.TestEntity.Entity;
 
 public class Send extends Kafka {
 

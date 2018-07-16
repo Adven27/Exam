@@ -8,7 +8,7 @@ import java.util.concurrent.ExecutionException;
 
 import static com.adven.concordion.extensions.exam.RandomUtils.anyInt;
 import static com.adven.concordion.extensions.exam.RandomUtils.anyString;
-import static com.adven.concordion.extensions.exam.kafka.protobuf.TestEntity.Entity;
+import static com.adven.concordion.extensions.exam.utils.protobuf.TestEntity.Entity;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class DefaultEventConsumerTestIT extends KafkaAwareTest {

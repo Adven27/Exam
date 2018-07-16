@@ -13,7 +13,7 @@
                 </expected>
                 <reply>
                     <success>
-                        <protobuf class="com.adven.concordion.extensions.exam.kafka.protobuf.TestEntity$Entity">
+                        <protobuf class="com.adven.concordion.extensions.exam.utils.protobuf.TestEntity$Entity">
                         {
                             "name": "OK",
                             "number": 42
@@ -21,7 +21,7 @@
                         </protobuf>
                     </success>
                     <fail>
-                        <protobuf class="com.adven.concordion.extensions.exam.kafka.protobuf.TestEntity$Entity">
+                        <protobuf class="com.adven.concordion.extensions.exam.utils.protobuf.TestEntity$Entity">
                         {
                             "name": "FAIL",
                             "number": 13

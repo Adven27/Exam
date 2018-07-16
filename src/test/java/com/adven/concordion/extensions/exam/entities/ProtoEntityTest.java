@@ -1,6 +1,6 @@
 package com.adven.concordion.extensions.exam.entities;
 
-import com.adven.concordion.extensions.exam.kafka.protobuf.TestEntity;
+import com.adven.concordion.extensions.exam.utils.protobuf.TestEntity;
 import org.junit.Test;
 
 import static com.adven.concordion.extensions.exam.RandomUtils.anyInt;

@@ -1,4 +1,4 @@
-package com.adven.concordion.extensions.exam.kafka.protobuf;
+package com.adven.concordion.extensions.exam.utils.protobuf;
 
 import com.adven.concordion.extensions.exam.kafka.EventUtils;
 import com.google.common.base.Optional;
@@ -7,7 +7,7 @@ import org.junit.Test;
 
 import static com.adven.concordion.extensions.exam.RandomUtils.anyInt;
 import static com.adven.concordion.extensions.exam.RandomUtils.anyString;
-import static com.adven.concordion.extensions.exam.kafka.protobuf.TestEntity.Entity;
+import static com.adven.concordion.extensions.exam.utils.protobuf.TestEntity.Entity;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class ProtoBytesToJsonTest {
