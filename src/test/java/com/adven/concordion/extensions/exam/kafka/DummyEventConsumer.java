@@ -1,9 +1,8 @@
 package com.adven.concordion.extensions.exam.kafka;
 
-import com.adven.concordion.extensions.exam.kafka.protobuf.ProtoEntity;
+import com.adven.concordion.extensions.exam.entities.ProtoEntity;
 import org.apache.kafka.common.utils.Bytes;
 
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;

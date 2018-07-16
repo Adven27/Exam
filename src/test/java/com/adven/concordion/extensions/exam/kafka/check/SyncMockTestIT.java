@@ -2,7 +2,7 @@ package com.adven.concordion.extensions.exam.kafka.check;
 
 import com.adven.concordion.extensions.exam.kafka.Event;
 import com.adven.concordion.extensions.exam.kafka.KafkaAwareTest;
-import com.adven.concordion.extensions.exam.kafka.protobuf.ProtoEntity;
+import com.adven.concordion.extensions.exam.entities.ProtoEntity;
 import org.apache.kafka.common.utils.Bytes;
 import org.junit.Test;
 

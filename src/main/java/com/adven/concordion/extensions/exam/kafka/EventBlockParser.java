@@ -1,7 +1,9 @@
 package com.adven.concordion.extensions.exam.kafka;
 
+import com.adven.concordion.extensions.exam.entities.Entity;
 import com.adven.concordion.extensions.exam.html.Html;
-import com.adven.concordion.extensions.exam.html.parsers.ValueBlockParser;
+import com.adven.concordion.extensions.exam.html.HtmlBlockParser;
+import com.adven.concordion.extensions.exam.html.ValueBlockParser;
 import com.google.common.base.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.val;

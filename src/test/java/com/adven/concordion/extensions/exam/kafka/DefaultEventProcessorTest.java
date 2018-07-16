@@ -1,6 +1,6 @@
 package com.adven.concordion.extensions.exam.kafka;
 
-import com.adven.concordion.extensions.exam.kafka.protobuf.ProtoEntity;
+import com.adven.concordion.extensions.exam.entities.ProtoEntity;
 import org.junit.Before;
 import org.junit.Test;
 

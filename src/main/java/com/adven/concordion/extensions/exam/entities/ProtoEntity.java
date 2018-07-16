@@ -1,6 +1,6 @@
-package com.adven.concordion.extensions.exam.kafka.protobuf;
+package com.adven.concordion.extensions.exam.entities;
 
-import com.adven.concordion.extensions.exam.kafka.AbstractEntity;
+import com.adven.concordion.extensions.exam.kafka.protobuf.ProtoUtils;
 import com.google.common.base.Optional;
 import lombok.Getter;
 import lombok.NonNull;

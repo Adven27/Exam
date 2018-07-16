@@ -1,4 +1,4 @@
-package com.adven.concordion.extensions.exam.kafka;
+package com.adven.concordion.extensions.exam.entities;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

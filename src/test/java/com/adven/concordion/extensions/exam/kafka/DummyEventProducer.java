@@ -1,5 +1,7 @@
 package com.adven.concordion.extensions.exam.kafka;
 
+import com.adven.concordion.extensions.exam.entities.Entity;
+
 import java.util.ArrayList;
 import java.util.List;
 

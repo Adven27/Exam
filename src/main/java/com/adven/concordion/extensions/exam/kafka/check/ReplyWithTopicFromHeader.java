@@ -1,6 +1,6 @@
 package com.adven.concordion.extensions.exam.kafka.check;
 
-import com.adven.concordion.extensions.exam.kafka.Entity;
+import com.adven.concordion.extensions.exam.entities.Entity;
 import com.adven.concordion.extensions.exam.kafka.Event;
 import com.adven.concordion.extensions.exam.kafka.EventHeader;
 import lombok.RequiredArgsConstructor;

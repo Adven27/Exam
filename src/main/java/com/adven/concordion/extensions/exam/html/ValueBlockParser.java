@@ -1,10 +1,7 @@
-package com.adven.concordion.extensions.exam.html.parsers;
+package com.adven.concordion.extensions.exam.html;
 
-import com.adven.concordion.extensions.exam.html.Html;
-import com.adven.concordion.extensions.exam.kafka.Entity;
-import com.adven.concordion.extensions.exam.kafka.HtmlBlockParser;
-import com.adven.concordion.extensions.exam.kafka.StringEntity;
-import com.adven.concordion.extensions.exam.kafka.protobuf.ProtoBlockParser;
+import com.adven.concordion.extensions.exam.entities.Entity;
+import com.adven.concordion.extensions.exam.entities.StringEntity;
 import com.google.common.base.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.val;

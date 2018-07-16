@@ -2,10 +2,12 @@ package com.adven.concordion.extensions.exam.kafka.commands;
 
 import com.adven.concordion.extensions.exam.commands.ExamCommand;
 import com.adven.concordion.extensions.exam.configurators.ConfigurationException;
+import com.adven.concordion.extensions.exam.entities.Entity;
+import com.adven.concordion.extensions.exam.entities.StringEntity;
 import com.adven.concordion.extensions.exam.html.Html;
 import com.adven.concordion.extensions.exam.html.HtmlBuilder;
 import com.adven.concordion.extensions.exam.kafka.*;
-import com.adven.concordion.extensions.exam.kafka.protobuf.ProtoEntity;
+import com.adven.concordion.extensions.exam.entities.ProtoEntity;
 import com.adven.concordion.extensions.exam.rest.JsonPrettyPrinter;
 import lombok.AccessLevel;
 import lombok.Getter;

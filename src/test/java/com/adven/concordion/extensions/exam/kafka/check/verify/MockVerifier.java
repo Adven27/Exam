@@ -1,6 +1,6 @@
 package com.adven.concordion.extensions.exam.kafka.check.verify;
 
-import com.adven.concordion.extensions.exam.kafka.Entity;
+import com.adven.concordion.extensions.exam.entities.Entity;
 import com.adven.concordion.extensions.exam.kafka.Event;
 import org.apache.kafka.common.utils.Bytes;
 

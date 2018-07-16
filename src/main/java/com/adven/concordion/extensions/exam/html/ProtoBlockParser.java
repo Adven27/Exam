@@ -1,7 +1,6 @@
-package com.adven.concordion.extensions.exam.kafka.protobuf;
+package com.adven.concordion.extensions.exam.html;
 
-import com.adven.concordion.extensions.exam.html.Html;
-import com.adven.concordion.extensions.exam.kafka.HtmlBlockParser;
+import com.adven.concordion.extensions.exam.entities.ProtoEntity;
 import com.google.common.base.Optional;
 import lombok.val;
 import org.apache.commons.lang3.StringUtils;

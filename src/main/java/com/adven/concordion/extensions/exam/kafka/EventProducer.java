@@ -1,6 +1,6 @@
 package com.adven.concordion.extensions.exam.kafka;
 
-import com.adven.concordion.extensions.exam.kafka.protobuf.ProtoEntity;
+import com.adven.concordion.extensions.exam.entities.Entity;
 import lombok.NonNull;
 
 public interface EventProducer {

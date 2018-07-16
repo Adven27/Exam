@@ -1,5 +1,6 @@
-package com.adven.concordion.extensions.exam.kafka;
+package com.adven.concordion.extensions.exam.entities;
 
+import com.adven.concordion.extensions.exam.kafka.EmptyEntity;
 import org.junit.Before;
 import org.junit.Test;
 
