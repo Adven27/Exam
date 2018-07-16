@@ -6,6 +6,10 @@ public interface Entity {
 
     boolean isEqualTo(final byte[] bytes);
 
+    boolean isEqualTo(final Object object);
+
+    boolean isEqualTo(final String string);
+
     String printable();
 
 }

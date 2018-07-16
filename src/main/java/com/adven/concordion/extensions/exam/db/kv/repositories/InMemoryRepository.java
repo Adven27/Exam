@@ -14,13 +14,9 @@ public final class InMemoryRepository implements KeyValueRepository {
     private final Map<String, Map<String, Object>> db;
 
     @Override
-    public Optional<String> findOne(final String cacheName, final String key, final ValueProcessor<?> converter) {
+    public Optional<Object> findOne(final String cacheName, final String key) {
         val cache = db.get(cacheName);
-        if (cache == null) {
-            return Optional.absent();
-        } else {
-            return converter.convert(cache.get(key));
-        }
+        return Optional.fromNullable(cache.get(key));
     }
 
     @Override

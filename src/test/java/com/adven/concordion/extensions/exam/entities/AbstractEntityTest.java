@@ -10,7 +10,7 @@ public class AbstractEntityTest {
     @Test
     public void testCleanup() {
         final String expected = anyString();
-        final AbstractEntity entity = new MockEntity();
+        final AbstractEntity entity = new MockEntity(anyString());
         final String result = entity.cleanup("\n" + expected + "\t");
         assertThat(result).isEqualTo(expected);
     }

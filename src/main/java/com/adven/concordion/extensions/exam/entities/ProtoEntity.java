@@ -1,23 +1,29 @@
 package com.adven.concordion.extensions.exam.entities;
 
+import com.adven.concordion.extensions.exam.utils.protobuf.ProtoToJson;
 import com.adven.concordion.extensions.exam.utils.protobuf.ProtoUtils;
 import com.google.common.base.Optional;
+import com.google.protobuf.Message;
 import lombok.Getter;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.apache.kafka.common.utils.Bytes;
 
 import java.util.Arrays;
 import java.util.List;
 
+@Slf4j
 @Getter
-@RequiredArgsConstructor
 public final class ProtoEntity extends AbstractEntity {
 
-    private final String jsonValue;
     private final String className;
     private final List<String> descriptors;
+
+    public ProtoEntity(final String value, final String className, final List<String> descriptors) {
+        super(value);
+        this.className = className;
+        this.descriptors = descriptors;
+    }
 
     public ProtoEntity(final String jsonValue, final String className, final String... descriptors) {
         this(jsonValue, className, Arrays.asList(descriptors));
@@ -25,7 +31,7 @@ public final class ProtoEntity extends AbstractEntity {
 
     @Override
     public byte[] toBytes() {
-        val messageOptional = ProtoUtils.fromJsonToProto(jsonValue, className, descriptors);
+        val messageOptional = ProtoUtils.fromJsonToProto(getValue(), className, descriptors);
         if (messageOptional.isPresent()) {
             return messageOptional.get().toByteArray();
         } else {
@@ -42,15 +48,20 @@ public final class ProtoEntity extends AbstractEntity {
         return false;
     }
 
-    public boolean isEqualTo(@NonNull final String string) {
-        final String expected = cleanup(jsonValue);
-        final String actual = cleanup(string);
-        return expected.equals(actual);
-    }
-
     @Override
-    public String printable() {
-        return jsonValue;
+    public boolean isEqualTo(final Object object) {
+        Message cast = null;
+        try {
+            cast = Message.class.cast(object);
+        } catch (ClassCastException e) {
+            log.error("Failed to cast value={} to string", object);
+        }
+        if (cast == null) {
+            return false;
+        } else {
+            val convert = new ProtoToJson<>().convert(cast);
+            return convert.isPresent() && isEqualTo(convert.get());
+        }
     }
 
 }

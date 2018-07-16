@@ -2,6 +2,10 @@ package com.adven.concordion.extensions.exam.entities;
 
 public final class MockEntity extends AbstractEntity {
 
+    public MockEntity(final String value) {
+        super(value);
+    }
+
     @Override
     public byte[] toBytes() {
         return new byte[0];
@@ -9,6 +13,11 @@ public final class MockEntity extends AbstractEntity {
 
     @Override
     public boolean isEqualTo(byte[] bytes) {
+        return false;
+    }
+
+    @Override
+    public boolean isEqualTo(Object object) {
         return false;
     }
 

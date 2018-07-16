@@ -1,20 +1,20 @@
 package com.adven.concordion.extensions.exam.entities;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.UnsupportedEncodingException;
 
 @Slf4j
-@RequiredArgsConstructor
 public final class StringEntity extends AbstractEntity {
 
-    private final String value;
+    public StringEntity(final String value) {
+        super(value);
+    }
 
     @Override
     public byte[] toBytes() {
         try {
-            return value.getBytes("UTF-8");
+            return getValue().getBytes("UTF-8");
         } catch (UnsupportedEncodingException e) {
             log.error("Bad encoding, can't get bytes of string", e);
         }
@@ -25,7 +25,7 @@ public final class StringEntity extends AbstractEntity {
     public boolean isEqualTo(final byte[] bytes) {
         try {
             final String actual = new String(bytes, "UTF-8");
-            return cleanup(value).equals(cleanup(actual));
+            return isEqualTo(actual);
         } catch (UnsupportedEncodingException e) {
             log.error("Bad encoding, can't encode bytes to string", e);
         }
@@ -33,7 +33,14 @@ public final class StringEntity extends AbstractEntity {
     }
 
     @Override
-    public String printable() {
-        return value;
+    public boolean isEqualTo(final Object object) {
+        String cast = null;
+        try {
+            cast = String.class.cast(object);
+        } catch (ClassCastException e) {
+            log.error("Failed to cast value={} to string", getValue());
+        }
+        return cast != null && isEqualTo(cast);
     }
+
 }

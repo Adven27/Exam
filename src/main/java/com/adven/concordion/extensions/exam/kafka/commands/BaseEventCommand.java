@@ -2,6 +2,7 @@ package com.adven.concordion.extensions.exam.kafka.commands;
 
 import com.adven.concordion.extensions.exam.commands.ExamCommand;
 import com.adven.concordion.extensions.exam.configurators.ConfigurationException;
+import com.adven.concordion.extensions.exam.entities.EmptyEntity;
 import com.adven.concordion.extensions.exam.entities.Entity;
 import com.adven.concordion.extensions.exam.entities.StringEntity;
 import com.adven.concordion.extensions.exam.html.Html;
