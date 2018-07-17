@@ -1,5 +1,6 @@
-package com.adven.concordion.extensions.exam.kafka;
+package com.adven.concordion.extensions.exam.entities;
 
+import com.google.common.base.Optional;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -10,7 +11,7 @@ public class EmptyEntityTest {
     private EmptyEntity entity;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         entity = new EmptyEntity();
     }
 
@@ -21,12 +22,17 @@ public class EmptyEntityTest {
 
     @Test
     public void testIsEqualToNull() {
-        assertThat(entity.isEqualTo(null)).isTrue();
+        assertThat(entity.isEqualTo((byte[]) null)).isTrue();
     }
 
     @Test
     public void testToBytes() {
         assertThat(entity.toBytes()).isEmpty();
+    }
+
+    @Test
+    public void testOriginal() {
+        assertThat(entity.original()).isEqualTo(Optional.absent());
     }
 
 }

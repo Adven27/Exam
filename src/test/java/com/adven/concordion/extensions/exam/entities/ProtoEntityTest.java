@@ -1,24 +1,27 @@
-package com.adven.concordion.extensions.exam.kafka.protobuf;
+package com.adven.concordion.extensions.exam.entities;
 
+import com.adven.concordion.extensions.exam.utils.protobuf.TestEntity;
+import com.google.common.base.Optional;
+import com.google.protobuf.Message;
 import org.junit.Test;
 
 import static com.adven.concordion.extensions.exam.RandomUtils.anyInt;
 import static com.adven.concordion.extensions.exam.RandomUtils.anyString;
 import static com.adven.concordion.extensions.exam.kafka.EventUtils.goodClass;
+import static com.adven.concordion.extensions.exam.kafka.EventUtils.goodEvent;
 import static com.adven.concordion.extensions.exam.kafka.EventUtils.goodMessage;
-import static com.adven.concordion.extensions.exam.kafka.protobuf.TestEntity.Entity;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class ProtoEntityTest {
 
     @Test
-    public void testEntity() {
+    public void testToBytes() {
         final ProtoEntity protoEntity = new ProtoEntity(goodMessage(), goodClass().getName());
         assertThat(protoEntity.toBytes()).isNotEmpty();
     }
 
     @Test
-    public void testEntityWithBadMessage() {
+    public void testToBytesWithBadMessage() {
         final ProtoEntity protoEntity = new ProtoEntity(anyString(), goodClass().getName());
         assertThat(protoEntity.toBytes()).isEmpty();
     }
@@ -27,7 +30,7 @@ public class ProtoEntityTest {
     public void testIsEqualTo() {
         final String name = anyString();
         final int number = anyInt();
-        final Entity entity = Entity.newBuilder()
+        final TestEntity.Entity entity = TestEntity.Entity.newBuilder()
             .setName(name)
             .setNumber(number)
             .build();
@@ -40,7 +43,7 @@ public class ProtoEntityTest {
     @Test
     public void testIsNotEqualToWithBadJsonValue() {
         final ProtoEntity protoEntity = new ProtoEntity(anyString(), goodClass().getName());
-        final Entity entity = Entity.newBuilder()
+        final TestEntity.Entity entity = TestEntity.Entity.newBuilder()
             .setName(anyString())
             .setNumber(anyInt())
             .build();
@@ -51,7 +54,7 @@ public class ProtoEntityTest {
     @Test
     public void testIsNotEqualTo() {
         final ProtoEntity protoEntity = new ProtoEntity(goodMessage(), goodClass().getName());
-        final Entity entity = Entity.newBuilder()
+        final TestEntity.Entity entity = TestEntity.Entity.newBuilder()
             .setName(anyString())
             .setNumber(anyInt())
             .build();
@@ -59,4 +62,11 @@ public class ProtoEntityTest {
         assertThat(result).isFalse();
     }
 
+    @Test
+    public void testOriginal() {
+        final String value = anyString();
+        final ProtoEntity protoEntity = new ProtoEntity(goodMessage(value), goodClass().getName());
+        final Optional<Message> expected = goodEvent(value).getMessage().original();
+        assertThat(protoEntity.original()).isEqualTo(expected);
+    }
 }

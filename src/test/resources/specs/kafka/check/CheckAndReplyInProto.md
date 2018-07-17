@@ -6,7 +6,7 @@
         <e:given>        
             <e:event-check topicName="test.consume.topic">
                 <expected>
-                    <protobuf class="com.adven.concordion.extensions.exam.kafka.protobuf.TestEntity$Entity">
+                    <protobuf class="com.adven.concordion.extensions.exam.utils.protobuf.TestEntity$Entity">
                     {
                         "name": "Make something good",
                         "number": 7
@@ -15,7 +15,7 @@
                 </expected>
                 <reply>
                     <success>
-                        <protobuf class="com.adven.concordion.extensions.exam.kafka.protobuf.TestEntity$Entity">
+                        <protobuf class="com.adven.concordion.extensions.exam.utils.protobuf.TestEntity$Entity">
                         {
                             "name": "OK",
                             "number": 42
@@ -23,7 +23,7 @@
                         </protobuf>
                     </success>
                     <fail>
-                        <protobuf class="com.adven.concordion.extensions.exam.kafka.protobuf.TestEntity$Entity">
+                        <protobuf class="com.adven.concordion.extensions.exam.utils.protobuf.TestEntity$Entity">
                         {
                             "name": "FAIL",
                             "number": 13

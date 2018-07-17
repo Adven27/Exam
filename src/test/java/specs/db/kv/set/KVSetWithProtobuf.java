@@ -2,7 +2,7 @@ package specs.db.kv.set;
 
 import specs.db.kv.KeyValue;
 
-import static com.adven.concordion.extensions.exam.kafka.protobuf.TestEntity.Entity;
+import static com.adven.concordion.extensions.exam.utils.protobuf.TestEntity.Entity;
 
 public class KVSetWithProtobuf extends KeyValue {
 

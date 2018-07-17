@@ -1,7 +1,7 @@
 package com.adven.concordion.extensions.exam.kafka.commands;
 
 import com.adven.concordion.extensions.exam.html.Html;
-import com.adven.concordion.extensions.exam.kafka.Entity;
+import com.adven.concordion.extensions.exam.entities.Entity;
 import com.adven.concordion.extensions.exam.kafka.Event;
 import com.adven.concordion.extensions.exam.kafka.EventBlockParser;
 import com.adven.concordion.extensions.exam.kafka.EventProcessor;

@@ -1,6 +1,7 @@
 package com.adven.concordion.extensions.exam.db.kv.repositories;
 
 import com.adven.concordion.extensions.exam.db.kv.KeyValueRepository;
+import com.adven.concordion.extensions.exam.entities.Entity;
 import com.google.common.base.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,20 +20,18 @@ public final class GridGainRepository implements KeyValueRepository {
     private Ignite igniteInstance;
 
     @Override
-    public Optional<String> findOne(final String cacheName, final String key, final ValueProcessor<?> valueProcessor) {
+    public Optional<Object> findOne(final String cacheName, final String key) {
         final Ignite ignite = ignite();
         final IgniteCache<String, Object> cache = ignite.getOrCreateCache(cacheName);
         log.info("Trying to get value from cache={} by key={}", cacheName, key);
-        final Object entity = cache.get(key);
-        return valueProcessor.convert(entity);
+        return Optional.fromNullable(cache.get(key));
     }
 
     @Override
-    public boolean save(final String cacheName, final String key, final String value, final String className,
-                        final ValueProcessor valueProcessor) {
+    public boolean save(final String cacheName, final String key, final Entity value) {
         final Ignite ignite = ignite();
         final IgniteCache<String, Object> cache = ignite.getOrCreateCache(cacheName);
-        val converted = valueProcessor.convert(value, className);
+        val converted = value.original();
         final boolean result;
         if (converted.isPresent()) {
             cache.put(key, converted.get());

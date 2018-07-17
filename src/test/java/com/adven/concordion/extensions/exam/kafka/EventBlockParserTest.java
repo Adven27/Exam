@@ -1,5 +1,7 @@
 package com.adven.concordion.extensions.exam.kafka;
 
+import com.adven.concordion.extensions.exam.entities.EmptyEntity;
+import com.adven.concordion.extensions.exam.entities.Entity;
 import com.adven.concordion.extensions.exam.html.Html;
 import com.google.common.base.Optional;
 import org.junit.Before;

@@ -1,4 +1,4 @@
-package com.adven.concordion.extensions.exam.kafka.protobuf;
+package com.adven.concordion.extensions.exam.utils.protobuf;
 
 import com.google.common.base.Optional;
 import com.google.protobuf.Message;
@@ -9,7 +9,7 @@ import static com.adven.concordion.extensions.exam.RandomUtils.anyInt;
 import static com.adven.concordion.extensions.exam.RandomUtils.anyString;
 import static com.adven.concordion.extensions.exam.kafka.EventUtils.goodClass;
 import static com.adven.concordion.extensions.exam.kafka.EventUtils.goodMessage;
-import static com.adven.concordion.extensions.exam.kafka.protobuf.TestEntity.Entity;
+import static com.adven.concordion.extensions.exam.utils.protobuf.TestEntity.Entity;
 import static org.assertj.core.api.Assertions.assertThat;
 
 

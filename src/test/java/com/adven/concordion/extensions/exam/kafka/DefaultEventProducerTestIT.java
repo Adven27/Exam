@@ -1,6 +1,6 @@
 package com.adven.concordion.extensions.exam.kafka;
 
-import com.adven.concordion.extensions.exam.kafka.protobuf.ProtoEntity;
+import com.adven.concordion.extensions.exam.entities.ProtoEntity;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.common.utils.Bytes;
 import org.junit.Test;

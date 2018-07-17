@@ -10,7 +10,7 @@ import specs.kafka.Kafka;
 import static com.adven.concordion.extensions.exam.RandomUtils.anyString;
 import static com.adven.concordion.extensions.exam.kafka.EventHeader.CORRELATION_ID;
 import static com.adven.concordion.extensions.exam.kafka.EventHeader.REPLY_TOPIC;
-import static com.adven.concordion.extensions.exam.kafka.protobuf.TestEntity.Entity;
+import static com.adven.concordion.extensions.exam.utils.protobuf.TestEntity.Entity;
 
 public class CheckAndReplyInProto extends Kafka {
 

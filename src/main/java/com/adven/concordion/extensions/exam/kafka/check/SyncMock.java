@@ -1,13 +1,12 @@
 package com.adven.concordion.extensions.exam.kafka.check;
 
-import com.adven.concordion.extensions.exam.kafka.Entity;
+import com.adven.concordion.extensions.exam.entities.Entity;
 import com.adven.concordion.extensions.exam.kafka.Event;
 import com.adven.concordion.extensions.exam.kafka.EventConsumer;
 import com.adven.concordion.extensions.exam.kafka.check.verify.CompositeVerifier;
 import com.adven.concordion.extensions.exam.kafka.check.verify.MessageVerifier;
 import com.adven.concordion.extensions.exam.kafka.check.verify.NullAwareVerifier;
 import com.adven.concordion.extensions.exam.kafka.check.verify.Verifier;
-import com.adven.concordion.extensions.exam.kafka.protobuf.ProtoEntity;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;

@@ -1,7 +1,7 @@
 package com.adven.concordion.extensions.exam.db.kv.repositories;
 
-import com.adven.concordion.extensions.exam.kafka.protobuf.ProtoToJson;
-import com.adven.concordion.extensions.exam.kafka.protobuf.ProtoUtils;
+import com.adven.concordion.extensions.exam.utils.protobuf.ProtoToJson;
+import com.adven.concordion.extensions.exam.utils.protobuf.ProtoUtils;
 import com.google.common.base.Optional;
 import com.google.protobuf.Message;
 import lombok.RequiredArgsConstructor;

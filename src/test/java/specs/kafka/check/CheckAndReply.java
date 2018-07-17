@@ -1,6 +1,6 @@
 package specs.kafka.check;
 
-import com.adven.concordion.extensions.exam.kafka.protobuf.TestEntity;
+import com.adven.concordion.extensions.exam.utils.protobuf.TestEntity;
 import com.google.protobuf.InvalidProtocolBufferException;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.producer.ProducerRecord;

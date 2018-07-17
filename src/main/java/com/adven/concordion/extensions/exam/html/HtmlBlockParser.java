@@ -1,6 +1,5 @@
-package com.adven.concordion.extensions.exam.kafka;
+package com.adven.concordion.extensions.exam.html;
 
-import com.adven.concordion.extensions.exam.html.Html;
 import com.google.common.base.Optional;
 
 public interface HtmlBlockParser<T> {

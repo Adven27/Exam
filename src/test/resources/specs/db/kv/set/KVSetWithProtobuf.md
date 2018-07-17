@@ -7,7 +7,7 @@
             <e:db-kv-set cache="test.cache">
                 <key>shortKey</key>
                 <value>
-                    <protobuf class="com.adven.concordion.extensions.exam.kafka.protobuf.TestEntity$Entity">
+                    <protobuf class="com.adven.concordion.extensions.exam.utils.protobuf.TestEntity$Entity">
                     {
                         "name": "living in db",
                         "number": 48

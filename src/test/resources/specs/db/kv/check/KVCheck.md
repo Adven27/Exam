@@ -25,11 +25,18 @@
             </e:db-kv-check>
         </e:then>
     </e:example>
-    <e:example name="Check that db doesn't contain entity" status="ExpectedToFail">
+    <e:example name="Check that db doesn't contain entity with such key and value" status="ExpectedToFail">
         <e:then>
             <e:db-kv-check cache="test.cache">
                 <key>another</key>
                 <value>living in db</value>
+            </e:db-kv-check>
+        </e:then>
+    </e:example>
+    <e:example name="Check that db doesn't contain value for specified key">
+        <e:then>
+            <e:db-kv-check cache="test.cache">
+                <key>another_one</key>
             </e:db-kv-check>
         </e:then>
     </e:example>

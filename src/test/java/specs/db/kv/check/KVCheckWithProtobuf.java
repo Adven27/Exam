@@ -1,6 +1,6 @@
 package specs.db.kv.check;
 
-import com.adven.concordion.extensions.exam.kafka.protobuf.TestEntity;
+import com.adven.concordion.extensions.exam.utils.protobuf.TestEntity;
 import specs.db.kv.KeyValue;
 
 import java.util.HashMap;

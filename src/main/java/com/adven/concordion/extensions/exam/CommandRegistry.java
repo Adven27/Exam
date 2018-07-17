@@ -72,8 +72,8 @@ public class CommandRegistry {
                 new EventCheckReplyCommand("event-check", "div", eventProcessor),
                 new EventSendCommand("event-send", "div", eventProcessor),
 
-                new KVCheckCommand("db-kv-check", "div", keyValueRepository, jsonUnitCfg),
-                new KVSetCommand("db-kv-set", "div", keyValueRepository, jsonUnitCfg)
+                new KVCheckCommand("db-kv-check", "div", keyValueRepository),
+                new KVSetCommand("db-kv-set", "div", keyValueRepository)
         ));
         if (pluggedDbModule(dbTester)) {
             commands.addAll(asList(

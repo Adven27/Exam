@@ -1,4 +1,4 @@
-package com.adven.concordion.extensions.exam.kafka.protobuf;
+package com.adven.concordion.extensions.exam.utils.protobuf;
 
 import com.adven.concordion.extensions.exam.utils.ReflectionUtils;
 import com.google.common.base.Optional;

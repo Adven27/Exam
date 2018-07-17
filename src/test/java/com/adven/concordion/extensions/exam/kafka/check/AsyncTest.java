@@ -2,14 +2,14 @@ package com.adven.concordion.extensions.exam.kafka.check;
 
 import com.adven.concordion.extensions.exam.kafka.Event;
 import com.adven.concordion.extensions.exam.kafka.KafkaAwareTest;
-import com.adven.concordion.extensions.exam.kafka.protobuf.ProtoEntity;
+import com.adven.concordion.extensions.exam.entities.ProtoEntity;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.common.utils.Bytes;
 
 import java.util.concurrent.ExecutionException;
 
 import static com.adven.concordion.extensions.exam.kafka.EventUtils.goodEvent;
-import static com.adven.concordion.extensions.exam.kafka.protobuf.TestEntity.Entity;
+import static com.adven.concordion.extensions.exam.utils.protobuf.TestEntity.Entity;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public abstract class AsyncTest extends KafkaAwareTest {
