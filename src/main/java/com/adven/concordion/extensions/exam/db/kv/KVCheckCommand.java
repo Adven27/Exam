@@ -34,7 +34,7 @@ public final class KVCheckCommand extends BaseKeyValueCommand {
         val key = keyBlock.text();
         val actual = keyValueRepository.findOne(cacheName, key);
         val expectedString = value.printable();
-        val valueColumn = isJson(expectedString) ? jsonValueColumn(expectedString) : valueColumn(expectedString);
+        val valueColumn = valueColumn(expectedString);
 
         val keyColumn = keyColumn(key);
         val table = dbTable(cacheName);
@@ -55,10 +55,6 @@ public final class KVCheckCommand extends BaseKeyValueCommand {
             announcer.failure(resultRecorder, valueColumn.el(), "", expectedString);
             html.text("Failed to find any entry for key=" + key);
         }
-    }
-
-    private boolean isJson(final String string) {
-        return string.contains("{");
     }
 
 }

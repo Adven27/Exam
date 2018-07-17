@@ -1,5 +1,7 @@
 package com.adven.concordion.extensions.exam.entities;
 
+import com.google.common.base.Optional;
+
 public final class MockEntity extends AbstractEntity {
 
     public MockEntity(final String value) {
@@ -9,6 +11,11 @@ public final class MockEntity extends AbstractEntity {
     @Override
     public byte[] toBytes() {
         return new byte[0];
+    }
+
+    @Override
+    public Optional original() {
+        return Optional.absent();
     }
 
     @Override
