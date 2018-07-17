@@ -1,5 +1,6 @@
 package com.adven.concordion.extensions.exam.entities;
 
+import com.google.common.base.Optional;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -27,6 +28,11 @@ public class EmptyEntityTest {
     @Test
     public void testToBytes() {
         assertThat(entity.toBytes()).isEmpty();
+    }
+
+    @Test
+    public void testOriginal() {
+        assertThat(entity.original()).isEqualTo(Optional.absent());
     }
 
 }
