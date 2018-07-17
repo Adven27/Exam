@@ -1,5 +1,6 @@
 package com.adven.concordion.extensions.exam.entities;
 
+import com.google.common.base.Optional;
 import lombok.EqualsAndHashCode;
 import org.apache.commons.lang3.StringUtils;
 
@@ -9,6 +10,11 @@ public final class EmptyEntity implements Entity {
     @Override
     public byte[] toBytes() {
         return new byte[0];
+    }
+
+    @Override
+    public Optional original() {
+        return Optional.absent();
     }
 
     @Override

@@ -1,11 +1,12 @@
 package com.adven.concordion.extensions.exam.entities;
 
+import com.google.common.base.Optional;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.UnsupportedEncodingException;
 
 @Slf4j
-public final class StringEntity extends AbstractEntity {
+public final class StringEntity extends AbstractEntity<String> {
 
     public StringEntity(final String value) {
         super(value);
@@ -19,6 +20,11 @@ public final class StringEntity extends AbstractEntity {
             log.error("Bad encoding, can't get bytes of string", e);
         }
         return new byte[]{};
+    }
+
+    @Override
+    public Optional<String> original() {
+        return Optional.fromNullable(getValue());
     }
 
     @Override

@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 
 @Getter(AccessLevel.PROTECTED)
 @RequiredArgsConstructor
-public abstract class AbstractEntity implements Entity {
+public abstract class AbstractEntity<T> implements Entity<T> {
 
     private final String value;
 

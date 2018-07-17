@@ -1,8 +1,12 @@
 package com.adven.concordion.extensions.exam.entities;
 
-public interface Entity {
+import com.google.common.base.Optional;
+
+public interface Entity<T> {
 
     byte[] toBytes();
+
+    Optional<T> original();
 
     boolean isEqualTo(final byte[] bytes);
 

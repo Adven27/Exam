@@ -14,7 +14,7 @@ import java.util.List;
 
 @Slf4j
 @Getter
-public final class ProtoEntity extends AbstractEntity {
+public final class ProtoEntity extends AbstractEntity<Message> {
 
     private final String className;
     private final List<String> descriptors;
@@ -31,12 +31,17 @@ public final class ProtoEntity extends AbstractEntity {
 
     @Override
     public byte[] toBytes() {
-        val messageOptional = ProtoUtils.fromJsonToProto(getValue(), className, descriptors);
-        if (messageOptional.isPresent()) {
-            return messageOptional.get().toByteArray();
+        val original = original();
+        if (original.isPresent()) {
+            return original.get().toByteArray();
         } else {
             return new byte[]{};
         }
+    }
+
+    @Override
+    public Optional<Message> original() {
+        return ProtoUtils.fromJsonToProto(getValue(), className, descriptors);
     }
 
     @Override
