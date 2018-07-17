@@ -32,7 +32,7 @@ public final class KVCheckCommand extends BaseKeyValueCommand {
 
         val cacheName = html.attr(CACHE);
         val key = keyBlock.text();
-        val actual = keyValueRepository.findOne(cacheName, key);
+        val actual = keyValueRepository.findOne(cacheName, key).or("");
         val expectedString = value.printable();
         val valueColumn = valueColumn(expectedString);
 
@@ -42,18 +42,12 @@ public final class KVCheckCommand extends BaseKeyValueCommand {
         val info = info("Expected entry");
         html.childs(info).dropAllTo(table);
 
-        if (actual.isPresent()) {
+        if (value.isEqualTo(actual)) {
             announcer.success(resultRecorder, keyColumn.el());
-            val actualValue = actual.get();
-            if (value.isEqualTo(actualValue)) {
-                announcer.success(resultRecorder, valueColumn.el());
-            } else {
-                announcer.failure(resultRecorder, valueColumn.el(), actualValue, expectedString);
-            }
         } else {
             announcer.failure(resultRecorder, keyColumn.el(), "", key);
-            announcer.failure(resultRecorder, valueColumn.el(), "", expectedString);
-            html.text("Failed to find any entry for key=" + key);
+            announcer.failure(resultRecorder, valueColumn.el(), actual.toString().equals("") ? "<empty>" : actual, expectedString);
+            html.text("Values doesn't match for key=" + key);
         }
     }
 
