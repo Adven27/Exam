@@ -14,7 +14,7 @@ public class ExamWebDriverContainer extends WebDriverThreadLocalContainer {
      *
      * @param driver web driver
      */
-    public void registerDriver(WebDriver driver) {
+    public void registerDriverForAutoClose(WebDriver driver) {
         setWebDriver(driver);
         markForAutoClose(driver);
     }

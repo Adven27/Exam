@@ -58,7 +58,7 @@ public class BrowserCommand extends ExamVerifyCommand {
         if (!(capabilities == null || alreadyRunning)) {
             ChromeDriver webDriver = new ChromeDriver(capabilities);
             WebDriverRunner.setWebDriver(webDriver);
-            driverContainer.registerDriver(webDriver);
+            driverContainer.registerDriverForAutoClose(webDriver);
             alreadyRunning = true;
         }
     }
