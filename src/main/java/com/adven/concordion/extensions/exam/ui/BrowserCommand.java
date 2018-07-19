@@ -19,6 +19,7 @@ public class BrowserCommand extends ExamVerifyCommand {
     private static final String FAIL_FAST = "failFast";
     private static final String URL = "url";
     private static boolean alreadyRunning = false;
+    private static ExamWebDriverContainer driverContainer = new ExamWebDriverContainer();
     private final DesiredCapabilities capabilities;
     private String url;
     private boolean failFast;
@@ -55,7 +56,9 @@ public class BrowserCommand extends ExamVerifyCommand {
 
     private static void runCustomDriverIfSet(DesiredCapabilities capabilities) {
         if (!(capabilities == null || alreadyRunning)) {
-            WebDriverRunner.setWebDriver(new ChromeDriver(capabilities));
+            ChromeDriver webDriver = new ChromeDriver(capabilities);
+            WebDriverRunner.setWebDriver(webDriver);
+            driverContainer.registerDriverForAutoClose(webDriver);
             alreadyRunning = true;
         }
     }
