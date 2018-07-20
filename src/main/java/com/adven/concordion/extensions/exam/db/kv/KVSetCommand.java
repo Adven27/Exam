@@ -22,12 +22,12 @@ public final class KVSetCommand extends BaseKeyValueCommand {
     public void setUp(final CommandCall commandCall, final Evaluator evaluator, final ResultRecorder resultRecorder) {
         val html = new Html(commandCall.getElement());
         val keyBlock = html.firstOrThrow(KEY);
+        val value = new ValueBlockParser("value").parse(html).or(new EmptyEntity());
 
         html.removeAllChild();
 
         final String cacheName = html.attr(CACHE);
         val key = keyBlock.text();
-        val value = new ValueBlockParser("value").parse(html).or(new EmptyEntity());
         val isSaved = keyValueRepository.save(cacheName, key, value);
         val valueColumn = valueColumn(value.printable());
 
