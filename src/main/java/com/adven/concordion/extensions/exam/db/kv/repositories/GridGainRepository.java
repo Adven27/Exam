@@ -15,16 +15,39 @@ import org.apache.ignite.configuration.IgniteConfiguration;
 @RequiredArgsConstructor
 public final class GridGainRepository implements KeyValueRepository {
 
+    private static final int DEFAULT_RETRY_COUNT = 3;
+
     private final IgniteConfiguration igniteConfiguration;
+    private final int retryCount;
 
     private Ignite igniteInstance;
+
+    public GridGainRepository(final IgniteConfiguration igniteConfiguration) {
+        this(igniteConfiguration, DEFAULT_RETRY_COUNT);
+    }
 
     @Override
     public Optional<Object> findOne(final String cacheName, final String key) {
         final Ignite ignite = ignite();
         final IgniteCache<String, Object> cache = ignite.getOrCreateCache(cacheName);
+        Object result = cache.get(key);
         log.info("Trying to get value from cache={} by key={}", cacheName, key);
-        return Optional.fromNullable(cache.get(key));
+        int attempts = 0;
+        while (attempts <= retryCount && result == null) {
+            result = cache.get(key);
+            awaitFor(500);
+            attempts++;
+        }
+        return Optional.fromNullable(result);
+    }
+
+    private void awaitFor(final long millis) {
+        try {
+            Thread.sleep(millis);
+        } catch (InterruptedException e) {
+            log.error("Thread was interrupted", e);
+            Thread.currentThread().interrupt();
+        }
     }
 
     @Override
