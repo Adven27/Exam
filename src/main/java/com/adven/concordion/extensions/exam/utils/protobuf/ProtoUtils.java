@@ -39,6 +39,23 @@ public final class ProtoUtils {
         return fromBytesToJson(bytes, className, descriptors.toArray(new Descriptor[]{}));
     }
 
+    public static Optional<Message> fromBytesToProto(final Bytes bytes, final String className,
+                                                     final List<String> descriptorClasses) {
+        final List<Descriptor> descriptors = descriptorInstances(descriptorClasses);
+        final Optional<Class<Message>> clazz = safeForName(className);
+        if (clazz.isPresent()) {
+            final BytesToProto<Message> converter = new BytesToProto<>(clazz.get());
+            converter.addAllDescriptors(descriptors);
+            return converter.convert(bytes);
+        }
+        return Optional.absent();
+    }
+
+    public static Optional<Message> fromBytesToProto(final Bytes bytes, final String className,
+                                                     final String... descriptors) {
+        return fromBytesToProto(bytes, className, Arrays.asList(descriptors));
+    }
+
     public static Optional<Message> fromJsonToProto(final String message, final String className,
                                                     final Descriptor... descriptors) {
         Optional<Class<Message>> clazz = safeForName(className);

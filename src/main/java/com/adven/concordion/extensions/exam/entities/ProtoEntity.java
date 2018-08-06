@@ -1,6 +1,5 @@
 package com.adven.concordion.extensions.exam.entities;
 
-import com.adven.concordion.extensions.exam.utils.protobuf.ProtoToJson;
 import com.adven.concordion.extensions.exam.utils.protobuf.ProtoUtils;
 import com.google.common.base.Optional;
 import com.google.protobuf.Message;
@@ -46,9 +45,9 @@ public final class ProtoEntity extends AbstractEntity<Message> {
 
     @Override
     public boolean isEqualTo(final byte[] bytes) {
-        final Optional<String> valueToCheck = ProtoUtils.fromBytesToJson(Bytes.wrap(bytes), className, descriptors);
-        if (valueToCheck.isPresent()) {
-            return isEqualTo(valueToCheck.get());
+        final Optional<Message> convert = ProtoUtils.fromBytesToProto(Bytes.wrap(bytes), className, descriptors);
+        if (convert.isPresent()) {
+            return isEqualTo(convert.get());
         }
         return false;
     }
@@ -57,15 +56,15 @@ public final class ProtoEntity extends AbstractEntity<Message> {
     public boolean isEqualTo(final Object object) {
         Message cast = null;
         try {
-            cast = Message.class.cast(object);
+            cast = (Message) object;
         } catch (ClassCastException e) {
             log.error("Failed to cast value={} to string", object);
         }
         if (cast == null) {
             return false;
         } else {
-            val convert = new ProtoToJson<>().convert(cast);
-            return convert.isPresent() && isEqualTo(convert.get());
+            final Optional<Message> convert = ProtoUtils.fromJsonToProto(getValue(), className, descriptors);
+            return convert.isPresent() && cast.equals(convert.get());
         }
     }
 
