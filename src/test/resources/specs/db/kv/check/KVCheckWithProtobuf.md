@@ -15,7 +15,7 @@
             <e:db-kv-check cache="test.cache">
                 <key>shortKey</key>
                 <value>
-                    <protobuf>
+                    <protobuf class="com.adven.concordion.extensions.exam.utils.protobuf.TestEntity$Entity">
                     {
                         "name": "living in db",
                         "number": 48
@@ -30,7 +30,7 @@
             <e:db-kv-check cache="test.cache">
                 <key>shortKey</key>
                 <value>
-                    <protobuf>
+                    <protobuf class="com.adven.concordion.extensions.exam.utils.protobuf.TestEntity$Entity">
                     {
                         "name": "not living in db",
                         "number": 48
@@ -45,7 +45,7 @@
             <e:db-kv-check cache="test.cache">
                 <key>another</key>
                 <value>
-                    <protobuf>
+                    <protobuf class="com.adven.concordion.extensions.exam.utils.protobuf.TestEntity$Entity">
                     {
                         "name": "not living in db",
                         "number": 48
