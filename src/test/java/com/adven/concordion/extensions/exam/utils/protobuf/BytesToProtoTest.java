@@ -1,7 +1,6 @@
 package com.adven.concordion.extensions.exam.utils.protobuf;
 
 import com.google.common.base.Optional;
-import org.apache.kafka.common.utils.Bytes;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -15,19 +14,13 @@ public class BytesToProtoTest {
     private BytesToProto<Entity> converter;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         converter = new BytesToProto<>(Entity.class);
     }
 
     @Test
     public void testConvertWithNull() {
         assertThat(converter.convert(null)).isEqualTo(Optional.absent());
-    }
-
-    @Test
-    public void testConvertWithEmptyBytesArray() {
-        final Bytes bytes = Bytes.wrap(new byte[]{});
-        assertThat(converter.convert(bytes)).isEqualTo(Optional.absent());
     }
 
     @Test
