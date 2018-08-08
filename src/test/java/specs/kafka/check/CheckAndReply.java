@@ -5,27 +5,32 @@ import com.google.protobuf.InvalidProtocolBufferException;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.utils.Bytes;
-import org.concordion.api.BeforeSpecification;
+import org.concordion.api.BeforeExample;
 import specs.kafka.Kafka;
 
 import static com.adven.concordion.extensions.exam.RandomUtils.anyString;
 import static com.adven.concordion.extensions.exam.kafka.EventHeader.CORRELATION_ID;
 import static com.adven.concordion.extensions.exam.kafka.EventHeader.REPLY_TOPIC;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class CheckAndReply extends Kafka {
 
-    @BeforeSpecification
+    @BeforeExample
     public void setUp() throws Exception {
         final String message = "{\"name\": \"Make something good\", \"number\": 7}";
         final ProducerRecord<String, Bytes> r = new ProducerRecord<>(CONSUME_TOPIC,
-            Bytes.wrap(message.getBytes("UTF-8")));
-        r.headers().add(REPLY_TOPIC, PRODUCE_TOPIC.getBytes("UTF-8"));
-        r.headers().add(CORRELATION_ID, anyString().getBytes("UTF-8"));
+            Bytes.wrap(message.getBytes(UTF_8)));
+        r.headers().add(REPLY_TOPIC, PRODUCE_TOPIC.getBytes(UTF_8));
+        r.headers().add(CORRELATION_ID, anyString().getBytes(UTF_8));
         produceEvent(r);
     }
 
     public boolean isCorrectResult() throws InvalidProtocolBufferException {
-        final ConsumerRecord<String, Bytes> record = consumeSingleEvent();
+        return isCorrectResult(PRODUCE_TOPIC);
+    }
+
+    public boolean isCorrectResult(final String topic) throws InvalidProtocolBufferException {
+        final ConsumerRecord<String, Bytes> record = consumeSingleEvent(topic, 1000L);
         final TestEntity.Entity entity = TestEntity.Entity.parseFrom(record.value().get());
         final TestEntity.Entity expected = TestEntity.Entity.newBuilder()
             .setName("OK")

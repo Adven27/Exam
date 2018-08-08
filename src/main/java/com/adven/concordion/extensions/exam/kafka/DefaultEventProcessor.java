@@ -6,6 +6,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
+import static org.apache.commons.lang3.StringUtils.*;
+
+
 @Slf4j
 @RequiredArgsConstructor
 public final class DefaultEventProcessor implements EventProcessor {
@@ -34,8 +37,10 @@ public final class DefaultEventProcessor implements EventProcessor {
         final SyncMock syncMock = new SyncMock(eventToCheck, eventConsumer);
         CheckMessageMock mock = syncMock;
         if (replySuccessEvent != null && replyFailEvent != null) {
-            mock = new ReplyWithTopicFromHeader(syncMock,
-                new WithReply(replySuccessEvent, replyFailEvent, eventProducer, syncMock));
+            mock = new WithReply(replySuccessEvent, replyFailEvent, eventProducer, syncMock);
+            if (isBlank(replySuccessEvent.getTopicName()) && isBlank(replyFailEvent.getTopicName())) {
+                mock = new ReplyWithTopicFromHeader(syncMock, (WithReply) mock);
+            }
         }
         if (isAsync) {
             mock = new AsyncMock(mock);
@@ -54,7 +59,7 @@ public final class DefaultEventProcessor implements EventProcessor {
 
     protected boolean send(final String topic, final String key, final Entity message,
                            final EventHeader header) {
-        if (StringUtils.isBlank(topic) || message == null) {
+        if (isBlank(topic) || message == null) {
             log.warn("Unable to send record with topic={}, key={}, message={}. Missing required parameters",
                 topic, key, message);
             return false;
