@@ -4,9 +4,9 @@ import com.adven.concordion.extensions.exam.entities.Entity;
 import com.adven.concordion.extensions.exam.kafka.check.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 
-import static org.apache.commons.lang3.StringUtils.*;
+import static org.apache.commons.lang3.StringUtils.isAnyBlank;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 
 @Slf4j
@@ -38,7 +38,7 @@ public final class DefaultEventProcessor implements EventProcessor {
         CheckMessageMock mock = syncMock;
         if (replySuccessEvent != null && replyFailEvent != null) {
             mock = new WithReply(replySuccessEvent, replyFailEvent, eventProducer, syncMock);
-            if (isBlank(replySuccessEvent.getTopicName()) && isBlank(replyFailEvent.getTopicName())) {
+            if (isAnyBlank(replySuccessEvent.getTopicName(), replyFailEvent.getTopicName())) {
                 mock = new ReplyWithTopicFromHeader(syncMock, (WithReply) mock);
             }
         }
