@@ -57,8 +57,10 @@ public final class DefaultEventConsumer implements EventConsumer {
     protected ConsumerRecords<String, Bytes> consumeBy(final KafkaConsumer<String, Bytes> consumer) {
         ConsumerRecords<String, Bytes> records = null;
         for (int i = 0; i < consumeTimeout; i += POLL_TIMEOUT) {
+            log.debug("Consuming records [{} of {} ms]", i, consumeTimeout);
             records = consumer.poll(POLL_TIMEOUT);
             if (!records.isEmpty()) {
+                log.info("Got records in {} ms", i);
                 break;
             }
         }

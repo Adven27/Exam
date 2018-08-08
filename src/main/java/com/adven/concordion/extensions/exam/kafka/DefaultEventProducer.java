@@ -68,6 +68,7 @@ public final class DefaultEventProducer implements EventProducer {
     protected boolean produce(final ProducerRecord<String, Bytes> record) {
         try (KafkaProducer<String, Bytes> producer = new KafkaProducer<>(properties)) {
             producer.send(record).get(produceTimeout, TimeUnit.MILLISECONDS);
+            log.info("Have sent record={}", record);
             return true;
         } catch (InterruptedException e) {
             log.warn("Thread was interrupted", e);

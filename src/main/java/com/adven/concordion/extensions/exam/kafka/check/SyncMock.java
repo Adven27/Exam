@@ -44,7 +44,9 @@ public final class SyncMock implements CheckMessageMock {
     }
 
     protected Event<Bytes> consume() {
-        return consume(eventToCheck.getTopicName());
+        final String topic = eventToCheck.getTopicName();
+        log.info("Trying to consume records from={}", topic);
+        return consume(topic);
     }
 
     protected Event<Bytes> consume(final String fromTopic) {
@@ -54,8 +56,11 @@ public final class SyncMock implements CheckMessageMock {
         }
         final List<Event<Bytes>> events = eventConsumer.consume(fromTopic);
         if (!events.isEmpty()) {
-            return events.get(0);
+            final Event<Bytes> event = events.get(0);
+            log.info("Got event={} from topic={}", event, fromTopic);
+            return event;
         } else {
+            log.info("Got no events from topic={}", fromTopic);
             return null;
         }
     }
