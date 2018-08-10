@@ -45,27 +45,39 @@ public final class ProtoEntity extends AbstractEntity<Message> {
 
     @Override
     public boolean isEqualTo(final byte[] bytes) {
-        final Optional<Message> convert = ProtoUtils.fromBytesToProto(Bytes.wrap(bytes), className, descriptors);
-        if (convert.isPresent()) {
-            return isEqualTo(convert.get());
+        final Optional<Message> actual = ProtoUtils.fromBytesToProto(Bytes.wrap(bytes), className, descriptors);
+        if (actual.isPresent()) {
+            return isEqualTo(actual.get());
         }
+        log.error("Failed to convert bytes={} to protobuf className={}", bytes, className);
         return false;
     }
 
     @Override
     public boolean isEqualTo(final Object object) {
-        Message cast = null;
+        Message actual = null;
         try {
-            cast = (Message) object;
+            actual = (Message) object;
         } catch (ClassCastException e) {
-            log.error("Failed to cast value={} to string", object);
+            log.error("Failed to cast value={} to protobuf class", object);
         }
-        if (cast == null) {
-            return false;
+        boolean result;
+        if (actual == null) {
+            result = false;
         } else {
             final Optional<Message> convert = ProtoUtils.fromJsonToProto(getValue(), className, descriptors);
-            return convert.isPresent() && cast.equals(convert.get());
+            if (convert.isPresent()) {
+                final Message expected = convert.get();
+                result = actual.equals(expected);
+                if (!result) {
+                    log.error("Expected={} is not equal to actual={}", expected, actual);
+                }
+            } else {
+                log.error("Failed to convert value={} for protobuf className={}", getValue(), className);
+                result = false;
+            }
         }
+        return result;
     }
 
 }

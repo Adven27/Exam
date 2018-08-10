@@ -17,7 +17,7 @@ public final class BytesToProto<T extends Message> extends ProtoClassAware<Bytes
 
     @Override
     public Optional<T> convert(final Bytes from) {
-        if (from == null || from.get().length == 0) {
+        if (from == null) {
             return Optional.absent();
         }
         return parse(from.get());

@@ -16,7 +16,7 @@ public final class AsyncMock implements Runnable, CheckMessageMock {
 
     @Override
     public boolean verify() {
-        new Thread(this).start();
+        new Thread(this, "EventCheck-Mock-Thread").start();
         return true;
     }
 

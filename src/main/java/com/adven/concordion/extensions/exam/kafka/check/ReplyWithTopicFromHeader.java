@@ -8,7 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.kafka.common.utils.Bytes;
 
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -46,20 +46,14 @@ public final class ReplyWithTopicFromHeader implements CheckMessageMock {
     }
 
     protected boolean reply(final Event<? extends Entity> event) {
-        try {
-            final EventHeader header = event.getHeader();
-            final String replyTopic = new String(header.getReplyToTopic(), "UTF-8");
-            if (StringUtils.isAnyBlank(replyTopic)) {
-                log.warn("Can reply only with replyTopic and correlation id. Got header={}", header);
-                return false;
-            } else {
-                return withReply.send(replyTopic, event);
-            }
-        } catch (UnsupportedEncodingException e) {
-            log.error("Unable to encode replyTopic={} to UTF-8", e);
-
+        final EventHeader header = event.getHeader();
+        final String replyTopic = new String(header.getReplyToTopic(), StandardCharsets.UTF_8);
+        if (StringUtils.isAnyBlank(replyTopic)) {
+            log.warn("Can reply only with replyTopic and correlation id. Got header={}", header);
+            return false;
+        } else {
+            return withReply.send(replyTopic, event);
         }
-        return false;
     }
 
 }
