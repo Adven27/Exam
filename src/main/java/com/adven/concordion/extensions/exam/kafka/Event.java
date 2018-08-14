@@ -11,6 +11,7 @@ public class Event<T> {
     String key;
     T message;
     EventHeader header;
+    String verifier;
 
     public static <T> Event<T> empty() {
         return Event.<T>builder().build();
