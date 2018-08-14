@@ -49,8 +49,8 @@ public final class SyncMock implements CheckMessageMock {
             if (eventToCheck != null && eventToCheck.getVerifier() != null && !eventToCheck.getVerifier().isEmpty()) {
                 result = (Verifier) Class.forName(eventToCheck.getVerifier()).newInstance();
             }
-        } catch (Exception e) {
-            log.warn("Unable to instantiate custom verifier of type [" + eventToCheck.getVerifier() + "]");
+        } catch (IllegalAccessException | InstantiationException | ClassNotFoundException e) {
+            log.warn("Unable to instantiate custom verifier of type [" + eventToCheck.getVerifier() + "]", e);
         }
         return result;
     }
