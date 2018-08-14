@@ -14,6 +14,7 @@ public final class EventBlockParser implements HtmlBlockParser<Event<Entity>> {
 
     static final String TOPIC_NAME = "topicName";
     static final String EVENT_KEY = "key";
+    static final String VERIFIER_KEY = "verifier";
     private static final String DEFAULT_EVENT_VALUE_BLOCK = "value";
 
     private final String valueBlockName;
@@ -29,8 +30,9 @@ public final class EventBlockParser implements HtmlBlockParser<Event<Entity>> {
         val headers = new HeaderBlockParser().parse(html);
         val builder = Event.<Entity>builder();
         builder.key(key)
-            .topicName(topicName)
-            .header(headers.isPresent() ? headers.get() : null);
+                .topicName(topicName)
+                .header(headers.isPresent() ? headers.get() : null)
+                .verifier(html.attr(VERIFIER_KEY));
         val value = new ValueBlockParser(valueBlockName).parse(html);
         builder.message(value.or(new EmptyEntity()));
         return Optional.of(builder.build());

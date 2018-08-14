@@ -40,7 +40,19 @@ public final class SyncMock implements CheckMessageMock {
     }
 
     protected boolean verify(final Event<Bytes> event) {
-        return verifier.verify(event, eventToCheck);
+        return getVerifier().verify(event, eventToCheck);
+    }
+
+    private Verifier getVerifier() {
+        Verifier result = verifier;
+        try {
+            if (eventToCheck != null && eventToCheck.getVerifier() != null && !eventToCheck.getVerifier().isEmpty()) {
+                result = (Verifier) Class.forName(eventToCheck.getVerifier()).newInstance();
+            }
+        } catch (IllegalAccessException | InstantiationException | ClassNotFoundException e) {
+            log.warn("Unable to instantiate custom verifier of type [" + eventToCheck.getVerifier() + "]", e);
+        }
+        return result;
     }
 
     protected Event<Bytes> consume() {
