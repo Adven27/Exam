@@ -19,6 +19,14 @@
             </e:fl-check>
         </e:then>
     </e:example>
+     <e:example name="Happy-path with parametrized file name">
+        <e:then print="true">
+            <e:fl-check dir="dir">
+                <file name="${#emptyFileNameFromTemplate}"/>
+                <file name="not_empty_file" from="data/actual.xml"/>
+            </e:fl-check>
+        </e:then>
+    </e:example>
     <e:example name="Surplus file" status="ExpectedToFail">
         <e:then print="true">
             <e:fl-check dir="dir">
