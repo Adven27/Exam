@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import static com.adven.concordion.extensions.exam.PlaceholdersResolver.*;
 import static com.adven.concordion.extensions.exam.html.HtmlBuilder.*;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static java.io.File.separator;
@@ -67,7 +68,8 @@ public class FilesCheckCommand extends BaseCommand {
             for (Html f : root.childs()) {
                 if ("file".equals(f.localName())) {
                     final FilesLoader.FileTag fileTag = filesLoader.readFileTag(f, evaluator);
-                    final String expectedName = fileTag.name();
+                    final Object resolvedName = resolveToObj(fileTag.name(), evaluator);
+                    final String expectedName = resolvedName != null ? resolvedName.toString() : fileTag.name();
 
                     Html fileNameTD = td(expectedName);
                     Html pre = codeXml("");
