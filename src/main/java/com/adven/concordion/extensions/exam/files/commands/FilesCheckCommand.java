@@ -68,7 +68,8 @@ public class FilesCheckCommand extends BaseCommand {
             for (Html f : root.childs()) {
                 if ("file".equals(f.localName())) {
                     final FilesLoader.FileTag fileTag = filesLoader.readFileTag(f, evaluator);
-                    final String expectedName = resolveToObj(fileTag.name(), evaluator).toString();
+                    final Object resolvedName = resolveToObj(fileTag.name(), evaluator);
+                    final String expectedName = resolvedName != null ? resolvedName.toString() : fileTag.name();
 
                     Html fileNameTD = td(expectedName);
                     Html pre = codeXml("");
