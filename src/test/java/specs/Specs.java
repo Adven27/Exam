@@ -34,7 +34,7 @@ public class Specs {
 
     static {
         try {
-            //  kafka.before();
+            kafka.before();
         } catch (Exception e) {
             throw new RuntimeException("Failed to start kafka", e);
         }
@@ -55,7 +55,7 @@ public class Specs {
             server.stop();
             server = null;
         }
-        // kafka.after();
+        kafka.after();
     }
 
     @BeforeSuite
