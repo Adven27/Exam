@@ -14,6 +14,9 @@ import com.adven.concordion.extensions.exam.files.commands.FilesShowCommand;
 import com.adven.concordion.extensions.exam.kafka.EventProcessor;
 import com.adven.concordion.extensions.exam.kafka.commands.EventCheckReplyCommand;
 import com.adven.concordion.extensions.exam.kafka.commands.EventSendCommand;
+import com.adven.concordion.extensions.exam.mq.MqCheckCommand;
+import com.adven.concordion.extensions.exam.mq.MqSendCommand;
+import com.adven.concordion.extensions.exam.mq.MqTester;
 import com.adven.concordion.extensions.exam.rest.*;
 import com.adven.concordion.extensions.exam.ui.BrowserCommand;
 import net.javacrumbs.jsonunit.core.Configuration;
@@ -23,11 +26,11 @@ import org.xmlunit.diff.NodeMatcher;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static java.util.Arrays.asList;
 
 public class CommandRegistry {
-
     private static final String TABLE = "table";
 
     private final List<ExamCommand> commands = new ArrayList<>();
@@ -39,6 +42,7 @@ public class CommandRegistry {
             DesiredCapabilities capabilities,
             FilesLoader filesLoader,
             EventProcessor eventProcessor,
+            Map<String, MqTester> mqTesters,
             KeyValueRepository keyValueRepository) {
 
         commands.addAll(asList(
@@ -69,6 +73,9 @@ public class CommandRegistry {
                 new BrowserCommand("div", capabilities),
 
                 new SetVarCommand("span"),
+
+                new MqCheckCommand("mq-check", "div", mqTesters),
+                new MqSendCommand("mq-send", "div", mqTesters),
 
                 new EventCheckReplyCommand("event-check", "div", eventProcessor),
                 new EventSendCommand("event-send", "div", eventProcessor),

@@ -10,6 +10,7 @@ import com.adven.concordion.extensions.exam.files.DefaultFilesLoader;
 import com.adven.concordion.extensions.exam.files.FilesLoader;
 import com.adven.concordion.extensions.exam.kafka.DefaultEventProcessor;
 import com.adven.concordion.extensions.exam.kafka.EventProcessor;
+import com.adven.concordion.extensions.exam.mq.MqTester;
 import com.adven.concordion.extensions.exam.rest.DateFormatMatcher;
 import com.adven.concordion.extensions.exam.rest.DateWithin;
 import com.adven.concordion.extensions.exam.rest.XMLDateWithin;
@@ -26,6 +27,8 @@ import org.xmlunit.diff.NodeMatcher;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
+import java.util.HashMap;
+import java.util.Map;
 
 import static net.javacrumbs.jsonunit.JsonAssert.when;
 import static net.javacrumbs.jsonunit.core.Option.IGNORING_ARRAY_ORDER;
@@ -44,6 +47,7 @@ public class ExamExtension implements ConcordionExtension {
     private static DesiredCapabilities capabilities;
     private Configuration jsonUnitCfg;
     private IDatabaseTester dbTester;
+    private Map<String, MqTester> mqTesters = new HashMap<>();
     private NodeMatcher nodeMatcher;
     private FilesLoader filesLoader;
     private EventProcessor eventProcessor;
@@ -154,6 +158,11 @@ public class ExamExtension implements ConcordionExtension {
         return this;
     }
 
+    public ExamExtension mq(Map<String, MqTester> mqTesters) {
+        this.mqTesters = mqTesters;
+        return this;
+    }
+
     @SuppressWarnings("unused")
     public ExamExtension keyValueDB(final KeyValueRepository keyValueRepository) {
         this.keyValueRepository = keyValueRepository;
@@ -166,7 +175,8 @@ public class ExamExtension implements ConcordionExtension {
         new BootstrapExtension().addTo(ex);
 
         final CommandRegistry registry = new CommandRegistry(
-                dbTester, jsonUnitCfg, nodeMatcher, capabilities, filesLoader, eventProcessor, keyValueRepository
+                dbTester, jsonUnitCfg, nodeMatcher, capabilities, filesLoader,
+                eventProcessor, mqTesters, keyValueRepository
         );
 
         for (ExamCommand cmd : registry.commands()) {

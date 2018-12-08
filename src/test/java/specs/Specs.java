@@ -2,19 +2,24 @@ package specs;
 
 import com.adven.concordion.extensions.exam.ExamExtension;
 import com.adven.concordion.extensions.exam.db.kv.repositories.InMemoryRepository;
+import com.adven.concordion.extensions.exam.mq.MqTester;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.extension.responsetemplating.ResponseTemplateTransformer;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import kotlin.Pair;
+import kotlin.collections.MapsKt;
 import org.concordion.api.AfterSuite;
 import org.concordion.api.BeforeSuite;
 import org.concordion.api.extension.Extension;
 import org.concordion.api.option.ConcordionOptions;
 import org.concordion.integration.junit4.ConcordionRunner;
+import org.jetbrains.annotations.NotNull;
 import org.junit.runner.RunWith;
 import org.springframework.kafka.test.rule.KafkaEmbedded;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Stack;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
@@ -46,6 +51,33 @@ public class Specs {
             .rest().port(PORT).end()
             .db().end()
             .ui().headless().end()
+            .mq(MapsKt.mapOf(new Pair<String, MqTester>("myQueue", new MqTester() {
+                Stack<String> queue = new Stack<>();
+
+                @Override
+                public void start() {
+                }
+
+                @Override
+                public void stop() {
+                }
+
+                @Override
+                public void send(@NotNull String message) {
+                    queue.add(message);
+                }
+
+                @NotNull
+                @Override
+                public String recieve() {
+                    return queue.pop();
+                }
+
+                @Override
+                public void purge() {
+
+                }
+            })))
             .kafka().brokers(kafka.getBrokersAsString()).end()
             .keyValueDB(new InMemoryRepository(inMemoryKeyValueDb));
 
