@@ -36,6 +36,7 @@ private const val CASE = "case"
 private const val PROTOCOL = "protocol"
 private const val STATUS_CODE = "statusCode"
 private const val REASON_PHRASE = "reasonPhrase"
+private const val FROM = "from"
 
 class PutCommand(name: String, tag: String) : RequestCommand(name, tag, Method.PUT)
 class GetCommand(name: String, tag: String) : RequestCommand(name, tag, Method.GET)
@@ -177,9 +178,9 @@ class CaseCommand(tag: String, private val cfg: Configuration) : RestVerifyComma
                     expected.attr(PROTOCOL)?.let { expectedToAdd.attrs(PROTOCOL to it) }
                     expected.attr(STATUS_CODE)?.let { expectedToAdd.attrs(STATUS_CODE to it) }
                     expected.attr(REASON_PHRASE)?.let { expectedToAdd.attrs(REASON_PHRASE to it) }
+                    expected.attr(FROM)?.let { expectedToAdd.attrs(FROM to it) }
                     tag(CASE)(
-                            if (body == null) null
-                            else tag(BODY).text(bodyContent),
+                            if (body == null) null else tag(BODY).text(bodyContent),
                             expectedToAdd
                     )
                 })
