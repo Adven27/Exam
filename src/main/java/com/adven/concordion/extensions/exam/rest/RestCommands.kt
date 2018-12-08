@@ -4,7 +4,12 @@ import com.adven.concordion.extensions.exam.commands.ExamCommand
 import com.adven.concordion.extensions.exam.commands.ExamVerifyCommand
 import com.adven.concordion.extensions.exam.html.*
 import com.adven.concordion.extensions.exam.resolveJson
+import com.adven.concordion.extensions.exam.resolveXml
 import com.adven.concordion.extensions.exam.rest.RequestExecutor.Companion.fromEvaluator
+import com.adven.concordion.extensions.exam.utils.content
+import com.adven.concordion.extensions.exam.utils.equalToXml
+import com.adven.concordion.extensions.exam.utils.prettyPrintJson
+import com.adven.concordion.extensions.exam.utils.prettyPrintXml
 import com.jayway.restassured.http.Method
 import net.javacrumbs.jsonunit.JsonAssert.assertJsonEquals
 import net.javacrumbs.jsonunit.core.Configuration
@@ -36,15 +41,16 @@ class PutCommand(name: String, tag: String) : RequestCommand(name, tag, Method.P
 class GetCommand(name: String, tag: String) : RequestCommand(name, tag, Method.GET)
 class PostCommand(name: String, tag: String) : RequestCommand(name, tag, Method.POST)
 class DeleteCommand(name: String, tag: String) : RequestCommand(name, tag, Method.DELETE)
+class SoapCommand(name: String, tag: String) : RequestCommand(name, tag, Method.POST, "application/soap+xml; charset=UTF-8;")
 
-sealed class RequestCommand(name: String, tag: String, val method: Method) : ExamCommand(name, tag) {
+sealed class RequestCommand(name: String, tag: String, val method: Method, private val contentType: String = "application/json") : ExamCommand(name, tag) {
 
     override fun setUp(commandCall: CommandCall?, evaluator: Evaluator?, resultRecorder: ResultRecorder?) {
         val executor = RequestExecutor.newExecutor(evaluator!!).method(method)
         val root = Html(commandCall!!.element).success()
 
         val url = attr(root, URL, "/", evaluator)
-        val type = attr(root, TYPE, "application/json", evaluator)
+        val type = attr(root, TYPE, contentType, evaluator)
         val cookies = cookies(evaluator, root)
         val headersMap = headers(root, evaluator)
 
@@ -60,12 +66,12 @@ sealed class RequestCommand(name: String, tag: String, val method: Method) : Exa
         val tr = thead()
         if (hasRequestBody) {
             tr(
-                th("Request")
+                    th("Request")
             )
         }
         tr(
-            th("Expected response"),
-            th("Status code")
+                th("Expected response"),
+                th("Status code")
         )
         table(header(tr))
         html.dropAllTo(table)
@@ -93,18 +99,18 @@ sealed class RequestCommand(name: String, tag: String, val method: Method) : Exa
 
     private fun addRequestDescTo(root: Html, url: String, type: String, cookies: String?) {
         val div = div()(
-            h(4, "")(
-                badge(method.name, "success"),
-                badge(type, "info"),
-                code(url)
-            )
+                h(4, "")(
+                        badge(method.name, "success"),
+                        badge(type, "info"),
+                        code(url)
+                )
         )
         if (cookies != null) {
             div(
-                h(6, "")(
-                    badge("Cookies", "info"),
-                    code(cookies)
-                )
+                    h(6, "")(
+                            badge("Cookies", "info"),
+                            code(cookies)
+                    )
             )
         }
         root(div)
@@ -117,14 +123,12 @@ sealed class RequestCommand(name: String, tag: String, val method: Method) : Exa
     }
 }
 
-open class RestVerifyCommand(name: String, tag: String) : ExamVerifyCommand(name, tag, RestResultRenderer()) {
-    protected val printer = JsonPrettyPrinter()
-}
+open class RestVerifyCommand(name: String, tag: String) : ExamVerifyCommand(name, tag, RestResultRenderer())
 
 class ExpectedStatusCommand(name: String, tag: String) : RestVerifyCommand(name, tag) {
-    override fun verify(cmd: CommandCall?, evaluator: Evaluator?, resultRecorder: ResultRecorder?) {
+    override fun verify(cmd: CommandCall?, evaluator: Evaluator?, resultRecorder: ResultRecorder) {
         Check.isFalse(cmd!!.hasChildCommands(),
-            "Nesting commands inside an 'expectedStatus' is not supported")
+                "Nesting commands inside an 'expectedStatus' is not supported")
 
         val element = cmd.html()
         val expected = element.text()
@@ -143,9 +147,7 @@ class CaseCheckCommand(name: String, tag: String) : ExamCommand(name, tag) {
         val checkTag = cmd.html()
         val td = td("colspan" to "3")
         checkTag.moveChildrenTo(td)
-        checkTag.parent().below(
-            tr()(
-                td))
+        checkTag.parent().below(tr()(td))
     }
 }
 
@@ -167,16 +169,20 @@ class CaseCommand(tag: String, private val cfg: Configuration) : RestVerifyComma
         }
 
         val body = caseRoot.first(BODY)
+        val bodyContent = body?.let { body.content() } ?: ""
         val expected = caseRoot.firstOrThrow(EXPECTED)
         caseRoot.remove(body, expected)(
-            cases.map {
-                val expectedToAdd = tag(EXPECTED).text(expected.text())
-                expected.attr(PROTOCOL)?.let { expectedToAdd.attrs(PROTOCOL to it) }
-                expected.attr(STATUS_CODE)?.let { expectedToAdd.attrs(STATUS_CODE to it) }
-                expected.attr(REASON_PHRASE)?.let { expectedToAdd.attrs(REASON_PHRASE to it) }
-
-                tag(CASE)(if (body == null) null else tag(BODY).text(body.text()), expectedToAdd)
-            })
+                cases.map {
+                    val expectedToAdd = tag(EXPECTED).text(expected.text())
+                    expected.attr(PROTOCOL)?.let { expectedToAdd.attrs(PROTOCOL to it) }
+                    expected.attr(STATUS_CODE)?.let { expectedToAdd.attrs(STATUS_CODE to it) }
+                    expected.attr(REASON_PHRASE)?.let { expectedToAdd.attrs(REASON_PHRASE to it) }
+                    tag(CASE)(
+                            if (body == null) null
+                            else tag(BODY).text(bodyContent),
+                            expectedToAdd
+                    )
+                })
     }
 
     override fun execute(cmd: CommandCall, eval: Evaluator, resultRecorder: ResultRecorder) {
@@ -184,6 +190,7 @@ class CaseCommand(tag: String, private val cfg: Configuration) : RestVerifyComma
         val root = cmd.html()
 
         val executor = fromEvaluator(eval)
+        val isJson = !executor.xml()
         val urlParams = root.takeAwayAttr(URL_PARAMS)
         val cookies = root.takeAwayAttr(COOKIES)
 
@@ -199,9 +206,16 @@ class CaseCommand(tag: String, private val cfg: Configuration) : RestVerifyComma
             val caseTR = tr().insteadOf(root.firstOrThrow(CASE))
             val body = caseTR.first(BODY)
             if (body != null) {
-                val bodyStr = resolveJson(body.text(), eval)
-                td().insteadOf(body).css("json").removeAllChild().text(printer.prettyPrint(bodyStr))
-                executor.body(bodyStr)
+                if (isJson) {
+                    val bodyStr = resolveJson(body.text(), eval)
+                    td().insteadOf(body).css("json").removeAllChild().text(bodyStr.prettyPrintJson())
+                    executor.body(bodyStr)
+                } else {
+                    val bodyStr = resolveXml(body.text(), eval)
+
+                    td().insteadOf(body).css("xml").removeAllChild().text(bodyStr.prettyPrintXml())
+                    executor.body(bodyStr)
+                }
             }
 
             val expected = caseTR.firstOrThrow(EXPECTED)
@@ -215,23 +229,43 @@ class CaseCommand(tag: String, private val cfg: Configuration) : RestVerifyComma
             childCommands.execute(eval, resultRecorder)
             childCommands.verify(eval, resultRecorder)
 
-            check(td().insteadOf(expected), eval, resultRecorder)
-
-            val actualStatus = executor.statusLine()
-            if (expectedStatus.trim() == actualStatus.trim()) {
-                success(resultRecorder, statusTd.el())
-            } else {
-                failure(resultRecorder, statusTd.el(), actualStatus, expectedStatus)
+            check(td().insteadOf(expected), eval, resultRecorder, isJson)
+            resultRecorder.check(statusTd, executor.statusLine(), expectedStatus) { a, e ->
+                a.trim() == e.trim()
             }
         }
     }
 
-    private fun expectedStatus(expected: Html): String {
-        return StatusBuilder(
+    private fun checkJsonContent(actual: String, expected: String, resultRecorder: ResultRecorder, root: Html) {
+        val prettyActual = actual.prettyPrintJson()
+        try {
+            assertJsonEquals(expected, prettyActual, cfg)
+            resultRecorder.pass(root)
+        } catch (e: Throwable) {
+            if (e is AssertionError || e is Exception) {
+                log.warn("Failed to assert expected={} with actual={}", expected, prettyActual, e)
+                resultRecorder.failure(root, prettyActual, expected)
+            } else throw e
+        }
+    }
+
+    private fun checkXmlContent(actual: String, expected: String, resultRecorder: ResultRecorder, element: Html) {
+        val prettyActual = actual.prettyPrintXml()
+        try {
+            resultRecorder.check(element, prettyActual, expected) { a, e ->
+                a.equalToXml(e)
+            }
+        } catch (e: Exception) {
+            log.error("Exception while checking content:", e)
+            resultRecorder.failure(element, prettyActual, expected)
+        }
+
+    }
+
+    private fun expectedStatus(expected: Html) = StatusBuilder(
             expected.takeAwayAttr(PROTOCOL),
             expected.takeAwayAttr(STATUS_CODE),
             expected.takeAwayAttr(REASON_PHRASE)).build()
-    }
 
     override fun verify(cmd: CommandCall, evaluator: Evaluator, resultRecorder: ResultRecorder) {
         val executor = fromEvaluator(evaluator)
@@ -239,56 +273,57 @@ class CaseCommand(tag: String, private val cfg: Configuration) : RestVerifyComma
         val rt = cmd.html()
         val caseDesc = caseDesc(rt.attr(DESC), evaluator)
         rt.attrs("data-type" to CASE, "id" to caseDesc).above(
-            tr()(
-                td(caseDesc, "colspan" to colspan).muted()))
+                tr()(
+                        td(caseDesc, "colspan" to colspan).muted()))
     }
 
-    private fun caseDesc(desc: String?, eval: Evaluator): String {
-        return "${++number}) " + if (desc == null) "" else resolveJson(desc, eval)
-    }
+    private fun caseDesc(desc: String?, eval: Evaluator): String =
+            "${++number}) " + if (desc == null) "" else resolveJson(desc, eval)
 
-    private fun check(root: Html, eval: Evaluator, resultRecorder: ResultRecorder) {
-        val expected = printer.prettyPrint(resolveJson(root.text(), eval))
-        root.removeAllChild().text(expected).css("json")
+    private fun check(root: Html, eval: Evaluator, resultRecorder: ResultRecorder, json: Boolean) {
+        val expected = resolve(json, root.content(), eval)
+
+        root.removeAllChild().text(expected).css(if (json) "json" else "xml")
 
         val executor = fromEvaluator(eval)
-
         fillCaseContext(root, executor)
-
         val actual = executor.responseBody()
         if (actual.isEmpty()) {
-            failure(resultRecorder, root, "(not set)", expected)
+            resultRecorder.failure(root, "(not set)", expected)
             return
         }
+        check(json, actual, expected, resultRecorder, root)
+    }
 
-        val prettyActual = printer.prettyPrint(actual)
-        try {
-            assertJsonEquals(expected, prettyActual, cfg)
-            success(resultRecorder, root)
-        } catch (e: Throwable) {
-            if (e is AssertionError || e is Exception) {
-                log.warn("Failed to assert expected={} with actual={}", expected, prettyActual, e)
-                failure(resultRecorder, root, prettyActual, expected)
-            } else throw e
-        }
+    private fun check(json: Boolean, actual: String, expected: String, resultRecorder: ResultRecorder, root: Html) =
+            if (json) {
+                checkJsonContent(actual, expected, resultRecorder, root)
+            } else {
+                checkXmlContent(actual, expected, resultRecorder, root)
+            }
+
+    private fun resolve(json: Boolean, content: String, eval: Evaluator): String = if (json) {
+        resolveJson(content, eval).prettyPrintJson()
+    } else {
+        resolveXml(content, eval).prettyPrintXml()
     }
 
     private fun fillCaseContext(root: Html, executor: RequestExecutor) {
         val cookies = executor.cookies
         root.parent().above(
-            tr()(
-                td("colspan" to if (executor.hasRequestBody()) "3" else "2")(
-                    div()(
-                        italic("${executor.requestMethod()} "),
-                        code(executor.requestUrlWithParams()),
-                        *cookiesTags(cookies)))))
+                tr()(
+                        td("colspan" to if (executor.hasRequestBody()) "3" else "2")(
+                                div()(
+                                        italic("${executor.requestMethod()} "),
+                                        code(executor.requestUrlWithParams()),
+                                        *cookiesTags(cookies)))))
     }
 
     private fun cookiesTags(cookies: String?): Array<Html> {
         return (if (cookies != null && !cookies.isEmpty()) {
             listOf(
-                italic(" Cookies "),
-                code(cookies)
+                    italic(" Cookies "),
+                    code(cookies)
             )
         } else listOf(span(""))).toTypedArray()
     }

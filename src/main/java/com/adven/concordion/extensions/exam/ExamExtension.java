@@ -42,7 +42,7 @@ public class ExamExtension implements ConcordionExtension {
             .withMatcher("xmlDateWithinNow", new XMLDateWithin());
     public static final FilesLoader DEFAULT_FILES_LOADER = new DefaultFilesLoader();
     private static DesiredCapabilities capabilities;
-    private net.javacrumbs.jsonunit.core.Configuration jsonUnitCfg;
+    private Configuration jsonUnitCfg;
     private IDatabaseTester dbTester;
     private NodeMatcher nodeMatcher;
     private FilesLoader filesLoader;

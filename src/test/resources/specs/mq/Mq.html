@@ -1,0 +1,17 @@
+<html xmlns:e="http://exam.extension.io">
+<body>
+<e:summary/>
+<e:example name="Send -> Get" print="true">
+    <e:when>
+        <e:mq-send name="myQueue">
+            {"message" : "value"}
+        </e:mq-send>
+    </e:when>
+    <e:then>
+        <e:mq-check name="myQueue">
+            {"message" : "value"}
+        </e:mq-check>
+    </e:then>
+</e:example>
+</body>
+</html>

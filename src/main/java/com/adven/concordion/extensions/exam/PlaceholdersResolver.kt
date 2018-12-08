@@ -26,17 +26,17 @@ fun resolveXml(body: String, eval: Evaluator): String {
 
 private fun resolve(body: String, type: String, eval: Evaluator): String {
     return resolveAliases(
-        type,
-        resolveExamCommands(
-            resolveVars(body, eval)
-        )
+            type,
+            resolveExamCommands(
+                    resolveVars(body, eval)
+            )
     )
 }
 
 private fun resolveVars(body: String, eval: Evaluator): String {
     var result = body
     while (result.contains(PREFIX_VAR)) {
-        val original = body
+        val original = result
         val v = extractVarFrom(original, PREFIX_VAR)
         result = original.replace(PREFIX_VAR + v + POSTFIX, getObject(eval, v).toString())
     }
@@ -44,9 +44,16 @@ private fun resolveVars(body: String, eval: Evaluator): String {
 }
 
 private fun getObject(eval: Evaluator, value: String): Any? {
+    fun extractAsDate(eval: Evaluator, v: String) = fromDateFields(getObject(eval, v) as Date)
     return if (value.contains(":")) {
         val (v, p) = value.split(":".toRegex(), 2)
-        forPattern(p).print(fromDateFields(getObject(eval, v) as Date))
+        forPattern(p).print(extractAsDate(eval, v))
+    } else if (value.contains("+")) {
+        val (v, p) = value.split("\\+".toRegex(), 2)
+        extractAsDate(eval, v).plus(parsePeriod(p)).toDate()
+    } else if (value.contains("-")) {
+        val (v, p) = value.split("-".toRegex(), 2)
+        extractAsDate(eval, v).minus(parsePeriod(p)).toDate()
     } else {
         eval.getVariable("#$value") ?: eval.evaluate(if (value.contains(".")) "#$value" else value)
     }
@@ -90,8 +97,8 @@ private fun constants(v: String): Any? {
             val date = v.substring("date(".length, v.indexOf(")"))
             LocalDateTime.parse(date, forPattern("dd.MM.yyyy")).toDate()
         }
-        v.startsWith("now+") -> now().plus(parsePeriod(v)).toDate()
-        v.startsWith("now-") -> now().minus(parsePeriod(v)).toDate()
+        v.startsWith("now+") -> now().plus(parsePeriod(v.substring(4))).toDate()
+        v.startsWith("now-") -> now().minus(parsePeriod(v.substring(4))).toDate()
         else -> when (v) {
             "yesterday" -> now().minusDays(1).toDate()
             "today", "now" -> now().toDate()
@@ -102,15 +109,15 @@ private fun constants(v: String): Any? {
 }
 
 private fun parsePeriod(v: String): Period {
-    return v.substring(5, v.indexOf("]")).split(",")
-        .map {
-            val (p1, p2) = it.trim().split(" ")
-            if (p1.isNum())
-                periodBy(parseInt(p1), p2)
-            else
-                periodBy(parseInt(p2), p1)
-        }
-        .fold(Period.ZERO) { a, n -> a.plus(n) }
+    return v.substring(1, v.indexOf("]")).split(",")
+            .map {
+                val (p1, p2) = it.trim().split(" ")
+                if (p1.isNum())
+                    periodBy(parseInt(p1), p2)
+                else
+                    periodBy(parseInt(p2), p1)
+            }
+            .fold(Period.ZERO) { a, n -> a.plus(n) }
 }
 
 fun periodBy(value: Int, type: String): BaseSingleFieldPeriod {

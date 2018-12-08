@@ -47,7 +47,7 @@
                 <body/>
                 <expected>
                     {
-                      "cookies": { "cook": "from_command"}
+                      "cookies": "{cook=from_command}"
                     }
                 </expected>
             </e:case>
@@ -55,7 +55,7 @@
                 <body/>
                 <expected>
                     {
-                      "cookies": { "cook": "from_case"}
+                      "cookies": "{cook=from_case}"
                     }
                 </expected>
             </e:case>
@@ -63,7 +63,7 @@
                 <body/>
                 <expected>
                     {
-                      "cookies": {"cook": "cookies" }
+                      "cookies": "{cook=cookies}"
                     }
                 </expected>
             </e:case>

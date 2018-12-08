@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
 import static com.adven.concordion.extensions.exam.files.commands.CheckType.*;
 import static org.xmlunit.diff.ComparisonResult.EQUAL;
 
-class PlaceholderSupportDiffEvaluator implements DifferenceEvaluator {
+public class PlaceholderSupportDiffEvaluator implements DifferenceEvaluator {
     private static final String ANY_NUMBER = "${xml-unit.any-number}";
     private static final String ANY_BOOLEAN = "${xml-unit.any-boolean}";
     private static final String ANY_STRING = "${xml-unit.any-string}";

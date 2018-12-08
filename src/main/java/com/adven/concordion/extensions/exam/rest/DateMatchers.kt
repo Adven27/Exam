@@ -41,7 +41,7 @@ class DateWithin private constructor(private val now: Boolean) : BaseMatcher<Any
     private lateinit var pattern: String
 
     override fun matches(item: Any): Boolean {
-        val actual = DateTime.parse(item as String, forPattern(pattern))
+        val actual = if (item is DateTime) item else DateTime.parse(item as String, forPattern(pattern))
         return isBetweenInclusive(expected.minus(period), expected.plus(period), actual)
     }
 
@@ -74,14 +74,9 @@ class DateWithin private constructor(private val now: Boolean) : BaseMatcher<Any
     }
 
     companion object {
-
-        fun param(): DateWithin {
-            return DateWithin(false)
-        }
-
-        fun now(): DateWithin {
-            return DateWithin(true)
-        }
+        fun param() = DateWithin(false)
+        fun now() = DateWithin(true)
+        fun now(param: String) = DateWithin(true).apply { setParameter("[][$param]") }
     }
 }
 

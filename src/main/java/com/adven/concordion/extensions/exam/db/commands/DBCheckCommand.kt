@@ -38,7 +38,7 @@ class DBCheckCommand(name: String, tag: String, dbTester: IDatabaseTester) : DBC
         listeners.addListener(DbResultRenderer())
     }
 
-    private fun failure(resultRecorder: ResultRecorder, element: Element, actual: Any, expected: String) {
+    private fun failure(resultRecorder: ResultRecorder, element: Element, actual: Any?, expected: String) {
         resultRecorder.record(FAILURE)
         listeners.announce().failureReported(AssertFailureEvent(element, expected, actual))
     }
@@ -51,7 +51,7 @@ class DBCheckCommand(name: String, tag: String, dbTester: IDatabaseTester) : DBC
     override fun verify(cmd: CommandCall?, evaluator: Evaluator?, resultRecorder: ResultRecorder?) {
         val actual = actualTable
         val filteredActual = includedColumnsTable(
-            actual, expectedTable.tableMetaData.columns)
+                actual, expectedTable.tableMetaData.columns)
 
         assertEq(cmd.html(), resultRecorder, expectedTable, filteredActual)
     }
@@ -77,10 +77,6 @@ class DBCheckCommand(name: String, tag: String, dbTester: IDatabaseTester) : DBC
             renderTable(act, actual)
             div(span("but was: "), act)
         }
-
-        for (diff in diffHandler.diffList as List<Difference>) {
-            System.err.println("***** DIFF " + diff.toString())
-        }
         checkResult(root, expectedTable, diffHandler.diffList as List<Difference>, resultRecorder!!)
     }
 
@@ -102,14 +98,13 @@ class DBCheckCommand(name: String, tag: String, dbTester: IDatabaseTester) : DBC
             el(tr)
             success(resultRecorder, td.el())
         } else {
-            for (i in 0 until expected.rowCount) {
+            for (row in 0 until expected.rowCount) {
                 val tr = tr()
                 for (col in cols) {
-                    val expectedValue = expected.getValue(i, col.columnName)
-                    val displayedExpected = expectedValue?.toString() ?: "(null)"
+                    val displayedExpected = expected.getValue(row, col.columnName)?.toString() ?: "(null)"
                     val td = td(displayedExpected)
                     tr(td)
-                    val fail = findFail(diffs, i, col)
+                    val fail = findFail(diffs, row, col)
                     if (fail != null) {
                         failure(resultRecorder, td.el(), fail.actualValue, displayedExpected)
                     } else {
@@ -121,10 +116,10 @@ class DBCheckCommand(name: String, tag: String, dbTester: IDatabaseTester) : DBC
         }
     }
 
-    private fun findFail(diffs: List<Difference>, i: Int, col: Column): Difference? {
+    private fun findFail(diffs: List<Difference>, row: Int, col: Column): Difference? {
         var fail: Difference? = null
         for (diff in diffs) {
-            if (diff.rowIndex == i && diff.columnName == col.columnName) {
+            if (diff.rowIndex == row && diff.columnName == col.columnName) {
                 fail = diff
                 break
             }

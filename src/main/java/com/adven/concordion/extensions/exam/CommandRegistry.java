@@ -59,6 +59,7 @@ public class CommandRegistry {
                 new FilesCheckCommand("fl-check", TABLE, jsonUnitCfg, nodeMatcher, filesLoader),
 
                 new PostCommand("post", "div"),
+                new SoapCommand("soap", "div"),
                 new GetCommand("get", "div"),
                 new PutCommand("put", "div"),
                 new DeleteCommand("delete", "div"),

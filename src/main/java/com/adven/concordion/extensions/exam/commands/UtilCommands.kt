@@ -3,6 +3,7 @@ package com.adven.concordion.extensions.exam.commands
 import com.adven.concordion.extensions.exam.ExamExtension
 import com.adven.concordion.extensions.exam.html.html
 import com.adven.concordion.extensions.exam.resolveToObj
+import com.adven.concordion.extensions.exam.resolveXml
 import nu.xom.Attribute
 import nu.xom.Element
 import nu.xom.XPathContext
@@ -14,7 +15,18 @@ import org.concordion.internal.ConcordionBuilder
 class SetVarCommand(tag: String) : ExamCommand("set", tag) {
     override fun setUp(cmd: CommandCall?, eval: Evaluator?, resultRecorder: ResultRecorder?) {
         val el = cmd.html()
-        eval!!.setVariable("#${el.attr("var")!!}", resolveToObj(el.attr("value"), eval))
+        var valueAttr = el.attr("value")
+        val value = if (valueAttr == null) {
+            val body = el.text()
+            val silent = el.attr("silent")
+            if (silent != null && silent == "true") {
+                el.removeAllChild()
+            }
+            resolveXml(body, eval!!)
+        } else {
+            resolveToObj(valueAttr, eval!!)
+        }
+        eval.setVariable("#${el.attr("var")!!}", value)
     }
 }
 

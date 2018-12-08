@@ -4,9 +4,11 @@ import com.adven.concordion.extensions.exam.ExamExtension
 import org.dbunit.JdbcDatabaseTester
 import org.dbunit.database.DatabaseConfig.PROPERTY_DATATYPE_FACTORY
 import org.dbunit.database.IDatabaseConnection
+import org.dbunit.ext.db2.Db2DataTypeFactory
 import org.dbunit.ext.h2.H2DataTypeFactory
 import org.dbunit.ext.hsqldb.HsqldbDataTypeFactory
 import org.dbunit.ext.oracle.OracleDataTypeFactory
+import org.dbunit.ext.postgresql.PostgresqlDataTypeFactory
 import java.util.*
 
 class DbTester(private val extension: ExamExtension) {
@@ -67,7 +69,9 @@ class ExamDbTester(driver: String, url: String, user: String, password: String, 
         when (dbName) {
             "HSQL Database Engine" -> cfg.setProperty(PROPERTY_DATATYPE_FACTORY, HsqldbDataTypeFactory())
             "H2" -> cfg.setProperty(PROPERTY_DATATYPE_FACTORY, H2DataTypeFactory())
+            "Db2" -> cfg.setProperty(PROPERTY_DATATYPE_FACTORY, Db2DataTypeFactory())
             "Oracle" -> cfg.setProperty(PROPERTY_DATATYPE_FACTORY, OracleDataTypeFactory())
+            "PostgreSQL" -> cfg.setProperty(PROPERTY_DATATYPE_FACTORY, PostgresqlDataTypeFactory())
             else -> System.err.println("No matching database product found $dbName")
         }
         return conn

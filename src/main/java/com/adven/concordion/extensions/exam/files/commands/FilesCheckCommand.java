@@ -3,9 +3,8 @@ package com.adven.concordion.extensions.exam.files.commands;
 import com.adven.concordion.extensions.exam.files.FilesLoader;
 import com.adven.concordion.extensions.exam.files.FilesResultRenderer;
 import com.adven.concordion.extensions.exam.html.Html;
+import com.adven.concordion.extensions.exam.utils.CheckUtilsKt;
 import net.javacrumbs.jsonunit.core.Configuration;
-import nu.xom.Document;
-import nu.xom.Serializer;
 import org.concordion.api.*;
 import org.concordion.api.listener.AssertEqualsListener;
 import org.concordion.api.listener.AssertFailureEvent;
@@ -16,12 +15,11 @@ import org.xmlunit.diff.Diff;
 import org.xmlunit.diff.DifferenceEvaluators;
 import org.xmlunit.diff.NodeMatcher;
 
-import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import static com.adven.concordion.extensions.exam.PlaceholdersResolver.*;
+import static com.adven.concordion.extensions.exam.PlaceholdersResolver.resolveToObj;
 import static com.adven.concordion.extensions.exam.html.HtmlBuilder.*;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static java.io.File.separator;
@@ -137,7 +135,7 @@ public class FilesCheckCommand extends BaseCommand {
             return;
         }
 
-        String prettyPrintedActual = prettyPrint(filesLoader.documentFrom(path));
+        String prettyPrintedActual = CheckUtilsKt.prettyPrintXml(filesLoader.documentFrom(path));
         try {
             if (assertEqualsXml(prettyPrintedActual, expected)) {
                 xmlEquals(resultRecorder, element);
@@ -147,18 +145,6 @@ public class FilesCheckCommand extends BaseCommand {
         } catch (Exception e) {
             e.printStackTrace();
             xmlDoesNotEqual(resultRecorder, element, prettyPrintedActual, expected);
-        }
-    }
-
-    private String prettyPrint(Document document) {
-        try {
-            ByteArrayOutputStream out = new ByteArrayOutputStream();
-            Serializer serializer = new Serializer(out, "UTF-8");
-            serializer.setIndent(4);
-            serializer.write(document);
-            return out.toString("UTF-8");
-        } catch (Exception e) {
-            throw new RuntimeException("invalid xml", e);
         }
     }
 

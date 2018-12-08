@@ -61,4 +61,22 @@
             </e:db-check>
         </e:then>
     </e:example>
+    <e:example name="Expected empty - fail" status="ExpectedToFail">
+        <e:given>
+            <e:db-set table="PERSON"/>
+        </e:given>
+        <e:then print="true">
+            <e:db-check table="PERSON" cols="NAME, AGE" where="NAME='Andrew'">
+                <row>Andrew, 30</row>
+            </e:db-check>
+        </e:then>
+    </e:example>
+    <e:example name="Expected empty - success">
+        <e:given>
+            <e:db-set table="PERSON"/>
+        </e:given>
+        <e:then print="true">
+            <e:db-check table="PERSON"/>
+        </e:then>
+    </e:example>
 </div>

@@ -1,0 +1,68 @@
+<html xmlns:e="http://exam.extension.io">
+<body>
+<e:summary/>
+<e:given>
+    Given server, that mirrors request
+</e:given>
+<e:example name="Check body - success" print="true">
+    <e:soap url="relative/url">
+        <e:case desc="Content can be inlined">
+            <body>
+            <![CDATA[
+            <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+                <soap:Body>
+                    <ns2:getItemRequest xmlns:ns2="http://ws.marketplace.core.tcsbank.ru">
+                        <date>${exam.now:yyyy-MM-dd}</date>
+                    </ns2:getItemRequest>
+                </soap:Body>
+            </soap:Envelope>
+            ]]>
+            </body>
+            <expected>
+                <![CDATA[
+                <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+                    <soap:Body>
+                        <ns2:getItemRequest xmlns:ns2="http://ws.marketplace.core.tcsbank.ru">
+                            <date>${exam.now:yyyy-MM-dd}</date>
+                        </ns2:getItemRequest>
+                    </soap:Body>
+                </soap:Envelope>
+                ]]>
+            </expected>
+        </e:case>
+        <e:case desc="Or stored in file">
+            <body from="/data/soap/body.xml"/>
+            <expected from="/data/soap/expected.xml"/>
+        </e:case>
+    </e:soap>
+</e:example>
+<e:example name="Check body - failed" status="ExpectedToFail" print="true">
+    <e:soap url="relative/url">
+        <e:case desc="Happy-path">
+            <body>
+            <![CDATA[
+            <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+                <soap:Body>
+                    <ns2:getItemRequest xmlns:ns2="http://ws.marketplace.core.tcsbank.ru">
+                        <date>${exam.now:yyyy-MM-dd}</date>
+                    </ns2:getItemRequest>
+                </soap:Body>
+            </soap:Envelope>
+            ]]>
+            </body>
+            <expected>
+                <![CDATA[
+                <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+                    <soap:Body>
+                        <ns2:getItemRequest xmlns:ns2="http://ws.marketplace.core.tcsbank.ru">
+                            <date>${exam.now+[1 day]:yyyy-MM-dd}</date>
+                        </ns2:getItemRequest>
+                    </soap:Body>
+                </soap:Envelope>
+                ]]>
+            </expected>
+        </e:case>
+    </e:soap>
+</e:example>
+</body>
+</html>
