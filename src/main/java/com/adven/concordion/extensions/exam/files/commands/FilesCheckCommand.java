@@ -10,9 +10,6 @@ import org.concordion.api.listener.AssertEqualsListener;
 import org.concordion.api.listener.AssertFailureEvent;
 import org.concordion.api.listener.AssertSuccessEvent;
 import org.concordion.internal.util.Announcer;
-import org.xmlunit.builder.DiffBuilder;
-import org.xmlunit.diff.Diff;
-import org.xmlunit.diff.DifferenceEvaluators;
 import org.xmlunit.diff.NodeMatcher;
 
 import java.util.ArrayList;
@@ -25,7 +22,6 @@ import static com.google.common.base.Strings.isNullOrEmpty;
 import static java.io.File.separator;
 import static java.util.Arrays.asList;
 import static kotlin.TuplesKt.to;
-import static org.xmlunit.diff.DifferenceEvaluators.chain;
 
 public class FilesCheckCommand extends BaseCommand {
     //FIXME temporary(HA!) reuse json-unit cfg for matchers retrieving
@@ -135,36 +131,17 @@ public class FilesCheckCommand extends BaseCommand {
             return;
         }
 
-        String prettyPrintedActual = CheckUtilsKt.prettyPrintXml(filesLoader.documentFrom(path));
+        String prettyActual = CheckUtilsKt.prettyPrintXml(filesLoader.documentFrom(path));
         try {
-            if (assertEqualsXml(prettyPrintedActual, expected)) {
+            if (CheckUtilsKt.equalToXml(prettyActual, expected, nodeMatcher, jsonUnitCfg)) {
                 xmlEquals(resultRecorder, element);
             } else {
-                xmlDoesNotEqual(resultRecorder, element, prettyPrintedActual, expected);
+                xmlDoesNotEqual(resultRecorder, element, prettyActual, expected);
             }
         } catch (Exception e) {
             e.printStackTrace();
-            xmlDoesNotEqual(resultRecorder, element, prettyPrintedActual, expected);
+            xmlDoesNotEqual(resultRecorder, element, prettyActual, expected);
         }
-    }
-
-    private boolean assertEqualsXml(String actual, String expected) {
-        Diff diff = DiffBuilder.compare(expected.trim())
-            .checkForSimilar().withNodeMatcher(nodeMatcher)
-            .withTest(actual.trim())
-            .withDifferenceEvaluator(
-                chain(
-                    DifferenceEvaluators.Default,
-                    new PlaceholderSupportDiffEvaluator(jsonUnitCfg)
-                )
-            )
-            .ignoreComments().ignoreWhitespace().build();
-
-        //FIXME Reports are visible only on logs, show them in spec too
-        if (diff.hasDifferences()) {
-            throw new RuntimeException(diff.toString());
-        }
-        return true;
     }
 
     private void xmlEquals(ResultRecorder resultRecorder, Element element) {

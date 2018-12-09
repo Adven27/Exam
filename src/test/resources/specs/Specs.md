@@ -4,6 +4,7 @@
 - [Команды для работы с файлами]( fl/Fl.md "c:run")
 - [Тестирование rest-сервисов ]( rs/Rs.md "c:run")
 - [Тестирование soap-сервисов ]( soap/Soap.html "c:run")
+- [Message queues testing]( mq/Mq.html "c:run")
 - [Expression Language (sort of)]( el/El.md "c:run")
 - [UI testing with web driver ]( ui/Ui.md "c:run")
 - [Декоративные команды]( decor/Decor.md "c:run")
