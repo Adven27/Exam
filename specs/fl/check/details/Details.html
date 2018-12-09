@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="UTF-8"?><html xmlns:concordion="http://www.concordion.org/2007/concordion" xmlns:e="http://exam.extension.io" xmlns:c="http://www.concordion.org/2007/concordion"><head><style>* {
+  font-family: Arial;
+}
+body {
+  padding: 32px;  
+}
+pre {
+  padding: 6px 28px 6px 28px;
+  background-color: #E8EEF7;
+}
+pre, pre *, code, code *, kbd {
+  font-family: Courier New, Courier;
+  font-size: 10pt;
+}
+h1, h1 * {
+  font-size: 24pt;	
+}
+p, td, th, li, .breadcrumbs {
+  font-size: 10pt;
+}
+p, li {
+  line-height: 140%;
+  max-width: 720px;
+}
+table {
+  border-collapse: collapse;
+  empty-cells: show;
+  margin: 8px 0px 8px 0px;
+}
+th, td {
+  border: 1px solid black;
+  padding: 3px;
+}
+td {
+  background-color: white;
+  vertical-align: top;
+}
+th {
+  background-color: #C3D9FF;
+}
+li {
+  margin-top: 6px;
+  margin-bottom: 6px; 
+}
+
+.example, :not(th)[concordion\:example] {
+  padding: 6px 16px 6px 16px;
+  border: 1px solid #C3D9FF;
+  margin: 6px 0px 28px 0px;
+  background-color: #F5F9FD;
+}
+.example h3, [concordion\:example] h3 {
+  margin-top: 8px;
+  margin-bottom: 8px;
+  font-size: 12pt;
+}
+
+p.success {
+  padding: 2px;
+}
+.success, .success * {
+  background-color: #afa !important;
+}
+.success pre {
+  background-color: #bbffbb;
+}
+.failure, .failure * {
+  background-color: #ffb0b0;
+  padding: 1px;
+}
+.failure .expected {
+  text-decoration: line-through;
+  color: #bb5050;
+}
+.ignored, .ignored * {
+  background-color: #f0f0f0 !important;	
+}
+
+ins {
+  text-decoration: none;	
+}
+
+.exceptionMessage {
+  background-color: #fdd;
+  font-family: Courier New, Courier, Monospace;
+  font-size: 10pt;
+  display: block;
+  font-weight: normal;
+  padding: 4px;
+  text-decoration: none !important;
+}
+.stackTrace, .stackTrace * {
+  font-weight: normal;
+}
+.stackTrace {
+  display: none;
+  padding: 1px 4px 4px 4px;
+  background-color: #fdd;
+  border-top: 1px dotted black;
+}
+.stackTraceExceptionMessage {
+  display: block;
+  font-family: Courier New, Courier, Monospace;
+  font-size: 8pt;
+  white-space: wrap;
+  padding: 1px 0px 1px 0px;
+}
+.stackTraceEntry {
+  white-space: nowrap;
+  font-family: Courier New, Courier, Monospace;
+  display: block;
+  font-size: 8pt;
+  padding: 1px 0px 1px 32px;
+}
+.stackTraceButton {
+  font-size: 8pt;
+  margin: 2px 8px 2px 0px;
+  font-weight: normal;
+  font-family: Arial;
+}
+
+.special {
+  font-style: italic;
+}
+.missing, .missing * {
+  background-color: #ff9999;
+  color:#bb5050;
+  text-decoration: line-through;
+}
+.surplus, .surplus * {
+  background-color: #ff9999;
+}
+.footer {
+  text-align: right;
+  margin-top: 40px;
+  font-size: 8pt;
+  width: 100%;
+  color: #999;
+}
+.footer .testTime {
+  padding: 2px 10px 0px 0px;
+}
+
+.idea {
+  font-size: 9pt;
+  color: #888;
+  font-style: italic;	
+}
+.tight li {
+  margin-top: 1px;
+  margin-bottom: 1px; 
+}
+.commentary {
+  float: right;
+  width: 200px;
+  background-color: #ffffd0;
+  padding:8px;
+  border: 3px solid #eeeeb0;	 
+  margin: 10px 0px 10px 10px;	 
+}
+.commentary, .commentary * {
+  font-size: 8pt;
+}
+</style><meta http-equiv="content-type" content="text/html; charset=UTF-8" /><link type="text/css" rel="stylesheet" href="../../../../codemirror/codemirror.css" /><link type="text/css" rel="stylesheet" href="../../../../codemirror/merge.css" /><link type="text/css" rel="stylesheet" href="../../../../codemirror/enable-codemirror.css" /><script type="text/javascript" src="../../../../codemirror/codemirror.js"></script><script type="text/javascript" src="../../../../codemirror/javascript.js"></script><script type="text/javascript" src="../../../../codemirror/xml.js"></script><script type="text/javascript" src="../../../../codemirror/formatting.js"></script><script type="text/javascript" src="../../../../codemirror/diff_match_patch.js"></script><script type="text/javascript" src="../../../../codemirror/merge.js"></script><script type="text/javascript" src="../../../../codemirror/enable-codemirror.js"></script><script type="text/javascript" src="../../../../bootstrap/jquery-3.2.1.slim.min.js"></script><script type="text/javascript" src="../../../../bootstrap/popper.min.js"></script><script type="text/javascript" src="../../../../bootstrap/bootstrap.min.js"></script><script type="text/javascript" src="../../../../bootstrap/sidebar.js"></script><link type="text/css" rel="stylesheet" href="../../../../bootstrap/enable-bootstrap.css" /><link type="text/css" rel="stylesheet" href="../../../../bootstrap/bootstrap.min.css" /><link type="text/css" rel="stylesheet" href="../../../../bootstrap/callout.css" /><link type="text/css" rel="stylesheet" href="../../../../bootstrap/font-awesome.min.css" /><link type="text/css" rel="stylesheet" href="../../../../bootstrap/scrollToTop.css" /><script type="text/javascript" src="../../../../bootstrap/scrollToTop.js"></script></head><body><span class="breadcrumbs"><a href="../../../Specs.html">Exam</a> &gt; <a href="../../Fl.html">Working with files</a> &gt; <a href="../Check.html">Check directory content</a> &gt; <a href="Details.html">File comparing details</a> &gt;</span><h1>File comparing details</h1>
+<div>
+    <div e:summary="" class="pin"><h4>Summary<button type="button" class="btn btn-light btn-sm text-muted ml-1" data-toggle="collapse" data-target="#summary" aria-expanded="true" aria-controls="summary">collapse</button></h4><div id="summary" class="collapse show"><div class="list-group"><a class="list-group-item list-group-item-action" href="#Order in list">Order in list<small class="card-img-overlay m-1" style="padding:0; left:inherit;"><span class="badge badge-pill badge-success">2</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small></a><a class="list-group-item list-group-item-action" href="#Tag order">Tag order<small class="card-img-overlay m-1" style="padding:0; left:inherit;"><span class="badge badge-pill badge-success">2</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small></a><a class="list-group-item list-group-item-action" href="#Failed">Failed<small class="card-img-overlay m-1" style="padding:0; left:inherit;"><span class="badge badge-pill badge-success">1</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning">1</span><span class="badge badge-pill badge-danger"></span><span class="badge badge-pill badge-warning">ExpectedToFail</span></small></a></div></div></div>
+    <div name="Order in list" c:example="Order in list" class="card mb-3" e:example="" id="Order in list"><div class="card-header" data-toggle="collapse" data-target="#76687303" aria-expanded="true" aria-controls="76687303"><a name="Order in list" data-type="example">Order in list</a></div><div class="card-body collapse show" id="76687303">
+        <div e:given="" class="bd-callout bd-callout-info">
+            <table e:fl-set="" class="table table-sm">
+                
+            <caption>/tmp/junit3266749888912837466<i class="fa fa-folder-open fa-pull-left fa-border"></i></caption><thead class="thead-default"><th style="width:20%">file</th><th>content</th></thead><tr><td><span>file</span></td><td><pre class="xml card" autoFormat="true" lineNumbers="false">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+                    &lt;list&gt;
+                        &lt;item&gt;one&lt;/item&gt;
+                        &lt;item&gt;two&lt;/item&gt;
+                    &lt;/list&gt;</pre></td></tr></table>
+        </div>
+        <div print="true" e:then="" class="bd-callout bd-callout-success"><pre class="xml card">
+&lt;e:fl-check dir="dir"&gt;
+                &lt;file name="file"&gt;
+                    &amp;lt;?xml version="1.0" encoding="UTF-8"?&amp;gt;
+                    &amp;lt;list&amp;gt;
+                        &amp;lt;item&amp;gt;two&amp;lt;/item&amp;gt;
+                        &amp;lt;item&amp;gt;!{str}&amp;lt;/item&amp;gt;
+                    &amp;lt;/list&amp;gt;
+                    
+                &lt;/file&gt;
+            &lt;/e:fl-check&gt;</pre>
+            <table e:fl-check="" class="table table-sm">
+                
+            <caption>/tmp/junit3266749888912837466<i class="fa fa-folder-open fa-pull-left fa-border"></i></caption><thead class="thead-default"><th style="width:20%">file</th><th>content</th></thead><tr><td class="rest-success">file</td><td><pre class="xml card rest-success" autoFormat="false" lineNumbers="false">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+                    &lt;list&gt;
+                        &lt;item&gt;two&lt;/item&gt;
+                        &lt;item&gt;${xml-unit.any-string}&lt;/item&gt;
+                    &lt;/list&gt;</pre></td></tr></table>
+        </div>
+    </div><div class="card-footer text-muted" data-toggle="collapse" data-target="#76687303" aria-expanded="true" aria-controls="76687303"><small><span class="badge badge-pill badge-success">2</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small></div></div>
+    <div name="Tag order" c:example="Tag order" class="card mb-3" e:example="" id="Tag order"><div class="card-header" data-toggle="collapse" data-target="#-2007703768" aria-expanded="true" aria-controls="-2007703768"><a name="Tag order" data-type="example">Tag order</a></div><div class="card-body collapse show" id="-2007703768">
+        <div e:given="" class="bd-callout bd-callout-info">
+            <table e:fl-set="" class="table table-sm">
+                
+            <caption>/tmp/junit3266749888912837466<i class="fa fa-folder-open fa-pull-left fa-border"></i></caption><thead class="thead-default"><th style="width:20%">file</th><th>content</th></thead><tr><td><span>file</span></td><td><pre class="xml card" autoFormat="true" lineNumbers="false">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+                    &lt;data&gt;
+                        &lt;one&gt;one&lt;/one&gt;
+                        &lt;two&gt;two&lt;/two&gt;
+                    &lt;/data&gt;</pre></td></tr></table>
+        </div>
+        <div print="true" e:then="" class="bd-callout bd-callout-success"><pre class="xml card">
+&lt;e:fl-check dir="dir"&gt;
+                &lt;file name="file"&gt;
+                    &amp;lt;?xml version="1.0" encoding="UTF-8"?&amp;gt;
+                    &amp;lt;data&amp;gt;
+                        &amp;lt;two&amp;gt;two&amp;lt;/two&amp;gt;
+                        &amp;lt;one&amp;gt;!{str}&amp;lt;/one&amp;gt;
+                    &amp;lt;/data&amp;gt;
+                    
+                &lt;/file&gt;
+            &lt;/e:fl-check&gt;</pre>
+            <table e:fl-check="" class="table table-sm">
+                
+            <caption>/tmp/junit3266749888912837466<i class="fa fa-folder-open fa-pull-left fa-border"></i></caption><thead class="thead-default"><th style="width:20%">file</th><th>content</th></thead><tr><td class="rest-success">file</td><td><pre class="xml card rest-success" autoFormat="false" lineNumbers="false">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+                    &lt;data&gt;
+                        &lt;two&gt;two&lt;/two&gt;
+                        &lt;one&gt;${xml-unit.any-string}&lt;/one&gt;
+                    &lt;/data&gt;</pre></td></tr></table>
+        </div>
+    </div><div class="card-footer text-muted" data-toggle="collapse" data-target="#-2007703768" aria-expanded="true" aria-controls="-2007703768"><small><span class="badge badge-pill badge-success">2</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small></div></div>
+    <div name="Failed" status="fail" c:example="Failed" c:status="ExpectedToFail" class="card mb-3" e:example="" id="Failed"><div class="card-header" data-toggle="collapse" data-target="#2096857181" aria-expanded="true" aria-controls="2096857181"><a name="Failed" data-type="example">Failed</a></div><div class="card-body collapse show" id="2096857181">
+        <div e:given="" class="bd-callout bd-callout-info">
+            <table e:fl-set="" class="table table-sm">
+                
+            <caption>/tmp/junit3266749888912837466<i class="fa fa-folder-open fa-pull-left fa-border"></i></caption><thead class="thead-default"><th style="width:20%">file</th><th>content</th></thead><tr><td><span>file</span></td><td><pre class="xml card" autoFormat="true" lineNumbers="false">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+                    &lt;data&gt;
+                        &lt;one&gt;one&lt;/one&gt;
+                        &lt;two&gt;two&lt;/two&gt;
+                        &lt;three&gt;three&lt;/three&gt;
+                    &lt;/data&gt;</pre></td></tr></table>
+        </div>
+        <div print="true" e:then="" class="bd-callout bd-callout-success"><pre class="xml card">
+&lt;e:fl-check dir="dir"&gt;
+                &lt;file name="file"&gt;
+                    &amp;lt;?xml version="1.0" encoding="UTF-8"?&amp;gt;
+                    &amp;lt;data&amp;gt;
+                        &amp;lt;two&amp;gt;two&amp;lt;/two&amp;gt;
+                        &amp;lt;two&amp;gt;two&amp;lt;/two&amp;gt;
+                        &amp;lt;one&amp;gt;one&amp;lt;/one&amp;gt;
+                    &amp;lt;/data&amp;gt;
+                    
+                &lt;/file&gt;
+            &lt;/e:fl-check&gt;</pre>
+            <table e:fl-check="" class="table table-sm">
+                
+            <caption>/tmp/junit3266749888912837466<i class="fa fa-folder-open fa-pull-left fa-border"></i></caption><thead class="thead-default"><th style="width:20%">file</th><th>content</th></thead><tr><td class="rest-success">file</td><td><pre class="xml card rest-failure" autoFormat="false" lineNumbers="false"><del class="expected">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+                    &lt;data&gt;
+                        &lt;two&gt;two&lt;/two&gt;
+                        &lt;two&gt;two&lt;/two&gt;
+                        &lt;one&gt;one&lt;/one&gt;
+                    &lt;/data&gt;</del>
+<ins class="actual">&lt;?xml version="1.0" encoding="UTF-8"?&gt;&#x0D;
+&lt;data&gt;&#x0D;
+    &lt;one&gt;one&lt;/one&gt;&#x0D;
+    &lt;two&gt;two&lt;/two&gt;&#x0D;
+    &lt;three&gt;three&lt;/three&gt;&#x0D;
+&lt;/data&gt;&#x0D;
+</ins></pre></td></tr></table>
+        </div>
+    </div><div class="card-footer text-muted" data-toggle="collapse" data-target="#2096857181" aria-expanded="true" aria-controls="2096857181"><small><span class="badge badge-pill badge-success">1</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning">1</span><span class="badge badge-pill badge-danger"></span><span class="badge badge-pill badge-warning">ExpectedToFail</span></small></div></div>
+</div><div class="footer">Results generated by <a href="http://www.concordion.org" style="font-weight: bold; text-decoration: none; color: #89C;">Concordion</a><div class="testTime">in 177 ms on 09-Dec-2018 at 12:28:14 UTC</div></div></body><button id="btnToTop" onclick="topFunction()" type="button" class="btn btn-light btn-sm text-muted ml-1"><i class="fa fa-arrow-up fa-3x"></i></button></html>
