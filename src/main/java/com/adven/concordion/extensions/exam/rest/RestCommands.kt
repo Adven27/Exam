@@ -194,9 +194,7 @@ class CaseCommand(tag: String, private val cfg: Configuration) : RestVerifyComma
         val cookies = root.takeAwayAttr(COOKIES)
 
         for (aCase in cases) {
-            for ((key, value) in aCase) {
-                eval.setVariable(key, value)
-            }
+            aCase.forEach { (key, value) -> eval.setVariable(key, value) }
 
             cookies?.let { executor.cookies(resolveJson(it, eval)) }
 

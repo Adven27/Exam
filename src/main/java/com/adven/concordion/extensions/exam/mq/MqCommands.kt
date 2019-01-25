@@ -42,7 +42,7 @@ class MqCheckCommand(name: String, tag: String, private val cfg: Configuration, 
         val mqTester = mqTesters[mqName]
                 ?: throw IllegalArgumentException("MQ with name $mqName not registered in Exam")
         val actual = mqTester.receive()
-        val expected = eval.resolveJson(root.content().trim())
+        val expected = eval.resolveJson(root.content(eval).trim())
         val container = pre(expected).css("json").attr("autoFormat", "true")
         root.removeAllChild()(
                 tableSlim()(
@@ -75,7 +75,7 @@ class MqSendCommand(name: String, tag: String, private val mqTesters: Map<String
         super.execute(cmd, eval, resultRecorder)
         val root = cmd.html()
         val mqName = root.takeAwayAttr("name")
-        val message = eval.resolveJson(root.content().trim())
+        val message = eval.resolveJson(root.content(eval).trim())
         root.removeAllChild()(
                 tableSlim()(
                         caption(mqName)(italic("", CLASS to "fa fa-envelope fa-pull-left fa-border")),

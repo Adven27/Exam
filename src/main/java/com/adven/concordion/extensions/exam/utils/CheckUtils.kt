@@ -2,11 +2,13 @@ package com.adven.concordion.extensions.exam.utils
 
 import com.adven.concordion.extensions.exam.files.commands.PlaceholderSupportDiffEvaluator
 import com.adven.concordion.extensions.exam.html.Html
+import com.adven.concordion.extensions.exam.resolveJson
 import com.adven.concordion.extensions.exam.rest.JsonPrettyPrinter
 import net.javacrumbs.jsonunit.core.Configuration
 import nu.xom.Builder
 import nu.xom.Document
 import nu.xom.Serializer
+import org.concordion.api.Evaluator
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.xmlunit.builder.DiffBuilder
@@ -51,9 +53,10 @@ fun Document.prettyPrintXml(): String {
     }
 }
 
-fun String.findResource() = javaClass.getResource(this) ?: throw FileNotFoundException("File not found: $this")
+fun String.findResource(eval: Evaluator) = javaClass.getResource(resolveJson(this, eval))
+        ?: throw FileNotFoundException("File not found: $this")
 
-fun Html.content() = this.attr("from")?.findResource()?.readText() ?: this.text()
+fun Html.content(eval: Evaluator) = this.attr("from")?.findResource(eval)?.readText() ?: this.text()
 
 fun <T : Any> T.logger(): Logger {
     return LoggerFactory.getLogger(this.javaClass.name)
