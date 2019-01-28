@@ -35,7 +35,7 @@ public class Specs {
 
     static {
         try {
-            kafka.before();
+            //kafka.before();
         } catch (Exception e) {
             throw new RuntimeException("Failed to start kafka", e);
         }
@@ -48,7 +48,7 @@ public class Specs {
             .db().end()
             .ui().headless().end()
             .mq("myQueue", new MqTester.DummyTester())
-            .kafka().brokers(kafka.getBrokersAsString()).end()
+            /*.kafka().brokers(kafka.getBrokersAsString()).end()*/
             .keyValueDB(new InMemoryRepository(inMemoryKeyValueDb));
 
     @AfterSuite
@@ -57,7 +57,7 @@ public class Specs {
             server.stop();
             server = null;
         }
-        kafka.after();
+        // kafka.after();
     }
 
     @BeforeSuite

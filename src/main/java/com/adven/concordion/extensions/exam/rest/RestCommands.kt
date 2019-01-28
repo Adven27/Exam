@@ -168,7 +168,7 @@ class CaseCommand(tag: String, private val cfg: Configuration) : RestVerifyComma
         }
 
         val body = caseRoot.first(BODY)
-        val bodyContent = body?.let { body.content() } ?: ""
+        val bodyContent = body?.let { body.content(eval) } ?: ""
         val expected = caseRoot.firstOrThrow(EXPECTED)
         caseRoot.remove(body, expected)(
                 cases.map {
