@@ -281,7 +281,7 @@ class CaseCommand(tag: String, private val cfg: Configuration) : RestVerifyComma
             "${++number}) " + if (desc == null) "" else resolveJson(desc, eval)
 
     private fun check(root: Html, eval: Evaluator, resultRecorder: ResultRecorder, json: Boolean) {
-        val expected = resolve(json, root.content(), eval)
+        val expected = resolve(json, root.content(eval), eval)
 
         root.removeAllChild().text(expected).css(if (json) "json" else "xml")
 

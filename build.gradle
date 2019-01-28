@@ -11,6 +11,7 @@ buildscript {
 
 plugins {
     id "org.jetbrains.kotlin.jvm" version "1.2.50"
+    id 'maven-publish'
 }
 group 'com.adven.concordion'
 version = 'develop-SNAPSHOT'
@@ -74,9 +75,9 @@ dependencies {
     testCompile 'org.slf4j:slf4j-log4j12:1.7.25'
     testCompile 'com.github.tomakehurst:wiremock-standalone:2.18.0'
 
-    compileOnly "org.jetbrains.kotlin:kotlin-stdlib-jdk7"
-    testCompile "org.jetbrains.kotlin:kotlin-test"
-    testCompile "org.jetbrains.kotlin:kotlin-test-junit"
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.2.50"
+    testCompile "org.jetbrains.kotlin:kotlin-test:1.2.50"
+    testCompile "org.jetbrains.kotlin:kotlin-test-junit:1.2.50"
 }
 
 test {
@@ -124,24 +125,17 @@ jacocoTestReport {
 uploadArchives {
     repositories {
         mavenDeployer {
+            configuration = configurations.compile
             repository(id: repoId, url: nexusUrl) {
                 authentication(userName: nexusUser, password: nexusPassword)
             }
-            pom.groupId = 'ERIB.PFM.Distrib'
-            pom.version = '0.4.6'
+            pom.groupId = nexusGroupId
+            pom.version = '0.5.4'
             pom.artifactId = 'exam'
-            pom.withXml {
-                asNode().dependencies.'*'.findAll() {
-                    it.scope.text() == 'runtime' && project.configurations.compile.allDependencies.find { dep ->
-                        dep.name == it.artifactId.text()
-                    }
-                }.each() {
-                    it.scope*.value = 'compile'
-                }
-            }
         }
     }
 }
+
 compileKotlin {
     kotlinOptions {
         jvmTarget = "1.8"
