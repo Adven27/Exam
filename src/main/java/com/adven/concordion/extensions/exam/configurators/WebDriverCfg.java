@@ -3,9 +3,8 @@ package com.adven.concordion.extensions.exam.configurators;
 import com.adven.concordion.extensions.exam.ExamExtension;
 import com.codeborne.selenide.Configuration;
 import com.codeborne.selenide.WebDriverRunner;
-import io.github.bonigarcia.wdm.ChromeDriverManager;
-import io.github.bonigarcia.wdm.FirefoxDriverManager;
-import io.github.bonigarcia.wdm.InternetExplorerDriverManager;
+import io.github.bonigarcia.wdm.DriverManagerType;
+import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
@@ -44,13 +43,13 @@ public class WebDriverCfg {
             Configuration.browser = browser;
             switch (browser) {
                 case WebDriverRunner.FIREFOX:
-                    FirefoxDriverManager.getInstance().version(version).setup();
+                    WebDriverManager.getInstance(DriverManagerType.FIREFOX).version(version).setup();
                     break;
                 case WebDriverRunner.INTERNET_EXPLORER:
-                    InternetExplorerDriverManager.getInstance().version(version).setup();
+                    WebDriverManager.getInstance(DriverManagerType.IEXPLORER).version(version).setup();
                     break;
                 default:
-                    ChromeDriverManager.getInstance().version(version).setup();
+                    WebDriverManager.getInstance(DriverManagerType.CHROME).version(version).setup();
                     if (headless) {
                         setHeadlessChromeOptions(extension);
                     }
