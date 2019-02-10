@@ -3,7 +3,6 @@ package com.adven.concordion.extensions.exam.db.commands
 import com.adven.concordion.extensions.exam.db.DbResultRenderer
 import com.adven.concordion.extensions.exam.html.*
 import org.concordion.api.CommandCall
-import org.concordion.api.Element
 import org.concordion.api.Evaluator
 import org.concordion.api.Result.FAILURE
 import org.concordion.api.Result.SUCCESS
@@ -17,7 +16,6 @@ import org.dbunit.IDatabaseTester
 import org.dbunit.assertion.DbComparisonFailure
 import org.dbunit.assertion.DiffCollectingFailureHandler
 import org.dbunit.assertion.Difference
-import org.dbunit.dataset.Column
 import org.dbunit.dataset.ITable
 import org.dbunit.dataset.SortedTable
 import org.dbunit.dataset.filter.DefaultColumnFilter.includedColumnsTable
@@ -30,7 +28,7 @@ class DBCheckCommand(name: String, tag: String, dbTester: IDatabaseTester) : DBC
         get() {
             val conn = dbTester.connection
             val qualifiedName = QualifiedTableName(expectedTable.tableName(), conn.schema).qualifiedName
-            val where = if (where.isNullOrEmpty()) "" else "WHERE " + where!!
+            val where = if (where.isNullOrEmpty()) "" else "WHERE $where"
             return conn.createQueryTable(qualifiedName, "select * from $qualifiedName $where")
         }
 
@@ -38,20 +36,23 @@ class DBCheckCommand(name: String, tag: String, dbTester: IDatabaseTester) : DBC
         listeners.addListener(DbResultRenderer())
     }
 
-    private fun failure(resultRecorder: ResultRecorder, element: Element, actual: Any?, expected: String) {
+    private fun failure(resultRecorder: ResultRecorder, html: Html, actual: Any?, expected: String): Html {
         resultRecorder.record(FAILURE)
-        listeners.announce().failureReported(AssertFailureEvent(element, expected, actual))
+        listeners.announce().failureReported(AssertFailureEvent(html.el, expected, actual))
+        return html
     }
 
-    private fun success(resultRecorder: ResultRecorder, element: Element) {
+    private fun success(resultRecorder: ResultRecorder, html: Html): Html {
         resultRecorder.record(SUCCESS)
-        listeners.announce().successReported(AssertSuccessEvent(element))
+        listeners.announce().successReported(AssertSuccessEvent(html.el))
+        return html
     }
 
     override fun verify(cmd: CommandCall?, evaluator: Evaluator?, resultRecorder: ResultRecorder?) {
         val actual = actualTable
         val filteredActual = includedColumnsTable(
-                actual, expectedTable.tableMetaData.columns)
+            actual, expectedTable.tableMetaData.columns
+        )
 
         assertEq(cmd.html(), resultRecorder, expectedTable, filteredActual)
     }
@@ -80,50 +81,37 @@ class DBCheckCommand(name: String, tag: String, dbTester: IDatabaseTester) : DBC
         checkResult(root, expectedTable, diffHandler.diffList as List<Difference>, resultRecorder!!)
     }
 
-    private fun checkResult(el: Html, expected: ITable, diffs: List<Difference>, resultRecorder: ResultRecorder) {
-        val title = el.attr("caption")
-        el(tableCaption(title, expected.tableMetaData.tableName))
-
+    private fun checkResult(root: Html, expected: ITable, diffs: List<Difference>, resultRecorder: ResultRecorder) {
         val cols = expected.tableMetaData.columns
-        val header = thead()
-        val thr = tr()
-        for (col in cols) {
-            thr(th(col.columnName))
-        }
-        el(header(thr))
-
-        if (expected.rowCount == 0) {
-            val td = td("<EMPTY>").attrs("colspan" to "${cols.size}")
-            val tr = tr()(td)
-            el(tr)
-            success(resultRecorder, td.el())
-        } else {
-            for (row in 0 until expected.rowCount) {
-                val tr = tr()
-                for (col in cols) {
-                    val displayedExpected = expected.getValue(row, col.columnName)?.toString() ?: "(null)"
-                    val td = td(displayedExpected)
-                    tr(td)
-                    val fail = findFail(diffs, row, col)
-                    if (fail != null) {
-                        failure(resultRecorder, td.el(), fail.actualValue, displayedExpected)
-                    } else {
-                        success(resultRecorder, td.el())
-                    }
+        root(
+            tableCaption(root.attr("caption"), expected.tableMetaData.tableName),
+            thead()(
+                tr()(
+                    cols.map { th(it.columnName) }
+                )))
+        root(
+            if (expected.rowCount == 0) {
+                listOf(
+                    tr()(
+                        td("<EMPTY>").attrs("colspan" to "${cols.size}").markAsSuccess(resultRecorder)
+                    )
+                )
+            } else {
+                (0 until expected.rowCount).map { row ->
+                    tr()(
+                        cols.map {
+                            td(expected[row, it]).apply {
+                                diffs.firstOrNull { diff ->
+                                    diff.rowIndex == row && diff.columnName == diff.columnName
+                                }?.markAsFailure(resultRecorder, this) ?: markAsSuccess(resultRecorder)
+                            }
+                        })
                 }
-                el(tr)
-            }
-        }
+            })
     }
 
-    private fun findFail(diffs: List<Difference>, row: Int, col: Column): Difference? {
-        var fail: Difference? = null
-        for (diff in diffs) {
-            if (diff.rowIndex == row && diff.columnName == col.columnName) {
-                fail = diff
-                break
-            }
-        }
-        return fail
-    }
+    private fun Html.markAsSuccess(resultRecorder: ResultRecorder) = success(resultRecorder, this)
+    private fun Difference.markAsFailure(resultRecorder: ResultRecorder, td: Html) =
+        failure(resultRecorder, td, this.actualValue, this.expectedValue.toString())
+
 }

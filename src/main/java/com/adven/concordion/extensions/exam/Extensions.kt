@@ -6,17 +6,22 @@ import org.concordion.api.extension.ConcordionExtension
 
 class CodeMirrorExtension : ConcordionExtension {
     override fun addTo(e: ConcordionExtender) {
-        e.withLinkedCSS(BASE + "codemirror.css", Resource(BASE + "codemirror.css"))
-        e.withLinkedCSS(BASE + "merge.css", Resource(BASE + "merge.css"))
-        e.withLinkedCSS(BASE + "enable-codemirror.css", Resource(BASE + "enable-codemirror.css"))
-
-        e.withLinkedJavaScript(BASE + "codemirror.js", Resource(BASE + "codemirror.js"))
-        e.withLinkedJavaScript(BASE + "javascript.js", Resource(BASE + "javascript.js"))
-        e.withLinkedJavaScript(BASE + "xml.js", Resource(BASE + "xml.js"))
-        e.withLinkedJavaScript(BASE + "formatting.js", Resource(BASE + "formatting.js"))
-        e.withLinkedJavaScript(BASE + "diff_match_patch.js", Resource(BASE + "diff_match_patch.js"))
-        e.withLinkedJavaScript(BASE + "merge.js", Resource(BASE + "merge.js"))
-        e.withLinkedJavaScript(BASE + "enable-codemirror.js", Resource(BASE + "enable-codemirror.js"))
+        e.apply {
+            listOf(
+                "codemirror.css",
+                "merge.css",
+                "enable-codemirror.css"
+            ).forEach { withLinkedCSS("$BASE$it", Resource("$BASE$it")) }
+            listOf(
+                "codemirror.js",
+                "javascript.js",
+                "xml.js",
+                "formatting.js",
+                "diff_match_patch.js",
+                "merge.js",
+                "enable-codemirror.js"
+            ).forEach { withLinkedJavaScript("$BASE$it", Resource("$BASE$it")) }
+        }
     }
 
     companion object {

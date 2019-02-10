@@ -21,12 +21,12 @@ class DBSetCommand(name: String, tag: String, dbTester: IDatabaseTester) : DBCom
     }
 
     private fun setUpDB(table: ITable, insertMode: DatabaseOperation) {
-        dbTester.setSetUpOperation(insertMode)
-        dbTester.dataSet = DefaultDataSet(table)
-        dbTester.onSetup()
+        dbTester.apply {
+            setSetUpOperation(insertMode)
+            dataSet = DefaultDataSet(table)
+            onSetup()
+        }
     }
 
-    private fun parseInsertMode(el: Html): DatabaseOperation {
-        return if (el.attr("mode") == "add") INSERT else CLEAN_INSERT
-    }
+    private fun parseInsertMode(el: Html) = if (el.attr("mode") == "add") INSERT else CLEAN_INSERT
 }
