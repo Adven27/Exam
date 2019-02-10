@@ -17,15 +17,19 @@ class HtmlTest {
                         tr()(
                             cols.map {
                                 th(it.toString())
-                            })),
+                            })
+                    ),
                     tbody(NAME to "tbody")(
                         (1..3).map { row ->
                             tr()(
                                 cols.map {
                                     td(STYLE to "color:red")(
-                                        span("$row-$it", CLASS to "span-in-cell"))
+                                        span("$row-$it", CLASS to "span-in-cell")
+                                    )
                                 })
-                        }))),
+                        })
+                )
+            ),
             """|<div name="div" class="div-class">
                |    <table name="table" class="table" custom-attr="some-value">
                |        <thead class="thead-default">
@@ -50,7 +54,8 @@ class HtmlTest {
                |        </tbody>
                |    </table>
                |</div>
-            """.trimMargin())
+            """.trimMargin()
+        )
         assertFalse(diff.hasDifferences(), diff.toString())
     }
 

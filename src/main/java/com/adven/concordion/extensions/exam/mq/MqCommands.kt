@@ -16,6 +16,14 @@ interface MqTester {
     fun purge()
 }
 
+open class MqTesterAdapter : MqTester {
+    override fun start() = Unit
+    override fun stop() = Unit
+    override fun send(message: String) = Unit
+    override fun recieve(): String = ""
+    override fun purge() = Unit
+}
+
 class MqCheckCommand(name: String, tag: String, private val mqTesters: Map<String, MqTester>) :
     ExamVerifyCommand(name, tag, RestResultRenderer()) {
     override fun verify(cmd: CommandCall, evaluator: Evaluator, resultRecorder: ResultRecorder) {

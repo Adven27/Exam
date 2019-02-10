@@ -4,16 +4,10 @@ import com.adven.concordion.extensions.exam.commands.*;
 import com.adven.concordion.extensions.exam.db.commands.DBCheckCommand;
 import com.adven.concordion.extensions.exam.db.commands.DBSetCommand;
 import com.adven.concordion.extensions.exam.db.commands.DBShowCommand;
-import com.adven.concordion.extensions.exam.db.kv.KVCheckCommand;
-import com.adven.concordion.extensions.exam.db.kv.KVSetCommand;
-import com.adven.concordion.extensions.exam.db.kv.KeyValueRepository;
 import com.adven.concordion.extensions.exam.files.FilesLoader;
 import com.adven.concordion.extensions.exam.files.commands.FilesCheckCommand;
 import com.adven.concordion.extensions.exam.files.commands.FilesSetCommand;
 import com.adven.concordion.extensions.exam.files.commands.FilesShowCommand;
-import com.adven.concordion.extensions.exam.kafka.EventProcessor;
-import com.adven.concordion.extensions.exam.kafka.commands.EventCheckReplyCommand;
-import com.adven.concordion.extensions.exam.kafka.commands.EventSendCommand;
 import com.adven.concordion.extensions.exam.mq.MqCheckCommand;
 import com.adven.concordion.extensions.exam.mq.MqSendCommand;
 import com.adven.concordion.extensions.exam.mq.MqTester;
@@ -41,9 +35,7 @@ public class CommandRegistry {
             NodeMatcher nodeMatcher,
             DesiredCapabilities capabilities,
             FilesLoader filesLoader,
-            EventProcessor eventProcessor,
-            Map<String, MqTester> mqTesters,
-            KeyValueRepository keyValueRepository) {
+            Map<String, MqTester> mqTesters) {
 
         commands.addAll(asList(
                 new GivenCommand("div"),
@@ -75,13 +67,8 @@ public class CommandRegistry {
                 new SetVarCommand("span"),
 
                 new MqCheckCommand("mq-check", "div", mqTesters),
-                new MqSendCommand("mq-send", "div", mqTesters),
+                new MqSendCommand("mq-send", "div", mqTesters)
 
-                new EventCheckReplyCommand("event-check", "div", eventProcessor),
-                new EventSendCommand("event-send", "div", eventProcessor),
-
-                new KVCheckCommand("db-kv-check", "div", keyValueRepository),
-                new KVSetCommand("db-kv-set", "div", keyValueRepository)
         ));
         if (pluggedDbModule(dbTester)) {
             commands.addAll(asList(

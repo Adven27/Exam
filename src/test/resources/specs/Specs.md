@@ -7,4 +7,3 @@
 - [Expression Language (sort of)]( el/El.md "c:run")
 - [UI testing with web driver ]( ui/Ui.md "c:run")
 - [Декоративные команды]( decor/Decor.md "c:run")
-- [Комманды для работы с Kafka](kafka/Kafka.md "c:run")

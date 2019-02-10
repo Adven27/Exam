@@ -8,5 +8,4 @@ public class Check extends Fl {
         return "empty_file";
     }
 
-
 }

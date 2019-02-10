@@ -189,11 +189,17 @@ class Html(internal val el: Element) {
     }
 
     fun descendants(tag: String) = this.el.getDescendantElements(tag).toList().map(::Html)
+
+    fun span(txt: String? = null, vararg attrs: Pair<String, String>, block: Html.() -> Unit) {
+        (Html("span", txt, *attrs))
+    }
 }
 
 fun div(txt: String? = null, vararg attrs: Pair<String, String>) = Html("div", txt, *attrs)
 
 fun div(vararg attrs: Pair<String, String>) = Html("div", *attrs)
+
+fun div(vararg attrs: Pair<String, String>, block: Html.() -> Unit) = Html("div", *attrs)
 
 fun table(vararg attrs: Pair<String, String>) = table(Html("table", *attrs))
 

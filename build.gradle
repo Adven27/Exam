@@ -1,17 +1,17 @@
 buildscript {
-    ext.kotlin_version = '1.2.50'
+    ext.kotlin_version = '1.2.71'
     repositories {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.5'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
 
 plugins {
-    id "org.jetbrains.kotlin.jvm" version "1.2.50"
+    id "org.jetbrains.kotlin.jvm" version "1.2.71"
 }
+
 group 'com.adven.concordion'
 version = 'develop-SNAPSHOT'
 
@@ -22,14 +22,6 @@ apply plugin: 'idea'
 apply plugin: 'jacoco'
 apply plugin: 'findbugs'
 apply plugin: 'checkstyle'
-apply plugin: 'com.google.protobuf'
-
-protobuf {
-    generatedFilesBaseDir = "$projectDir/src"
-    protoc {
-        artifact = 'com.google.protobuf:protoc:3.5.1-1'
-    }
-}
 
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
@@ -40,9 +32,6 @@ compileTestJava.options.encoding = 'utf-8'
 repositories {
     mavenCentral()
     mavenLocal()
-    maven {
-        url 'http://www.gridgainsystems.com/nexus/content/repositories/external'
-    }
 }
 
 dependencies {
@@ -61,16 +50,9 @@ dependencies {
     compile 'joda-time:joda-time:2.9.9'
     compile 'com.codeborne:selenide:3.11'
     compile 'io.github.bonigarcia:webdrivermanager:1.7.1'
-    compile 'com.google.protobuf:protobuf-java:3.5.1'
-    compile 'com.google.protobuf:protobuf-java-util:3.5.1'
-    compile 'org.apache.kafka:kafka-clients:1.0.0'
-    compileOnly 'org.projectlombok:lombok:1.16.18'
-    compileOnly 'org.gridgain:gridgain-core:8.3.2'
-    testCompile 'junit:junit:4.12'
     testCompile 'com.h2database:h2:1.4.195'
     testCompile 'org.simpleframework:simple:5.1.6'
     testCompile 'org.assertj:assertj-core:3.10.0'
-    testCompile 'org.springframework.kafka:spring-kafka-test:2.1.6.RELEASE'
     testCompile 'org.slf4j:slf4j-log4j12:1.7.25'
     testCompile 'com.github.tomakehurst:wiremock-standalone:2.18.0'
 

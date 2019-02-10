@@ -2,14 +2,10 @@ package com.adven.concordion.extensions.exam;
 
 import com.adven.concordion.extensions.exam.commands.ExamCommand;
 import com.adven.concordion.extensions.exam.configurators.DbTester;
-import com.adven.concordion.extensions.exam.configurators.KafkaTester;
 import com.adven.concordion.extensions.exam.configurators.RestAssuredCfg;
 import com.adven.concordion.extensions.exam.configurators.WebDriverCfg;
-import com.adven.concordion.extensions.exam.db.kv.KeyValueRepository;
 import com.adven.concordion.extensions.exam.files.DefaultFilesLoader;
 import com.adven.concordion.extensions.exam.files.FilesLoader;
-import com.adven.concordion.extensions.exam.kafka.DefaultEventProcessor;
-import com.adven.concordion.extensions.exam.kafka.EventProcessor;
 import com.adven.concordion.extensions.exam.mq.MqTester;
 import com.adven.concordion.extensions.exam.rest.DateFormatMatcher;
 import com.adven.concordion.extensions.exam.rest.DateWithin;
@@ -50,14 +46,11 @@ public class ExamExtension implements ConcordionExtension {
     private Map<String, MqTester> mqTesters = new HashMap<>();
     private NodeMatcher nodeMatcher;
     private FilesLoader filesLoader;
-    private EventProcessor eventProcessor;
-    private KeyValueRepository keyValueRepository;
 
     public ExamExtension() {
         jsonUnitCfg = DEFAULT_JSON_UNIT_CFG;
         nodeMatcher = DEFAULT_NODE_MATCHER;
         filesLoader = DEFAULT_FILES_LOADER;
-        eventProcessor = new DefaultEventProcessor("localhost:9092");
     }
 
     private static DataSource lookUp(String jndi) {
@@ -117,17 +110,6 @@ public class ExamExtension implements ConcordionExtension {
     }
 
     @SuppressWarnings("unused")
-    public KafkaTester kafka() {
-        return new KafkaTester(this);
-    }
-
-    @SuppressWarnings("unused")
-    public ExamExtension kafka(final EventProcessor eventProcessor) {
-        this.eventProcessor = eventProcessor;
-        return this;
-    }
-
-    @SuppressWarnings("unused")
     public DbTester db() {
         return new DbTester(this);
     }
@@ -163,20 +145,13 @@ public class ExamExtension implements ConcordionExtension {
         return this;
     }
 
-    @SuppressWarnings("unused")
-    public ExamExtension keyValueDB(final KeyValueRepository keyValueRepository) {
-        this.keyValueRepository = keyValueRepository;
-        return this;
-    }
-
     @Override
     public void addTo(ConcordionExtender ex) {
         new CodeMirrorExtension().addTo(ex);
         new BootstrapExtension().addTo(ex);
 
         final CommandRegistry registry = new CommandRegistry(
-                dbTester, jsonUnitCfg, nodeMatcher, capabilities, filesLoader,
-                eventProcessor, mqTesters, keyValueRepository
+                dbTester, jsonUnitCfg, nodeMatcher, capabilities, filesLoader, mqTesters
         );
 
         for (ExamCommand cmd : registry.commands()) {
