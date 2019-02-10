@@ -1,5 +1,6 @@
 package com.adven.concordion.extensions.exam.rest
 
+import com.adven.concordion.extensions.exam.ExamExtension
 import com.adven.concordion.extensions.exam.commands.ExamCommand
 import com.adven.concordion.extensions.exam.commands.ExamVerifyCommand
 import com.adven.concordion.extensions.exam.html.*
@@ -17,8 +18,6 @@ import org.concordion.api.CommandCall
 import org.concordion.api.Evaluator
 import org.concordion.api.ResultRecorder
 import org.concordion.internal.util.Check
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 import java.util.*
 
 private const val HEADERS = "headers"
@@ -153,7 +152,6 @@ class CaseCheckCommand(name: String, tag: String) : ExamCommand(name, tag) {
 }
 
 class CaseCommand(tag: String, private val cfg: Configuration) : RestVerifyCommand(CASE, tag) {
-    private val log = logger()
     private val cases = ArrayList<Map<String, Any?>>()
     private var number = 0
 
@@ -170,7 +168,7 @@ class CaseCommand(tag: String, private val cfg: Configuration) : RestVerifyComma
         }
 
         val body = caseRoot.first(BODY)
-        val bodyContent = body?.let { body.content() } ?: ""
+        val bodyContent = body?.let { body.content(eval) } ?: ""
         val expected = caseRoot.firstOrThrow(EXPECTED)
         caseRoot.remove(body, expected)(
                 cases.map {
@@ -196,9 +194,7 @@ class CaseCommand(tag: String, private val cfg: Configuration) : RestVerifyComma
         val cookies = root.takeAwayAttr(COOKIES)
 
         for (aCase in cases) {
-            for ((key, value) in aCase) {
-                eval.setVariable(key, value)
-            }
+            aCase.forEach { (key, value) -> eval.setVariable(key, value) }
 
             cookies?.let { executor.cookies(resolveJson(it, eval)) }
 
@@ -208,11 +204,11 @@ class CaseCommand(tag: String, private val cfg: Configuration) : RestVerifyComma
             val body = caseTR.first(BODY)
             if (body != null) {
                 if (isJson) {
-                    val bodyStr = resolveJson(body.text(), eval)
+                    val bodyStr = eval.resolveJson(body.text())
                     td().insteadOf(body).css("json").removeAllChild().text(bodyStr.prettyPrintJson())
                     executor.body(bodyStr)
                 } else {
-                    val bodyStr = resolveXml(body.text(), eval)
+                    val bodyStr = eval.resolveXml(body.text())
 
                     td().insteadOf(body).css("xml").removeAllChild().text(bodyStr.prettyPrintXml())
                     executor.body(bodyStr)
@@ -244,23 +240,26 @@ class CaseCommand(tag: String, private val cfg: Configuration) : RestVerifyComma
             resultRecorder.pass(root)
         } catch (e: Throwable) {
             if (e is AssertionError || e is Exception) {
-                log.warn("Failed to assert expected={} with actual={}", expected, prettyActual, e)
                 resultRecorder.failure(root, prettyActual, expected)
+                root.below(
+                        span(e.message, CLASS to "exceptionMessage")
+                )
             } else throw e
         }
     }
 
-    private fun checkXmlContent(actual: String, expected: String, resultRecorder: ResultRecorder, element: Html) {
+    private fun checkXmlContent(actual: String, expected: String, resultRecorder: ResultRecorder, root: Html) {
         val prettyActual = actual.prettyPrintXml()
         try {
-            resultRecorder.check(element, prettyActual, expected) { a, e ->
-                a.equalToXml(e)
+            resultRecorder.check(root, prettyActual, expected) { a, e ->
+                a.equalToXml(e, ExamExtension.DEFAULT_NODE_MATCHER, ExamExtension.DEFAULT_JSON_UNIT_CFG)
             }
         } catch (e: Exception) {
-            log.error("Exception while checking content:", e)
-            resultRecorder.failure(element, prettyActual, expected)
+            resultRecorder.failure(root, prettyActual, expected)
+            root.below(
+                    span(e.message, CLASS to "exceptionMessage")
+            )
         }
-
     }
 
     private fun expectedStatus(expected: Html) = StatusBuilder(
@@ -282,7 +281,7 @@ class CaseCommand(tag: String, private val cfg: Configuration) : RestVerifyComma
             "${++number}) " + if (desc == null) "" else resolveJson(desc, eval)
 
     private fun check(root: Html, eval: Evaluator, resultRecorder: ResultRecorder, json: Boolean) {
-        val expected = resolve(json, root.content(), eval)
+        val expected = resolve(json, root.content(eval), eval)
 
         root.removeAllChild().text(expected).css(if (json) "json" else "xml")
 
@@ -328,8 +327,4 @@ class CaseCommand(tag: String, private val cfg: Configuration) : RestVerifyComma
             )
         } else listOf(span(""))).toTypedArray()
     }
-}
-
-fun <T : Any> T.logger(): Logger {
-    return LoggerFactory.getLogger(this.javaClass.name)
 }

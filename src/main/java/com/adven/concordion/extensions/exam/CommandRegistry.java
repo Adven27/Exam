@@ -66,7 +66,7 @@ public class CommandRegistry {
 
                 new SetVarCommand("span"),
 
-                new MqCheckCommand("mq-check", "div", mqTesters),
+                new MqCheckCommand("mq-check", "div", jsonUnitCfg, mqTesters),
                 new MqSendCommand("mq-send", "div", mqTesters)
 
         ));

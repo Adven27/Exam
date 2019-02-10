@@ -26,8 +26,9 @@ class TableData(private val table: String, private val defaults: Map<String, Any
 
     fun row(vararg values: Any?): TableData {
         val rowBuilder = dataSetBuilder.newRow(table)
+        val notDefaultsColumns = columns.filter { column -> !defaults.containsKey(column) }
         for (i in values.indices) {
-            rowBuilder.with(columns[i], values[i])
+            rowBuilder.with(notDefaultsColumns[i], values[i])
         }
         for ((key, value) in defaults) {
             rowBuilder.with(key, resolveValue(value))

@@ -141,7 +141,12 @@ public class ExamExtension implements ConcordionExtension {
     }
 
     public ExamExtension mq(Map<String, MqTester> mqTesters) {
-        this.mqTesters = mqTesters;
+        this.mqTesters.putAll(mqTesters);
+        return this;
+    }
+
+    public ExamExtension mq(String name, MqTester mqTester) {
+        mqTesters.put(name, mqTester);
         return this;
     }
 

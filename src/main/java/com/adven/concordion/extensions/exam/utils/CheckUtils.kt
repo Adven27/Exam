@@ -1,26 +1,31 @@
 package com.adven.concordion.extensions.exam.utils
 
-import com.adven.concordion.extensions.exam.ExamExtension
 import com.adven.concordion.extensions.exam.files.commands.PlaceholderSupportDiffEvaluator
 import com.adven.concordion.extensions.exam.html.Html
+import com.adven.concordion.extensions.exam.resolveJson
 import com.adven.concordion.extensions.exam.rest.JsonPrettyPrinter
+import net.javacrumbs.jsonunit.core.Configuration
 import nu.xom.Builder
 import nu.xom.Document
 import nu.xom.Serializer
+import org.concordion.api.Evaluator
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.xmlunit.builder.DiffBuilder
 import org.xmlunit.diff.DifferenceEvaluators
+import org.xmlunit.diff.NodeMatcher
 import java.io.ByteArrayOutputStream
 import java.io.FileNotFoundException
 import java.io.StringReader
 
-fun String.equalToXml(expected: String): Boolean {
+fun String.equalToXml(expected: String, nodeMatcher: NodeMatcher?, configuration: Configuration?): Boolean {
     val diff = DiffBuilder.compare(expected.trim { it <= ' ' })
-            .checkForSimilar().withNodeMatcher(ExamExtension.DEFAULT_NODE_MATCHER)
+            .checkForSimilar().withNodeMatcher(nodeMatcher)
             .withTest(this.trim { it <= ' ' })
             .withDifferenceEvaluator(
                     DifferenceEvaluators.chain(
                             DifferenceEvaluators.Default,
-                            PlaceholderSupportDiffEvaluator(ExamExtension.DEFAULT_JSON_UNIT_CFG)
+                            PlaceholderSupportDiffEvaluator(configuration)
                     )
             )
             .ignoreComments().ignoreWhitespace().build()
@@ -48,6 +53,11 @@ fun Document.prettyPrintXml(): String {
     }
 }
 
-fun String.findResource() = javaClass.getResource(this) ?: throw FileNotFoundException("File not found: $this")
+fun String.findResource(eval: Evaluator) = javaClass.getResource(resolveJson(this, eval))
+        ?: throw FileNotFoundException("File not found: $this")
 
-fun Html.content() = this.attr("from")?.findResource()?.readText() ?: this.text()
+fun Html.content(eval: Evaluator) = this.attr("from")?.findResource(eval)?.readText() ?: this.text()
+
+fun <T : Any> T.logger(): Logger {
+    return LoggerFactory.getLogger(this.javaClass.name)
+}

@@ -13,7 +13,7 @@ import org.concordion.api.ResultRecorder
 import org.concordion.internal.ConcordionBuilder
 
 class SetVarCommand(tag: String) : ExamCommand("set", tag) {
-    override fun setUp(cmd: CommandCall?, eval: Evaluator?, resultRecorder: ResultRecorder?) {
+    override fun setUp(cmd: CommandCall, eval: Evaluator, resultRecorder: ResultRecorder) {
         val el = cmd.html()
         var valueAttr = el.attr("value")
         val value = if (valueAttr == null) {
@@ -22,9 +22,9 @@ class SetVarCommand(tag: String) : ExamCommand("set", tag) {
             if (silent != null && silent == "true") {
                 el.removeAllChild()
             }
-            resolveXml(body, eval!!)
+            eval.resolveXml(body)
         } else {
-            resolveToObj(valueAttr, eval!!)
+            eval.resolveToObj(valueAttr)
         }
         eval.setVariable("#${el.attr("var")!!}", value)
     }

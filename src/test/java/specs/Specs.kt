@@ -33,7 +33,7 @@ open class Specs {
                 queue.add(message)
             }
 
-            override fun recieve(): String = queue.pop()
+            override fun receive(): String = queue.pop()
         }))
 
     companion object {

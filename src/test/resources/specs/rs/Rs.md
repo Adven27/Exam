@@ -4,4 +4,4 @@
 - [GET]( get/Get.md "c:run")
 - [DELETE]( delete/Delete.md "c:run")
 - [PUT]( put/Put.md "c:run")
-- [Parametrized cases]( param/Param.md "c:run")
+- [Parametrized cases]( param/Param.html "c:run")

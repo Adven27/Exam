@@ -16,13 +16,13 @@ const val PREFIX_EXAM = "\${exam."
 const val PREFIX_VAR = "\${#"
 const val POSTFIX = '}'
 
-fun resolveJson(body: String, eval: Evaluator): String {
-    return resolve(body, "json", eval)
-}
+fun resolveJson(body: String, eval: Evaluator): String = eval.resolveJson(body)
 
-fun resolveXml(body: String, eval: Evaluator): String {
-    return resolve(body, "xml", eval)
-}
+fun resolveXml(body: String, eval: Evaluator): String = eval.resolveXml(body)
+
+fun Evaluator.resolveJson(body: String): String = resolve(body, "json", this)
+
+fun Evaluator.resolveXml(body: String): String = resolve(body, "xml", this)
 
 private fun resolve(body: String, type: String, eval: Evaluator): String {
     return resolveAliases(
@@ -141,16 +141,16 @@ private fun String.isNum(): Boolean {
     }
 }
 
-fun resolveToObj(placeholder: String?, evaluator: Evaluator): Any? {
-    return when {
-        placeholder == null -> null
-        placeholder.startsWith("'") && placeholder.endsWith("'") -> placeholder.substring(1, placeholder.lastIndex)
-        placeholder.startsWith(PREFIX_VAR) -> getObject(evaluator, extractVarFrom(placeholder, PREFIX_VAR))
-        placeholder.startsWith(PREFIX_EXAM) -> resolveDate(extractVarFrom(placeholder, PREFIX_EXAM))
-        placeholder.isRange() -> placeholder.toRange()
-        else -> placeholder
-    }
+fun Evaluator.resolveToObj(placeholder: String?): Any? = when {
+    placeholder == null -> null
+    placeholder.startsWith("'") && placeholder.endsWith("'") -> placeholder.substring(1, placeholder.lastIndex)
+    placeholder.startsWith(PREFIX_VAR) -> getObject(this, extractVarFrom(placeholder, PREFIX_VAR))
+    placeholder.startsWith(PREFIX_EXAM) -> resolveDate(extractVarFrom(placeholder, PREFIX_EXAM))
+    placeholder.isRange() -> placeholder.toRange()
+    else -> placeholder
 }
+
+fun resolveToObj(placeholder: String?, evaluator: Evaluator): Any? = evaluator.resolveToObj(placeholder)
 
 fun String.isRange() = this.matches("^[0-9]+[.]{2}[0-9]+$".toRegex())
 

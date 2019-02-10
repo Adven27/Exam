@@ -1,20 +1,17 @@
-# POST-request
-## `<e:post url="..." type="<optional>">`
-
+<html xmlns:e="http://exam.extension.io">
+<body>
+<h1>Parametrized testing</h1>
 <div>
     <e:summary/>
-    <e:given>
-        Given server, that mirrors request
-    </e:given>
+    <e:given>Given server, that mirrors request</e:given>
     <e:example name="Parametrized cases" status="ExpectedToFail">
         <e:post url="relative/url" print="true">
-            <e:case desc="Wrong response"  values=",">
-                <body>
-                    {"exact": "${#p1}", "template": 1}
-                </body>
-                <expected>
-                    {"exact": "${#p2}", "template": "!{number}"}
-                </expected>
+            <e:case desc="All cases should fail">
+                <body>{"exact": "${#p1}", "template": 1}</body>
+                <expected>{"exact": "${#p2}", "template": "!{number}"}</expected>
+                <e:check>
+                    <e:db-show table="person"/>
+                </e:check>
                 <where vars="p1, p2" separator="|">
                     <vals>first value of p1| first value of p2</vals>
                     <vals>second value of p1| second value of p2</vals>
@@ -25,3 +22,5 @@
         </e:post>
     </e:example>
 </div>
+</body>
+</html>

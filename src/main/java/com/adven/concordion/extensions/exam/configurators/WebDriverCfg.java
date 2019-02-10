@@ -3,12 +3,12 @@ package com.adven.concordion.extensions.exam.configurators;
 import com.adven.concordion.extensions.exam.ExamExtension;
 import com.codeborne.selenide.Configuration;
 import com.codeborne.selenide.WebDriverRunner;
-import io.github.bonigarcia.wdm.ChromeDriverManager;
-import io.github.bonigarcia.wdm.FirefoxDriverManager;
-import io.github.bonigarcia.wdm.InternetExplorerDriverManager;
+import io.github.bonigarcia.wdm.DriverManagerType;
+import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
+import static io.github.bonigarcia.wdm.DriverManagerType.*;
 import static java.util.Collections.singletonMap;
 import static org.openqa.selenium.chrome.ChromeOptions.CAPABILITY;
 
@@ -44,13 +44,13 @@ public class WebDriverCfg {
             Configuration.browser = browser;
             switch (browser) {
                 case WebDriverRunner.FIREFOX:
-                    FirefoxDriverManager.getInstance().version(version).setup();
+                    WebDriverManager.getInstance(FIREFOX).version(version).setup();
                     break;
                 case WebDriverRunner.INTERNET_EXPLORER:
-                    InternetExplorerDriverManager.getInstance().version(version).setup();
+                    WebDriverManager.getInstance(IEXPLORER).version(version).setup();
                     break;
                 default:
-                    ChromeDriverManager.getInstance().version(version).setup();
+                    WebDriverManager.getInstance(CHROME).version(version).setup();
                     if (headless) {
                         setHeadlessChromeOptions(extension);
                     }
@@ -62,7 +62,8 @@ public class WebDriverCfg {
     private static void setHeadlessChromeOptions(ExamExtension extension) {
         final ChromeOptions opt = new ChromeOptions();
         opt.addArguments(
-                "no-sandbox", "headless", "disable-gpu", "disable-extensions", "window-size=1366,768");
+                "no-sandbox", "headless", "disable-gpu", "disable-extensions", "window-size=1366,768"
+        );
         extension.webDriverCapabilities(new DesiredCapabilities(singletonMap(CAPABILITY, opt)));
     }
 
