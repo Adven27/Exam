@@ -31,7 +31,7 @@ class HtmlTest {
                 )
             ),
             """|<div name="div" class="div-class">
-               |    <table name="table" class="table" custom-attr="some-value">
+               |    <table name="table" class="table table-sm" custom-attr="some-value">
                |        <thead class="thead-default">
                |        <tr>
                |            <th>1</th>
