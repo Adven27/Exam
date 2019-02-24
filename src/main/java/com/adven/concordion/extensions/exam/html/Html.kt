@@ -203,7 +203,7 @@ fun div(vararg attrs: Pair<String, String>, block: Html.() -> Unit) = Html("div"
 
 fun table(vararg attrs: Pair<String, String>) = table(Html("table", *attrs))
 
-fun table(el: Html): Html = el.css("table")
+fun table(el: Html): Html = el.css("table table-sm")
 
 fun table(el: Element): Html = table(Html(el))
 

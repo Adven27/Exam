@@ -13,7 +13,9 @@ import org.dbunit.dataset.ITable
 
 open class DBCommand(name: String, tag: String, protected val dbTester: IDatabaseTester) : ExamCommand(name, tag) {
     private val remarks = HashMap<String, Int>()
+    private val colParser = ColParser()
     protected lateinit var expectedTable: ITable
+
     protected var where: String? = null
 
     override fun setUp(cmd: CommandCall?, eval: Evaluator?, resultRecorder: ResultRecorder?) {
@@ -37,8 +39,8 @@ open class DBCommand(name: String, tag: String, protected val dbTester: IDatabas
         return if (attr == null)
             TableData.Cols()
         else {
-            val remarkAndVal = ColParser().parse(attr)
-            remarks.plus(remarkAndVal.map { it.key to it.value.first })
+            val remarkAndVal = colParser.parse(attr)
+            remarks += remarkAndVal.map { it.key to it.value.first }.filter { it.second > 0 }
             TableData.Cols(
                 remarkAndVal
                     .filterValues { !it.second.isBlank() }
@@ -61,19 +63,22 @@ open class DBCommand(name: String, tag: String, protected val dbTester: IDatabas
                 tr()(
                     cols.map {
                         th(it.columnName, CLASS to classFor(it))
-                    })),
+                    })
+            ),
             tbody()(
                 rows.map {
                     tr()(
                         it.withIndex().map { (i, text) ->
                             td(text, CLASS to classFor(cols[i]))
                         })
-                }))
+                })
+        )
     }
 
     protected fun tableCaption(title: String?, def: String?): Html {
         return caption(if (title != null && !title.isBlank()) title else def)(
-            italic("", CLASS to "fa fa-database fa-pull-left fa-border"))
+            italic("", CLASS to "fa fa-database fa-pull-left fa-border")
+        )
     }
 }
 
@@ -84,18 +89,16 @@ class ColParser {
                 val (r, n, v) = ("""(\**)([^=]+)=?(.*)""".toRegex()).matchEntire(it.trim())!!.destructured
                 mapOf(n to (r.length to v))
             }
-            .reduce { acc, next -> acc.plus(next) }
+            .reduce { acc, next -> acc + next }
     }
 }
 
 fun ITable.tableName(): String = this.tableMetaData.tableName
 
-fun ITable.columnsSortedBy(remarks: Map<String, Int>): List<Column> {
-    return this.tableMetaData.columns.copyOf().sortedWith(
-        Comparator { o1, o2 ->
-            compareValues(remarks[o1.columnName] ?: 0, remarks[o2.columnName] ?: 0)
-        })
-}
+fun ITable.columnsSortedBy(remarks: Map<String, Int>): List<Column> = tableMetaData.columns.copyOf().sortedWith(
+    Comparator { o1, o2 ->
+        -compareValues(remarks[o1.columnName], remarks[o2.columnName])
+    })
 
 operator fun ITable.get(row: Int, col: Column): String = this.getValue(row, col.columnName)?.toString() ?: "(null)"
 
