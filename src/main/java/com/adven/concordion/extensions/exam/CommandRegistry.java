@@ -1,6 +1,15 @@
 package com.adven.concordion.extensions.exam;
 
-import com.adven.concordion.extensions.exam.commands.*;
+import com.adven.concordion.extensions.exam.commands.ExamBeforeExampleCommand;
+import com.adven.concordion.extensions.exam.commands.ExamCommand;
+import com.adven.concordion.extensions.exam.commands.ExamExampleCommand;
+import com.adven.concordion.extensions.exam.commands.ExamplesSummaryCommand;
+import com.adven.concordion.extensions.exam.commands.GivenCommand;
+import com.adven.concordion.extensions.exam.commands.InlineBeforeExampleCommand;
+import com.adven.concordion.extensions.exam.commands.ScrollToTopCommand;
+import com.adven.concordion.extensions.exam.commands.SetVarCommand;
+import com.adven.concordion.extensions.exam.commands.ThenCommand;
+import com.adven.concordion.extensions.exam.commands.WhenCommand;
 import com.adven.concordion.extensions.exam.db.commands.DBCheckCommand;
 import com.adven.concordion.extensions.exam.db.commands.DBSetCommand;
 import com.adven.concordion.extensions.exam.db.commands.DBShowCommand;
@@ -11,7 +20,14 @@ import com.adven.concordion.extensions.exam.files.commands.FilesShowCommand;
 import com.adven.concordion.extensions.exam.mq.MqCheckCommand;
 import com.adven.concordion.extensions.exam.mq.MqSendCommand;
 import com.adven.concordion.extensions.exam.mq.MqTester;
-import com.adven.concordion.extensions.exam.rest.*;
+import com.adven.concordion.extensions.exam.rest.CaseCheckCommand;
+import com.adven.concordion.extensions.exam.rest.CaseCommand;
+import com.adven.concordion.extensions.exam.rest.DeleteCommand;
+import com.adven.concordion.extensions.exam.rest.ExpectedStatusCommand;
+import com.adven.concordion.extensions.exam.rest.GetCommand;
+import com.adven.concordion.extensions.exam.rest.PostCommand;
+import com.adven.concordion.extensions.exam.rest.PutCommand;
+import com.adven.concordion.extensions.exam.rest.SoapCommand;
 import com.adven.concordion.extensions.exam.ui.BrowserCommand;
 import net.javacrumbs.jsonunit.core.Configuration;
 import org.dbunit.IDatabaseTester;
@@ -59,7 +75,7 @@ public class CommandRegistry {
                 new GetCommand("get", "div"),
                 new PutCommand("put", "div"),
                 new DeleteCommand("delete", "div"),
-                new CaseCommand("tr", jsonUnitCfg),
+            new CaseCommand("tr", jsonUnitCfg, nodeMatcher),
                 new ExpectedStatusCommand("rs-status", "code"),
 
                 new BrowserCommand("div", capabilities),

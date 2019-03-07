@@ -5,9 +5,6 @@
     Given server, that mirrors request
 </e:given>
 <e:example name="Check body - success" print="true">
-    <e:given>
-        <e:set var="body" value="body.xml"/>
-    </e:given>
     <e:soap url="relative/url">
         <e:case desc="Content can be inlined">
             <body>
@@ -36,6 +33,9 @@
         <e:case desc="Or stored in file">
             <body from="/data/soap/${#body}"/>
             <expected from="/data/soap/expected.xml"/>
+            <where vars="body">
+                <vals>body.xml</vals>
+            </where>
         </e:case>
     </e:soap>
 </e:example>

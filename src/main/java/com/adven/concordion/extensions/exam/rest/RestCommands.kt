@@ -18,6 +18,7 @@ import org.concordion.api.CommandCall
 import org.concordion.api.Evaluator
 import org.concordion.api.ResultRecorder
 import org.concordion.internal.util.Check
+import org.xmlunit.diff.NodeMatcher
 import java.util.*
 
 private const val HEADERS = "headers"
@@ -151,7 +152,7 @@ class CaseCheckCommand(name: String, tag: String) : ExamCommand(name, tag) {
     }
 }
 
-class CaseCommand(tag: String, private val cfg: Configuration) : RestVerifyCommand(CASE, tag) {
+class CaseCommand(tag: String, private val cfg: Configuration, private val nodeMatcher: NodeMatcher) : RestVerifyCommand(CASE, tag) {
     private val cases = ArrayList<Map<String, Any?>>()
     private var number = 0
 
@@ -168,7 +169,6 @@ class CaseCommand(tag: String, private val cfg: Configuration) : RestVerifyComma
         }
 
         val body = caseRoot.first(BODY)
-        val bodyContent = body?.let { body.content(eval) } ?: ""
         val expected = caseRoot.firstOrThrow(EXPECTED)
         caseRoot.remove(body, expected)(
                 cases.map {
@@ -178,7 +178,11 @@ class CaseCommand(tag: String, private val cfg: Configuration) : RestVerifyComma
                     expected.attr(REASON_PHRASE)?.let { expectedToAdd.attrs(REASON_PHRASE to it) }
                     expected.attr(FROM)?.let { expectedToAdd.attrs(FROM to it) }
                     tag(CASE)(
-                            if (body == null) null else tag(BODY).text(bodyContent),
+                            if (body == null)
+                                null
+                            else tag(BODY).text(body.text()).apply {
+                                body.attr(FROM)?.let { this.attrs(FROM to it) }
+                            },
                             expectedToAdd
                     )
                 })
@@ -203,12 +207,13 @@ class CaseCommand(tag: String, private val cfg: Configuration) : RestVerifyComma
             val caseTR = tr().insteadOf(root.firstOrThrow(CASE))
             val body = caseTR.first(BODY)
             if (body != null) {
+                val content = body.content(eval)
                 if (isJson) {
-                    val bodyStr = eval.resolveJson(body.text())
+                    val bodyStr = eval.resolveJson(content)
                     td().insteadOf(body).css("json").removeAllChild().text(bodyStr.prettyPrintJson())
                     executor.body(bodyStr)
                 } else {
-                    val bodyStr = eval.resolveXml(body.text())
+                    val bodyStr = eval.resolveXml(content)
 
                     td().insteadOf(body).css("xml").removeAllChild().text(bodyStr.prettyPrintXml())
                     executor.body(bodyStr)
@@ -252,7 +257,7 @@ class CaseCommand(tag: String, private val cfg: Configuration) : RestVerifyComma
         val prettyActual = actual.prettyPrintXml()
         try {
             resultRecorder.check(root, prettyActual, expected) { a, e ->
-                a.equalToXml(e, ExamExtension.DEFAULT_NODE_MATCHER, ExamExtension.DEFAULT_JSON_UNIT_CFG)
+                a.equalToXml(e, nodeMatcher, ExamExtension.DEFAULT_JSON_UNIT_CFG)
             }
         } catch (e: Exception) {
             resultRecorder.failure(root, prettyActual, expected)
