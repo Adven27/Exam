@@ -102,7 +102,7 @@ class DBCheckCommand(name: String, tag: String, dbTester: IDatabaseTester) : DBC
                         cols.map {
                             td(expected[row, it]).apply {
                                 diffs.firstOrNull { diff ->
-                                    diff.rowIndex == row && diff.columnName == diff.columnName
+                                    diff.rowIndex == row && diff.columnName == it.columnName
                                 }?.markAsFailure(resultRecorder, this) ?: markAsSuccess(resultRecorder)
                             }
                         })
