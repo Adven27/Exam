@@ -67,5 +67,76 @@
         </e:case>
     </e:soap>
 </e:example>
+<e:example name="Placeholder support" print="true">
+    <e:soap url="relative/url">
+        <e:case desc="Happy-path">
+            <body >
+            <![CDATA[
+            <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+                <soap:Body>
+                    <ns2:getItemRequest xmlns:ns2="http://ws.marketplace.core.tcsbank.ru">
+                        <val>${#val}</val>
+                    </ns2:getItemRequest>
+                </soap:Body>
+            </soap:Envelope>
+            ]]>
+            </body>
+            <expected>
+                <![CDATA[
+                <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+                    <soap:Body>
+                        <ns2:getItemRequest xmlns:ns2="http://ws.marketplace.core.tcsbank.ru">
+                            <val>${#placeholder}</val>
+                        </ns2:getItemRequest>
+                    </soap:Body>
+                </soap:Envelope>
+                ]]>
+            </expected>
+            <where vars="val, placeholder">
+                <vals>3,           !{number}</vals>
+                <vals>hi,          !{string}</vals>
+                <vals>true,        !{bool}</vals>
+                <vals>a,           !{regex}[abc]</vals>
+                <vals>22.01.2000,  !{formattedAs dd.mm.yyyy}</vals>
+                <vals>anything,    !{ignore}</vals>
+            </where>
+        </e:case>
+    </e:soap>
+</e:example>
+<e:example name="Placeholder support - fail" status="ExpectedToFail" print="true">
+    <e:soap url="relative/url">
+        <e:case desc="Happy-path">
+            <body >
+            <![CDATA[
+            <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+                <soap:Body>
+                    <ns2:getItemRequest xmlns:ns2="http://ws.marketplace.core.tcsbank.ru">
+                        <val>${#val}</val>
+                    </ns2:getItemRequest>
+                </soap:Body>
+            </soap:Envelope>
+            ]]>
+            </body>
+            <expected>
+                <![CDATA[
+                <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+                    <soap:Body>
+                        <ns2:getItemRequest xmlns:ns2="http://ws.marketplace.core.tcsbank.ru">
+                            <val>${#placeholder}</val>
+                        </ns2:getItemRequest>
+                    </soap:Body>
+                </soap:Envelope>
+                ]]>
+            </expected>
+            <where vars="val, placeholder">
+                <vals>three,       !{number}</vals>
+                <vals>3,           !{string}</vals>
+                <vals>1,           !{boolean}</vals>
+                <vals>d,           !{regex}[abc]</vals>
+                <vals>22/01/2000,  !{formattedAs dd.mm.yyyy}</vals>
+            </where>
+        </e:case>
+    </e:soap>
+</e:example>
 </body>
 </html>

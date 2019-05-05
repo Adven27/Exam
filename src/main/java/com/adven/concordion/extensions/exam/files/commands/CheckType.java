@@ -9,14 +9,18 @@ public enum CheckType {
     public boolean suit(String node) {
         switch (this) {
             case NUMBER:
-                return Ints.tryParse(node) != null || Doubles.tryParse(node) != null;
+                return isNum(node);
             case BOOLEAN:
                 String val = node.toLowerCase();
                 return "true".equals(val) || "false".equals(val);
             case STRING:
-                return node != null;
+                return !isNum(node);
             default:
                 return false;
         }
+    }
+
+    private boolean isNum(String node) {
+        return Ints.tryParse(node) != null || Doubles.tryParse(node) != null;
     }
 }
