@@ -1,15 +1,6 @@
 package com.adven.concordion.extensions.exam;
 
-import com.adven.concordion.extensions.exam.commands.ExamBeforeExampleCommand;
-import com.adven.concordion.extensions.exam.commands.ExamCommand;
-import com.adven.concordion.extensions.exam.commands.ExamExampleCommand;
-import com.adven.concordion.extensions.exam.commands.ExamplesSummaryCommand;
-import com.adven.concordion.extensions.exam.commands.GivenCommand;
-import com.adven.concordion.extensions.exam.commands.InlineBeforeExampleCommand;
-import com.adven.concordion.extensions.exam.commands.ScrollToTopCommand;
-import com.adven.concordion.extensions.exam.commands.SetVarCommand;
-import com.adven.concordion.extensions.exam.commands.ThenCommand;
-import com.adven.concordion.extensions.exam.commands.WhenCommand;
+import com.adven.concordion.extensions.exam.commands.*;
 import com.adven.concordion.extensions.exam.db.commands.DBCheckCommand;
 import com.adven.concordion.extensions.exam.db.commands.DBSetCommand;
 import com.adven.concordion.extensions.exam.db.commands.DBShowCommand;
@@ -75,7 +66,7 @@ public class CommandRegistry {
                 new GetCommand("get", "div"),
                 new PutCommand("put", "div"),
                 new DeleteCommand("delete", "div"),
-            new CaseCommand("tr", jsonUnitCfg, nodeMatcher),
+                new CaseCommand("tr", jsonUnitCfg, nodeMatcher),
                 new ExpectedStatusCommand("rs-status", "code"),
 
                 new BrowserCommand("div", capabilities),
@@ -83,7 +74,9 @@ public class CommandRegistry {
                 new SetVarCommand("span"),
 
                 new MqCheckCommand("mq-check", "div", jsonUnitCfg, mqTesters),
-                new MqSendCommand("mq-send", "div", mqTesters)
+                new MqSendCommand("mq-send", "div", mqTesters),
+                new JsonCheckCommand("json-check", "div", jsonUnitCfg),
+                new XmlCheckCommand("xml-check", "div", jsonUnitCfg, nodeMatcher)
 
         ));
         if (pluggedDbModule(dbTester)) {

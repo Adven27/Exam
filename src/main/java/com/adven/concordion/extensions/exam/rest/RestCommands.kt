@@ -1,6 +1,5 @@
 package com.adven.concordion.extensions.exam.rest
 
-import com.adven.concordion.extensions.exam.ExamExtension
 import com.adven.concordion.extensions.exam.commands.ExamCommand
 import com.adven.concordion.extensions.exam.commands.ExamVerifyCommand
 import com.adven.concordion.extensions.exam.html.*
@@ -257,7 +256,7 @@ class CaseCommand(tag: String, private val cfg: Configuration, private val nodeM
         val prettyActual = actual.prettyPrintXml()
         try {
             resultRecorder.check(root, prettyActual, expected) { a, e ->
-                a.equalToXml(e, nodeMatcher, ExamExtension.DEFAULT_JSON_UNIT_CFG)
+                a.equalToXml(e, nodeMatcher, cfg)
             }
         } catch (e: Exception) {
             resultRecorder.failure(root, prettyActual, expected)
