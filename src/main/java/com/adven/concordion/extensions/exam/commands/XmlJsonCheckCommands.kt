@@ -2,6 +2,7 @@ package com.adven.concordion.extensions.exam.commands
 
 import com.adven.concordion.extensions.exam.html.*
 import com.adven.concordion.extensions.exam.resolveJson
+import com.adven.concordion.extensions.exam.resolveXml
 import com.adven.concordion.extensions.exam.rest.RestResultRenderer
 import com.adven.concordion.extensions.exam.utils.content
 import com.adven.concordion.extensions.exam.utils.equalToXml
@@ -19,9 +20,9 @@ class XmlCheckCommand(name: String, tag: String, private val cfg: Configuration,
 
     override fun verify(cmd: CommandCall, eval: Evaluator, resultRecorder: ResultRecorder) {
         val root = cmd.html()
-        val actual = eval.evaluate(root.takeAwayAttr("actual")).toString()
-        val expected = eval.resolveJson( root.content(eval).trim())
-        val container = pre(expected).css("json").attr("autoFormat", "true")
+        val actual = eval.evaluate(root.takeAwayAttr("actual")).toString().prettyPrintXml()
+        val expected = eval.resolveXml(root.content(eval).trim()).prettyPrintXml()
+        val container = pre(expected).css("xml")
         root.removeAllChild()(
                 tableSlim()(
                         trWithTDs(
@@ -33,13 +34,12 @@ class XmlCheckCommand(name: String, tag: String, private val cfg: Configuration,
     }
 
     private fun checkXmlContent(actual: String, expected: String, resultRecorder: ResultRecorder, root: Html) {
-        val prettyActual = actual.prettyPrintXml()
         try {
-            resultRecorder.check(root, prettyActual, expected) { a, e ->
+            resultRecorder.check(root, actual, expected) { a, e ->
                 a.equalToXml(e, nodeMatcher, cfg)
             }
         } catch (e: Exception) {
-            resultRecorder.failure(root, prettyActual, expected)
+            resultRecorder.failure(root, actual, expected)
             root.below(
                     span(e.message, CLASS to "exceptionMessage")
             )
@@ -52,9 +52,9 @@ class JsonCheckCommand(name: String, tag: String, private val cfg: Configuration
 
     override fun verify(cmd: CommandCall, eval: Evaluator, resultRecorder: ResultRecorder) {
         val root = cmd.html()
-        val actual = eval.evaluate(root.attr("actual")).toString()
-        val expected = eval.resolveJson(root.content(eval).trim())
-        val container = pre(expected).css("json").attr("autoFormat", "true")
+        val actual = eval.evaluate(root.attr("actual")).toString().prettyPrintJson()
+        val expected = eval.resolveJson(root.content(eval).trim()).prettyPrintJson()
+        val container = pre(expected).css("json")
         root.removeAllChild()(
                 tableSlim()(
                         trWithTDs(
