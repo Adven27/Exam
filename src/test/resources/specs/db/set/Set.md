@@ -16,7 +16,11 @@
                 <row>Andrew,30</row>
                 <row>Carl,20</row>
             </e:db-set>
-            <e:db-show caption="New table content" table="PERSON"/>
+            <e:db-check caption="New table content" table="PERSON" cols="NAME, AGE">
+                <row>${#name}, ${#age}</row>
+                <row>Andrew  , 30     </row>
+                <row>Carl    , 20     </row>
+            </e:db-check>
         </e:then>
     </e:example>
     <e:example name="CLEAN INSERT">

@@ -22,7 +22,7 @@ class DBSetCommand(name: String, tag: String, dbTester: IDatabaseTester) : DBCom
 
     private fun setUpDB(table: ITable, insertMode: DatabaseOperation) {
         dbTester.apply {
-            setSetUpOperation(insertMode)
+            setUpOperation = insertMode
             dataSet = DefaultDataSet(table)
             onSetup()
         }

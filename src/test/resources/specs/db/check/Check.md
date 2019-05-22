@@ -61,7 +61,7 @@
             </e:db-check>
         </e:then>
     </e:example>
-    <e:example name="Expected empty - fail" status="ExpectedToFail">
+    <e:example name="Check empty - fail" status="ExpectedToFail">
         <e:given>
             <e:db-set table="PERSON"/>
         </e:given>
@@ -71,7 +71,7 @@
             </e:db-check>
         </e:then>
     </e:example>
-    <e:example name="Expected empty - success">
+    <e:example name="Check empty - success">
         <e:given>
             <e:db-set table="PERSON"/>
         </e:given>
