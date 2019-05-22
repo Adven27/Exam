@@ -2,6 +2,7 @@ package com.adven.concordion.extensions.exam.db.commands
 
 import com.adven.concordion.extensions.exam.db.DbResultRenderer
 import com.adven.concordion.extensions.exam.html.*
+import com.github.database.rider.core.assertion.DataSetAssert
 import org.concordion.api.CommandCall
 import org.concordion.api.Evaluator
 import org.concordion.api.Result.FAILURE
@@ -11,7 +12,6 @@ import org.concordion.api.listener.AssertEqualsListener
 import org.concordion.api.listener.AssertFailureEvent
 import org.concordion.api.listener.AssertSuccessEvent
 import org.concordion.internal.util.Announcer
-import org.dbunit.Assertion.assertEquals
 import org.dbunit.IDatabaseTester
 import org.dbunit.assertion.DbComparisonFailure
 import org.dbunit.assertion.DiffCollectingFailureHandler
@@ -63,7 +63,7 @@ class DBCheckCommand(name: String, tag: String, dbTester: IDatabaseTester) : DBC
         val columns = expected.tableMetaData.columns
         val expectedTable = SortedTable(expected, columns)
         try {
-            assertEquals(expectedTable, SortedTable(actual, columns), diffHandler)
+            DataSetAssert().assertEquals(expectedTable, SortedTable(actual, columns), diffHandler)
         } catch (f: DbComparisonFailure) {
             //TODO move to ResultRenderer
             resultRecorder!!.record(FAILURE)
