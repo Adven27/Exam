@@ -1,6 +1,8 @@
 package com.adven.concordion.extensions.exam.configurators
 
 import com.adven.concordion.extensions.exam.ExamExtension
+import com.github.database.rider.core.connection.ConnectionHolderImpl
+import com.github.database.rider.core.dataset.DataSetExecutorImpl
 import org.dbunit.JdbcDatabaseTester
 import org.dbunit.database.DatabaseConfig.PROPERTY_DATATYPE_FACTORY
 import org.dbunit.database.IDatabaseConnection
@@ -52,7 +54,13 @@ class DbTester(private val extension: ExamExtension) {
     }
 
     fun end(): ExamExtension {
-        return extension.dbTester(ExamDbTester(driver, url, user, password, schema))
+        return extension.dbTester(
+                DataSetExecutorImpl.instance(
+                        ConnectionHolderImpl(
+                                ExamDbTester(driver, url, user, password, schema).connection.connection
+                        )
+                )
+        )
     }
 }
 

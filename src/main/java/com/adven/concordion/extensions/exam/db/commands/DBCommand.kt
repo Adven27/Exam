@@ -4,19 +4,23 @@ import com.adven.concordion.extensions.exam.commands.ExamCommand
 import com.adven.concordion.extensions.exam.db.TableData
 import com.adven.concordion.extensions.exam.html.*
 import com.adven.concordion.extensions.exam.resolveToObj
+import com.github.database.rider.core.api.dataset.DataSetProvider
+import com.github.database.rider.core.dataset.DataSetExecutorImpl
 import org.concordion.api.CommandCall
 import org.concordion.api.Evaluator
 import org.concordion.api.ResultRecorder
-import org.dbunit.IDatabaseTester
 import org.dbunit.dataset.Column
+import org.dbunit.dataset.DefaultDataSet
+import org.dbunit.dataset.IDataSet
 import org.dbunit.dataset.ITable
 
-open class DBCommand(name: String, tag: String, protected val dbTester: IDatabaseTester) : ExamCommand(name, tag) {
+open class DBCommand(name: String, tag: String, protected val dbTester: DataSetExecutorImpl) : ExamCommand(name, tag) {
     private val remarks = HashMap<String, Int>()
     private val colParser = ColParser()
     protected lateinit var expectedTable: ITable
 
     protected var where: String? = null
+    protected var ds: String? = null
 
     override fun setUp(cmd: CommandCall?, eval: Evaluator?, resultRecorder: ResultRecorder?) {
         val root = tableSlim(cmd.html())(
@@ -25,6 +29,7 @@ open class DBCommand(name: String, tag: String, protected val dbTester: IDatabas
         )
         remarks.clear()
         where = root.takeAwayAttr("where", eval)
+        ds = root.takeAwayAttr("ds", DataSetExecutorImpl.DEFAULT_EXECUTOR_ID)
         val rows = RowParser(root, "row", eval!!).parse()
         val cols = parseCols(root, eval)
         expectedTable = TableData.filled(
@@ -103,3 +108,13 @@ fun ITable.columnsSortedBy(remarks: Map<String, Int>): List<Column> = tableMetaD
 operator fun ITable.get(row: Int, col: Column): String = this.getValue(row, col.columnName)?.toString() ?: "(null)"
 
 fun <R> ITable.mapRows(transform: (Int) -> R): List<R> = (0 until this.rowCount).map(transform)
+
+class ExamDataSetProvider : DataSetProvider {
+    companion object {
+        lateinit var table: ITable
+    }
+
+    override fun provide(): IDataSet {
+        return DefaultDataSet(table)
+    }
+}

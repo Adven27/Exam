@@ -10,6 +10,8 @@ import com.adven.concordion.extensions.exam.mq.MqTester;
 import com.adven.concordion.extensions.exam.rest.DateFormatMatcher;
 import com.adven.concordion.extensions.exam.rest.DateWithin;
 import com.adven.concordion.extensions.exam.rest.XMLDateWithin;
+import com.github.database.rider.core.connection.ConnectionHolderImpl;
+import com.github.database.rider.core.dataset.DataSetExecutorImpl;
 import net.javacrumbs.jsonunit.core.Configuration;
 import org.concordion.api.extension.ConcordionExtender;
 import org.concordion.api.extension.ConcordionExtension;
@@ -35,14 +37,14 @@ public class ExamExtension implements ConcordionExtension {
     public static final String NS = "http://exam.extension.io";
     public static final DefaultNodeMatcher DEFAULT_NODE_MATCHER = new DefaultNodeMatcher(byNameAndText, byName);
     public static final Configuration DEFAULT_JSON_UNIT_CFG = when(IGNORING_ARRAY_ORDER)
-            .withMatcher("formattedAs", new DateFormatMatcher())
-            .withMatcher("formattedAndWithin", DateWithin.Companion.param())
-            .withMatcher("formattedAndWithinNow", DateWithin.Companion.now())
-            .withMatcher("xmlDateWithinNow", new XMLDateWithin());
+        .withMatcher("formattedAs", new DateFormatMatcher())
+        .withMatcher("formattedAndWithin", DateWithin.Companion.param())
+        .withMatcher("formattedAndWithinNow", DateWithin.Companion.now())
+        .withMatcher("xmlDateWithinNow", new XMLDateWithin());
     public static final FilesLoader DEFAULT_FILES_LOADER = new DefaultFilesLoader();
     private static DesiredCapabilities capabilities;
     private Configuration jsonUnitCfg;
-    private IDatabaseTester dbTester;
+    private DataSetExecutorImpl dbTester;
     private Map<String, MqTester> mqTesters = new HashMap<>();
     private NodeMatcher nodeMatcher;
     private FilesLoader filesLoader;
@@ -116,12 +118,30 @@ public class ExamExtension implements ConcordionExtension {
 
     @SuppressWarnings("unused")
     public ExamExtension db(DataSource dataSource) {
-        return dbTester(new DataSourceDatabaseTester(dataSource));
+        try {
+            return dbTester(DataSetExecutorImpl.instance(
+                new ConnectionHolderImpl(
+                    new DataSourceDatabaseTester(dataSource).getConnection().getConnection()
+                )
+            ));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @SuppressWarnings("unused")
     public ExamExtension db(DataSource dataSource, String schema) {
-        return dbTester(new DataSourceDatabaseTester(dataSource, schema));
+        try {
+            return dbTester(
+                DataSetExecutorImpl.instance(
+                    new ConnectionHolderImpl(
+                        new DataSourceDatabaseTester(dataSource, schema).getConnection().getConnection()
+                    )
+                )
+            );
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @SuppressWarnings("unused")
@@ -135,7 +155,7 @@ public class ExamExtension implements ConcordionExtension {
     }
 
     @SuppressWarnings("unused")
-    public ExamExtension dbTester(IDatabaseTester dbTester) {
+    public ExamExtension dbTester(DataSetExecutorImpl dbTester) {
         this.dbTester = dbTester;
         return this;
     }
@@ -156,7 +176,7 @@ public class ExamExtension implements ConcordionExtension {
         new BootstrapExtension().addTo(ex);
 
         final CommandRegistry registry = new CommandRegistry(
-                dbTester, jsonUnitCfg, nodeMatcher, capabilities, filesLoader, mqTesters
+            dbTester, jsonUnitCfg, nodeMatcher, capabilities, filesLoader, mqTesters
         );
 
         for (ExamCommand cmd : registry.commands()) {

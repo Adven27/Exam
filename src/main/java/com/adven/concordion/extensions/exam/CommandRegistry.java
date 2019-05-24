@@ -1,6 +1,17 @@
 package com.adven.concordion.extensions.exam;
 
-import com.adven.concordion.extensions.exam.commands.*;
+import com.adven.concordion.extensions.exam.commands.ExamBeforeExampleCommand;
+import com.adven.concordion.extensions.exam.commands.ExamCommand;
+import com.adven.concordion.extensions.exam.commands.ExamExampleCommand;
+import com.adven.concordion.extensions.exam.commands.ExamplesSummaryCommand;
+import com.adven.concordion.extensions.exam.commands.GivenCommand;
+import com.adven.concordion.extensions.exam.commands.InlineBeforeExampleCommand;
+import com.adven.concordion.extensions.exam.commands.JsonCheckCommand;
+import com.adven.concordion.extensions.exam.commands.ScrollToTopCommand;
+import com.adven.concordion.extensions.exam.commands.SetVarCommand;
+import com.adven.concordion.extensions.exam.commands.ThenCommand;
+import com.adven.concordion.extensions.exam.commands.WhenCommand;
+import com.adven.concordion.extensions.exam.commands.XmlCheckCommand;
 import com.adven.concordion.extensions.exam.db.commands.DBCheckCommand;
 import com.adven.concordion.extensions.exam.db.commands.DBSetCommand;
 import com.adven.concordion.extensions.exam.db.commands.DBShowCommand;
@@ -20,8 +31,8 @@ import com.adven.concordion.extensions.exam.rest.PostCommand;
 import com.adven.concordion.extensions.exam.rest.PutCommand;
 import com.adven.concordion.extensions.exam.rest.SoapCommand;
 import com.adven.concordion.extensions.exam.ui.BrowserCommand;
+import com.github.database.rider.core.dataset.DataSetExecutorImpl;
 import net.javacrumbs.jsonunit.core.Configuration;
-import org.dbunit.IDatabaseTester;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.xmlunit.diff.NodeMatcher;
 
@@ -37,58 +48,58 @@ public class CommandRegistry {
     private final List<ExamCommand> commands = new ArrayList<>();
 
     public CommandRegistry(
-            IDatabaseTester dbTester,
-            Configuration jsonUnitCfg,
-            NodeMatcher nodeMatcher,
-            DesiredCapabilities capabilities,
-            FilesLoader filesLoader,
-            Map<String, MqTester> mqTesters) {
+        DataSetExecutorImpl dbTester,
+        Configuration jsonUnitCfg,
+        NodeMatcher nodeMatcher,
+        DesiredCapabilities capabilities,
+        FilesLoader filesLoader,
+        Map<String, MqTester> mqTesters) {
 
         commands.addAll(asList(
-                new GivenCommand("div"),
-                new WhenCommand("div"),
-                new ThenCommand("div"),
+            new GivenCommand("div"),
+            new WhenCommand("div"),
+            new ThenCommand("div"),
 
-                new ExamExampleCommand("div"),
-                new ExamBeforeExampleCommand("div"),
-                new InlineBeforeExampleCommand("div"),
-                new ExamplesSummaryCommand("summary", "div"),
-                new ScrollToTopCommand("scrollToTop", "div"),
+            new ExamExampleCommand("div"),
+            new ExamBeforeExampleCommand("div"),
+            new InlineBeforeExampleCommand("div"),
+            new ExamplesSummaryCommand("summary", "div"),
+            new ScrollToTopCommand("scrollToTop", "div"),
 
-                new CaseCheckCommand("check", "div"),
+            new CaseCheckCommand("check", "div"),
 
-                new FilesShowCommand("fl-show", TABLE, filesLoader),
-                new FilesSetCommand("fl-set", TABLE, filesLoader),
-                new FilesCheckCommand("fl-check", TABLE, jsonUnitCfg, nodeMatcher, filesLoader),
+            new FilesShowCommand("fl-show", TABLE, filesLoader),
+            new FilesSetCommand("fl-set", TABLE, filesLoader),
+            new FilesCheckCommand("fl-check", TABLE, jsonUnitCfg, nodeMatcher, filesLoader),
 
-                new PostCommand("post", "div"),
-                new SoapCommand("soap", "div"),
-                new GetCommand("get", "div"),
-                new PutCommand("put", "div"),
-                new DeleteCommand("delete", "div"),
-                new CaseCommand("tr", jsonUnitCfg, nodeMatcher),
-                new ExpectedStatusCommand("rs-status", "code"),
+            new PostCommand("post", "div"),
+            new SoapCommand("soap", "div"),
+            new GetCommand("get", "div"),
+            new PutCommand("put", "div"),
+            new DeleteCommand("delete", "div"),
+            new CaseCommand("tr", jsonUnitCfg, nodeMatcher),
+            new ExpectedStatusCommand("rs-status", "code"),
 
-                new BrowserCommand("div", capabilities),
+            new BrowserCommand("div", capabilities),
 
-                new SetVarCommand("span"),
+            new SetVarCommand("span"),
 
-                new MqCheckCommand("mq-check", "div", jsonUnitCfg, mqTesters),
-                new MqSendCommand("mq-send", "div", mqTesters),
-                new JsonCheckCommand("json-check", "div", jsonUnitCfg),
-                new XmlCheckCommand("xml-check", "div", jsonUnitCfg, nodeMatcher)
+            new MqCheckCommand("mq-check", "div", jsonUnitCfg, mqTesters),
+            new MqSendCommand("mq-send", "div", mqTesters),
+            new JsonCheckCommand("json-check", "div", jsonUnitCfg),
+            new XmlCheckCommand("xml-check", "div", jsonUnitCfg, nodeMatcher)
 
         ));
         if (pluggedDbModule(dbTester)) {
             commands.addAll(asList(
-                    new DBShowCommand("db-show", TABLE, dbTester),
-                    new DBCheckCommand("db-check", TABLE, dbTester),
-                    new DBSetCommand("db-set", TABLE, dbTester))
+                new DBShowCommand("db-show", TABLE, dbTester),
+                new DBCheckCommand("db-check", TABLE, dbTester),
+                new DBSetCommand("db-set", TABLE, dbTester))
             );
         }
     }
 
-    private boolean pluggedDbModule(IDatabaseTester dbTester) {
+    private boolean pluggedDbModule(DataSetExecutorImpl dbTester) {
         return dbTester != null;
     }
 

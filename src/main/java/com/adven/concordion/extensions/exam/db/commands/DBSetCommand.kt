@@ -2,17 +2,17 @@ package com.adven.concordion.extensions.exam.db.commands
 
 import com.adven.concordion.extensions.exam.html.Html
 import com.adven.concordion.extensions.exam.html.html
+import com.github.database.rider.core.api.dataset.SeedStrategy
+import com.github.database.rider.core.api.dataset.SeedStrategy.CLEAN_INSERT
+import com.github.database.rider.core.api.dataset.SeedStrategy.INSERT
+import com.github.database.rider.core.configuration.DataSetConfig
+import com.github.database.rider.core.dataset.DataSetExecutorImpl
 import org.concordion.api.CommandCall
 import org.concordion.api.Evaluator
 import org.concordion.api.ResultRecorder
-import org.dbunit.IDatabaseTester
-import org.dbunit.dataset.DefaultDataSet
 import org.dbunit.dataset.ITable
-import org.dbunit.operation.DatabaseOperation
-import org.dbunit.operation.DatabaseOperation.CLEAN_INSERT
-import org.dbunit.operation.DatabaseOperation.INSERT
 
-class DBSetCommand(name: String, tag: String, dbTester: IDatabaseTester) : DBCommand(name, tag, dbTester) {
+class DBSetCommand(name: String, tag: String, dbTester: DataSetExecutorImpl) : DBCommand(name, tag, dbTester) {
     override fun setUp(cmd: CommandCall?, eval: Evaluator?, resultRecorder: ResultRecorder?) {
         super.setUp(cmd, eval, resultRecorder)
         val el = cmd.html()
@@ -20,12 +20,13 @@ class DBSetCommand(name: String, tag: String, dbTester: IDatabaseTester) : DBCom
         setUpDB(expectedTable, parseInsertMode(el))
     }
 
-    private fun setUpDB(table: ITable, insertMode: DatabaseOperation) {
-        dbTester.apply {
-            setUpOperation = insertMode
-            dataSet = DefaultDataSet(table)
-            onSetup()
-        }
+    private fun setUpDB(table: ITable, insertMode: SeedStrategy) {
+        dbTester.createDataSet(dataSetConfig(insertMode, table))
+    }
+
+    private fun dataSetConfig(insertMode: SeedStrategy, table: ITable): DataSetConfig {
+        ExamDataSetProvider.table = table
+        return DataSetConfig().datasetProvider(ExamDataSetProvider().javaClass).strategy(insertMode).executorId(ds)
     }
 
     private fun parseInsertMode(el: Html) = if (el.attr("mode") == "add") INSERT else CLEAN_INSERT

@@ -2,21 +2,22 @@ package com.adven.concordion.extensions.exam.db.commands
 
 import com.adven.concordion.extensions.exam.html.html
 import com.adven.concordion.extensions.exam.html.table
+import com.github.database.rider.core.dataset.DataSetExecutorImpl
 import org.concordion.api.CommandCall
 import org.concordion.api.Evaluator
 import org.concordion.api.ResultRecorder
-import org.dbunit.IDatabaseTester
 import org.dbunit.database.IDatabaseConnection
 import org.dbunit.dataset.ITable
 import org.dbunit.dataset.filter.DefaultColumnFilter.includedColumnsTable
 
-class DBShowCommand(name: String, tag: String, dbTester: IDatabaseTester) : DBCommand(name, tag, dbTester) {
+class DBShowCommand(name: String, tag: String, dbTester: DataSetExecutorImpl) : DBCommand(name, tag, dbTester) {
 
     override fun setUp(cmd: CommandCall?, eval: Evaluator?, resultRecorder: ResultRecorder?) {
         val el = table(cmd.html())
         val tableName = el.takeAwayAttr("table", eval)!!
         val where = el.takeAwayAttr("where", eval)
-        val conn = dbTester.connection
+        val ds = el.takeAwayAttr("ds", DataSetExecutorImpl.DEFAULT_EXECUTOR_ID)
+        val conn = DataSetExecutorImpl.getExecutorById(ds).riderDataSource.dbUnitConnection
 
         renderTable(
             el,
