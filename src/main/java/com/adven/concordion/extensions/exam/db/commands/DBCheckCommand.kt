@@ -63,7 +63,7 @@ class DBCheckCommand(name: String, tag: String, dbTester: DataSetExecutorImpl) :
         val columns = expected.tableMetaData.columns
         val expectedTable = SortedTable(expected, columns)
         try {
-            DataSetAssert().assertEquals(expectedTable, SortedTable(actual, columns), diffHandler)
+            DBAssert().assertEquals(expectedTable, SortedTable(actual, columns), diffHandler)
         } catch (f: DbComparisonFailure) {
             //TODO move to ResultRenderer
             resultRecorder!!.record(FAILURE)

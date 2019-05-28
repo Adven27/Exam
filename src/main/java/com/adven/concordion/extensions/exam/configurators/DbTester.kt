@@ -1,9 +1,10 @@
 package com.adven.concordion.extensions.exam.configurators
 
 import com.adven.concordion.extensions.exam.ExamExtension
-import com.github.database.rider.core.connection.ConnectionHolderImpl
+import com.github.database.rider.core.configuration.DBUnitConfig
 import com.github.database.rider.core.dataset.DataSetExecutorImpl
 import org.dbunit.JdbcDatabaseTester
+import org.dbunit.database.DatabaseConfig
 import org.dbunit.database.DatabaseConfig.PROPERTY_DATATYPE_FACTORY
 import org.dbunit.database.IDatabaseConnection
 import org.dbunit.ext.db2.Db2DataTypeFactory
@@ -55,11 +56,11 @@ class DbTester(private val extension: ExamExtension) {
 
     fun end(): ExamExtension {
         return extension.dbTester(
-                DataSetExecutorImpl.instance(
-                        ConnectionHolderImpl(
-                                ExamDbTester(driver, url, user, password, schema).connection.connection
-                        )
-                )
+            DataSetExecutorImpl.instance {
+                ExamDbTester(driver, url, user, password, schema).connection.connection
+            }.apply {
+                dbUnitConfig = DBUnitConfig().addDBUnitProperty(DatabaseConfig.FEATURE_ALLOW_EMPTY_FIELDS, true)
+            }
         )
     }
 }
@@ -74,6 +75,8 @@ class ExamDbTester(driver: String, url: String, user: String, password: String, 
         val conn = super.getConnection()
         val dbName: String = conn.connection.metaData.databaseProductName
         val cfg = conn.config
+
+        cfg.setProperty(DatabaseConfig.FEATURE_ALLOW_EMPTY_FIELDS, true)
         when (dbName) {
             "HSQL Database Engine" -> cfg.setProperty(PROPERTY_DATATYPE_FACTORY, HsqldbDataTypeFactory())
             "H2" -> cfg.setProperty(PROPERTY_DATATYPE_FACTORY, H2DataTypeFactory())

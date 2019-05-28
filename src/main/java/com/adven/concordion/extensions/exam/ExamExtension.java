@@ -11,12 +11,15 @@ import com.adven.concordion.extensions.exam.mq.MqTester;
 import com.adven.concordion.extensions.exam.rest.DateFormatMatcher;
 import com.adven.concordion.extensions.exam.rest.DateWithin;
 import com.adven.concordion.extensions.exam.rest.XMLDateWithin;
+import com.github.database.rider.core.api.connection.ConnectionHolder;
+import com.github.database.rider.core.configuration.DBUnitConfig;
 import com.github.database.rider.core.connection.ConnectionHolderImpl;
 import com.github.database.rider.core.dataset.DataSetExecutorImpl;
 import net.javacrumbs.jsonunit.core.Configuration;
 import org.concordion.api.extension.ConcordionExtender;
 import org.concordion.api.extension.ConcordionExtension;
 import org.dbunit.DataSourceDatabaseTester;
+import org.dbunit.database.DatabaseConfig;
 import org.hamcrest.Matcher;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -26,12 +29,14 @@ import org.xmlunit.diff.NodeMatcher;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
 import static net.javacrumbs.jsonunit.JsonAssert.when;
 import static net.javacrumbs.jsonunit.core.Option.IGNORING_ARRAY_ORDER;
+import static org.dbunit.database.DatabaseConfig.FEATURE_ALLOW_EMPTY_FIELDS;
 import static org.xmlunit.diff.ElementSelectors.byName;
 import static org.xmlunit.diff.ElementSelectors.byNameAndText;
 
@@ -69,7 +74,6 @@ public class ExamExtension implements ConcordionExtension {
         capabilities = c;
     }
 
-    @SuppressWarnings("unused")
     /**
      * matcherName - name to reference in placeholder
      * matcher - implementation
@@ -77,16 +81,19 @@ public class ExamExtension implements ConcordionExtension {
      *              matcherName↓    ↓parameter
      * <datetime>!{xmlDateWithinNow 1min}</datetime>
      */
+    @SuppressWarnings("unused")
     public ExamExtension addPlaceholderMatcher(String matcherName, Matcher<?> matcher) {
         jsonUnitCfg = jsonUnitCfg.withMatcher(matcherName, matcher);
         return this;
     }
 
+    @SuppressWarnings("unused")
     public ExamExtension withXmlUnitNodeMatcher(NodeMatcher nodeMatcher) {
         this.nodeMatcher = nodeMatcher;
         return this;
     }
 
+    @SuppressWarnings("unused")
     public ExamExtension withFilesLoader(FilesLoader customFilesLoader) {
         this.filesLoader = customFilesLoader;
         return this;
@@ -178,28 +185,38 @@ public class ExamExtension implements ConcordionExtension {
      *      ))
      * )
      */
+    @SuppressWarnings("unused")
     public ExamExtension dbTesters(final ExamDbTester defaultDB, final Map<String, ExamDbTester> others) {
-        try {
-            for (Map.Entry<String, ExamDbTester> e : others.entrySet()) {
-                DataSetExecutorImpl.instance(e.getKey(), connectionHolderFor(e.getValue()));
-            }
-            dbTester = DataSetExecutorImpl.instance(connectionHolderFor(defaultDB));
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+        for (Map.Entry<String, ExamDbTester> e : others.entrySet()) {
+            DataSetExecutorImpl.instance(e.getKey(), connectionHolderFor(e.getValue())).setDBUnitConfig(
+                new DBUnitConfig(e.getKey()).addDBUnitProperty(FEATURE_ALLOW_EMPTY_FIELDS, true)
+            );
         }
+        dbTester = DataSetExecutorImpl.instance(connectionHolderFor(defaultDB));
+        dbTester.setDBUnitConfig(new DBUnitConfig().addDBUnitProperty(FEATURE_ALLOW_EMPTY_FIELDS, true));
         return this;
     }
 
     @NotNull
-    private ConnectionHolderImpl connectionHolderFor(ExamDbTester dbTester) throws SQLException {
-        return new ConnectionHolderImpl(dbTester.getConnection().getConnection());
+    private ConnectionHolder connectionHolderFor(final ExamDbTester dbTester) {
+        return new ConnectionHolder() {
+            public Connection getConnection() {
+                try {
+                    return dbTester.getConnection().getConnection();
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        };
     }
 
+    @SuppressWarnings("unused")
     public ExamExtension mq(Map<String, MqTester> mqTesters) {
         this.mqTesters.putAll(mqTesters);
         return this;
     }
 
+    @SuppressWarnings("unused")
     public ExamExtension mq(String name, MqTester mqTester) {
         mqTesters.put(name, mqTester);
         return this;
