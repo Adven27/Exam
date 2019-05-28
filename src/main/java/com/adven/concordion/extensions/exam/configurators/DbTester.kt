@@ -68,7 +68,7 @@ class DbTester(private val extension: ExamExtension) {
  * Fix for warning "Potential problem found:
  * The configured data type factory 'class org.dbunit.dataset.datatype.DefaultDataTypeFactory'"
  */
-class ExamDbTester(driver: String, url: String, user: String, password: String, schema: String?)
+class ExamDbTester(driver: String, url: String, user: String, password: String, schema: String? = null)
     : JdbcDatabaseTester(driver, url, user, password, schema) {
     override fun getConnection(): IDatabaseConnection {
         val conn = super.getConnection()

@@ -26,7 +26,7 @@ class DBSetCommand(name: String, tag: String, dbTester: DataSetExecutorImpl) : D
 
     private fun dataSetConfig(insertMode: SeedStrategy, table: ITable): DataSetConfig {
         ExamDataSetProvider.table = table
-        return DataSetConfig().datasetProvider(ExamDataSetProvider().javaClass).strategy(insertMode).executorId(ds)
+        return DataSetConfig().datasetProvider(ExamDataSetProvider::class.java).strategy(insertMode).executorId(ds)
     }
 
     private fun parseInsertMode(el: Html) = if (el.attr("mode") == "add") INSERT else CLEAN_INSERT

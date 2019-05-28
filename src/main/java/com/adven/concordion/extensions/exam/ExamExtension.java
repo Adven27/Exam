@@ -2,6 +2,7 @@ package com.adven.concordion.extensions.exam;
 
 import com.adven.concordion.extensions.exam.commands.ExamCommand;
 import com.adven.concordion.extensions.exam.configurators.DbTester;
+import com.adven.concordion.extensions.exam.configurators.ExamDbTester;
 import com.adven.concordion.extensions.exam.configurators.RestAssuredCfg;
 import com.adven.concordion.extensions.exam.configurators.WebDriverCfg;
 import com.adven.concordion.extensions.exam.files.DefaultFilesLoader;
@@ -16,8 +17,8 @@ import net.javacrumbs.jsonunit.core.Configuration;
 import org.concordion.api.extension.ConcordionExtender;
 import org.concordion.api.extension.ConcordionExtension;
 import org.dbunit.DataSourceDatabaseTester;
-import org.dbunit.IDatabaseTester;
 import org.hamcrest.Matcher;
+import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.xmlunit.diff.DefaultNodeMatcher;
 import org.xmlunit.diff.NodeMatcher;
@@ -25,6 +26,7 @@ import org.xmlunit.diff.NodeMatcher;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -158,6 +160,39 @@ public class ExamExtension implements ConcordionExtension {
     public ExamExtension dbTester(DataSetExecutorImpl dbTester) {
         this.dbTester = dbTester;
         return this;
+    }
+
+    /**
+     * .dbTesters(
+     *      ExamDbTester(
+     *          "org.h2.Driver",
+     *          "jdbc:h2:mem:test;INIT=CREATE SCHEMA IF NOT EXISTS SA\\;SET SCHEMA SA",
+     *          "sa",
+     *          ""
+     *      ),
+     *      mapOf("other" to ExamDbTester(
+     *          "org.postgresql.Driver",
+     *          "jdbc:postgresql://localhost:5432/postgres",
+     *          "postgres",
+     *          "postgres"
+     *      ))
+     * )
+     */
+    public ExamExtension dbTesters(final ExamDbTester defaultDB, final Map<String, ExamDbTester> others) {
+        try {
+            for (Map.Entry<String, ExamDbTester> e : others.entrySet()) {
+                DataSetExecutorImpl.instance(e.getKey(), connectionHolderFor(e.getValue()));
+            }
+            dbTester = DataSetExecutorImpl.instance(connectionHolderFor(defaultDB));
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return this;
+    }
+
+    @NotNull
+    private ConnectionHolderImpl connectionHolderFor(ExamDbTester dbTester) throws SQLException {
+        return new ConnectionHolderImpl(dbTester.getConnection().getConnection());
     }
 
     public ExamExtension mq(Map<String, MqTester> mqTesters) {

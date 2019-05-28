@@ -111,7 +111,7 @@ fun <R> ITable.mapRows(transform: (Int) -> R): List<R> = (0 until this.rowCount)
 
 class ExamDataSetProvider : DataSetProvider {
     companion object {
-        lateinit var table: ITable
+        internal var table: ITable? = null
     }
 
     override fun provide(): IDataSet {
