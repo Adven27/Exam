@@ -1,3 +1,4 @@
+[![Get automatic notifications about new "exam" versions](https://www.bintray.com/docs/images/bintray_badge_greyscale.png)](https://bintray.com/adven27/exam/exam?source=watch)
 [![Build Status](https://travis-ci.org/Adven27/Exam.svg?branch=master)](https://travis-ci.org/Adven27/Exam)
 # Exam
 [Concordion](https://github.com/concordion/concordion) extension 
