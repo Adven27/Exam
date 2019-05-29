@@ -5,15 +5,32 @@
 ## Getting started
 ### 1) Install
 
-Add to build.gradle
+Maven
+```xml
+<repositories>
+    <repository>
+        <id>Exam</id>
+        <url>https://dl.bintray.com/adven27/exam</url>
+    </repository>
+</repositories>  
+```
+```xml
+<dependency>
+    <groupId>org.adven.concordion.ext</groupId>
+    <artifactId>exam</artifactId>
+    <version>1.0.0</version>
+</dependency>
+```
+
+Gradle
 ```groovy
 repositories {
-  maven { url "https://jitpack.io" }
-}    
-
-dependencies {
-  testCompile ('com.github.Adven27:Exam:master-SNAPSHOT')
+    maven {
+        url  "https://dl.bintray.com/adven27/exam" 
+    }
 }
+
+testCompile "org.adven.concordion.ext:exam:1.0.0"
 ```
 ### 2) Use
 

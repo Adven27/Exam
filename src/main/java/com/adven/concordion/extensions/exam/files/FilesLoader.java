@@ -4,9 +4,6 @@ import com.adven.concordion.extensions.exam.html.Html;
 import nu.xom.Document;
 import org.concordion.api.Evaluator;
 
-/**
- * Интерфейс реализации работы с файлами.
- */
 public interface FilesLoader {
 
     void clearFolder(String path);
