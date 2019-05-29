@@ -2,7 +2,6 @@ package com.adven.concordion.extensions.exam.db.commands
 
 import com.adven.concordion.extensions.exam.db.DbResultRenderer
 import com.adven.concordion.extensions.exam.html.*
-import com.github.database.rider.core.assertion.DataSetAssert
 import com.github.database.rider.core.dataset.DataSetExecutorImpl
 import org.concordion.api.CommandCall
 import org.concordion.api.Evaluator
@@ -18,7 +17,6 @@ import org.dbunit.assertion.DiffCollectingFailureHandler
 import org.dbunit.assertion.Difference
 import org.dbunit.dataset.ITable
 import org.dbunit.dataset.SortedTable
-import org.dbunit.dataset.filter.DefaultColumnFilter.includedColumnsTable
 import org.dbunit.util.QualifiedTableName
 
 class DBCheckCommand(name: String, tag: String, dbTester: DataSetExecutorImpl) : DBCommand(name, tag, dbTester) {
@@ -49,21 +47,17 @@ class DBCheckCommand(name: String, tag: String, dbTester: DataSetExecutorImpl) :
     }
 
     override fun verify(cmd: CommandCall?, evaluator: Evaluator?, resultRecorder: ResultRecorder?) {
-        val actual = actualTable
-        val filteredActual = includedColumnsTable(
-            actual, expectedTable.tableMetaData.columns
-        )
-
-        assertEq(cmd.html(), resultRecorder, expectedTable, filteredActual)
+        assertEq(cmd.html(), resultRecorder, expectedTable, actualTable.withColumnsAsIn(expectedTable))
     }
 
     private fun assertEq(rootEl: Html, resultRecorder: ResultRecorder?, expected: ITable, actual: ITable) {
         var root = rootEl
         val diffHandler = DiffCollectingFailureHandler()
-        val columns = expected.tableMetaData.columns
+        val columns: Array<String> = if (orderBy.isEmpty()) expected.columnNamesArray() else orderBy
         val expectedTable = SortedTable(expected, columns)
+        val actualTable = SortedTable(actual, columns)
         try {
-            DBAssert().assertEquals(expectedTable, SortedTable(actual, columns), diffHandler)
+            DBAssert().assertEquals(expectedTable, actualTable, diffHandler)
         } catch (f: DbComparisonFailure) {
             //TODO move to ResultRenderer
             resultRecorder!!.record(FAILURE)
@@ -78,16 +72,16 @@ class DBCheckCommand(name: String, tag: String, dbTester: DataSetExecutorImpl) :
             renderTable(act, actual)
             div(span("but was: "), act)
         }
-        checkResult(root, expectedTable, diffHandler.diffList as List<Difference>, resultRecorder!!)
+        checkResult(root, expectedTable, actualTable,  diffHandler.diffList as List<Difference>, resultRecorder!!)
     }
 
-    private fun checkResult(root: Html, expected: ITable, diffs: List<Difference>, resultRecorder: ResultRecorder) {
-        val cols = expected.tableMetaData.columns
+    private fun checkResult(root: Html, expected: ITable, actual: ITable, diffs: List<Difference>, resultRecorder: ResultRecorder) {
+        val cols = expected.columnNames()
         root(
-            tableCaption(root.attr("caption"), expected.tableMetaData.tableName),
+            tableCaption(root.attr("caption"), expected.tableName()),
             thead()(
                 tr()(
-                    cols.map { th(it.columnName) }
+                    cols.map { th(it) }
                 )))
         root(
             if (expected.rowCount == 0) {
@@ -100,10 +94,13 @@ class DBCheckCommand(name: String, tag: String, dbTester: DataSetExecutorImpl) :
                 (0 until expected.rowCount).map { row ->
                     tr()(
                         cols.map {
-                            td(expected[row, it]).apply {
+                            val expectedValue = expected[row, it]
+                            td(expectedValue).apply {
                                 diffs.firstOrNull { diff ->
-                                    diff.rowIndex == row && diff.columnName == it.columnName
-                                }?.markAsFailure(resultRecorder, this) ?: markAsSuccess(resultRecorder)
+                                    diff.rowIndex == row && diff.columnName == it
+                                }?.markAsFailure(resultRecorder, this) ?: markAsSuccess(resultRecorder).text(
+                                    if (text().startsWith("regex:")) """ (${actual[row, it]})""" else ""
+                                )
                             }
                         })
                 }
@@ -113,5 +110,4 @@ class DBCheckCommand(name: String, tag: String, dbTester: DataSetExecutorImpl) :
     private fun Html.markAsSuccess(resultRecorder: ResultRecorder) = success(resultRecorder, this)
     private fun Difference.markAsFailure(resultRecorder: ResultRecorder, td: Html) =
         failure(resultRecorder, td, this.actualValue, this.expectedValue.toString())
-
 }

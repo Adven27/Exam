@@ -106,7 +106,7 @@ class Html(internal val el: Element) {
 
     fun takeAwayAttr(name: String, def: String): String = takeAwayAttr(name) ?: def
 
-    fun takeAwayAttr(attrName: String, def: String, eval: Evaluator) = takeAwayAttr(attrName, eval) ?: def
+    fun takeAwayAttr(attrName: String, def: String, eval: Evaluator? = null) = takeAwayAttr(attrName, eval) ?: def
 
     fun el() = el
 

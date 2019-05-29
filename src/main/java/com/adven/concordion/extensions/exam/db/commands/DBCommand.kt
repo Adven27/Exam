@@ -13,6 +13,7 @@ import org.dbunit.assertion.DbUnitAssert
 import org.dbunit.assertion.Difference
 import org.dbunit.assertion.FailureHandler
 import org.dbunit.dataset.*
+import org.dbunit.dataset.filter.DefaultColumnFilter
 import org.slf4j.LoggerFactory
 import java.util.regex.Pattern
 
@@ -22,6 +23,7 @@ open class DBCommand(name: String, tag: String, protected val dbTester: DataSetE
     protected lateinit var expectedTable: ITable
 
     protected var where: String? = null
+    protected var orderBy: Array<String> = emptyArray()
     protected var ds: String? = null
 
     override fun setUp(cmd: CommandCall?, eval: Evaluator?, resultRecorder: ResultRecorder?) {
@@ -31,13 +33,12 @@ open class DBCommand(name: String, tag: String, protected val dbTester: DataSetE
         )
         remarks.clear()
         where = root.takeAwayAttr("where", eval)
+        orderBy = root.takeAwayAttr("orderBy", eval)?.split(",")?.map { it.trim() }?.toTypedArray() ?: emptyArray()
         ds = root.takeAwayAttr("ds", DataSetExecutorImpl.DEFAULT_EXECUTOR_ID)
-        val rows = RowParser(root, "row", eval!!).parse()
-        val cols = parseCols(root, eval)
         expectedTable = TableData.filled(
                 root.takeAwayAttr("table", eval)!!,
-                rows,
-                cols
+                RowParser(root, "row", eval!!).parse(),
+                parseCols(root, eval)
         )
     }
 
@@ -101,13 +102,17 @@ class ColParser {
 }
 
 fun ITable.tableName(): String = this.tableMetaData.tableName
-
+fun ITable.columns() = this.tableMetaData.columns
+fun ITable.columnNames() = this.tableMetaData.columns.map { it.columnName }
+fun ITable.columnNamesArray() = this.columnNames().toTypedArray()
 fun ITable.columnsSortedBy(remarks: Map<String, Int>): List<Column> = tableMetaData.columns.copyOf().sortedWith(
         Comparator { o1, o2 ->
             -compareValues(remarks[o1.columnName], remarks[o2.columnName])
         })
+fun ITable.withColumnsAsIn(expected: ITable) = DefaultColumnFilter.includedColumnsTable(this, expected.columns())
 
-operator fun ITable.get(row: Int, col: Column): String = this.getValue(row, col.columnName)?.toString() ?: "(null)"
+operator fun ITable.get(row: Int, col: String): String = this.getValue(row, col)?.toString() ?: "(null)"
+operator fun ITable.get(row: Int, col: Column): String = this[row, col.columnName]
 
 fun <R> ITable.mapRows(transform: (Int) -> R): List<R> = (0 until this.rowCount).map(transform)
 
