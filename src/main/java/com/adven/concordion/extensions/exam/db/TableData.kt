@@ -1,10 +1,10 @@
 package com.adven.concordion.extensions.exam.db
 
-import com.github.database.rider.core.dataset.builder.DataSetBuilder
 import org.dbunit.dataset.Column
 import org.dbunit.dataset.DefaultTable
 import org.dbunit.dataset.IDataSet
 import org.dbunit.dataset.ITable
+import org.dbunit.dataset.builder.DataSetBuilder
 import org.dbunit.dataset.datatype.DataType.UNKNOWN
 import java.util.*
 import java.util.Arrays.asList
@@ -25,16 +25,28 @@ class TableData(private val table: String, private val defaults: Map<String, Any
     }
 
     fun row(vararg values: Any?): TableData {
-        val notDefaultsColumns = columns.filter { column -> !defaults.containsKey(column) }.toTypedArray()
-        dataSetBuilder.table(table)
-                .columns(*(notDefaultsColumns + defaults.keys))
-                .values(
-                        *(values.toMutableList().apply {
-                            addAll(defaults.values.map { resolveValue(it) })
-                        }.toTypedArray())
-                )
+        val colsToSet = columns.filter { !defaults.contains(it) }
+        validate(values, colsToSet)
+        dataSetBuilder = dataSetBuilder.newRow(table).apply {
+            (colsToSet.zip(values).toMap() + defaults).forEach { (col, value) ->
+                with(col, resolveValue(value))
+            }
+        }.add()
         currentRow++
         return this
+    }
+
+    private fun validate(values: Array<out Any?>, columns: List<String>) {
+        if (values.size != columns.size) {
+            throw IllegalArgumentException(
+                String.format(
+                    "Number of columns (%s) for table %s is different than the number of provided values (%s)",
+                    this.columns.size,
+                    table,
+                    values.size
+                )
+            )
+        }
     }
 
     fun rows(rows: List<List<Any?>>): TableData {

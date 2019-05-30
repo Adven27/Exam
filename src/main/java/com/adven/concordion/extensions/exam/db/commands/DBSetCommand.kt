@@ -27,10 +27,11 @@ class DBSetCommand(name: String, tag: String, dbTester: DataSetExecutorImpl) : D
     private fun dataSetConfig(insertMode: SeedStrategy, table: ITable): DataSetConfig {
         ExamDataSetProvider.table = table
         return DataSetConfig()
-                .datasetProvider(ExamDataSetProvider::class.java)
-                .strategy(insertMode)
-                .executorId(ds)
-                .name(emptyArray())
+            .datasetProvider(ExamDataSetProvider::class.java)
+            .strategy(insertMode)
+            .executorId(ds)
+            .useSequenceFiltering(false)
+            .name(emptyArray())
     }
 
     private fun parseInsertMode(el: Html) = if (el.attr("mode") == "add") INSERT else CLEAN_INSERT
