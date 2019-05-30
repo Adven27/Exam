@@ -13,8 +13,8 @@ Maven
 ```xml
 <repositories>
     <repository>
-        <id>Exam</id>
-        <url>https://dl.bintray.com/adven27/exam</url>
+      <id>jcenter</id>
+      <url>https://jcenter.bintray.com/</url>
     </repository>
 </repositories>  
 ```
@@ -29,9 +29,7 @@ Maven
 Gradle
 ```groovy
 repositories {
-    maven {
-        url  "https://dl.bintray.com/adven27/exam" 
-    }
+    jcenter()
 }
 
 testCompile "org.adven.concordion.ext:exam:1.0.0"
