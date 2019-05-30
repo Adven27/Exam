@@ -75,8 +75,8 @@ public class ExamExtension implements ConcordionExtension {
     }
 
     /**
-     * matcherName - name to reference in placeholder
-     * matcher - implementation
+     * matcherName - name to reference in placeholder.
+     * matcher - implementation.
      * usage example:
      *              matcherName↓    ↓parameter
      * <datetime>!{xmlDateWithinNow 1min}</datetime>

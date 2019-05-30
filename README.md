@@ -22,7 +22,7 @@ Maven
 <dependency>
     <groupId>org.adven.concordion.ext</groupId>
     <artifactId>exam</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
 </dependency>
 ```
 
@@ -32,7 +32,7 @@ repositories {
     jcenter()
 }
 
-testCompile "org.adven.concordion.ext:exam:1.0.0"
+testCompile "org.adven.concordion.ext:exam:1.0.1"
 ```
 ### 2) Use
 
