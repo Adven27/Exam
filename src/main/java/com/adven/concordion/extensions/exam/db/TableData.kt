@@ -1,10 +1,9 @@
 package com.adven.concordion.extensions.exam.db
 
+import com.adven.concordion.extensions.exam.db.builder.DataSetBuilder
 import org.dbunit.dataset.Column
 import org.dbunit.dataset.DefaultTable
-import org.dbunit.dataset.IDataSet
 import org.dbunit.dataset.ITable
-import org.dbunit.dataset.builder.DataSetBuilder
 import org.dbunit.dataset.datatype.DataType.UNKNOWN
 import java.util.*
 import java.util.Arrays.asList
@@ -27,11 +26,9 @@ class TableData(private val table: String, private val defaults: Map<String, Any
     fun row(vararg values: Any?): TableData {
         val colsToSet = columns.filter { !defaults.contains(it) }
         validate(values, colsToSet)
-        dataSetBuilder = dataSetBuilder.newRow(table).apply {
-            (colsToSet.zip(values).toMap() + defaults).forEach { (col, value) ->
-                with(col, resolveValue(value))
-            }
-        }.add()
+        dataSetBuilder = dataSetBuilder.newRowTo(table)
+            .withFields(colsToSet.zip(values).toMap() + defaults.mapValues { resolveValue(it.value) })
+            .add()
         currentRow++
         return this
     }
@@ -54,9 +51,7 @@ class TableData(private val table: String, private val defaults: Map<String, Any
         return this
     }
 
-    fun build(): IDataSet {
-        return dataSetBuilder.build()
-    }
+    fun build() = dataSetBuilder.build()
 
     fun table(): ITable {
         val dataSet = build()
@@ -66,18 +61,11 @@ class TableData(private val table: String, private val defaults: Map<String, Any
             dataSet.getTable(table)
     }
 
-    private fun columns(c: List<String>): Array<Column?> {
-        val columns = arrayOfNulls<Column>(c.size)
-        c.indices.forEach { i ->
-            columns[i] = Column(c[i], UNKNOWN)
-        }
-        return columns
-    }
+    private fun columns(c: List<String>): Array<Column?> = c.map { Column(it, UNKNOWN) }.toTypedArray()
 
     data class Cols(val defaults: Map<String, Any?> = emptyMap(), val cols: List<String> = emptyList())
 
     companion object {
-        fun filled(table: String, rows: List<List<Any?>>, cols: Cols): ITable =
-                TableData(table, cols).rows(rows).table()
+        fun filled(table: String, rows: List<List<Any?>>, cols: Cols) = TableData(table, cols).rows(rows).table()
     }
 }

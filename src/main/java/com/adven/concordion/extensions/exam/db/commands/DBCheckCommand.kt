@@ -12,12 +12,14 @@ import org.concordion.api.listener.AssertEqualsListener
 import org.concordion.api.listener.AssertFailureEvent
 import org.concordion.api.listener.AssertSuccessEvent
 import org.concordion.internal.util.Announcer
-import org.dbunit.assertion.DbComparisonFailure
-import org.dbunit.assertion.DiffCollectingFailureHandler
-import org.dbunit.assertion.Difference
+import org.dbunit.assertion.*
+import org.dbunit.dataset.DataSetException
 import org.dbunit.dataset.ITable
 import org.dbunit.dataset.SortedTable
+import org.dbunit.dataset.datatype.DataType
 import org.dbunit.util.QualifiedTableName
+import org.slf4j.LoggerFactory
+import java.util.regex.Pattern
 
 class DBCheckCommand(name: String, tag: String, dbTester: DataSetExecutorImpl) : DBCommand(name, tag, dbTester) {
     private val listeners = Announcer.to(AssertEqualsListener::class.java)
@@ -72,7 +74,7 @@ class DBCheckCommand(name: String, tag: String, dbTester: DataSetExecutorImpl) :
             renderTable(act, actual)
             div(span("but was: "), act)
         }
-        checkResult(root, expectedTable, actualTable,  diffHandler.diffList as List<Difference>, resultRecorder!!)
+        checkResult(root, expectedTable, actualTable, diffHandler.diffList as List<Difference>, resultRecorder!!)
     }
 
     private fun checkResult(root: Html, expected: ITable, actual: ITable, diffs: List<Difference>, resultRecorder: ResultRecorder) {
@@ -99,7 +101,7 @@ class DBCheckCommand(name: String, tag: String, dbTester: DataSetExecutorImpl) :
                                 diffs.firstOrNull { diff ->
                                     diff.rowIndex == row && diff.columnName == it
                                 }?.markAsFailure(resultRecorder, this) ?: markAsSuccess(resultRecorder).text(
-                                    if (text().startsWith("regex:")) """ (${actual[row, it]})""" else ""
+                                    if (text().isRegex()) """ (${actual[row, it]})""" else ""
                                 )
                             }
                         })
@@ -109,5 +111,92 @@ class DBCheckCommand(name: String, tag: String, dbTester: DataSetExecutorImpl) :
 
     private fun Html.markAsSuccess(resultRecorder: ResultRecorder) = success(resultRecorder, this)
     private fun Difference.markAsFailure(resultRecorder: ResultRecorder, td: Html) =
-        failure(resultRecorder, td, this.actualValue, this.expectedValue.toString())
+            failure(resultRecorder, td, this.actualValue, this.expectedValue.toString())
 }
+
+class DBAssert : DbUnitAssert() {
+
+    /**
+     * Same as DBUnitAssert with support for regex in row values
+     * @param expectedTable expected table
+     * @param actualTable current table
+     * @param comparisonCols columnName
+     * @param failureHandler handler
+     * @throws DataSetException if datasets does not match
+     */
+    @Throws(DataSetException::class)
+    override fun compareData(
+        expectedTable: ITable?,
+        actualTable: ITable?,
+        comparisonCols: Array<ComparisonColumn>?,
+        failureHandler: FailureHandler?
+    ) {
+        logger.debug(
+            "compareData(expectedTable={}, actualTable={}, " + "comparisonCols={}, failureHandler={}) - start",
+            expectedTable, actualTable, comparisonCols, failureHandler
+        )
+        when {
+            expectedTable == null -> shouldBeSet("expectedTable")
+            actualTable == null -> shouldBeSet("actualTable")
+            comparisonCols == null -> shouldBeSet("comparisonCols")
+            failureHandler == null -> shouldBeSet("failureHandler")
+            else ->
+                for (i in 0 until expectedTable.rowCount) {
+                    for (j in comparisonCols.indices) {
+                        val compareColumn = comparisonCols[j]
+
+                        val column = compareColumn.columnName
+                        val dataType = compareColumn.dataType
+
+                        val expected = expectedTable.getValue(i, column)
+                        val actual = actualTable.getValue(i, column)
+
+                        if (skipCompare(column, expected, actual)) {
+                            if (logger.isTraceEnabled) {
+                                logger.trace("""ignoring comparison $expected=$actual on column $column""")
+                            }
+                            continue
+                        }
+                        when {
+                            expected.isRegex() ->
+                                if (!regexMatches(expected, actual)) {
+                                    failureHandler.handle(
+                                        Difference(
+                                            expectedTable, actualTable, i, column, expected, actual ?: "(null)"
+                                        )
+                                    )
+                                }
+                            compareAs(dataType, expected, actual) ->
+                                failureHandler.handle(
+                                    Difference(expectedTable, actualTable, i, column, expected, actual)
+                                )
+                        }
+                    }
+                }
+        }
+    }
+
+    private fun shouldBeSet(param: String): Unit =
+        throw NullPointerException("The parameter '$param' must not be null")
+
+    private fun compareAs(type: DataType, expected: Any?, actual: Any?) = type.compare(expected, actual) != 0
+
+    private fun regexMatches(expectedValue: Any, actualValue: Any?): Boolean {
+        if (actualValue == null) return false
+        val expected = expectedValue.toString()
+        val pattern = Pattern.compile(expected.substring(expected.indexOf(endSymbol(expected)) + 1).trim { it <= ' ' })
+        return pattern.matcher(actualValue.toString()).matches()
+    }
+
+    private fun endSymbol(expected: String) = when {
+        expected.startsWith("!{regex}") -> "}"
+        else -> ":"
+    }
+
+    companion object {
+        private val logger = LoggerFactory.getLogger(DbUnitAssert::class.java)
+    }
+}
+
+private fun Any?.isRegex() =
+    this != null && (this.toString().startsWith("regex:") || this.toString().startsWith("!{regex}"))
