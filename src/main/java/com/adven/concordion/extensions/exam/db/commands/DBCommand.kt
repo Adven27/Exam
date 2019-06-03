@@ -1,23 +1,19 @@
 package com.adven.concordion.extensions.exam.db.commands
 
 import com.adven.concordion.extensions.exam.commands.ExamCommand
+import com.adven.concordion.extensions.exam.configurators.ExamDbTester
 import com.adven.concordion.extensions.exam.db.TableData
 import com.adven.concordion.extensions.exam.html.*
 import com.adven.concordion.extensions.exam.resolveToObj
-import com.github.database.rider.core.api.dataset.DataSetProvider
 import com.github.database.rider.core.dataset.DataSetExecutorImpl
 import org.concordion.api.CommandCall
 import org.concordion.api.Evaluator
 import org.concordion.api.ResultRecorder
-import org.dbunit.assertion.DbUnitAssert
-import org.dbunit.assertion.Difference
-import org.dbunit.assertion.FailureHandler
-import org.dbunit.dataset.*
+import org.dbunit.dataset.Column
+import org.dbunit.dataset.ITable
 import org.dbunit.dataset.filter.DefaultColumnFilter
-import org.slf4j.LoggerFactory
-import java.util.regex.Pattern
 
-open class DBCommand(name: String, tag: String, protected val dbTester: DataSetExecutorImpl) : ExamCommand(name, tag) {
+open class DBCommand(name: String, tag: String, protected val dbTester: ExamDbTester) : ExamCommand(name, tag) {
     private val remarks = HashMap<String, Int>()
     private val colParser = ColParser()
     protected lateinit var expectedTable: ITable
@@ -115,13 +111,3 @@ operator fun ITable.get(row: Int, col: String): String = this.getValue(row, col)
 operator fun ITable.get(row: Int, col: Column): String = this[row, col.columnName]
 
 fun <R> ITable.mapRows(transform: (Int) -> R): List<R> = (0 until this.rowCount).map(transform)
-
-class ExamDataSetProvider : DataSetProvider {
-    companion object {
-        internal var table: ITable? = null
-    }
-
-    override fun provide(): IDataSet {
-        return DefaultDataSet(table)
-    }
-}

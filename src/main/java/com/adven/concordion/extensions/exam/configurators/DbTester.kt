@@ -1,8 +1,6 @@
 package com.adven.concordion.extensions.exam.configurators
 
 import com.adven.concordion.extensions.exam.ExamExtension
-import com.github.database.rider.core.configuration.DBUnitConfig
-import com.github.database.rider.core.dataset.DataSetExecutorImpl
 import org.dbunit.JdbcDatabaseTester
 import org.dbunit.database.DatabaseConfig
 import org.dbunit.database.DatabaseConfig.PROPERTY_DATATYPE_FACTORY
@@ -13,6 +11,7 @@ import org.dbunit.ext.hsqldb.HsqldbDataTypeFactory
 import org.dbunit.ext.oracle.OracleDataTypeFactory
 import org.dbunit.ext.postgresql.PostgresqlDataTypeFactory
 import java.util.*
+import java.util.concurrent.ConcurrentHashMap
 
 class DbTester(private val extension: ExamExtension) {
     private var driver = "org.h2.Driver"
@@ -55,13 +54,7 @@ class DbTester(private val extension: ExamExtension) {
     }
 
     fun end(): ExamExtension {
-        return extension.dbTester(
-            DataSetExecutorImpl.instance {
-                ExamDbTester(driver, url, user, password, schema).connection.connection
-            }.apply {
-                dbUnitConfig = DBUnitConfig().addDBUnitProperty(DatabaseConfig.FEATURE_ALLOW_EMPTY_FIELDS, true)
-            }
-        )
+        return extension.dbTester(ExamDbTester(driver, url, user, password, schema))
     }
 }
 
@@ -71,6 +64,9 @@ class DbTester(private val extension: ExamExtension) {
  */
 class ExamDbTester(driver: String, url: String, user: String, password: String, schema: String? = null)
     : JdbcDatabaseTester(driver, url, user, password, schema) {
+
+    val executors = ConcurrentHashMap<String, ExamDbTester>()
+
     override fun getConnection(): IDatabaseConnection {
         val conn = super.getConnection()
         val dbName: String = conn.connection.metaData.databaseProductName

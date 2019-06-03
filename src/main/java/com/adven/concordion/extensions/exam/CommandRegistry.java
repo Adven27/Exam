@@ -12,6 +12,7 @@ import com.adven.concordion.extensions.exam.commands.SetVarCommand;
 import com.adven.concordion.extensions.exam.commands.ThenCommand;
 import com.adven.concordion.extensions.exam.commands.WhenCommand;
 import com.adven.concordion.extensions.exam.commands.XmlCheckCommand;
+import com.adven.concordion.extensions.exam.configurators.ExamDbTester;
 import com.adven.concordion.extensions.exam.db.commands.DBCheckCommand;
 import com.adven.concordion.extensions.exam.db.commands.DBSetCommand;
 import com.adven.concordion.extensions.exam.db.commands.DBShowCommand;
@@ -48,7 +49,7 @@ public class CommandRegistry {
     private final List<ExamCommand> commands = new ArrayList<>();
 
     public CommandRegistry(
-        DataSetExecutorImpl dbTester,
+        ExamDbTester dbTester,
         Configuration jsonUnitCfg,
         NodeMatcher nodeMatcher,
         DesiredCapabilities capabilities,
@@ -99,7 +100,7 @@ public class CommandRegistry {
         }
     }
 
-    private boolean pluggedDbModule(DataSetExecutorImpl dbTester) {
+    private boolean pluggedDbModule(ExamDbTester dbTester) {
         return dbTester != null;
     }
 

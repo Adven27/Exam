@@ -1,8 +1,8 @@
 package com.adven.concordion.extensions.exam.db.commands
 
+import com.adven.concordion.extensions.exam.configurators.ExamDbTester
 import com.adven.concordion.extensions.exam.db.DbResultRenderer
 import com.adven.concordion.extensions.exam.html.*
-import com.github.database.rider.core.dataset.DataSetExecutorImpl
 import org.concordion.api.CommandCall
 import org.concordion.api.Evaluator
 import org.concordion.api.Result.FAILURE
@@ -21,12 +21,12 @@ import org.dbunit.util.QualifiedTableName
 import org.slf4j.LoggerFactory
 import java.util.regex.Pattern
 
-class DBCheckCommand(name: String, tag: String, dbTester: DataSetExecutorImpl) : DBCommand(name, tag, dbTester) {
+class DBCheckCommand(name: String, tag: String, dbTester: ExamDbTester) : DBCommand(name, tag, dbTester) {
     private val listeners = Announcer.to(AssertEqualsListener::class.java)
 
     private val actualTable: ITable
         get() {
-            val conn = DataSetExecutorImpl.getExecutorById(ds).riderDataSource.dbUnitConnection
+            val conn = dbTester.executors[ds]!!.connection
             val qualifiedName = QualifiedTableName(expectedTable.tableName(), conn.schema).qualifiedName
             val where = if (where.isNullOrEmpty()) "" else "WHERE $where"
             return conn.createQueryTable(qualifiedName, "select * from $qualifiedName $where")
