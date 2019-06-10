@@ -65,6 +65,10 @@ class DbTester(private val extension: ExamExtension) {
 class ExamDbTester(driver: String, url: String, user: String, password: String, schema: String? = null)
     : JdbcDatabaseTester(driver, url, user, password, schema) {
 
+    companion object {
+        const val DEFAULT_DATASOURCE = "default"
+    }
+
     val executors = ConcurrentHashMap<String, ExamDbTester>()
 
     override fun getConnection(): IDatabaseConnection {

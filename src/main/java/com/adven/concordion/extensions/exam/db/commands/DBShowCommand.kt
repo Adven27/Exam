@@ -3,7 +3,6 @@ package com.adven.concordion.extensions.exam.db.commands
 import com.adven.concordion.extensions.exam.configurators.ExamDbTester
 import com.adven.concordion.extensions.exam.html.html
 import com.adven.concordion.extensions.exam.html.table
-import com.github.database.rider.core.dataset.DataSetExecutorImpl
 import org.concordion.api.CommandCall
 import org.concordion.api.Evaluator
 import org.concordion.api.ResultRecorder
@@ -17,7 +16,7 @@ class DBShowCommand(name: String, tag: String, dbTester: ExamDbTester) : DBComma
         val el = table(cmd.html())
         val tableName = el.takeAwayAttr("table", eval)!!
         val where = el.takeAwayAttr("where", eval)
-        val ds = el.takeAwayAttr("ds", DataSetExecutorImpl.DEFAULT_EXECUTOR_ID)
+        val ds = el.takeAwayAttr("ds", ExamDbTester.DEFAULT_DATASOURCE)
         val conn = dbTester.executors[ds]!!.connection
 
         renderTable(

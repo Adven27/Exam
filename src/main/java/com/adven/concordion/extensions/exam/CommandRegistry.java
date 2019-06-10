@@ -32,7 +32,6 @@ import com.adven.concordion.extensions.exam.rest.PostCommand;
 import com.adven.concordion.extensions.exam.rest.PutCommand;
 import com.adven.concordion.extensions.exam.rest.SoapCommand;
 import com.adven.concordion.extensions.exam.ui.BrowserCommand;
-import com.github.database.rider.core.dataset.DataSetExecutorImpl;
 import net.javacrumbs.jsonunit.core.Configuration;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.xmlunit.diff.NodeMatcher;

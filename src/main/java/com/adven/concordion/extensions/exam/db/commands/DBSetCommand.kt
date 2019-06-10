@@ -3,14 +3,14 @@ package com.adven.concordion.extensions.exam.db.commands
 import com.adven.concordion.extensions.exam.configurators.ExamDbTester
 import com.adven.concordion.extensions.exam.html.Html
 import com.adven.concordion.extensions.exam.html.html
-import com.github.database.rider.core.api.dataset.SeedStrategy
-import com.github.database.rider.core.api.dataset.SeedStrategy.CLEAN_INSERT
-import com.github.database.rider.core.api.dataset.SeedStrategy.INSERT
 import org.concordion.api.CommandCall
 import org.concordion.api.Evaluator
 import org.concordion.api.ResultRecorder
 import org.dbunit.dataset.DefaultDataSet
 import org.dbunit.dataset.ITable
+import org.dbunit.operation.DatabaseOperation
+import org.dbunit.operation.DatabaseOperation.CLEAN_INSERT
+import org.dbunit.operation.DatabaseOperation.INSERT
 
 class DBSetCommand(name: String, tag: String, dbTester: ExamDbTester) : DBCommand(name, tag, dbTester) {
     override fun setUp(cmd: CommandCall?, eval: Evaluator?, resultRecorder: ResultRecorder?) {
@@ -20,9 +20,9 @@ class DBSetCommand(name: String, tag: String, dbTester: ExamDbTester) : DBComman
         setUpDB(expectedTable, parseInsertMode(el))
     }
 
-    private fun setUpDB(table: ITable, insertMode: SeedStrategy) {
+    private fun setUpDB(table: ITable, insertMode: DatabaseOperation) {
         dbTester.executors[ds]!!.apply {
-            setUpOperation = insertMode.operation
+            setUpOperation = insertMode
             dataSet = DefaultDataSet(table)
             onSetup()
         }

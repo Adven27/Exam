@@ -6,16 +6,32 @@
         <e:given print="true">
             <span>Concordion variable age = <span c:set="#age">99</span></span>    
             <e:db-set table="PERSON" cols="NAME, AGE, BIRTHDAY">
-                <row>Andrew,     30, ${exam.now:yyyy-MM-dd}</row>
-                <row>Carl,  ${#age}, ${exam.now+[day 1, m 1]:yyyy-MM-dd}</row>
+                <row>Andrew                                     , 30      , ${exam.now:yyyy-MM-dd}</row>
+                <row>Carl                                       , ${#age} , ${exam.now+[day 1, m 1]:yyyy-MM-dd}</row>
                 <row>' untrimmed string with commas, inside it ', ${#null}, ${exam.date(14.05.1951)}</row>
             </e:db-set>
         </e:given>
         <e:then print="true">
             <e:db-check table="PERSON" cols="NAME, AGE, BIRTHDAY">
-                <row>Andrew,        30, ${exam.now:yyyy-MM-dd}</row>
-                <row>  Carl,   ${#age}, ${exam.now+[day 1, m 1]:yyyy-MM-dd}</row>
+                <row>Andrew                                     , 30      , ${exam.now:yyyy-MM-dd}</row>
+                <row>  Carl                                     , ${#age} , ${exam.now+[day 1, m 1]:yyyy-MM-dd}</row>
                 <row>' untrimmed string with commas, inside it ', ${#null}, ${exam.date(14.05.1951):yyyy-MM-dd}</row>
+            </e:db-check>
+        </e:then>
+    </e:example>
+    <e:example name="Check within tolerance of expected timestamp" status="ExpectedToFail">
+        <e:given print="true">
+            <e:db-set table="PERSON" cols="NAME, BIRTHDAY">
+                <row>withinNow pass, ${exam.now+[5 min]}</row>
+                <row>withinNow fail, ${exam.now+[5 min]}</row>
+                <row>within pass   , ${exam.now}</row>
+            </e:db-set>
+        </e:given>
+        <e:then print="true">
+            <e:db-check table="PERSON" cols="NAME, BIRTHDAY">
+                <row>withinNow pass, !{within 10min}</row>
+                <row>withinNow fail, !{within 1min}</row>
+                <row>within pass   , !{within 25hours}${exam.tomorrow}</row>
             </e:db-check>
         </e:then>
     </e:example>
@@ -28,7 +44,7 @@
         <e:then print="true">
             <p>Check that NAME and BIRTHDAY are "NOT NULL" and AGE is a digit:</p>
             <e:db-check table="PERSON" cols="NAME, AGE, BIRTHDAY">
-                <row>regex:.*, !{regex}\d+, !{regex}.*</row>
+                <row>!{regex}.*, !{regex}\d+, !{regex}.*</row>
             </e:db-check>
         </e:then>
     </e:example>
@@ -42,19 +58,19 @@
         <e:then print="true">
             <p>
                 By default, db-check compares datasets sorted by all columns from "cols" attribute.
-                This works fine in most cases. However in case of using "regex:" pattern as field value, 
+                This works fine in most cases. However in case of using "!{regex}" pattern as field value, 
                 sorting of actual and expected datasets may give different results and false-negative fails like this:
             </p>
             <e:db-check table="PERSON" cols="NAME, AGE">
-                <row>regex:.*, 1</row>
-                <row>regex:.*, 2</row>
+                <row>!{regex}.*, 1</row>
+                <row>!{regex}.*, 2</row>
             </e:db-check>
             <p>
                 In order to fix this, order and columns for sorting may be set explicitly: 
             </p>
             <e:db-check table="PERSON" cols="NAME, AGE" orderBy="AGE, NAME">
-                <row>regex:.*, 1</row>
-                <row>regex:.*, 2</row>
+                <row>!{regex}.*, 1</row>
+                <row>!{regex}.*, 2</row>
             </e:db-check>
         </e:then>
     </e:example>

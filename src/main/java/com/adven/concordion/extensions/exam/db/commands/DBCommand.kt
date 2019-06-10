@@ -5,7 +5,6 @@ import com.adven.concordion.extensions.exam.configurators.ExamDbTester
 import com.adven.concordion.extensions.exam.db.TableData
 import com.adven.concordion.extensions.exam.html.*
 import com.adven.concordion.extensions.exam.resolveToObj
-import com.github.database.rider.core.dataset.DataSetExecutorImpl
 import org.concordion.api.CommandCall
 import org.concordion.api.Evaluator
 import org.concordion.api.ResultRecorder
@@ -30,7 +29,7 @@ open class DBCommand(name: String, tag: String, protected val dbTester: ExamDbTe
         remarks.clear()
         where = root.takeAwayAttr("where", eval)
         orderBy = root.takeAwayAttr("orderBy", eval)?.split(",")?.map { it.trim() }?.toTypedArray() ?: emptyArray()
-        ds = root.takeAwayAttr("ds", DataSetExecutorImpl.DEFAULT_EXECUTOR_ID)
+        ds = root.takeAwayAttr("ds", ExamDbTester.DEFAULT_DATASOURCE)
         expectedTable = TableData.filled(
                 root.takeAwayAttr("table", eval)!!,
                 RowParser(root, "row", eval!!).parse(),
@@ -105,6 +104,7 @@ fun ITable.columnsSortedBy(remarks: Map<String, Int>): List<Column> = tableMetaD
         Comparator { o1, o2 ->
             -compareValues(remarks[o1.columnName], remarks[o2.columnName])
         })
+
 fun ITable.withColumnsAsIn(expected: ITable) = DefaultColumnFilter.includedColumnsTable(this, expected.columns())
 
 operator fun ITable.get(row: Int, col: String): String = this.getValue(row, col)?.toString() ?: "(null)"

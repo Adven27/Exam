@@ -107,7 +107,7 @@ class XMLDateWithin : BaseMatcher<Any>(), ParametrizedMatcher {
     }
 }
 
-private fun parsePeriod(within: String): BaseSingleFieldPeriod {
+fun parsePeriod(within: String): BaseSingleFieldPeriod {
     var i = 0
     while (i < within.length && isDigit(within[i])) {
         i++

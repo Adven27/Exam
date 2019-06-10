@@ -11,7 +11,6 @@ import com.adven.concordion.extensions.exam.mq.MqTester;
 import com.adven.concordion.extensions.exam.rest.DateFormatMatcher;
 import com.adven.concordion.extensions.exam.rest.DateWithin;
 import com.adven.concordion.extensions.exam.rest.XMLDateWithin;
-import com.github.database.rider.core.dataset.DataSetExecutorImpl;
 import net.javacrumbs.jsonunit.core.Configuration;
 import org.concordion.api.extension.ConcordionExtender;
 import org.concordion.api.extension.ConcordionExtension;
@@ -58,8 +57,8 @@ public class ExamExtension implements ConcordionExtension {
      * matcherName - name to reference in placeholder.
      * matcher - implementation.
      * usage example:
-     *              matcherName↓    ↓parameter
-     * <datetime>!{xmlDateWithinNow 1min}</datetime>
+     *      matcherName↓    ↓parameter
+     * !{xmlDateWithinNow 1min}
      */
     @SuppressWarnings("unused")
     public ExamExtension addPlaceholderMatcher(String matcherName, Matcher<?> matcher) {
@@ -108,7 +107,7 @@ public class ExamExtension implements ConcordionExtension {
     @SuppressWarnings("unused")
     public ExamExtension dbTester(ExamDbTester dbTester) {
         this.dbTester = dbTester;
-        dbTester.getExecutors().put(DataSetExecutorImpl.DEFAULT_EXECUTOR_ID, dbTester);
+        dbTester.getExecutors().put(ExamDbTester.DEFAULT_DATASOURCE, dbTester);
         return this;
     }
 
@@ -131,7 +130,7 @@ public class ExamExtension implements ConcordionExtension {
     @SuppressWarnings("unused")
     public ExamExtension dbTesters(final ExamDbTester defaultDB, final Map<String, ExamDbTester> others) {
         dbTester = defaultDB;
-        dbTester.getExecutors().put(DataSetExecutorImpl.DEFAULT_EXECUTOR_ID, defaultDB);
+        dbTester.getExecutors().put(ExamDbTester.DEFAULT_DATASOURCE, defaultDB);
         for (Map.Entry<String, ExamDbTester> e : others.entrySet()) {
             dbTester.getExecutors().put(e.getKey(), e.getValue());
         }

@@ -3,6 +3,8 @@ package com.adven.concordion.extensions.exam.db.commands
 import com.adven.concordion.extensions.exam.configurators.ExamDbTester
 import com.adven.concordion.extensions.exam.db.DbResultRenderer
 import com.adven.concordion.extensions.exam.html.*
+import com.adven.concordion.extensions.exam.resolveToObj
+import com.adven.concordion.extensions.exam.rest.parsePeriod
 import org.concordion.api.CommandCall
 import org.concordion.api.Evaluator
 import org.concordion.api.Result.FAILURE
@@ -12,13 +14,18 @@ import org.concordion.api.listener.AssertEqualsListener
 import org.concordion.api.listener.AssertFailureEvent
 import org.concordion.api.listener.AssertSuccessEvent
 import org.concordion.internal.util.Announcer
-import org.dbunit.assertion.*
-import org.dbunit.dataset.DataSetException
+import org.dbunit.assertion.DbComparisonFailure
+import org.dbunit.assertion.DbUnitAssert
+import org.dbunit.assertion.DiffCollectingFailureHandler
+import org.dbunit.assertion.Difference
+import org.dbunit.assertion.comparer.value.IsActualEqualToExpectedValueComparer
+import org.dbunit.assertion.comparer.value.IsActualWithinToleranceOfExpectedTimestampValueComparer
 import org.dbunit.dataset.ITable
 import org.dbunit.dataset.SortedTable
 import org.dbunit.dataset.datatype.DataType
 import org.dbunit.util.QualifiedTableName
-import org.slf4j.LoggerFactory
+import java.sql.Timestamp
+import java.util.*
 import java.util.regex.Pattern
 
 class DBCheckCommand(name: String, tag: String, dbTester: ExamDbTester) : DBCommand(name, tag, dbTester) {
@@ -49,17 +56,23 @@ class DBCheckCommand(name: String, tag: String, dbTester: ExamDbTester) : DBComm
     }
 
     override fun verify(cmd: CommandCall?, evaluator: Evaluator?, resultRecorder: ResultRecorder?) {
-        assertEq(cmd.html(), resultRecorder, expectedTable, actualTable.withColumnsAsIn(expectedTable))
+        assertEq(evaluator!!, cmd.html(), resultRecorder, expectedTable, actualTable.withColumnsAsIn(expectedTable))
     }
 
-    private fun assertEq(rootEl: Html, resultRecorder: ResultRecorder?, expected: ITable, actual: ITable) {
+    private fun assertEq(evaluator: Evaluator, rootEl: Html, resultRecorder: ResultRecorder?, expected: ITable, actual: ITable) {
         var root = rootEl
         val diffHandler = DiffCollectingFailureHandler()
         val columns: Array<String> = if (orderBy.isEmpty()) expected.columnNamesArray() else orderBy
         val expectedTable = SortedTable(expected, columns)
         val actualTable = SortedTable(actual, columns)
         try {
-            DBAssert().assertEquals(expectedTable, actualTable, diffHandler)
+            DbUnitAssert().assertWithValueComparer(
+                expectedTable,
+                actualTable,
+                diffHandler,
+                RegexAndWithinAwareValueComparer(evaluator),
+                null
+            )
         } catch (f: DbComparisonFailure) {
             //TODO move to ResultRenderer
             resultRecorder!!.record(FAILURE)
@@ -111,92 +124,59 @@ class DBCheckCommand(name: String, tag: String, dbTester: ExamDbTester) : DBComm
 
     private fun Html.markAsSuccess(resultRecorder: ResultRecorder) = success(resultRecorder, this)
     private fun Difference.markAsFailure(resultRecorder: ResultRecorder, td: Html) =
-            failure(resultRecorder, td, this.actualValue, this.expectedValue.toString())
+        failure(resultRecorder, td, this.actualValue, this.expectedValue.toString())
 }
 
-class DBAssert : DbUnitAssert() {
-
-    /**
-     * Same as DBUnitAssert with support for regex in row values
-     * @param expectedTable expected table
-     * @param actualTable current table
-     * @param comparisonCols columnName
-     * @param failureHandler handler
-     * @throws DataSetException if datasets does not match
-     */
-    @Throws(DataSetException::class)
-    override fun compareData(
+class WithinValueComparer(tolerance: Long) : IsActualWithinToleranceOfExpectedTimestampValueComparer(0, tolerance) {
+    public override fun isExpected(
         expectedTable: ITable?,
         actualTable: ITable?,
-        comparisonCols: Array<ComparisonColumn>?,
-        failureHandler: FailureHandler?
-    ) {
-        logger.debug(
-            "compareData(expectedTable={}, actualTable={}, " + "comparisonCols={}, failureHandler={}) - start",
-            expectedTable, actualTable, comparisonCols, failureHandler
+        rowNum: Int,
+        columnName: String?,
+        dataType: DataType,
+        expectedValue: Any?,
+        actualValue: Any?
+    ) = super.isExpected(expectedTable, actualTable, rowNum, columnName, dataType, expectedValue, actualValue)
+}
+
+class RegexAndWithinAwareValueComparer(val evaluator: Evaluator) : IsActualEqualToExpectedValueComparer() {
+    override fun isExpected(
+        expectedTable: ITable?,
+        actualTable: ITable?,
+        rowNum: Int,
+        columnName: String?,
+        dataType: DataType,
+        expected: Any?,
+        actual: Any?
+    ): Boolean = when {
+        expected.isRegex() -> regexMatches(expected, actual)
+        expected.isWithin() -> WithinValueComparer(expected.toString().withinPeriod()).isExpected(
+            expectedTable, actualTable, rowNum, columnName, dataType, resolve(expected.toString()), actual
         )
-        when {
-            expectedTable == null -> shouldBeSet("expectedTable")
-            actualTable == null -> shouldBeSet("actualTable")
-            comparisonCols == null -> shouldBeSet("comparisonCols")
-            failureHandler == null -> shouldBeSet("failureHandler")
-            else ->
-                for (i in 0 until expectedTable.rowCount) {
-                    for (j in comparisonCols.indices) {
-                        val compareColumn = comparisonCols[j]
-
-                        val column = compareColumn.columnName
-                        val dataType = compareColumn.dataType
-
-                        val expected = expectedTable.getValue(i, column)
-                        val actual = actualTable.getValue(i, column)
-
-                        if (skipCompare(column, expected, actual)) {
-                            if (logger.isTraceEnabled) {
-                                logger.trace("""ignoring comparison $expected=$actual on column $column""")
-                            }
-                            continue
-                        }
-                        when {
-                            expected.isRegex() ->
-                                if (!regexMatches(expected, actual)) {
-                                    failureHandler.handle(
-                                        Difference(
-                                            expectedTable, actualTable, i, column, expected, actual ?: "(null)"
-                                        )
-                                    )
-                                }
-                            compareAs(dataType, expected, actual) ->
-                                failureHandler.handle(
-                                    Difference(expectedTable, actualTable, i, column, expected, actual)
-                                )
-                        }
-                    }
-                }
-        }
+        else -> super.isExpected(expectedTable, actualTable, rowNum, columnName, dataType, expected, actual)
     }
 
-    private fun shouldBeSet(param: String): Unit =
-        throw NullPointerException("The parameter '$param' must not be null")
+    private fun resolve(expected: String) : Timestamp {
+        val expectedDateExpression = expected.substring(expected.indexOf("}") + 1).trim()
+        return Timestamp((
+            if (expectedDateExpression.isBlank()) Date()
+            else (resolveToObj(expectedDateExpression, evaluator) as Date)
+            ).time)
+    }
 
-    private fun compareAs(type: DataType, expected: Any?, actual: Any?) = type.compare(expected, actual) != 0
-
-    private fun regexMatches(expectedValue: Any, actualValue: Any?): Boolean {
+    private fun regexMatches(expectedValue: Any?, actualValue: Any?): Boolean {
         if (actualValue == null) return false
         val expected = expectedValue.toString()
-        val pattern = Pattern.compile(expected.substring(expected.indexOf(endSymbol(expected)) + 1).trim { it <= ' ' })
+        val pattern = Pattern.compile(expected.substring(expected.indexOf("}") + 1).trim())
         return pattern.matcher(actualValue.toString()).matches()
-    }
-
-    private fun endSymbol(expected: String) = when {
-        expected.startsWith("!{regex}") -> "}"
-        else -> ":"
-    }
-
-    companion object {
-        private val logger = LoggerFactory.getLogger(DbUnitAssert::class.java)
     }
 }
 
 private fun Any?.isRegex() =
-    this != null && (this.toString().startsWith("regex:") || this.toString().startsWith("!{regex}"))
+    this != null && this.toString().startsWith("!{regex}")
+
+private fun Any?.isWithin() =
+        this != null && this.toString().startsWith("!{within ")
+
+private fun String.withinPeriod() =
+    parsePeriod(this.substring("!{within ".length, this.indexOf("}")).trim()).toPeriod().toStandardDuration().millis
