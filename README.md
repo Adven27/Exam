@@ -1,7 +1,7 @@
 [![Get automatic notifications about new "exam" versions](https://www.bintray.com/docs/images/bintray_badge_bw.png)](https://bintray.com/adven27/exam/exam?source=watch)
 
 [![Build Status](https://travis-ci.org/Adven27/Exam.svg?branch=master)](https://travis-ci.org/Adven27/Exam)
-[ ![Download](https://api.bintray.com/packages/adven27/exam/exam/images/download.svg?version=1.0.2) ](https://bintray.com/adven27/exam/exam/1.0.2/link)
+[ ![Download](https://api.bintray.com/packages/adven27/exam/exam/images/download.svg?version=1.1.0) ](https://bintray.com/adven27/exam/exam/1.1.0/link)
 
 # Exam
 [Concordion](https://github.com/concordion/concordion) extension 
@@ -22,7 +22,7 @@ Maven
 <dependency>
     <groupId>org.adven.concordion.ext</groupId>
     <artifactId>exam</artifactId>
-    <version>1.0.2</version>
+    <version>1.1.0</version>
 </dependency>
 ```
 
@@ -32,7 +32,7 @@ repositories {
     jcenter()
 }
 
-testCompile "org.adven.concordion.ext:exam:1.0.2"
+testCompile "org.adven.concordion.ext:exam:1.1.0"
 ```
 ### 2) Use
 
