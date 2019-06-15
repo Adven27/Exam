@@ -22,7 +22,7 @@ public class Db extends Specs {
         return new ExamDbTester(
             "org.h2.Driver", "jdbc:h2:mem:test;DB_CLOSE_DELAY=-1;"
             + "INIT=CREATE SCHEMA IF NOT EXISTS SA\\;SET SCHEMA SA\\;" + CREATE_TABLES,
-            "sa", "", null);
+            "sa", "");
     }
 
     @BeforeSpecification

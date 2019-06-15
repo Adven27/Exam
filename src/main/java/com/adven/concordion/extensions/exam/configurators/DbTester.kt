@@ -4,10 +4,13 @@ import com.adven.concordion.extensions.exam.ExamExtension
 import org.dbunit.JdbcDatabaseTester
 import org.dbunit.database.DatabaseConfig
 import org.dbunit.database.DatabaseConfig.PROPERTY_DATATYPE_FACTORY
+import org.dbunit.database.DatabaseConfig.PROPERTY_METADATA_HANDLER
 import org.dbunit.database.IDatabaseConnection
 import org.dbunit.ext.db2.Db2DataTypeFactory
 import org.dbunit.ext.h2.H2DataTypeFactory
 import org.dbunit.ext.hsqldb.HsqldbDataTypeFactory
+import org.dbunit.ext.mssql.MsSqlDataTypeFactory
+import org.dbunit.ext.mysql.MySqlMetadataHandler
 import org.dbunit.ext.oracle.OracleDataTypeFactory
 import org.dbunit.ext.postgresql.PostgresqlDataTypeFactory
 import java.util.*
@@ -19,6 +22,7 @@ class DbTester(private val extension: ExamExtension) {
     private var user = "sa"
     private var schema: String? = null
     private var password = ""
+    private var config = emptyMap<String, Any?>()
 
     fun driver(driver: String): DbTester {
         this.driver = driver
@@ -45,6 +49,11 @@ class DbTester(private val extension: ExamExtension) {
         return this
     }
 
+    fun config(cfg: Map<String, Any?>): DbTester {
+        this.config = cfg
+        return this
+    }
+
     fun from(props: Properties): DbTester {
         driver = props.getProperty("hibernate.connection.driver_class")
         url = props.getProperty("connection.url")
@@ -54,7 +63,7 @@ class DbTester(private val extension: ExamExtension) {
     }
 
     fun end(): ExamExtension {
-        return extension.dbTester(ExamDbTester(driver, url, user, password, schema))
+        return extension.dbTester(ExamDbTester(driver, url, user, password, schema, config))
     }
 }
 
@@ -62,8 +71,14 @@ class DbTester(private val extension: ExamExtension) {
  * Fix for warning "Potential problem found:
  * The configured data type factory 'class org.dbunit.dataset.datatype.DefaultDataTypeFactory'"
  */
-class ExamDbTester(driver: String, url: String, user: String, password: String, schema: String? = null)
-    : JdbcDatabaseTester(driver, url, user, password, schema) {
+open class ExamDbTester @JvmOverloads constructor(
+        driver: String,
+        url: String,
+        user: String,
+        password: String,
+        schema: String? = null,
+        private val config: Map<String, Any?> = emptyMap()
+) : JdbcDatabaseTester(driver, url, user, password, schema) {
 
     companion object {
         const val DEFAULT_DATASOURCE = "default"
@@ -83,8 +98,13 @@ class ExamDbTester(driver: String, url: String, user: String, password: String, 
             "Db2" -> cfg.setProperty(PROPERTY_DATATYPE_FACTORY, Db2DataTypeFactory())
             "Oracle" -> cfg.setProperty(PROPERTY_DATATYPE_FACTORY, OracleDataTypeFactory())
             "PostgreSQL" -> cfg.setProperty(PROPERTY_DATATYPE_FACTORY, PostgresqlDataTypeFactory())
+            "MySQL" -> {
+                cfg.setProperty(PROPERTY_DATATYPE_FACTORY, MsSqlDataTypeFactory())
+                cfg.setProperty(PROPERTY_METADATA_HANDLER, MySqlMetadataHandler())
+            }
             else -> System.err.println("No matching database product found $dbName")
         }
+        config.forEach { (k, v) -> cfg.setProperty(k, v) }
         return conn
     }
 }
