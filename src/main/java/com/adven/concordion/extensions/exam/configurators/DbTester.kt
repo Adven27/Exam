@@ -9,7 +9,7 @@ import org.dbunit.database.IDatabaseConnection
 import org.dbunit.ext.db2.Db2DataTypeFactory
 import org.dbunit.ext.h2.H2DataTypeFactory
 import org.dbunit.ext.hsqldb.HsqldbDataTypeFactory
-import org.dbunit.ext.mssql.MsSqlDataTypeFactory
+import org.dbunit.ext.mysql.MySqlDataTypeFactory
 import org.dbunit.ext.mysql.MySqlMetadataHandler
 import org.dbunit.ext.oracle.OracleDataTypeFactory
 import org.dbunit.ext.postgresql.PostgresqlDataTypeFactory
@@ -99,7 +99,7 @@ open class ExamDbTester @JvmOverloads constructor(
             "Oracle" -> cfg.setProperty(PROPERTY_DATATYPE_FACTORY, OracleDataTypeFactory())
             "PostgreSQL" -> cfg.setProperty(PROPERTY_DATATYPE_FACTORY, PostgresqlDataTypeFactory())
             "MySQL" -> {
-                cfg.setProperty(PROPERTY_DATATYPE_FACTORY, MsSqlDataTypeFactory())
+                cfg.setProperty(PROPERTY_DATATYPE_FACTORY, MySqlDataTypeFactory())
                 cfg.setProperty(PROPERTY_METADATA_HANDLER, MySqlMetadataHandler())
             }
             else -> System.err.println("No matching database product found $dbName")
