@@ -114,7 +114,7 @@ class DBCheckCommand(name: String, tag: String, dbTester: ExamDbTester) : DBComm
                                 diffs.firstOrNull { diff ->
                                     diff.rowIndex == row && diff.columnName == it
                                 }?.markAsFailure(resultRecorder, this) ?: markAsSuccess(resultRecorder).text(
-                                    if (text().isRegex()) """ (${actual[row, it]})""" else ""
+                                    if (text().isRegex() || text().isWithin()) """ (${actual[row, it]})""" else ""
                                 )
                             }
                         })
