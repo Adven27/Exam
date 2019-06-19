@@ -4,7 +4,7 @@
 <div>
     <e:summary/>
     <e:given>
-        <e:db-set table="PERSON" cols="NAME, AGE">
+        <e:db-set table="PERSON" cols="NAME, AGE, ID=1..10">
             <row>Andrew,30</row>
             <row>Carl,20</row>
         </e:db-set>

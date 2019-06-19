@@ -4,13 +4,13 @@
     <e:summary/>
     <e:example name="Every db command has independent(from other commands) column order">
         <e:given>
-            <e:db-set table="PERSON" cols="*NAME, *AGE, BIRTHDAY=${exam.date(10.10.2010)}">
+            <e:db-set table="PERSON" cols="*NAME, *AGE, BIRTHDAY=${exam.date(10.10.2010)}, ID=1..10">
                 <row>Bob,20</row>
                 <row>Ed,40</row>
             </e:db-set>
         </e:given>
         <e:when>
-            <e:db-set mode="add" table="PERSON" cols="BIRTHDAY, NAME, AGE=10">
+            <e:db-set operation="insert" table="PERSON" cols="BIRTHDAY, NAME, AGE=10, ID=11..20">
                 <row>${exam.date(10.10.2010)},Adam</row>
             </e:db-set>
         </e:when>
@@ -24,7 +24,7 @@
     </e:example>
     <e:example name="Order sign (*) shouldn't influence on how values are set (date(10.10.2010) shouldn't go to NAME column)">
         <e:when>
-            <e:db-set table="PERSON" cols="BIRTHDAY, *NAME, AGE=10">
+            <e:db-set table="PERSON" cols="BIRTHDAY, *NAME, AGE=10, ID=1..10">
                 <row>${exam.date(10.10.2010)},Adam</row>
             </e:db-set>
         </e:when>

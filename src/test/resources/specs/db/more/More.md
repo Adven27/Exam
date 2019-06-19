@@ -5,7 +5,7 @@
     <e:example name="Using of vars and EL">
         <e:given print="true">
             <span>Concordion variable age = <span c:set="#age">99</span></span>    
-            <e:db-set table="PERSON" cols="NAME, AGE, BIRTHDAY">
+            <e:db-set table="PERSON" cols="NAME, AGE, BIRTHDAY, ID=1..10">
                 <row>Andrew                                     , 30      , ${exam.now:yyyy-MM-dd}</row>
                 <row>Carl                                       , ${#age} , ${exam.now+[day 1, m 1]:yyyy-MM-dd}</row>
                 <row>' untrimmed string with commas, inside it ', ${#null}, ${exam.date(14.05.1951)}</row>
@@ -21,7 +21,7 @@
     </e:example>
     <e:example name="Check within tolerance of expected timestamp" status="ExpectedToFail">
         <e:given print="true">
-            <e:db-set table="PERSON" cols="NAME, BIRTHDAY">
+            <e:db-set table="PERSON" cols="NAME, BIRTHDAY, ID=1..10">
                 <row>withinNow pass, ${exam.now+[5 min]}</row>
                 <row>withinNow fail, ${exam.now+[5 min]}</row>
                 <row>within pass   , ${exam.now}</row>
@@ -37,7 +37,7 @@
     </e:example>
     <e:example name="Check with regex" status="ExpectedToFail">
         <e:given print="true">
-            <e:db-set table="PERSON" cols="NAME, AGE">
+            <e:db-set table="PERSON" cols="NAME, AGE, ID=1..10">
                 <row>'', 30</row>
             </e:db-set>
         </e:given>
@@ -50,7 +50,7 @@
     </e:example>
     <e:example name="Check with order by" status="ExpectedToFail">
         <e:given print="true">
-            <e:db-set table="PERSON" cols="NAME, AGE">
+            <e:db-set table="PERSON" cols="NAME, AGE, ID=1..10">
                 <row>A, 2</row>
                 <row>B, 1</row>
             </e:db-set>

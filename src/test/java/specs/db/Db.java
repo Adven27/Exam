@@ -13,7 +13,7 @@ import static org.joda.time.format.DateTimeFormat.forPattern;
 
 public class Db extends Specs {
     private static final String CREATE_TABLES = "CREATE TABLE IF NOT EXISTS PERSON "
-        + "(NAME VARCHAR2(255 CHAR), AGE NUMBER, IQ NUMBER, BIRTHDAY TIMESTAMP)\\;"
+        + "(ID INT PRIMARY KEY, NAME VARCHAR2(255 CHAR), AGE NUMBER, IQ NUMBER, BIRTHDAY TIMESTAMP)\\;"
         + "CREATE TABLE IF NOT EXISTS EMPTY (NAME VARCHAR2(255 CHAR), VALUE NUMBER)";
 
     private final IDatabaseTester dbTester = dbTester();
@@ -31,10 +31,12 @@ public class Db extends Specs {
         dbTester.onSetup();
     }
 
-    public boolean addRecord(String name, String age, String birthday) {
+    public boolean addRecord(String id, String name, String age, String birthday) {
         try {
             Date bd = LocalDateTime.parse(birthday, forPattern("dd.MM.yyyy")).toDate();
-            dbTester.setDataSet(new TableData("PERSON", "NAME", "AGE", "BIRTHDAY").row(name, age, bd).build());
+            dbTester.setDataSet(
+                new TableData("PERSON", "ID", "NAME", "AGE", "BIRTHDAY").row(id, name, age, bd).build()
+            );
             dbTester.onSetup();
         } catch (Exception e) {
             throw new RuntimeException(e);
