@@ -2,6 +2,7 @@ package com.adven.concordion.extensions.exam.files.commands;
 
 import net.javacrumbs.jsonunit.core.Configuration;
 import net.javacrumbs.jsonunit.core.ParametrizedMatcher;
+import org.w3c.dom.Attr;
 import org.w3c.dom.Node;
 import org.w3c.dom.Text;
 import org.xmlunit.diff.Comparison;
@@ -33,13 +34,10 @@ public class PlaceholderSupportDiffEvaluator implements DifferenceEvaluator {
         if (outcome == EQUAL) {
             return outcome;
         }
-        final Node expectedNode = comparison.getControlDetails().getTarget();
-        final Node actualNode = comparison.getTestDetails().getTarget();
-        if (expectedNode instanceof Text && actualNode instanceof Text) {
-            final String expected = expectedNode.getTextContent();
-            final String actual = actualNode.getTextContent();
-
-            if (check(expected, actual)) {
+        final Node expected = comparison.getControlDetails().getTarget();
+        final Node actual = comparison.getTestDetails().getTarget();
+        if (expected instanceof Text && actual instanceof Text || expected instanceof Attr && actual instanceof Attr) {
+            if (check(expected.getTextContent(), actual.getTextContent())) {
                 return EQUAL;
             }
         }
