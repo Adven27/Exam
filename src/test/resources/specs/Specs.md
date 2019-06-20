@@ -7,5 +7,5 @@
 - [MQ testing]( mq/Mq.html "c:run")
 - [Expression Language (sort of)]( el/El.md "c:run")
 - [UI testing]( ui/Ui.md "c:run")
-- [XML\JSON testing]( xj/Xj.md "c:run")
+- [XML\JSON testing]( xj/Xj.html "c:run")
 - [Decorating]( decor/Decor.md "c:run")

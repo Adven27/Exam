@@ -124,7 +124,7 @@ class DBCheckCommand(name: String, tag: String, dbTester: ExamDbTester) : DBComm
 
     private fun Html.markAsSuccess(resultRecorder: ResultRecorder) = success(resultRecorder, this)
     private fun Difference.markAsFailure(resultRecorder: ResultRecorder, td: Html) =
-        failure(resultRecorder, td, this.actualValue, this.expectedValue.toString())
+        failure(resultRecorder, td, this.actualValue, this.expectedValue.convertToString())
 }
 
 class WithinValueComparer(tolerance: Long) : IsActualWithinToleranceOfExpectedTimestampValueComparer(0, tolerance) {

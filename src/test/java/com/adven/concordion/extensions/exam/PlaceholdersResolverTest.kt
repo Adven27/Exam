@@ -88,6 +88,8 @@ class PlaceholdersResolverTest {
     fun canUseJsonUnitMatcherAliases() {
         assertThat(resolveJson("!{formattedAs dd.MM.yyyy}", eval),
             `is`("\${json-unit.matches:formattedAs}dd.MM.yyyy"))
+        assertThat(resolveJson("!{formattedAs dd.MM.yyyy HH:mm}", eval),
+                `is`("\${json-unit.matches:formattedAs}dd.MM.yyyy HH:mm"))
         assertThat(resolveJson("!{formattedAndWithin [yyyy-MM-dd][1d][1951-05-13]}", eval),
             `is`("\${json-unit.matches:formattedAndWithin}[yyyy-MM-dd][1d][1951-05-13]"))
     }

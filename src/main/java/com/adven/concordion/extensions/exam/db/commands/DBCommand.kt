@@ -107,7 +107,9 @@ fun ITable.columnsSortedBy(remarks: Map<String, Int>): List<Column> = tableMetaD
 
 fun ITable.withColumnsAsIn(expected: ITable) = DefaultColumnFilter.includedColumnsTable(this, expected.columns())
 
-operator fun ITable.get(row: Int, col: String): String = this.getValue(row, col)?.toString() ?: "(null)"
+operator fun ITable.get(row: Int, col: String): String = this.getValue(row, col)?.convertToString() ?: "(null)"
 operator fun ITable.get(row: Int, col: Column): String = this[row, col.columnName]
 
 fun <R> ITable.mapRows(transform: (Int) -> R): List<R> = (0 until this.rowCount).map(transform)
+
+fun Any.convertToString(): String = if (this is Array<*>) this.contentToString() else this.toString()

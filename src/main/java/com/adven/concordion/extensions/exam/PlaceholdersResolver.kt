@@ -87,7 +87,7 @@ private fun toPlaceholder(alias: String, type: String): String {
         "any-boolean", "boolean", "bool" -> "\${$type-unit.any-boolean}"
         "regexp", "regex" -> "\${$type-unit.regex}"
         "ignored", "ignore" -> "\${$type-unit.ignore}"
-        else -> String.format("\${$type-unit.matches:%s}%s", *alias.split(" ").toTypedArray() as Array<*>)
+        else -> String.format("\${$type-unit.matches:%s}%s", *alias.split(" ", limit = 2).toTypedArray() as Array<*>)
     }
 }
 
