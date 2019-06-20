@@ -1,0 +1,177 @@
+<xs:schema elementFormDefault="qualified" targetNamespace="http://exam.extension.io"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:attribute name="status">
+        <xs:simpleType>
+            <xs:restriction base="xs:string">
+                <xs:enumeration value="ExpectedToFail"/>
+                <xs:enumeration value="ExpectedToPass"/>
+                <xs:enumeration value="Unimplemented"/>
+            </xs:restriction>
+        </xs:simpleType>
+    </xs:attribute>
+    <xs:attribute name="operation" default="clean_insert">
+        <xs:simpleType>
+            <xs:restriction base="xs:string">
+                <xs:enumeration value="insert"/>
+                <xs:enumeration value="update"/>
+                <xs:enumeration value="delete"/>
+            </xs:restriction>
+        </xs:simpleType>
+    </xs:attribute>
+
+    <xs:element name="summary">
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute type="xs:string" name="title"/>
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="given" type="given-info"/>
+    <xs:element name="inline">
+        <xs:complexType mixed="true">
+            <xs:all>
+                <xs:element name="given" type="given-info"/>
+                <xs:element name="set" type="set-info"/>
+                <xs:element name="db-set" type="db-set-info"/>
+                <xs:element name="mq-send" type="mq-info"/>
+            </xs:all>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:complexType name="given-info" mixed="true">
+        <xs:all>
+            <xs:element name="set" type="set-info"/>
+            <xs:element name="db-set" type="db-set-info"/>
+            <xs:element name="mq-send" type="mq-info"/>
+        </xs:all>
+    </xs:complexType>
+
+    <xs:complexType name="xj-info" mixed="true">
+        <xs:simpleContent>
+            <xs:extension base="xs:string">
+                <xs:attribute type="xs:string" name="actual" use="required" default="variable"/>
+                <xs:attribute type="xs:string" name="from" default="/data"/>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+
+    <xs:complexType name="set-info">
+        <xs:simpleContent>
+            <xs:extension base="xs:string">
+                <xs:attribute type="xs:string" name="var" use="required"/>
+                <xs:attribute type="xs:string" name="value" use="required"/>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+
+    <xs:complexType name="db-set-info">
+        <xs:sequence>
+            <xs:element name="row" type="xs:string"/>
+        </xs:sequence>
+        <xs:attribute type="xs:string" name="table" use="required"/>
+        <xs:attribute type="xs:string" name="cols" use="required"/>
+        <xs:attribute type="xs:string" name="caption"/>
+        <xs:attribute ref="operation"/>
+    </xs:complexType>
+    <xs:complexType name="db-check-info">
+        <xs:sequence>
+            <xs:element name="row" type="xs:string"/>
+        </xs:sequence>
+        <xs:attribute type="xs:string" name="table" use="required"/>
+        <xs:attribute type="xs:string" name="cols" use="required"/>
+        <xs:attribute type="xs:string" name="caption"/>
+    </xs:complexType>
+
+    <xs:complexType name="mq-info">
+        <xs:simpleContent>
+            <xs:extension base="xs:string">
+                <xs:attribute type="xs:string" name="from" default="/data/soap"/>
+                <xs:attribute type="xs:string" name="name" use="required"/>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+
+    <xs:complexType name="check-info" mixed="true">
+        <xs:all>
+            <xs:element name="xml-check" type="xj-info"/>
+            <xs:element name="json-check" type="xj-info"/>
+            <xs:element name="db-check" type="db-check-info"/>
+            <xs:element name="mq-check" type="mq-info"/>
+        </xs:all>
+    </xs:complexType>
+
+    <xs:complexType name="where-info">
+        <xs:sequence>
+            <xs:element name="vals" type="xs:string"/>
+        </xs:sequence>
+        <xs:attribute type="xs:string" name="vars" use="required"/>
+    </xs:complexType>
+
+    <xs:complexType name="expected-info">
+        <xs:simpleContent>
+            <xs:extension base="xs:string">
+                <xs:attribute type="xs:string" name="from" default="/data/soap"/>
+                <xs:attribute type="xs:string" name="reasonPhrase" default="Server Error"/>
+                <xs:attribute type="xs:string" name="statusCode" default="500"/>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+
+    <xs:complexType name="post-info">
+        <xs:sequence>
+            <xs:element name="case">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="body">
+                            <xs:complexType mixed="true">
+                                <xs:simpleContent>
+                                    <xs:extension base="xs:string">
+                                        <xs:attribute type="xs:string" name="from" default="/data/soap"/>
+                                    </xs:extension>
+                                </xs:simpleContent>
+                            </xs:complexType>
+                        </xs:element>
+                        <xs:element name="expected" type="expected-info"/>
+                        <xs:element name="where" type="where-info"/>
+                        <xs:element name="check" type="check-info"/>
+                    </xs:sequence>
+                    <xs:attribute type="xs:string" name="desc"/>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+        <xs:attribute type="xs:string" name="url" use="required"/>
+    </xs:complexType>
+    <xs:complexType name="get-info">
+        <xs:sequence>
+            <xs:element name="case">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="expected" type="expected-info"/>
+                        <xs:element name="where" type="where-info"/>
+                        <xs:element name="check" type="check-info"/>
+                    </xs:sequence>
+                    <xs:attribute type="xs:string" name="desc"/>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+        <xs:attribute type="xs:string" name="url" use="required"/>
+    </xs:complexType>
+
+    <xs:element name="example">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="given" type="given-info" minOccurs="0"/>
+                <xs:element name="when" type="given-info" minOccurs="0"/>
+                <xs:element name="then" minOccurs="0" type="check-info"/>
+                <xs:element name="soap" type="post-info" minOccurs="0"/>
+                <xs:element name="post" type="post-info" minOccurs="0"/>
+                <xs:element name="get" type="get-info" minOccurs="0"/>
+            </xs:sequence>
+            <xs:attribute type="xs:string" name="name" use="required"/>
+            <xs:attribute type="xs:string" name="print"/>
+            <xs:attribute ref="status"/>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>

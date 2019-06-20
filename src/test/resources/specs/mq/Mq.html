@@ -1,4 +1,4 @@
-<html xmlns:e="http://exam.extension.io" xmlns:concordion="http://www.concordion.org/2007/concordion">
+<html xmlns:e="http://exam.extension.io">
 <body>
 <e:summary/>
 <e:example name="Send -> Get: success" print="true">
@@ -13,7 +13,7 @@
         </e:mq-check>
     </e:then>
 </e:example>
-<e:example name="Send -> Get: failed" concordion:status="ExpectedToFail" print="true">
+<e:example name="Send -> Get: failed" status="ExpectedToFail" print="true">
     <e:when>
         <e:mq-send name="myQueue">
             {"date" : "${exam.now-[2 day]:yyyy-MM-dd}"}
