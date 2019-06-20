@@ -1,10 +1,10 @@
 package com.adven.concordion.extensions.exam.db.commands
 
-import com.adven.concordion.extensions.exam.configurators.ExamDbTester
+import com.adven.concordion.extensions.exam.db.ExamDbTester
 import com.adven.concordion.extensions.exam.db.DbResultRenderer
-import com.adven.concordion.extensions.exam.html.*
-import com.adven.concordion.extensions.exam.resolveToObj
-import com.adven.concordion.extensions.exam.rest.parsePeriod
+import com.adven.concordion.extensions.exam.core.html.*
+import com.adven.concordion.extensions.exam.core.resolveToObj
+import com.adven.concordion.extensions.exam.core.utils.parsePeriod
 import org.concordion.api.CommandCall
 import org.concordion.api.Evaluator
 import org.concordion.api.Result.FAILURE
@@ -179,4 +179,9 @@ private fun Any?.isWithin() =
         this != null && this.toString().startsWith("!{within ")
 
 private fun String.withinPeriod() =
-    parsePeriod(this.substring("!{within ".length, this.indexOf("}")).trim()).toPeriod().toStandardDuration().millis
+    parsePeriod(
+        this.substring(
+            "!{within ".length,
+            this.indexOf("}")
+        ).trim()
+    ).toPeriod().toStandardDuration().millis

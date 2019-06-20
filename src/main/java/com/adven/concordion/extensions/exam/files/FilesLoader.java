@@ -1,6 +1,6 @@
 package com.adven.concordion.extensions.exam.files;
 
-import com.adven.concordion.extensions.exam.html.Html;
+import com.adven.concordion.extensions.exam.core.html.Html;
 import nu.xom.Document;
 import org.concordion.api.Evaluator;
 

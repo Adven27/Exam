@@ -1,7 +1,7 @@
 package com.adven.concordion.extensions.exam.files;
 
-import com.adven.concordion.extensions.exam.PlaceholdersResolver;
-import com.adven.concordion.extensions.exam.html.Html;
+import com.adven.concordion.extensions.exam.core.PlaceholdersResolver;
+import com.adven.concordion.extensions.exam.core.html.Html;
 import com.google.common.io.Files;
 import nu.xom.Builder;
 import nu.xom.Document;

@@ -1,11 +1,11 @@
 package com.adven.concordion.extensions.exam.files.commands;
 
-import com.adven.concordion.extensions.exam.commands.ExamCommand;
-import com.adven.concordion.extensions.exam.html.Html;
+import com.adven.concordion.extensions.exam.core.commands.ExamCommand;
+import com.adven.concordion.extensions.exam.core.html.Html;
 
-import static com.adven.concordion.extensions.exam.html.HtmlBuilder.*;
+import static com.adven.concordion.extensions.exam.core.html.HtmlBuilder.*;
 
-class BaseCommand extends ExamCommand {
+public class BaseCommand extends ExamCommand {
     protected static final String EMPTY = "<EMPTY>";
     protected static final String HEADER = "file";
     protected static final String FILE_CONTENT = "content";

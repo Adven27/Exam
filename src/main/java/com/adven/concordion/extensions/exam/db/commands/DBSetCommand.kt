@@ -1,7 +1,7 @@
 package com.adven.concordion.extensions.exam.db.commands
 
-import com.adven.concordion.extensions.exam.configurators.ExamDbTester
-import com.adven.concordion.extensions.exam.html.html
+import com.adven.concordion.extensions.exam.core.html.html
+import com.adven.concordion.extensions.exam.db.ExamDbTester
 import org.concordion.api.CommandCall
 import org.concordion.api.Evaluator
 import org.concordion.api.ResultRecorder

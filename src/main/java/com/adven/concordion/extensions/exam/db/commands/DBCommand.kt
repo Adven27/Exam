@@ -1,10 +1,10 @@
 package com.adven.concordion.extensions.exam.db.commands
 
-import com.adven.concordion.extensions.exam.commands.ExamCommand
-import com.adven.concordion.extensions.exam.configurators.ExamDbTester
+import com.adven.concordion.extensions.exam.core.commands.ExamCommand
+import com.adven.concordion.extensions.exam.db.ExamDbTester
 import com.adven.concordion.extensions.exam.db.TableData
-import com.adven.concordion.extensions.exam.html.*
-import com.adven.concordion.extensions.exam.resolveToObj
+import com.adven.concordion.extensions.exam.core.html.*
+import com.adven.concordion.extensions.exam.core.resolveToObj
 import org.concordion.api.CommandCall
 import org.concordion.api.Evaluator
 import org.concordion.api.ResultRecorder

@@ -1,12 +1,12 @@
 package com.adven.concordion.extensions.exam.files.commands;
 
 import com.adven.concordion.extensions.exam.files.FilesLoader;
-import com.adven.concordion.extensions.exam.html.Html;
+import com.adven.concordion.extensions.exam.core.html.Html;
 import org.concordion.api.CommandCall;
 import org.concordion.api.Evaluator;
 import org.concordion.api.ResultRecorder;
 
-import static com.adven.concordion.extensions.exam.html.HtmlBuilder.*;
+import static com.adven.concordion.extensions.exam.core.html.HtmlBuilder.*;
 import static java.io.File.separator;
 import static kotlin.TuplesKt.to;
 

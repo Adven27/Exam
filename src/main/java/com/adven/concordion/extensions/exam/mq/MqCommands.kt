@@ -1,12 +1,12 @@
 package com.adven.concordion.extensions.exam.mq
 
-import com.adven.concordion.extensions.exam.commands.ExamCommand
-import com.adven.concordion.extensions.exam.commands.ExamVerifyCommand
-import com.adven.concordion.extensions.exam.html.*
-import com.adven.concordion.extensions.exam.resolveJson
-import com.adven.concordion.extensions.exam.rest.RestResultRenderer
-import com.adven.concordion.extensions.exam.utils.content
-import com.adven.concordion.extensions.exam.utils.prettyPrintJson
+import com.adven.concordion.extensions.exam.core.commands.ExamCommand
+import com.adven.concordion.extensions.exam.core.commands.ExamVerifyCommand
+import com.adven.concordion.extensions.exam.core.html.*
+import com.adven.concordion.extensions.exam.core.resolveJson
+import com.adven.concordion.extensions.exam.ws.RestResultRenderer
+import com.adven.concordion.extensions.exam.core.utils.content
+import com.adven.concordion.extensions.exam.core.utils.prettyPrintJson
 import net.javacrumbs.jsonunit.JsonAssert
 import net.javacrumbs.jsonunit.core.Configuration
 import org.concordion.api.CommandCall

@@ -1,6 +1,6 @@
 package specs.db;
 
-import com.adven.concordion.extensions.exam.configurators.ExamDbTester;
+import com.adven.concordion.extensions.exam.db.ExamDbTester;
 import com.adven.concordion.extensions.exam.db.TableData;
 import org.concordion.api.BeforeSpecification;
 import org.dbunit.IDatabaseTester;

@@ -1,0 +1,99 @@
+<html xmlns:e="http://exam.extension.io"  xmlns:cc="http://www.concordion.org/2007/concordion">
+<body>
+<h1>Table setting</h1>
+<e:summary/>
+<e:example name="DbUnit operations support">
+    <e:given>
+        Given record <b cc:set="#id">1</b>
+                     <b cc:set="#name">Bob</b>
+                     <b cc:set="#age">50</b>
+                     <b cc:set="#bd">10.10.2000</b>
+        <span cc:assertTrue="addRecord(#id, #name, #age, #bd)">present</span> in PERSON
+        <e:db-show table="PERSON"/>
+    </e:given>
+    <e:when print="true">
+        <e:db-set operation="insert" caption="Append records" table="PERSON" cols="ID=10..20, NAME, AGE">
+            <e:row>Andrew,30</e:row>
+            <e:row>Carl,20</e:row>
+        </e:db-set>
+    </e:when>
+    <e:then>
+        <e:db-check caption="Records was appended" table="PERSON" cols="NAME, AGE">
+            <e:row>${#name}, ${#age}</e:row>
+            <e:row>Andrew  , 30     </e:row>
+            <e:row>Carl    , 20     </e:row>
+        </e:db-check>
+    </e:then>
+    <e:when print="true">
+        <e:db-set operation="update" caption="Update by primary key" table="PERSON" cols="ID=1, NAME, AGE">
+            <e:row>not Bob, 500</e:row>
+        </e:db-set>
+    </e:when>
+    <e:then>
+        <e:db-check caption="Record was updated" table="PERSON" cols="NAME, AGE">
+            <e:row>not Bob , 500 </e:row>
+            <e:row>Andrew  , 30  </e:row>
+            <e:row>Carl    , 20  </e:row>
+        </e:db-check>
+    </e:then>
+    <e:when print="true">
+        <e:db-set caption="Clean insert by default" table="PERSON" cols="ID=10..20, NAME, AGE, BIRTHDAY">
+            <e:row>' Andrew ', 30 , ${exam.date(10.10.1990)}</e:row>
+            <e:row>Carl      , 20 , ${exam.date(01.02.1980)}</e:row>
+        </e:db-set>
+    </e:when>
+    <e:then>
+        <e:db-check caption="Table was cleaned and records was inserted" table="PERSON" cols="NAME, AGE, BIRTHDAY">
+            <e:row>' Andrew ', 30, ${exam.date(10.10.1990)}</e:row>
+            <e:row>Carl      , 20, ${exam.date(01.02.1980)}</e:row>
+        </e:db-check>
+    </e:then>
+</e:example>
+<e:example name="Default values">
+    <e:given>
+        <e:db-set caption="Given empty table" table="PERSON"/>
+    </e:given>
+    <e:then print="true">
+        <e:db-set caption="Records to add" table="PERSON" cols="NAME, AGE=20, BIRTHDAY=${exam.yesterday}, ID=1..10">
+            <e:row>Andrew</e:row>
+            <e:row>Carl</e:row>
+        </e:db-set>
+        <e:db-show caption="New table content" table="PERSON"/>
+    </e:then>
+</e:example>
+<e:example name="Ranges">
+    <e:given>
+        <e:db-set caption="Given empty table" table="PERSON"/>
+    </e:given>
+    <e:then print="true">
+        <e:db-set caption="Records to add" table="PERSON" cols="*AGE=2..4, *IQ=4..2, BIRTHDAY=${exam.yesterday}, NAME, ID=1..10">
+            <e:row>age 2 iq 4</e:row>
+            <e:row>age 3 iq 3</e:row>
+            <e:row>age 4 iq 2</e:row>
+            <e:row>again 2 4</e:row>
+            <e:row>again 3 3</e:row>
+        </e:db-set>
+        <e:db-check caption="New table content" table="PERSON" cols="*AGE=2..4, NAME, *IQ=4..2">
+            <e:row>age 2 iq 4</e:row>
+            <e:row>age 3 iq 3</e:row>
+            <e:row>age 4 iq 2</e:row>
+            <e:row>again 2 4</e:row>
+            <e:row>again 3 3</e:row>
+        </e:db-check>
+    </e:then>
+</e:example>
+<e:example name="Custom cell values separator">
+    <e:given>
+        <e:db-set caption="Given empty table" table="PERSON"/>
+    </e:given>
+    <e:then print="true">
+        <e:db-set separator="|" table="PERSON" cols="NAME, AGE, ID=1">
+            <e:row>If you need commas , inside value, use custom separator -> | 20</e:row>
+        </e:db-set>
+        <e:db-check separator="|" table="PERSON" cols="NAME, AGE">
+            <e:row>If you need commas , inside value, use custom separator -> | 20</e:row>
+        </e:db-check>
+    </e:then>
+</e:example>
+</body>
+</html>

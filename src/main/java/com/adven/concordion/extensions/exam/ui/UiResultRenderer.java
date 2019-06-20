@@ -1,13 +1,13 @@
 package com.adven.concordion.extensions.exam.ui;
 
-import com.adven.concordion.extensions.exam.html.Html;
+import com.adven.concordion.extensions.exam.core.html.Html;
 import com.codeborne.selenide.ex.UIAssertionError;
 import org.concordion.api.listener.*;
 
 import java.io.File;
 import java.util.concurrent.atomic.AtomicLong;
 
-import static com.adven.concordion.extensions.exam.html.HtmlBuilder.imageOverlay;
+import static com.adven.concordion.extensions.exam.core.html.HtmlBuilder.imageOverlay;
 import static com.codeborne.selenide.Selenide.screenshot;
 
 public class UiResultRenderer implements AssertEqualsListener, AssertTrueListener, AssertFalseListener {

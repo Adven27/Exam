@@ -1,7 +1,7 @@
 package com.adven.concordion.extensions.exam.ui;
 
-import com.adven.concordion.extensions.exam.commands.ExamVerifyCommand;
-import com.adven.concordion.extensions.exam.html.Html;
+import com.adven.concordion.extensions.exam.core.commands.ExamVerifyCommand;
+import com.adven.concordion.extensions.exam.core.html.Html;
 import com.codeborne.selenide.Configuration;
 import com.codeborne.selenide.WebDriverRunner;
 import com.codeborne.selenide.ex.UIAssertionError;

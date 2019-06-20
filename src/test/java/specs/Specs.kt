@@ -1,11 +1,17 @@
 package specs
 
-import com.adven.concordion.extensions.exam.ExamExtension
+import com.adven.concordion.extensions.exam.core.ExamExtension
+import com.adven.concordion.extensions.exam.db.DbPlugin
+import com.adven.concordion.extensions.exam.files.FlPlugin
+import com.adven.concordion.extensions.exam.mq.MqPlugin
 import com.adven.concordion.extensions.exam.mq.MqTesterAdapter
+import com.adven.concordion.extensions.exam.ui.UiPlugin
+import com.adven.concordion.extensions.exam.ws.WsPlugin
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock.*
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig
 import com.github.tomakehurst.wiremock.extension.responsetemplating.ResponseTemplateTransformer
+import com.jayway.restassured.RestAssured
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings
 import org.concordion.api.AfterSuite
 import org.concordion.api.BeforeSuite
@@ -16,25 +22,35 @@ import org.concordion.internal.ConcordionBuilder.NAMESPACE_CONCORDION_2007
 import org.junit.runner.RunWith
 import java.util.*
 
+@SuppressFBWarnings("ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD")
 @RunWith(ConcordionRunner::class)
 @ConcordionOptions(declareNamespaces = ["c", NAMESPACE_CONCORDION_2007, "e", ExamExtension.NS])
 open class Specs {
 
     @SuppressFBWarnings(value = ["URF_UNREAD_FIELD"], justification = "concordion extension declaration")
     @Extension
-    private val exam = ExamExtension()
-        .rest().port(PORT).end()
-        .db().end()
-        .ui().headless().end()
-        .mq(mapOf("myQueue" to object : MqTesterAdapter() {
-            private val queue = Stack<String>()
+    @Suppress("unused")
+    private val exam = ExamExtension().addPlugins(
+        WsPlugin { RestAssured.port = PORT },
+        DbPlugin(
+            "org.h2.Driver",
+            "jdbc:h2:mem:test;INIT=CREATE SCHEMA IF NOT EXISTS SA\\;SET SCHEMA SA",
+            "sa", ""
+        ),
+        FlPlugin(),
+        MqPlugin(
+            mapOf("myQueue" to object : MqTesterAdapter() {
+                private val queue = Stack<String>()
 
-            override fun send(message: String) {
-                queue.add(message)
-            }
+                override fun send(message: String) {
+                    queue.add(message)
+                }
 
-            override fun receive(): String = queue.pop()
-        }))
+                override fun receive(): String = queue.pop()
+            })
+        ),
+        UiPlugin()
+    )
 
     companion object {
         private const val PORT = 8888
