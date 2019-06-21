@@ -1,0 +1,24 @@
+<html xmlns:e="http://exam.extension.io" xmlns:c="http://www.concordion.org/2007/concordion">
+<body>
+<h1>UI testing</h1>
+<e:summary/>
+<e:example name="Steps chain fail fast by default" print="true" status="ExpectedToFail">
+    <e:browser url=":8888/ui">
+        <e:step name="hasText">Should fail</e:step>
+        <e:step name="hasText">Shouldn't be ran</e:step>
+    </e:browser>
+</e:example>
+<e:example name="Can disable fail fast" print="true" status="ExpectedToFail">
+    <e:browser url=":8888/ui" failFast="false">
+        <e:step name="hasText">Fails but next step should run</e:step>
+        <e:step name="hasText" desc="Should successfully check text">Dummy page</e:step>
+    </e:browser>
+</e:example>
+<e:example name="Can set check result to variable" print="true">
+    <e:browser url=":8888/ui">
+        <e:step set="someVar" name="noParamsCheck"/>
+    </e:browser>
+    <var>#someVar</var> = <code c:assertTrue="areEqual(#someVar, #TEXT)">valueFromMethodCall</code>
+</e:example>
+</body>
+</html>
