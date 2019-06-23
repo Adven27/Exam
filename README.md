@@ -1,5 +1,4 @@
 [![Get automatic notifications about new "exam" versions](https://www.bintray.com/docs/images/bintray_badge_bw.png)](https://bintray.com/adven27/exam/exam?source=watch)
-
 [![Build Status](https://travis-ci.org/Adven27/Exam.svg?branch=master)](https://travis-ci.org/Adven27/Exam)
 [ ![Download](https://api.bintray.com/packages/adven27/exam/exam/images/download.svg?version=2.0.0) ](https://bintray.com/adven27/exam/exam/2.0.0/link)
 
