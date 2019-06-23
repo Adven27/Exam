@@ -51,18 +51,19 @@ public class Specs {
 }
 ```
 
-`specs.usercreation.UserCreation.java`
-```java
-public class UserCreation extends Specs {
-}
-```
-
 `specs\Specs.md`
 ```html
 # API
 
 - [User creation]( usercreation/UserCreation.html "c:run")
 ```
+
+`specs.usercreation.UserCreation.java`
+```java
+public class UserCreation extends Specs {
+}
+```
+
 `specs\usercreation\UserCreation.html`
 ```html
 <html xmlns:e="http://exam.extension.io">

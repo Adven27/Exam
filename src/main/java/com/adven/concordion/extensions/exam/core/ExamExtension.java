@@ -39,6 +39,8 @@ public class ExamExtension implements ConcordionExtension {
     }
 
     /**
+     * Attach xmlunit/jsonunit matchers.
+     *
      * @param matcherName name to reference in placeholder.
      * @param matcher     implementation.
      *                    <br/>usage:<br/>

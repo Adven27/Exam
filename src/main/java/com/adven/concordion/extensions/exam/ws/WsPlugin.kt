@@ -3,6 +3,7 @@ package com.adven.concordion.extensions.exam.ws
 import com.adven.concordion.extensions.exam.core.ExamExtension
 import com.adven.concordion.extensions.exam.core.ExamPlugin
 import com.adven.concordion.extensions.exam.core.commands.ExamCommand
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings
 import io.restassured.RestAssured
 import net.javacrumbs.jsonunit.core.Configuration
 import org.xmlunit.diff.DefaultNodeMatcher
@@ -10,7 +11,7 @@ import org.xmlunit.diff.ElementSelectors.byName
 import org.xmlunit.diff.ElementSelectors.byNameAndText
 import org.xmlunit.diff.NodeMatcher
 
-//@SuppressFBWarnings("RV_RETURN_VALUE_IGNORED_NO_SIDE_EFFECT")
+@SuppressFBWarnings("ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD")
 class WsPlugin constructor(
     uri: String = "http://localhost", basePath: String = "", port: Int = 8080,
     private val nodeMatcher: NodeMatcher = DefaultNodeMatcher(byNameAndText, byName),
