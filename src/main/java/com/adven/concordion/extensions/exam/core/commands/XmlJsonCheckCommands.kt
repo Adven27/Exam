@@ -3,11 +3,11 @@ package com.adven.concordion.extensions.exam.core.commands
 import com.adven.concordion.extensions.exam.core.html.*
 import com.adven.concordion.extensions.exam.core.resolveJson
 import com.adven.concordion.extensions.exam.core.resolveXml
-import com.adven.concordion.extensions.exam.ws.RestResultRenderer
 import com.adven.concordion.extensions.exam.core.utils.content
 import com.adven.concordion.extensions.exam.core.utils.equalToXml
 import com.adven.concordion.extensions.exam.core.utils.prettyPrintJson
 import com.adven.concordion.extensions.exam.core.utils.prettyPrintXml
+import com.adven.concordion.extensions.exam.ws.RestResultRenderer
 import net.javacrumbs.jsonunit.JsonAssert
 import net.javacrumbs.jsonunit.core.Configuration
 import org.concordion.api.CommandCall
@@ -16,7 +16,7 @@ import org.concordion.api.ResultRecorder
 import org.xmlunit.diff.NodeMatcher
 
 class XmlCheckCommand(name: String, tag: String, private val cfg: Configuration, private val nodeMatcher: NodeMatcher) :
-        ExamVerifyCommand(name, tag, RestResultRenderer()) {
+    ExamVerifyCommand(name, tag, RestResultRenderer()) {
 
     override fun verify(cmd: CommandCall, eval: Evaluator, resultRecorder: ResultRecorder) {
         val root = cmd.html()
@@ -24,11 +24,11 @@ class XmlCheckCommand(name: String, tag: String, private val cfg: Configuration,
         val expected = eval.resolveXml(root.content(eval).trim()).prettyPrintXml()
         val container = pre(expected).css("xml")
         root.removeAllChild()(
-                tableSlim()(
-                        trWithTDs(
-                                container
-                        )
+            tableSlim()(
+                trWithTDs(
+                    container
                 )
+            )
         )
         checkXmlContent(actual, expected, resultRecorder, container)
     }
@@ -41,14 +41,14 @@ class XmlCheckCommand(name: String, tag: String, private val cfg: Configuration,
         } catch (e: Exception) {
             resultRecorder.failure(root, actual, expected)
             root.below(
-                    span(e.message, CLASS to "exceptionMessage")
+                span(e.message, CLASS to "exceptionMessage")
             )
         }
     }
 }
 
 class JsonCheckCommand(name: String, tag: String, private val cfg: Configuration) :
-        ExamVerifyCommand(name, tag, RestResultRenderer()) {
+    ExamVerifyCommand(name, tag, RestResultRenderer()) {
 
     override fun verify(cmd: CommandCall, eval: Evaluator, resultRecorder: ResultRecorder) {
         val root = cmd.html()
@@ -56,11 +56,11 @@ class JsonCheckCommand(name: String, tag: String, private val cfg: Configuration
         val expected = eval.resolveJson(root.content(eval).trim()).prettyPrintJson()
         val container = pre(expected).css("json")
         root.removeAllChild()(
-                tableSlim()(
-                        trWithTDs(
-                                container
-                        )
+            tableSlim()(
+                trWithTDs(
+                    container
                 )
+            )
         )
         checkJsonContent(actual, expected, resultRecorder, container)
     }
@@ -73,7 +73,7 @@ class JsonCheckCommand(name: String, tag: String, private val cfg: Configuration
             if (e is AssertionError || e is Exception) {
                 resultRecorder.failure(root, actual.prettyPrintJson(), expected.prettyPrintJson())
                 root.below(
-                        span(e.message, CLASS to "exceptionMessage")
+                    span(e.message, CLASS to "exceptionMessage")
                 )
             } else throw e
         }

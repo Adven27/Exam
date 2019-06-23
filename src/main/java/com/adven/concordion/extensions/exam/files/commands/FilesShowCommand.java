@@ -35,7 +35,7 @@ public class FilesShowCommand extends BaseCommand {
 
             String[] fileNames = filesLoader.getFileNames(evalPath);
 
-            if (fileNames == null || fileNames.length == 0) {
+            if (fileNames.length == 0) {
                 addRow(element, EMPTY);
             } else {
                 for (String fName : fileNames) {

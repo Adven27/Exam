@@ -15,10 +15,9 @@ import org.dbunit.ext.postgresql.PostgresqlDataTypeFactory
 import java.util.concurrent.ConcurrentHashMap
 
 /**
- * Fix for warning "Potential problem found:
- * The configured data type factory 'class org.dbunit.dataset.datatype.DefaultDataTypeFactory'"
+ * @param config properties for org.dbunit.database.DatabaseConfig
  */
-open class ExamDbTester @JvmOverloads constructor(
+open class DbTester @JvmOverloads constructor(
         driver: String,
         url: String,
         user: String,
@@ -31,7 +30,7 @@ open class ExamDbTester @JvmOverloads constructor(
         const val DEFAULT_DATASOURCE = "default"
     }
 
-    val executors = ConcurrentHashMap<String, ExamDbTester>()
+    val executors = ConcurrentHashMap<String, DbTester>()
 
     override fun getConnection(): IDatabaseConnection {
         val conn = super.getConnection()

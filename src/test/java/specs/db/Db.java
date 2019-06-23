@@ -1,6 +1,6 @@
 package specs.db;
 
-import com.adven.concordion.extensions.exam.db.ExamDbTester;
+import com.adven.concordion.extensions.exam.db.DbTester;
 import com.adven.concordion.extensions.exam.db.TableData;
 import org.concordion.api.BeforeSpecification;
 import org.dbunit.IDatabaseTester;
@@ -19,7 +19,7 @@ public class Db extends Specs {
     private final IDatabaseTester dbTester = dbTester();
 
     private static IDatabaseTester dbTester() {
-        return new ExamDbTester(
+        return new DbTester(
             "org.h2.Driver", "jdbc:h2:mem:test;DB_CLOSE_DELAY=-1;"
             + "INIT=CREATE SCHEMA IF NOT EXISTS SA\\;SET SCHEMA SA\\;" + CREATE_TABLES,
             "sa", "");

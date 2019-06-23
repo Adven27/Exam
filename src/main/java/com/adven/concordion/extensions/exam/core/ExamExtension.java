@@ -11,6 +11,10 @@ import org.hamcrest.Matcher;
 import org.xmlunit.diff.DefaultNodeMatcher;
 import org.xmlunit.diff.NodeMatcher;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import static java.util.Collections.addAll;
 import static net.javacrumbs.jsonunit.JsonAssert.when;
 import static net.javacrumbs.jsonunit.core.Option.IGNORING_ARRAY_ORDER;
 import static org.xmlunit.diff.ElementSelectors.byName;
@@ -26,23 +30,19 @@ public class ExamExtension implements ConcordionExtension {
         .withMatcher("xmlDateWithinNow", new XMLDateWithin());
 
     private Configuration jsonUnitCfg;
-
     private NodeMatcher nodeMatcher;
-
-    private final CommandRegistry registry;
+    private final List<ExamPlugin> plugins = new ArrayList<>();
 
     public ExamExtension() {
         jsonUnitCfg = DEFAULT_JSON_UNIT_CFG;
         nodeMatcher = DEFAULT_NODE_MATCHER;
-        registry = new CommandRegistry(jsonUnitCfg, nodeMatcher);
     }
 
     /**
-     * matcherName - name to reference in placeholder.
-     * matcher - implementation.
-     * usage example:
-     * matcherName↓    ↓parameter
-     * !{xmlDateWithinNow 1min}
+     * @param matcherName name to reference in placeholder.
+     * @param matcher     implementation.
+     *                    <br/>usage:<br/>
+     *                    !{matcherName param1 param2}
      */
     @SuppressWarnings("unused")
     public ExamExtension addPlaceholderMatcher(String matcherName, Matcher<?> matcher) {
@@ -58,20 +58,22 @@ public class ExamExtension implements ConcordionExtension {
 
     @SuppressWarnings("unused")
     public ExamExtension addPlugin(ExamPlugin plugin) {
-        registry.register(plugin.commands());
+        plugins.add(plugin);
         return this;
     }
 
     @SuppressWarnings("unused")
-    public ExamExtension addPlugins(ExamPlugin... plugins) {
-        for (ExamPlugin plugin : plugins) {
-            registry.register(plugin.commands());
-        }
+    public ExamExtension withPlugins(ExamPlugin... plugins) {
+        addAll(this.plugins, plugins);
         return this;
     }
 
     @Override
     public void addTo(ConcordionExtender ex) {
+        CommandRegistry registry = new CommandRegistry(jsonUnitCfg, nodeMatcher);
+        for (ExamPlugin plugin : plugins) {
+            registry.register(plugin.commands());
+        }
         new CodeMirrorExtension().addTo(ex);
         new BootstrapExtension().addTo(ex);
 

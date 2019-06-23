@@ -10,7 +10,7 @@ import com.adven.concordion.extensions.exam.core.utils.equalToXml
 import com.adven.concordion.extensions.exam.core.utils.prettyPrintJson
 import com.adven.concordion.extensions.exam.core.utils.prettyPrintXml
 import com.adven.concordion.extensions.exam.ws.RequestExecutor.Companion.fromEvaluator
-import com.jayway.restassured.http.Method
+import io.restassured.http.Method
 import net.javacrumbs.jsonunit.JsonAssert.assertJsonEquals
 import net.javacrumbs.jsonunit.core.Configuration
 import org.concordion.api.CommandCall
@@ -41,9 +41,15 @@ class PutCommand(name: String, tag: String) : RequestCommand(name, tag, Method.P
 class GetCommand(name: String, tag: String) : RequestCommand(name, tag, Method.GET)
 class PostCommand(name: String, tag: String) : RequestCommand(name, tag, Method.POST)
 class DeleteCommand(name: String, tag: String) : RequestCommand(name, tag, Method.DELETE)
-class SoapCommand(name: String, tag: String) : RequestCommand(name, tag, Method.POST, "application/soap+xml; charset=UTF-8;")
+class SoapCommand(name: String, tag: String) :
+    RequestCommand(name, tag, Method.POST, "application/soap+xml; charset=UTF-8;")
 
-sealed class RequestCommand(name: String, tag: String, val method: Method, private val contentType: String = "application/json") : ExamCommand(name, tag) {
+sealed class RequestCommand(
+    name: String,
+    tag: String,
+    private val method: Method,
+    private val contentType: String = "application/json"
+) : ExamCommand(name, tag) {
 
     override fun setUp(commandCall: CommandCall?, evaluator: Evaluator?, resultRecorder: ResultRecorder?) {
         val executor = RequestExecutor.newExecutor(evaluator!!).method(method)
@@ -99,11 +105,11 @@ sealed class RequestCommand(name: String, tag: String, val method: Method, priva
 
     private fun addRequestDescTo(root: Html, url: String, type: String, cookies: String?) {
         val div = div()(
-                h(4, "")(
-                    badge(method.name, "success"),
-                    badge(type, "info"),
-                    code(url)
-                )
+            h(4, "")(
+                badge(method.name, "success"),
+                badge(type, "info"),
+                code(url)
+            )
         )
         if (cookies != null) {
             div(
@@ -127,8 +133,10 @@ open class RestVerifyCommand(name: String, tag: String) : ExamVerifyCommand(name
 
 class ExpectedStatusCommand(name: String, tag: String) : RestVerifyCommand(name, tag) {
     override fun verify(cmd: CommandCall?, evaluator: Evaluator?, resultRecorder: ResultRecorder) {
-        Check.isFalse(cmd!!.hasChildCommands(),
-                "Nesting commands inside an 'expectedStatus' is not supported")
+        Check.isFalse(
+            cmd!!.hasChildCommands(),
+            "Nesting commands inside an 'expectedStatus' is not supported"
+        )
 
         val element = cmd.html()
         val expected = element.text()
@@ -151,7 +159,8 @@ class CaseCheckCommand(name: String, tag: String) : ExamCommand(name, tag) {
     }
 }
 
-class CaseCommand(tag: String, private val cfg: Configuration, private val nodeMatcher: NodeMatcher) : RestVerifyCommand(CASE, tag) {
+class CaseCommand(tag: String, private val cfg: Configuration, private val nodeMatcher: NodeMatcher) :
+    RestVerifyCommand(CASE, tag) {
     private val cases = ArrayList<Map<String, Any?>>()
     private var number = 0
 
@@ -170,22 +179,24 @@ class CaseCommand(tag: String, private val cfg: Configuration, private val nodeM
         val body = caseRoot.first(BODY)
         val expected = caseRoot.firstOrThrow(EXPECTED)
         caseRoot.remove(body, expected)(
-                cases.map {
-                    val expectedToAdd = tag(EXPECTED).text(expected.text())
-                    expected.attr(PROTOCOL)?.let { expectedToAdd.attrs(PROTOCOL to it) }
-                    expected.attr(STATUS_CODE)?.let { expectedToAdd.attrs(STATUS_CODE to it) }
-                    expected.attr(REASON_PHRASE)?.let { expectedToAdd.attrs(REASON_PHRASE to it) }
-                    expected.attr(FROM)?.let { expectedToAdd.attrs(FROM to it) }
-                    tag(CASE)(
-                            if (body == null)
-                                null
-                            else tag(BODY).text(body.text()).apply {
-                                body.attr(FROM)?.let { this.attrs(FROM to it) }
-                            },
-                            expectedToAdd
-                    )
-                })
+            cases.map {
+                val expectedToAdd = tag(EXPECTED).text(expected.text())
+                expected.attr(PROTOCOL)?.let { expectedToAdd.attrs(PROTOCOL to it) }
+                expected.attr(STATUS_CODE)?.let { expectedToAdd.attrs(STATUS_CODE to it) }
+                expected.attr(REASON_PHRASE)?.let { expectedToAdd.attrs(REASON_PHRASE to it) }
+                expected.attr(FROM)?.let { expectedToAdd.attrs(FROM to it) }
+                tag(CASE)(
+                    if (body == null)
+                        null
+                    else tag(BODY).text(body.text()).apply {
+                        body.attr(FROM)?.let { this.attrs(FROM to it) }
+                    },
+                    expectedToAdd
+                )
+            })
     }
+
+    private val MAX_WIDTH = "max-width:550px"
 
     override fun execute(cmd: CommandCall, eval: Evaluator, resultRecorder: ResultRecorder) {
         val childCommands = cmd.children
@@ -201,26 +212,23 @@ class CaseCommand(tag: String, private val cfg: Configuration, private val nodeM
 
             cookies?.let { executor.cookies(resolveJson(it, eval)) }
 
-            executor.urlParams(if (urlParams == null) null else resolveJson(
-                urlParams,
-                eval
-            )
-            )
+            executor.urlParams(if (urlParams == null) null else resolveJson(urlParams, eval))
 
             val caseTR = tr().insteadOf(root.firstOrThrow(CASE))
             val body = caseTR.first(BODY)
             if (body != null) {
                 val content = body.content(eval)
+                var bodyStr: String
                 if (isJson) {
-                    val bodyStr = eval.resolveJson(content)
-                    td().insteadOf(body).css("json").removeAllChild().text(bodyStr.prettyPrintJson())
-                    executor.body(bodyStr)
+                    bodyStr = eval.resolveJson(content)
+                    td().insteadOf(body).css("json").style(MAX_WIDTH).removeAllChild().text(bodyStr.prettyPrintJson())
                 } else {
-                    val bodyStr = eval.resolveXml(content)
+                    bodyStr = eval.resolveXml(content)
 
-                    td().insteadOf(body).css("xml").removeAllChild().text(bodyStr.prettyPrintXml())
-                    executor.body(bodyStr)
+                    td().insteadOf(body).css("xml").style(MAX_WIDTH).removeAllChild()
+                        .text(bodyStr.prettyPrintXml())
                 }
+                executor.body(bodyStr)
             }
 
             val expected = caseTR.firstOrThrow(EXPECTED)
@@ -250,7 +258,7 @@ class CaseCommand(tag: String, private val cfg: Configuration, private val nodeM
             if (e is AssertionError || e is Exception) {
                 resultRecorder.failure(root, prettyActual, expected)
                 root.below(
-                        span(e.message, CLASS to "exceptionMessage")
+                    span(e.message, CLASS to "exceptionMessage")
                 )
             } else throw e
         }
@@ -265,15 +273,16 @@ class CaseCommand(tag: String, private val cfg: Configuration, private val nodeM
         } catch (e: Exception) {
             resultRecorder.failure(root, prettyActual, expected)
             root.below(
-                    span(e.message, CLASS to "exceptionMessage")
+                span(e.message, CLASS to "exceptionMessage")
             )
         }
     }
 
     private fun expectedStatus(expected: Html) = StatusBuilder(
-            expected.takeAwayAttr(PROTOCOL),
-            expected.takeAwayAttr(STATUS_CODE),
-            expected.takeAwayAttr(REASON_PHRASE)).build()
+        expected.takeAwayAttr(PROTOCOL),
+        expected.takeAwayAttr(STATUS_CODE),
+        expected.takeAwayAttr(REASON_PHRASE)
+    ).build()
 
     override fun verify(cmd: CommandCall, evaluator: Evaluator, resultRecorder: ResultRecorder) {
         val executor = fromEvaluator(evaluator)
@@ -281,20 +290,19 @@ class CaseCommand(tag: String, private val cfg: Configuration, private val nodeM
         val rt = cmd.html()
         val caseDesc = caseDesc(rt.attr(DESC), evaluator)
         rt.attrs("data-type" to CASE, "id" to caseDesc).above(
-                tr()(
-                        td(caseDesc, "colspan" to colspan).muted()))
+            tr()(
+                td(caseDesc, "colspan" to colspan).muted()
+            )
+        )
     }
 
     private fun caseDesc(desc: String?, eval: Evaluator): String =
-            "${++number}) " + if (desc == null) "" else resolveJson(
-                desc,
-                eval
-            )
+        "${++number}) " + if (desc == null) "" else resolveJson(desc, eval)
 
     private fun check(root: Html, eval: Evaluator, resultRecorder: ResultRecorder, json: Boolean) {
         val expected = resolve(json, root.content(eval), eval)
 
-        root.removeAllChild().text(expected).css(if (json) "json" else "xml")
+        root.removeAllChild().text(expected).css(if (json) "json" else "xml").style(MAX_WIDTH)
 
         val executor = fromEvaluator(eval)
         fillCaseContext(root, executor)
@@ -327,14 +335,18 @@ class CaseCommand(tag: String, private val cfg: Configuration, private val nodeM
                     div()(
                         italic("${executor.requestMethod()} "),
                         code(executor.requestUrlWithParams()),
-                        *cookiesTags(cookies)))))
+                        *cookiesTags(cookies)
+                    )
+                )
+            )
+        )
     }
 
     private fun cookiesTags(cookies: String?): Array<Html> {
         return (if (cookies != null && !cookies.isEmpty()) {
             listOf(
-                    italic(" Cookies "),
-                    code(cookies)
+                italic(" Cookies "),
+                code(cookies)
             )
         } else listOf(span(""))).toTypedArray()
     }

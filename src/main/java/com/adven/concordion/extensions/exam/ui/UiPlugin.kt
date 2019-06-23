@@ -2,6 +2,7 @@ package com.adven.concordion.extensions.exam.ui
 
 import com.adven.concordion.extensions.exam.core.ExamPlugin
 import com.adven.concordion.extensions.exam.core.commands.ExamCommand
+import com.codeborne.selenide.Configuration
 import com.codeborne.selenide.WebDriverRunner
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings
 import io.github.bonigarcia.wdm.DriverManagerType
@@ -13,21 +14,23 @@ import java.util.Collections.singletonMap
 
 @SuppressFBWarnings("ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD")
 open class UiPlugin @JvmOverloads constructor(
-    var timeout: Long = com.codeborne.selenide.Configuration.timeout,
+    var timeout: Long = Configuration.timeout,
     browser: String = WebDriverRunner.CHROME,
     version: String? = null,
-    baseUrl: String = com.codeborne.selenide.Configuration.baseUrl,
+    baseUrl: String = Configuration.baseUrl,
     headless: Boolean = true,
     private var capabilities: DesiredCapabilities? = null
 ) : ExamPlugin {
 
-//    private var webDriverInited: Boolean = false
+    companion object {
+        private var webDriverInited: Boolean = false
+    }
 
     init {
-//        if (!webDriverInited) {
-            com.codeborne.selenide.Configuration.timeout = timeout
-            com.codeborne.selenide.Configuration.baseUrl = baseUrl
-            com.codeborne.selenide.Configuration.browser = browser
+        if (!webDriverInited) {
+            Configuration.timeout = timeout
+            Configuration.baseUrl = baseUrl
+            Configuration.browser = browser
             when (browser) {
                 WebDriverRunner.FIREFOX ->
                     WebDriverManager.getInstance(DriverManagerType.FIREFOX).version(version).setup()
@@ -40,8 +43,8 @@ open class UiPlugin @JvmOverloads constructor(
                     }
                 }
             }
-//            webDriverInited = true
-//        }
+            webDriverInited = true
+        }
     }
 
     private fun setHeadlessChromeOptions() {

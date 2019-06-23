@@ -1,7 +1,7 @@
 package com.adven.concordion.extensions.exam.files.commands;
 
-import com.adven.concordion.extensions.exam.files.FilesLoader;
 import com.adven.concordion.extensions.exam.core.html.Html;
+import com.adven.concordion.extensions.exam.files.FilesLoader;
 import org.concordion.api.CommandCall;
 import org.concordion.api.Evaluator;
 import org.concordion.api.ResultRecorder;
@@ -35,13 +35,13 @@ public class FilesSetCommand extends BaseCommand {
             for (Html f : root.childs()) {
                 if ("file".equals(f.localName())) {
                     final FilesLoader.FileTag fileTag = filesLoader.readFileTag(f, evaluator);
-                    filesLoader.createFileWith(evalPath + separator + fileTag.name(), fileTag.content());
+                    filesLoader.createFileWith(evalPath + separator + fileTag.getName(), fileTag.getContent());
                     root.childs(
                         trWithTDs(
-                            span(fileTag.name()),
-                            codeXml(fileTag.content()).attrs(
-                                    to("autoFormat", String.valueOf(fileTag.autoFormat())),
-                                    to("lineNumbers", String.valueOf(fileTag.lineNumbers()))
+                            span(fileTag.getName()),
+                            codeXml(fileTag.getContent()).attrs(
+                                to("autoFormat", String.valueOf(fileTag.getAutoFormat())),
+                                to("lineNumbers", String.valueOf(fileTag.getLineNumbers()))
                             ))).remove(f);
 
                     empty = false;

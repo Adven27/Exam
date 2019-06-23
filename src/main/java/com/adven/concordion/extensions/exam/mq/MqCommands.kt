@@ -4,9 +4,9 @@ import com.adven.concordion.extensions.exam.core.commands.ExamCommand
 import com.adven.concordion.extensions.exam.core.commands.ExamVerifyCommand
 import com.adven.concordion.extensions.exam.core.html.*
 import com.adven.concordion.extensions.exam.core.resolveJson
-import com.adven.concordion.extensions.exam.ws.RestResultRenderer
 import com.adven.concordion.extensions.exam.core.utils.content
 import com.adven.concordion.extensions.exam.core.utils.prettyPrintJson
+import com.adven.concordion.extensions.exam.ws.RestResultRenderer
 import net.javacrumbs.jsonunit.JsonAssert
 import net.javacrumbs.jsonunit.core.Configuration
 import org.concordion.api.CommandCall
@@ -29,24 +29,27 @@ open class MqTesterAdapter : MqTester {
     override fun purge() = Unit
 }
 
-class MqCheckCommand(name: String, tag: String, private val cfg: Configuration, private val mqTesters: Map<String, MqTester>) :
-        ExamVerifyCommand(name, tag, RestResultRenderer()) {
+class MqCheckCommand(
+    name: String,
+    tag: String,
+    private val cfg: Configuration,
+    private val mqTesters: Map<String, MqTester>
+) :
+    ExamVerifyCommand(name, tag, RestResultRenderer()) {
 
     override fun verify(cmd: CommandCall, eval: Evaluator, resultRecorder: ResultRecorder) {
         val root = cmd.html()
         val mqName = root.takeAwayAttr("name")
-        val mqTester = mqTesters[mqName]
-                ?: throw IllegalArgumentException("MQ with name $mqName not registered in Exam")
-        val actual = mqTester.receive()
+        val actual = mqTesters.getOrFail(mqName).receive()
         val expected = eval.resolveJson(root.content(eval).trim())
         val container = pre(expected).css("json").attr("autoFormat", "true")
         root.removeAllChild()(
-                tableSlim()(
-                        caption(mqName)(italic("", CLASS to "fa fa-envelope-open fa-pull-left fa-border")),
-                        trWithTDs(
-                                container
-                        )
+            tableSlim()(
+                caption(mqName)(italic("", CLASS to "fa fa-envelope-open fa-pull-left fa-border")),
+                trWithTDs(
+                    container
                 )
+            )
         )
         checkJsonContent(actual, expected, resultRecorder, container)
     }
@@ -59,7 +62,7 @@ class MqCheckCommand(name: String, tag: String, private val cfg: Configuration, 
             if (e is AssertionError || e is Exception) {
                 resultRecorder.failure(root, actual.prettyPrintJson(), expected.prettyPrintJson())
                 root.below(
-                        span(e.message, CLASS to "exceptionMessage")
+                    span(e.message, CLASS to "exceptionMessage")
                 )
             } else throw e
         }
@@ -73,15 +76,16 @@ class MqSendCommand(name: String, tag: String, private val mqTesters: Map<String
         val mqName = root.takeAwayAttr("name")
         val message = eval.resolveJson(root.content(eval).trim())
         root.removeAllChild()(
-                tableSlim()(
-                        caption(mqName)(italic("", CLASS to "fa fa-envelope fa-pull-left fa-border")),
-                        trWithTDs(
-                                pre(message).css("json")
-                        )
+            tableSlim()(
+                caption(mqName)(italic("", CLASS to "fa fa-envelope fa-pull-left fa-border")),
+                trWithTDs(
+                    pre(message).css("json")
                 )
+            )
         )
-        val mqTester = mqTesters[mqName]
-                ?: throw IllegalArgumentException("MQ with name $mqName not registered in Exam")
-        mqTester.send(message)
+        mqTesters.getOrFail(mqName).send(message)
     }
 }
+
+private fun Map<String, MqTester>.getOrFail(mqName: String?): MqTester = this[mqName]
+    ?: throw IllegalArgumentException("MQ with name $mqName not registered in MqPlugin")

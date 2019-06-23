@@ -19,9 +19,9 @@ import java.io.FileNotFoundException
 import java.io.StringReader
 
 fun String.equalToXml(expected: String, nodeMatcher: NodeMatcher?, configuration: Configuration?): Boolean {
-    val diff = DiffBuilder.compare(expected.trim { it <= ' ' })
+    val diff = DiffBuilder.compare(expected.trim())
             .checkForSimilar().withNodeMatcher(nodeMatcher)
-            .withTest(this.trim { it <= ' ' })
+            .withTest(this.trim())
             .withDifferenceEvaluator(
                     DifferenceEvaluators.chain(
                             DifferenceEvaluators.Default,

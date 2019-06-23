@@ -1,6 +1,6 @@
 package com.adven.concordion.extensions.exam.db.commands
 
-import com.adven.concordion.extensions.exam.db.ExamDbTester
+import com.adven.concordion.extensions.exam.db.DbTester
 import com.adven.concordion.extensions.exam.db.DbResultRenderer
 import com.adven.concordion.extensions.exam.core.html.*
 import com.adven.concordion.extensions.exam.core.resolveToObj
@@ -28,7 +28,7 @@ import java.sql.Timestamp
 import java.util.*
 import java.util.regex.Pattern
 
-class DBCheckCommand(name: String, tag: String, dbTester: ExamDbTester) : DBCommand(name, tag, dbTester) {
+class DBCheckCommand(name: String, tag: String, dbTester: DbTester) : DBCommand(name, tag, dbTester) {
     private val listeners = Announcer.to(AssertEqualsListener::class.java)
 
     private val actualTable: ITable
@@ -114,7 +114,7 @@ class DBCheckCommand(name: String, tag: String, dbTester: ExamDbTester) : DBComm
                                 diffs.firstOrNull { diff ->
                                     diff.rowIndex == row && diff.columnName == it
                                 }?.markAsFailure(resultRecorder, this) ?: markAsSuccess(resultRecorder).text(
-                                    if (text().isRegex() || text().isWithin()) """ (${actual[row, it]})""" else ""
+                                    if (text().isRegex() || text().isWithin()) " (${actual[row, it]})" else ""
                                 )
                             }
                         })

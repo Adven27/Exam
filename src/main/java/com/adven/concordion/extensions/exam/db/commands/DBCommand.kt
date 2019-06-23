@@ -1,7 +1,7 @@
 package com.adven.concordion.extensions.exam.db.commands
 
 import com.adven.concordion.extensions.exam.core.commands.ExamCommand
-import com.adven.concordion.extensions.exam.db.ExamDbTester
+import com.adven.concordion.extensions.exam.db.DbTester
 import com.adven.concordion.extensions.exam.db.TableData
 import com.adven.concordion.extensions.exam.core.html.*
 import com.adven.concordion.extensions.exam.core.resolveToObj
@@ -12,7 +12,7 @@ import org.dbunit.dataset.Column
 import org.dbunit.dataset.ITable
 import org.dbunit.dataset.filter.DefaultColumnFilter
 
-open class DBCommand(name: String, tag: String, protected val dbTester: ExamDbTester) : ExamCommand(name, tag) {
+open class DBCommand(name: String, tag: String, protected val dbTester: DbTester) : ExamCommand(name, tag) {
     private val remarks = HashMap<String, Int>()
     private val colParser = ColParser()
     protected lateinit var expectedTable: ITable
@@ -29,7 +29,7 @@ open class DBCommand(name: String, tag: String, protected val dbTester: ExamDbTe
         remarks.clear()
         where = root.takeAwayAttr("where", eval)
         orderBy = root.takeAwayAttr("orderBy", eval)?.split(",")?.map { it.trim() }?.toTypedArray() ?: emptyArray()
-        ds = root.takeAwayAttr("ds", ExamDbTester.DEFAULT_DATASOURCE)
+        ds = root.takeAwayAttr("ds", DbTester.DEFAULT_DATASOURCE)
         expectedTable = TableData.filled(
                 root.takeAwayAttr("table", eval)!!,
                 RowParser(root, "row", eval!!).parse(),

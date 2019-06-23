@@ -1,9 +1,9 @@
 package com.adven.concordion.extensions.exam.files.commands;
 
-import com.adven.concordion.extensions.exam.files.FilesLoader;
-import com.adven.concordion.extensions.exam.files.FilesResultRenderer;
 import com.adven.concordion.extensions.exam.core.html.Html;
 import com.adven.concordion.extensions.exam.core.utils.CheckUtilsKt;
+import com.adven.concordion.extensions.exam.files.FilesLoader;
+import com.adven.concordion.extensions.exam.files.FilesResultRenderer;
 import net.javacrumbs.jsonunit.core.Configuration;
 import org.concordion.api.*;
 import org.concordion.api.listener.AssertEqualsListener;
@@ -52,7 +52,7 @@ public class FilesCheckCommand extends BaseCommand {
 
             String[] names = filesLoader.getFileNames(evalPath);
 
-            List<String> surplusFiles = names == null || names.length == 0
+            List<String> surplusFiles = names.length == 0
                 ? new ArrayList<String>()
                 : new ArrayList<>(asList(names));
 
@@ -62,8 +62,8 @@ public class FilesCheckCommand extends BaseCommand {
             for (Html f : root.childs()) {
                 if ("file".equals(f.localName())) {
                     final FilesLoader.FileTag fileTag = filesLoader.readFileTag(f, evaluator);
-                    final Object resolvedName = resolveToObj(fileTag.name(), evaluator);
-                    final String expectedName = resolvedName != null ? resolvedName.toString() : fileTag.name();
+                    final Object resolvedName = resolveToObj(fileTag.getName(), evaluator);
+                    final String expectedName = resolvedName != null ? resolvedName.toString() : fileTag.getName();
 
                     Html fileNameTD = td(expectedName);
                     Html pre = codeXml("");
@@ -76,7 +76,7 @@ public class FilesCheckCommand extends BaseCommand {
                         announceSuccess(fileNameTD.el());
                         surplusFiles.remove(expectedName);
 
-                        if (fileTag.content() == null) {
+                        if (fileTag.getContent() == null) {
                             String id = UUID.randomUUID().toString();
                             final String content = filesLoader.readFile(evalPath, expectedName);
                             if (!isNullOrEmpty(content)) {
@@ -90,9 +90,9 @@ public class FilesCheckCommand extends BaseCommand {
                         } else {
                             checkContent(
                                 evalPath + separator + expectedName,
-                                fileTag.content(),
+                                fileTag.getContent(),
                                 resultRecorder,
-                                pre.text(fileTag.content()).el()
+                                pre.text(fileTag.getContent()).el()
                             );
                         }
                     }
@@ -101,8 +101,8 @@ public class FilesCheckCommand extends BaseCommand {
                             fileNameTD,
                             td().childs(
                                 pre.attrs(
-                                        to("autoFormat", String.valueOf(fileTag.autoFormat())),
-                                        to("lineNumbers", String.valueOf(fileTag.lineNumbers())))))
+                                    to("autoFormat", String.valueOf(fileTag.getAutoFormat())),
+                                    to("lineNumbers", String.valueOf(fileTag.getLineNumbers())))))
                     ).remove(f);
                     empty = false;
                 }

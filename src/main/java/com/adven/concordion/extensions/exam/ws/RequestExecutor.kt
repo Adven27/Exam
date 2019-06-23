@@ -1,9 +1,9 @@
 package com.adven.concordion.extensions.exam.ws
 
-import com.jayway.restassured.RestAssured.given
-import com.jayway.restassured.http.Method
-import com.jayway.restassured.http.Method.*
-import com.jayway.restassured.response.Response
+import io.restassured.RestAssured.given
+import io.restassured.http.Method
+import io.restassured.http.Method.*
+import io.restassured.response.Response
 import org.concordion.api.Evaluator
 
 class RequestExecutor private constructor() {

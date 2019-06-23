@@ -11,7 +11,6 @@ import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock.*
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig
 import com.github.tomakehurst.wiremock.extension.responsetemplating.ResponseTemplateTransformer
-import com.jayway.restassured.RestAssured
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings
 import org.concordion.api.AfterSuite
 import org.concordion.api.BeforeSuite
@@ -28,10 +27,10 @@ import java.util.*
 open class Specs {
 
     @SuppressFBWarnings(value = ["URF_UNREAD_FIELD"], justification = "concordion extension declaration")
-    @Extension
     @Suppress("unused")
-    private val exam = ExamExtension().addPlugins(
-        WsPlugin { RestAssured.port = PORT },
+    @Extension
+    private val exam = ExamExtension().withPlugins(
+        WsPlugin(PORT),
         DbPlugin(
             "org.h2.Driver",
             "jdbc:h2:mem:test;INIT=CREATE SCHEMA IF NOT EXISTS SA\\;SET SCHEMA SA",

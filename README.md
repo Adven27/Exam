@@ -1,7 +1,7 @@
 [![Get automatic notifications about new "exam" versions](https://www.bintray.com/docs/images/bintray_badge_bw.png)](https://bintray.com/adven27/exam/exam?source=watch)
 
 [![Build Status](https://travis-ci.org/Adven27/Exam.svg?branch=master)](https://travis-ci.org/Adven27/Exam)
-[ ![Download](https://api.bintray.com/packages/adven27/exam/exam/images/download.svg?version=1.1.1) ](https://bintray.com/adven27/exam/exam/1.1.1/link)
+[ ![Download](https://api.bintray.com/packages/adven27/exam/exam/images/download.svg?version=2.0.0) ](https://bintray.com/adven27/exam/exam/2.0.0/link)
 
 # Exam
 [Concordion](https://github.com/concordion/concordion) extension 
@@ -22,7 +22,7 @@ Maven
 <dependency>
     <groupId>org.adven.concordion.ext</groupId>
     <artifactId>exam</artifactId>
-    <version>1.1.1</version>
+    <version>2.0.0</version>
 </dependency>
 ```
 
@@ -32,55 +32,74 @@ repositories {
     jcenter()
 }
 
-testCompile "org.adven.concordion.ext:exam:1.1.1"
+testCompile "org.adven.concordion.ext:exam:2.0.0"
 ```
 ### 2) Use
 
 For detailed info, [see original tutorial](http://concordion.org/tutorial/java/markdown/)
 
-Specs.java
+`specs.Specs.java`
 ```java
 @RunWith(ConcordionRunner.class)
 @ConcordionOptions(declareNamespaces = {"c", "http://www.concordion.org/2007/concordion", "e", ExamExtension.NS})
 public class Specs {
     @Extension
-    private final ExamExtension exam = new ExamExtension().
-            rest().end().
-            db().end();
+    private final ExamExtension exam = new ExamExtension().withPlugins(
+        new WsPlugin("/app", 8888),
+        new DbPlugin("org.postgresql.Driver", "jdbc:postgresql://localhost:5432/postgres", "postgres", "postgres")
+    );
 }
 ```
 
-Specs.md
-```html
-#Some markdown header
+`specs.usercreation.UserCreation.java`
+```java
+public class UserCreation extends Specs {
+}
+```
 
-<div>
-    <e:example name="My dummy example">
+`specs\Specs.md`
+```html
+# API
+
+- [User creation]( usercreation/UserCreation.html "c:run")
+```
+`specs\usercreation\UserCreation.html`
+```html
+<html xmlns:e="http://exam.extension.io">
+<body>
+    <h1>User creation</h1>
+    <e:example name="My dummy user creation example">
         <e:given>
-          <e:db-set table="PERSON" cols="NAME, AGE">
-              <row>Andrew,30</row>
-              <row>Carl,20</row>
+          Given users:
+          <e:db-set table="user" cols="name, age, id=1..10">
+              <e:row>Andrew, 20</e:row>
+              <e:row>Bob   , 30</e:row>
           </e:db-set>
         </e:given>
-        <e:post url="relative/url">
-          <e:case desc="Happy-path">        
-            <body>
-                {"exact": "ok", "template": 1}
-            </body>
-            <expected>
-                {"exact": "ok", "template": "!{number}"}
-            </expected>
+        <e:post url="users">
+          <e:case desc="When name and age was posted user should be created and id should be returned">        
+            <e:body> {"name": "Carl", "age": 40} </e:body>
+            <e:expected> {"id": "!{number}"} </e:expected>
+            <e:check>
+                <e:db-check table="person" cols="name, age">
+                  <e:row>Andrew, 20</e:row>
+                  <e:row>Bob   , 30</e:row>
+                  <e:row>Carl  , 40</e:row>
+                </e:db-check>
+            </e:check>
           </e:case>      
-          <e:case desc="Expected to fail">
-            <body>
-                {"exact": "not ok", "template": "not number"}
-            </body>
-            <expected>
-                {"exact": "ok", "template": "!{number}"}
-            </expected>
+          <e:case desc="Age is optional">
+            <e:body> {"name": "Don"} </e:body>
+            <e:expected> {"id": "!{number}"} </e:expected>
+            <e:check>
+                <e:db-check table="person" cols="name, age" where="name='Don'">
+                  <e:row>Don, ${#null}</e:row>
+                </e:db-check>
+            </e:check>
           </e:case>
         </e:post>
     </e:example>
-</div>
+</body>
+</html>
   ```
 For more info, [see live spec](https://adven27.github.io/Exam/specs/Specs.html)

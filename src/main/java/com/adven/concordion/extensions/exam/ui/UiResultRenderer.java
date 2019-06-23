@@ -21,7 +21,7 @@ public class UiResultRenderer implements AssertEqualsListener, AssertTrueListene
         UIAssertionError err = (UIAssertionError) event.getActual();
         el.remove(s);
         el.childs(
-                imageOverlay(getPath(err.getScreenshot()), 360, event.getExpected(), err.getMessage(), "rest-failure")
+            imageOverlay(getPath(err.getScreenshot()), 360, event.getExpected(), err.getMessage(), "rest-failure")
         );
     }
 
@@ -32,7 +32,7 @@ public class UiResultRenderer implements AssertEqualsListener, AssertTrueListene
         String desc = s.attr("desc");
         el.remove(s);
         el.childs(
-                imageOverlay(getPath(screenshot(getFileName(name))), 360, name, checkAndGetDesc(desc), "rest-success")
+            imageOverlay(getPath(screenshot(getFileName(name))), 360, name, checkAndGetDesc(desc), "rest-success")
         );
     }
 

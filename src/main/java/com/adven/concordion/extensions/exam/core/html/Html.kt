@@ -12,6 +12,7 @@ const val ONCLICK = "onclick"
 const val CLASS = "class"
 const val STYLE = "style"
 const val NAME = "name"
+const val TABLE = "table"
 
 class Html(internal val el: Element) {
     constructor(tag: String) : this(Element(tag))
@@ -190,7 +191,7 @@ class Html(internal val el: Element) {
 
     fun descendants(tag: String) = this.el.getDescendantElements(tag).toList().map(::Html)
 
-    fun span(txt: String? = null, vararg attrs: Pair<String, String>, block: Html.() -> Unit) {
+    fun span(txt: String? = null, vararg attrs: Pair<String, String>) {
         (Html("span", txt, *attrs))
     }
 }
@@ -198,8 +199,6 @@ class Html(internal val el: Element) {
 fun div(txt: String? = null, vararg attrs: Pair<String, String>) = Html("div", txt, *attrs)
 
 fun div(vararg attrs: Pair<String, String>) = Html("div", *attrs)
-
-fun div(vararg attrs: Pair<String, String>, block: Html.() -> Unit) = Html("div", *attrs)
 
 fun table(vararg attrs: Pair<String, String>) = table(Html("table", *attrs))
 

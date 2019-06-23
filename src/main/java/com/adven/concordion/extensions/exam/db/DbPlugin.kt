@@ -6,37 +6,40 @@ import com.adven.concordion.extensions.exam.db.commands.DBCheckCommand
 import com.adven.concordion.extensions.exam.db.commands.DBSetCommand
 import com.adven.concordion.extensions.exam.db.commands.DBShowCommand
 
-class DbPlugin(private val dbTester: ExamDbTester) : ExamPlugin {
+class DbPlugin(private val dbTester: DbTester) : ExamPlugin {
 
-    @Suppress("unused")
+    /***
+     * @param dbUnitConfig properties for org.dbunit.database.DatabaseConfig
+     */
+    @JvmOverloads
     constructor(
         driver: String,
         url: String,
         user: String,
         password: String,
         schema: String? = null,
-        config: Map<String, Any?> = emptyMap()
-    ) : this(ExamDbTester(driver, url, user, password, schema, config))
+        dbUnitConfig: Map<String, Any?> = emptyMap()
+    ) : this(DbTester(driver, url, user, password, schema, dbUnitConfig))
 
     init {
-        dbTester.executors[ExamDbTester.DEFAULT_DATASOURCE] = dbTester
+        dbTester.executors[DbTester.DEFAULT_DATASOURCE] = dbTester
     }
 
     /**
-     * @param defaultDB Default datasource: <e:db-set
+     * @param defaultTester Default datasource: <e:db-set
      * @param others map of additional datasources: <e:db-set ds="other"
      *
      *
-     * ExamDbTester(
+     * DbTester(
      * "org.h2.Driver", "jdbc:h2:mem:test;INIT=CREATE SCHEMA IF NOT EXISTS SA\\;SET SCHEMA SA", "sa", ""
      * ),
-     * mapOf("other" to ExamDbTester(
+     * mapOf("other" to DbTester(
      * "org.postgresql.Driver", "jdbc:postgresql://localhost:5432/postgres", "postgres", "postgres"
      * ))
      *
      */
     @Suppress("unused")
-    constructor(defaultDB: ExamDbTester, others: Map<String, ExamDbTester>) : this(defaultDB) {
+    constructor(defaultTester: DbTester, others: Map<String, DbTester>) : this(defaultTester) {
         for ((key, value) in others) {
             dbTester.executors[key] = value
         }
