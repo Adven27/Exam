@@ -13,7 +13,7 @@ class CommandRegistry(jsonUnitCfg: Configuration, nodeMatcher: NodeMatcher) {
 
         ExamExampleCommand("div"),
         ExamBeforeExampleCommand("div"),
-        InlineBeforeExampleCommand("div"),
+        BeforeEachExampleCommand("div"),
         ExamplesSummaryCommand("summary", "div"),
         ScrollToTopCommand("scrollToTop", "div"),
 

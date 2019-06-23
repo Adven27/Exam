@@ -2,7 +2,9 @@ package com.adven.concordion.extensions.exam.db
 
 import com.adven.concordion.extensions.exam.core.ExamPlugin
 import com.adven.concordion.extensions.exam.core.commands.ExamCommand
+import com.adven.concordion.extensions.exam.core.html.TABLE
 import com.adven.concordion.extensions.exam.db.commands.DBCheckCommand
+import com.adven.concordion.extensions.exam.db.commands.DBCleanCommand
 import com.adven.concordion.extensions.exam.db.commands.DBSetCommand
 import com.adven.concordion.extensions.exam.db.commands.DBShowCommand
 
@@ -48,10 +50,7 @@ class DbPlugin(private val dbTester: DbTester) : ExamPlugin {
     override fun commands(): List<ExamCommand> = listOf(
         DBShowCommand("db-show", TABLE, dbTester),
         DBCheckCommand("db-check", TABLE, dbTester),
-        DBSetCommand("db-set", TABLE, dbTester)
+        DBSetCommand("db-set", TABLE, dbTester),
+        DBCleanCommand("db-clean", "span", dbTester)
     )
-
-    companion object {
-        private const val TABLE = "table"
-    }
 }

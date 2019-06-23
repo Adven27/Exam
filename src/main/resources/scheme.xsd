@@ -29,12 +29,13 @@
         </xs:complexType>
     </xs:element>
     <xs:element name="given" type="given-info"/>
-    <xs:element name="inline">
+    <xs:element name="before-each">
         <xs:complexType mixed="true">
             <xs:all>
                 <xs:element name="given" type="given-info"/>
                 <xs:element name="set" type="set-info"/>
                 <xs:element name="db-set" type="db-set-info"/>
+                <xs:element name="db-clean" type="db-clean-info"/>
                 <xs:element name="mq-send" type="mq-info"/>
             </xs:all>
         </xs:complexType>
@@ -44,6 +45,7 @@
         <xs:all>
             <xs:element name="set" type="set-info"/>
             <xs:element name="db-set" type="db-set-info"/>
+            <xs:element name="db-clean" type="db-clean-info"/>
             <xs:element name="mq-send" type="mq-info"/>
         </xs:all>
     </xs:complexType>
@@ -62,6 +64,16 @@
             <xs:extension base="xs:string">
                 <xs:attribute type="xs:string" name="var" use="required"/>
                 <xs:attribute type="xs:string" name="value" use="required"/>
+                <xs:attribute type="xs:boolean" name="silent"/>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+
+    <xs:complexType name="db-clean-info">
+        <xs:simpleContent>
+            <xs:extension base="xs:string">
+                <xs:attribute type="xs:string" name="tables" default="table1, table2" use="required"/>
+                <xs:attribute type="xs:string" name="ds"/>
             </xs:extension>
         </xs:simpleContent>
     </xs:complexType>

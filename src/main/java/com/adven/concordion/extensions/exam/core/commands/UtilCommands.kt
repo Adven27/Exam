@@ -15,7 +15,7 @@ import org.concordion.internal.ConcordionBuilder
 class SetVarCommand(tag: String) : ExamCommand("set", tag) {
     override fun setUp(cmd: CommandCall, eval: Evaluator, resultRecorder: ResultRecorder) {
         val el = cmd.html()
-        var valueAttr = el.attr("value")
+        val valueAttr = el.attr("value")
         val value = if (valueAttr == null) {
             val body = el.text()
             val silent = el.attr("silent")
@@ -30,7 +30,7 @@ class SetVarCommand(tag: String) : ExamCommand("set", tag) {
     }
 }
 
-class InlineBeforeExampleCommand(tag: String) : ExamCommand("inline", tag) {
+class BeforeEachExampleCommand(tag: String) : ExamCommand("before-each", tag) {
     override fun beforeParse(elem: Element) {
         super.beforeParse(elem)
         val ns = XPathContext("e", ExamExtension.NS)
