@@ -31,50 +31,17 @@ class CodeMirrorExtension : ConcordionExtension {
 
 class BootstrapExtension : ConcordionExtension {
     override fun addTo(e: ConcordionExtender) {
-        e.withLinkedJavaScript(
-            BOOTSTRAP_JQUERY, Resource(
-                BOOTSTRAP_JQUERY
-            ))
-        e.withLinkedJavaScript(
-            BOOTSTRAP_POPPER, Resource(
-                BOOTSTRAP_POPPER
-            ))
-        e.withLinkedJavaScript(
-            BOOTSTRAP, Resource(
-                BOOTSTRAP
-            ))
-        e.withLinkedJavaScript(
-            BOOTSTRAP_SIDEBAR, Resource(
-                BOOTSTRAP_SIDEBAR
-            ))
-        e.withLinkedCSS(
-            ENABLE_BOOTSTRAP_CSS, Resource(
-                ENABLE_BOOTSTRAP_CSS
-            ))
-        e.withLinkedCSS(
-            BOOTSTRAP_CSS, Resource(
-                BOOTSTRAP_CSS
-            ))
-        e.withLinkedCSS(
-            BOOTSTRAP_CALLOUT_CSS, Resource(
-                BOOTSTRAP_CALLOUT_CSS
-            ))
-        e.withLinkedCSS(
-            BOOTSTRAP_FA_CSS, Resource(
-                BOOTSTRAP_FA_CSS
-            ))
-        e.withResource(
-            BOOTSTRAP_FA_FONT, Resource(
-                BOOTSTRAP_FA_FONT
-            ))
-        e.withLinkedCSS(
-            SCROLL_TO_TOP_CSS, Resource(
-                SCROLL_TO_TOP_CSS
-            ))
-        e.withLinkedJavaScript(
-            SCROLL_TO_TOP_JS, Resource(
-                SCROLL_TO_TOP_JS
-            ))
+        e.withLinkedJavaScript(BOOTSTRAP_JQUERY, Resource(BOOTSTRAP_JQUERY))
+        e.withLinkedJavaScript(BOOTSTRAP_POPPER, Resource(BOOTSTRAP_POPPER))
+        e.withLinkedJavaScript(BOOTSTRAP, Resource(BOOTSTRAP))
+        e.withLinkedJavaScript(BOOTSTRAP_SIDEBAR, Resource(BOOTSTRAP_SIDEBAR))
+        e.withLinkedCSS(ENABLE_BOOTSTRAP_CSS, Resource(ENABLE_BOOTSTRAP_CSS))
+        e.withLinkedCSS(BOOTSTRAP_CSS, Resource(BOOTSTRAP_CSS))
+        e.withLinkedCSS(BOOTSTRAP_CALLOUT_CSS, Resource(BOOTSTRAP_CALLOUT_CSS))
+        e.withLinkedCSS(BOOTSTRAP_FA_CSS, Resource(BOOTSTRAP_FA_CSS))
+        e.withResource(BOOTSTRAP_FA_FONT, Resource(BOOTSTRAP_FA_FONT))
+        e.withLinkedCSS(SCROLL_TO_TOP_CSS, Resource(SCROLL_TO_TOP_CSS))
+        e.withLinkedJavaScript(SCROLL_TO_TOP_JS, Resource(SCROLL_TO_TOP_JS))
     }
 
     companion object {

@@ -9,7 +9,7 @@ import org.concordion.api.Evaluator
 class RequestExecutor private constructor() {
     private lateinit var method: Method
     private lateinit var url: String
-    private var response: Response? = null
+    private lateinit var response: Response
     private var body: String? = null
     private var type: String? = null
     private val headers = HashMap<String, String>()
@@ -60,13 +60,13 @@ class RequestExecutor private constructor() {
 
     fun xml() = type?.contains("soap+xml", true) ?: false
 
-    fun responseHeader(attributeValue: String) = response!!.getHeader(attributeValue)
+    fun responseHeader(attributeValue: String) = response.getHeader(attributeValue)
 
-    fun statusLine() = response!!.statusLine()
+    fun statusLine() = response.statusLine()
 
-    fun statusCode() = response!!.statusCode
+    fun statusCode() = response.statusCode
 
-    fun responseBody() = response!!.body().asString()
+    fun responseBody() = response.body().asString()
 
     fun requestUrlWithParams() = url + if (urlParams != null) "?$urlParams" else ""
 
@@ -76,7 +76,7 @@ class RequestExecutor private constructor() {
 
     fun requestHeader(header: String) = headers.get(header)
 
-    internal fun execute(): Response? {
+    internal fun execute(): Response {
         val request = given()
         request.headers(headers)
 

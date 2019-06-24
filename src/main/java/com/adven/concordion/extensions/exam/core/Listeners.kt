@@ -110,7 +110,7 @@ class SpecSummaryListener : SpecificationProcessingListener {
         return div(ID to id, CLASS to "collapse")(
             exampleEl.descendants("tr").filter { "case" == it.attr("data-type") }.map {
                 val anchor = it.attr("id")!!
-                menuItemA(anchor, italic("").css("fa fa-circle fa-fw"))
+                menuItemA(anchor, italic(""))
                     .attrs("href" to "#$anchor")
                     .muted()
             })

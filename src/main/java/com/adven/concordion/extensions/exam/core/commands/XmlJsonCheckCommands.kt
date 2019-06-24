@@ -5,8 +5,8 @@ import com.adven.concordion.extensions.exam.core.resolveJson
 import com.adven.concordion.extensions.exam.core.resolveXml
 import com.adven.concordion.extensions.exam.core.utils.content
 import com.adven.concordion.extensions.exam.core.utils.equalToXml
-import com.adven.concordion.extensions.exam.core.utils.prettyPrintJson
-import com.adven.concordion.extensions.exam.core.utils.prettyPrintXml
+import com.adven.concordion.extensions.exam.core.utils.prettyJson
+import com.adven.concordion.extensions.exam.core.utils.prettyXml
 import com.adven.concordion.extensions.exam.ws.RestResultRenderer
 import net.javacrumbs.jsonunit.JsonAssert
 import net.javacrumbs.jsonunit.core.Configuration
@@ -20,8 +20,8 @@ class XmlCheckCommand(name: String, tag: String, private val cfg: Configuration,
 
     override fun verify(cmd: CommandCall, eval: Evaluator, resultRecorder: ResultRecorder) {
         val root = cmd.html()
-        val actual = eval.evaluate(root.takeAwayAttr("actual")).toString().prettyPrintXml()
-        val expected = eval.resolveXml(root.content(eval).trim()).prettyPrintXml()
+        val actual = eval.evaluate(root.takeAwayAttr("actual")).toString().prettyXml()
+        val expected = eval.resolveXml(root.content(eval).trim()).prettyXml()
         val container = pre(expected).css("xml")
         root.removeAllChild()(
             tableSlim()(
@@ -52,8 +52,8 @@ class JsonCheckCommand(name: String, tag: String, private val cfg: Configuration
 
     override fun verify(cmd: CommandCall, eval: Evaluator, resultRecorder: ResultRecorder) {
         val root = cmd.html()
-        val actual = eval.evaluate(root.attr("actual")).toString().prettyPrintJson()
-        val expected = eval.resolveJson(root.content(eval).trim()).prettyPrintJson()
+        val actual = eval.evaluate(root.attr("actual")).toString().prettyJson()
+        val expected = eval.resolveJson(root.content(eval).trim()).prettyJson()
         val container = pre(expected).css("json")
         root.removeAllChild()(
             tableSlim()(
@@ -71,7 +71,7 @@ class JsonCheckCommand(name: String, tag: String, private val cfg: Configuration
             resultRecorder.pass(root)
         } catch (e: Throwable) {
             if (e is AssertionError || e is Exception) {
-                resultRecorder.failure(root, actual.prettyPrintJson(), expected.prettyPrintJson())
+                resultRecorder.failure(root, actual.prettyJson(), expected.prettyJson())
                 root.below(
                     span(e.message, CLASS to "exceptionMessage")
                 )

@@ -5,7 +5,7 @@ import com.adven.concordion.extensions.exam.core.commands.ExamVerifyCommand
 import com.adven.concordion.extensions.exam.core.html.*
 import com.adven.concordion.extensions.exam.core.resolveJson
 import com.adven.concordion.extensions.exam.core.utils.content
-import com.adven.concordion.extensions.exam.core.utils.prettyPrintJson
+import com.adven.concordion.extensions.exam.core.utils.prettyJson
 import com.adven.concordion.extensions.exam.ws.RestResultRenderer
 import net.javacrumbs.jsonunit.JsonAssert
 import net.javacrumbs.jsonunit.core.Configuration
@@ -60,7 +60,7 @@ class MqCheckCommand(
             resultRecorder.pass(root)
         } catch (e: Throwable) {
             if (e is AssertionError || e is Exception) {
-                resultRecorder.failure(root, actual.prettyPrintJson(), expected.prettyPrintJson())
+                resultRecorder.failure(root, actual.prettyJson(), expected.prettyJson())
                 root.below(
                     span(e.message, CLASS to "exceptionMessage")
                 )

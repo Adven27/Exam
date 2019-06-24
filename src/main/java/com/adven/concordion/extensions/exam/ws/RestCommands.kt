@@ -7,8 +7,8 @@ import com.adven.concordion.extensions.exam.core.resolveJson
 import com.adven.concordion.extensions.exam.core.resolveXml
 import com.adven.concordion.extensions.exam.core.utils.content
 import com.adven.concordion.extensions.exam.core.utils.equalToXml
-import com.adven.concordion.extensions.exam.core.utils.prettyPrintJson
-import com.adven.concordion.extensions.exam.core.utils.prettyPrintXml
+import com.adven.concordion.extensions.exam.core.utils.prettyJson
+import com.adven.concordion.extensions.exam.core.utils.prettyXml
 import com.adven.concordion.extensions.exam.ws.RequestExecutor.Companion.fromEvaluator
 import io.restassured.http.Method
 import net.javacrumbs.jsonunit.JsonAssert.assertJsonEquals
@@ -196,8 +196,6 @@ class CaseCommand(tag: String, private val cfg: Configuration, private val nodeM
             })
     }
 
-    private val MAX_WIDTH = "max-width:550px"
-
     override fun execute(cmd: CommandCall, eval: Evaluator, resultRecorder: ResultRecorder) {
         val childCommands = cmd.children
         val root = cmd.html()
@@ -221,12 +219,12 @@ class CaseCommand(tag: String, private val cfg: Configuration, private val nodeM
                 var bodyStr: String
                 if (isJson) {
                     bodyStr = eval.resolveJson(content)
-                    td().insteadOf(body).css("json").style(MAX_WIDTH).removeAllChild().text(bodyStr.prettyPrintJson())
+                    td().insteadOf(body).css("json").style(MAX_WIDTH).removeAllChild().text(bodyStr.prettyJson())
                 } else {
                     bodyStr = eval.resolveXml(content)
 
                     td().insteadOf(body).css("xml").style(MAX_WIDTH).removeAllChild()
-                        .text(bodyStr.prettyPrintXml())
+                        .text(bodyStr.prettyXml())
                 }
                 executor.body(bodyStr)
             }
@@ -237,8 +235,7 @@ class CaseCommand(tag: String, private val cfg: Configuration, private val nodeM
             caseTR(statusTd)
 
             childCommands.setUp(eval, resultRecorder)
-            val response = executor.execute()
-            eval.setVariable("#exam_response", response)
+            eval.setVariable("#exam_response", executor.execute())
             childCommands.execute(eval, resultRecorder)
             childCommands.verify(eval, resultRecorder)
 
@@ -250,7 +247,7 @@ class CaseCommand(tag: String, private val cfg: Configuration, private val nodeM
     }
 
     private fun checkJsonContent(actual: String, expected: String, resultRecorder: ResultRecorder, root: Html) {
-        val prettyActual = actual.prettyPrintJson()
+        val prettyActual = actual.prettyJson()
         try {
             assertJsonEquals(expected, prettyActual, cfg)
             resultRecorder.pass(root)
@@ -265,7 +262,7 @@ class CaseCommand(tag: String, private val cfg: Configuration, private val nodeM
     }
 
     private fun checkXmlContent(actual: String, expected: String, resultRecorder: ResultRecorder, root: Html) {
-        val prettyActual = actual.prettyPrintXml()
+        val prettyActual = actual.prettyXml()
         try {
             resultRecorder.check(root, prettyActual, expected) { a, e ->
                 a.equalToXml(e, nodeMatcher, cfg)
@@ -278,11 +275,11 @@ class CaseCommand(tag: String, private val cfg: Configuration, private val nodeM
         }
     }
 
-    private fun expectedStatus(expected: Html) = StatusBuilder(
-        expected.takeAwayAttr(PROTOCOL),
-        expected.takeAwayAttr(STATUS_CODE),
-        expected.takeAwayAttr(REASON_PHRASE)
-    ).build()
+    private fun expectedStatus(expected: Html) = listOf(
+        expected.takeAwayAttr(PROTOCOL, "HTTP/1.1").trim(),
+        expected.takeAwayAttr(STATUS_CODE, "200").trim(),
+        expected.takeAwayAttr(REASON_PHRASE, "OK").trim()
+    ).joinToString(" ")
 
     override fun verify(cmd: CommandCall, evaluator: Evaluator, resultRecorder: ResultRecorder) {
         val executor = fromEvaluator(evaluator)
@@ -322,9 +319,9 @@ class CaseCommand(tag: String, private val cfg: Configuration, private val nodeM
         }
 
     private fun resolve(json: Boolean, content: String, eval: Evaluator): String = if (json) {
-        resolveJson(content, eval).prettyPrintJson()
+        resolveJson(content, eval).prettyJson()
     } else {
-        resolveXml(content, eval).prettyPrintXml()
+        resolveXml(content, eval).prettyXml()
     }
 
     private fun fillCaseContext(root: Html, executor: RequestExecutor) {
@@ -349,5 +346,9 @@ class CaseCommand(tag: String, private val cfg: Configuration, private val nodeM
                 code(cookies)
             )
         } else listOf(span(""))).toTypedArray()
+    }
+
+    companion object {
+        private const val MAX_WIDTH = "max-width:550px"
     }
 }
