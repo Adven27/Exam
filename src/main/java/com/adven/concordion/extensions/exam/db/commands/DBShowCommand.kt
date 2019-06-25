@@ -26,7 +26,7 @@ class DBShowCommand(name: String, tag: String, dbTester: DbTester) : DBCommand(n
                     conn.createTable(tableName)
                 else
                     getFilteredTable(conn, tableName, where),
-                parseCols(el, eval!!).cols.toTypedArray()
+                parseCols(el, eval!!).keys.toTypedArray()
             ))
     }
 

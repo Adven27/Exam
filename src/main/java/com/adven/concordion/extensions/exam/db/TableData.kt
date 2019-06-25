@@ -5,16 +5,10 @@ import org.dbunit.dataset.Column
 import org.dbunit.dataset.DefaultTable
 import org.dbunit.dataset.ITable
 import org.dbunit.dataset.datatype.DataType.UNKNOWN
-import java.util.*
-import java.util.Arrays.asList
 
-class TableData(private val table: String, private val defaults: Map<String, Any?>, vararg columns: String) {
-    private val columns: List<String> = asList(*columns)
+class TableData(private val table: String, private val defaults: Map<String, Any?>) {
     private var dataSetBuilder = DataSetBuilder()
     private var currentRow = 0
-
-    constructor(table: String, vararg columns: String) : this(table, HashMap(), *columns)
-    constructor(table: String, columns: Cols) : this(table, columns.defaults, *columns.cols.toTypedArray())
 
     private fun resolveValue(value: Any?): Any? {
         return if (value is IntProgression) {
@@ -24,21 +18,21 @@ class TableData(private val table: String, private val defaults: Map<String, Any
     }
 
     fun row(vararg values: Any?): TableData {
-        val colsToSet = columns.filter { !defaults.contains(it) }
+        val colsToSet = defaults.filterValues { it == null }.keys
         validate(values, colsToSet)
         dataSetBuilder = dataSetBuilder.newRowTo(table)
-            .withFields(colsToSet.zip(values).toMap() + defaults.mapValues { resolveValue(it.value) })
+            .withFields(defaults.mapValues { resolveValue(it.value) } + colsToSet.zip(values).toMap())
             .add()
         currentRow++
         return this
     }
 
-    private fun validate(values: Array<out Any?>, columns: List<String>) {
+    private fun validate(values: Array<out Any?>, columns: Set<String>) {
         if (values.size != columns.size) {
             throw IllegalArgumentException(
                 String.format(
                     "Number of columns (%s) for table %s is different than the number of provided values (%s)",
-                    this.columns.size,
+                    columns.size,
                     table,
                     values.size
                 )
@@ -56,16 +50,14 @@ class TableData(private val table: String, private val defaults: Map<String, Any
     fun table(): ITable {
         val dataSet = build()
         return if (dataSet.tableNames.isEmpty())
-            DefaultTable(table, columns(columns))
+            DefaultTable(table, columns(defaults.keys))
         else
             dataSet.getTable(table)
     }
 
-    private fun columns(c: List<String>): Array<Column?> = c.map { Column(it, UNKNOWN) }.toTypedArray()
-
-    data class Cols(val defaults: Map<String, Any?> = emptyMap(), val cols: List<String> = emptyList())
+    private fun columns(c: Set<String>): Array<Column?> = c.map { Column(it, UNKNOWN) }.toTypedArray()
 
     companion object {
-        fun filled(table: String, rows: List<List<Any?>>, cols: Cols) = TableData(table, cols).rows(rows).table()
+        fun filled(table: String, rows: List<List<Any?>>, cols: Map<String, Any?>) = TableData(table, cols).rows(rows).table()
     }
 }

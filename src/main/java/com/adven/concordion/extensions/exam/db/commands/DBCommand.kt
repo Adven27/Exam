@@ -37,19 +37,15 @@ open class DBCommand(name: String, tag: String, protected val dbTester: DbTester
         )
     }
 
-    protected fun parseCols(el: Html, eval: Evaluator): TableData.Cols {
+    protected fun parseCols(el: Html, eval: Evaluator): Map<String, Any?> {
         val attr = el.takeAwayAttr("cols")
         return if (attr == null)
-            TableData.Cols()
+            emptyMap()
         else {
             val remarkAndVal = colParser.parse(attr)
             remarks += remarkAndVal.map { it.key to it.value.first }.filter { it.second > 0 }
-            TableData.Cols(
-                remarkAndVal
-                    .filterValues { !it.second.isBlank() }
-                    .mapValues { resolveToObj(it.value.second, eval) },
-                remarkAndVal.keys.toList()
-            )
+            remarkAndVal
+                .mapValues { resolveToObj(it.value.second, eval) }
         }
     }
 
@@ -86,11 +82,11 @@ open class DBCommand(name: String, tag: String, protected val dbTester: DbTester
 }
 
 class ColParser {
-    fun parse(attr: String): Map<String, Pair<Int, String>> {
+    fun parse(attr: String): Map<String, Pair<Int, String?>> {
         return attr.split(",")
             .map {
                 val (r, n, v) = ("""(\**)([^=]+)=?(.*)""".toRegex()).matchEntire(it.trim())!!.destructured
-                mapOf(n to (r.length to v))
+                mapOf(n to (r.length to (if (v.isBlank()) null else v)))
             }
             .reduce { acc, next -> acc + next }
     }
