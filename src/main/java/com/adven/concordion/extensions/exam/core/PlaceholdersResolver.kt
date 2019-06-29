@@ -45,28 +45,28 @@ private fun resolveVars(body: String, eval: Evaluator): String {
             PREFIX_VAR + v + POSTFIX, getObject(
                 eval,
                 v
-            ).toString())
+            ).toString()
+        )
     }
     return result
 }
 
 private fun getObject(eval: Evaluator, value: String): Any? {
-    fun extractAsDate(eval: Evaluator, v: String) = fromDateFields(
-        getObject(
-            eval,
-            v
-        ) as Date)
-    return if (value.contains(":")) {
-        val (v, p) = value.split(":".toRegex(), 2)
-        forPattern(p).print(extractAsDate(eval, v))
-    } else if (value.contains("+")) {
-        val (v, p) = value.split("\\+".toRegex(), 2)
-        extractAsDate(eval, v).plus(parsePeriod(p)).toDate()
-    } else if (value.contains("-")) {
-        val (v, p) = value.split("-".toRegex(), 2)
-        extractAsDate(eval, v).minus(parsePeriod(p)).toDate()
-    } else {
-        eval.getVariable("#$value") ?: eval.evaluate(if (value.contains(".")) "#$value" else value)
+    fun extractAsDate(eval: Evaluator, v: String) = fromDateFields(getObject(eval, v) as Date)
+    return when {
+        value.contains(":") -> {
+            val (v, p) = value.split(":".toRegex(), 2)
+            forPattern(p).print(extractAsDate(eval, v))
+        }
+        value.contains("+") -> {
+            val (v, p) = value.split("\\+".toRegex(), 2)
+            extractAsDate(eval, v).plus(parsePeriodFrom(p.substring(1, v.indexOf("]")))).toDate()
+        }
+        value.contains("-") -> {
+            val (v, p) = value.split("-".toRegex(), 2)
+            extractAsDate(eval, v).minus(parsePeriodFrom(p.substring(1, v.indexOf("]")))).toDate()
+        }
+        else -> eval.getVariable("#$value") ?: eval.evaluate(if (value.contains(".")) "#$value" else value)
     }
 }
 
@@ -81,7 +81,8 @@ private fun resolveExamCommands(body: String): String {
         original = original.replace(
             PREFIX_EXAM + v + POSTFIX, resolveDate(
                 v
-            )!!.toString())
+            )!!.toString()
+        )
         b = original
     }
     return b
@@ -117,8 +118,8 @@ private fun constants(v: String): Any? {
             val date = v.substring("date(".length, v.indexOf(")"))
             LocalDateTime.parse(date, forPattern("dd.MM.yyyy")).toDate()
         }
-        v.startsWith("now+") -> now().plus(parsePeriod(v.substring(4))).toDate()
-        v.startsWith("now-") -> now().minus(parsePeriod(v.substring(4))).toDate()
+        v.startsWith("now+") -> now().plus(parsePeriodFrom(v.substring(5, v.indexOf("]")))).toDate()
+        v.startsWith("now-") -> now().minus(parsePeriodFrom(v.substring(5, v.indexOf("]")))).toDate()
         else -> when (v) {
             "yesterday" -> now().minusDays(1).toDate()
             "today", "now" -> now().toDate()
@@ -128,16 +129,16 @@ private fun constants(v: String): Any? {
     }
 }
 
-private fun parsePeriod(v: String): Period {
-    return v.substring(1, v.indexOf("]")).split(",")
-            .map {
-                val (p1, p2) = it.trim().split(" ")
-                if (p1.isNum())
-                    periodBy(parseInt(p1), p2)
-                else
-                    periodBy(parseInt(p2), p1)
-            }
-            .fold(Period.ZERO) { a, n -> a.plus(n) }
+fun parsePeriodFrom(v: String): Period {
+    return v.split(",").filter { it.isNotBlank() }
+        .map {
+            val (p1, p2) = it.trim().split(" ")
+            if (p1.isNum())
+                periodBy(parseInt(p1), p2)
+            else
+                periodBy(parseInt(p2), p1)
+        }
+        .fold(Period.ZERO) { a, n -> a.plus(n) }
 }
 
 fun periodBy(value: Int, type: String): BaseSingleFieldPeriod {
@@ -204,9 +205,7 @@ private fun extractFromAlias(placeholder: String): String {
 }
 
 private fun resolveDate(v: String): Any? {
-    return if (v.contains(":")) getDateFromPattern(v) else constants(
-        v
-    )
+    return if (v.contains(":")) getDateFromPattern(v) else constants(v)
 }
 
 private fun getDateFromPattern(value: String): String {

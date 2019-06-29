@@ -6,7 +6,7 @@ import org.dbunit.dataset.DefaultTable
 import org.dbunit.dataset.ITable
 import org.dbunit.dataset.datatype.DataType.UNKNOWN
 
-class TableData(private val table: String, private val defaults: Map<String, Any?>) {
+class TableData(private val table: String, private val columns: Map<String, Any?>) {
     private var dataSetBuilder = DataSetBuilder()
     private var currentRow = 0
 
@@ -18,10 +18,10 @@ class TableData(private val table: String, private val defaults: Map<String, Any
     }
 
     fun row(vararg values: Any?): TableData {
-        val colsToSet = defaults.filterValues { it == null }.keys
+        val colsToSet = columns.filterValues { it == null }.keys
         validate(values, colsToSet)
         dataSetBuilder = dataSetBuilder.newRowTo(table)
-            .withFields(defaults.mapValues { resolveValue(it.value) } + colsToSet.zip(values).toMap())
+            .withFields(columns.mapValues { resolveValue(it.value) } + colsToSet.zip(values).toMap())
             .add()
         currentRow++
         return this
@@ -50,7 +50,7 @@ class TableData(private val table: String, private val defaults: Map<String, Any
     fun table(): ITable {
         val dataSet = build()
         return if (dataSet.tableNames.isEmpty())
-            DefaultTable(table, columns(defaults.keys))
+            DefaultTable(table, columns(columns.keys))
         else
             dataSet.getTable(table)
     }
