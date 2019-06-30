@@ -1,15 +1,14 @@
 package com.adven.concordion.extensions.exam.core.html
 
-import org.concordion.api.Evaluator
+import org.concordion.internal.OgnlEvaluator
 import org.joda.time.LocalDate.now
 import org.joda.time.Period
 import org.junit.Test
-import org.mockito.Mockito.mock
 import java.text.SimpleDateFormat
 import kotlin.test.assertEquals
 
 class RowParserTest {
-    private val eval = mock(Evaluator::class.java)
+    private val eval = OgnlEvaluator(null)
 
     @Test
     fun valuesAreCommaSeparatedAndTrimmed() {

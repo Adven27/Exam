@@ -16,7 +16,7 @@ import java.lang.Boolean.parseBoolean
 import java.nio.charset.Charset
 import java.util.*
 
-class DefaultFilesLoader : FilesLoader {
+open class DefaultFilesLoader : FilesLoader {
 
     override fun clearFolder(path: String) {
         File(path).listFiles()?.forEach { file ->
@@ -79,7 +79,7 @@ class DefaultFilesLoader : FilesLoader {
         val content = getContentFor(f)
         return FilesLoader.FileTag(
             f.attr("name"),
-            if (content == null) null else resolveXml(content, eval).trim(),
+            if (content == null) null else eval.resolveXml(content).trim(),
             parseBoolean(f.attr("autoFormat")),
             parseBoolean(f.attr("lineNumbers"))
         )

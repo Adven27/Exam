@@ -1,8 +1,12 @@
 package com.adven.concordion.extensions.exam.core
 
+import com.adven.concordion.extensions.exam.core.html.Html
+import com.adven.concordion.extensions.exam.core.html.pre
 import com.adven.concordion.extensions.exam.core.utils.DateFormatMatcher
 import com.adven.concordion.extensions.exam.core.utils.DateWithin
+import com.adven.concordion.extensions.exam.core.utils.HANDLEBARS
 import com.adven.concordion.extensions.exam.core.utils.XMLDateWithin
+import com.github.jknack.handlebars.Handlebars
 import net.javacrumbs.jsonunit.JsonAssert.`when`
 import net.javacrumbs.jsonunit.core.Configuration
 import net.javacrumbs.jsonunit.core.Option.IGNORING_ARRAY_ORDER
@@ -15,6 +19,7 @@ import org.xmlunit.diff.ElementSelectors.byNameAndText
 import org.xmlunit.diff.NodeMatcher
 import java.util.*
 import java.util.Collections.addAll
+import kotlin.collections.HashMap
 
 class ExamExtension : ConcordionExtension {
     private var jsonUnitCfg: Configuration = DEFAULT_JSON_UNIT_CFG
@@ -42,6 +47,12 @@ class ExamExtension : ConcordionExtension {
     }
 
     @Suppress("unused")
+    fun withHandlebar(fn: (handlebars: Handlebars) -> Unit): ExamExtension {
+        fn(HANDLEBARS)
+        return this
+    }
+
+    @Suppress("unused")
     fun addPlugin(plugin: ExamPlugin): ExamExtension {
         plugins.add(plugin)
         return this
@@ -65,10 +76,20 @@ class ExamExtension : ConcordionExtension {
         BootstrapExtension().addTo(ex)
         ex.withDocumentParsingListener(ExamDocumentParsingListener(registry))
         ex.withSpecificationProcessingListener(SpecSummaryListener())
+        ex.withThrowableListener {
+            Html(it.element).below(
+                pre(
+                    "Error while executing command:\n\n" +
+                            "${PARSED_COMMANDS[it.element.getAttributeValue("cmdId")]}\n\n" +
+                            "${it.throwable.cause?.message}"
+                ).css("exceptionMessage")
+            )
+        }
         ex.withExampleListener(ExamExampleListener())
     }
 
     companion object {
+        val PARSED_COMMANDS: MutableMap<String, String> = HashMap()
         const val NS = "http://exam.extension.io"
         val DEFAULT_NODE_MATCHER = DefaultNodeMatcher(byNameAndText, byName)
         val DEFAULT_JSON_UNIT_CFG: Configuration = `when`(IGNORING_ARRAY_ORDER)

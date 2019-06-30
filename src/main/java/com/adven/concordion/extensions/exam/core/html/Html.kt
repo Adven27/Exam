@@ -99,7 +99,7 @@ class Html(internal val el: Element) {
     fun takeAwayAttr(name: String, eval: Evaluator? = null): String? {
         var attr = attr(name)
         if (attr != null) {
-            attr = if (eval != null) resolveJson(attr, eval) else attr
+            attr = eval?.resolveJson(attr) ?: attr
             el.removeAttribute(name)
         }
         return attr

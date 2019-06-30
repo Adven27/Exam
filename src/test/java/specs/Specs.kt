@@ -7,6 +7,8 @@ import com.adven.concordion.extensions.exam.mq.MqPlugin
 import com.adven.concordion.extensions.exam.mq.MqTesterAdapter
 import com.adven.concordion.extensions.exam.ui.UiPlugin
 import com.adven.concordion.extensions.exam.ws.WsPlugin
+import com.github.jknack.handlebars.Context
+import com.github.jknack.handlebars.Helper
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock.*
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig
@@ -49,7 +51,13 @@ open class Specs {
             })
         ),
         UiPlugin()
-    )
+    ).withHandlebar {
+        it.registerHelper("hi", Helper { context: Any?, options ->
+            //{{hi '1' 'p1 'p2' o1='a' o2='b'}} => Hello context = 1; params = [p1, p2]; options = {o1=a, o2=b}!
+            //{{hi variable1 variable2 o1=variable3}} => Hello context = 1; params = [2]; options = {o1=3}!
+            "Hello context = $context; params = ${options.params.map { it.toString() }}; options = ${options.hash}!"
+        })
+    }
 
     companion object {
         private const val PORT = 8888

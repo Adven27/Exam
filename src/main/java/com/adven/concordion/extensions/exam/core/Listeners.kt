@@ -1,12 +1,15 @@
 package com.adven.concordion.extensions.exam.core
 
+import com.adven.concordion.extensions.exam.core.ExamExtension.Companion.PARSED_COMMANDS
 import com.adven.concordion.extensions.exam.core.html.*
+import nu.xom.Attribute
 import nu.xom.Document
 import nu.xom.Element
 import org.concordion.api.ImplementationStatus
 import org.concordion.api.ImplementationStatus.*
 import org.concordion.api.listener.*
-import java.util.*
+import java.util.UUID
+
 
 internal class ExamExampleListener : ExampleListener {
     override fun beforeExample(event: ExampleEvent) {}
@@ -59,7 +62,10 @@ internal class ExamDocumentParsingListener(private val registry: CommandRegistry
             visit(children.get(i))
         }
 
-        if (ExamExtension.NS == elem.namespaceURI) {
+        if (ExamExtension.NS == elem.namespaceURI && registry.commands().map { it.name() }.contains(elem.localName)) {
+            val cmdId = UUID.randomUUID().toString()
+            PARSED_COMMANDS[cmdId] = elem.toXML()
+            elem.addAttribute(Attribute("cmdId", cmdId))
             registry.getBy(elem.localName)?.beforeParse(elem)
         }
     }

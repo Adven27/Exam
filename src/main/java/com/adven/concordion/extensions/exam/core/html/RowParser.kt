@@ -44,24 +44,18 @@ class RowParser(private val el: Html, private val tag: String, private val eval:
                 when {
                     rest.startsWith(PREFIX_EXAM) || rest.startsWith(PREFIX_VAR) -> {
                         values.add(
-                            resolveToObj(
-                                rest.substringBefore(POSTFIX) + POSTFIX,
-                                eval
-                            )
+                            eval.resolveToObj(rest.substringBefore(POSTFIX) + POSTFIX)
                         )
                         rest = rest.substringAfter(POSTFIX, "").substringAfter(separator, "").trim()
                     }
                     rest.startsWith("'") -> {
                         val cell = rest.substring(1).substringBefore("'")
-                        values.add(resolveToObj(cell, eval))
+                        values.add(eval.resolveToObj(cell))
                         rest = rest.substring(cell.length).substringAfter(separator, "").trimStart()
                     }
                     else -> {
                         values.add(
-                            resolveToObj(
-                                rest.substringBefore(separator).trim(),
-                                eval
-                            )
+                            eval.resolveToObj(rest.substringBefore(separator).trim())
                         )
                         rest = rest.substringAfter(separator, "").trim()
                     }

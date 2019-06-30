@@ -51,7 +51,7 @@ fun Document.prettyXml(): String {
     }
 }
 
-fun String.findResource(eval: Evaluator) = javaClass.getResource(resolveJson(this, eval))
+fun String.findResource(eval: Evaluator) = javaClass.getResource(eval.resolveJson(this))
     ?: throw FileNotFoundException("File not found: $this")
 
 fun Html.content(eval: Evaluator) = this.attr("from")?.findResource(eval)?.readText() ?: this.text()

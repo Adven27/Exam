@@ -160,7 +160,7 @@ class RegexAndWithinAwareValueComparer(val evaluator: Evaluator) : IsActualEqual
         val expectedDateExpression = expected.substring(expected.indexOf("}") + 1).trim()
         return Timestamp((
             if (expectedDateExpression.isBlank()) Date()
-            else (resolveToObj(expectedDateExpression, evaluator) as Date)
+            else (evaluator.resolveToObj(expectedDateExpression) as Date)
             ).time)
     }
 

@@ -208,9 +208,9 @@ class CaseCommand(tag: String, private val cfg: Configuration, private val nodeM
         for (aCase in cases) {
             aCase.forEach { (key, value) -> eval.setVariable(key, value) }
 
-            cookies?.let { executor.cookies(resolveJson(it, eval)) }
+            cookies?.let { executor.cookies(eval.resolveJson(it)) }
 
-            executor.urlParams(if (urlParams == null) null else resolveJson(urlParams, eval))
+            executor.urlParams(if (urlParams == null) null else eval.resolveJson(urlParams))
 
             val caseTR = tr().insteadOf(root.firstOrThrow(CASE))
             val body = caseTR.first(BODY)
@@ -294,7 +294,7 @@ class CaseCommand(tag: String, private val cfg: Configuration, private val nodeM
     }
 
     private fun caseDesc(desc: String?, eval: Evaluator): String =
-        "${++number}) " + if (desc == null) "" else resolveJson(desc, eval)
+        "${++number}) " + if (desc == null) "" else eval.resolveJson(desc)
 
     private fun check(root: Html, eval: Evaluator, resultRecorder: ResultRecorder, json: Boolean) {
         val expected = resolve(json, root.content(eval), eval)
@@ -319,9 +319,9 @@ class CaseCommand(tag: String, private val cfg: Configuration, private val nodeM
         }
 
     private fun resolve(json: Boolean, content: String, eval: Evaluator): String = if (json) {
-        resolveJson(content, eval).prettyJson()
+        eval.resolveJson(content).prettyJson()
     } else {
-        resolveXml(content, eval).prettyXml()
+        eval.resolveXml(content).prettyXml()
     }
 
     private fun fillCaseContext(root: Html, executor: RequestExecutor) {

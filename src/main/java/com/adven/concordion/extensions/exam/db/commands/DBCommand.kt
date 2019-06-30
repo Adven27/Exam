@@ -39,13 +39,11 @@ open class DBCommand(name: String, tag: String, protected val dbTester: DbTester
 
     protected fun parseCols(el: Html, eval: Evaluator): Map<String, Any?> {
         val attr = el.takeAwayAttr("cols")
-        return if (attr == null)
-            emptyMap()
+        return if (attr == null) emptyMap()
         else {
             val remarkAndVal = colParser.parse(attr)
             remarks += remarkAndVal.map { it.key to it.value.first }.filter { it.second > 0 }
-            remarkAndVal
-                .mapValues { resolveToObj(it.value.second, eval) }
+            remarkAndVal.mapValues { eval.resolveToObj(it.value.second) }
         }
     }
 
