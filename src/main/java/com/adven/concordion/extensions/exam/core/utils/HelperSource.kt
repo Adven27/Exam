@@ -58,7 +58,7 @@ enum class HelperSource(
 ) : Helper<Any?> {
     dateFormat(
         """{{dateFormat date "yyyy-MM-dd'T'HH:mm Z" tz="GMT+3" minus="1 y, 2 months, d 3" plus="4 h, 5 min, 6 s"}}""",
-        mapOf("date" to LocalDateTime(2000, 1, 2, 10, 20).toDate()),
+        mapOf("date" to DateTime(2000, 1, 2, 10, 20, DateTimeZone.forOffsetHours(3)).toDate()),
         "1998-10-30T14:25 +0300",
         mapOf(TZ to "\"GMT+3\"", PLUS to "\"1 day\"", MINUS to "\"5 hours\"")
     ) {
