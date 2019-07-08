@@ -1,11 +1,9 @@
 package com.adven.concordion.extensions.exam
 
-import com.adven.concordion.extensions.exam.core.resolveJson
 import com.adven.concordion.extensions.exam.core.resolveToObj
 import com.adven.concordion.extensions.exam.core.utils.HANDLEBARS
 import com.adven.concordion.extensions.exam.core.utils.HelperSource
 import com.adven.concordion.extensions.exam.core.utils.HelperSource.Companion.DEFAULT_FORMAT
-import com.adven.concordion.extensions.exam.core.utils.HelperSource.Companion.HANDELBAR_RESULT
 import com.adven.concordion.extensions.exam.core.utils.resolve
 import com.github.jknack.handlebars.Handlebars
 import com.github.jknack.handlebars.HandlebarsException
@@ -15,7 +13,6 @@ import org.concordion.internal.OgnlEvaluator
 import org.joda.time.LocalDateTime
 import org.joda.time.format.DateTimeFormat
 import org.junit.Test
-import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.test.assertEquals
 
@@ -53,12 +50,7 @@ class HandlebarsResolverTest {
 
     @Test
     fun now_defaults() {
-        assertThat(SimpleDateFormat("E MMM dd HH:mm:ss z yyyy").parse(sut("{{now}}")))
-            .isCloseTo(Date(), 2000)
-
-        assertThat(eval.getVariable(HANDELBAR_RESULT) as Date)
-            .isCloseTo(Date(), 2000)
-
+        assertThat(eval.resolveToObj("{{now}}") as Date).isCloseTo(Date(), 2000)
     }
 
     @Test
@@ -72,7 +64,11 @@ class HandlebarsResolverTest {
 
     @Test
     fun defaults() {
-        HelperSource.values().forEach { assertEquals(it.expected, sut(it)) }
+        HelperSource.values().forEach {
+            val expected = it.expected
+            if (expected is Date) assertThat(sut(it) as Date).describedAs("Failed helper: %s", it).isCloseTo(expected, 2000)
+            else assertEquals(expected, sut(it), "Failed helper: $it")
+        }
     }
 
     private fun sut(h: HelperSource): Any? {
