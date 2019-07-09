@@ -3,9 +3,9 @@
 <e:summary/>
 <e:example name="Success" print="true">
     <e:then>
-        <e:json-check actual="actualJson">{"date" : "${exam.now:yyyy-MM-dd}"}</e:json-check>
+        <e:json-check actual="actualJson">{"date" : "{{now 'yyyy-MM-dd'}}"}</e:json-check>
         <e:json-check actual="actualJson" from="/data/xj/expected.json"/>
-        <e:xml-check actual="actualXml"><![CDATA[<date>${exam.now:yyyy-MM-dd}</date>]]></e:xml-check>
+        <e:xml-check actual="actualXml"><![CDATA[<date>{{now 'yyyy-MM-dd'}}</date>]]></e:xml-check>
         <e:xml-check actual="actualXml" from="/data/xj/expected.xml"/>
     </e:then>
 </e:example>

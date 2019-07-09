@@ -7,15 +7,15 @@ import org.hamcrest.BaseMatcher
 import org.hamcrest.Description
 import org.joda.time.DateTime
 import org.joda.time.base.BaseSingleFieldPeriod
-import org.joda.time.format.DateTimeFormat.forPattern
 import java.lang.Character.isDigit
+import java.text.SimpleDateFormat
 
 class DateFormatMatcher : BaseMatcher<Any>(), ParametrizedMatcher {
     private var param: String? = null
 
     override fun matches(item: Any): Boolean {
         return try {
-            DateTime.parse(item as String, forPattern(param!!))
+            DateTime(SimpleDateFormat(param!!).parse(item as String).time)
             true
         } catch (e: Exception) {
             false
@@ -41,7 +41,7 @@ class DateWithin private constructor(private val now: Boolean) : BaseMatcher<Any
     private lateinit var pattern: String
 
     override fun matches(item: Any): Boolean {
-        val actual = if (item is DateTime) item else DateTime.parse(item as String, forPattern(pattern))
+        val actual = if (item is DateTime) item else DateTime(SimpleDateFormat(pattern).parse(item as String).time)
         return isBetweenInclusive(expected.minus(period), expected.plus(period), actual)
     }
 
@@ -67,7 +67,7 @@ class DateWithin private constructor(private val now: Boolean) : BaseMatcher<Any
         } else {
             param = param.substring(within.length + 2)
             val date = param.substring(1, param.indexOf("]"))
-            expected = DateTime.parse(date, forPattern(pattern))
+            expected = DateTime(SimpleDateFormat(pattern).parse(date).time)
         }
 
         this.period = parsePeriod(within)

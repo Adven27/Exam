@@ -2,12 +2,12 @@ package specs
 
 import com.adven.concordion.extensions.exam.core.ExamExtension
 import com.adven.concordion.extensions.exam.db.DbPlugin
+import com.adven.concordion.extensions.exam.db.DbTester
 import com.adven.concordion.extensions.exam.files.FlPlugin
 import com.adven.concordion.extensions.exam.mq.MqPlugin
 import com.adven.concordion.extensions.exam.mq.MqTesterAdapter
 import com.adven.concordion.extensions.exam.ui.UiPlugin
 import com.adven.concordion.extensions.exam.ws.WsPlugin
-import com.github.jknack.handlebars.Context
 import com.github.jknack.handlebars.Helper
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock.*
@@ -31,42 +31,43 @@ open class Specs {
     @SuppressFBWarnings(value = ["URF_UNREAD_FIELD"], justification = "concordion extension declaration")
     @Suppress("unused")
     @Extension
-    private val exam = ExamExtension().withPlugins(
-        WsPlugin(PORT),
-        DbPlugin(
-            "org.h2.Driver",
-            "jdbc:h2:mem:test;INIT=CREATE SCHEMA IF NOT EXISTS SA\\;SET SCHEMA SA",
-            "sa", ""
-        ),
-        FlPlugin(),
-        MqPlugin(
-            mapOf("myQueue" to object : MqTesterAdapter() {
-                private val queue = Stack<String>()
-
-                override fun send(message: String) {
-                    queue.add(message)
-                }
-
-                override fun receive(): String = queue.pop()
-            })
-        ),
-        UiPlugin()
-    ).withHandlebar {
-        it.registerHelper("hi", Helper { context: Any?, options ->
-            //{{hi '1' 'p1 'p2' o1='a' o2='b'}} => Hello context = 1; params = [p1, p2]; options = {o1=a, o2=b}!
-            //{{hi variable1 variable2 o1=variable3}} => Hello context = 1; params = [2]; options = {o1=3}!
-            "Hello context = $context; params = ${options.params.map { it.toString() }}; options = ${options.hash}!"
-        })
-    }
+    private val exam = EXAM
 
     companion object {
-        private const val PORT = 8888
-        private var server: WireMockServer? = WireMockServer(
+        @JvmStatic val dbTester = dbTester()
+
+        const val PORT = 8888
+        protected var server: WireMockServer? = WireMockServer(
             wireMockConfig().extensions(ResponseTemplateTransformer(true)).port(PORT)
         )
 
+        private val EXAM = ExamExtension().withPlugins(
+            WsPlugin(PORT),
+            DbPlugin(dbTester),
+            FlPlugin(),
+            MqPlugin(
+                mapOf("myQueue" to object : MqTesterAdapter() {
+                    private val queue = Stack<String>()
+
+                    override fun send(message: String) {
+                        queue.add(message)
+                    }
+
+                    override fun receive(): String = queue.pop()
+                })
+            ),
+            UiPlugin()
+        ).withHandlebar { hb ->
+            hb.registerHelper("hi", Helper { context: Any?, options ->
+                //{{hi '1' 'p1 'p2' o1='a' o2='b'}} => Hello context = 1; params = [p1, p2]; options = {o1=a, o2=b}!
+                //{{hi variable1 variable2 o1=variable3}} => Hello context = 1; params = [2]; options = {o1=3}!
+                "Hello context = $context; params = ${options.params.map { it.toString() }}; options = ${options.hash}!"
+            })
+        }
+
         @JvmStatic
         @AfterSuite
+        @Suppress("unused")
         fun stopServer() {
             if (server != null) {
                 server!!.stop()
@@ -76,6 +77,7 @@ open class Specs {
 
         @JvmStatic
         @BeforeSuite
+        @Suppress("unused")
         fun startServer() {
             server?.apply {
                 val req = "{{{request.body}}}"
@@ -148,5 +150,12 @@ open class Specs {
         }
 
         private infix fun String.status(status: Int) = aResponse().withBody(this).withStatus(status)
+
+        private fun dbTester(): DbTester {
+            return DbTester(
+                "org.h2.Driver", "jdbc:h2:mem:test;DB_CLOSE_DELAY=-1;INIT=RUNSCRIPT FROM 'classpath:sql/populate.sql'",
+                "sa", ""
+            )
+        }
     }
 }

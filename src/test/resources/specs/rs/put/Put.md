@@ -13,7 +13,7 @@
                     {"exact": "ok", "template": 1}
                 </body>
                 <expected>
-                    {"exact": "ok", "template": "!{number}"}
+                    {"exact": "ok", "template": "{{number}}"}
                 </expected>
                 <e:check>
                   <span c:assertTrue="true">Block for additional checks</span>
@@ -24,7 +24,7 @@
                     {"exact": "not ok", "template": "not number"}
                 </body>
                 <expected>
-                    {"exact": "ok", "template": "!{number}"}
+                    {"exact": "ok", "template": "{{number}}"}
                 </expected>
             </e:case>
         </e:put>
@@ -33,10 +33,10 @@
         <e:put url="status/400" type="text/plain">
             <e:case desc="Placeholders can be used inside body block">
                 <body>
-                    {"url": "${#url}", "template": 1}
+                    {"url": "{{url}}", "template": 1}
                 </body>
                 <expected>
-                    {"url": "status/400", "template": "!{number}"}
+                    {"url": "status/400", "template": "{{number}}"}
                 </expected>
             </e:case>
         </e:put>
@@ -59,7 +59,7 @@
                     }
                 </expected>
             </e:case>
-            <e:case cookies="cook=${#url}" desc="Placeholders can be used">
+            <e:case cookies="cook={{url}}" desc="Placeholders can be used">
                 <body/>
                 <expected>
                     {

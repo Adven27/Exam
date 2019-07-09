@@ -6,32 +6,32 @@
         <e:given print="true">
             <span>Concordion variable age = <span c:set="#age">99</span></span>    
             <e:db-set table="PERSON" cols="NAME, AGE, BIRTHDAY, ID=1..10">
-                <row>Andrew                                     , 30      , ${exam.now:yyyy-MM-dd}</row>
-                <row>Carl                                       , ${#age} , ${exam.now+[day 1, m 1]:yyyy-MM-dd}</row>
-                <row>' untrimmed string with commas, inside it ', ${#null}, ${exam.date(14.05.1951)}</row>
+                <row>Andrew                                     , 30      , {{now "yyyy-MM-dd"}}</row>
+                <row>Carl                                       , {{age}} , {{now "yyyy-MM-dd" plus="day 1, m 1"}}</row>
+                <row>' untrimmed string with commas, inside it ', {{NULL}}, {{date "1951-05-14"}}</row>
             </e:db-set>
         </e:given>
         <e:then print="true">
             <e:db-check table="PERSON" cols="NAME, AGE, BIRTHDAY">
-                <row>Andrew                                     , 30      , ${exam.now:yyyy-MM-dd}</row>
-                <row>  Carl                                     , ${#age} , ${exam.now+[day 1, m 1]:yyyy-MM-dd}</row>
-                <row>' untrimmed string with commas, inside it ', ${#null}, ${exam.date(14.05.1951):yyyy-MM-dd}</row>
+                <row>Andrew                                     , 30      , {{now "yyyy-MM-dd"}}</row>
+                <row>  Carl                                     , {{age}} , {{now "yyyy-MM-dd" plus="day 1, m 1"}}</row>
+                <row>' untrimmed string with commas, inside it ', {{NULL}}, {{dateFormat (date "1951-05-14") "yyyy-MM-dd"}}</row>
             </e:db-check>
         </e:then>
     </e:example>
     <e:example name="Check within tolerance of expected timestamp" status="ExpectedToFail">
         <e:given print="true">
             <e:db-set table="PERSON" cols="NAME, BIRTHDAY, ID=1..10">
-                <row>withinNow pass, ${exam.now+[5 min]}</row>
-                <row>withinNow fail, ${exam.now+[5 min]}</row>
-                <row>within pass   , ${exam.now}</row>
+                <row>withinNow pass, {{now plus="5 min"}}</row>
+                <row>withinNow fail, {{now plus="5 min"}}</row>
+                <row>within pass   , {{now}}</row>
             </e:db-set>
         </e:given>
         <e:then print="true">
             <e:db-check table="PERSON" cols="NAME, BIRTHDAY">
                 <row>withinNow pass, !{within 10min}</row>
                 <row>withinNow fail, !{within 1min}</row>
-                <row>within pass   , !{within 25hours}${exam.tomorrow}</row>
+                <row>within pass   , !{within 25hours}{{now plus="1 day"}}</row>
             </e:db-check>
         </e:then>
     </e:example>
