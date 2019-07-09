@@ -1,5 +1,6 @@
 package com.adven.concordion.extensions.exam
 
+import com.adven.concordion.extensions.exam.core.html.Html
 import com.adven.concordion.extensions.exam.core.resolveToObj
 import com.adven.concordion.extensions.exam.core.utils.HANDLEBARS
 import com.adven.concordion.extensions.exam.core.utils.HelperSource
@@ -17,7 +18,7 @@ import java.util.*
 import kotlin.test.assertEquals
 
 class HandlebarsResolverTest {
-    private val eval = OgnlEvaluator(null)
+    private val eval = OgnlEvaluator(Html("div").el)
     private val sut: Handlebars = HANDLEBARS
     private val defaultFormat = DEFAULT_FORMAT.format()
 

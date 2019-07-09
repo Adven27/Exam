@@ -80,8 +80,8 @@ class ExamExtension : ConcordionExtension {
             Html(it.element).below(
                 pre(
                     "Error while executing command:\n\n" +
-                            "${PARSED_COMMANDS[it.element.getAttributeValue("cmdId")]}\n\n" +
-                            "${it.throwable.cause?.message}"
+                        "${PARSED_COMMANDS[it.element.getAttributeValue("cmdId")]}\n\n" +
+                        "${it.throwable.cause?.message ?: it.throwable.message}"
                 ).css("exceptionMessage")
             )
         }

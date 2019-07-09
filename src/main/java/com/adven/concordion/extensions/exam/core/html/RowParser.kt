@@ -1,9 +1,6 @@
 package com.adven.concordion.extensions.exam.core.html
 
-import com.adven.concordion.extensions.exam.core.POSTFIX
-import com.adven.concordion.extensions.exam.core.PREFIX_EXAM
-import com.adven.concordion.extensions.exam.core.PREFIX_VAR
-import com.adven.concordion.extensions.exam.core.resolveToObj
+import com.adven.concordion.extensions.exam.core.*
 import com.google.common.base.Strings.isNullOrEmpty
 import org.concordion.api.Evaluator
 import java.util.*
@@ -42,7 +39,7 @@ class RowParser(private val el: Html, private val tag: String, private val eval:
             var rest = text.trim()
             do {
                 when {
-                    rest.startsWith(PREFIX_EXAM) || rest.startsWith(PREFIX_VAR) -> {
+                    rest.startsWith(PREFIX) -> {
                         values.add(
                             eval.resolveToObj(rest.substringBefore(POSTFIX) + POSTFIX)
                         )

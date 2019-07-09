@@ -4,12 +4,16 @@ import com.adven.concordion.extensions.exam.core.parsePeriodFrom
 import com.adven.concordion.extensions.exam.core.utils.HelperSource.Companion.HANDELBAR_RESULT
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat
 import com.github.jknack.handlebars.Context
+import com.github.jknack.handlebars.EscapingStrategy.NOOP
 import com.github.jknack.handlebars.Handlebars
 import com.github.jknack.handlebars.Helper
 import com.github.jknack.handlebars.Options
+import io.restassured.internal.RestAssuredResponseImpl
+import io.restassured.response.Response
 import org.apache.commons.lang3.LocaleUtils
 import org.apache.commons.lang3.Validate.isInstanceOf
 import org.concordion.api.Evaluator
+import org.eclipse.jetty.util.DateCache.DEFAULT_FORMAT
 import org.joda.time.DateTime
 import org.joda.time.DateTimeZone
 import org.joda.time.LocalDateTime
@@ -21,13 +25,22 @@ var END_DELIMITER = "}}"
 const val PLACEHOLDER_TYPE = "placeholder_type"
 
 val HANDLEBARS: Handlebars = Handlebars()
+    .with(NOOP)
     .prettyPrint(false)
     .registerHelpers(HelperSource::class.java)
     .registerHelperMissing(Helper<Any> { _, opts ->
         throw IllegalArgumentException(
             "Variable or helper '${opts.fn.text()}' not found, available helpers:\n\n${HelperSource.values().joinToString(
                 "\n"
-            )}\n"
+            )}\n\n" +
+                "Or register custom one:\n\n" +
+                "ExamExtension().withHandlebar { hb ->\n" +
+                "    hb.registerHelper(\"hi\", Helper { context: Any?, options ->\n" +
+                "        //{{hi '1' 'p1 'p2' o1='a' o2='b'}} => Hello context = 1; params = [p1, p2]; options = {o1=a, o2=b}!\n" +
+                "        //{{hi variable1 variable2 o1=variable3}} => Hello context = 1; params = [2]; options = {o1=3}!\n" +
+                "        \"Hello context = \$context; params = \${options.params.map { it.toString() }}; options = \${options.hash}!\"\n" +
+                "    })\n" +
+                "}"
         )
     })
 
@@ -53,7 +66,7 @@ private const val MINUS = "minus"
 enum class HelperSource(
     val example: String,
     val context: Map<String, Any?> = emptyMap(),
-    val expected: Any = "",
+    val expected: Any? = "",
     val opts: Map<String, String> = emptyMap()
 ) : Helper<Any?> {
     dateFormat(
@@ -134,6 +147,46 @@ enum class HelperSource(
     ) {
         override fun invoke(context: Any?, options: Options): Any? =
             "\${${placeholderType(options.context)}-unit.matches:$context}${options.param(0, "")}"
+    },
+    formattedAs(
+        "{{formattedAs \"yyyy-MM-dd'T'hh:mm:ss\"}}",
+        mapOf(PLACEHOLDER_TYPE to "json"),
+        "\${json-unit.matches:formattedAs}yyyy-MM-dd'T'hh:mm:ss"
+    ) {
+        override fun invoke(context: Any?, options: Options): Any? =
+            "\${${placeholderType(options.context)}-unit.matches:formattedAs}$context"
+    },
+    formattedAndWithinNow(
+        "{{formattedAndWithinNow \"yyyy-MM-dd'T'hh:mm:ss\" \"5s\"}}",
+        mapOf(PLACEHOLDER_TYPE to "json"),
+        "\${json-unit.matches:formattedAndWithinNow}[yyyy-MM-dd'T'hh:mm:ss][5s]"
+    ) {
+        override fun invoke(context: Any?, options: Options): Any? =
+            "\${${placeholderType(options.context)}-unit.matches:formattedAndWithinNow}[$context][${options.param(0, "5s")}]"
+    },
+    formattedAndWithin(
+        "{{formattedAndWithin 'yyyy-MM-dd' '5s' '1951-05-13'}}",
+        mapOf(PLACEHOLDER_TYPE to "json"),
+        "\${json-unit.matches:formattedAndWithin}[yyyy-MM-dd][5s][1951-05-13]"
+    ) {
+        override fun invoke(context: Any?, options: Options): Any? =
+            "\${${placeholderType(options.context)}-unit.matches:formattedAndWithin}[$context][${options.param(0, "5s")}][${options.param(1, "")}]"
+    },
+    responseBody(
+        "{{responseBody 'name'}}",
+        mapOf("exam_response" to "{\"name\" : \"adam\"}".response()),
+        "adam"
+    ) {
+        override fun invoke(context: Any?, options: Options): Any? {
+            return ((options.context.model() as Evaluator).getVariable("#exam_response") as Response)
+                    .jsonPath().getString("$context")
+        }
+    },
+    NULL("{{NULL}}", emptyMap(), null) {
+        override fun invoke(context: Any?, options: Options): Any? = null
+    },
+    eval("{{eval '#var'}}", mapOf("var" to 2), 2) {
+        override fun invoke(context: Any?, options: Options): Any? = (options.context.model() as Evaluator).evaluate("$context")
     };
 
     override fun apply(context: Any?, options: Options): Any? {
@@ -160,7 +213,11 @@ enum class HelperSource(
     }
 
     override fun toString() =
-        "$name: '$example' ${if (context.isEmpty()) "" else "+ variables:$context "}=> ${if (expected is String) "'$expected'" else "$expected (${expected::class.java})"}"
+        "$name: '$example' ${if (context.isEmpty()) "" else "+ variables:$context "}=> ${when (expected) {
+            is String -> "'$expected'"
+            null -> null
+            else -> "$expected (${expected.javaClass})"
+        }}"
 
     protected fun placeholderType(context: Context) = (context.model() as Evaluator).getVariable("#$PLACEHOLDER_TYPE")
 
@@ -191,5 +248,21 @@ enum class HelperSource(
     companion object {
         const val DEFAULT_FORMAT = "yyyy-MM-dd'T'HH:mm:ss"
         const val HANDELBAR_RESULT = "#handlebar_result"
+    }
+}
+
+private fun String.response(): Response {
+    val cnt = this
+    return TestResponse(RestAssuredResponseImpl().apply {
+        groovyResponse = io.restassured.internal.RestAssuredResponseOptionsGroovyImpl().apply {
+            config = io.restassured.config.RestAssuredConfig.config()
+            content = cnt
+        }
+    })
+}
+
+class TestResponse(private val delegate: RestAssuredResponseImpl) : Response by delegate {
+    override fun toString(): String {
+        return print()
     }
 }

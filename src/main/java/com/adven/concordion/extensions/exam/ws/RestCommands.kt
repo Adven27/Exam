@@ -5,10 +5,7 @@ import com.adven.concordion.extensions.exam.core.commands.ExamVerifyCommand
 import com.adven.concordion.extensions.exam.core.html.*
 import com.adven.concordion.extensions.exam.core.resolveJson
 import com.adven.concordion.extensions.exam.core.resolveXml
-import com.adven.concordion.extensions.exam.core.utils.content
-import com.adven.concordion.extensions.exam.core.utils.equalToXml
-import com.adven.concordion.extensions.exam.core.utils.prettyJson
-import com.adven.concordion.extensions.exam.core.utils.prettyXml
+import com.adven.concordion.extensions.exam.core.utils.*
 import com.adven.concordion.extensions.exam.ws.RequestExecutor.Companion.fromEvaluator
 import io.restassured.http.Method
 import net.javacrumbs.jsonunit.JsonAssert.assertJsonEquals
@@ -166,6 +163,7 @@ class CaseCommand(tag: String, private val cfg: Configuration, private val nodeM
 
     override fun setUp(cmd: CommandCall, eval: Evaluator, resultRecorder: ResultRecorder) {
         val caseRoot = cmd.html()
+        eval.setVariable("#$PLACEHOLDER_TYPE", if (fromEvaluator(eval).xml()) "xml" else "json")
         cases.clear()
         val where = caseRoot.first(WHERE)
         if (where != null) {

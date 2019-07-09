@@ -50,7 +50,7 @@
                     }
                 </expected>
             </e:case>
-            <e:case cookies="cook=${#url},anotherCook=asd" desc="Placeholders can be used">
+            <e:case cookies="cook={{url}},anotherCook=asd" desc="Placeholders can be used">
                 <expected>
                     {
                       "DELETE": "/relative/url",
@@ -66,7 +66,7 @@
                     </ol>
                 </e:check>
             </e:case>
-            <e:case cookies="cook=${#exam_response.header('my_header')}" desc="If @FullOGNL is enabled, response fields can be accessed, e.g. ${#exam_response.header('my_header')}">
+            <e:case cookies="cook={{eval &quot;#exam_response.header('my_header')&quot;}}" desc="If @FullOGNL is enabled, response fields can be accessed">
                 <expected>
                     {
                       "DELETE": "/relative/url",
