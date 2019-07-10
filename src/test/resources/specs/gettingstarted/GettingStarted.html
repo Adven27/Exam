@@ -58,13 +58,13 @@
     </e:given>
     <e:delete url="/widgets/1">
         <e:case desc="Successful deletion">
-            <e:expected>{"result" : "ok"}</e:expected>
+            <e:expected/>
             <e:check>
                 <e:db-check caption="Widget was deleted:" table="widgets"/>
             </e:check>
         </e:case>
         <e:case desc="Absent widget deletion">
-            <e:expected statusCode="404" reasonPhrase="Not Found">{"result" : "error"}</e:expected>
+            <e:expected statusCode="404" reasonPhrase="Not Found"/>
         </e:case>
     </e:delete>
 </e:example>
@@ -142,9 +142,7 @@
     </e:put>
     <e:delete url="/widgets/{{id}}">
         <e:case desc="Delete">
-            <e:expected>
-                <e:expected>{"result" : "ok"}</e:expected>
-            </e:expected>
+            <e:expected/>
         </e:case>
     </e:delete>
 </e:example>
