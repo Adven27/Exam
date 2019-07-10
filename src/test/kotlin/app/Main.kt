@@ -66,9 +66,8 @@ fun Application.module() {
 
         delete("/widgets/{id}") {
             val removed = service.delete(call.parameters["id"]?.toInt()!!)
-            //FIXME empty body response check
-            if (removed) call.respond(HttpStatusCode.OK, mapOf("result" to "ok"))
-            else call.respond(HttpStatusCode.NotFound, mapOf("result" to "error"))
+            if (removed) call.respond(HttpStatusCode.OK)
+            else call.respond(HttpStatusCode.NotFound)
         }
     }
 }

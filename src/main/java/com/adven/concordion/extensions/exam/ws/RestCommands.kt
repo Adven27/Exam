@@ -194,32 +194,32 @@ class CaseCommand(tag: String, private val cfg: Configuration, private val nodeM
             })
     }
 
-    override fun execute(cmd: CommandCall, eval: Evaluator, resultRecorder: ResultRecorder) {
-        val childCommands = cmd.children
-        val root = cmd.html()
+    override fun execute(commandCall: CommandCall, evaluator: Evaluator, resultRecorder: ResultRecorder) {
+        val childCommands = commandCall.children
+        val root = commandCall.html()
 
-        val executor = fromEvaluator(eval)
+        val executor = fromEvaluator(evaluator)
         val isJson = !executor.xml()
         val urlParams = root.takeAwayAttr(URL_PARAMS)
         val cookies = root.takeAwayAttr(COOKIES)
 
         for (aCase in cases) {
-            aCase.forEach { (key, value) -> eval.setVariable(key, value) }
+            aCase.forEach { (key, value) -> evaluator.setVariable(key, value) }
 
-            cookies?.let { executor.cookies(eval.resolveJson(it)) }
+            cookies?.let { executor.cookies(evaluator.resolveJson(it)) }
 
-            executor.urlParams(if (urlParams == null) null else eval.resolveJson(urlParams))
+            executor.urlParams(if (urlParams == null) null else evaluator.resolveJson(urlParams))
 
             val caseTR = tr().insteadOf(root.firstOrThrow(CASE))
             val body = caseTR.first(BODY)
             if (body != null) {
-                val content = body.content(eval)
+                val content = body.content(evaluator)
                 var bodyStr: String
                 if (isJson) {
-                    bodyStr = eval.resolveJson(content)
+                    bodyStr = evaluator.resolveJson(content)
                     td().insteadOf(body).css("json").style(MAX_WIDTH).removeAllChild().text(bodyStr.prettyJson())
                 } else {
-                    bodyStr = eval.resolveXml(content)
+                    bodyStr = evaluator.resolveXml(content)
 
                     td().insteadOf(body).css("xml").style(MAX_WIDTH).removeAllChild()
                         .text(bodyStr.prettyXml())
@@ -232,12 +232,12 @@ class CaseCommand(tag: String, private val cfg: Configuration, private val nodeM
             val statusTd = td(expectedStatus)
             caseTR(statusTd)
 
-            childCommands.setUp(eval, resultRecorder)
-            eval.setVariable("#exam_response", executor.execute())
-            childCommands.execute(eval, resultRecorder)
-            childCommands.verify(eval, resultRecorder)
+            childCommands.setUp(evaluator, resultRecorder)
+            evaluator.setVariable("#exam_response", executor.execute())
+            childCommands.execute(evaluator, resultRecorder)
+            childCommands.verify(evaluator, resultRecorder)
 
-            check(td().insteadOf(expected), eval, resultRecorder, isJson)
+            check(td().insteadOf(expected), evaluator, resultRecorder, isJson)
             resultRecorder.check(statusTd, executor.statusLine(), expectedStatus) { a, e ->
                 a.trim() == e.trim()
             }
@@ -302,11 +302,11 @@ class CaseCommand(tag: String, private val cfg: Configuration, private val nodeM
         val executor = fromEvaluator(eval)
         fillCaseContext(root, executor)
         val actual = executor.responseBody()
-        if (actual.isEmpty()) {
-            resultRecorder.failure(root, "(not set)", expected)
-            return
+        when {
+            expected.isNotEmpty() && actual.isEmpty() -> resultRecorder.failure(root, "(empty)", expected)
+            expected.isEmpty() && actual.isEmpty() -> resultRecorder.pass(root)
+            else -> check(json, actual, expected, resultRecorder, root)
         }
-        check(json, actual, expected, resultRecorder, root)
     }
 
     private fun check(json: Boolean, actual: String, expected: String, resultRecorder: ResultRecorder, root: Html) =
@@ -338,7 +338,7 @@ class CaseCommand(tag: String, private val cfg: Configuration, private val nodeM
     }
 
     private fun cookiesTags(cookies: String?): Array<Html> {
-        return (if (cookies != null && !cookies.isEmpty()) {
+        return (if (cookies != null && cookies.isNotEmpty()) {
             listOf(
                 italic(" Cookies "),
                 code(cookies)
