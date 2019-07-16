@@ -1,5 +1,6 @@
 package com.adven.concordion.extensions.exam.core.utils
 
+import com.adven.concordion.extensions.exam.core.ExamExtension
 import com.adven.concordion.extensions.exam.core.html.Html
 import com.adven.concordion.extensions.exam.core.resolveJson
 import com.adven.concordion.extensions.exam.files.commands.PlaceholderSupportDiffEvaluator
@@ -51,7 +52,7 @@ fun Document.prettyXml(): String {
     }
 }
 
-fun String.findResource(eval: Evaluator) = javaClass.getResource(eval.resolveJson(this))
+fun String.findResource(eval: Evaluator) = ExamExtension::class.java.getResource(eval.resolveJson(this))
     ?: throw FileNotFoundException("File not found: $this")
 
 fun Html.content(eval: Evaluator) = this.attr("from")?.findResource(eval)?.readText() ?: this.text()
