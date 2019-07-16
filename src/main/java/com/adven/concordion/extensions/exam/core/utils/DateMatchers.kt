@@ -1,8 +1,8 @@
 package com.adven.concordion.extensions.exam.core.utils
 
 import com.adven.concordion.extensions.exam.core.periodBy
-import com.sun.org.apache.xerces.internal.jaxp.datatype.DatatypeFactoryImpl
 import net.javacrumbs.jsonunit.core.ParametrizedMatcher
+import org.apache.xerces.jaxp.datatype.DatatypeFactoryImpl
 import org.hamcrest.BaseMatcher
 import org.hamcrest.Description
 import org.joda.time.DateTime

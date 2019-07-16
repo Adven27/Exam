@@ -1,10 +1,10 @@
 package com.adven.concordion.extensions.exam.db.commands
 
-import com.adven.concordion.extensions.exam.db.DbTester
-import com.adven.concordion.extensions.exam.db.DbResultRenderer
 import com.adven.concordion.extensions.exam.core.html.*
 import com.adven.concordion.extensions.exam.core.resolveToObj
 import com.adven.concordion.extensions.exam.core.utils.parsePeriod
+import com.adven.concordion.extensions.exam.db.DbResultRenderer
+import com.adven.concordion.extensions.exam.db.DbTester
 import org.concordion.api.CommandCall
 import org.concordion.api.Evaluator
 import org.concordion.api.Result.FAILURE
@@ -114,7 +114,10 @@ class DBCheckCommand(name: String, tag: String, dbTester: DbTester) : DBCommand(
                                 diffs.firstOrNull { diff ->
                                     diff.rowIndex == row && diff.columnName == it
                                 }?.markAsFailure(resultRecorder, this) ?: markAsSuccess(resultRecorder).text(
-                                    if (text().isRegex() || text().isWithin()) " (${actual[row, it]})" else ""
+                                    if ((text().isRegex() || text().isWithin()) && actual.rowCount == expected.rowCount)
+                                        " (${actual[row, it]})"
+                                    else
+                                        ""
                                 )
                             }
                         })
@@ -149,14 +152,22 @@ class RegexAndWithinAwareValueComparer(val evaluator: Evaluator) : IsActualEqual
         expected: Any?,
         actual: Any?
     ): Boolean = when {
-        expected.isRegex() -> regexMatches(expected, actual)
-        expected.isWithin() -> WithinValueComparer(expected.toString().withinPeriod()).isExpected(
-            expectedTable, actualTable, rowNum, columnName, dataType, resolve(expected.toString()), actual
-        )
+        expected.isRegex() -> setVarIfNeeded(actual, expected) { a, e -> regexMatches(e, a) }
+        expected.isWithin() -> setVarIfNeeded(actual, expected) { a, e ->
+            WithinValueComparer(expected.toString().withinPeriod()).isExpected(
+                expectedTable, actualTable, rowNum, columnName, dataType, resolve(e.toString()), a
+            )
+        }
         else -> super.isExpected(expectedTable, actualTable, rowNum, columnName, dataType, expected, actual)
     }
 
-    private fun resolve(expected: String) : Timestamp {
+    private fun setVarIfNeeded(actual: Any?, expected: Any?, check: (actual: Any?, expected: Any?) -> Boolean): Boolean {
+        val split = expected.toString().split(">>")
+        if (split.size > 1) evaluator.setVariable("#${split[1]}", actual)
+        return check(actual, split[0])
+    }
+
+    private fun resolve(expected: String): Timestamp {
         val expectedDateExpression = expected.substring(expected.indexOf("}") + 1).trim()
         return Timestamp((
             if (expectedDateExpression.isBlank()) Date()
@@ -176,7 +187,7 @@ private fun Any?.isRegex() =
     this != null && this.toString().startsWith("!{regex}")
 
 private fun Any?.isWithin() =
-        this != null && this.toString().startsWith("!{within ")
+    this != null && this.toString().startsWith("!{within ")
 
 private fun String.withinPeriod() =
     parsePeriod(
