@@ -82,7 +82,7 @@ class ExamExtension : ConcordionExtension {
                     "Error while executing command:\n\n" +
                         "${PARSED_COMMANDS[it.element.getAttributeValue("cmdId")]}\n\n" +
                         "${it.throwable.cause?.message ?: it.throwable.message}"
-                ).css("exceptionMessage")
+                ).css("alert alert-warning small")
             )
         }
         ex.withExampleListener(ExamExampleListener())
