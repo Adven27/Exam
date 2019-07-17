@@ -32,7 +32,7 @@ object DatabaseFactory {
 
 object Widgets : Table() {
     val id = integer("id").primaryKey().autoIncrement()
-    val name = varchar("name", 255)
+    val name = varchar("name", 10)
     val quantity = integer("quantity")
     val updatedAt = datetime("updated")
 }

@@ -53,7 +53,13 @@ fun Application.module() {
             return@post when {
                 widget.name == null -> call.respond(HttpStatusCode.BadRequest, mapOf("error" to "name is required"))
                 widget.quantity == null -> call.respond(HttpStatusCode.BadRequest, mapOf("error" to "quantity is required"))
-                else -> call.respond(HttpStatusCode.Created, service.add(widget))
+                else -> {
+                    try {
+                        call.respond(HttpStatusCode.Created, service.add(widget))
+                    } catch (e: Exception) {
+                        call.respond(HttpStatusCode.BadRequest, mapOf("error" to e.message))
+                    }
+                }
             }
         }
 
@@ -108,13 +114,15 @@ class WidgetService {
         var key = 0
         DatabaseFactory.dbQuery {
             key = (Widgets.insert {
-                it[name] = widget.name!!
+                it[name] = if (widget.name!!.isBlank()) throw BlankNotAllowed() else widget.name
                 it[quantity] = widget.quantity!!
                 it[updatedAt] = DateTime()
             } get Widgets.id)
         }
         return getBy(key)!!
     }
+
+    class BlankNotAllowed : RuntimeException("blank value not allowed")
 
     suspend fun delete(id: Int): Boolean = DatabaseFactory.dbQuery { Widgets.deleteWhere { Widgets.id eq id } > 0 }
 
