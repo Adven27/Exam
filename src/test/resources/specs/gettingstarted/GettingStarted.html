@@ -31,24 +31,73 @@
         </e:case>
     </e:post>
 </e:example>
-<e:example name="Invalid creation" print="true">
+<br/>
+<blockquote class="blockquote">
+    <p class="mb-0">For testing validation, parametrized (aka <code>where</code>) cases may be used:</p>
+</blockquote>
+<e:example name="Validate creation" print="true">
     <e:given>
         <e:db-set caption="There are no widgets" table="widgets"/>
     </e:given>
     <e:post url="/widgets">
-        <e:case desc="name is required">
-            <e:body>{"quantity": "10"}</e:body>
-            <e:expected statusCode="400" reasonPhrase="Bad Request">{ "error": "name is required" }</e:expected>
-        </e:case>
         <e:case desc="quantity is required">
-            <e:body>{"name": "widget1"}</e:body>
-            <e:expected statusCode="400" reasonPhrase="Bad Request">{ "error": "quantity is required" }</e:expected>
+            <e:body>
+                {"name": "widget1"}
+            </e:body>
+            <e:expected statusCode="400" reasonPhrase="Bad Request">
+                { "error": "quantity is required" }
+            </e:expected>
+        </e:case>
+        <e:case desc="name is required">
+            <e:body>
+                {"quantity": "10"}
+            </e:body>
+            <e:expected statusCode="400" reasonPhrase="Bad Request">
+                { "error": "name is required" }
+            </e:expected>
+        </e:case>
+        <e:case desc="name should't be blank or more than 10 symbols">
+            <e:body>
+                {"name": "{{invalid}}", "quantity": "10"}
+            </e:body>
+            <e:expected statusCode="400" reasonPhrase="Bad Request">
+                { "error": "{{error}}" }
+            </e:expected>
+            <e:where vars="invalid, error">
+                <e:vals>''          , blank value not allowed</e:vals>
+                <e:vals>more_than_10, Value 'more_than_10' can't be stored to database column because exceeds length app.Widgets.name.columnType.colLength</e:vals>
+            </e:where>
         </e:case>
         <e:check>
             <e:db-check caption="No widgets were created:" table="widgets"/>
         </e:check>
     </e:post>
 </e:example>
+<br/>
+<blockquote class="blockquote">
+    <p class="mb-0">Or more tricky and compact equivalent of previous example (request/response body templates are hidden in files):</p>
+</blockquote>
+<e:example name="Validate creation - parametrized" print="true">
+    <e:given>
+        <e:db-set caption="There are no widgets" table="widgets"/>
+    </e:given>
+    <e:post url="/widgets">
+        <e:case desc="Name and quantity validation">
+            <e:body from="/data/getting-started/{{req}}"/>
+            <e:expected from="/data/getting-started/error.json" statusCode="400" reasonPhrase="Bad Request"/>
+            <e:where vars="name, req, error">
+                <e:vals>ignored     , invalid-no-name.json    , name is required</e:vals>
+                <e:vals>ignored     , invalid-no-quantity.json, quantity is required</e:vals>
+                <e:vals>''          , create-req.json         , blank value not allowed</e:vals>
+                <e:vals>more_than_10, create-req.json         , Value 'more_than_10' can't be stored to database column because exceeds length app.Widgets.name.columnType.colLength</e:vals>
+            </e:where>
+        </e:case>
+        <e:check>
+            <e:db-check caption="No widgets were created:" table="widgets"/>
+        </e:check>
+    </e:post>
+</e:example>
+<br/>
 <h3>Let's test widget deletion API:</h3>
 <e:example name="Successful widget deletion" print="true">
     <e:given>
