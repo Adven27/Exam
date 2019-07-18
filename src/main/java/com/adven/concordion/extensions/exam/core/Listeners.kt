@@ -2,13 +2,19 @@ package com.adven.concordion.extensions.exam.core
 
 import com.adven.concordion.extensions.exam.core.ExamExtension.Companion.PARSED_COMMANDS
 import com.adven.concordion.extensions.exam.core.html.*
+import com.adven.concordion.extensions.exam.core.utils.content
 import nu.xom.Attribute
 import nu.xom.Document
 import nu.xom.Element
+import nu.xom.XPathContext
+import nu.xom.converters.DOMConverter
 import org.concordion.api.ImplementationStatus
 import org.concordion.api.ImplementationStatus.*
 import org.concordion.api.listener.*
 import java.util.UUID
+import java.io.ByteArrayInputStream
+import javax.xml.parsers.DocumentBuilderFactory
+import org.concordion.api.Element as ConcordionElement
 
 
 internal class ExamExampleListener : ExampleListener {
@@ -44,18 +50,38 @@ internal class ExamExampleListener : ExampleListener {
 
 internal class ExamDocumentParsingListener(private val registry: CommandRegistry) : DocumentParsingListener {
     override fun beforeParsing(document: Document) {
-        visit(document.rootElement)
-        addToTopButton(document)
+        document.rootElement.apply {
+            resolveIncludes()
+            visit(this)
+            addToTopButton(this)
+        }
     }
 
-    private fun addToTopButton(document: Document) {
-        Html(org.concordion.api.Element(document.rootElement))(
+    private fun Element.resolveIncludes() {
+        val name = "include"
+        this.query(".//$name | .//e:$name", XPathContext("e", ExamExtension.NS))?.let {
+            for (i in 0 until it.size()) {
+                val node = it[i]
+                val template = DOMConverter.convert(
+                    loadXMLFromString(Html(ConcordionElement(node as Element)).content())).rootElement
+                val parent = node.parent
+                val position = parent.indexOf(node)
+                for (j in template.childElements.size() - 1 downTo 0) {
+                    parent.insertChild(template.childElements[j].apply { detach() }, position)
+                }
+                parent.removeChild(node)
+            }
+        }
+    }
+
+    private fun addToTopButton(elem: Element) {
+        Html(ConcordionElement(elem))(
             button("", ID to "btnToTop", ONCLICK to "topFunction()")(
                 italic("").css("fa fa-arrow-up fa-3x")))
     }
 
     private fun visit(elem: Element) {
-        log(org.concordion.api.Element(elem))
+        log(ConcordionElement(elem))
         val children = elem.childElements
 
         for (i in 0 until children.size()) {
@@ -70,7 +96,7 @@ internal class ExamDocumentParsingListener(private val registry: CommandRegistry
         }
     }
 
-    private fun log(elem: org.concordion.api.Element) {
+    private fun log(elem: ConcordionElement) {
         if ((elem.getAttributeValue("print") ?: "false").toBoolean()) {
             val sb = StringBuilder()
             for (e in elem.childElements) {
@@ -78,6 +104,13 @@ internal class ExamDocumentParsingListener(private val registry: CommandRegistry
             }
             elem.prependChild(codeXml(sb.toString()).el())
         }
+    }
+}
+
+fun loadXMLFromString(xml: String): org.w3c.dom.Document? {
+    return DocumentBuilderFactory.newInstance().let {
+        it.isNamespaceAware = true
+        it.newDocumentBuilder().parse(ByteArrayInputStream(xml.toByteArray()))
     }
 }
 
