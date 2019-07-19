@@ -1,9 +1,20 @@
+# Exam: Acceptance Test–Driven Development based on [Concordion](https://github.com/concordion/concordion)
+
+>Illustration from *"Growing Object-Oriented Software, Guided by Tests"*
+>[![Exam](docs/atdd.png)](#attributions)
+
 [![Get automatic notifications about new "exam" versions](https://www.bintray.com/docs/images/bintray_badge_bw.png)](https://bintray.com/adven27/exam/exam?source=watch)
+[![Stability: Active](https://masterminds.github.io/stability/active.svg)](https://masterminds.github.io/stability/active.html)
 [![Build Status](https://travis-ci.org/Adven27/Exam.svg?branch=master)](https://travis-ci.org/Adven27/Exam)
 [ ![Download](https://api.bintray.com/packages/adven27/exam/exam/images/download.svg?version=3.0.0) ](https://bintray.com/adven27/exam/exam/3.0.0/link)
 
-# Exam
-[Concordion](https://github.com/concordion/concordion) extension 
+**Exam** is oriented on **declarative end-to-end black\graybox** application testing in a way a manual tester would do it: send request, verify response\database\message queue etc.
+
+## Features
+
+- **Declarative glue-code free** approach
+- **Attractive, flexible documentation** thanks to Concordion
+- **Widly used set of testing tools** under the hood: *dbunit, rest-assured, xml-unit, json-unit*
 
 ## Getting started
 ### 1) Install
@@ -79,7 +90,7 @@ public class UserCreation extends Specs {
         <e:post url="users">
           <e:case desc="When name and age was posted user should be created and id should be returned">        
             <e:body> {"name": "Carl", "age": 40} </e:body>
-            <e:expected> {"id": "!{number}"} </e:expected>
+            <e:expected> {"id": "{{number}}"} </e:expected>
             <e:check>
                 <e:db-check table="person" cols="name, age">
                   <e:row>Andrew, 20</e:row>
@@ -90,10 +101,10 @@ public class UserCreation extends Specs {
           </e:case>      
           <e:case desc="Age is optional">
             <e:body> {"name": "Don"} </e:body>
-            <e:expected> {"id": "!{number}"} </e:expected>
+            <e:expected> {"id": "{{number}}"} </e:expected>
             <e:check>
                 <e:db-check table="person" cols="name, age" where="name='Don'">
-                  <e:row>Don, ${#null}</e:row>
+                  <e:row>Don, {{NULL}}</e:row>
                 </e:db-check>
             </e:check>
           </e:case>
