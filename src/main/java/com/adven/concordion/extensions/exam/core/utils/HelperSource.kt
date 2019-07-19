@@ -13,16 +13,17 @@ import io.restassured.response.Response
 import org.apache.commons.lang3.LocaleUtils
 import org.apache.commons.lang3.Validate.isInstanceOf
 import org.concordion.api.Evaluator
-import org.eclipse.jetty.util.DateCache.DEFAULT_FORMAT
 import org.joda.time.DateTime
 import org.joda.time.DateTimeZone
 import org.joda.time.LocalDateTime
 import java.text.SimpleDateFormat
 import java.util.*
+import java.util.regex.Pattern
 
 var START_DELIMITER = "{{"
 var END_DELIMITER = "}}"
 const val PLACEHOLDER_TYPE = "placeholder_type"
+const val DB_ACTUAL = "db_actual"
 
 val HANDLEBARS: Handlebars = Handlebars()
     .with(NOOP)
@@ -139,8 +140,9 @@ enum class HelperSource(
             "\${${placeholderType(options.context)}-unit.ignore}"
     },
     regex("{{regex '\\d+'}}", mapOf(PLACEHOLDER_TYPE to "json"), "\${json-unit.regex}\\d+") {
-        override fun invoke(context: Any?, options: Options): CharSequence =
-            "\${${placeholderType(options.context)}-unit.regex}$context"
+        override fun invoke(context: Any?, options: Options): Any? = if (placeholderType(options.context) == "db")
+            regexMatches(context.toString(), dbActual(options.context))
+        else "\${${placeholderType(options.context)}-unit.regex}$context"
     },
     matches(
         "{{matches 'name' 'params'}}", mapOf(PLACEHOLDER_TYPE to "json"), "\${json-unit.matches:name}params"
@@ -179,7 +181,7 @@ enum class HelperSource(
     ) {
         override fun invoke(context: Any?, options: Options): Any? {
             return ((options.context.model() as Evaluator).getVariable("#exam_response") as Response)
-                    .jsonPath().getString("$context")
+                .jsonPath().getString("$context")
         }
     },
     NULL("{{NULL}}", emptyMap(), null) {
@@ -220,6 +222,7 @@ enum class HelperSource(
         }}"
 
     protected fun placeholderType(context: Context) = (context.model() as Evaluator).getVariable("#$PLACEHOLDER_TYPE")
+    protected fun dbActual(context: Context) = (context.model() as Evaluator).getVariable("#$DB_ACTUAL")
 
     protected fun dateFormat(
         context: Any?, options: Options, format: String, local: String, plus: String, minus: String, tz: Any?
@@ -249,6 +252,12 @@ enum class HelperSource(
         const val DEFAULT_FORMAT = "yyyy-MM-dd'T'HH:mm:ss"
         const val HANDELBAR_RESULT = "#handlebar_result"
     }
+}
+
+private fun regexMatches(p: String, actualValue: Any?): Boolean {
+    if (actualValue == null) return false
+    val pattern = Pattern.compile(p)
+    return pattern.matcher(actualValue.toString()).matches()
 }
 
 private fun String.response(): Response {
