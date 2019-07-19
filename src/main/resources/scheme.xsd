@@ -37,6 +37,7 @@
                 <xs:element name="db-set" type="db-set-info"/>
                 <xs:element name="db-clean" type="db-clean-info"/>
                 <xs:element name="mq-send" type="mq-info"/>
+                <xs:element name="include" type="include-info"/>
             </xs:all>
         </xs:complexType>
     </xs:element>
@@ -48,6 +49,7 @@
             <xs:element name="db-clean" type="db-clean-info"/>
             <xs:element name="db-show" type="db-set-info"/>
             <xs:element name="mq-send" type="mq-info"/>
+            <xs:element name="include" type="include-info"/>
         </xs:all>
     </xs:complexType>
 
@@ -56,6 +58,30 @@
             <xs:extension base="xs:string">
                 <xs:attribute type="xs:string" name="actual" use="required" default="variable"/>
                 <xs:attribute type="xs:string" name="from" default="/data"/>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+
+    <xs:complexType name="include-info" mixed="true">
+        <xs:simpleContent>
+            <xs:extension base="xs:string">
+                <xs:attribute type="xs:string" name="from" default="/data/keywords/clean-tables.xml">
+                    <xs:annotation>
+                        <xs:documentation>
+                            Includes elements from file to current document. Example of usage:
+                            <pre>
+Insert in spec:
+&lt;e:include from="/data/keywords/clean-tables.xml"/&gt;
+
+Create file in resources /data/keywords/clean-tables.xml with content:
+
+&lt;anyTagNameWillBeIgnored xmlns:e="http://exam.extension.io" xmlns:cc="http://www.concordion.org/2007/concordion"&gt;
+    &lt;span&gt;Clean tables: &lt;e:db-clean tables="table1, table2"/&gt;&lt;/span&gt;
+&lt;/anyTagNameWillBeIgnored&gt;
+                            </pre>
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
             </xs:extension>
         </xs:simpleContent>
     </xs:complexType>
@@ -129,6 +155,7 @@
             <xs:element name="db-check" type="db-check-info"/>
             <xs:element name="mq-check" type="mq-info"/>
             <xs:element name="set" type="set-info"/>
+            <xs:element name="include" type="include-info"/>
         </xs:all>
     </xs:complexType>
 

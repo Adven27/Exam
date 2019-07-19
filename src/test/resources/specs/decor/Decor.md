@@ -20,4 +20,5 @@
     <e:example name="Some example 2"/>
     <var>#myOuterVar</var><code c:echo="#myOuterVar"/>
     <var>#myInnerVar</var><code c:echo="#myInnerVar"/>
+    <e:include from="/keywords/some-keyword.xml"/>
 </div>

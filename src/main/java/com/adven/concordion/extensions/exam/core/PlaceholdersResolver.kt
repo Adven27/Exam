@@ -29,7 +29,7 @@ private fun resolveTxt(body: String, type: String, eval: Evaluator): String {
 fun parsePeriodFrom(v: String): Period = v.split(",").filter { it.isNotBlank() }
     .map {
         val (p1, p2) = it.trim().split(" ")
-        if (p1.isNum()) periodBy(parseInt(p1), p2)
+        if (p1.toIntOrNull() != null) periodBy(parseInt(p1), p2)
         else periodBy(parseInt(p2), p1)
     }.fold(Period.ZERO) { a, n -> a + n }
 
@@ -41,13 +41,6 @@ fun periodBy(value: Int, type: String): BaseSingleFieldPeriod = when (type) {
     "m", "min", "minute", "minutes" -> Minutes.minutes(value)
     "s", "sec", "second", "seconds" -> Seconds.seconds(value)
     else -> throw UnsupportedOperationException("Unsupported period type $type")
-}
-
-private fun String.isNum(): Boolean = try {
-    parseInt(this)
-    true
-} catch (e: NumberFormatException) {
-    false
 }
 
 fun Evaluator.resolveToObj(placeholder: String?): Any? = when {
