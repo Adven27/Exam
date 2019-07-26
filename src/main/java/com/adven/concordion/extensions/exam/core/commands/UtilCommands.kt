@@ -49,6 +49,10 @@ class WaitCommand(tag: String) : ExamCommand("await", tag) {
         val hasBody = el.takeAwayAttr("hasBody")
         val hasBodyFrom = el.takeAwayAttr("hasBodyFrom")
         val expectedStatus = el.takeAwayAttr("hasStatusCode")
+
+        val body = if (withBodyFrom.isEmpty()) el.text() else eval.resolve(withBodyFrom.readFile())
+        el.removeChildren()
+
         val await = Awaitility.await()
             .atMost(el.takeAwayAttr("atMostSec", "4").toLong(), TimeUnit.SECONDS)
             .pollDelay(el.takeAwayAttr("pollDelayMillis", "0").toLong(), TimeUnit.MILLISECONDS)
@@ -56,13 +60,13 @@ class WaitCommand(tag: String) : ExamCommand("await", tag) {
 
         Thread.sleep(1000L * eval.resolve(el.takeAwayAttr("seconds", "0")).toInt())
         when {
-            untilTrue != null -> {
-                await.alias(untilTrue).until { Boolean.TRUE == eval.evaluate(untilTrue) }
-            }
-            untilGet.isNotEmpty() && (hasBody != null || hasBodyFrom != null || expectedStatus != null) -> {
+            untilTrue != null -> await.alias(untilTrue).until { Boolean.TRUE == eval.evaluate(untilTrue) }
+            untilGet.isNotEmpty() && hasAny(hasBody, hasBodyFrom, expectedStatus) -> {
                 when {
-                    hasBody != null -> await.awaitGet(untilGet, eval.resolve(hasBody), expectedStatus)
-                    hasBodyFrom != null -> await.awaitGet(untilGet, eval.resolve(hasBodyFrom.readFile()), expectedStatus)
+                    hasBody != null ->
+                        await.awaitGet(eval, untilGet, eval.resolve(hasBody), expectedStatus)
+                    hasBodyFrom != null ->
+                        await.awaitGet(eval, untilGet, eval.resolve(hasBodyFrom.readFile()), expectedStatus)
                     expectedStatus != null -> await.untilAsserted {
                         RestAssured.get(untilGet)
                             .apply { eval.setVariable("#exam_response", this) }
@@ -70,17 +74,13 @@ class WaitCommand(tag: String) : ExamCommand("await", tag) {
                     }
                 }
             }
-            untilPost.isNotEmpty() && (hasBody != null || hasBodyFrom != null || expectedStatus != null) -> {
+            untilPost.isNotEmpty() && hasAny(hasBody, hasBodyFrom, expectedStatus) -> {
                 when {
-                    hasBody != null -> await.awaitPost(untilPost, eval.resolve(hasBody), expectedStatus)
-                    hasBodyFrom != null -> await.awaitPost(untilPost, eval.resolve(hasBodyFrom.readFile()), expectedStatus)
+                    hasBody != null ->
+                        await.awaitPost(eval, body, withContentType, untilPost, eval.resolve(hasBody), expectedStatus)
+                    hasBodyFrom != null ->
+                        await.awaitPost(eval, body, withContentType, untilPost, eval.resolve(hasBodyFrom.readFile()), expectedStatus)
                     expectedStatus != null -> await.untilAsserted {
-                        val body = if (withBodyFrom.isEmpty()) {
-                            el.text()
-                        } else {
-                            eval.resolve(withBodyFrom.readFile())
-                        }
-                        el.removeChildren()
                         RestAssured.given().body(eval.resolve(body)).contentType(withContentType).post(untilPost)
                             .apply { eval.setVariable("#exam_response", this) }
                             .then().statusCode(expectedStatus.toInt())
@@ -90,14 +90,23 @@ class WaitCommand(tag: String) : ExamCommand("await", tag) {
         }
     }
 
-    private fun ConditionFactory.awaitPost(url: String, expectedBody: String, expectedStatus: String?) = untilAsserted {
-        val response = RestAssured.post(url).then()
+    private fun hasAny(hasBody: String?, hasBodyFrom: String?, expectedStatus: String?) =
+        hasBody != null || hasBodyFrom != null || expectedStatus != null
+
+    private fun ConditionFactory.awaitPost(
+        eval: Evaluator, body: String, contentType: String, url: String, expectedBody: String, expectedStatus: String?
+    ) = untilAsserted {
+        val response = RestAssured.given().body(eval.resolve(body)).contentType(contentType).post(url)
+            .apply { eval.setVariable("#exam_response", this) }
+            .then()
         if (expectedStatus != null) response.statusCode(expectedStatus.toInt())
         assertEquals(expectedBody, response.extract().body().asString())
     }
 
-    private fun ConditionFactory.awaitGet(url: String, expectedBody: String, expectedStatus: String?) = untilAsserted {
-        val response = RestAssured.get(url).then()
+    private fun ConditionFactory.awaitGet(eval: Evaluator, url: String, expectedBody: String, expectedStatus: String?) = untilAsserted {
+        val response = RestAssured.get(url)
+            .apply { eval.setVariable("#exam_response", this) }
+            .then()
         if (expectedStatus != null) response.statusCode(expectedStatus.toInt())
         assertEquals(expectedBody, response.extract().body().asString())
     }
