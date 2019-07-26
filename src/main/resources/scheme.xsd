@@ -45,6 +45,7 @@
     <xs:complexType name="given-info" mixed="true">
         <xs:all>
             <xs:element name="set" type="set-info"/>
+            <xs:element name="await" type="await-info"/>
             <xs:element name="db-set" type="db-set-info"/>
             <xs:element name="db-clean" type="db-clean-info"/>
             <xs:element name="db-show" type="db-set-info"/>
@@ -58,6 +59,23 @@
             <xs:extension base="xs:string">
                 <xs:attribute type="xs:string" name="actual" use="required" default="variable"/>
                 <xs:attribute type="xs:string" name="from" default="/data"/>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+
+    <xs:complexType name="await-info" mixed="true">
+        <xs:simpleContent>
+            <xs:extension base="xs:string">
+                <xs:attribute type="xs:integer" name="seconds" default="2"/>
+                <xs:attribute type="xs:string" name="untilTrue" default="isDone(#param)"/>
+                <xs:attribute type="xs:string" name="untilHttpGet" default="/jobs/{{id}}"/>
+                <xs:attribute type="xs:string" name="untilHttpPost" default="/jobs"/>
+                <xs:attribute type="xs:string" name="hasBody" default="ok"/>
+                <xs:attribute type="xs:string" name="hasBodyFrom" default="/data/job-finished.json"/>
+                <xs:attribute type="xs:string" name="hasStatusCode" default="200"/>
+                <xs:attribute type="xs:integer" name="atMostSec" default="4"/>
+                <xs:attribute type="xs:integer" name="pollDelayMillis" default="1000"/>
+                <xs:attribute type="xs:integer" name="pollIntervalMillis" default="100"/>
             </xs:extension>
         </xs:simpleContent>
     </xs:complexType>
@@ -150,6 +168,7 @@ Create file in resources /data/keywords/clean-tables.xml with content:
 
     <xs:complexType name="check-info" mixed="true">
         <xs:all>
+            <xs:element name="await" type="await-info"/>
             <xs:element name="xml-check" type="xj-info"/>
             <xs:element name="json-check" type="xj-info"/>
             <xs:element name="db-check" type="db-check-info"/>

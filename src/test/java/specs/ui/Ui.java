@@ -9,11 +9,11 @@ import static com.codeborne.selenide.Selenide.$;
 
 public class Ui extends Specs {
 
-    public void hasText(String text) throws Exception {
+    public void hasText(String text) {
         $(By.tagName("span")).shouldHave(text(text));
     }
 
-    public String noParamsCheck() throws Exception {
+    public String noParamsCheck() {
         $(By.tagName("span")).should(exist);
         return "valueFromMethodCall";
     }

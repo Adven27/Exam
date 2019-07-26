@@ -22,6 +22,7 @@ import java.util.Collections.addAll
 import kotlin.collections.HashMap
 
 class ExamExtension : ConcordionExtension {
+    private var focusOnError: Boolean = true
     private var jsonUnitCfg: Configuration = DEFAULT_JSON_UNIT_CFG
     private var nodeMatcher: NodeMatcher = DEFAULT_NODE_MATCHER
     private val plugins = ArrayList<ExamPlugin>()
@@ -64,6 +65,15 @@ class ExamExtension : ConcordionExtension {
         return this
     }
 
+    /**
+     * All examples but failed will be collapsed
+     */
+    @Suppress("unused")
+    fun withFocusOnFailed(enabled: Boolean): ExamExtension {
+        focusOnError = enabled
+        return this
+    }
+
     override fun addTo(ex: ConcordionExtender) {
         val registry = CommandRegistry(jsonUnitCfg, nodeMatcher)
         plugins.forEach { registry.register(it.commands()) }
@@ -84,6 +94,9 @@ class ExamExtension : ConcordionExtension {
                         "${it.throwable.cause?.message ?: it.throwable.message}"
                 ).css("alert alert-warning small")
             )
+        }
+        if (focusOnError) {
+            ex.withSpecificationProcessingListener(FocusOnErrorsListener())
         }
         ex.withExampleListener(ExamExampleListener())
     }
