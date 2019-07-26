@@ -214,8 +214,8 @@
 </blockquote>
 <e:example name="Trigger job and poll result with custom logic" print="true">
     <e:post url="/jobs">
-        <e:case desc="Trigger job">
-            <e:body/>
+        <e:case desc="Trigger job with some optional body">
+            <e:body>{"name" : "value"}</e:body>
             <e:expected>{"id" : "{{number}}" }</e:expected>
         </e:case>
     </e:post>
@@ -232,15 +232,15 @@
     </e:then>
 </e:example>
 <blockquote class="blockquote">
-    <p class="mb-0">Equivalent of previous example with http polling:</p>
+    <p class="mb-0">Equivalent of previous example with explicit http polling:</p>
 </blockquote>
 <e:example name="Trigger job and poll result with http request" print="true">
     <e:when>
-        Trigger job
-        <e:await untilHttpPost="/jobs" hasStatusCode="200"/>
+        Trigger job on <code cc:set="#url">/jobs</code> with some optional body <code cc:set="#json">{"name" : "value"}</code>
+        <e:await untilHttpPost="{{url}}" hasStatusCode="201" atMostSec="10">{{json}}</e:await>
         <e:set var="id" value="{{responseBody 'id'}}"/>
         and wait until it's finished.
-        <e:await untilHttpGet="/jobs/{{id}}" hasBodyFrom="/data/getting-started/job-finished.json" hasStatusCode="200"/>
+        <e:await untilHttpGet="/jobs/{{id}}" hasBodyFrom="/data/getting-started/job-finished.json"/>
         Job id = <code cc:echo="#id"/>
     </e:when>
     <e:then>

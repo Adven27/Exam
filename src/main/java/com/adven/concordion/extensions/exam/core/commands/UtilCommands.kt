@@ -28,7 +28,7 @@ class SetVarCommand(tag: String) : ExamCommand("set", tag) {
             val body = el.text()
             val silent = el.attr("silent")
             if (silent != null && silent == "true") {
-                el.removeAllChild()
+                el.removeChildren()
             }
             eval.resolveXml(body)
         } else {
@@ -44,6 +44,8 @@ class WaitCommand(tag: String) : ExamCommand("await", tag) {
         val untilTrue = el.takeAwayAttr("untilTrue")
         val untilGet = eval.resolve(el.takeAwayAttr("untilHttpGet", ""))
         val untilPost = eval.resolve(el.takeAwayAttr("untilHttpPost", ""))
+        val withBodyFrom = eval.resolve(el.takeAwayAttr("withBodyFrom", ""))
+        val withContentType = eval.resolve(el.takeAwayAttr("withContentType", "application/json"))
         val hasBody = el.takeAwayAttr("hasBody")
         val hasBodyFrom = el.takeAwayAttr("hasBodyFrom")
         val expectedStatus = el.takeAwayAttr("hasStatusCode")
@@ -62,7 +64,8 @@ class WaitCommand(tag: String) : ExamCommand("await", tag) {
                     hasBody != null -> await.awaitGet(untilGet, eval.resolve(hasBody), expectedStatus)
                     hasBodyFrom != null -> await.awaitGet(untilGet, eval.resolve(hasBodyFrom.readFile()), expectedStatus)
                     expectedStatus != null -> await.untilAsserted {
-                        RestAssured.get(untilGet).apply { eval.setVariable("#exam_response", this) }
+                        RestAssured.get(untilGet)
+                            .apply { eval.setVariable("#exam_response", this) }
                             .then().statusCode(expectedStatus.toInt())
                     }
                 }
@@ -72,7 +75,14 @@ class WaitCommand(tag: String) : ExamCommand("await", tag) {
                     hasBody != null -> await.awaitPost(untilPost, eval.resolve(hasBody), expectedStatus)
                     hasBodyFrom != null -> await.awaitPost(untilPost, eval.resolve(hasBodyFrom.readFile()), expectedStatus)
                     expectedStatus != null -> await.untilAsserted {
-                        RestAssured.post(untilPost).apply { eval.setVariable("#exam_response", this) }
+                        val body = if (withBodyFrom.isEmpty()) {
+                            el.text()
+                        } else {
+                            eval.resolve(withBodyFrom.readFile())
+                        }
+                        el.removeChildren()
+                        RestAssured.given().body(eval.resolve(body)).contentType(withContentType).post(untilPost)
+                            .apply { eval.setVariable("#exam_response", this) }
                             .then().statusCode(expectedStatus.toInt())
                     }
                 }

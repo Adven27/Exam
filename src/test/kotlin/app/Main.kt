@@ -13,6 +13,7 @@ import io.ktor.features.ContentNegotiation
 import io.ktor.http.HttpStatusCode
 import io.ktor.jackson.jackson
 import io.ktor.request.receive
+import io.ktor.request.receiveOrNull
 import io.ktor.response.respond
 import io.ktor.routing.*
 import io.ktor.server.engine.embeddedServer
@@ -44,7 +45,7 @@ fun Application.module() {
     val jobService = JobService()
     routing {
         post("/jobs") {
-            log.info("trigger job")
+            log.info("trigger job " + call.receiveOrNull<NewWidget>())
             val id = jobService.add()
             jobs.add(id)
 

@@ -70,8 +70,10 @@
                 <xs:attribute type="xs:string" name="untilTrue" default="isDone(#param)"/>
                 <xs:attribute type="xs:string" name="untilHttpGet" default="/jobs/{{id}}"/>
                 <xs:attribute type="xs:string" name="untilHttpPost" default="/jobs"/>
+                <xs:attribute type="xs:string" name="withBodyFrom" default="/data/request.json"/>
+                <xs:attribute type="xs:string" name="withContentType" default="application/json"/>
                 <xs:attribute type="xs:string" name="hasBody" default="ok"/>
-                <xs:attribute type="xs:string" name="hasBodyFrom" default="/data/job-finished.json"/>
+                <xs:attribute type="xs:string" name="hasBodyFrom" default="/data/response.json"/>
                 <xs:attribute type="xs:string" name="hasStatusCode" default="200"/>
                 <xs:attribute type="xs:integer" name="atMostSec" default="4"/>
                 <xs:attribute type="xs:integer" name="pollDelayMillis" default="1000"/>
@@ -223,7 +225,10 @@ Create file in resources /data/keywords/clean-tables.xml with content:
             </xs:element>
             <xs:element name="check" type="check-info"/>
         </xs:sequence>
-        <xs:attribute type="xs:string" name="url" use="required"/>
+        <xs:attribute type="xs:string" name="url" use="required" default="/"/>
+        <xs:attribute type="xs:string" name="contentType" default="application/json"/>
+        <xs:attribute type="xs:string" name="cookies" default="one=1, two=2"/>
+        <xs:attribute type="xs:string" name="headers"/>
     </xs:complexType>
     <xs:complexType name="get-info">
         <xs:sequence>
@@ -241,6 +246,7 @@ Create file in resources /data/keywords/clean-tables.xml with content:
         </xs:sequence>
         <xs:attribute type="xs:string" name="url" use="required"/>
         <xs:attribute type="xs:string" name="cookies" default="one=1, two=2"/>
+        <xs:attribute type="xs:string" name="headers"/>
     </xs:complexType>
 
     <xs:element name="example">

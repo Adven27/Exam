@@ -18,7 +18,7 @@ import org.xmlunit.diff.NodeMatcher
 import java.util.*
 
 private const val HEADERS = "headers"
-private const val TYPE = "type"
+private const val TYPE = "contentType"
 private const val URL = "url"
 private const val DESC = "desc"
 private const val URL_PARAMS = "urlParams"
@@ -84,7 +84,7 @@ sealed class RequestCommand(
         val headers = html.takeAwayAttr(HEADERS, eval)
         val headersMap = HashMap<String, String>()
         if (headers != null) {
-            val headersArray = headers.split(",".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+            val headersArray = headers.split(",").dropLastWhile { it.isEmpty() }.toTypedArray()
             for (i in headersArray.indices) {
                 if (i - 1 % 2 == 0) {
                     headersMap[headersArray[i - 1]] = headersArray[i]
@@ -217,11 +217,11 @@ class CaseCommand(tag: String, private val cfg: Configuration, private val nodeM
                 var bodyStr: String
                 if (isJson) {
                     bodyStr = evaluator.resolveJson(content)
-                    td().insteadOf(body).css("json").style(MAX_WIDTH).removeAllChild().text(bodyStr.prettyJson())
+                    td().insteadOf(body).css("json").style(MAX_WIDTH).removeChildren().text(bodyStr.prettyJson())
                 } else {
                     bodyStr = evaluator.resolveXml(content)
 
-                    td().insteadOf(body).css("xml").style(MAX_WIDTH).removeAllChild()
+                    td().insteadOf(body).css("xml").style(MAX_WIDTH).removeChildren()
                         .text(bodyStr.prettyXml())
                 }
                 executor.body(bodyStr)
@@ -297,7 +297,7 @@ class CaseCommand(tag: String, private val cfg: Configuration, private val nodeM
     private fun check(root: Html, eval: Evaluator, resultRecorder: ResultRecorder, json: Boolean) {
         val expected = resolve(json, root.content(eval), eval)
 
-        root.removeAllChild().text(expected).css(if (json) "json" else "xml").style(MAX_WIDTH)
+        root.removeChildren().text(expected).css(if (json) "json" else "xml").style(MAX_WIDTH)
 
         val executor = fromEvaluator(eval)
         fillCaseContext(root, executor)

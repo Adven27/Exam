@@ -272,6 +272,6 @@ private fun String.response(): Response {
 
 class TestResponse(private val delegate: RestAssuredResponseImpl) : Response by delegate {
     override fun toString(): String {
-        return print()
+        return asString()
     }
 }

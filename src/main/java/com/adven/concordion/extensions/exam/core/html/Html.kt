@@ -170,7 +170,7 @@ class Html(internal val el: Element) {
 
     fun firstOrThrow(tag: String) = first(tag) ?: throw IllegalStateException("<$tag> tag is required")
 
-    fun removeAllChild(): Html {
+    fun removeChildren(): Html {
         moveChildrenTo(Html("tmp"))
         return this
     }
