@@ -114,7 +114,7 @@ class DBCheckCommand(name: String, tag: String, dbTester: DbTester) : DBCommand(
                                 diffs.firstOrNull { diff ->
                                     diff.rowIndex == row && diff.columnName == it
                                 }?.markAsFailure(resultRecorder, this) ?: markAsSuccess(resultRecorder).text(
-                                    if ((text().isRegex() || text().isWithin()) && actual.rowCount == expected.rowCount)
+                                    if (isDbMatcher(text()) && actual.rowCount == expected.rowCount)
                                         " (${actual[row, it]})"
                                     else
                                         ""
@@ -125,6 +125,7 @@ class DBCheckCommand(name: String, tag: String, dbTester: DbTester) : DBCommand(
             })
     }
 
+    private fun isDbMatcher(text: String) = (text.isRegex() || text.isWithin() || text.isNumber() || text.isNotNull())
     private fun Html.markAsSuccess(resultRecorder: ResultRecorder) = success(resultRecorder, this)
     private fun Difference.markAsFailure(resultRecorder: ResultRecorder, td: Html) =
         failure(resultRecorder, td, this.actualValue, this.expectedValue?.convertToString() ?: "null")
@@ -152,6 +153,8 @@ class RegexAndWithinAwareValueComparer(val evaluator: Evaluator) : IsActualEqual
         expected: Any?,
         actual: Any?
     ): Boolean = when {
+        expected.isNotNull() -> setVarIfNeeded(actual, expected) { a, _ -> a != null }
+        expected.isNumber() -> setVarIfNeeded(actual, expected) { a, _ -> regexMatches("^\\d+\$", a) }
         expected.isRegex() -> setVarIfNeeded(actual, expected) { a, e -> regexMatches(e, a) }
         expected.isWithin() -> setVarIfNeeded(actual, expected) { a, e ->
             WithinValueComparer(expected.toString().withinPeriod()).isExpected(
@@ -178,16 +181,17 @@ class RegexAndWithinAwareValueComparer(val evaluator: Evaluator) : IsActualEqual
     private fun regexMatches(expectedValue: Any?, actualValue: Any?): Boolean {
         if (actualValue == null) return false
         val expected = expectedValue.toString()
-        val pattern = Pattern.compile(expected.substring(expected.indexOf("}") + 1).trim())
-        return pattern.matcher(actualValue.toString()).matches()
+        return regexMatches(expected.substring(expected.indexOf("}") + 1).trim(), actualValue)
     }
+
+    private fun regexMatches(pattern: String, actualValue: Any?): Boolean =
+        if (actualValue == null) false else Pattern.compile(pattern).matcher(actualValue.toString()).matches()
 }
 
-private fun Any?.isRegex() =
-    this != null && this.toString().startsWith("!{regex}")
-
-private fun Any?.isWithin() =
-    this != null && this.toString().startsWith("!{within ")
+private fun Any?.isNotNull() = this != null && this.toString().startsWith("!{notNull}")
+private fun Any?.isNumber() = this != null && this.toString().startsWith("!{number}")
+private fun Any?.isRegex() = this != null && this.toString().startsWith("!{regex}")
+private fun Any?.isWithin() = this != null && this.toString().startsWith("!{within ")
 
 private fun String.withinPeriod() =
     parsePeriod(

@@ -56,14 +56,14 @@ open class Specs {
                     override fun receive(): String = queue.pop()
                 })
             ),
-            UiPlugin()
+            UiPlugin(screenshotsOnFail = true, screenshotsOnSuccess = false)
         ).withHandlebar { hb ->
             hb.registerHelper("hi", Helper { context: Any?, options ->
                 //{{hi '1' 'p1 'p2' o1='a' o2='b'}} => Hello context = 1; params = [p1, p2]; options = {o1=a, o2=b}!
                 //{{hi variable1 variable2 o1=variable3}} => Hello context = 1; params = [2]; options = {o1=3}!
                 "Hello context = $context; params = ${options.params.map { it.toString() }}; options = ${options.hash}!"
             })
-        }
+        }.withFocusOnFailed(false)
 
         @JvmStatic
         @AfterSuite

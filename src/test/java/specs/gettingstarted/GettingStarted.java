@@ -21,4 +21,8 @@ public class GettingStarted extends Specs {
         SutApp.stop();
         RestAssured.port = Specs.PORT;
     }
+
+    public boolean isDone(String id) {
+        return !RestAssured.get("/jobs/" + id).body().jsonPath().getBoolean("running");
+    }
 }

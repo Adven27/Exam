@@ -13,14 +13,19 @@ import io.ktor.features.ContentNegotiation
 import io.ktor.http.HttpStatusCode
 import io.ktor.jackson.jackson
 import io.ktor.request.receive
+import io.ktor.request.receiveOrNull
 import io.ktor.response.respond
 import io.ktor.routing.*
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.jetty.Jetty
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.jetbrains.exposed.sql.*
 import org.joda.time.DateTime
 import java.util.*
 import java.util.concurrent.TimeUnit
+import kotlin.collections.ArrayList
 
 fun Application.module() {
     install(CallLogging)
@@ -35,15 +40,36 @@ fun Application.module() {
         }
     }
     DatabaseFactory.init()
-    val service = WidgetService()
+    val jobs: MutableList<Int> = ArrayList()
+    val widgetService = WidgetService()
+    val jobService = JobService()
     routing {
+        post("/jobs") {
+            log.info("trigger job " + call.receiveOrNull<NewWidget>())
+            val id = jobService.add()
+            jobs.add(id)
+
+            //do some hard work async
+            GlobalScope.launch {
+                delay(2000L)
+                jobService.update(id, "done")
+                jobs.remove(id)
+            }
+            call.respond("""{ "id" : $id }""")
+        }
+
+        get("/jobs/{id}") {
+            log.info("is job running?")
+            call.respond("""{ "running" : "${jobs.contains(call.parameters["id"]?.toInt()!!)}" }""")
+        }
+
         get("/widgets/") {
-            log.info("service.getAll: " + service.getAll().toString())
-            call.respond(service.getAll())
+            log.info("service.getAll: " + widgetService.getAll().toString())
+            call.respond(widgetService.getAll())
         }
 
         get("/widgets/{id}") {
-            val widget = service.getBy(call.parameters["id"]?.toInt()!!)
+            val widget = widgetService.getBy(call.parameters["id"]?.toInt()!!)
             if (widget == null) call.respond(HttpStatusCode.NotFound)
             else call.respond(widget)
         }
@@ -55,7 +81,7 @@ fun Application.module() {
                 widget.quantity == null -> call.respond(HttpStatusCode.BadRequest, mapOf("error" to "quantity is required"))
                 else -> {
                     try {
-                        call.respond(HttpStatusCode.Created, service.add(widget))
+                        call.respond(HttpStatusCode.Created, widgetService.add(widget))
                     } catch (e: Exception) {
                         call.respond(HttpStatusCode.BadRequest, mapOf("error" to e.message))
                     }
@@ -65,13 +91,13 @@ fun Application.module() {
 
         put("/widgets/") {
             val widget = call.receive<NewWidget>()
-            val updated = service.update(widget)
+            val updated = widgetService.update(widget)
             if (updated == null) call.respond(HttpStatusCode.NotFound)
             else call.respond(HttpStatusCode.OK, updated)
         }
 
         delete("/widgets/{id}") {
-            val removed = service.delete(call.parameters["id"]?.toInt()!!)
+            val removed = widgetService.delete(call.parameters["id"]?.toInt()!!)
             if (removed) call.respond(HttpStatusCode.OK)
             else call.respond(HttpStatusCode.NotFound)
         }
@@ -127,9 +153,27 @@ class WidgetService {
     suspend fun delete(id: Int): Boolean = DatabaseFactory.dbQuery { Widgets.deleteWhere { Widgets.id eq id } > 0 }
 
     private fun toWidget(row: ResultRow) = Widget(
-            id = row[Widgets.id],
-            name = row[Widgets.name],
-            quantity = row[Widgets.quantity],
-            updatedAt = row[Widgets.updatedAt]
+        id = row[Widgets.id],
+        name = row[Widgets.name],
+        quantity = row[Widgets.quantity],
+        updatedAt = row[Widgets.updatedAt]
     )
+}
+
+class JobService {
+    suspend fun add(): Int {
+        var key = 0
+        DatabaseFactory.dbQuery {
+            key = (JobResult.insert {} get JobResult.id)
+        }
+        return key
+    }
+
+    suspend fun update(id: Int, jobResult: String) {
+        DatabaseFactory.dbQuery {
+            JobResult.update({ JobResult.id eq id }) {
+                it[result] = jobResult
+            }
+        }
+    }
 }

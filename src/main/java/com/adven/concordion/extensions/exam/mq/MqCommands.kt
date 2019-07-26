@@ -43,7 +43,7 @@ class MqCheckCommand(
         val actual = mqTesters.getOrFail(mqName).receive()
         val expected = eval.resolveJson(root.content(eval).trim())
         val container = pre(expected).css("json").attr("autoFormat", "true")
-        root.removeAllChild()(
+        root.removeChildren()(
             tableSlim()(
                 caption(mqName)(italic("", CLASS to "fa fa-envelope-open fa-pull-left fa-border")),
                 trWithTDs(
@@ -75,7 +75,7 @@ class MqSendCommand(name: String, tag: String, private val mqTesters: Map<String
         val root = cmd.html()
         val mqName = root.takeAwayAttr("name")
         val message = eval.resolveJson(root.content(eval).trim())
-        root.removeAllChild()(
+        root.removeChildren()(
             tableSlim()(
                 caption(mqName)(italic("", CLASS to "fa fa-envelope fa-pull-left fa-border")),
                 trWithTDs(

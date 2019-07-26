@@ -57,5 +57,6 @@ fun String.findResource(eval: Evaluator) = ExamExtension::class.java.getResource
     ?: throw FileNotFoundException("File not found: $this")
 
 fun Html.content() = this.attr("from")?.findResource()?.readText() ?: this.text()
+fun String.readFile() = this.findResource().readText()
 fun String.findResource() = ExamExtension::class.java.getResource(this)
     ?: throw FileNotFoundException("File not found: $this")

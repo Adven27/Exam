@@ -2,7 +2,6 @@ package com.adven.concordion.extensions.exam.core.utils
 
 import com.adven.concordion.extensions.exam.core.parsePeriodFrom
 import com.adven.concordion.extensions.exam.core.utils.HelperSource.Companion.HANDELBAR_RESULT
-import com.fasterxml.jackson.databind.util.ISO8601DateFormat
 import com.github.jknack.handlebars.Context
 import com.github.jknack.handlebars.EscapingStrategy.NOOP
 import com.github.jknack.handlebars.Handlebars
@@ -12,6 +11,7 @@ import io.restassured.internal.RestAssuredResponseImpl
 import io.restassured.response.Response
 import org.apache.commons.lang3.LocaleUtils
 import org.apache.commons.lang3.Validate.isInstanceOf
+import org.apache.commons.lang3.time.DateFormatUtils
 import org.concordion.api.Evaluator
 import org.joda.time.DateTime
 import org.joda.time.DateTimeZone
@@ -119,7 +119,7 @@ enum class HelperSource(
     ) {
         override fun invoke(context: Any?, options: Options): Any? {
             val format = options.hash<String>("format", null)
-            return if (format == null) ISO8601DateFormat().parse(context as String)
+            return if (format == null) DateFormatUtils.ISO_8601_EXTENDED_DATE_FORMAT.parse(context as String)
             else SimpleDateFormat(format).parse(context as String)
         }
     },
@@ -272,6 +272,6 @@ private fun String.response(): Response {
 
 class TestResponse(private val delegate: RestAssuredResponseImpl) : Response by delegate {
     override fun toString(): String {
-        return print()
+        return asString()
     }
 }

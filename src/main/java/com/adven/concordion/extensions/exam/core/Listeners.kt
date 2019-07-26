@@ -11,11 +11,23 @@ import nu.xom.converters.DOMConverter
 import org.concordion.api.ImplementationStatus
 import org.concordion.api.ImplementationStatus.*
 import org.concordion.api.listener.*
-import java.util.UUID
 import java.io.ByteArrayInputStream
+import java.util.*
 import javax.xml.parsers.DocumentBuilderFactory
+import kotlin.collections.ArrayList
+import kotlin.collections.List
+import kotlin.collections.MutableList
+import kotlin.collections.filter
+import kotlin.collections.flatMap
+import kotlin.collections.forEach
+import kotlin.collections.isNotEmpty
+import kotlin.collections.listOf
+import kotlin.collections.map
+import kotlin.collections.set
+import kotlin.collections.toTypedArray
 import org.concordion.api.Element as ConcordionElement
 
+val examplesToFocus: MutableList<String?> = ArrayList()
 
 internal class ExamExampleListener : ExampleListener {
     override fun beforeExample(event: ExampleEvent) {}
@@ -32,6 +44,10 @@ internal class ExamExampleListener : ExampleListener {
                 pill(summary.failureCount, "warning"),
                 pill(summary.exceptionCount, "danger"),
                 if (status != null) badgeFor(status) else null))
+
+        if (summary.failureCount > 0 || summary.exceptionCount > 0) {
+            examplesToFocus.add(card.attr("id"))
+        }
     }
 
     private fun removeConcordionExpectedToFailWarning(card: Html) {
@@ -44,6 +60,23 @@ internal class ExamExampleListener : ExampleListener {
             EXPECTED_TO_FAIL -> pill(EXPECTED_TO_FAIL.tag, "warning")
             UNIMPLEMENTED -> pill(UNIMPLEMENTED.tag, "primary")
             else -> throw UnsupportedOperationException("Unsupported spec implementation status $status")
+        }
+    }
+}
+
+class FocusOnErrorsListener : SpecificationProcessingListener {
+    override fun beforeProcessingSpecification(event: SpecificationProcessingEvent) {
+        examplesToFocus.clear()
+    }
+
+    override fun afterProcessingSpecification(event: SpecificationProcessingEvent) {
+        if (examplesToFocus.isNotEmpty()) {
+            val body = Html(event.rootElement).first("body")
+            body!!.descendants("a")
+                .filter { "example" == it.attr("data-type") }
+                .map { it.parent().parent() }
+                .filter { !examplesToFocus.contains(it.attr("id")) }
+                .forEach { bodyOf(it).attr("class", "card-body collapse") }
         }
     }
 }

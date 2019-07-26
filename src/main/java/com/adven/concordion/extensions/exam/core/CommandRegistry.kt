@@ -18,6 +18,7 @@ class CommandRegistry(jsonUnitCfg: Configuration, nodeMatcher: NodeMatcher) {
         ScrollToTopCommand("scrollToTop", "div"),
 
         SetVarCommand("span"),
+        WaitCommand("span"),
 
         JsonCheckCommand("json-check", "div", jsonUnitCfg),
         XmlCheckCommand("xml-check", "div", jsonUnitCfg, nodeMatcher)

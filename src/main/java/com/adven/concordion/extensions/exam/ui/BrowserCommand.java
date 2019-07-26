@@ -25,8 +25,8 @@ public class BrowserCommand extends ExamVerifyCommand {
     private boolean failFast;
     private String originalSelenideReportsFolder;
 
-    public BrowserCommand(String tag, DesiredCapabilities capabilities) {
-        super("browser", tag, new UiResultRenderer());
+    public BrowserCommand(String tag, boolean screenshots, DesiredCapabilities capabilities) {
+        super("browser", tag, new UiResultRenderer(screenshots));
         this.capabilities = capabilities;
     }
 

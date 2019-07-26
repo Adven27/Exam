@@ -25,8 +25,17 @@
             </e:expected>
             <e:check>
                 <e:db-check caption="Widget was created:" table="widgets" cols="id, name, quantity, updated" orderBy="name">
-                    <e:row>!{regex}\d, widget1, 10, !{within 5s}</e:row>
+                    <e:row>!{number}, widget1, 10, !{within 5s}</e:row>
                 </e:db-check>
+                or
+                <e:db-check caption="Widget was created:" table="widgets" cols="id, name, quantity, updated" orderBy="name">
+                    <e:row>!{regex}\d, widget1, 10, !{notNull}</e:row>
+                </e:db-check>
+                or with variable setting:
+                <e:db-check caption="Widget was created:" table="widgets" cols="id, name, quantity, updated" orderBy="name">
+                    <e:row>!{number}>>id, !{notNull}>>name, !{regex}\d+>>quantity, !{within 5s}>>updated</e:row>
+                </e:db-check>
+                #id = <code cc:echo="#id"/> #name = <code cc:echo="#name"/> #quantity = <code cc:echo="#quantity"/> #updated = <code cc:echo="#updated"/>
             </e:check>
         </e:case>
     </e:post>
@@ -197,6 +206,49 @@
             <e:expected/>
         </e:case>
     </e:delete>
+</e:example>
+<br/>
+<h3>Testing asynchronous behavior</h3>
+<blockquote class="blockquote">
+    <p class="mb-0">Assume we need to trigger a job and do checks only after it's finished:</p>
+</blockquote>
+<e:example name="Trigger job and poll result with custom logic" print="true">
+    <e:post url="/jobs">
+        <e:case desc="Trigger job with some optional body">
+            <e:body>{"name" : "value"}</e:body>
+            <e:expected>{"id" : "{{number}}" }</e:expected>
+        </e:case>
+    </e:post>
+    <e:when>
+        <e:set var="id" value="{{responseBody 'id'}}"/>
+        <e:await untilTrue="isDone(#id)" atMostSec="3" pollDelayMillis="500" pollIntervalMillis="1000"/>
+        Job <code cc:echo="#id"/> is finished.
+    </e:when>
+    <e:then>
+        Now we can check result:
+        <e:db-check table="jobResult" cols="result" where="id={{id}}">
+            <e:row>done</e:row>
+        </e:db-check>
+    </e:then>
+</e:example>
+<blockquote class="blockquote">
+    <p class="mb-0">Equivalent of previous example with explicit http polling:</p>
+</blockquote>
+<e:example name="Trigger job and poll result with http request" print="true">
+    <e:when>
+        Trigger job on <code cc:set="#url">/jobs</code> with some optional body <code cc:set="#json">{"name" : "value"}</code>
+        <e:await untilHttpPost="{{url}}" hasStatusCode="200">{{json}}</e:await>
+        <e:set var="id" value="{{responseBody 'id'}}"/>
+        and wait until it's finished.
+        <e:await untilHttpGet="/jobs/{{id}}" hasBodyFrom="/data/getting-started/job-finished.json"/>
+        Job id = <code cc:echo="#id"/>
+    </e:when>
+    <e:then>
+        Now we can check result:
+        <e:db-check table="jobResult" cols="result" where="id={{id}}">
+            <e:row>done</e:row>
+        </e:db-check>
+    </e:then>
 </e:example>
 </body>
 </html>

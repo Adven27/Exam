@@ -8,12 +8,17 @@ import java.io.File;
 import java.util.concurrent.atomic.AtomicLong;
 
 import static com.adven.concordion.extensions.exam.core.html.HtmlBuilder.imageOverlay;
+import static com.adven.concordion.extensions.exam.core.html.HtmlBuilder.noImageOverlay;
 import static com.codeborne.selenide.Selenide.screenshot;
 
 public class UiResultRenderer implements AssertEqualsListener, AssertTrueListener, AssertFalseListener {
-
     private static final AtomicLong screenshotsCounter = new AtomicLong();
     private static final String DEFAULT_DESC = "No description";
+    private final boolean screenshots;
+
+    UiResultRenderer(boolean screenshots) {
+        this.screenshots = screenshots;
+    }
 
     public void failureReported(AssertFailureEvent event) {
         Html s = new Html(event.getElement());
@@ -21,7 +26,9 @@ public class UiResultRenderer implements AssertEqualsListener, AssertTrueListene
         UIAssertionError err = (UIAssertionError) event.getActual();
         el.remove(s);
         el.childs(
-            imageOverlay(getPath(err.getScreenshot()), 360, event.getExpected(), err.getMessage(), "rest-failure")
+            err.getScreenshot().isEmpty()
+                ? noImageOverlay(event.getExpected(), err.getMessage(), "rest-failure")
+                : imageOverlay(getPath(err.getScreenshot()), 360, event.getExpected(), err.getMessage(), "rest-failure")
         );
     }
 
@@ -32,7 +39,9 @@ public class UiResultRenderer implements AssertEqualsListener, AssertTrueListene
         String desc = s.attr("desc");
         el.remove(s);
         el.childs(
-            imageOverlay(getPath(screenshot(getFileName(name))), 360, name, checkAndGetDesc(desc), "rest-success")
+            screenshots
+                ? imageOverlay(getPath(screenshot(getFileName(name))), 360, name, checkAndGetDesc(desc), "rest-success")
+                : noImageOverlay(name, checkAndGetDesc(desc), "rest-success")
         );
     }
 

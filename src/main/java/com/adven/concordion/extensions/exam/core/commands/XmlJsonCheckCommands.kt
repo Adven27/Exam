@@ -23,7 +23,7 @@ class XmlCheckCommand(name: String, tag: String, private val cfg: Configuration,
         val actual = eval.evaluate(root.takeAwayAttr("actual")).toString().prettyXml()
         val expected = eval.resolveXml(root.content(eval).trim()).prettyXml()
         val container = pre(expected).css("xml")
-        root.removeAllChild()(
+        root.removeChildren()(
             tableSlim()(
                 trWithTDs(
                     container
@@ -55,7 +55,7 @@ class JsonCheckCommand(name: String, tag: String, private val cfg: Configuration
         val actual = eval.evaluate(root.attr("actual")).toString().prettyJson()
         val expected = eval.resolveJson(root.content(eval).trim()).prettyJson()
         val container = pre(expected).css("json")
-        root.removeAllChild()(
+        root.removeChildren()(
             tableSlim()(
                 trWithTDs(
                     container

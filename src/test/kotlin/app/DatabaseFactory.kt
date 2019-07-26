@@ -13,6 +13,7 @@ object DatabaseFactory {
     fun init() {
         Database.connect("jdbc:h2:mem:test;DB_CLOSE_DELAY=-1;INIT=CREATE SCHEMA IF NOT EXISTS SA\\;SET SCHEMA SA", driver = "org.h2.Driver", user = "sa")
         transaction {
+            create(JobResult)
             create(Widgets)
             Widgets.insert {
                 it[name] = "widget one"
@@ -35,6 +36,11 @@ object Widgets : Table() {
     val name = varchar("name", 10)
     val quantity = integer("quantity")
     val updatedAt = datetime("updated")
+}
+
+object JobResult : Table() {
+    val id = integer("id").primaryKey().autoIncrement()
+    val result = varchar("result", 10).nullable()
 }
 
 data class Widget(val id: Int, val name: String, val quantity: Int, val updatedAt: DateTime)

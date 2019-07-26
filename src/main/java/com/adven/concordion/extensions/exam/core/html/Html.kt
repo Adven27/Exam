@@ -170,7 +170,7 @@ class Html(internal val el: Element) {
 
     fun firstOrThrow(tag: String) = first(tag) ?: throw IllegalStateException("<$tag> tag is required")
 
-    fun removeAllChild(): Html {
+    fun removeChildren(): Html {
         moveChildrenTo(Html("tmp"))
         return this
     }
@@ -267,6 +267,15 @@ fun imageOverlay(src: String, size: Int, title: String, desc: String, descStyle:
     )
 }
 
+fun noImageOverlay(title: String, desc: String, descStyle: String): Html {
+    return div().css("card bg-light")(
+        div().css("card-img-top $descStyle")(
+            h(4, title),
+            paragraph(desc) css "card-text"
+        )
+    )
+}
+
 fun image(src: String) = Html("image").attrs("src" to src)
 
 fun image(src: String, width: Int, height: Int) = image(src).css("img-thumbnail")
@@ -308,6 +317,8 @@ fun button(txt: String = "", vararg attrs: Pair<String, String>) = Html("button"
 fun buttonCollapse(txt: String, target: String) = button(txt) collapse target
 
 fun footerOf(card: Html) = Html(card.el.getChildElements("div")[2])
+
+fun bodyOf(card: Html) = Html(card.el.getChildElements("div")[1])
 
 fun stat() = Html("small")
 

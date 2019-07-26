@@ -19,6 +19,8 @@ open class UiPlugin @JvmOverloads constructor(
     version: String? = null,
     baseUrl: String = Configuration.baseUrl,
     headless: Boolean = true,
+    private val screenshotsOnSuccess: Boolean = true,
+    screenshotsOnFail: Boolean = true,
     private var capabilities: DesiredCapabilities? = null
 ) : ExamPlugin {
 
@@ -28,6 +30,7 @@ open class UiPlugin @JvmOverloads constructor(
 
     init {
         if (!webDriverInited) {
+            Configuration.screenshots = screenshotsOnFail
             Configuration.timeout = timeout
             Configuration.baseUrl = baseUrl
             Configuration.browser = browser
@@ -56,6 +59,6 @@ open class UiPlugin @JvmOverloads constructor(
     }
 
     override fun commands(): List<ExamCommand> = listOf(
-        BrowserCommand("div", capabilities)
+        BrowserCommand("div", screenshotsOnSuccess, capabilities)
     )
 }
