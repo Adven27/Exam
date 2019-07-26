@@ -237,7 +237,7 @@
 <e:example name="Trigger job and poll result with http request" print="true">
     <e:when>
         Trigger job on <code cc:set="#url">/jobs</code> with some optional body <code cc:set="#json">{"name" : "value"}</code>
-        <e:await untilHttpPost="{{url}}" hasStatusCode="201" atMostSec="10">{{json}}</e:await>
+        <e:await untilHttpPost="{{url}}" hasStatusCode="200">{{json}}</e:await>
         <e:set var="id" value="{{responseBody 'id'}}"/>
         and wait until it's finished.
         <e:await untilHttpGet="/jobs/{{id}}" hasBodyFrom="/data/getting-started/job-finished.json"/>
