@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="UTF-8"?><html xmlns:concordion="http://www.concordion.org/2007/concordion" xmlns:e="http://exam.extension.io" xmlns:c="http://www.concordion.org/2007/concordion"><head><style>* {
+  font-family: Arial;
+}
+body {
+  padding: 32px;  
+}
+pre {
+  padding: 6px 28px 6px 28px;
+  background-color: #E8EEF7;
+}
+pre, pre *, code, code *, kbd {
+  font-family: Courier New, Courier;
+  font-size: 10pt;
+}
+h1, h1 * {
+  font-size: 24pt;	
+}
+p, td, th, li, .breadcrumbs {
+  font-size: 10pt;
+}
+p, li {
+  line-height: 140%;
+  max-width: 720px;
+}
+table {
+  border-collapse: collapse;
+  empty-cells: show;
+  margin: 8px 0px 8px 0px;
+}
+th, td {
+  border: 1px solid black;
+  padding: 3px;
+}
+td {
+  background-color: white;
+  vertical-align: top;
+}
+th {
+  background-color: #C3D9FF;
+}
+li {
+  margin-top: 6px;
+  margin-bottom: 6px; 
+}
+
+.example, :not(th)[concordion\:example] {
+  padding: 6px 16px 6px 16px;
+  border: 1px solid #C3D9FF;
+  margin: 6px 0px 28px 0px;
+  background-color: #F5F9FD;
+}
+.example h3, [concordion\:example] h3 {
+  margin-top: 8px;
+  margin-bottom: 8px;
+  font-size: 12pt;
+}
+
+p.success {
+  padding: 2px;
+}
+.success, .success * {
+  background-color: #afa !important;
+}
+.success pre {
+  background-color: #bbffbb;
+}
+.failure, .failure * {
+  background-color: #ffb0b0;
+  padding: 1px;
+}
+.failure .expected {
+  text-decoration: line-through;
+  color: #bb5050;
+}
+.ignored, .ignored * {
+  background-color: #f0f0f0 !important;	
+}
+
+ins {
+  text-decoration: none;	
+}
+
+.exceptionMessage {
+  background-color: #fdd;
+  font-family: Courier New, Courier, Monospace;
+  font-size: 10pt;
+  display: block;
+  font-weight: normal;
+  padding: 4px;
+  text-decoration: none !important;
+}
+.stackTrace, .stackTrace * {
+  font-weight: normal;
+}
+.stackTrace {
+  display: none;
+  padding: 1px 4px 4px 4px;
+  background-color: #fdd;
+  border-top: 1px dotted black;
+}
+.stackTraceExceptionMessage {
+  display: block;
+  font-family: Courier New, Courier, Monospace;
+  font-size: 8pt;
+  white-space: wrap;
+  padding: 1px 0px 1px 0px;
+}
+.stackTraceEntry {
+  white-space: nowrap;
+  font-family: Courier New, Courier, Monospace;
+  display: block;
+  font-size: 8pt;
+  padding: 1px 0px 1px 32px;
+}
+.stackTraceButton {
+  font-size: 8pt;
+  margin: 2px 8px 2px 0px;
+  font-weight: normal;
+  font-family: Arial;
+}
+
+.special {
+  font-style: italic;
+}
+.missing, .missing * {
+  background-color: #ff9999;
+  color:#bb5050;
+  text-decoration: line-through;
+}
+.surplus, .surplus * {
+  background-color: #ff9999;
+}
+.footer {
+  text-align: right;
+  margin-top: 40px;
+  font-size: 8pt;
+  width: 100%;
+  color: #999;
+}
+.footer .testTime {
+  padding: 2px 10px 0px 0px;
+}
+
+.idea {
+  font-size: 9pt;
+  color: #888;
+  font-style: italic;	
+}
+.tight li {
+  margin-top: 1px;
+  margin-bottom: 1px; 
+}
+.commentary {
+  float: right;
+  width: 200px;
+  background-color: #ffffd0;
+  padding:8px;
+  border: 3px solid #eeeeb0;	 
+  margin: 10px 0px 10px 10px;	 
+}
+.commentary, .commentary * {
+  font-size: 8pt;
+}
+</style><meta http-equiv="content-type" content="text/html; charset=UTF-8" /><link type="text/css" rel="stylesheet" href="../../../codemirror/codemirror.css" /><link type="text/css" rel="stylesheet" href="../../../codemirror/merge.css" /><link type="text/css" rel="stylesheet" href="../../../codemirror/enable-codemirror.css" /><script type="text/javascript" src="../../../codemirror/codemirror.js"></script><script type="text/javascript" src="../../../codemirror/javascript.js"></script><script type="text/javascript" src="../../../codemirror/xml.js"></script><script type="text/javascript" src="../../../codemirror/formatting.js"></script><script type="text/javascript" src="../../../codemirror/diff_match_patch.js"></script><script type="text/javascript" src="../../../codemirror/merge.js"></script><script type="text/javascript" src="../../../codemirror/enable-codemirror.js"></script><script type="text/javascript" src="../../../bootstrap/jquery-3.2.1.slim.min.js"></script><script type="text/javascript" src="../../../bootstrap/popper.min.js"></script><script type="text/javascript" src="../../../bootstrap/bootstrap.min.js"></script><script type="text/javascript" src="../../../bootstrap/sidebar.js"></script><link type="text/css" rel="stylesheet" href="../../../bootstrap/enable-bootstrap.css" /><link type="text/css" rel="stylesheet" href="../../../bootstrap/bootstrap.min.css" /><link type="text/css" rel="stylesheet" href="../../../bootstrap/callout.css" /><link type="text/css" rel="stylesheet" href="../../../bootstrap/font-awesome.min.css" /><link type="text/css" rel="stylesheet" href="../../../bootstrap/scrollToTop.css" /><script type="text/javascript" src="../../../bootstrap/scrollToTop.js"></script></head><body><span class="breadcrumbs"><a href="../../Specs.html">Exam - Concordion extension</a> &gt; <a href="../Db.html">Working with DB</a> &gt; <a href="Check.html">Check table</a> &gt;</span><h1>Check table</h1>
+<h2><code>&lt;e:db-check table="..." cols="..."/&gt;</code></h2>
+<div>
+    <div cmdId="7f4b8200-0a42-4e60-aea8-427b3df76d76" e:summary="" class="pin"><h4>Summary<button type="button" class="btn btn-light btn-sm text-muted ml-1" data-toggle="collapse" data-target="#summary" aria-expanded="true" aria-controls="summary">collapse</button></h4><div id="summary" class="collapse show"><div class="list-group"><a class="list-group-item list-group-item-action" href="#Happy-path">Happy-path<small class="card-img-overlay m-1" style="padding:0; left:inherit;"><span class="badge badge-pill badge-success">4</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small></a><a class="list-group-item list-group-item-action" href="#Surplus">Surplus<small class="card-img-overlay m-1" style="padding:0; left:inherit;"><span class="badge badge-pill badge-success">2</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning">1</span><span class="badge badge-pill badge-danger"></span><span class="badge badge-pill badge-warning">ExpectedToFail</span></small></a><a class="list-group-item list-group-item-action" href="#Missing">Missing<small class="card-img-overlay m-1" style="padding:0; left:inherit;"><span class="badge badge-pill badge-success">6</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning">1</span><span class="badge badge-pill badge-danger"></span><span class="badge badge-pill badge-warning">ExpectedToFail</span></small></a><a class="list-group-item list-group-item-action" href="#Wrong fields">Wrong fields<small class="card-img-overlay m-1" style="padding:0; left:inherit;"><span class="badge badge-pill badge-success">1</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning">3</span><span class="badge badge-pill badge-danger"></span><span class="badge badge-pill badge-warning">ExpectedToFail</span></small></a><a class="list-group-item list-group-item-action" href="#Partial check">Partial check<small class="card-img-overlay m-1" style="padding:0; left:inherit;"><span class="badge badge-pill badge-success">4</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small></a><a class="list-group-item list-group-item-action" href="#Subset check">Subset check<small class="card-img-overlay m-1" style="padding:0; left:inherit;"><span class="badge badge-pill badge-success">2</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small></a><a class="list-group-item list-group-item-action" href="#Check empty - fail">Check empty - fail<small class="card-img-overlay m-1" style="padding:0; left:inherit;"><span class="badge badge-pill badge-success">2</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning">1</span><span class="badge badge-pill badge-danger"></span><span class="badge badge-pill badge-warning">ExpectedToFail</span></small></a><a class="list-group-item list-group-item-action" href="#Check empty - success">Check empty - success<small class="card-img-overlay m-1" style="padding:0; left:inherit;"><span class="badge badge-pill badge-success">1</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small></a></div></div></div>
+    <div cmdId="cf534cc5-094a-4902-82ab-b7d614057eaf" e:given="" class="bd-callout bd-callout-info">
+        <table cmdId="74ae3e1f-a3a9-40c0-bf09-e5e6ac9a8470" e:db-set="" class="table table-sm">
+            
+            
+        <div></div><span></span><caption>PERSON<i class="fa fa-database fa-pull-left fa-border"></i></caption><thead class="thead-default"><tr><th class="">NAME</th><th class="">AGE</th><th class="">ID</th></tr></thead><tbody><tr><td class="">Andrew</td><td class="">30</td><td class="">1</td></tr><tr><td class="">Carl</td><td class="">20</td><td class="">2</td></tr></tbody></table>
+    </div>
+    <div name="Happy-path" cmdId="9db0a26c-01e9-4ef4-a0f2-9c8f59bb84ba" c:example="Happy-path" class="card mb-3" e:example="" id="Happy-path"><div class="card-header" data-toggle="collapse" data-target="#1258051346" aria-expanded="true" aria-controls="1258051346"><a name="Happy-path" data-type="example">Happy-path</a></div><div class="card-body collapse show" id="1258051346">
+        <div print="true" cmdId="a0edb3de-26c1-4609-a4a6-5917fb38bb4b" e:then="" class="bd-callout bd-callout-success"><pre class="xml card">
+&lt;e:db-check table="PERSON" cols="NAME, AGE"&gt;
+                &lt;row&gt;Carl,20&lt;/row&gt;
+                &lt;row&gt;Andrew,30&lt;/row&gt;
+            &lt;/e:db-check&gt;</pre>
+            <table cmdId="87cfd419-4322-4b7e-856a-a75ea5af97be" e:db-check="" class="table table-sm">
+                
+                
+            <div></div><span></span><caption>PERSON<i class="fa fa-database fa-pull-left fa-border"></i></caption><thead class="thead-default"><tr><th>NAME</th><th>AGE</th></tr></thead><tr><td class="table-success">Andrew</td><td class="table-success">30</td></tr><tr><td class="table-success">Carl</td><td class="table-success">20</td></tr></table>
+        </div>
+    </div><div class="card-footer text-muted" data-toggle="collapse" data-target="#1258051346" aria-expanded="true" aria-controls="1258051346"><small><span class="badge badge-pill badge-success">4</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small></div></div>
+    <div name="Surplus" status="ExpectedToFail" cmdId="2a7acdce-1ca2-41c4-9f55-60bd89b1e931" c:example="Surplus" c:status="ExpectedToFail" class="card mb-3" e:example="" id="Surplus"><div class="card-header" data-toggle="collapse" data-target="#-188269622" aria-expanded="true" aria-controls="-188269622"><a name="Surplus" data-type="example">Surplus</a></div><div class="card-body collapse show" id="-188269622">
+        <div print="true" cmdId="36b5be28-a07e-421a-bbf7-28e936919896" e:then="" class="bd-callout bd-callout-success"><pre class="xml card">
+&lt;e:db-check table="PERSON" cols="NAME, AGE"&gt;
+                &lt;row&gt;Carl,20&lt;/row&gt;
+            &lt;/e:db-check&gt;</pre>
+            <table cmdId="b126305a-2af4-47db-a078-47215f4b9c6c" e:db-check="" class="table table-sm">
+                
+            <div></div><span></span></table><div class="rest-failure bd-callout bd-callout-danger"><div>row count (table=PERSON) expected:&lt;1&gt; but was:&lt;2&gt;</div><span>Expected: </span><table class="table table-sm"><caption>PERSON<i class="fa fa-database fa-pull-left fa-border"></i></caption><thead class="thead-default"><tr><th>NAME</th><th>AGE</th></tr></thead><tr><td class="table-success">Carl</td><td class="table-success">20</td></tr></table><span>but was: </span><table class="table table-sm"><caption>PERSON<i class="fa fa-database fa-pull-left fa-border"></i></caption><thead class="thead-default"><tr><th class="">NAME</th><th class="">AGE</th></tr></thead><tbody><tr><td class="">Andrew</td><td class="">30</td></tr><tr><td class="">Carl</td><td class="">20</td></tr></tbody></table></div>
+        </div>
+    </div><div class="card-footer text-muted" data-toggle="collapse" data-target="#-188269622" aria-expanded="true" aria-controls="-188269622"><small><span class="badge badge-pill badge-success">2</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning">1</span><span class="badge badge-pill badge-danger"></span><span class="badge badge-pill badge-warning">ExpectedToFail</span></small></div></div>
+    <div name="Missing" status="ExpectedToFail" cmdId="04406265-5aa1-4b72-b895-4228263c7389" c:example="Missing" c:status="ExpectedToFail" class="card mb-3" e:example="" id="Missing"><div class="card-header" data-toggle="collapse" data-target="#-1560864442" aria-expanded="true" aria-controls="-1560864442"><a name="Missing" data-type="example">Missing</a></div><div class="card-body collapse show" id="-1560864442">
+        <div print="true" cmdId="dce47961-4439-4172-9dd4-a685c0828907" e:then="" class="bd-callout bd-callout-success"><pre class="xml card">
+&lt;e:db-check table="PERSON" cols="NAME, AGE"&gt;
+                &lt;row&gt;Carl,20&lt;/row&gt;
+                &lt;row&gt;Andrew,30&lt;/row&gt;
+                &lt;row&gt;Missing Record,69&lt;/row&gt;
+            &lt;/e:db-check&gt;</pre>
+            <table cmdId="16e158ba-c3a0-498b-a0f9-ed6141b9ad24" e:db-check="" class="table table-sm">
+                
+                
+                
+            <div></div><span></span></table><div class="rest-failure bd-callout bd-callout-danger"><div>row count (table=PERSON) expected:&lt;3&gt; but was:&lt;2&gt;</div><span>Expected: </span><table class="table table-sm"><caption>PERSON<i class="fa fa-database fa-pull-left fa-border"></i></caption><thead class="thead-default"><tr><th>NAME</th><th>AGE</th></tr></thead><tr><td class="table-success">Andrew</td><td class="table-success">30</td></tr><tr><td class="table-success">Carl</td><td class="table-success">20</td></tr><tr><td class="table-success">Missing Record</td><td class="table-success">69</td></tr></table><span>but was: </span><table class="table table-sm"><caption>PERSON<i class="fa fa-database fa-pull-left fa-border"></i></caption><thead class="thead-default"><tr><th class="">NAME</th><th class="">AGE</th></tr></thead><tbody><tr><td class="">Andrew</td><td class="">30</td></tr><tr><td class="">Carl</td><td class="">20</td></tr></tbody></table></div>
+        </div>
+    </div><div class="card-footer text-muted" data-toggle="collapse" data-target="#-1560864442" aria-expanded="true" aria-controls="-1560864442"><small><span class="badge badge-pill badge-success">6</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning">1</span><span class="badge badge-pill badge-danger"></span><span class="badge badge-pill badge-warning">ExpectedToFail</span></small></div></div>
+    <div name="Wrong fields" status="ExpectedToFail" cmdId="dbaf64fe-6bf1-4212-927f-93718e695225" c:example="Wrong fields" c:status="ExpectedToFail" class="card mb-3" e:example="" id="Wrong fields"><div class="card-header" data-toggle="collapse" data-target="#-1461944148" aria-expanded="true" aria-controls="-1461944148"><a name="Wrong fields" data-type="example">Wrong fields</a></div><div class="card-body collapse show" id="-1461944148">
+        <div print="true" cmdId="b270ab54-9cab-4be9-80c3-489c250382ba" e:then="" class="bd-callout bd-callout-success"><pre class="xml card">
+&lt;e:db-check table="PERSON" cols="NAME, AGE"&gt;
+                &lt;row&gt;Carl,30&lt;/row&gt;
+                &lt;row&gt;Not Andrew,30&lt;/row&gt;
+            &lt;/e:db-check&gt;</pre>
+            <table cmdId="be0fd062-24a0-449a-a7e2-c9d3247fcc0c" e:db-check="" class="table table-sm">
+                
+                
+            <div></div><span></span><caption>PERSON<i class="fa fa-database fa-pull-left fa-border"></i></caption><thead class="thead-default"><tr><th>NAME</th><th>AGE</th></tr></thead><tr><td class="rest-failure"><del class="expected">Carl</del>
+<ins class="actual">Andrew</ins></td><td class="table-success">30</td></tr><tr><td class="rest-failure"><del class="expected">Not Andrew</del>
+<ins class="actual">Carl</ins></td><td class="rest-failure"><del class="expected">30</del>
+<ins class="actual">20</ins></td></tr></table>
+        </div>
+    </div><div class="card-footer text-muted" data-toggle="collapse" data-target="#-1461944148" aria-expanded="true" aria-controls="-1461944148"><small><span class="badge badge-pill badge-success">1</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning">3</span><span class="badge badge-pill badge-danger"></span><span class="badge badge-pill badge-warning">ExpectedToFail</span></small></div></div>
+    <div name="Partial check" cmdId="07d4be44-f2e0-48c1-9aaf-d813e1f14b77" c:example="Partial check" class="card mb-3" e:example="" id="Partial check"><div class="card-header" data-toggle="collapse" data-target="#740560265" aria-expanded="true" aria-controls="740560265"><a name="Partial check" data-type="example">Partial check</a></div><div class="card-body collapse show" id="740560265">
+        <div cmdId="c181a029-1a79-4019-bee9-7d6f69f86767" e:given="" class="bd-callout bd-callout-info">
+            Set <var>#someVar</var> = <code c:set="#someVar">3</code>
+        </div>
+        <div print="true" cmdId="2c92914f-4da8-48f4-b1c5-37ff6229b6f0" e:then="" class="bd-callout bd-callout-success"><pre class="xml card">
+&lt;e:db-check table="PERSON" cols="NAME, AGE" ignoreRowsBefore="2" ignoreRowsAfter="{{someVar}}"&gt;
+                &lt;row&gt;Will be ignored&lt;/row&gt;
+                &lt;row&gt;Andrew,30&lt;/row&gt;
+                &lt;row&gt;Carl,20&lt;/row&gt;
+                &lt;row&gt;Will be ignored&lt;/row&gt;
+            &lt;/e:db-check&gt;</pre>
+            <table cmdId="4aeccacb-764a-4cf5-9fd9-203ce795fbdb" e:db-check="" class="table table-sm">
+                <row>Will be ignored</row>
+                
+                
+                <row>Will be ignored</row>
+            <div></div><span></span><caption>PERSON<i class="fa fa-database fa-pull-left fa-border"></i></caption><thead class="thead-default"><tr><th>NAME</th><th>AGE</th></tr></thead><tr><td class="table-success">Andrew</td><td class="table-success">30</td></tr><tr><td class="table-success">Carl</td><td class="table-success">20</td></tr></table>
+        </div>
+    </div><div class="card-footer text-muted" data-toggle="collapse" data-target="#740560265" aria-expanded="true" aria-controls="740560265"><small><span class="badge badge-pill badge-success">4</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small></div></div>
+    <div name="Subset check" cmdId="cf84f135-c528-425c-848b-9e180a87332b" c:example="Subset check" class="card mb-3" e:example="" id="Subset check"><div class="card-header" data-toggle="collapse" data-target="#-631111254" aria-expanded="true" aria-controls="-631111254"><a name="Subset check" data-type="example">Subset check</a></div><div class="card-body collapse show" id="-631111254">
+        <div print="true" cmdId="9a09d18e-403b-4ba7-bb92-2956a85ef528" e:then="" class="bd-callout bd-callout-success"><pre class="xml card">
+&lt;e:db-check table="PERSON" cols="NAME, AGE" where="NAME='Andrew'"&gt;
+                &lt;row&gt;Andrew,30&lt;/row&gt;
+            &lt;/e:db-check&gt;</pre>
+            <table cmdId="21eba0bc-ef92-4e04-9053-726a39bbf416" e:db-check="" class="table table-sm">
+                
+            <div></div><span></span><caption>PERSON<i class="fa fa-database fa-pull-left fa-border"></i></caption><thead class="thead-default"><tr><th>NAME</th><th>AGE</th></tr></thead><tr><td class="table-success">Andrew</td><td class="table-success">30</td></tr></table>
+        </div>
+    </div><div class="card-footer text-muted" data-toggle="collapse" data-target="#-631111254" aria-expanded="true" aria-controls="-631111254"><small><span class="badge badge-pill badge-success">2</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small></div></div>
+    <div name="Check empty - fail" status="ExpectedToFail" cmdId="4e6cdff4-741c-4698-b65b-5ed34c720f3d" c:example="Check empty - fail" c:status="ExpectedToFail" class="card mb-3" e:example="" id="Check empty - fail"><div class="card-header" data-toggle="collapse" data-target="#-1338527332" aria-expanded="true" aria-controls="-1338527332"><a name="Check empty - fail" data-type="example">Check empty - fail</a></div><div class="card-body collapse show" id="-1338527332">
+        <div cmdId="6b424c11-5ef1-4b52-adc6-634bce1c1adc" e:given="" class="bd-callout bd-callout-info">
+            <table cmdId="f73f2feb-2d7e-41bf-aca0-039d593a058a" e:db-set="" class="table table-sm"><div></div><span></span><caption>PERSON<i class="fa fa-database fa-pull-left fa-border"></i></caption><thead class="thead-default"><tr /></thead><tbody /></table>
+        </div>
+        <div print="true" cmdId="f2bb7975-8d91-499d-a3a9-6bfa19939f9d" e:then="" class="bd-callout bd-callout-success"><pre class="xml card">
+&lt;e:db-check table="PERSON" cols="NAME, AGE" where="NAME='Andrew'"&gt;
+                &lt;row&gt;Andrew, 30&lt;/row&gt;
+            &lt;/e:db-check&gt;</pre>
+            <table cmdId="adc7b559-ced1-4da8-bb0a-2b3f849f8666" e:db-check="" class="table table-sm">
+                
+            <div></div><span></span></table><div class="rest-failure bd-callout bd-callout-danger"><div>row count (table=PERSON) expected:&lt;1&gt; but was:&lt;0&gt;</div><span>Expected: </span><table class="table table-sm"><caption>PERSON<i class="fa fa-database fa-pull-left fa-border"></i></caption><thead class="thead-default"><tr><th>NAME</th><th>AGE</th></tr></thead><tr><td class="table-success">Andrew</td><td class="table-success">30</td></tr></table><span>but was: </span><table class="table table-sm"><caption>PERSON<i class="fa fa-database fa-pull-left fa-border"></i></caption><thead class="thead-default"><tr><th class="">NAME</th><th class="">AGE</th></tr></thead><tbody /></table></div>
+        </div>
+    </div><div class="card-footer text-muted" data-toggle="collapse" data-target="#-1338527332" aria-expanded="true" aria-controls="-1338527332"><small><span class="badge badge-pill badge-success">2</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning">1</span><span class="badge badge-pill badge-danger"></span><span class="badge badge-pill badge-warning">ExpectedToFail</span></small></div></div>
+    <div name="Check empty - success" cmdId="4195ace6-3499-44ca-9e8e-afcf2a1f3cbf" c:example="Check empty - success" class="card mb-3" e:example="" id="Check empty - success"><div class="card-header" data-toggle="collapse" data-target="#1923116229" aria-expanded="true" aria-controls="1923116229"><a name="Check empty - success" data-type="example">Check empty - success</a></div><div class="card-body collapse show" id="1923116229">
+        <div cmdId="a15bd91f-754d-42d1-ab4d-cf0d1cc1a7a6" e:given="" class="bd-callout bd-callout-info">
+            <table cmdId="75f26680-1354-48ce-a42d-b222e6c463ec" e:db-set="" class="table table-sm"><div></div><span></span><caption>PERSON<i class="fa fa-database fa-pull-left fa-border"></i></caption><thead class="thead-default"><tr /></thead><tbody /></table>
+        </div>
+        <div print="true" cmdId="b496f33c-5c2f-4425-a0fb-a1a339151d52" e:then="" class="bd-callout bd-callout-success"><pre class="xml card">
+&lt;e:db-check table="PERSON" /&gt;</pre>
+            <table cmdId="f368488e-95b8-444d-b3f6-ec874de5b823" e:db-check="" class="table table-sm"><div></div><span></span><caption>PERSON<i class="fa fa-database fa-pull-left fa-border"></i></caption><thead class="thead-default"><tr /></thead><tr><td colspan="0" class="table-success">&lt;EMPTY&gt;</td></tr></table>
+        </div>
+    </div><div class="card-footer text-muted" data-toggle="collapse" data-target="#1923116229" aria-expanded="true" aria-controls="1923116229"><small><span class="badge badge-pill badge-success">1</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small></div></div>
+</div><div class="footer">Results generated by <a href="http://www.concordion.org" style="font-weight: bold; text-decoration: none; color: #89C;">Concordion</a><div class="testTime">in 523 ms on 26-Jul-2019 at 17:46:30 UTC</div></div></body><button id="btnToTop" onclick="topFunction()" type="button" class="btn btn-light btn-sm text-muted ml-1"><i class="fa fa-arrow-up fa-3x"></i></button></html>
