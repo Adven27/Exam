@@ -115,12 +115,19 @@ enum class HelperSource(
         """{{date '01.02.2000 10:20' format="dd.MM.yyyy HH:mm"}}""",
         emptyMap(),
         LocalDateTime(2000, 2, 1, 10, 20).toDate(),
-        mapOf(FORMAT to "\"dd.MM.yyyy\"")
+        mapOf(FORMAT to "\"dd.MM.yyyy\"", PLUS to "\"1 day\"", MINUS to "\"5 hours\"")
     ) {
         override fun invoke(context: Any?, options: Options): Any? {
-            val format = options.hash<String>("format", null)
-            return if (format == null) DateFormatUtils.ISO_8601_EXTENDED_DATE_FORMAT.parse(context as String)
-            else SimpleDateFormat(format).parse(context as String)
+            return if (context is String && context.isNotBlank()) {
+                val format = options.hash<String>("format", null)
+                if (format == null) DateFormatUtils.ISO_8601_EXTENDED_DATE_FORMAT.parse(context)
+                else SimpleDateFormat(format).parse(context)
+            } else {
+                LocalDateTime((context as Date))
+                    .plus(parsePeriodFrom(options.hash(PLUS, "")))
+                    .minus(parsePeriodFrom(options.hash(MINUS, "")))
+                    .toDate()
+            }
         }
     },
     string("{{string}}", mapOf(PLACEHOLDER_TYPE to "json"), "\${json-unit.any-string}") {
