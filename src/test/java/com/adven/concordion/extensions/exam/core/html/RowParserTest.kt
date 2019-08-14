@@ -24,14 +24,25 @@ class RowParserTest {
     fun spacesCommasAndExpressionsInsideCells() {
         val html = Html("table")(
             Html("row", " 1',' 2 "),
-            Html("row", " {{now 'dd.MM' plus='1 day, 2 month'}},' 4, 5 '")
+            Html("row", " {{now 'dd.MM' plus='1 day'}},' 4, 5 '")
         )
 
-        val expectedPeriod = Period().plusDays(1).plusMonths(2)
+        val expectedPeriod = Period().plusDays(1)
         val expectedDate = SimpleDateFormat("dd.MM").format(now().plus(expectedPeriod).toDate())
         assertEquals(listOf(
             listOf("1'", " 2"),
             listOf(expectedDate, " 4, 5 ")
         ), RowParser(html, "row", eval).parse())
+    }
+
+    @Test
+    fun resolveOneOrMorePlaceholdersToString() {
+        val html = Html("table")(
+            Html("row", "{{resolve \"{{now 'dd'}} {{now 'MM'}}\"}}, {{resolve '{{today}}'}}")
+        )
+        val dd = SimpleDateFormat("dd").format(now().toDate())
+        val mm = SimpleDateFormat("MM").format(now().toDate())
+
+        assertEquals(listOf(listOf("$dd $mm", now().toDate().toString())), RowParser(html, "row", eval).parse())
     }
 }

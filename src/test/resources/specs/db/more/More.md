@@ -7,14 +7,14 @@
             <span>Concordion variable age = <span c:set="#age">99</span></span>    
             <e:db-set table="PERSON" cols="NAME, AGE, BIRTHDAY, ID=1..10">
                 <row>Andrew                                     , 30      , {{now "yyyy-MM-dd"}}</row>
-                <row>Carl                                       , {{age}} , {{now "yyyy-MM-dd" plus="day 1, m 1"}}</row>
+                <row>Carl                                       , {{age}} , {{now "yyyy-MM-dd" plus="day 1"}}</row>
                 <row>' untrimmed string with commas, inside it ', {{NULL}}, {{date "1951-05-14"}}</row>
             </e:db-set>
         </e:given>
         <e:then print="true">
             <e:db-check table="PERSON" cols="NAME, AGE, BIRTHDAY">
                 <row>Andrew                                     , 30      , {{now "yyyy-MM-dd"}}</row>
-                <row>  Carl                                     , {{age}} , {{now "yyyy-MM-dd" plus="day 1, m 1"}}</row>
+                <row>  Carl                                     , {{age}} , {{now "yyyy-MM-dd" plus="day 1"}}</row>
                 <row>' untrimmed string with commas, inside it ', {{NULL}}, {{dateFormat (date "1951-05-14") "yyyy-MM-dd"}}</row>
             </e:db-check>
         </e:then>
