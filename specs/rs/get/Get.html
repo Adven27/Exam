@@ -1,0 +1,319 @@
+<?xml version="1.0" encoding="UTF-8"?><html xmlns:concordion="http://www.concordion.org/2007/concordion" xmlns:e="http://exam.extension.io" xmlns:c="http://www.concordion.org/2007/concordion"><head><style>* {
+  font-family: Arial;
+}
+body {
+  padding: 32px;  
+}
+pre {
+  padding: 6px 28px 6px 28px;
+  background-color: #E8EEF7;
+}
+pre, pre *, code, code *, kbd {
+  font-family: Courier New, Courier;
+  font-size: 10pt;
+}
+h1, h1 * {
+  font-size: 24pt;	
+}
+p, td, th, li, .breadcrumbs {
+  font-size: 10pt;
+}
+p, li {
+  line-height: 140%;
+  max-width: 720px;
+}
+table {
+  border-collapse: collapse;
+  empty-cells: show;
+  margin: 8px 0px 8px 0px;
+}
+th, td {
+  border: 1px solid black;
+  padding: 3px;
+}
+td {
+  background-color: white;
+  vertical-align: top;
+}
+th {
+  background-color: #C3D9FF;
+}
+li {
+  margin-top: 6px;
+  margin-bottom: 6px; 
+}
+
+.example, :not(th)[concordion\:example] {
+  padding: 6px 16px 6px 16px;
+  border: 1px solid #C3D9FF;
+  margin: 6px 0px 28px 0px;
+  background-color: #F5F9FD;
+}
+.example h3, [concordion\:example] h3 {
+  margin-top: 8px;
+  margin-bottom: 8px;
+  font-size: 12pt;
+}
+
+p.success {
+  padding: 2px;
+}
+.success, .success * {
+  background-color: #afa !important;
+}
+.success pre {
+  background-color: #bbffbb;
+}
+.failure, .failure * {
+  background-color: #ffb0b0;
+  padding: 1px;
+}
+.failure .expected {
+  text-decoration: line-through;
+  color: #bb5050;
+}
+.ignored, .ignored * {
+  background-color: #f0f0f0 !important;	
+}
+
+ins {
+  text-decoration: none;	
+}
+
+.exceptionMessage {
+  background-color: #fdd;
+  font-family: Courier New, Courier, Monospace;
+  font-size: 10pt;
+  display: block;
+  font-weight: normal;
+  padding: 4px;
+  text-decoration: none !important;
+}
+.stackTrace, .stackTrace * {
+  font-weight: normal;
+}
+.stackTrace {
+  display: none;
+  padding: 1px 4px 4px 4px;
+  background-color: #fdd;
+  border-top: 1px dotted black;
+}
+.stackTraceExceptionMessage {
+  display: block;
+  font-family: Courier New, Courier, Monospace;
+  font-size: 8pt;
+  white-space: wrap;
+  padding: 1px 0px 1px 0px;
+}
+.stackTraceEntry {
+  white-space: nowrap;
+  font-family: Courier New, Courier, Monospace;
+  display: block;
+  font-size: 8pt;
+  padding: 1px 0px 1px 32px;
+}
+.stackTraceButton {
+  font-size: 8pt;
+  margin: 2px 8px 2px 0px;
+  font-weight: normal;
+  font-family: Arial;
+}
+
+.special {
+  font-style: italic;
+}
+.missing, .missing * {
+  background-color: #ff9999;
+  color:#bb5050;
+  text-decoration: line-through;
+}
+.surplus, .surplus * {
+  background-color: #ff9999;
+}
+.footer {
+  text-align: right;
+  margin-top: 40px;
+  font-size: 8pt;
+  width: 100%;
+  color: #999;
+}
+.footer .testTime {
+  padding: 2px 10px 0px 0px;
+}
+
+.idea {
+  font-size: 9pt;
+  color: #888;
+  font-style: italic;	
+}
+.tight li {
+  margin-top: 1px;
+  margin-bottom: 1px; 
+}
+.commentary {
+  float: right;
+  width: 200px;
+  background-color: #ffffd0;
+  padding:8px;
+  border: 3px solid #eeeeb0;	 
+  margin: 10px 0px 10px 10px;	 
+}
+.commentary, .commentary * {
+  font-size: 8pt;
+}
+</style><meta http-equiv="content-type" content="text/html; charset=UTF-8" /><link type="text/css" rel="stylesheet" href="../../../codemirror/codemirror.css" /><link type="text/css" rel="stylesheet" href="../../../codemirror/merge.css" /><link type="text/css" rel="stylesheet" href="../../../codemirror/enable-codemirror.css" /><script type="text/javascript" src="../../../codemirror/codemirror.js"></script><script type="text/javascript" src="../../../codemirror/javascript.js"></script><script type="text/javascript" src="../../../codemirror/xml.js"></script><script type="text/javascript" src="../../../codemirror/formatting.js"></script><script type="text/javascript" src="../../../codemirror/diff_match_patch.js"></script><script type="text/javascript" src="../../../codemirror/merge.js"></script><script type="text/javascript" src="../../../codemirror/enable-codemirror.js"></script><script type="text/javascript" src="../../../bootstrap/jquery-3.2.1.slim.min.js"></script><script type="text/javascript" src="../../../bootstrap/popper.min.js"></script><script type="text/javascript" src="../../../bootstrap/bootstrap.min.js"></script><script type="text/javascript" src="../../../bootstrap/sidebar.js"></script><link type="text/css" rel="stylesheet" href="../../../bootstrap/enable-bootstrap.css" /><link type="text/css" rel="stylesheet" href="../../../bootstrap/bootstrap.min.css" /><link type="text/css" rel="stylesheet" href="../../../bootstrap/callout.css" /><link type="text/css" rel="stylesheet" href="../../../bootstrap/font-awesome.min.css" /><link type="text/css" rel="stylesheet" href="../../../bootstrap/scrollToTop.css" /><script type="text/javascript" src="../../../bootstrap/scrollToTop.js"></script></head><body><span class="breadcrumbs"><a href="../../Specs.html">Exam - Concordion extension</a> &gt; <a href="../Rs.html">Rest specification</a> &gt; <a href="Get.html">GET-request</a> &gt;</span><h1>GET-request</h1>
+<h2><code>&lt;e:get url="..." type="&lt;optional&gt;"&gt;</code></h2>
+<div>
+    <div cmdId="b3888819-c7fe-4b6a-9cb5-66e6ecc75c58" e:summary="" class="pin"><h4>Summary<button type="button" class="btn btn-light btn-sm text-muted ml-1" data-toggle="collapse" data-target="#summary" aria-expanded="true" aria-controls="summary">collapse</button></h4><div id="summary" class="collapse show"><div class="list-group"><a class="list-group-item list-group-item-action" href="#Body check">Body check<small class="card-img-overlay m-1" style="padding:0; left:inherit;"><span class="badge badge-pill badge-success">4</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning">1</span><span class="badge badge-pill badge-danger"></span><span class="badge badge-pill badge-warning">ExpectedToFail</span></small><button type="button" class="btn btn-light btn-sm text-muted ml-1" data-toggle="collapse" data-target="#ceab64e4-65a6-4c52-a707-a75ac5c2f84a" aria-expanded="true" aria-controls="ceab64e4-65a6-4c52-a707-a75ac5c2f84a">cases</button></a><div id="ceab64e4-65a6-4c52-a707-a75ac5c2f84a" class="collapse"><a href="#1) Request with params (happy-path)" class="list-group-item list-group-item-action text-muted">1) Request with params (happy-path)<i></i></a><a href="#2) Request without params (wrong response body)" class="list-group-item list-group-item-action text-muted">2) Request without params (wrong response body)<i></i></a></div><a class="list-group-item list-group-item-action" href="#Status code check">Status code check<small class="card-img-overlay m-1" style="padding:0; left:inherit;"><span class="badge badge-pill badge-success">1</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning">1</span><span class="badge badge-pill badge-danger"></span><span class="badge badge-pill badge-warning">ExpectedToFail</span></small><button type="button" class="btn btn-light btn-sm text-muted ml-1" data-toggle="collapse" data-target="#157670ff-9f35-420d-a09d-4d274fb177e6" aria-expanded="true" aria-controls="157670ff-9f35-420d-a09d-4d274fb177e6">cases</button></a><div id="157670ff-9f35-420d-a09d-4d274fb177e6" class="collapse"><a href="#3) Wrong status code" class="list-group-item list-group-item-action text-muted">3) Wrong status code<i></i></a></div><a class="list-group-item list-group-item-action" href="#Check failed status code">Check failed status code<small class="card-img-overlay m-1" style="padding:0; left:inherit;"><span class="badge badge-pill badge-success">2</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small><button type="button" class="btn btn-light btn-sm text-muted ml-1" data-toggle="collapse" data-target="#d0b4bd37-b3b3-4d8e-aed4-29c0f0239a8f" aria-expanded="true" aria-controls="d0b4bd37-b3b3-4d8e-aed4-29c0f0239a8f">cases</button></a><div id="d0b4bd37-b3b3-4d8e-aed4-29c0f0239a8f" class="collapse"><a href="#4) Wrong status code was expected" class="list-group-item list-group-item-action text-muted">4) Wrong status code was expected<i></i></a></div><a class="list-group-item list-group-item-action" href="#Cookies">Cookies<small class="card-img-overlay m-1" style="padding:0; left:inherit;"><span class="badge badge-pill badge-success">8</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small><button type="button" class="btn btn-light btn-sm text-muted ml-1" data-toggle="collapse" data-target="#65e5ff7d-ff62-4121-b07c-3934fad0df24" aria-expanded="true" aria-controls="65e5ff7d-ff62-4121-b07c-3934fad0df24">cases</button></a><div id="65e5ff7d-ff62-4121-b07c-3934fad0df24" class="collapse"><a href="#5) Can be set in command" class="list-group-item list-group-item-action text-muted">5) Can be set in command<i></i></a><a href="#6) Can be override by case" class="list-group-item list-group-item-action text-muted">6) Can be override by case<i></i></a><a href="#7) Placeholders can be used" class="list-group-item list-group-item-action text-muted">7) Placeholders can be used<i></i></a><a href="#8) If @FullOGNL is enabled, response fields can be accessed" class="list-group-item list-group-item-action text-muted">8) If @FullOGNL is enabled, response fields can be accessed<i></i></a></div></div></div></div>
+    <div cmdId="9add2fe6-1a56-468e-88d8-0fccc5e501b0" e:given="" class="bd-callout bd-callout-info">
+        Given server, that mirrors GET-request
+    </div>
+    <div name="Body check" status="ExpectedToFail" print="true" cmdId="042ddbea-0f40-49fe-b817-aa9234e84bbc" c:example="Body check" c:status="ExpectedToFail" class="card mb-3" e:example="" id="Body check"><div class="card-header" data-toggle="collapse" data-target="#362925354" aria-expanded="true" aria-controls="362925354"><a name="Body check" data-type="example">Body check</a></div><div class="card-body collapse show" id="362925354"><pre class="xml card">
+&lt;e:get url="relative/url"&gt;
+            &lt;e:case desc="Request with params (happy-path)" urlParams="param1=1&amp;amp;param2=2"&gt;
+                &lt;expected&gt;
+                    { "GET": "/relative/url?param1=1&amp;amp;param2=2" }
+                &lt;/expected&gt;
+            &lt;/e:case&gt;
+            &lt;e:case desc="Request without params (wrong response body)"&gt;
+                &lt;expected&gt;
+                    { "GET": "/relative/url?noparams" }
+                &lt;/expected&gt;
+                &lt;e:check&gt;
+                    &lt;span c:assertTrue="true"&gt;Block for additional checks&lt;/span&gt;
+                &lt;/e:check&gt;
+            &lt;/e:case&gt;
+        &lt;/e:get&gt;</pre>
+        <div cmdId="b498fb6e-e5c2-4986-a1e0-2be00177e562" e:get="" class="bd-callout bd-callout-success"><table class="table table-sm"><thead class="thead-default"><thead class="thead-default"><th>Expected response</th><th>Status code</th></thead></thead>
+            <tr desc="Request with params (happy-path)" cmdId="264819fd-4366-407e-a19a-358802114c68" e:case="" data-type="case" id="1) Request with params (happy-path)"><tr><td colspan="2" class="text-muted">1) Request with params (happy-path)</td></tr>
+                
+            <tr><tr><td colspan="2"><div><i>GET </i><code>relative/url?param1=1&amp;param2=2</code><span></span></div></td></tr><td style="max-width:550px" class="json rest-success">{
+  "GET": "/relative/url?param1=1&amp;param2=2"
+}</td><td class="rest-success">HTTP/1.1 200 OK</td></tr></tr>
+            <tr desc="Request without params (wrong response body)" cmdId="fd0ca109-30c3-4939-a4e4-225070b8a998" e:case="" data-type="case" id="2) Request without params (wrong response body)"><tr><td colspan="2" class="text-muted">2) Request without params (wrong response body)</td></tr>
+                
+                <div cmdId="dec24a32-65c4-44e1-82fe-6dda3825b7ce" e:check="" />
+            <tr><tr><td colspan="2"><div><i>GET </i><code>relative/url</code><span></span></div></td></tr><td style="max-width:550px" class="json rest-failure"><del class="expected">{
+  "GET": "/relative/url?noparams"
+}</del>
+<ins class="actual">{
+  "GET": "/relative/url"
+}</ins></td><span class="exceptionMessage">JSON documents are different:
+Different value found in node "GET", expected: &lt;"/relative/url?noparams"&gt; but was: &lt;"/relative/url"&gt;.
+</span><td class="rest-success">HTTP/1.1 200 OK</td></tr></tr><tr><td colspan="3">
+                    <span c:assertTrue="true" class="success">Block for additional checks</span>
+                </td></tr>
+        <div><h4><span class="badge badge-success ml-1 mr-1">GET</span><span class="badge badge-info ml-1 mr-1">application/json</span><code>relative/url</code></h4></div></table></div>
+    </div><div class="card-footer text-muted" data-toggle="collapse" data-target="#362925354" aria-expanded="true" aria-controls="362925354"><small><span class="badge badge-pill badge-success">4</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning">1</span><span class="badge badge-pill badge-danger"></span><span class="badge badge-pill badge-warning">ExpectedToFail</span></small></div></div>
+    <div name="Status code check" status="ExpectedToFail" print="true" cmdId="4c6dd013-88d2-45cd-85cf-fd7854c179c3" c:example="Status code check" c:status="ExpectedToFail" class="card mb-3" e:example="" id="Status code check"><div class="card-header" data-toggle="collapse" data-target="#1177583075" aria-expanded="true" aria-controls="1177583075"><a name="Status code check" data-type="example">Status code check</a></div><div class="card-body collapse show" id="1177583075"><pre class="xml card">
+&lt;e:get url="status/400"&gt;
+            &lt;e:case desc="Wrong status code"&gt;
+                &lt;expected&gt;
+                    {"GET": "/status/400"}
+                &lt;/expected&gt;
+            &lt;/e:case&gt;
+        &lt;/e:get&gt;</pre>
+        <div cmdId="403c97cf-a907-4729-8f23-e9194c440fa0" e:get="" class="bd-callout bd-callout-success"><table class="table table-sm"><thead class="thead-default"><thead class="thead-default"><th>Expected response</th><th>Status code</th></thead></thead>
+            <tr desc="Wrong status code" cmdId="38b07216-cf00-4161-951c-9571c2d9b4e2" e:case="" data-type="case" id="3) Wrong status code"><tr><td colspan="2" class="text-muted">3) Wrong status code</td></tr>
+                
+            <tr><tr><td colspan="2"><div><i>GET </i><code>status/400</code><span></span></div></td></tr><td style="max-width:550px" class="json rest-success">{
+  "GET": "/status/400"
+}</td><td class="rest-failure"><del class="expected">HTTP/1.1 200 OK</del>
+<ins class="actual">HTTP/1.1 400 Bad Request</ins></td></tr></tr>
+        <div><h4><span class="badge badge-success ml-1 mr-1">GET</span><span class="badge badge-info ml-1 mr-1">application/json</span><code>status/400</code></h4></div></table></div>
+    </div><div class="card-footer text-muted" data-toggle="collapse" data-target="#1177583075" aria-expanded="true" aria-controls="1177583075"><small><span class="badge badge-pill badge-success">1</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning">1</span><span class="badge badge-pill badge-danger"></span><span class="badge badge-pill badge-warning">ExpectedToFail</span></small></div></div>
+    <div name="Check failed status code" print="true" cmdId="8cefcf48-1215-4549-a754-6ca8bd0cfc5c" c:example="Check failed status code" class="card mb-3" e:example="" id="Check failed status code"><div class="card-header" data-toggle="collapse" data-target="#-443495376" aria-expanded="true" aria-controls="-443495376"><a name="Check failed status code" data-type="example">Check failed status code</a></div><div class="card-body collapse show" id="-443495376"><pre class="xml card">
+&lt;e:get url="status/400"&gt;
+            &lt;e:case desc="Wrong status code was expected"&gt;
+                &lt;expected statusCode="400" reasonPhrase="Bad Request"&gt;
+                    {"GET": "/status/400"}
+                &lt;/expected&gt;
+            &lt;/e:case&gt;
+        &lt;/e:get&gt;</pre>
+        <div cmdId="57bb099f-0ce3-463c-b198-fa34d7a69bf6" e:get="" class="bd-callout bd-callout-success"><table class="table table-sm"><thead class="thead-default"><thead class="thead-default"><th>Expected response</th><th>Status code</th></thead></thead>
+            <tr desc="Wrong status code was expected" cmdId="77881e7e-c6b7-467b-b044-8c4db264bdad" e:case="" data-type="case" id="4) Wrong status code was expected"><tr><td colspan="2" class="text-muted">4) Wrong status code was expected</td></tr>
+                
+            <tr><tr><td colspan="2"><div><i>GET </i><code>status/400</code><span></span></div></td></tr><td style="max-width:550px" class="json rest-success">{
+  "GET": "/status/400"
+}</td><td class="rest-success">HTTP/1.1 400 Bad Request</td></tr></tr>
+        <div><h4><span class="badge badge-success ml-1 mr-1">GET</span><span class="badge badge-info ml-1 mr-1">application/json</span><code>status/400</code></h4></div></table></div>
+    </div><div class="card-footer text-muted" data-toggle="collapse" data-target="#-443495376" aria-expanded="true" aria-controls="-443495376"><small><span class="badge badge-pill badge-success">2</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small></div></div>
+    <div name="Cookies" print="true" cmdId="25b717e6-26ff-4e32-9f28-53d37d5c7eff" c:example="Cookies" class="card mb-3" e:example="" id="Cookies"><div class="card-header" data-toggle="collapse" data-target="#-1678124433" aria-expanded="true" aria-controls="-1678124433"><a name="Cookies" data-type="example">Cookies</a></div><div class="card-body collapse show" id="-1678124433"><pre class="xml card">
+&lt;e:get url="relative/url" cookies="cook=from_command"&gt;
+            &lt;e:case desc="Can be set in command"&gt;
+                &lt;expected&gt;
+                    {
+                      "GET": "/relative/url",
+                      "cookies": "{cook=from_command}"
+                    }
+                &lt;/expected&gt;
+            &lt;/e:case&gt;
+            &lt;e:case cookies="cook=from_case" desc="Can be override by case"&gt;
+                &lt;expected&gt;
+                    {
+                      "GET": "/relative/url",
+                      "cookies": "{cook=from_case}"
+                    }
+                &lt;/expected&gt;
+            &lt;/e:case&gt;
+            &lt;e:case cookies="cook={{url}},anotherCook=asd" desc="Placeholders can be used"&gt;
+                &lt;expected&gt;
+                    {
+                      "GET": "/relative/url",
+                      "cookies": "{cook=relative/url, anotherCook=asd}"
+                    }
+                &lt;/expected&gt;
+                &lt;e:check&gt;
+                    Last response saved in variable &lt;var&gt;#exam_response&lt;/var&gt;&lt;br /&gt;
+                    &lt;ol&gt;
+                        &lt;li&gt;&lt;code c:execute="#my_header = #exam_response.header('my_header')"&gt;c:execute="#my_header = #exam_response.header('my_header')&lt;/code&gt;&lt;/li&gt;
+                        &lt;li&gt;echo #exam_response.header('my_header') =&amp;gt; &lt;code c:echo="#exam_response.header('my_header')" /&gt;&lt;/li&gt;
+                        &lt;li&gt;echo #my_header =&amp;gt; &lt;code c:echo="#my_header" /&gt;&lt;/li&gt;
+                    &lt;/ol&gt;
+                &lt;/e:check&gt;
+            &lt;/e:case&gt;
+            &lt;e:case cookies="cook={{eval &amp;quot;#exam_response.header('my_header')&amp;quot;}}" desc="If @FullOGNL is enabled, response fields can be accessed"&gt;
+                &lt;expected&gt;
+                    {
+                      "GET": "/relative/url",
+                      "cookies": "{cook=some value}"
+                    }
+                &lt;/expected&gt;
+            &lt;/e:case&gt;
+        &lt;/e:get&gt;</pre>
+        <div cmdId="93e650d0-33d9-4764-9550-759aac23397a" e:get="" class="bd-callout bd-callout-success"><table class="table table-sm"><thead class="thead-default"><thead class="thead-default"><th>Expected response</th><th>Status code</th></thead></thead>
+            <tr desc="Can be set in command" cmdId="bbe0b9fa-6d9f-4a26-af7a-1b7aeda437fb" e:case="" data-type="case" id="5) Can be set in command"><tr><td colspan="2" class="text-muted">5) Can be set in command</td></tr>
+                
+            <tr><tr><td colspan="2"><div><i>GET </i><code>relative/url</code><i> Cookies </i><code>cook=from_command</code></div></td></tr><td style="max-width:550px" class="json rest-success">{
+  "GET": "/relative/url",
+  "cookies": "{cook=from_command}"
+}</td><td class="rest-success">HTTP/1.1 200 OK</td></tr></tr>
+            <tr desc="Can be override by case" cmdId="45e0e700-bc9e-4813-a96f-51b61d29bcdd" e:case="" data-type="case" id="6) Can be override by case"><tr><td colspan="2" class="text-muted">6) Can be override by case</td></tr>
+                
+            <tr><tr><td colspan="2"><div><i>GET </i><code>relative/url</code><i> Cookies </i><code>cook=from_case</code></div></td></tr><td style="max-width:550px" class="json rest-success">{
+  "GET": "/relative/url",
+  "cookies": "{cook=from_case}"
+}</td><td class="rest-success">HTTP/1.1 200 OK</td></tr></tr>
+            <tr desc="Placeholders can be used" cmdId="d58d1c2b-0a5e-4760-b179-b3bbf33b3a27" e:case="" data-type="case" id="7) Placeholders can be used"><tr><td colspan="2" class="text-muted">7) Placeholders can be used</td></tr>
+                
+                <div cmdId="3d616d6a-35b1-472b-8909-718334b76f72" e:check="" />
+            <tr><tr><td colspan="2"><div><i>GET </i><code>relative/url</code><i> Cookies </i><code>cook=relative/url,anotherCook=asd</code></div></td></tr><td style="max-width:550px" class="json rest-success">{
+  "GET": "/relative/url",
+  "cookies": "{cook=relative/url, anotherCook=asd}"
+}</td><td class="rest-success">HTTP/1.1 200 OK</td></tr></tr><tr><td colspan="3">
+                    Last response saved in variable <var>#exam_response</var><br />
+                    <ol>
+                        <li><code c:execute="#my_header = #exam_response.header('my_header')">c:execute="#my_header = #exam_response.header('my_header')</code></li>
+                        <li>echo #exam_response.header('my_header') =&gt; <code c:echo="#exam_response.header('my_header')">some value</code></li>
+                        <li>echo #my_header =&gt; <code c:echo="#my_header">some value</code></li>
+                    </ol>
+                </td></tr>
+            <tr desc="If @FullOGNL is enabled, response fields can be accessed" cmdId="82838ad5-42a5-432f-8606-d5bf25da7753" e:case="" data-type="case" id="8) If @FullOGNL is enabled, response fields can be accessed"><tr><td colspan="2" class="text-muted">8) If @FullOGNL is enabled, response fields can be accessed</td></tr>
+                
+            <tr><tr><td colspan="2"><div><i>GET </i><code>relative/url</code><i> Cookies </i><code>cook=some value</code></div></td></tr><td style="max-width:550px" class="json rest-success">{
+  "GET": "/relative/url",
+  "cookies": "{cook=some value}"
+}</td><td class="rest-success">HTTP/1.1 200 OK</td></tr></tr>
+        <div><h4><span class="badge badge-success ml-1 mr-1">GET</span><span class="badge badge-info ml-1 mr-1">application/json</span><code>relative/url</code></h4><h6><span class="badge badge-info ml-1 mr-1">Cookies</span><code>cook=from_command</code></h6></div></table></div>
+    </div><div class="card-footer text-muted" data-toggle="collapse" data-target="#-1678124433" aria-expanded="true" aria-controls="-1678124433"><small><span class="badge badge-pill badge-success">8</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small></div></div>
+</div><div class="footer">Results generated by <a href="http://www.concordion.org" style="font-weight: bold; text-decoration: none; color: #89C;">Concordion</a><div class="testTime">in 439 ms on 15-Aug-2019 at 07:53:59 UTC</div></div></body><button id="btnToTop" onclick="topFunction()" type="button" class="btn btn-light btn-sm text-muted ml-1"><i class="fa fa-arrow-up fa-3x"></i></button></html>
