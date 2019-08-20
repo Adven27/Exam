@@ -170,6 +170,17 @@ Create file in resources /data/keywords/clean-tables.xml with content:
             </xs:extension>
         </xs:simpleContent>
     </xs:complexType>
+    <xs:complexType name="mq-check-info">
+        <xs:simpleContent>
+            <xs:extension base="xs:string">
+                <xs:attribute type="xs:string" name="from" default="/data/mq"/>
+                <xs:attribute type="xs:string" name="name" use="required"/>
+                <xs:attribute type="xs:integer" name="awaitAtMostSec" default="4"/>
+                <xs:attribute type="xs:integer" name="awaitPollDelayMillis" default="0"/>
+                <xs:attribute type="xs:integer" name="awaitPollIntervalMillis" default="1000"/>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
 
     <xs:complexType name="check-info" mixed="true">
         <xs:all>
@@ -177,7 +188,7 @@ Create file in resources /data/keywords/clean-tables.xml with content:
             <xs:element name="xml-check" type="xj-info"/>
             <xs:element name="json-check" type="xj-info"/>
             <xs:element name="db-check" type="db-check-info"/>
-            <xs:element name="mq-check" type="mq-info"/>
+            <xs:element name="mq-check" type="mq-check-info"/>
             <xs:element name="set" type="set-info"/>
             <xs:element name="include" type="include-info"/>
         </xs:all>

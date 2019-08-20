@@ -47,13 +47,13 @@ open class Specs {
             FlPlugin(),
             MqPlugin(
                 mapOf("myQueue" to object : MqTesterAdapter() {
-                    private val queue = Stack<String>()
+                    private val queue = ArrayDeque<String>()
 
                     override fun send(message: String) {
                         queue.add(message)
                     }
 
-                    override fun receive(): String = queue.pop()
+                    override fun receive(): String = queue.poll() ?: ""
                 })
             ),
             UiPlugin(screenshotsOnFail = true, screenshotsOnSuccess = false)
