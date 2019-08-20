@@ -212,7 +212,7 @@
 <blockquote class="blockquote">
     <p class="mb-0">Assume we need to trigger a job and do checks only after it's finished:</p>
 </blockquote>
-<e:example name="Trigger job and poll result with custom logic" print="true">
+<e:example name="Trigger job and poll result with custom method" print="true">
     <e:post url="/jobs">
         <e:case desc="Trigger job with some optional body">
             <e:body>{"name" : "value"}</e:body>
@@ -246,6 +246,23 @@
     <e:then>
         Now we can check result:
         <e:db-check table="jobResult" cols="result" where="id={{id}}">
+            <e:row>done</e:row>
+        </e:db-check>
+    </e:then>
+</e:example>
+<blockquote class="blockquote">
+    <p class="mb-0">Equivalent of previous example with awaiting by db-check:</p>
+</blockquote>
+<e:example name="Trigger job and poll result with db-check" print="true">
+    <e:when>
+        Trigger job on <code cc:set="#url">/jobs</code> with some optional body <code cc:set="#json">{"name" : "value"}</code>
+        <e:await untilHttpPost="{{url}}"  hasStatusCode="200">{{json}}</e:await>
+        <e:set var="id" value="{{responseBody 'id'}}"/>
+        Job id = <code cc:echo="#id"/>
+    </e:when>
+    <e:then>
+        Await for result:
+        <e:db-check table="jobResult" cols="result" where="id={{id}}" awaitAtMostSec="4">
             <e:row>done</e:row>
         </e:db-check>
     </e:then>
