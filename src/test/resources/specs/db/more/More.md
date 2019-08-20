@@ -44,7 +44,7 @@
         <e:then print="true">
             <p>Check that NAME and BIRTHDAY are "NOT NULL" and AGE is a digit:</p>
             <e:db-check table="PERSON" cols="NAME, AGE, BIRTHDAY">
-                <row>!{regex}.*, !{regex}\d+, !{regex}.*</row>
+                <row>!{regex}.*, !{number}, !{notNull}</row>
             </e:db-check>
         </e:then>
     </e:example>

@@ -234,10 +234,9 @@ private fun Any?.isNumber() = this != null && this.toString().startsWith("!{numb
 private fun Any?.isRegex() = this != null && this.toString().startsWith("!{regex}")
 private fun Any?.isWithin() = this != null && this.toString().startsWith("!{within ")
 
-private fun String.withinPeriod() =
-    parsePeriod(
-        this.substring(
-            "!{within ".length,
-            this.indexOf("}")
-        ).trim()
-    ).toPeriod().toStandardDuration().millis
+private fun String.withinPeriod() = parsePeriod(
+    this.substring(
+        "!{within ".length,
+        this.indexOf("}")
+    ).trim()
+).toPeriod().toStandardDuration().millis
