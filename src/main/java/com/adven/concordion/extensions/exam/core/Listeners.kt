@@ -11,26 +11,30 @@ import nu.xom.converters.DOMConverter
 import org.concordion.api.ImplementationStatus
 import org.concordion.api.ImplementationStatus.*
 import org.concordion.api.listener.*
+import org.concordion.internal.FailFastException
 import java.io.ByteArrayInputStream
+import java.io.File
 import java.util.*
+import java.util.function.Predicate
 import javax.xml.parsers.DocumentBuilderFactory
 import kotlin.collections.ArrayList
-import kotlin.collections.List
-import kotlin.collections.MutableList
-import kotlin.collections.filter
-import kotlin.collections.flatMap
-import kotlin.collections.forEach
-import kotlin.collections.isNotEmpty
-import kotlin.collections.listOf
-import kotlin.collections.map
 import kotlin.collections.set
-import kotlin.collections.toTypedArray
 import org.concordion.api.Element as ConcordionElement
 
 val examplesToFocus: MutableList<String?> = ArrayList()
 
-internal class ExamExampleListener : ExampleListener {
-    override fun beforeExample(event: ExampleEvent) {}
+internal class ExamExampleListener(private val skipDecider: Predicate<ExampleEvent>) : ExampleListener {
+    override fun beforeExample(event: ExampleEvent) {
+        val name = event.resultSummary.specificationDescription.substringAfterLast(File.separator)
+        val elem = event.element
+        if (skipDecider.test(event)) {
+            elem.appendSister(ConcordionElement("div").apply {
+                appendText("Example \"$name\" is skipped by ${skipDecider.javaClass.simpleName}")
+            })
+            elem.parentElement.removeChild(elem)
+            throw FailFastException("Skipping example", AssertionError("Skipping example"))
+        }
+    }
 
     override fun afterExample(event: ExampleEvent) {
         val summary = event.resultSummary
@@ -154,13 +158,10 @@ class SpecSummaryListener : SpecificationProcessingListener {
         val body = Html(event.rootElement).first("body")
         if (body != null) {
             val menu = body.findBy("summary")
-            if (menu != null) {
+            val examples = body.descendants("a").filter { "example" == it.attr("data-type") }
+            if (menu != null && examples.isNotEmpty()) {
                 menu.parent().css("pin")
-                menu(
-                    div(CLASS to "list-group")(
-                        *body.descendants("a").filter { "example" == it.attr("data-type") }.flatMap {
-                            menuItem(it)
-                        }.toTypedArray()))
+                menu(div(CLASS to "list-group")(*examples.flatMap { menuItem(it) }.toTypedArray()))
             }
         }
     }

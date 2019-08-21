@@ -12,6 +12,7 @@ import net.javacrumbs.jsonunit.core.Configuration
 import net.javacrumbs.jsonunit.core.Option.IGNORING_ARRAY_ORDER
 import org.concordion.api.extension.ConcordionExtender
 import org.concordion.api.extension.ConcordionExtension
+import org.concordion.api.listener.ExampleEvent
 import org.hamcrest.Matcher
 import org.xmlunit.diff.DefaultNodeMatcher
 import org.xmlunit.diff.ElementSelectors.byName
@@ -19,12 +20,14 @@ import org.xmlunit.diff.ElementSelectors.byNameAndText
 import org.xmlunit.diff.NodeMatcher
 import java.util.*
 import java.util.Collections.addAll
+import java.util.function.Predicate
 import kotlin.collections.HashMap
 
 class ExamExtension : ConcordionExtension {
     private var focusOnError: Boolean = true
     private var jsonUnitCfg: Configuration = DEFAULT_JSON_UNIT_CFG
     private var nodeMatcher: NodeMatcher = DEFAULT_NODE_MATCHER
+    private var skipDecider: Predicate<ExampleEvent> = Predicate { false }
     private val plugins = ArrayList<ExamPlugin>()
 
     /**
@@ -74,6 +77,22 @@ class ExamExtension : ConcordionExtension {
         return this
     }
 
+    @Suppress("unused")
+    fun runOnlyExamplesWithPathsContains(vararg exampleNames: String): ExamExtension {
+        skipDecider = Predicate {
+            exampleNames.none { pattern ->
+                it.resultSummary.specificationDescription.contains(pattern)
+            }
+        }
+        return this
+    }
+
+    @Suppress("unused")
+    fun withSkipExampleDecider(decider: Predicate<ExampleEvent>): ExamExtension {
+        skipDecider = decider
+        return this
+    }
+
     override fun addTo(ex: ConcordionExtender) {
         val registry = CommandRegistry(jsonUnitCfg, nodeMatcher)
         plugins.forEach { registry.register(it.commands()) }
@@ -98,7 +117,7 @@ class ExamExtension : ConcordionExtension {
         if (focusOnError) {
             ex.withSpecificationProcessingListener(FocusOnErrorsListener())
         }
-        ex.withExampleListener(ExamExampleListener())
+        ex.withExampleListener(ExamExampleListener(skipDecider))
     }
 
     companion object {
