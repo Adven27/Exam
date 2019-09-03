@@ -16,6 +16,7 @@ import org.concordion.api.Evaluator
 import org.joda.time.DateTime
 import org.joda.time.DateTimeZone
 import org.joda.time.LocalDateTime
+import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.regex.Pattern
@@ -112,15 +113,31 @@ enum class HelperSource(
 
     },
     date(
-        """{{date '01.02.2000 10:20' format="dd.MM.yyyy HH:mm"}}""",
+        """{{date '01.02.2000 10:20' format="dd.MM.yyyy HH:mm" minus="1 h" plus="1 h"}}""",
         emptyMap(),
         LocalDateTime(2000, 2, 1, 10, 20).toDate(),
-        mapOf(FORMAT to "\"dd.MM.yyyy\"")
+        mapOf(FORMAT to "\"dd.MM.yyyy\"", PLUS to "\"1 day\"", MINUS to "\"5 hours\"")
     ) {
         override fun invoke(context: Any?, options: Options): Any? {
-            val format = options.hash<String>("format", null)
-            return if (format == null) DateFormatUtils.ISO_8601_EXTENDED_DATE_FORMAT.parse(context as String)
-            else SimpleDateFormat(format).parse(context as String)
+            return LocalDateTime(parseDate(context, options))
+                .plus(parsePeriodFrom(options.hash(PLUS, "")))
+                .minus(parsePeriodFrom(options.hash(MINUS, "")))
+                .toDate()
+        }
+
+        private fun parseDate(context: Any?, options: Options): Date = if (context is String && context.isNotBlank()) {
+            parseDate(context, options.hash<String>(FORMAT, null))
+        } else {
+            context as Date
+        }
+
+        private fun parseDate(date: String, format: String?): Date {
+            val pattern = format ?: DateFormatUtils.ISO_8601_EXTENDED_DATE_FORMAT.pattern
+            try {
+                return SimpleDateFormat(pattern).parse(date)
+            } catch (e: ParseException) {
+                throw ParseException("Unparseable date: $date, format: $pattern ", e.errorOffset)
+            }
         }
     },
     string("{{string}}", mapOf(PLACEHOLDER_TYPE to "json"), "\${json-unit.any-string}") {

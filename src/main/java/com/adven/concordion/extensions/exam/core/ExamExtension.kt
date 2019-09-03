@@ -20,14 +20,13 @@ import org.xmlunit.diff.ElementSelectors.byNameAndText
 import org.xmlunit.diff.NodeMatcher
 import java.util.*
 import java.util.Collections.addAll
-import java.util.function.Predicate
 import kotlin.collections.HashMap
 
 class ExamExtension : ConcordionExtension {
     private var focusOnError: Boolean = true
     private var jsonUnitCfg: Configuration = DEFAULT_JSON_UNIT_CFG
     private var nodeMatcher: NodeMatcher = DEFAULT_NODE_MATCHER
-    private var skipDecider: Predicate<ExampleEvent> = Predicate { false }
+    private var skipDecider: SkipDecider = SkipDecider.NoSkip()
     private val plugins = ArrayList<ExamPlugin>()
 
     /**
@@ -78,17 +77,33 @@ class ExamExtension : ConcordionExtension {
     }
 
     @Suppress("unused")
-    fun runOnlyExamplesWithPathsContains(vararg exampleNames: String): ExamExtension {
-        skipDecider = Predicate {
-            exampleNames.none { pattern ->
-                it.resultSummary.specificationDescription.contains(pattern)
+    fun runOnlyExamplesWithPathsContains(vararg substrings: String): ExamExtension {
+        skipDecider = object : SkipDecider {
+            var reason = ""
+            override fun test(event: ExampleEvent): Boolean {
+                val skips = mutableListOf<String>()
+                val name = event.resultSummary.specificationDescription
+                val noSkip = substrings.none { substring ->
+                    if (name.contains(substring)) {
+                        true
+                    } else {
+                        skips += substring
+                        false
+                    }
+                }
+                if (noSkip) {
+                    reason = "specification name: \"$name\" not contains: $skips \n"
+                }
+                return noSkip
             }
+
+            override fun reason(): String = reason
         }
         return this
     }
 
     @Suppress("unused")
-    fun withSkipExampleDecider(decider: Predicate<ExampleEvent>): ExamExtension {
+    fun withSkipExampleDecider(decider: SkipDecider): ExamExtension {
         skipDecider = decider
         return this
     }
