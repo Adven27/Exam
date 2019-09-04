@@ -12,6 +12,7 @@ import net.javacrumbs.jsonunit.core.Configuration
 import net.javacrumbs.jsonunit.core.Option.IGNORING_ARRAY_ORDER
 import org.concordion.api.extension.ConcordionExtender
 import org.concordion.api.extension.ConcordionExtension
+import org.concordion.api.listener.ExampleEvent
 import org.hamcrest.Matcher
 import org.xmlunit.diff.DefaultNodeMatcher
 import org.xmlunit.diff.ElementSelectors.byName
@@ -25,6 +26,7 @@ class ExamExtension : ConcordionExtension {
     private var focusOnError: Boolean = true
     private var jsonUnitCfg: Configuration = DEFAULT_JSON_UNIT_CFG
     private var nodeMatcher: NodeMatcher = DEFAULT_NODE_MATCHER
+    private var skipDecider: SkipDecider = SkipDecider.NoSkip()
     private val plugins = ArrayList<ExamPlugin>()
 
     /**
@@ -74,6 +76,38 @@ class ExamExtension : ConcordionExtension {
         return this
     }
 
+    @Suppress("unused")
+    fun runOnlyExamplesWithPathsContains(vararg substrings: String): ExamExtension {
+        skipDecider = object : SkipDecider {
+            var reason = ""
+            override fun test(event: ExampleEvent): Boolean {
+                val skips = mutableListOf<String>()
+                val name = event.resultSummary.specificationDescription
+                val noSkip = substrings.none { substring ->
+                    if (name.contains(substring)) {
+                        true
+                    } else {
+                        skips += substring
+                        false
+                    }
+                }
+                if (noSkip) {
+                    reason = "specification name: \"$name\" not contains: $skips \n"
+                }
+                return noSkip
+            }
+
+            override fun reason(): String = reason
+        }
+        return this
+    }
+
+    @Suppress("unused")
+    fun withSkipExampleDecider(decider: SkipDecider): ExamExtension {
+        skipDecider = decider
+        return this
+    }
+
     override fun addTo(ex: ConcordionExtender) {
         val registry = CommandRegistry(jsonUnitCfg, nodeMatcher)
         plugins.forEach { registry.register(it.commands()) }
@@ -98,7 +132,7 @@ class ExamExtension : ConcordionExtension {
         if (focusOnError) {
             ex.withSpecificationProcessingListener(FocusOnErrorsListener())
         }
-        ex.withExampleListener(ExamExampleListener())
+        ex.withExampleListener(ExamExampleListener(skipDecider))
     }
 
     companion object {

@@ -17,7 +17,10 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings
 import org.concordion.api.AfterSuite
 import org.concordion.api.BeforeSuite
 import org.concordion.api.extension.Extension
+import org.concordion.api.extension.Extensions
 import org.concordion.api.option.ConcordionOptions
+import org.concordion.ext.runtotals.RunTotalsExtension
+import org.concordion.ext.timing.TimerExtension
 import org.concordion.integration.junit4.ConcordionRunner
 import org.concordion.internal.ConcordionBuilder.NAMESPACE_CONCORDION_2007
 import org.junit.runner.RunWith
@@ -25,6 +28,7 @@ import java.util.*
 
 @SuppressFBWarnings("ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD")
 @RunWith(ConcordionRunner::class)
+@Extensions(value = [TimerExtension::class, RunTotalsExtension::class])
 @ConcordionOptions(declareNamespaces = ["c", NAMESPACE_CONCORDION_2007, "e", ExamExtension.NS])
 open class Specs {
 
@@ -47,13 +51,13 @@ open class Specs {
             FlPlugin(),
             MqPlugin(
                 mapOf("myQueue" to object : MqTesterAdapter() {
-                    private val queue = Stack<String>()
+                    private val queue = ArrayDeque<String>()
 
                     override fun send(message: String) {
                         queue.add(message)
                     }
 
-                    override fun receive(): String = queue.pop()
+                    override fun receive(): String = queue.poll() ?: ""
                 })
             ),
             UiPlugin(screenshotsOnFail = true, screenshotsOnSuccess = false)

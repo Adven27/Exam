@@ -5,6 +5,8 @@ import com.adven.concordion.extensions.exam.core.resolveToObj
 import com.adven.concordion.extensions.exam.core.utils.parsePeriod
 import com.adven.concordion.extensions.exam.db.DbResultRenderer
 import com.adven.concordion.extensions.exam.db.DbTester
+import org.awaitility.Awaitility
+import org.awaitility.core.ConditionTimeoutException
 import org.concordion.api.CommandCall
 import org.concordion.api.Evaluator
 import org.concordion.api.Result.FAILURE
@@ -26,6 +28,7 @@ import org.dbunit.dataset.datatype.DataType
 import org.dbunit.util.QualifiedTableName
 import java.sql.Timestamp
 import java.util.*
+import java.util.concurrent.TimeUnit
 import java.util.regex.Pattern
 
 class DBCheckCommand(name: String, tag: String, dbTester: DbTester) : DBCommand(name, tag, dbTester) {
@@ -56,23 +59,60 @@ class DBCheckCommand(name: String, tag: String, dbTester: DbTester) : DBCommand(
     }
 
     override fun verify(cmd: CommandCall?, evaluator: Evaluator?, resultRecorder: ResultRecorder?) {
-        assertEq(evaluator!!, cmd.html(), resultRecorder, expectedTable, actualTable.withColumnsAsIn(expectedTable))
+        assertEq(evaluator!!, cmd.html(), resultRecorder)
     }
 
-    private fun assertEq(evaluator: Evaluator, rootEl: Html, resultRecorder: ResultRecorder?, expected: ITable, actual: ITable) {
+    private fun assertEq(evaluator: Evaluator, rootEl: Html, resultRecorder: ResultRecorder?) {
         var root = rootEl
-        val diffHandler = DiffCollectingFailureHandler()
-        val columns: Array<String> = if (orderBy.isEmpty()) expected.columnNamesArray() else orderBy
-        val expectedTable = SortedTable(expected, columns)
-        val actualTable = SortedTable(actual, columns)
+        var diffHandler = DiffCollectingFailureHandler()
+        val columns: Array<String> = if (orderBy.isEmpty()) expectedTable.columnNamesArray() else orderBy
+        val expected = SortedTable(expectedTable, columns)
+        lateinit var actual: ITable
+        val atMostSec = root.takeAwayAttr("awaitAtMostSec")
+        val pollDelay = root.takeAwayAttr("awaitPollDelayMillis")
+        val pollInterval = root.takeAwayAttr("awaitPollIntervalMillis")
         try {
-            DbUnitAssert().assertWithValueComparer(
-                expectedTable,
-                actualTable,
-                diffHandler,
-                RegexAndWithinAwareValueComparer(evaluator),
-                null
-            )
+            if (atMostSec != null || pollDelay != null || pollInterval != null) {
+                val atMost = atMostSec?.toLong() ?: 4
+                val delay = pollDelay?.toLong() ?: 0
+                val interval = pollInterval?.toLong() ?: 1000
+                try {
+                    Awaitility.await("Await DB table ${expected.tableName()}")
+                        .atMost(atMost, TimeUnit.SECONDS)
+                        .pollDelay(delay, TimeUnit.MILLISECONDS)
+                        .pollInterval(interval, TimeUnit.MILLISECONDS)
+                        .untilAsserted {
+                            actual = actualTable.withColumnsAsIn(expectedTable)
+                            diffHandler = DiffCollectingFailureHandler()
+                            DbUnitAssert().assertWithValueComparer(
+                                expected,
+                                SortedTable(actual, columns),
+                                diffHandler,
+                                RegexAndWithinAwareValueComparer(evaluator),
+                                null
+                            )
+                            if (diffHandler.diffList.isNotEmpty()) {
+                                throw AssertionError()
+                            }
+                        }
+                } catch (f: ConditionTimeoutException) {
+                    root(pre(
+                        "DB check with poll delay $delay ms and poll interval $interval ms didn't complete within $atMost seconds:"
+                    ).css("alert alert-danger small"))
+                    if (f.cause is DbComparisonFailure) {
+                        throw f.cause as DbComparisonFailure
+                    }
+                }
+            } else {
+                actual = actualTable.withColumnsAsIn(expectedTable)
+                DbUnitAssert().assertWithValueComparer(
+                    expected,
+                    SortedTable(actual, columns),
+                    diffHandler,
+                    RegexAndWithinAwareValueComparer(evaluator),
+                    null
+                )
+            }
         } catch (f: DbComparisonFailure) {
             //TODO move to ResultRenderer
             resultRecorder!!.record(FAILURE)
@@ -86,8 +126,9 @@ class DBCheckCommand(name: String, tag: String, dbTester: DbTester) : DBCommand(
             val act = tableSlim()
             renderTable(act, actual)
             div(span("but was: "), act)
+        } finally {
+            checkResult(root, expected, SortedTable(actual, columns), diffHandler.diffList as List<Difference>, resultRecorder!!)
         }
-        checkResult(root, expectedTable, actualTable, diffHandler.diffList as List<Difference>, resultRecorder!!)
     }
 
     private fun checkResult(root: Html, expected: ITable, actual: ITable, diffs: List<Difference>, resultRecorder: ResultRecorder) {
@@ -193,10 +234,9 @@ private fun Any?.isNumber() = this != null && this.toString().startsWith("!{numb
 private fun Any?.isRegex() = this != null && this.toString().startsWith("!{regex}")
 private fun Any?.isWithin() = this != null && this.toString().startsWith("!{within ")
 
-private fun String.withinPeriod() =
-    parsePeriod(
-        this.substring(
-            "!{within ".length,
-            this.indexOf("}")
-        ).trim()
-    ).toPeriod().toStandardDuration().millis
+private fun String.withinPeriod() = parsePeriod(
+    this.substring(
+        "!{within ".length,
+        this.indexOf("}")
+    ).trim()
+).toPeriod().toStandardDuration().millis

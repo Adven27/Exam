@@ -132,10 +132,11 @@
         <e:set var="upd1" value="{{now tz='GMT+3'}}"/>
         <e:set var="upd2" value="{{now plus='1 day'}}"/>
         <e:set var="format" value="yyyy-MM-dd'T'HH:mm:ss.SSSXXX"/>
-        <e:db-set caption="Given widgets:" table="widgets" cols="name, quantity, updated, id=1..3">
+        <e:db-set caption="Given widgets:" table="widgets" cols="name, quantity, updated, id=1..10">
             <e:row>widget1, 10, {{upd1}}</e:row>
             <e:row>widget2, 20, {{upd2}}</e:row>
             <e:row>widget3, 30, {{date '01.02.2000 10:20+03:00' format="dd.MM.yyyy HH:mmXXX"}}</e:row>
+            <e:row>widget4, 40, {{date upd2 plus='12 h'}}</e:row>
         </e:db-set>
     </e:given>
     <e:get url="/widgets">
@@ -156,6 +157,11 @@
                 "name": "widget3",
                 "quantity": 30,
                 "updatedAt": "{{dateFormat (date '01.02.2000 10:20+03:00' format="dd.MM.yyyy HH:mmXXX") format}}"
+                }, {
+                "id": 4,
+                "name": "widget4",
+                "quantity": 40,
+                "updatedAt": "{{dateFormat (date upd2 plus='12 h') format}}"
                 }]
             </e:expected>
         </e:case>
@@ -212,7 +218,7 @@
 <blockquote class="blockquote">
     <p class="mb-0">Assume we need to trigger a job and do checks only after it's finished:</p>
 </blockquote>
-<e:example name="Trigger job and poll result with custom logic" print="true">
+<e:example name="Trigger job and poll result with custom method" print="true">
     <e:post url="/jobs">
         <e:case desc="Trigger job with some optional body">
             <e:body>{"name" : "value"}</e:body>
@@ -246,6 +252,23 @@
     <e:then>
         Now we can check result:
         <e:db-check table="jobResult" cols="result" where="id={{id}}">
+            <e:row>done</e:row>
+        </e:db-check>
+    </e:then>
+</e:example>
+<blockquote class="blockquote">
+    <p class="mb-0">Equivalent of previous example with awaiting by db-check:</p>
+</blockquote>
+<e:example name="Trigger job and poll result with db-check" print="true">
+    <e:when>
+        Trigger job on <code cc:set="#url">/jobs</code> with some optional body <code cc:set="#json">{"name" : "value"}</code>
+        <e:await untilHttpPost="{{url}}"  hasStatusCode="200">{{json}}</e:await>
+        <e:set var="id" value="{{responseBody 'id'}}"/>
+        Job id = <code cc:echo="#id"/>
+    </e:when>
+    <e:then>
+        Await for result:
+        <e:db-check table="jobResult" cols="result" where="id={{id}}" awaitAtMostSec="4">
             <e:row>done</e:row>
         </e:db-check>
     </e:then>

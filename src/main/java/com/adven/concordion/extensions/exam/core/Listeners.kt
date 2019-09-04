@@ -11,26 +11,40 @@ import nu.xom.converters.DOMConverter
 import org.concordion.api.ImplementationStatus
 import org.concordion.api.ImplementationStatus.*
 import org.concordion.api.listener.*
+import org.concordion.internal.FailFastException
 import java.io.ByteArrayInputStream
+import java.io.File
 import java.util.*
+import java.util.function.Predicate
 import javax.xml.parsers.DocumentBuilderFactory
 import kotlin.collections.ArrayList
-import kotlin.collections.List
-import kotlin.collections.MutableList
-import kotlin.collections.filter
-import kotlin.collections.flatMap
-import kotlin.collections.forEach
-import kotlin.collections.isNotEmpty
-import kotlin.collections.listOf
-import kotlin.collections.map
 import kotlin.collections.set
-import kotlin.collections.toTypedArray
 import org.concordion.api.Element as ConcordionElement
 
 val examplesToFocus: MutableList<String?> = ArrayList()
 
-internal class ExamExampleListener : ExampleListener {
-    override fun beforeExample(event: ExampleEvent) {}
+interface SkipDecider : Predicate<ExampleEvent> {
+    fun reason(): String
+
+    class NoSkip : SkipDecider {
+        override fun reason(): String = ""
+
+        override fun test(t: ExampleEvent): Boolean = false
+    }
+}
+
+internal class ExamExampleListener(private val skipDecider: SkipDecider) : ExampleListener {
+    override fun beforeExample(event: ExampleEvent) {
+        val name = event.resultSummary.specificationDescription.substringAfterLast(File.separator)
+        val elem = event.element
+        if (skipDecider.test(event)) {
+            elem.appendSister(ConcordionElement("div").apply {
+                appendText("Example \"$name\" is skipped by ${skipDecider.javaClass.simpleName} because ${skipDecider.reason()}")
+            })
+            elem.parentElement.removeChild(elem)
+            throw FailFastException("Skipping example", AssertionError("Skipping example"))
+        }
+    }
 
     override fun afterExample(event: ExampleEvent) {
         val summary = event.resultSummary
@@ -154,13 +168,10 @@ class SpecSummaryListener : SpecificationProcessingListener {
         val body = Html(event.rootElement).first("body")
         if (body != null) {
             val menu = body.findBy("summary")
-            if (menu != null) {
+            val examples = body.descendants("a").filter { "example" == it.attr("data-type") }
+            if (menu != null && examples.isNotEmpty()) {
                 menu.parent().css("pin")
-                menu(
-                    div(CLASS to "list-group")(
-                        *body.descendants("a").filter { "example" == it.attr("data-type") }.flatMap {
-                            menuItem(it)
-                        }.toTypedArray()))
+                menu(div(CLASS to "list-group")(*examples.flatMap { menuItem(it) }.toTypedArray()))
             }
         }
     }
@@ -170,13 +181,24 @@ class SpecSummaryListener : SpecificationProcessingListener {
         val id = UUID.randomUUID().toString()
         val rootExampleEl = it.parent().parent()
         val item = menuItemA(anchor).attrs("href" to "#$anchor")(
-            footerOf(rootExampleEl).firstOrThrow("small").deepClone()
-                .css("card-img-overlay m-1").style("padding:0; left:inherit;"))
+            footerOf(rootExampleEl)
+                .firstOrThrow("small")
+                .deepClone()
+                .css("card-img-overlay m-1")
+                .style("padding:0; left:inherit;")
+                .above(pill(extractElapsedTime(rootExampleEl), "light"))
+        )
         val cases = cases(rootExampleEl, id)
 
         return if (cases.childs().isEmpty())
             listOf(item) else listOf(item(buttonCollapse("cases", id)), cases)
     }
+
+    private fun extractElapsedTime(card: Html): String =
+        card.childs().firstOrNull { "time-fig" == it.attr("class") }.let {
+            card.remove(it)
+            it?.text() ?: ""
+        }
 
     private fun cases(exampleEl: Html, id: String): Html {
         return div(ID to id, CLASS to "collapse")(
