@@ -58,7 +58,7 @@
         <xs:simpleContent>
             <xs:extension base="xs:string">
                 <xs:attribute type="xs:string" name="actual" use="required" default="variable"/>
-                <xs:attribute type="xs:string" name="from" default="/data"/>
+                <xs:attribute type="xs:anyURI" name="from" default="/data"/>
             </xs:extension>
         </xs:simpleContent>
     </xs:complexType>
@@ -70,10 +70,10 @@
                 <xs:attribute type="xs:string" name="untilTrue" default="isDone(#param)"/>
                 <xs:attribute type="xs:string" name="untilHttpGet" default="/jobs/{{id}}"/>
                 <xs:attribute type="xs:string" name="untilHttpPost" default="/jobs"/>
-                <xs:attribute type="xs:string" name="withBodyFrom" default="/data/request.json"/>
+                <xs:attribute type="xs:anyURI" name="withBodyFrom" default="/data/request.json"/>
                 <xs:attribute type="xs:string" name="withContentType" default="application/json"/>
                 <xs:attribute type="xs:string" name="hasBody" default="ok"/>
-                <xs:attribute type="xs:string" name="hasBodyFrom" default="/data/response.json"/>
+                <xs:attribute type="xs:anyURI" name="hasBodyFrom" default="/data/response.json"/>
                 <xs:attribute type="xs:integer" name="hasStatusCode" default="200"/>
                 <xs:attribute type="xs:integer" name="atMostSec" default="4"/>
                 <xs:attribute type="xs:integer" name="pollDelayMillis" default="1000"/>
@@ -85,7 +85,7 @@
     <xs:complexType name="include-info" mixed="true">
         <xs:simpleContent>
             <xs:extension base="xs:string">
-                <xs:attribute type="xs:string" name="from" default="/data/keywords/clean-tables.xml">
+                <xs:attribute type="xs:anyURI" name="from" default="/data/keywords/clean-tables.xml">
                     <xs:annotation>
                         <xs:documentation>
                             Includes elements from file to current document. Example of usage:
@@ -110,7 +110,7 @@ Create file in resources /data/keywords/clean-tables.xml with content:
         <xs:simpleContent>
             <xs:extension base="xs:string">
                 <xs:attribute type="xs:string" name="var" use="required"/>
-                <xs:attribute type="xs:string" name="value" use="required"/>
+                <xs:attribute type="xs:string" name="value"/>
                 <xs:attribute type="xs:boolean" name="silent"/>
             </xs:extension>
         </xs:simpleContent>
@@ -165,7 +165,7 @@ Create file in resources /data/keywords/clean-tables.xml with content:
     <xs:complexType name="mq-info">
         <xs:simpleContent>
             <xs:extension base="xs:string">
-                <xs:attribute type="xs:string" name="from" default="/data/mq"/>
+                <xs:attribute type="xs:anyURI" name="from" default="/data/mq"/>
                 <xs:attribute type="xs:string" name="name" use="required"/>
             </xs:extension>
         </xs:simpleContent>
@@ -209,7 +209,7 @@ Create file in resources /data/keywords/clean-tables.xml with content:
     <xs:complexType name="expected-info">
         <xs:simpleContent>
             <xs:extension base="xs:string">
-                <xs:attribute type="xs:string" name="from" default="/data/ws/expected.json"/>
+                <xs:attribute type="xs:anyURI" name="from" default="/data/ws/expected.json"/>
                 <xs:attribute type="xs:string" name="reasonPhrase" default="Server Error"/>
                 <xs:attribute type="xs:integer" name="statusCode" default="500"/>
             </xs:extension>
@@ -225,7 +225,7 @@ Create file in resources /data/keywords/clean-tables.xml with content:
                             <xs:complexType mixed="true">
                                 <xs:simpleContent>
                                     <xs:extension base="xs:string">
-                                        <xs:attribute type="xs:string" name="from" default="/data/ws/request.json"/>
+                                        <xs:attribute type="xs:anyURI" name="from" default="/data/ws/request.json"/>
                                     </xs:extension>
                                 </xs:simpleContent>
                             </xs:complexType>

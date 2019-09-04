@@ -103,7 +103,9 @@ class WaitCommand(tag: String) : ExamCommand("await", tag) {
         assertEquals(expectedBody, response.extract().body().asString())
     }
 
-    private fun ConditionFactory.awaitGet(eval: Evaluator, url: String, expectedBody: String, expectedStatus: String?) = untilAsserted {
+    private fun ConditionFactory.awaitGet(
+        eval: Evaluator, url: String, expectedBody: String, expectedStatus: String?
+    ) = untilAsserted {
         val response = RestAssured.get(url)
             .apply { eval.setVariable("#exam_response", this) }
             .then()

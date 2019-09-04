@@ -1,6 +1,7 @@
 package com.adven.concordion.extensions.exam.core.utils
 
 import com.adven.concordion.extensions.exam.core.parsePeriodFrom
+import com.adven.concordion.extensions.exam.core.resolve
 import com.adven.concordion.extensions.exam.core.utils.HelperSource.Companion.HANDELBAR_RESULT
 import com.github.jknack.handlebars.Context
 import com.github.jknack.handlebars.EscapingStrategy.NOOP
@@ -15,6 +16,7 @@ import org.apache.commons.lang3.time.DateFormatUtils
 import org.concordion.api.Evaluator
 import org.joda.time.DateTime
 import org.joda.time.DateTimeZone
+import org.joda.time.LocalDate
 import org.joda.time.LocalDateTime
 import java.text.ParseException
 import java.text.SimpleDateFormat
@@ -112,6 +114,30 @@ enum class HelperSource(
             .toDate()
 
     },
+    today(
+        """{{today "yyyy-MM-dd'T'HH:mm Z" tz="GMT+3" minus="1 y, 2 months, d 3" plus="4 h, 5 min, 6 s"}}""",
+        emptyMap(),
+        DateTime.now(DateTimeZone.forOffsetHours(3))
+            .minusYears(1).minusMonths(2).minusDays(3)
+            .plusHours(4).plusMinutes(5).plusSeconds(6)
+            .toString("yyyy-MM-dd'T'HH:mm Z"),
+        mapOf(TZ to "\"GMT+3\"", PLUS to "\"1 day\"", MINUS to "\"5 hours\"")
+    ) {
+        override fun invoke(context: Any?, options: Options): Any? = if (context is String && context.isNotBlank()) {
+            dateFormat(
+                Date(),
+                options,
+                context,
+                options.param(0, Locale.getDefault().toString()),
+                options.hash(PLUS, ""),
+                options.hash(MINUS, ""),
+                options.hash<Any>(TZ)
+            )
+        } else LocalDateTime.now()
+            .plus(parsePeriodFrom(options.hash(PLUS, "")))
+            .minus(parsePeriodFrom(options.hash(MINUS, "")))
+            .toLocalDate().toDateTimeAtStartOfDay().toDate()
+    },
     date(
         """{{date '01.02.2000 10:20' format="dd.MM.yyyy HH:mm" minus="1 h" plus="1 h"}}""",
         emptyMap(),
@@ -206,6 +232,9 @@ enum class HelperSource(
     },
     eval("{{eval '#var'}}", mapOf("var" to 2), 2) {
         override fun invoke(context: Any?, options: Options): Any? = (options.context.model() as Evaluator).evaluate("$context")
+    },
+    resolve("{{resolve \"today is {{today}}\"}}", emptyMap(), "today is ${LocalDate.now().toDate()}") {
+        override fun invoke(context: Any?, options: Options): Any? = (options.context.model() as Evaluator).resolve("$context")
     };
 
     override fun apply(context: Any?, options: Options): Any? {
