@@ -2,7 +2,6 @@ package com.adven.concordion.extensions.exam.core.utils
 
 import com.adven.concordion.extensions.exam.core.parsePeriodFrom
 import com.adven.concordion.extensions.exam.core.resolve
-import com.adven.concordion.extensions.exam.core.utils.HelperSource.Companion.HANDELBAR_RESULT
 import com.github.jknack.handlebars.Context
 import com.github.jknack.handlebars.EscapingStrategy.NOOP
 import com.github.jknack.handlebars.Handlebars
@@ -21,15 +20,21 @@ import org.joda.time.LocalDateTime
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
+import java.util.concurrent.atomic.AtomicReference
 import java.util.regex.Pattern
 
 var START_DELIMITER = "{{"
 var END_DELIMITER = "}}"
 const val PLACEHOLDER_TYPE = "placeholder_type"
 const val DB_ACTUAL = "db_actual"
+val HB_RESULT: AtomicReference<Any?> = AtomicReference()
 
 val HANDLEBARS: Handlebars = Handlebars()
     .with(NOOP)
+    .with { value, next ->
+        HB_RESULT.set(value)
+        return@with next.format(value)
+    }
     .prettyPrint(false)
     .registerHelpers(HelperSource::class.java)
     .registerHelperMissing(Helper<Any> { _, opts ->
@@ -49,17 +54,14 @@ val HANDLEBARS: Handlebars = Handlebars()
     })
 
 fun Handlebars.resolve(eval: Any?, placeholder: String): String =
-    this.with { value, next ->
-        if (eval is Evaluator) eval.setVariable(HANDELBAR_RESULT, value)
-        return@with next.format(value)
-    }.compileInline(placeholder, START_DELIMITER, END_DELIMITER).apply(
+    this.compileInline(placeholder, START_DELIMITER, END_DELIMITER).apply(
         Context.newBuilder(eval).resolver(EvaluatorValueResolver.INSTANCE).build()
     )
 
 fun Handlebars.resolveObj(eval: Evaluator, placeholder: String): Any? {
-    eval.setVariable(HANDELBAR_RESULT, placeholder)
+    HB_RESULT.set(placeholder)
     resolve(eval, placeholder)
-    return eval.getVariable(HANDELBAR_RESULT)
+    return HB_RESULT.get()
 }
 
 private const val TZ = "tz"
@@ -240,7 +242,7 @@ enum class HelperSource(
     override fun apply(context: Any?, options: Options): Any? {
         validate(options)
         val result = this(context, options)
-        (options.context.model() as Evaluator).setVariable(HANDELBAR_RESULT, result)
+        HB_RESULT.set(result)
         return result
     }
 
@@ -296,7 +298,6 @@ enum class HelperSource(
 
     companion object {
         const val DEFAULT_FORMAT = "yyyy-MM-dd'T'HH:mm:ss"
-        const val HANDELBAR_RESULT = "#handlebar_result"
     }
 }
 
