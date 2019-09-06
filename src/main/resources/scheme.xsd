@@ -51,7 +51,26 @@
             <xs:element name="db-show" type="db-set-info"/>
             <xs:element name="mq-send" type="mq-info"/>
             <xs:element name="include" type="include-info"/>
+            <xs:element name="browser" type="browser-info"/>
         </xs:all>
+    </xs:complexType>
+
+    <xs:complexType name="browser-info">
+        <xs:sequence>
+            <xs:element name="step">
+                <xs:complexType mixed="true">
+                    <xs:simpleContent>
+                        <xs:extension base="xs:string">
+                            <xs:attribute type="xs:string" name="name" use="required" default="methodName"/>
+                            <xs:attribute type="xs:string" name="desc"/>
+                            <xs:attribute type="xs:string" name="set" default="variableName"/>
+                        </xs:extension>
+                    </xs:simpleContent>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+        <xs:attribute type="xs:anyURI" name="url" use="required" default=":8888/ui"/>
+        <xs:attribute type="xs:boolean" name="failFast" default="true"/>
     </xs:complexType>
 
     <xs:complexType name="xj-info" mixed="true">
@@ -90,14 +109,15 @@
                         <xs:documentation>
                             Includes elements from file to current document. Example of usage:
                             <pre>
-Insert in spec:
-&lt;e:include from="/data/keywords/clean-tables.xml"/&gt;
+                                Insert in spec:
+                                &lt;e:include from="/data/keywords/clean-tables.xml"/&gt;
 
-Create file in resources /data/keywords/clean-tables.xml with content:
+                                Create file in resources /data/keywords/clean-tables.xml with content:
 
-&lt;anyTagNameWillBeIgnored xmlns:e="http://exam.extension.io" xmlns:cc="http://www.concordion.org/2007/concordion"&gt;
-    &lt;span&gt;Clean tables: &lt;e:db-clean tables="table1, table2"/&gt;&lt;/span&gt;
-&lt;/anyTagNameWillBeIgnored&gt;
+                                &lt;anyTagNameWillBeIgnored xmlns:e="http://exam.extension.io"
+                                xmlns:cc="http://www.concordion.org/2007/concordion"&gt;
+                                &lt;span&gt;Clean tables: &lt;e:db-clean tables="table1, table2"/&gt;&lt;/span&gt;
+                                &lt;/anyTagNameWillBeIgnored&gt;
                             </pre>
                         </xs:documentation>
                     </xs:annotation>
@@ -191,6 +211,7 @@ Create file in resources /data/keywords/clean-tables.xml with content:
             <xs:element name="mq-check" type="mq-check-info"/>
             <xs:element name="set" type="set-info"/>
             <xs:element name="include" type="include-info"/>
+            <xs:element name="browser" type="browser-info"/>
         </xs:all>
     </xs:complexType>
 
@@ -274,6 +295,7 @@ Create file in resources /data/keywords/clean-tables.xml with content:
                 <xs:element name="get" type="get-info" minOccurs="0"/>
                 <xs:element name="delete" type="post-info" minOccurs="0"/>
                 <xs:element name="put" type="post-info" minOccurs="0"/>
+                <xs:element name="browser" type="browser-info"/>
             </xs:sequence>
             <xs:attribute type="xs:string" name="name" use="required"/>
             <xs:attribute type="xs:string" name="print"/>
