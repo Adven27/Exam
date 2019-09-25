@@ -58,7 +58,7 @@ class RequestExecutor private constructor() {
         return this
     }
 
-    fun xml() = type?.contains("soap+xml", true) ?: false
+    fun xml() = type?.contains("xml", true) ?: false
 
     fun responseHeader(attributeValue: String) = response.getHeader(attributeValue)
 
