@@ -86,7 +86,7 @@ sealed class RequestCommand(
         if (headers != null) {
             val headersArray = headers.split(",").dropLastWhile { it.isEmpty() }.toTypedArray()
             for (i in headersArray.indices) {
-                if (i - 1 % 2 == 0) {
+                if ((i - 1) % 2 == 0) {
                     headersMap[headersArray[i - 1]] = headersArray[i]
                 }
             }
