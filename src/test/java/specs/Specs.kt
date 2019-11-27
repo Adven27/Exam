@@ -113,6 +113,17 @@ open class Specs {
                     )
                 )
                 stubFor(
+                    get(urlPathEqualTo("/ignoreJson")).atPriority(1).willReturn(
+                            aResponse().withBody("{ \"param1\":\"value1\", \"param2\":\"value2\", " +
+                                    "\"arr\": [{\"param3\":\"value3\", \"param4\":\"value4\"}, {\"param3\":\"value3\", \"param4\":\"value4\"}]}")
+                    )
+                )
+                stubFor(
+                    get(urlPathEqualTo("/ignoreJsonArray")).atPriority(1).willReturn(
+                            aResponse().withBody("[{\"param3\":\"value3\", \"param4\":\"value4\"}, {\"param3\":\"value3\", \"param4\":\"value4\"}]")
+                    )
+                )
+                stubFor(
                     any(urlPathEqualTo("/status/400")).atPriority(2).willReturn(
                         method status 400
                     )
