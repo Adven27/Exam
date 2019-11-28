@@ -198,7 +198,7 @@ class CaseCommand(tag: String, private var cfg: Configuration, private val nodeM
 
     private fun overrideConfigurationIfIgnoredPathExist(expected: Html) {
         expected.attr(IGNORED_PATHS)?.let { attr ->
-            cfg = cfg.whenIgnoringPaths(*attr.split(";").filter { v -> v.isNotEmpty() }.toTypedArray())
+            cfg = cfg.whenIgnoringPaths(*attr.split(";").filter { it.isNotEmpty() }.toTypedArray())
         }
     }
 
