@@ -233,6 +233,14 @@
                 <xs:attribute type="xs:anyURI" name="from" default="/data/ws/expected.json"/>
                 <xs:attribute type="xs:string" name="reasonPhrase" default="Server Error"/>
                 <xs:attribute type="xs:integer" name="statusCode" default="500"/>
+                <xs:attribute type="xs:string" name="ignoredPaths" default="jsonPathToField;arrayField[*].nodeInArray">
+                    <xs:annotation>
+                        <xs:documentation>
+                            Option makes JsonUnit ignore the specified paths in the actual value
+                            <a href="https://github.com/lukas-krecan/JsonUnit#ignoring-paths">Read more...</a>
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
             </xs:extension>
         </xs:simpleContent>
     </xs:complexType>

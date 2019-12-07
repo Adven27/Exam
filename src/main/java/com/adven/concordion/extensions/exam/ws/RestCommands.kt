@@ -29,6 +29,7 @@ private const val BODY = "body"
 private const val EXPECTED = "expected"
 private const val WHERE = "where"
 private const val CASE = "case"
+private const val IGNORED_PATHS = "ignoredPaths"
 private const val PROTOCOL = "protocol"
 private const val STATUS_CODE = "statusCode"
 private const val REASON_PHRASE = "reasonPhrase"
@@ -86,7 +87,7 @@ sealed class RequestCommand(
         if (headers != null) {
             val headersArray = headers.split(",").dropLastWhile { it.isEmpty() }.toTypedArray()
             for (i in headersArray.indices) {
-                if (i - 1 % 2 == 0) {
+                if ((i - 1) % 2 == 0) {
                     headersMap[headersArray[i - 1]] = headersArray[i]
                 }
             }
@@ -156,7 +157,7 @@ class CaseCheckCommand(name: String, tag: String) : ExamCommand(name, tag) {
     }
 }
 
-class CaseCommand(tag: String, private val cfg: Configuration, private val nodeMatcher: NodeMatcher) :
+class CaseCommand(tag: String, private var cfg: Configuration, private val nodeMatcher: NodeMatcher) :
     RestVerifyCommand(CASE, tag) {
     private val cases = ArrayList<Map<String, Any?>>()
     private var number = 0
@@ -176,6 +177,7 @@ class CaseCommand(tag: String, private val cfg: Configuration, private val nodeM
 
         val body = caseRoot.first(BODY)
         val expected = caseRoot.firstOrThrow(EXPECTED)
+        overrideConfigurationIfIgnoredPathExist(expected)
         caseRoot.remove(body, expected)(
             cases.map {
                 val expectedToAdd = tag(EXPECTED).text(expected.text())
@@ -192,6 +194,12 @@ class CaseCommand(tag: String, private val cfg: Configuration, private val nodeM
                     expectedToAdd
                 )
             })
+    }
+
+    private fun overrideConfigurationIfIgnoredPathExist(expected: Html) {
+        expected.attr(IGNORED_PATHS)?.let { attr ->
+            cfg = cfg.whenIgnoringPaths(*attr.split(";").filter { it.isNotEmpty() }.toTypedArray())
+        }
     }
 
     override fun execute(commandCall: CommandCall, evaluator: Evaluator, resultRecorder: ResultRecorder) {

@@ -85,4 +85,30 @@
             </e:case>
         </e:get>
     </e:example>
+    <e:example name="Ignore json paths" print="true">
+        <span>ignored JSON paths should be placed in "expected" at "ignoredPaths" attribute separated by ";". </span>
+        <e:get url="ignoreJson">
+            <e:case desc="JSON nodes can be ignored">
+                <expected ignoredPaths="param2;arr[*].param4">
+                    {
+                      "param1":"value1",
+                      "arr":[
+                      {"param3":"value3"},
+                      {"param3":"value3"}
+                      ]
+                    }
+                </expected>
+            </e:case>
+        </e:get>
+        <e:get url="ignoreJsonArray">
+            <e:case desc="JSON nodes in array can be ignored">
+                <expected ignoredPaths="[*].param4">
+                    [
+                      {"param3":"value3"},
+                      {"param3":"value3"}
+                    ]
+                </expected>
+            </e:case>
+         </e:get>
+    </e:example>    
 </div>
