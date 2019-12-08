@@ -51,13 +51,14 @@ open class Specs {
             FlPlugin(),
             MqPlugin(
                 mapOf("myQueue" to object : MqTesterAdapter() {
-                    private val queue = ArrayDeque<String>()
+                    private val queue = ArrayDeque<Pair<Map<String, Any>, String>>()
 
-                    override fun send(message: String) {
-                        queue.add(message)
+                    override fun send(message: String, headers: Map<String, Any>) {
+                        queue.add(headers to message)
                     }
 
-                    override fun receive(): String = queue.poll() ?: ""
+                    override fun receiveWithHeaders(): Pair<Map<String, Any>, String> =
+                            queue.poll() ?: emptyMap<String, Any>() to ""
                 })
             ),
             UiPlugin(screenshotsOnFail = true, screenshotsOnSuccess = false)
