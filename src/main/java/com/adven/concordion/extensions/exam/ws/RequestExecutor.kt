@@ -94,9 +94,9 @@ class RequestExecutor private constructor() {
         }
 
         response = when (method) {
-            PUT -> request.put(url)
+            PUT -> request.put(requestUrlWithParams())
             GET -> request.get(requestUrlWithParams())
-            POST -> request.post(url)
+            POST -> request.post(requestUrlWithParams())
             PATCH -> request.patch(url)
             DELETE -> request.delete(requestUrlWithParams())
             else -> throw UnsupportedOperationException(method.name)

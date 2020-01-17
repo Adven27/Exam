@@ -69,4 +69,25 @@
             </e:case>
         </e:post>
     </e:example>
+    <e:example name="POST with url params" print="true">
+        <e:post url="/method/withParams">
+            <e:case desc="POST can send parameters in url" urlParams="param1=1&amp;param2=2">
+                <body>
+                    {
+                      "bodyValue": 111
+                    }
+                </body>
+                <expected>
+                    {
+                      "request": {
+                        "POST": "/method/withParams?param1=1&amp;param2=2"
+                      },
+                      "body": {
+                        "bodyValue": 111
+                      }
+                    }
+                </expected>
+            </e:case>
+        </e:post>
+    </e:example>
 </div>

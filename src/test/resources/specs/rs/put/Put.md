@@ -69,4 +69,25 @@
             </e:case>
         </e:put>
     </e:example>
+    <e:example name="PUT with url params" print="true">
+        <e:put url="/method/withParams">
+            <e:case desc="PUT can send parameters in url" urlParams="param1=1&amp;param2=2">
+                <body>
+                    {
+                      "bodyValue": 111
+                    }
+                </body>
+                <expected>
+                    {
+                      "request": {
+                        "PUT": "/method/withParams?param1=1&amp;param2=2"
+                      },
+                      "body": {
+                        "bodyValue": 111
+                      }
+                    }
+                </expected>
+            </e:case>
+        </e:put>
+    </e:example>
 </div>

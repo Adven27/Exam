@@ -124,12 +124,15 @@ open class Specs {
                             aResponse().withBody("[{\"param3\":\"value3\", \"param4\":\"value4\"}, {\"param3\":\"value3\", \"param4\":\"value4\"}]")
                     )
                 )
+                stubFor(any(urlPathEqualTo("/method/withParams")).atPriority(1).willReturn(
+                        aResponse().withBody(" { \"request\" : $method, \"body\": $req }")
+                )
+                )
                 stubFor(
                     any(urlPathEqualTo("/status/400")).atPriority(2).willReturn(
                         method status 400
                     )
                 )
-
                 stubFor(
                     post(anyUrl()).withCookie("cook", matching(".*")).atPriority(3).willReturn(
                         cookie status 200
