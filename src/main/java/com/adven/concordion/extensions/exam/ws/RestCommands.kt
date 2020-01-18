@@ -15,6 +15,7 @@ import org.concordion.api.Evaluator
 import org.concordion.api.ResultRecorder
 import org.concordion.internal.util.Check
 import org.xmlunit.diff.NodeMatcher
+import java.nio.charset.Charset
 import java.util.*
 
 private const val HEADERS = "headers"
@@ -26,6 +27,10 @@ private const val COOKIES = "cookies"
 private const val VARIABLES = "vars"
 private const val VALUES = "vals"
 private const val BODY = "body"
+private const val MULTI_PART = "multiPart"
+private const val PART = "part"
+private const val PART_NAME = "name"
+private const val FILE_NAME = "fileName"
 private const val EXPECTED = "expected"
 private const val WHERE = "where"
 private const val CASE = "case"
@@ -176,9 +181,10 @@ class CaseCommand(tag: String, private var cfg: Configuration, private val nodeM
         }
 
         val body = caseRoot.first(BODY)
+        val multiPart = caseRoot.first(MULTI_PART)
         val expected = caseRoot.firstOrThrow(EXPECTED)
         overrideConfigurationIfIgnoredPathExist(expected)
-        caseRoot.remove(body, expected)(
+        caseRoot.remove(body, expected, multiPart)(
             cases.map {
                 val expectedToAdd = tag(EXPECTED).text(expected.text())
                 expected.attr(PROTOCOL)?.let { expectedToAdd.attrs(PROTOCOL to it) }
@@ -191,6 +197,20 @@ class CaseCommand(tag: String, private var cfg: Configuration, private val nodeM
                     else tag(BODY).text(body.text()).apply {
                         body.attr(FROM)?.let { this.attrs(FROM to it) }
                     },
+                    if (multiPart == null)
+                        null
+                    else {
+                        val multiPartArray = multiPart.all(PART).map {
+                            tag(PART).text(it.text()).apply {
+                                it.attr(NAME)?.let { this.attrs(NAME to it) }
+                                it.attr(TYPE)?.let { this.attrs(TYPE to it) }
+                                it.attr(FILE_NAME)?.let { this.attrs(FILE_NAME to it) }
+                                it.attr(FROM)?.let { this.attrs(FROM to it) }
+                            }
+                        }.toTypedArray()
+                        tag(MULTI_PART)(*multiPartArray)
+                    }
+                    ,
                     expectedToAdd
                 )
             })
@@ -234,6 +254,7 @@ class CaseCommand(tag: String, private var cfg: Configuration, private val nodeM
                 }
                 executor.body(bodyStr)
             }
+            processMultipart(caseTR, evaluator, executor)
 
             val expected = caseTR.firstOrThrow(EXPECTED)
             val expectedStatus = expectedStatus(expected)
@@ -249,6 +270,39 @@ class CaseCommand(tag: String, private var cfg: Configuration, private val nodeM
             resultRecorder.check(statusTd, executor.statusLine(), expectedStatus) { a, e ->
                 a.trim() == e.trim()
             }
+        }
+    }
+
+    private fun processMultipart(caseTR: Html, evaluator: Evaluator, executor: RequestExecutor) {
+        val multiPart = caseTR.first(MULTI_PART)
+        if (multiPart != null) {
+            val table = table()
+            multiPart.all(PART).forEach {
+                val mpType = it.takeAwayAttr(TYPE)
+                val name = it.takeAwayAttr(PART_NAME)
+                val fileName = it.takeAwayAttr(FILE_NAME)
+                val content = it.content(evaluator)
+
+                table(tr()(td()(badge("Part", "light")), td()(
+                        name?.let { badge(name.toString(), "warning") },
+                        mpType?.let { badge(mpType.toString(), "info") },
+                        fileName?.let { code(fileName.toString()) })))
+                val mpStr: String
+                if (executor.xml(mpType.toString())) {
+                    mpStr = evaluator.resolveXml(content)
+                    table(tr()(td()(badge("Content", "dark")), td(mpStr.prettyXml()).css("xml").style(MAX_WIDTH)))
+                } else {
+                    mpStr = evaluator.resolveJson(content)
+                    table(tr()(td()(badge("Content", "dark")), td(mpStr.prettyJson()).css("json").style(MAX_WIDTH)))
+                }
+                if (mpType == null)
+                    executor.multiPart(name.toString(), fileName.toString(), mpStr.toByteArray(Charset.forName("UTF-8")))
+                else
+                    executor.multiPart(name.toString(), mpType.toString(), mpStr)
+
+            }
+            multiPart.removeChildren()
+            td().insteadOf(multiPart)(table)
         }
     }
 

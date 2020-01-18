@@ -10,6 +10,7 @@ class RequestExecutor private constructor() {
     private lateinit var method: Method
     private lateinit var url: String
     private lateinit var response: Response
+    private var multiPart: MutableList<MultiPart> = ArrayList()
     private var body: String? = null
     private var type: String? = null
     private val headers = HashMap<String, String>()
@@ -53,12 +54,18 @@ class RequestExecutor private constructor() {
         return this
     }
 
+    fun multiPart(name: String, fileName: String, value: Any): RequestExecutor {
+        this.multiPart.add(MultiPart(name, value, fileName))
+        return this
+    }
+
     fun cookies(cookies: String?): RequestExecutor {
         this.cookies = cookies
         return this
     }
 
     fun xml() = type?.contains("xml", true) ?: false
+    fun xml(type: String) = type.contains("xml", true)
 
     fun responseHeader(attributeValue: String) = response.getHeader(attributeValue)
 
@@ -81,6 +88,13 @@ class RequestExecutor private constructor() {
         request.headers(headers)
 
         body?.let { request.body(it) }
+        multiPart.forEach {
+            if (it.value is ByteArray) {
+                request.multiPart(it.name, it.type, it.value)
+            } else {
+                request.multiPart(it.name, it.value, it.type)
+            }
+        }
         type?.let { request.contentType(it) }
         cookies?.let {
             request.cookies(
@@ -118,3 +132,9 @@ class RequestExecutor private constructor() {
         }
     }
 }
+
+class MultiPart(
+        val name: String,
+        val value: Any,
+        val type: String? = null //for file used as name
+)
