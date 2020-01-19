@@ -1,0 +1,42 @@
+<html xmlns:e="http://exam.extension.io">
+<body>
+<h1> Multipart testing</h1>
+<div>
+    <e:summary/>
+    <e:given>Given server, that mirrors request</e:given>
+    <e:given>
+        Multipart request may contains one or more parts with specified content-type<br/>
+        For file part content-type is should be not specified
+    </e:given>
+    <e:example name="Multipart cases">
+        <e:post url="multipart/url" print="true" contentType="multipart/form-data">
+            <e:case desc="">
+                <e:multiPart>
+                    <e:part name="file" fileName="test.txt">
+                        test-part
+                    </e:part>
+                    <e:part name="jsonPart" contentType="application/json">
+                        {
+                        "test": "{{name}}"
+                        }
+                    </e:part>
+                </e:multiPart>
+                <e:expected>
+                    {
+                    "part1": "file",
+                    "fileName": "test.txt",
+                    "part1": "jsonPart",
+                    "json": {
+                        "test": "{{name}}"
+                        }
+                    }
+                </e:expected>
+                <e:where vars="name">
+                    <e:vals>ignored</e:vals>
+                </e:where>
+            </e:case>
+        </e:post>
+    </e:example>
+</div>
+</body>
+</html>
