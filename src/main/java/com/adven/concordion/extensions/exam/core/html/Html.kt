@@ -168,6 +168,10 @@ class Html(internal val el: Element) {
         return if (first == null) null else Html(first)
     }
 
+    fun all(tag: String): Collection<Html> {
+        return el.childElements.asList().filter {  it.localName == tag }.map { Html(it) }
+    }
+
     fun firstOrThrow(tag: String) = first(tag) ?: throw IllegalStateException("<$tag> tag is required")
 
     fun removeChildren(): Html {

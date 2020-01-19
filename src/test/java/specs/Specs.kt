@@ -126,8 +126,15 @@ open class Specs {
                 )
                 stubFor(any(urlPathEqualTo("/method/withParams")).atPriority(1).willReturn(
                         aResponse().withBody(" { \"request\" : $method, \"body\": $req }")
-                )
-                )
+                ))
+                stubFor(post(urlPathEqualTo("/multipart/url")).atPriority(1).willReturn(
+                    aResponse().withHeader("Content-Type", "application/json")
+                            .withBody("{ {{regexExtract request.body 'name=\"(.*?)\"' 'nameP'}} \"part1\": \"{{nameP.0}}\"," +
+                                    " {{regexExtract request.body 'filename=\"(.*?)\"' 'fileP' }} \"fileName\": \"{{fileP.0}}\"," +
+                                    " {{regexExtract request.body 'name=\"(jsonPart)\"' 'jsonP' }} \"part1\": \"{{jsonP.0}}\"," +
+                                    " {{regexExtract request.body '\"(.*?)\": \"(.*?)\"' 'jsonC' }}  \"json\": {\"{{jsonC.0}}\" :  \"{{jsonC.1}}\" }" +
+                                    "}")
+                ))
                 stubFor(
                     any(urlPathEqualTo("/status/400")).atPriority(2).willReturn(
                         method status 400
