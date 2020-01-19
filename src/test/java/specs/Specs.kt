@@ -124,6 +124,9 @@ open class Specs {
                             aResponse().withBody("[{\"param3\":\"value3\", \"param4\":\"value4\"}, {\"param3\":\"value3\", \"param4\":\"value4\"}]")
                     )
                 )
+                stubFor(any(urlPathEqualTo("/method/withParams")).atPriority(1).willReturn(
+                        aResponse().withBody(" { \"request\" : $method, \"body\": $req }")
+                ))
                 stubFor(post(urlPathEqualTo("/multipart/url")).atPriority(1).willReturn(
                     aResponse().withHeader("Content-Type", "application/json")
                             .withBody("{ {{regexExtract request.body 'name=\"(.*?)\"' 'nameP'}} \"part1\": \"{{nameP.0}}\"," +
@@ -137,7 +140,6 @@ open class Specs {
                         method status 400
                     )
                 )
-
                 stubFor(
                     post(anyUrl()).withCookie("cook", matching(".*")).atPriority(3).willReturn(
                         cookie status 200
