@@ -110,5 +110,21 @@
                 </expected>
             </e:case>
          </e:get>
-    </e:example>    
+    </e:example>  
+    <e:example name="Configure json compare mode" print="true">
+        <span>Specific configuration for json-unit should be placed in "expected" at "jsonUnitOptions" attribute separated by ";". </span>
+        <e:get url="ignoreJson">
+            <e:case desc="Extra fields can be ignored">
+                <expected jsonUnitOptions="IGNORING_EXTRA_FIELDS">
+                    {
+                      "param1":"value1",
+                      "arr":[
+                      {"param3":"value3"},
+                      {"param3":"value3"}
+                      ]
+                    }
+                </expected>
+            </e:case>
+        </e:get>
+    </e:example>
 </div>
