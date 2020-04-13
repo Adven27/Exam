@@ -1,27 +1,23 @@
-package specs.xj;
+package specs.xj
 
-import org.joda.time.LocalDate;
-import specs.Specs;
+import org.joda.time.LocalDate
+import specs.Specs
 
-public class Xj extends Specs {
-    private static final String NOW = LocalDate.now().toString("yyyy-MM-dd");
+class Xj : Specs() {
+    val actualJson: String
+        get() = """{"date" : "$NOW"}"""
 
-    public String getActualJson() {
-        return "{\"date\" : \"" + NOW + "\"}";
-    }
+    val actualXml: String
+        get() = "<date>$NOW</date>"
 
-    public String getActualXml() {
-        return "<date>" + NOW + "</date>";
-    }
+    val actualJsonWithFieldsToIgnore: String
+        get() = """{ 
+            |"param1":"1", 
+            |"extra":"ignore", 
+            |"arr": [{"param2":"2", "extra":"ignore"}, {"extra":"ignore", "param3":"3"}]
+            |}""".trimMargin()
 
-    public String getActualJsonWithFieldsToIgnore() {
-        return "{ " +
-            "\"param1\":\"value1\", " +
-            "\"param2\":\"ignore\", " +
-            "\"arr\": [" +
-            "{\"param3\":\"value3\", \"param4\":\"ignore\"}, " +
-            "{\"param3\":\"ignore\", \"param4\":\"value4\"}" +
-            "]" +
-            "}";
+    companion object {
+        private val NOW = LocalDate.now().toString("yyyy-MM-dd")
     }
 }

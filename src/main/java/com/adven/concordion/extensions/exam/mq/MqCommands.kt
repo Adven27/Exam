@@ -9,6 +9,8 @@ import com.adven.concordion.extensions.exam.core.utils.prettyJson
 import com.adven.concordion.extensions.exam.ws.RestResultRenderer
 import net.javacrumbs.jsonunit.JsonAssert
 import net.javacrumbs.jsonunit.core.Configuration
+import net.javacrumbs.jsonunit.core.Option
+import net.javacrumbs.jsonunit.core.internal.Options
 import org.awaitility.Awaitility
 import org.concordion.api.CommandCall
 import org.concordion.api.Evaluator
@@ -39,13 +41,17 @@ open class MqTesterAdapter : MqTester {
 class MqCheckCommand(
     name: String,
     tag: String,
-    private val cfg: Configuration,
+    private val originalCfg: Configuration,
     private val mqTesters: Map<String, MqTester>
 ) :
     ExamVerifyCommand(name, tag, RestResultRenderer()) {
 
+    private lateinit var usedCfg: Configuration
+
     override fun verify(cmd: CommandCall, eval: Evaluator, resultRecorder: ResultRecorder) {
         val root = cmd.html()
+        usedCfg = originalCfg;
+        root.attr("jsonUnitOptions")?.let { attr -> overrideJsonUnitOption(attr) }
         val mqName = root.takeAwayAttr("name")
         lateinit var actualBody: String
         val expectedBody = eval.resolveJson(root.content(eval).trim())
@@ -76,7 +82,7 @@ class MqCheckCommand(
                         val (actualHeaders, receivedBody) = mqTesters.getOrFail(mqName).receiveWithHeaders()
                         actualBody = receivedBody
                         Assert.assertEquals(actualHeaders, expectedHeaders)
-                        JsonAssert.assertJsonEquals(expectedBody, actualBody, cfg)
+                        JsonAssert.assertJsonEquals(expectedBody, actualBody, usedCfg)
                     }
                 resultRecorder.pass(container)
             } catch (e: Exception) {
@@ -97,7 +103,7 @@ class MqCheckCommand(
 
     private fun checkJsonContent(actual: String, expected: String, resultRecorder: ResultRecorder, root: Html) {
         try {
-            JsonAssert.assertJsonEquals(expected, actual, cfg)
+            JsonAssert.assertJsonEquals(expected, actual, usedCfg)
             resultRecorder.pass(root)
         } catch (e: Throwable) {
             if (e is AssertionError || e is Exception) {
@@ -107,6 +113,14 @@ class MqCheckCommand(
                 )
             } else throw e
         }
+    }
+
+    private fun overrideJsonUnitOption(attr: String) {
+        val first = usedCfg.options.values().first()
+        val other = usedCfg.options.values();
+        other.remove(first);
+        other.addAll(attr.split(";").filter { it.isNotEmpty() }.map { Option.valueOf(it) }.toSet())
+        usedCfg = usedCfg.withOptions(Options(first, *other.toTypedArray()))
     }
 }
 

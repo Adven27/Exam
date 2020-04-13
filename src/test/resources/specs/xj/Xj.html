@@ -17,16 +17,19 @@
 </e:example>
 <p>Specific configuration for json-unit may be passed through "jsonUnitOptions" attribute separated by ";". </p>
 <e:example name="Configure json compare mode" print="true">
-    <span>Given actual json</span>
-    <pre class="json" cc:echo="actualJsonWithFieldsToIgnore"/>
-    <p>When <code>jsonUnitOptions="IGNORING_EXTRA_FIELDS"</code> is used</p>
-    <p>Then check is passed</p>
-    <e:json-check actual="actualJsonWithFieldsToIgnore" jsonUnitOptions="IGNORING_EXTRA_FIELDS">
-        {
-        "param1":"value1",
-        "arr":[ {"param3":"value3"}, {"param4":"value4"} ]
-        }
-    </e:json-check>
+    <e:given>
+        Given actual json
+        <pre class="json" cc:echo="actualJsonWithFieldsToIgnore"/>
+    </e:given>
+    <e:when>
+        When <code>jsonUnitOptions="IGNORING_EXTRA_FIELDS"</code> is used
+    </e:when>
+    <e:then>
+        Then check is passed
+        <e:json-check actual="actualJsonWithFieldsToIgnore" jsonUnitOptions="IGNORING_EXTRA_FIELDS">
+            { "param1":"1", "arr":[ {"param2":"2"}, {"param3":"3"} ] }
+        </e:json-check>
+    </e:then>
 </e:example>
 </body>
 </html>

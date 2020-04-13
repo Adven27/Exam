@@ -78,6 +78,14 @@
             <xs:extension base="xs:string">
                 <xs:attribute type="xs:string" name="actual" use="required" default="variable"/>
                 <xs:attribute type="xs:anyURI" name="from" default="/data"/>
+                <xs:attribute type="xs:string" name="jsonUnitOptions" default="IGNORING_EXTRA_FIELDS;TREATING_NULL_AS_ABSENT">
+                    <xs:annotation>
+                        <xs:documentation>
+                            With Options you can configure different compare modes
+                            <a href="https://github.com/lukas-krecan/JsonUnit#options">Read more...</a>
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
             </xs:extension>
         </xs:simpleContent>
     </xs:complexType>
@@ -200,6 +208,14 @@
                 <xs:attribute type="xs:integer" name="awaitPollDelayMillis" default="0"/>
                 <xs:attribute type="xs:integer" name="awaitPollIntervalMillis" default="1000"/>
                 <xs:attribute type="xs:string" name="headers" default="__TypeId__=String,contentEncoding=UTF-8"/>
+                <xs:attribute type="xs:string" name="jsonUnitOptions" default="IGNORING_EXTRA_FIELDS;TREATING_NULL_AS_ABSENT">
+                    <xs:annotation>
+                        <xs:documentation>
+                            With Options you can configure different compare modes
+                            <a href="https://github.com/lukas-krecan/JsonUnit#options">Read more...</a>
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
             </xs:extension>
         </xs:simpleContent>
     </xs:complexType>
@@ -243,7 +259,7 @@
                         </xs:documentation>
                     </xs:annotation>
                 </xs:attribute>
-                <xs:attribute type="xs:string" name="jsonUnitOptions" default="Option1;Option2">
+                <xs:attribute type="xs:string" name="jsonUnitOptions" default="IGNORING_EXTRA_FIELDS;TREATING_NULL_AS_ABSENT">
                     <xs:annotation>
                         <xs:documentation>
                             With Options you can configure different compare modes
