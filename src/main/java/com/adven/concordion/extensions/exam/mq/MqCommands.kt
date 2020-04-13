@@ -3,6 +3,7 @@ package com.adven.concordion.extensions.exam.mq
 import com.adven.concordion.extensions.exam.core.commands.ExamCommand
 import com.adven.concordion.extensions.exam.core.commands.ExamVerifyCommand
 import com.adven.concordion.extensions.exam.core.html.*
+import com.adven.concordion.extensions.exam.core.resolve
 import com.adven.concordion.extensions.exam.core.resolveJson
 import com.adven.concordion.extensions.exam.core.utils.content
 import com.adven.concordion.extensions.exam.core.utils.prettyJson
@@ -21,20 +22,18 @@ import java.util.concurrent.TimeUnit
 interface MqTester {
     fun start()
     fun stop()
-    @Deprecated("should use send with headers")
-    fun send(message: String)
-    fun send(message:String, headers: Map<String, Any>) = send(message)
-    @Deprecated("should use receive with headers")
-    fun receive(): String
-    fun receiveWithHeaders(): Pair<Map<String, Any>, String> = emptyMap<String, Any>() to receive()
+    fun send(message: String, headers: Map<String, String>)
+    fun receive(): Message
     fun purge()
+
+    data class Message @JvmOverloads constructor(val body: String = "", val headers: Map<String, String> = emptyMap())
 }
 
 open class MqTesterAdapter : MqTester {
     override fun start() = Unit
     override fun stop() = Unit
-    override fun send(message: String) = Unit
-    override fun receive(): String = ""
+    override fun send(message: String, headers: Map<String, String>) = Unit
+    override fun receive(): MqTester.Message = MqTester.Message()
     override fun purge() = Unit
 }
 
@@ -55,7 +54,7 @@ class MqCheckCommand(
         val mqName = root.takeAwayAttr("name")
         lateinit var actualBody: String
         val expectedBody = eval.resolveJson(root.content(eval).trim())
-        val expectedHeaders = headers(root)
+        val expectedHeaders = headers(root, eval)
         val container = pre(expectedBody).css("json").attr("autoFormat", "true")
         val atMostSec = root.takeAwayAttr("awaitAtMostSec")
         val pollDelay = root.takeAwayAttr("awaitPollDelayMillis")
@@ -63,8 +62,8 @@ class MqCheckCommand(
         root.removeChildren()(
             tableSlim()(
                 caption(mqName)(italic("", CLASS to "fa fa-envelope-open fa-pull-left fa-border")),
-                    caption("Headers: ${expectedHeaders.entries.joinToString()}")(italic("", CLASS to "fa fa-border")),
-                    trWithTDs(
+                caption("Headers: ${expectedHeaders.entries.joinToString()}")(italic("", CLASS to "fa fa-border")),
+                trWithTDs(
                     container
                 )
             )
@@ -79,9 +78,9 @@ class MqCheckCommand(
                     .pollDelay(delay, TimeUnit.MILLISECONDS)
                     .pollInterval(interval, TimeUnit.MILLISECONDS)
                     .untilAsserted {
-                        val (actualHeaders, receivedBody) = mqTesters.getOrFail(mqName).receiveWithHeaders()
-                        actualBody = receivedBody
-                        Assert.assertEquals(actualHeaders, expectedHeaders)
+                        val message = mqTesters.getOrFail(mqName).receive()
+                        actualBody = message.body
+                        Assert.assertEquals(message.headers, expectedHeaders)
                         JsonAssert.assertJsonEquals(expectedBody, actualBody, usedCfg)
                     }
                 resultRecorder.pass(container)
@@ -95,9 +94,9 @@ class MqCheckCommand(
                 )
             }
         } else {
-            val (actualHeaders, receivedBody) = mqTesters.getOrFail(mqName).receiveWithHeaders()
-            Assert.assertEquals(actualHeaders, expectedHeaders)
-            checkJsonContent(receivedBody, expectedBody, resultRecorder, container)
+            val message = mqTesters.getOrFail(mqName).receive()
+            Assert.assertEquals(message.headers, expectedHeaders)
+            checkJsonContent(message.body, expectedBody, resultRecorder, container)
         }
     }
 
@@ -125,12 +124,12 @@ class MqCheckCommand(
 }
 
 class MqSendCommand(name: String, tag: String, private val mqTesters: Map<String, MqTester>) : ExamCommand(name, tag) {
-    override fun execute(commandCall: CommandCall, evaluator: Evaluator, resultRecorder: ResultRecorder) {
-        super.execute(commandCall, evaluator, resultRecorder)
+    override fun execute(commandCall: CommandCall, eval: Evaluator, resultRecorder: ResultRecorder) {
+        super.execute(commandCall, eval, resultRecorder)
         val root = commandCall.html()
         val mqName = root.takeAwayAttr("name")
-        val headers = headers(root)
-        val message = evaluator.resolveJson(root.content(evaluator).trim())
+        val headers = headers(root, eval)
+        val message = eval.resolveJson(root.content(eval).trim())
         root.removeChildren()(
             tableSlim()(
                 caption(mqName)(italic("", CLASS to "fa fa-envelope fa-pull-left fa-border")),
@@ -145,12 +144,12 @@ class MqSendCommand(name: String, tag: String, private val mqTesters: Map<String
 
 }
 
-private fun headers(root: Html): Map<String, Any> {
+private fun headers(root: Html, eval: Evaluator): Map<String, String> {
     return root.takeAwayAttr("headers")
-            ?.split(',')
-            ?.map { it.split('=')[0] to it.split('=')[1] }
-            ?.toMap()
-            ?: emptyMap()
+        ?.split(',')
+        ?.map { it.split('=')[0] to eval.resolve(it.split('=')[1]) }
+        ?.toMap()
+        ?: emptyMap()
 }
 
 private fun Map<String, MqTester>.getOrFail(mqName: String?): MqTester = this[mqName]

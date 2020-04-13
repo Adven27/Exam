@@ -5,6 +5,7 @@ import com.adven.concordion.extensions.exam.db.DbPlugin
 import com.adven.concordion.extensions.exam.db.DbTester
 import com.adven.concordion.extensions.exam.files.FlPlugin
 import com.adven.concordion.extensions.exam.mq.MqPlugin
+import com.adven.concordion.extensions.exam.mq.MqTester
 import com.adven.concordion.extensions.exam.mq.MqTesterAdapter
 import com.adven.concordion.extensions.exam.ui.UiPlugin
 import com.adven.concordion.extensions.exam.ws.WsPlugin
@@ -51,14 +52,13 @@ open class Specs {
             FlPlugin(),
             MqPlugin(
                 mapOf("myQueue" to object : MqTesterAdapter() {
-                    private val queue = ArrayDeque<Pair<Map<String, Any>, String>>()
+                    private val queue = ArrayDeque<MqTester.Message>()
 
-                    override fun send(message: String, headers: Map<String, Any>) {
-                        queue.add(headers to message)
+                    override fun send(message: String, headers: Map<String, String>) {
+                        queue.add(MqTester.Message(message, headers))
                     }
 
-                    override fun receiveWithHeaders(): Pair<Map<String, Any>, String> =
-                            queue.poll() ?: emptyMap<String, Any>() to ""
+                    override fun receive() = queue.poll() ?: MqTester.Message()
                 })
             ),
             UiPlugin(screenshotsOnFail = true, screenshotsOnSuccess = false)
@@ -115,25 +115,31 @@ open class Specs {
                 )
                 stubFor(
                     get(urlPathEqualTo("/ignoreJson")).atPriority(1).willReturn(
-                            aResponse().withBody("{ \"param1\":\"value1\", \"param2\":\"value2\", " +
-                                    "\"arr\": [{\"param3\":\"value3\", \"param4\":\"value4\"}, {\"param3\":\"value3\", \"param4\":\"value4\"}]}")
+                        aResponse().withBody("""{ 
+                            |"param1":"value1", 
+                            |"param2":"value2", 
+                            |"arr": [{"param3":"value3", "param4":"value4"}, {"param3":"value3", "param4":"value4"}]
+                            |}""".trimMargin())
                     )
                 )
                 stubFor(
                     get(urlPathEqualTo("/ignoreJsonArray")).atPriority(1).willReturn(
-                            aResponse().withBody("[{\"param3\":\"value3\", \"param4\":\"value4\"}, {\"param3\":\"value3\", \"param4\":\"value4\"}]")
+                        aResponse().withBody("""[
+                            |{"param3":"value3", "param4":"value4"}, 
+                            |{"param3":"value3", "param4":"value4"}
+                            |]""".trimMargin())
                     )
                 )
                 stubFor(any(urlPathEqualTo("/method/withParams")).atPriority(1).willReturn(
-                        aResponse().withBody(" { \"request\" : $method, \"body\": $req }")
+                    aResponse().withBody(""" { "request" : $method, "body": $req }""")
                 ))
                 stubFor(post(urlPathEqualTo("/multipart/url")).atPriority(1).willReturn(
                     aResponse().withHeader("Content-Type", "application/json")
-                            .withBody("{ {{regexExtract request.body 'name=\"(.*?)\"' 'nameP'}} \"part1\": \"{{nameP.0}}\"," +
-                                    " {{regexExtract request.body 'filename=\"(.*?)\"' 'fileP' }} \"fileName\": \"{{fileP.0}}\"," +
-                                    " {{regexExtract request.body 'name=\"(jsonPart)\"' 'jsonP' }} \"part1\": \"{{jsonP.0}}\"," +
-                                    " {{regexExtract request.body '\"(.*?)\": \"(.*?)\"' 'jsonC' }}  \"json\": {\"{{jsonC.0}}\" :  \"{{jsonC.1}}\" }" +
-                                    "}")
+                        .withBody("{ {{regexExtract request.body 'name=\"(.*?)\"' 'nameP'}} \"part1\": \"{{nameP.0}}\"," +
+                            " {{regexExtract request.body 'filename=\"(.*?)\"' 'fileP' }} \"fileName\": \"{{fileP.0}}\"," +
+                            " {{regexExtract request.body 'name=\"(jsonPart)\"' 'jsonP' }} \"part1\": \"{{jsonP.0}}\"," +
+                            " {{regexExtract request.body '\"(.*?)\": \"(.*?)\"' 'jsonC' }} \"json\": {\"{{jsonC.0}}\" : \"{{jsonC.1}}\" }" +
+                            "}")
                 ))
                 stubFor(
                     any(urlPathEqualTo("/status/400")).atPriority(2).willReturn(
