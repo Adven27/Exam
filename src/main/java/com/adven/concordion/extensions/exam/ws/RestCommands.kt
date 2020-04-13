@@ -165,8 +165,9 @@ class CaseCheckCommand(name: String, tag: String) : ExamCommand(name, tag) {
     }
 }
 
-class CaseCommand(tag: String, private var cfg: Configuration, private val nodeMatcher: NodeMatcher) :
+class CaseCommand(tag: String, private var originalCfg: Configuration, private val nodeMatcher: NodeMatcher) :
     RestVerifyCommand(CASE, tag) {
+    private var usedCfg = originalCfg
     private val cases = ArrayList<Map<String, Any?>>()
     private var number = 0
 
@@ -186,7 +187,7 @@ class CaseCommand(tag: String, private var cfg: Configuration, private val nodeM
         val body = caseRoot.first(BODY)
         val multiPart = caseRoot.first(MULTI_PART)
         val expected = caseRoot.firstOrThrow(EXPECTED)
-        overrideConfigurationIfIgnoredPathExist(expected)
+        setUpJsonUnitConfiguration(expected)
         caseRoot.remove(body, expected, multiPart)(
             cases.map {
                 val expectedToAdd = tag(EXPECTED).text(expected.text())
@@ -219,19 +220,20 @@ class CaseCommand(tag: String, private var cfg: Configuration, private val nodeM
             })
     }
 
-    private fun overrideConfigurationIfIgnoredPathExist(expected: Html) {
+    private fun setUpJsonUnitConfiguration(expected: Html) {
+        usedCfg = originalCfg;
         expected.attr(IGNORED_PATHS)?.let { attr ->
-            cfg = cfg.whenIgnoringPaths(*attr.split(";").filter { it.isNotEmpty() }.toTypedArray())
+            usedCfg = usedCfg.whenIgnoringPaths(*attr.split(";").filter { it.isNotEmpty() }.toTypedArray())
         }
         expected.attr(JSON_UNIT_OPTIONS)?.let { attr -> overrideJsonUnitOption(attr) }
     }
 
     private fun overrideJsonUnitOption(attr: String) {
-        val first = cfg.options.values().first()
-        val other = cfg.options.values();
+        val first = usedCfg.options.values().first()
+        val other = usedCfg.options.values();
         other.remove(first);
         other.addAll(attr.split(";").filter { it.isNotEmpty() }.map { Option.valueOf(it) }.toSet())
-        cfg = cfg.withOptions(Options(first, *other.toTypedArray()))
+        usedCfg = usedCfg.withOptions(Options(first, *other.toTypedArray()))
     }
 
     override fun execute(commandCall: CommandCall, evaluator: Evaluator, resultRecorder: ResultRecorder) {
@@ -321,7 +323,7 @@ class CaseCommand(tag: String, private var cfg: Configuration, private val nodeM
     private fun checkJsonContent(actual: String, expected: String, resultRecorder: ResultRecorder, root: Html) {
         val prettyActual = actual.prettyJson()
         try {
-            assertJsonEquals(expected, prettyActual, cfg)
+            assertJsonEquals(expected, prettyActual, usedCfg)
             resultRecorder.pass(root)
         } catch (e: Throwable) {
             if (e is AssertionError || e is Exception) {
@@ -337,7 +339,7 @@ class CaseCommand(tag: String, private var cfg: Configuration, private val nodeM
         val prettyActual = actual.prettyXml()
         try {
             resultRecorder.check(root, prettyActual, expected) { a, e ->
-                a.equalToXml(e, nodeMatcher, cfg)
+                a.equalToXml(e, nodeMatcher, usedCfg)
             }
         } catch (e: Exception) {
             resultRecorder.failure(root, prettyActual, expected)
