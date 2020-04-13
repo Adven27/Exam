@@ -13,4 +13,15 @@ public class Xj extends Specs {
     public String getActualXml() {
         return "<date>" + NOW + "</date>";
     }
+
+    public String getActualJsonWithFieldsToIgnore() {
+        return "{ " +
+            "\"param1\":\"value1\", " +
+            "\"param2\":\"ignore\", " +
+            "\"arr\": [" +
+            "{\"param3\":\"value3\", \"param4\":\"ignore\"}, " +
+            "{\"param3\":\"ignore\", \"param4\":\"value4\"}" +
+            "]" +
+            "}";
+    }
 }

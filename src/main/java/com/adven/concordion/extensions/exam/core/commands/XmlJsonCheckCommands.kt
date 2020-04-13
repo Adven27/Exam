@@ -10,6 +10,8 @@ import com.adven.concordion.extensions.exam.core.utils.prettyXml
 import com.adven.concordion.extensions.exam.ws.RestResultRenderer
 import net.javacrumbs.jsonunit.JsonAssert
 import net.javacrumbs.jsonunit.core.Configuration
+import net.javacrumbs.jsonunit.core.Option
+import net.javacrumbs.jsonunit.core.internal.Options
 import org.concordion.api.CommandCall
 import org.concordion.api.Evaluator
 import org.concordion.api.ResultRecorder
@@ -47,11 +49,15 @@ class XmlCheckCommand(name: String, tag: String, private val cfg: Configuration,
     }
 }
 
-class JsonCheckCommand(name: String, tag: String, private val cfg: Configuration) :
+class JsonCheckCommand(name: String, tag: String, private val originalCfg: Configuration) :
     ExamVerifyCommand(name, tag, RestResultRenderer()) {
+
+    private lateinit var usedCfg: Configuration
 
     override fun verify(cmd: CommandCall, eval: Evaluator, resultRecorder: ResultRecorder) {
         val root = cmd.html()
+        usedCfg = originalCfg
+        root.attr("jsonUnitOptions")?.let { attr -> overrideJsonUnitOption(attr) }
         val actual = eval.evaluate(root.attr("actual")).toString().prettyJson()
         val expected = eval.resolveJson(root.content(eval).trim()).prettyJson()
         val container = pre(expected).css("json")
@@ -65,9 +71,17 @@ class JsonCheckCommand(name: String, tag: String, private val cfg: Configuration
         checkJsonContent(actual, expected, resultRecorder, container)
     }
 
+    private fun overrideJsonUnitOption(attr: String) {
+        val first = usedCfg.options.values().first()
+        val other = usedCfg.options.values();
+        other.remove(first);
+        other.addAll(attr.split(";").filter { it.isNotEmpty() }.map { Option.valueOf(it) }.toSet())
+        usedCfg = usedCfg.withOptions(Options(first, *other.toTypedArray()))
+    }
+
     private fun checkJsonContent(actual: String, expected: String, resultRecorder: ResultRecorder, root: Html) {
         try {
-            JsonAssert.assertJsonEquals(expected, actual, cfg)
+            JsonAssert.assertJsonEquals(expected, actual, usedCfg)
             resultRecorder.pass(root)
         } catch (e: Throwable) {
             if (e is AssertionError || e is Exception) {
