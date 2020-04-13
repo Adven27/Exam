@@ -1,4 +1,4 @@
-<html xmlns:e="http://exam.extension.io">
+<html xmlns:e="http://exam.extension.io" xmlns:cc="http://www.concordion.org/2007/concordion">
 <body>
 <e:summary/>
 <e:example name="Success" print="true">
@@ -13,6 +13,22 @@
     <e:then>
         <e:json-check actual="actualJson">{"date" : "1"}</e:json-check>
         <e:xml-check actual="actualXml"><![CDATA[<date>1</date>]]></e:xml-check>
+    </e:then>
+</e:example>
+<p>Specific configuration for json-unit may be passed through "jsonUnitOptions" attribute separated by ";". </p>
+<e:example name="Configure json compare mode" print="true">
+    <e:given>
+        Given actual json
+        <pre class="json" cc:echo="actualJsonWithFieldsToIgnore"/>
+    </e:given>
+    <e:when>
+        When <code>jsonUnitOptions="IGNORING_EXTRA_FIELDS"</code> is used
+    </e:when>
+    <e:then>
+        Then check is passed
+        <e:json-check actual="actualJsonWithFieldsToIgnore" jsonUnitOptions="IGNORING_EXTRA_FIELDS">
+            { "param1":"1", "arr":[ {"param2":"2"}, {"param3":"3"} ] }
+        </e:json-check>
     </e:then>
 </e:example>
 </body>

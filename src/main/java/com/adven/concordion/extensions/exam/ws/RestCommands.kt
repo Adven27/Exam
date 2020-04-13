@@ -10,6 +10,8 @@ import com.adven.concordion.extensions.exam.ws.RequestExecutor.Companion.fromEva
 import io.restassured.http.Method
 import net.javacrumbs.jsonunit.JsonAssert.assertJsonEquals
 import net.javacrumbs.jsonunit.core.Configuration
+import net.javacrumbs.jsonunit.core.Option
+import net.javacrumbs.jsonunit.core.internal.Options
 import org.concordion.api.CommandCall
 import org.concordion.api.Evaluator
 import org.concordion.api.ResultRecorder
@@ -35,6 +37,7 @@ private const val EXPECTED = "expected"
 private const val WHERE = "where"
 private const val CASE = "case"
 private const val IGNORED_PATHS = "ignoredPaths"
+private const val JSON_UNIT_OPTIONS = "jsonUnitOptions"
 private const val PROTOCOL = "protocol"
 private const val STATUS_CODE = "statusCode"
 private const val REASON_PHRASE = "reasonPhrase"
@@ -220,6 +223,15 @@ class CaseCommand(tag: String, private var cfg: Configuration, private val nodeM
         expected.attr(IGNORED_PATHS)?.let { attr ->
             cfg = cfg.whenIgnoringPaths(*attr.split(";").filter { it.isNotEmpty() }.toTypedArray())
         }
+        expected.attr(JSON_UNIT_OPTIONS)?.let { attr -> overrideJsonUnitOption(attr) }
+    }
+
+    private fun overrideJsonUnitOption(attr: String) {
+        val first = cfg.options.values().first()
+        val other = cfg.options.values();
+        other.remove(first);
+        other.addAll(attr.split(";").filter { it.isNotEmpty() }.map { Option.valueOf(it) }.toSet())
+        cfg = cfg.withOptions(Options(first, *other.toTypedArray()))
     }
 
     override fun execute(commandCall: CommandCall, evaluator: Evaluator, resultRecorder: ResultRecorder) {

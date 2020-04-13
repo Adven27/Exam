@@ -12,6 +12,20 @@
             {"date" : "{{now 'yyyy-MM-dd'}}"}
         </e:mq-check>
     </e:then>
+    <p>Specific configuration for json-unit may be passed through "jsonUnitOptions" attribute separated by ";". </p>
+    <e:when>
+        <e:mq-send name="myQueue">
+            { "param1":"1", "extra":"ignore", "arr": [{"param3":"3", "extra":"ignore"}, {"extra":"ignore", "param4":"4"}]}
+        </e:mq-send>
+    </e:when>
+    <e:then>
+        <e:mq-check name="myQueue" jsonUnitOptions="IGNORING_EXTRA_FIELDS">
+            {
+            "param1": "1",
+            "arr": [{ "param3": "3" }, { "param4": "4"}]
+            }
+        </e:mq-check>
+    </e:then>
 </e:example>
 <e:example name="Send -> Get: failed" status="ExpectedToFail" print="true">
     <e:when>
