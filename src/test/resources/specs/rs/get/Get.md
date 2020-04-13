@@ -127,4 +127,20 @@
             </e:case>
         </e:get>
     </e:example>
+    <e:example name="Configure json compare mode (check)" print="true" status="ExpectedToFail">
+        <span>Specific configuration for json-unit should be not affect other examples </span>
+        <e:get url="ignoreJson">
+            <e:case desc="Extra fields produce error">
+                <expected >
+                    {
+                      "param1":"value1",
+                      "arr":[
+                      {"param3":"value3"},
+                      {"param3":"value3"}
+                      ]
+                    }
+                </expected>
+            </e:case>
+        </e:get>
+    </e:example>
 </div>
