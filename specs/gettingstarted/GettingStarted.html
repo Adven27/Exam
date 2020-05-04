@@ -1,0 +1,779 @@
+<?xml version="1.0" encoding="UTF-8"?><html xmlns:e="http://exam.extension.io" xmlns:cc="http://www.concordion.org/2007/concordion"><head><script type="text/javascript">/* Stack Trace Toggling */
+
+function getElementById(id) {
+  var element;
+
+  if (document.getElementById) { // standard
+    return document.getElementById(id);
+  } else if (document.all) { // old IE versions
+    return document.all[id];
+  } else if (document.layers) { // nn4
+    return document.layers[id];
+  }
+  alert("Sorry, but your web browser is not supported by Concordion.");
+}
+
+function isVisible(element) {
+  return element.style.display;
+}
+
+function makeVisible(element) {
+  element.style.display = "block";
+}
+
+function makeInvisible(element) {
+  element.style.display = "";
+}
+
+function toggleStackTrace(stackTraceNumber) {
+  var stackTrace = getElementById("stackTrace" + stackTraceNumber);
+  var stackTraceButton = getElementById("stackTraceButton" + stackTraceNumber);
+  if (isVisible(stackTrace)) {
+    makeInvisible(stackTrace);
+    stackTraceButton.value = "View Stack";
+  } else {
+    makeVisible(stackTrace);
+    stackTraceButton.value = "Hide Stack";
+  }
+}
+</script><style>* {
+  font-family: Arial;
+}
+body {
+  padding: 32px;  
+}
+pre {
+  padding: 6px 28px 6px 28px;
+  background-color: #E8EEF7;
+}
+pre, pre *, code, code *, kbd {
+  font-family: Courier New, Courier;
+  font-size: 10pt;
+}
+h1, h1 * {
+  font-size: 24pt;	
+}
+p, td, th, li, .breadcrumbs {
+  font-size: 10pt;
+}
+p, li {
+  line-height: 140%;
+  max-width: 720px;
+}
+table {
+  border-collapse: collapse;
+  empty-cells: show;
+  margin: 8px 0px 8px 0px;
+}
+th, td {
+  border: 1px solid black;
+  padding: 3px;
+}
+td {
+  background-color: white;
+  vertical-align: top;
+}
+th {
+  background-color: #C3D9FF;
+}
+li {
+  margin-top: 6px;
+  margin-bottom: 6px; 
+}
+
+.example, :not(th)[cc\:example] {
+  padding: 6px 16px 6px 16px;
+  border: 1px solid #C3D9FF;
+  margin: 6px 0px 28px 0px;
+  background-color: #F5F9FD;
+}
+.example h3, [cc\:example] h3 {
+  margin-top: 8px;
+  margin-bottom: 8px;
+  font-size: 12pt;
+}
+
+p.success {
+  padding: 2px;
+}
+.success, .success * {
+  background-color: #afa !important;
+}
+.success pre {
+  background-color: #bbffbb;
+}
+.failure, .failure * {
+  background-color: #ffb0b0;
+  padding: 1px;
+}
+.failure .expected {
+  text-decoration: line-through;
+  color: #bb5050;
+}
+.ignored, .ignored * {
+  background-color: #f0f0f0 !important;	
+}
+
+ins {
+  text-decoration: none;	
+}
+
+.exceptionMessage {
+  background-color: #fdd;
+  font-family: Courier New, Courier, Monospace;
+  font-size: 10pt;
+  display: block;
+  font-weight: normal;
+  padding: 4px;
+  text-decoration: none !important;
+}
+.stackTrace, .stackTrace * {
+  font-weight: normal;
+}
+.stackTrace {
+  display: none;
+  padding: 1px 4px 4px 4px;
+  background-color: #fdd;
+  border-top: 1px dotted black;
+}
+.stackTraceExceptionMessage {
+  display: block;
+  font-family: Courier New, Courier, Monospace;
+  font-size: 8pt;
+  white-space: wrap;
+  padding: 1px 0px 1px 0px;
+}
+.stackTraceEntry {
+  white-space: nowrap;
+  font-family: Courier New, Courier, Monospace;
+  display: block;
+  font-size: 8pt;
+  padding: 1px 0px 1px 32px;
+}
+.stackTraceButton {
+  font-size: 8pt;
+  margin: 2px 8px 2px 0px;
+  font-weight: normal;
+  font-family: Arial;
+}
+
+.special {
+  font-style: italic;
+}
+.missing, .missing * {
+  background-color: #ff9999;
+  color:#bb5050;
+  text-decoration: line-through;
+}
+.surplus, .surplus * {
+  background-color: #ff9999;
+}
+.footer {
+  text-align: right;
+  margin-top: 40px;
+  font-size: 8pt;
+  width: 100%;
+  color: #999;
+}
+.footer .testTime {
+  padding: 2px 10px 0px 0px;
+}
+
+.idea {
+  font-size: 9pt;
+  color: #888;
+  font-style: italic;	
+}
+.tight li {
+  margin-top: 1px;
+  margin-bottom: 1px; 
+}
+.commentary {
+  float: right;
+  width: 200px;
+  background-color: #ffffd0;
+  padding:8px;
+  border: 3px solid #eeeeb0;	 
+  margin: 10px 0px 10px 10px;	 
+}
+.commentary, .commentary * {
+  font-size: 8pt;
+}
+</style><meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<link type="text/css" rel="stylesheet" href="../../timingExtensionStyle.css" /><script type="text/javascript" src="../../timingExtensionToggle.js"></script><link type="text/css" rel="stylesheet" href="../../codemirror/codemirror.css" /><link type="text/css" rel="stylesheet" href="../../codemirror/merge.css" /><link type="text/css" rel="stylesheet" href="../../codemirror/enable-codemirror.css" /><script type="text/javascript" src="../../codemirror/codemirror.js"></script><script type="text/javascript" src="../../codemirror/javascript.js"></script><script type="text/javascript" src="../../codemirror/xml.js"></script><script type="text/javascript" src="../../codemirror/formatting.js"></script><script type="text/javascript" src="../../codemirror/diff_match_patch.js"></script><script type="text/javascript" src="../../codemirror/merge.js"></script><script type="text/javascript" src="../../codemirror/enable-codemirror.js"></script><script type="text/javascript" src="../../bootstrap/jquery-3.2.1.slim.min.js"></script><script type="text/javascript" src="../../bootstrap/popper.min.js"></script><script type="text/javascript" src="../../bootstrap/bootstrap.min.js"></script><script type="text/javascript" src="../../bootstrap/sidebar.js"></script><link type="text/css" rel="stylesheet" href="../../bootstrap/enable-bootstrap.css" /><link type="text/css" rel="stylesheet" href="../../bootstrap/bootstrap.min.css" /><link type="text/css" rel="stylesheet" href="../../bootstrap/callout.css" /><link type="text/css" rel="stylesheet" href="../../bootstrap/font-awesome.min.css" /><link type="text/css" rel="stylesheet" href="../../bootstrap/scrollToTop.css" /><script type="text/javascript" src="../../bootstrap/scrollToTop.js"></script></head><body><div id="toggle-button"><img id="toggle-on" src="../../timing-on.svg" height="24" width="24" style="display:none" /><img id="toggle-off" src="../../timing-off.svg" height="24" width="24" /></div><span class="breadcrumbs"><a href="../Specs.html">Exam - Concordion extension</a> &gt;</span>
+<h1>Getting started</h1>
+<div cmdId="8c49505b-f61f-4a87-9098-7835280a2fbf" e:summary="" class="pin"><h4>Summary<button type="button" class="btn btn-light btn-sm text-muted ml-1" data-toggle="collapse" data-target="#summary" aria-expanded="true" aria-controls="summary">collapse</button></h4><div id="summary" class="collapse show"><div class="list-group"><a class="list-group-item list-group-item-action" href="#Successful widget creation">Successful widget creation<small class="card-img-overlay m-1" style="padding:0; left:inherit;"><span class="badge badge-pill badge-light">2s 378ms</span><span class="badge badge-pill badge-success">14</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small><button type="button" class="btn btn-light btn-sm text-muted ml-1" data-toggle="collapse" data-target="#cdd499d2-8fa3-467e-9d40-4ca4f86363da" aria-expanded="true" aria-controls="cdd499d2-8fa3-467e-9d40-4ca4f86363da">cases</button></a><div id="cdd499d2-8fa3-467e-9d40-4ca4f86363da" class="collapse"><a href="#1) Successful creation" class="list-group-item list-group-item-action text-muted">1) Successful creation<i></i></a></div><a class="list-group-item list-group-item-action" href="#Validate creation">Validate creation<small class="card-img-overlay m-1" style="padding:0; left:inherit;"><span class="badge badge-pill badge-light">247ms</span><span class="badge badge-pill badge-success">9</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small><button type="button" class="btn btn-light btn-sm text-muted ml-1" data-toggle="collapse" data-target="#6ce9019f-675f-404f-8f45-e8599193a5a3" aria-expanded="true" aria-controls="6ce9019f-675f-404f-8f45-e8599193a5a3">cases</button></a><div id="6ce9019f-675f-404f-8f45-e8599193a5a3" class="collapse"><a href="#2) quantity is required" class="list-group-item list-group-item-action text-muted">2) quantity is required<i></i></a><a href="#3) name is required" class="list-group-item list-group-item-action text-muted">3) name is required<i></i></a><a href="#4) name should't be blank or more than 10 symbols" class="list-group-item list-group-item-action text-muted">4) name should't be blank or more than 10 symbols<i></i></a></div><a class="list-group-item list-group-item-action" href="#Validate creation - parametrized">Validate creation - parametrized<small class="card-img-overlay m-1" style="padding:0; left:inherit;"><span class="badge badge-pill badge-light">295ms</span><span class="badge badge-pill badge-success">9</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small><button type="button" class="btn btn-light btn-sm text-muted ml-1" data-toggle="collapse" data-target="#c7263cff-3a81-4f25-a734-1941cc45f0e1" aria-expanded="true" aria-controls="c7263cff-3a81-4f25-a734-1941cc45f0e1">cases</button></a><div id="c7263cff-3a81-4f25-a734-1941cc45f0e1" class="collapse"><a href="#5) Name and quantity validation" class="list-group-item list-group-item-action text-muted">5) Name and quantity validation<i></i></a></div><a class="list-group-item list-group-item-action" href="#Successful widget deletion">Successful widget deletion<small class="card-img-overlay m-1" style="padding:0; left:inherit;"><span class="badge badge-pill badge-light">298ms</span><span class="badge badge-pill badge-success">5</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small><button type="button" class="btn btn-light btn-sm text-muted ml-1" data-toggle="collapse" data-target="#471a2799-0486-4100-acdc-70a7e51b3e67" aria-expanded="true" aria-controls="471a2799-0486-4100-acdc-70a7e51b3e67">cases</button></a><div id="471a2799-0486-4100-acdc-70a7e51b3e67" class="collapse"><a href="#6) Successful deletion" class="list-group-item list-group-item-action text-muted">6) Successful deletion<i></i></a><a href="#7) Absent widget deletion" class="list-group-item list-group-item-action text-muted">7) Absent widget deletion<i></i></a></div><a class="list-group-item list-group-item-action" href="#Successful widget retrieving">Successful widget retrieving<small class="card-img-overlay m-1" style="padding:0; left:inherit;"><span class="badge badge-pill badge-light">96ms</span><span class="badge badge-pill badge-success"></span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger">2</span></small><button type="button" class="btn btn-light btn-sm text-muted ml-1" data-toggle="collapse" data-target="#a26fd1c4-b2b1-4977-986e-838a892c50a8" aria-expanded="true" aria-controls="a26fd1c4-b2b1-4977-986e-838a892c50a8">cases</button></a><div id="a26fd1c4-b2b1-4977-986e-838a892c50a8" class="collapse"><a href="#8) Can retrieve stored widgets" class="list-group-item list-group-item-action text-muted">8) Can retrieve stored widgets<i></i></a></div><a class="list-group-item list-group-item-action" href="#CRUD">CRUD<small class="card-img-overlay m-1" style="padding:0; left:inherit;"><span class="badge badge-pill badge-light">1s 37ms</span><span class="badge badge-pill badge-success">8</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small><button type="button" class="btn btn-light btn-sm text-muted ml-1" data-toggle="collapse" data-target="#0cc9be7e-99ca-4acf-a473-3d2cbfa19283" aria-expanded="true" aria-controls="0cc9be7e-99ca-4acf-a473-3d2cbfa19283">cases</button></a><div id="0cc9be7e-99ca-4acf-a473-3d2cbfa19283" class="collapse"><a href="#9) Create" class="list-group-item list-group-item-action text-muted">9) Create<i></i></a><a href="#10) Read" class="list-group-item list-group-item-action text-muted">10) Read<i></i></a><a href="#11) Update" class="list-group-item list-group-item-action text-muted">11) Update<i></i></a><a href="#12) Delete" class="list-group-item list-group-item-action text-muted">12) Delete<i></i></a></div><a class="list-group-item list-group-item-action" href="#Trigger job and poll result with custom method">Trigger job and poll result with custom method<small class="card-img-overlay m-1" style="padding:0; left:inherit;"><span class="badge badge-pill badge-light">2s 760ms</span><span class="badge badge-pill badge-success">3</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small><button type="button" class="btn btn-light btn-sm text-muted ml-1" data-toggle="collapse" data-target="#17e1ee17-d528-4bf3-af5a-f58a4eb7536e" aria-expanded="true" aria-controls="17e1ee17-d528-4bf3-af5a-f58a4eb7536e">cases</button></a><div id="17e1ee17-d528-4bf3-af5a-f58a4eb7536e" class="collapse"><a href="#13) Trigger job with some optional body" class="list-group-item list-group-item-action text-muted">13) Trigger job with some optional body<i></i></a></div><a class="list-group-item list-group-item-action" href="#Trigger job and poll result with http request">Trigger job and poll result with http request<small class="card-img-overlay m-1" style="padding:0; left:inherit;"><span class="badge badge-pill badge-light">2s 224ms</span><span class="badge badge-pill badge-success">1</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small></a><a class="list-group-item list-group-item-action" href="#Trigger job and poll result with db-check">Trigger job and poll result with db-check<small class="card-img-overlay m-1" style="padding:0; left:inherit;"><span class="badge badge-pill badge-light">2s 158ms</span><span class="badge badge-pill badge-success">1</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small></a></div></div></div>
+<div cmdId="082eabdb-2178-4848-9f61-864999d31c32" e:given="" class="bd-callout bd-callout-info">
+    We have a simple CRUD App for widgets manipulation.
+    Widgets are stored in DB like this:
+    <table cmdId="688d5fc8-1108-46f8-9abf-163c2e146f4c" e:db-show="" class="table table-sm"><caption>WIDGETS<i class="fa fa-database fa-pull-left fa-border"></i></caption><thead class="thead-default"><tr><th class="">ID</th><th class="">NAME</th><th class="">QUANTITY</th><th class="">UPDATED</th></tr></thead><tbody><tr><td class="">1</td><td class="">widget one</td><td class="">27</td><td class="">2020-05-04 05:50:11.011</td></tr><tr><td class="">2</td><td class="">widget two</td><td class="">14</td><td class="">2020-05-04 05:50:11.011</td></tr></tbody></table>
+</div>
+<h3>Let's test widget creation API:</h3>
+<div xmlns:c="http://www.concordion.org/2007/concordion" name="Successful widget creation" print="true" cmdId="eac79a22-63ab-45d5-a543-4f83987f8d2a" c:example="Successful widget creation" class="card mb-3" e:example="" id="Successful widget creation"><div class="card-header" data-toggle="collapse" data-target="#102879189" aria-expanded="true" aria-controls="102879189"><a name="Successful widget creation" data-type="example">Successful widget creation</a></div><div class="card-body collapse show" id="102879189"><pre class="xml card">
+&lt;e:given&gt;
+        &lt;e:db-set caption="There are no widgets" table="widgets" /&gt;
+    &lt;/e:given&gt;
+&lt;e:post url="/widgets"&gt;
+        &lt;e:case desc="Successful creation"&gt;
+            &lt;e:body&gt;{"name" : "widget1", "quantity": "10"}&lt;/e:body&gt;
+            &lt;e:expected statusCode="201" reasonPhrase="Created"&gt;
+                {
+                "id": "{{number}}",
+                "name": "widget1",
+                "quantity": 10,
+                "updatedAt": "{{formattedAndWithinNow "yyyy-MM-dd'T'HH:mm:ss.SSSXXX" "5s"}}"
+                }
+            &lt;/e:expected&gt;
+            &lt;e:check&gt;
+                &lt;e:db-check caption="Widget was created:" table="widgets" cols="id, name, quantity, updated" orderBy="name"&gt;
+                    &lt;e:row&gt;!{number}, widget1, 10, !{within 5s}&lt;/e:row&gt;
+                &lt;/e:db-check&gt;
+                or
+                &lt;e:db-check caption="Widget was created:" table="widgets" cols="id, name, quantity, updated" orderBy="name"&gt;
+                    &lt;e:row&gt;!{regex}\d, widget1, 10, !{notNull}&lt;/e:row&gt;
+                &lt;/e:db-check&gt;
+                or with variable setting:
+                &lt;e:db-check caption="Widget was created:" table="widgets" cols="id, name, quantity, updated" orderBy="name"&gt;
+                    &lt;e:row&gt;!{number}&amp;gt;&amp;gt;id, !{notNull}&amp;gt;&amp;gt;name, !{regex}\d+&amp;gt;&amp;gt;quantity, !{within 5s}&amp;gt;&amp;gt;updated&lt;/e:row&gt;
+                &lt;/e:db-check&gt;
+                #id = &lt;code cc:echo="#id" /&gt; #name = &lt;code cc:echo="#name" /&gt; #quantity = &lt;code cc:echo="#quantity" /&gt; #updated = &lt;code cc:echo="#updated" /&gt;
+            &lt;/e:check&gt;
+        &lt;/e:case&gt;
+    &lt;/e:post&gt;</pre>
+    <div cmdId="28105c90-41ce-4959-8471-f3481d611bad" e:given="" class="bd-callout bd-callout-info">
+        <table cmdId="ee1bfad1-ac70-4fae-a63d-5984709dfc60" e:db-set="" class="table table-sm"><div></div><span></span><caption>There are no widgets<i class="fa fa-database fa-pull-left fa-border"></i></caption><thead class="thead-default"><tr /></thead><tbody /></table>
+    </div>
+    <div cmdId="dc0d7434-5b6e-4827-9076-07216e0bf3ac" e:post="" class="bd-callout bd-callout-success"><table class="table table-sm"><thead class="thead-default"><thead class="thead-default"><th>Request</th><th>Expected response</th><th>Status code</th></thead></thead>
+        <tr desc="Successful creation" cmdId="05780bef-34bf-459c-9bcb-2cf095cd880b" e:case="" data-type="case" id="1) Successful creation"><tr><td colspan="3" class="text-muted">1) Successful creation</td></tr>
+            
+            
+            <div cmdId="a6de6170-8823-48c9-bfbc-df0a30ca1c6a" e:check="" />
+        <tr><tr><td colspan="3"><div><i>POST </i><code>/widgets</code><span></span></div></td></tr><td class="json" style="max-width:550px">{
+  "name": "widget1",
+  "quantity": "10"
+}</td><td style="max-width:550px" class="json rest-success">{
+  "id": "${json-unit.any-number}",
+  "name": "widget1",
+  "quantity": 10,
+  "updatedAt": "${json-unit.matches:formattedAndWithinNow}[yyyy-MM-dd'T'HH:mm:ss.SSSXXX][5s]"
+}</td><td class="rest-success">HTTP/1.1 201 Created</td></tr></tr><tr><td colspan="3">
+                <table caption="Widget was created:" cmdId="d0311a2d-40ae-4e04-aeff-6127dbcc1da7" e:db-check="" class="table table-sm">
+                    
+                <div></div><span></span><caption>Widget was created:<i class="fa fa-database fa-pull-left fa-border"></i></caption><thead class="thead-default"><tr><th>id</th><th>name</th><th>quantity</th><th>updated</th></tr></thead><tr><td class="table-success">!{number} (3)</td><td class="table-success">widget1</td><td class="table-success">10</td><td class="table-success">!{within 5s} (2020-05-04 17:50:13.51)</td></tr></table>
+                or
+                <table caption="Widget was created:" cmdId="22112fda-7e44-437d-9458-a54cd7cd689d" e:db-check="" class="table table-sm">
+                    
+                <div></div><span></span><caption>Widget was created:<i class="fa fa-database fa-pull-left fa-border"></i></caption><thead class="thead-default"><tr><th>id</th><th>name</th><th>quantity</th><th>updated</th></tr></thead><tr><td class="table-success">!{regex}\d (3)</td><td class="table-success">widget1</td><td class="table-success">10</td><td class="table-success">!{notNull} (2020-05-04 17:50:13.51)</td></tr></table>
+                or with variable setting:
+                <table caption="Widget was created:" cmdId="aeff66db-1205-49b1-853b-231ca17bbdf8" e:db-check="" class="table table-sm">
+                    
+                <div></div><span></span><caption>Widget was created:<i class="fa fa-database fa-pull-left fa-border"></i></caption><thead class="thead-default"><tr><th>id</th><th>name</th><th>quantity</th><th>updated</th></tr></thead><tr><td class="table-success">!{number}&gt;&gt;id (3)</td><td class="table-success">!{notNull}&gt;&gt;name (widget1)</td><td class="table-success">!{regex}\d+&gt;&gt;quantity (10)</td><td class="table-success">!{within 5s}&gt;&gt;updated (2020-05-04 17:50:13.51)</td></tr></table>
+                #id = <code cc:echo="#id">3</code> #name = <code cc:echo="#name">widget1</code> #quantity = <code cc:echo="#quantity">10</code> #updated = <code cc:echo="#updated">2020-05-04 17:50:13.51</code>
+            </td></tr>
+    <div><h4><span class="badge badge-success ml-1 mr-1">POST</span><span class="badge badge-info ml-1 mr-1">application/json</span><code>/widgets</code></h4></div></table></div>
+</div><div class="card-footer text-muted" data-toggle="collapse" data-target="#102879189" aria-expanded="true" aria-controls="102879189"><small><span class="badge badge-pill badge-success">14</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small></div></div>
+<br />
+<blockquote class="blockquote">
+    <p class="mb-0">For testing validation, parametrized (aka <code>where</code>) cases may be used:</p>
+</blockquote>
+<div xmlns:c="http://www.concordion.org/2007/concordion" name="Validate creation" print="true" cmdId="4bce7628-f9ac-4ed3-b62f-823f42221a7b" c:example="Validate creation" class="card mb-3" e:example="" id="Validate creation"><div class="card-header" data-toggle="collapse" data-target="#17190537" aria-expanded="true" aria-controls="17190537"><a name="Validate creation" data-type="example">Validate creation</a></div><div class="card-body collapse show" id="17190537"><pre class="xml card">
+&lt;e:given&gt;
+        &lt;e:db-set caption="There are no widgets" table="widgets" /&gt;
+    &lt;/e:given&gt;
+&lt;e:post url="/widgets"&gt;
+        &lt;e:case desc="quantity is required"&gt;
+            &lt;e:body&gt;
+                {"name": "widget1"}
+            &lt;/e:body&gt;
+            &lt;e:expected statusCode="400" reasonPhrase="Bad Request"&gt;
+                { "error": "quantity is required" }
+            &lt;/e:expected&gt;
+        &lt;/e:case&gt;
+        &lt;e:case desc="name is required"&gt;
+            &lt;e:body&gt;
+                {"quantity": "10"}
+            &lt;/e:body&gt;
+            &lt;e:expected statusCode="400" reasonPhrase="Bad Request"&gt;
+                { "error": "name is required" }
+            &lt;/e:expected&gt;
+        &lt;/e:case&gt;
+        &lt;e:case desc="name should't be blank or more than 10 symbols"&gt;
+            &lt;e:body&gt;
+                {"name": "{{invalid}}", "quantity": "10"}
+            &lt;/e:body&gt;
+            &lt;e:expected statusCode="400" reasonPhrase="Bad Request"&gt;
+                { "error": "{{error}}" }
+            &lt;/e:expected&gt;
+            &lt;e:where vars="invalid, error"&gt;
+                &lt;e:vals&gt;''          , blank value not allowed&lt;/e:vals&gt;
+                &lt;e:vals&gt;more_than_10, Value 'more_than_10' can't be stored to database column because exceeds length app.Widgets.name.columnType.colLength&lt;/e:vals&gt;
+            &lt;/e:where&gt;
+        &lt;/e:case&gt;
+        &lt;e:check&gt;
+            &lt;e:db-check caption="No widgets were created:" table="widgets" /&gt;
+        &lt;/e:check&gt;
+    &lt;/e:post&gt;</pre>
+    <div cmdId="28c35c62-7684-4812-9401-949fd1936489" e:given="" class="bd-callout bd-callout-info">
+        <table cmdId="31a713cf-0458-4a1e-b013-94bad285ffa6" e:db-set="" class="table table-sm"><div></div><span></span><caption>There are no widgets<i class="fa fa-database fa-pull-left fa-border"></i></caption><thead class="thead-default"><tr /></thead><tbody /></table>
+    </div>
+    <div cmdId="18ec8f16-05a2-4fbc-b0d2-364bcd238501" e:post="" class="bd-callout bd-callout-success"><table class="table table-sm"><thead class="thead-default"><thead class="thead-default"><th>Request</th><th>Expected response</th><th>Status code</th></thead></thead>
+        <tr desc="quantity is required" cmdId="cbe529a0-e754-4849-9c30-45a1284966e1" e:case="" data-type="case" id="2) quantity is required"><tr><td colspan="3" class="text-muted">2) quantity is required</td></tr>
+            
+            
+        <tr><tr><td colspan="3"><div><i>POST </i><code>/widgets</code><span></span></div></td></tr><td class="json" style="max-width:550px">{
+  "name": "widget1"
+}</td><td style="max-width:550px" class="json rest-success">{
+  "error": "quantity is required"
+}</td><td class="rest-success">HTTP/1.1 400 Bad Request</td></tr></tr>
+        <tr desc="name is required" cmdId="6e1477cc-9853-41e1-821d-0a9f6433a5bc" e:case="" data-type="case" id="3) name is required"><tr><td colspan="3" class="text-muted">3) name is required</td></tr>
+            
+            
+        <tr><tr><td colspan="3"><div><i>POST </i><code>/widgets</code><span></span></div></td></tr><td class="json" style="max-width:550px">{
+  "quantity": "10"
+}</td><td style="max-width:550px" class="json rest-success">{
+  "error": "name is required"
+}</td><td class="rest-success">HTTP/1.1 400 Bad Request</td></tr></tr>
+        <tr desc="name should't be blank or more than 10 symbols" cmdId="208e0994-dbfc-4cc0-8afb-81003d9a8aa3" e:case="" data-type="case" id="4) name should't be blank or more than 10 symbols"><tr><td colspan="3" class="text-muted">4) name should't be blank or more than 10 symbols</td></tr>
+            
+            
+            <e:where>
+                
+                
+            </e:where>
+        <tr><tr><td colspan="3"><div><i>POST </i><code>/widgets</code><span></span></div></td></tr><td class="json" style="max-width:550px">{
+  "name": "",
+  "quantity": "10"
+}</td><td style="max-width:550px" class="json rest-success">{
+  "error": "blank value not allowed"
+}</td><td class="rest-success">HTTP/1.1 400 Bad Request</td></tr><tr><tr><td colspan="3"><div><i>POST </i><code>/widgets</code><span></span></div></td></tr><td class="json" style="max-width:550px">{
+  "name": "more_than_10",
+  "quantity": "10"
+}</td><td style="max-width:550px" class="json rest-success">{
+  "error": "Value 'more_than_10' can't be stored to database column because exceeds length app.Widgets.name.columnType.colLength"
+}</td><td class="rest-success">HTTP/1.1 400 Bad Request</td></tr></tr>
+        <div cmdId="ea43d47d-766b-4209-80c8-f3ef82cfa6fa" e:check="" />
+    <div><h4><span class="badge badge-success ml-1 mr-1">POST</span><span class="badge badge-info ml-1 mr-1">application/json</span><code>/widgets</code></h4></div></table><tr><td colspan="3">
+            <table caption="No widgets were created:" cmdId="cfee5599-dadc-4049-b88a-f17e8b9a5a4e" e:db-check="" class="table table-sm"><div></div><span></span><caption>No widgets were created:<i class="fa fa-database fa-pull-left fa-border"></i></caption><thead class="thead-default"><tr /></thead><tr><td colspan="0" class="table-success">&lt;EMPTY&gt;</td></tr></table>
+        </td></tr></div>
+</div><div class="card-footer text-muted" data-toggle="collapse" data-target="#17190537" aria-expanded="true" aria-controls="17190537"><small><span class="badge badge-pill badge-success">9</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small></div></div>
+<br />
+<blockquote class="blockquote">
+    <p class="mb-0">Or more tricky and compact equivalent of previous example (request/response body templates are hidden in files):</p>
+</blockquote>
+<div xmlns:c="http://www.concordion.org/2007/concordion" name="Validate creation - parametrized" print="true" cmdId="e49bde62-7b98-490e-9eff-160c935741eb" c:example="Validate creation - parametrized" class="card mb-3" e:example="" id="Validate creation - parametrized"><div class="card-header" data-toggle="collapse" data-target="#-1613731824" aria-expanded="true" aria-controls="-1613731824"><a name="Validate creation - parametrized" data-type="example">Validate creation - parametrized</a></div><div class="card-body collapse show" id="-1613731824"><pre class="xml card">
+&lt;e:given&gt;
+        &lt;e:db-set caption="There are no widgets" table="widgets" /&gt;
+    &lt;/e:given&gt;
+&lt;e:post url="/widgets"&gt;
+        &lt;e:case desc="Name and quantity validation"&gt;
+            &lt;e:body from="/data/getting-started/{{req}}" /&gt;
+            &lt;e:expected from="/data/getting-started/error.json" statusCode="400" reasonPhrase="Bad Request" /&gt;
+            &lt;e:where vars="name, req, error"&gt;
+                &lt;e:vals&gt;ignored     , invalid-no-name.json    , name is required&lt;/e:vals&gt;
+                &lt;e:vals&gt;ignored     , invalid-no-quantity.json, quantity is required&lt;/e:vals&gt;
+                &lt;e:vals&gt;''          , create-req.json         , blank value not allowed&lt;/e:vals&gt;
+                &lt;e:vals&gt;more_than_10, create-req.json         , Value 'more_than_10' can't be stored to database column because exceeds length app.Widgets.name.columnType.colLength&lt;/e:vals&gt;
+            &lt;/e:where&gt;
+        &lt;/e:case&gt;
+        &lt;e:check&gt;
+            &lt;e:db-check caption="No widgets were created:" table="widgets" /&gt;
+        &lt;/e:check&gt;
+    &lt;/e:post&gt;</pre>
+    <div cmdId="f86be713-d066-4789-aae5-a24171b9a29a" e:given="" class="bd-callout bd-callout-info">
+        <table cmdId="cd1d26ce-bfc7-4a18-af91-244409bf7432" e:db-set="" class="table table-sm"><div></div><span></span><caption>There are no widgets<i class="fa fa-database fa-pull-left fa-border"></i></caption><thead class="thead-default"><tr /></thead><tbody /></table>
+    </div>
+    <div cmdId="2b5cb328-2e62-4249-8552-913f5846abab" e:post="" class="bd-callout bd-callout-success"><table class="table table-sm"><thead class="thead-default"><thead class="thead-default"><th>Request</th><th>Expected response</th><th>Status code</th></thead></thead>
+        <tr desc="Name and quantity validation" cmdId="af3926b3-5433-4375-a143-7d3c91f97fdb" e:case="" data-type="case" id="5) Name and quantity validation"><tr><td colspan="3" class="text-muted">5) Name and quantity validation</td></tr>
+            
+            
+            <e:where>
+                
+                
+                
+                
+            </e:where>
+        <tr><tr><td colspan="3"><div><i>POST </i><code>/widgets</code><span></span></div></td></tr><td from="/data/getting-started/{{req}}" class="json" style="max-width:550px">{
+  "quantity": "10"
+}</td><td from="/data/getting-started/error.json" style="max-width:550px" class="json rest-success">{
+  "error": "name is required"
+}</td><td class="rest-success">HTTP/1.1 400 Bad Request</td></tr><tr><tr><td colspan="3"><div><i>POST </i><code>/widgets</code><span></span></div></td></tr><td from="/data/getting-started/{{req}}" class="json" style="max-width:550px">{
+  "name": "widget1"
+}</td><td from="/data/getting-started/error.json" style="max-width:550px" class="json rest-success">{
+  "error": "quantity is required"
+}</td><td class="rest-success">HTTP/1.1 400 Bad Request</td></tr><tr><tr><td colspan="3"><div><i>POST </i><code>/widgets</code><span></span></div></td></tr><td from="/data/getting-started/{{req}}" class="json" style="max-width:550px">{
+  "name": "",
+  "quantity": "10"
+}</td><td from="/data/getting-started/error.json" style="max-width:550px" class="json rest-success">{
+  "error": "blank value not allowed"
+}</td><td class="rest-success">HTTP/1.1 400 Bad Request</td></tr><tr><tr><td colspan="3"><div><i>POST </i><code>/widgets</code><span></span></div></td></tr><td from="/data/getting-started/{{req}}" class="json" style="max-width:550px">{
+  "name": "more_than_10",
+  "quantity": "10"
+}</td><td from="/data/getting-started/error.json" style="max-width:550px" class="json rest-success">{
+  "error": "Value 'more_than_10' can't be stored to database column because exceeds length app.Widgets.name.columnType.colLength"
+}</td><td class="rest-success">HTTP/1.1 400 Bad Request</td></tr></tr>
+        <div cmdId="0f96f7d3-4a5a-4413-a744-0b70709d70da" e:check="" />
+    <div><h4><span class="badge badge-success ml-1 mr-1">POST</span><span class="badge badge-info ml-1 mr-1">application/json</span><code>/widgets</code></h4></div></table><tr><td colspan="3">
+            <table caption="No widgets were created:" cmdId="e01e6d63-d423-4bba-b95c-d2977ef383ab" e:db-check="" class="table table-sm"><div></div><span></span><caption>No widgets were created:<i class="fa fa-database fa-pull-left fa-border"></i></caption><thead class="thead-default"><tr /></thead><tr><td colspan="0" class="table-success">&lt;EMPTY&gt;</td></tr></table>
+        </td></tr></div>
+</div><div class="card-footer text-muted" data-toggle="collapse" data-target="#-1613731824" aria-expanded="true" aria-controls="-1613731824"><small><span class="badge badge-pill badge-success">9</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small></div></div>
+<br />
+<h3>Let's test widget deletion API:</h3>
+<div xmlns:c="http://www.concordion.org/2007/concordion" name="Successful widget deletion" print="true" cmdId="924277dd-e58d-48e1-ba4b-0a52eac3aafe" c:example="Successful widget deletion" class="card mb-3" e:example="" id="Successful widget deletion"><div class="card-header" data-toggle="collapse" data-target="#-897825596" aria-expanded="true" aria-controls="-897825596"><a name="Successful widget deletion" data-type="example">Successful widget deletion</a></div><div class="card-body collapse show" id="-897825596"><pre class="xml card">
+&lt;e:given&gt;
+        &lt;e:db-set caption="Given widget:" table="widgets" cols="name, quantity, id=1, updated={{now}}"&gt;
+            &lt;e:row&gt;widget1, 10&lt;/e:row&gt;
+        &lt;/e:db-set&gt;
+    &lt;/e:given&gt;
+&lt;e:delete url="/widgets/1"&gt;
+        &lt;e:case desc="Successful deletion"&gt;
+            &lt;e:expected /&gt;
+            &lt;e:check&gt;
+                &lt;e:db-check caption="Widget was deleted:" table="widgets" /&gt;
+            &lt;/e:check&gt;
+        &lt;/e:case&gt;
+        &lt;e:case desc="Absent widget deletion"&gt;
+            &lt;e:expected statusCode="404" reasonPhrase="Not Found" /&gt;
+        &lt;/e:case&gt;
+    &lt;/e:delete&gt;</pre>
+    <div cmdId="3d7cf8e0-cd53-40f7-be8e-ce40f65839ca" e:given="" class="bd-callout bd-callout-info">
+        <table cmdId="923b6028-245c-4ebf-8d07-a3b6cec72454" e:db-set="" class="table table-sm">
+            
+        <div></div><span></span><caption>Given widget:<i class="fa fa-database fa-pull-left fa-border"></i></caption><thead class="thead-default"><tr><th class="">name</th><th class="">quantity</th><th class="">id</th><th class="">updated</th></tr></thead><tbody><tr><td class="">widget1</td><td class="">10</td><td class="">1</td><td class="">2020-05-04 05:50:14.014</td></tr></tbody></table>
+    </div>
+    <div cmdId="32cc8b5c-8f53-4d0b-a78d-4f35e07ef3c4" e:delete="" class="bd-callout bd-callout-success"><table class="table table-sm"><thead class="thead-default"><thead class="thead-default"><th>Expected response</th><th>Status code</th></thead></thead>
+        <tr desc="Successful deletion" cmdId="f3393c54-744d-43a4-9f80-44a2d7a73365" e:case="" data-type="case" id="6) Successful deletion"><tr><td colspan="2" class="text-muted">6) Successful deletion</td></tr>
+            
+            <div cmdId="656cc5f6-ebfa-4944-8c29-d19d4bc22336" e:check="" />
+        <tr><tr><td colspan="2"><div><i>DELETE </i><code>/widgets/1</code><span></span></div></td></tr><td style="max-width:550px" class="json rest-success"> </td><td class="rest-success">HTTP/1.1 200 OK</td></tr></tr><tr><td colspan="3">
+                <table caption="Widget was deleted:" cmdId="06c3efac-ee96-4a77-8279-f8db47e12433" e:db-check="" class="table table-sm"><div></div><span></span><caption>Widget was deleted:<i class="fa fa-database fa-pull-left fa-border"></i></caption><thead class="thead-default"><tr /></thead><tr><td colspan="0" class="table-success">&lt;EMPTY&gt;</td></tr></table>
+            </td></tr>
+        <tr desc="Absent widget deletion" cmdId="2f131347-11e7-457b-93a4-cc38a8beebcb" e:case="" data-type="case" id="7) Absent widget deletion"><tr><td colspan="2" class="text-muted">7) Absent widget deletion</td></tr>
+            
+        <tr><tr><td colspan="2"><div><i>DELETE </i><code>/widgets/1</code><span></span></div></td></tr><td style="max-width:550px" class="json rest-success"> </td><td class="rest-success">HTTP/1.1 404 Not Found</td></tr></tr>
+    <div><h4><span class="badge badge-success ml-1 mr-1">DELETE</span><span class="badge badge-info ml-1 mr-1">application/json</span><code>/widgets/1</code></h4></div></table></div>
+</div><div class="card-footer text-muted" data-toggle="collapse" data-target="#-897825596" aria-expanded="true" aria-controls="-897825596"><small><span class="badge badge-pill badge-success">5</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small></div></div>
+<h3>Let's test widget retrieving API:</h3>
+<div xmlns:c="http://www.concordion.org/2007/concordion" name="Successful widget retrieving" print="true" cmdId="c00d0f74-b356-4c4f-8788-9a970a3eea59" c:example="Successful widget retrieving" class="card mb-3" e:example="" id="Successful widget retrieving"><div class="card-header" data-toggle="collapse" data-target="#1413626223" aria-expanded="true" aria-controls="1413626223"><a name="Successful widget retrieving" data-type="example">Successful widget retrieving</a></div><div class="card-body collapse show" id="1413626223"><pre class="xml card">
+&lt;e:given&gt;
+        &lt;e:set var="upd1" value="{{now tz='GMT+3'}}" /&gt;
+        &lt;e:set var="upd2" value="{{now plus='1 day'}}" /&gt;
+        &lt;e:set var="format" value="yyyy-MM-dd'T'HH:mm:ss.SSSXXX" /&gt;
+        &lt;e:db-set caption="Given widgets:" table="widgets" cols="name, quantity, updated, id=1..10"&gt;
+            &lt;e:row&gt;widget1, 10, {{upd1}}&lt;/e:row&gt;
+            &lt;e:row&gt;widget2, 20, {{upd2}}&lt;/e:row&gt;
+            &lt;e:row&gt;widget3, 30, {{date '01.02.2000 10:20+03:00' format="dd.MM.yyyy HH:mmXXX"}}&lt;/e:row&gt;
+            &lt;e:row&gt;widget4, 40, {{date upd2 plus='12 h'}}&lt;/e:row&gt;
+        &lt;/e:db-set&gt;
+    &lt;/e:given&gt;
+&lt;e:get url="/widgets"&gt;
+        &lt;e:case desc="Can retrieve stored widgets"&gt;
+            &lt;e:expected&gt;
+                [{
+                "id": 1,
+                "name": "widget1",
+                "quantity": 10,
+                "updatedAt": "{{dateFormat upd1 format}}"
+                }, {
+                "id": 2,
+                "name": "widget2",
+                "quantity": 20,
+                "updatedAt": "{{dateFormat upd2 format}}"
+                }, {
+                "id": 3,
+                "name": "widget3",
+                "quantity": 30,
+                "updatedAt": "{{dateFormat (date '01.02.2000 10:20+03:00' format="dd.MM.yyyy HH:mmXXX") format}}"
+                }, {
+                "id": 4,
+                "name": "widget4",
+                "quantity": 40,
+                "updatedAt": "{{dateFormat (date upd2 plus='12 h') format}}"
+                }]
+            &lt;/e:expected&gt;
+        &lt;/e:case&gt;
+    &lt;/e:get&gt;</pre>
+    <div cmdId="b581440c-acef-4fd9-83c2-fa5b2073ac46" e:given="" class="bd-callout bd-callout-info">
+        <pre var="upd1" value="{{now tz='GMT+3'}}" cmdId="cbecd7b0-1611-4b90-a460-3fe4cb28297e" e:set="" />
+        <pre var="upd2" value="{{now plus='1 day'}}" cmdId="d15c3534-8c84-4267-b2d4-718dab706562" e:set="" />
+        <pre var="format" value="yyyy-MM-dd'T'HH:mm:ss.SSSXXX" cmdId="9b160a2e-f02a-4a46-b68e-c2b0a054988b" e:set="" />
+        <table caption="Given widgets:" cols="name, quantity, updated, id=1..10" cmdId="cd71784b-b229-4e0a-8491-68273afaaf0e" e:db-set="" class="table table-sm"><span class="failure"><del class="expected">
+            
+            
+            <e:row>widget3, 30, {{date '01.02.2000 10:20+03:00' format="dd.MM.yyyy HH:mmXXX"}}</e:row>
+            <e:row>widget4, 40, {{date upd2 plus='12 h'}}</e:row>
+        <div></div><span></span></del></span><span class="exceptionMessage">inline@44f6e370:1:2: java.lang.IllegalArgumentException: Illegal pattern component: XXX
+    inline@44f6e370:1:2</span><input class="stackTraceButton" id="stackTraceButton1" type="button" onclick="javascript:toggleStackTrace('1')" value="View Stack" /><div class="stackTrace" id="stackTrace1"><p>While evaluating expression: <code></code></p><div class="stackTraceExceptionMessage">com.github.jknack.handlebars.HandlebarsException: inline@44f6e370:1:2: java.lang.IllegalArgumentException: Illegal pattern component: XXX
+    inline@44f6e370:1:2</div><div class="stackTraceEntry">at org.joda.time.format.DateTimeFormat.parsePatternTo (DateTimeFormat.java:566)</div><div class="stackTraceEntry">at org.joda.time.format.DateTimeFormat.createFormatterForPattern (DateTimeFormat.java:687)</div><div class="stackTraceEntry">at org.joda.time.format.DateTimeFormat.forPattern (DateTimeFormat.java:177)</div><div class="stackTraceEntry">at com.adven.concordion.extensions.exam.core.utils.HelperSource$date.parseDate (HelperSource.kt:166)</div><div class="stackTraceEntry">at com.adven.concordion.extensions.exam.core.utils.HelperSource$date.parseDate (HelperSource.kt:157)</div><div class="stackTraceEntry">at com.adven.concordion.extensions.exam.core.utils.HelperSource$date.invoke (HelperSource.kt:150)</div><div class="stackTraceEntry">at com.adven.concordion.extensions.exam.core.utils.HelperSource.apply (HelperSource.kt:246)</div><div class="stackTraceEntry">at com.github.jknack.handlebars.internal.Variable.value (Variable.java:181)</div><div class="stackTraceEntry">at com.github.jknack.handlebars.internal.Variable.merge (Variable.java:160)</div><div class="stackTraceEntry">at com.github.jknack.handlebars.internal.BaseTemplate.apply (BaseTemplate.java:130)</div><div class="stackTraceEntry">at com.github.jknack.handlebars.internal.TemplateList.merge (TemplateList.java:95)</div><div class="stackTraceEntry">at com.github.jknack.handlebars.internal.BaseTemplate.apply (BaseTemplate.java:130)</div><div class="stackTraceEntry">at com.github.jknack.handlebars.internal.BaseTemplate.apply (BaseTemplate.java:118)</div><div class="stackTraceEntry">at com.github.jknack.handlebars.internal.ForwardingTemplate.apply (ForwardingTemplate.java:100)</div><div class="stackTraceEntry">at com.adven.concordion.extensions.exam.core.utils.HelperSourceKt.resolve (HelperSource.kt:57)</div><div class="stackTraceEntry">at com.adven.concordion.extensions.exam.core.utils.HelperSourceKt.resolveObj (HelperSource.kt:63)</div><div class="stackTraceEntry">at com.adven.concordion.extensions.exam.core.PlaceholdersResolver.resolveToObj (PlaceholdersResolver.kt:50)</div><div class="stackTraceEntry">at com.adven.concordion.extensions.exam.core.html.RowParser.parseValues (RowParser.kt:44)</div><div class="stackTraceEntry">at com.adven.concordion.extensions.exam.core.html.RowParser.parse (RowParser.kt:26)</div><div class="stackTraceEntry">at com.adven.concordion.extensions.exam.db.commands.DBCommand.setUp (DBCommand.kt:37)</div><div class="stackTraceEntry">at com.adven.concordion.extensions.exam.db.commands.DBSetCommand.setUp (DBSetCommand.kt:27)</div><div class="stackTraceEntry">at org.concordion.api.AbstractCommandDecorator$1.run (AbstractCommandDecorator.java:17)</div><div class="stackTraceEntry">at org.concordion.internal.command.LocalTextDecorator.process (LocalTextDecorator.java:26)</div><div class="stackTraceEntry">at org.concordion.api.AbstractCommandDecorator.setUp (AbstractCommandDecorator.java:15)</div><div class="stackTraceEntry">at org.concordion.api.AbstractCommandDecorator$1.run (AbstractCommandDecorator.java:17)</div><div class="stackTraceEntry">at org.concordion.internal.command.ThrowableCatchingDecorator.process (ThrowableCatchingDecorator.java:38)</div><div class="stackTraceEntry">at org.concordion.api.AbstractCommandDecorator.setUp (AbstractCommandDecorator.java:15)</div><div class="stackTraceEntry">at org.concordion.api.CommandCall.setUp (CommandCall.java:64)</div><div class="stackTraceEntry">at org.concordion.api.CommandCallList.processSequentially (CommandCallList.java:32)</div><div class="stackTraceEntry">at com.adven.concordion.extensions.exam.core.commands.ExamCommand.execute (ExamCommand.kt:14)</div><div class="stackTraceEntry">at org.concordion.api.AbstractCommandDecorator$2.run (AbstractCommandDecorator.java:25)</div><div class="stackTraceEntry">at org.concordion.internal.command.LocalTextDecorator.process (LocalTextDecorator.java:26)</div><div class="stackTraceEntry">at org.concordion.api.AbstractCommandDecorator.execute (AbstractCommandDecorator.java:23)</div><div class="stackTraceEntry">at org.concordion.api.AbstractCommandDecorator$2.run (AbstractCommandDecorator.java:25)</div><div class="stackTraceEntry">at org.concordion.internal.command.ThrowableCatchingDecorator.process (ThrowableCatchingDecorator.java:38)</div><div class="stackTraceEntry">at org.concordion.api.AbstractCommandDecorator.execute (AbstractCommandDecorator.java:23)</div><div class="stackTraceEntry">at org.concordion.api.CommandCall.execute (CommandCall.java:72)</div><div class="stackTraceEntry">at org.concordion.api.CommandCallList.processSequentially (CommandCallList.java:33)</div><div class="stackTraceEntry">at org.concordion.internal.command.ExampleCommand.execute (ExampleCommand.java:42)</div><div class="stackTraceEntry">at org.concordion.api.AbstractCommandDecorator$2.run (AbstractCommandDecorator.java:25)</div><div class="stackTraceEntry">at org.concordion.internal.command.LocalTextDecorator.process (LocalTextDecorator.java:26)</div><div class="stackTraceEntry">at org.concordion.api.AbstractCommandDecorator.execute (AbstractCommandDecorator.java:23)</div><div class="stackTraceEntry">at org.concordion.api.AbstractCommandDecorator$2.run (AbstractCommandDecorator.java:25)</div><div class="stackTraceEntry">at org.concordion.internal.command.ThrowableCatchingDecorator.process (ThrowableCatchingDecorator.java:38)</div><div class="stackTraceEntry">at org.concordion.api.AbstractCommandDecorator.execute (AbstractCommandDecorator.java:23)</div><div class="stackTraceEntry">at org.concordion.api.CommandCall.execute (CommandCall.java:72)</div><div class="stackTraceEntry">at org.concordion.internal.XMLSpecification.processNode (XMLSpecification.java:61)</div><div class="stackTraceEntry">at org.concordion.internal.XMLSpecification.processExample (XMLSpecification.java:85)</div><div class="stackTraceEntry">at org.concordion.Concordion.processExample (Concordion.java:103)</div><div class="stackTraceEntry">at org.concordion.internal.FixtureRunner.run (FixtureRunner.java:37)</div><div class="stackTraceEntry">at org.concordion.integration.junit4.ConcordionRunner.invoke (ConcordionRunner.java:203)</div><div class="stackTraceEntry">at org.concordion.integration.junit4.ConcordionRunner$1.invoke (ConcordionRunner.java:31)</div><div class="stackTraceEntry">at org.concordion.integration.junit4.ConcordionFrameworkMethod.invokeExplosively (ConcordionFrameworkMethod.java:58)</div><div class="stackTraceEntry">at org.junit.internal.runners.statements.InvokeMethod.evaluate (InvokeMethod.java:17)</div><div class="stackTraceEntry">at org.junit.runners.ParentRunner.runLeaf (ParentRunner.java:325)</div><div class="stackTraceEntry">at org.junit.runners.BlockJUnit4ClassRunner.runChild (BlockJUnit4ClassRunner.java:78)</div><div class="stackTraceEntry">at org.concordion.integration.junit4.ConcordionRunner.runChild (ConcordionRunner.java:187)</div><div class="stackTraceEntry">at org.concordion.integration.junit4.ConcordionRunner.runChild (ConcordionRunner.java:23)</div><div class="stackTraceEntry">at org.junit.runners.ParentRunner$3.run (ParentRunner.java:290)</div><div class="stackTraceEntry">at org.junit.runners.ParentRunner$1.schedule (ParentRunner.java:71)</div><div class="stackTraceEntry">at org.junit.runners.ParentRunner.runChildren (ParentRunner.java:288)</div><div class="stackTraceEntry">at org.junit.runners.ParentRunner.access$000 (ParentRunner.java:58)</div><div class="stackTraceEntry">at org.junit.runners.ParentRunner$2.evaluate (ParentRunner.java:268)</div><div class="stackTraceEntry">at org.junit.runners.ParentRunner.run (ParentRunner.java:363)</div><div class="stackTraceEntry">at org.concordion.integration.junit4.ConcordionRunner.run (ConcordionRunner.java:146)</div><div class="stackTraceEntry">at org.junit.runners.Suite.runChild (Suite.java:128)</div><div class="stackTraceEntry">at org.junit.runners.Suite.runChild (Suite.java:27)</div><div class="stackTraceEntry">at org.junit.runners.ParentRunner$3.run (ParentRunner.java:290)</div><div class="stackTraceEntry">at org.junit.runners.ParentRunner$1.schedule (ParentRunner.java:71)</div><div class="stackTraceEntry">at org.junit.runners.ParentRunner.runChildren (ParentRunner.java:288)</div><div class="stackTraceEntry">at org.junit.runners.ParentRunner.access$000 (ParentRunner.java:58)</div><div class="stackTraceEntry">at org.junit.runners.ParentRunner$2.evaluate (ParentRunner.java:268)</div><div class="stackTraceEntry">at org.junit.runners.ParentRunner.run (ParentRunner.java:363)</div><div class="stackTraceEntry">at org.junit.runner.JUnitCore.run (JUnitCore.java:137)</div><div class="stackTraceEntry">at org.junit.runner.JUnitCore.run (JUnitCore.java:115)</div><div class="stackTraceEntry">at org.junit.runner.JUnitCore.run (JUnitCore.java:105)</div><div class="stackTraceEntry">at org.junit.runner.JUnitCore.runClasses (JUnitCore.java:62)</div><div class="stackTraceEntry">at org.junit.runner.JUnitCore.runClasses (JUnitCore.java:49)</div><div class="stackTraceEntry">at org.concordion.internal.runner.DefaultConcordionRunner.runJUnitClass (DefaultConcordionRunner.java:78)</div><div class="stackTraceEntry">at org.concordion.internal.runner.DefaultConcordionRunner.runTestClass (DefaultConcordionRunner.java:44)</div><div class="stackTraceEntry">at org.concordion.internal.runner.DefaultConcordionRunner.execute (DefaultConcordionRunner.java:19)</div><div class="stackTraceEntry">at org.concordion.internal.command.SequentialRunStrategy.call (SequentialRunStrategy.java:10)</div><div class="stackTraceEntry">at org.concordion.internal.command.RunCommand.execute (RunCommand.java:80)</div><div class="stackTraceEntry">at org.concordion.api.AbstractCommandDecorator$2.run (AbstractCommandDecorator.java:25)</div><div class="stackTraceEntry">at org.concordion.internal.command.LocalTextDecorator.process (LocalTextDecorator.java:26)</div><div class="stackTraceEntry">at org.concordion.api.AbstractCommandDecorator.execute (AbstractCommandDecorator.java:23)</div><div class="stackTraceEntry">at org.concordion.api.AbstractCommandDecorator$2.run (AbstractCommandDecorator.java:25)</div><div class="stackTraceEntry">at org.concordion.internal.command.ThrowableCatchingDecorator.process (ThrowableCatchingDecorator.java:38)</div><div class="stackTraceEntry">at org.concordion.api.AbstractCommandDecorator.execute (AbstractCommandDecorator.java:23)</div><div class="stackTraceEntry">at org.concordion.api.CommandCall.execute (CommandCall.java:72)</div><div class="stackTraceEntry">at org.concordion.api.CommandCallList.processSequentially (CommandCallList.java:33)</div><div class="stackTraceEntry">at org.concordion.internal.command.SpecificationCommand.execute (SpecificationCommand.java:36)</div><div class="stackTraceEntry">at org.concordion.api.CommandCall.execute (CommandCall.java:72)</div><div class="stackTraceEntry">at org.concordion.internal.XMLSpecification.processNode (XMLSpecification.java:61)</div><div class="stackTraceEntry">at org.concordion.internal.XMLSpecification.processExample (XMLSpecification.java:78)</div><div class="stackTraceEntry">at org.concordion.Concordion.processExample (Concordion.java:103)</div><div class="stackTraceEntry">at org.concordion.internal.FixtureRunner.run (FixtureRunner.java:37)</div><div class="stackTraceEntry">at org.concordion.integration.junit4.ConcordionRunner.invoke (ConcordionRunner.java:203)</div><div class="stackTraceEntry">at org.concordion.integration.junit4.ConcordionRunner$1.invoke (ConcordionRunner.java:31)</div><div class="stackTraceEntry">at org.concordion.integration.junit4.ConcordionFrameworkMethod.invokeExplosively (ConcordionFrameworkMethod.java:58)</div><div class="stackTraceEntry">at org.junit.internal.runners.statements.InvokeMethod.evaluate (InvokeMethod.java:17)</div><div class="stackTraceEntry">at org.junit.runners.ParentRunner.runLeaf (ParentRunner.java:325)</div><div class="stackTraceEntry">at org.junit.runners.BlockJUnit4ClassRunner.runChild (BlockJUnit4ClassRunner.java:78)</div><div class="stackTraceEntry">at org.concordion.integration.junit4.ConcordionRunner.runChild (ConcordionRunner.java:187)</div><div class="stackTraceEntry">at org.concordion.integration.junit4.ConcordionRunner.runChild (ConcordionRunner.java:23)</div><div class="stackTraceEntry">at org.junit.runners.ParentRunner$3.run (ParentRunner.java:290)</div><div class="stackTraceEntry">at org.junit.runners.ParentRunner$1.schedule (ParentRunner.java:71)</div><div class="stackTraceEntry">at org.junit.runners.ParentRunner.runChildren (ParentRunner.java:288)</div><div class="stackTraceEntry">at org.junit.runners.ParentRunner.access$000 (ParentRunner.java:58)</div><div class="stackTraceEntry">at org.junit.runners.ParentRunner$2.evaluate (ParentRunner.java:268)</div><div class="stackTraceEntry">at org.junit.runners.ParentRunner.run (ParentRunner.java:363)</div><div class="stackTraceEntry">at org.concordion.integration.junit4.ConcordionRunner.run (ConcordionRunner.java:146)</div><div class="stackTraceEntry">at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassExecutor.runTestClass (JUnitTestClassExecutor.java:110)</div><div class="stackTraceEntry">at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassExecutor.execute (JUnitTestClassExecutor.java:58)</div><div class="stackTraceEntry">at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassExecutor.execute (JUnitTestClassExecutor.java:38)</div><div class="stackTraceEntry">at org.gradle.api.internal.tasks.testing.junit.AbstractJUnitTestClassProcessor.processTestClass (AbstractJUnitTestClassProcessor.java:62)</div><div class="stackTraceEntry">at org.gradle.api.internal.tasks.testing.SuiteTestClassProcessor.processTestClass (SuiteTestClassProcessor.java:51)</div><div class="stackTraceEntry">at sun.reflect.NativeMethodAccessorImpl.invoke0 (NativeMethodAccessorImpl.java:-2)</div><div class="stackTraceEntry">at sun.reflect.NativeMethodAccessorImpl.invoke (NativeMethodAccessorImpl.java:62)</div><div class="stackTraceEntry">at sun.reflect.DelegatingMethodAccessorImpl.invoke (DelegatingMethodAccessorImpl.java:43)</div><div class="stackTraceEntry">at java.lang.reflect.Method.invoke (Method.java:498)</div><div class="stackTraceEntry">at org.gradle.internal.dispatch.ReflectionDispatch.dispatch (ReflectionDispatch.java:35)</div><div class="stackTraceEntry">at org.gradle.internal.dispatch.ReflectionDispatch.dispatch (ReflectionDispatch.java:24)</div><div class="stackTraceEntry">at org.gradle.internal.dispatch.ContextClassLoaderDispatch.dispatch (ContextClassLoaderDispatch.java:32)</div><div class="stackTraceEntry">at org.gradle.internal.dispatch.ProxyDispatchAdapter$DispatchingInvocationHandler.invoke (ProxyDispatchAdapter.java:93)</div><div class="stackTraceEntry">at com.sun.proxy.$Proxy2.processTestClass (Unknown Source)</div><div class="stackTraceEntry">at org.gradle.api.internal.tasks.testing.worker.TestWorker.processTestClass (TestWorker.java:118)</div><div class="stackTraceEntry">at sun.reflect.NativeMethodAccessorImpl.invoke0 (NativeMethodAccessorImpl.java:-2)</div><div class="stackTraceEntry">at sun.reflect.NativeMethodAccessorImpl.invoke (NativeMethodAccessorImpl.java:62)</div><div class="stackTraceEntry">at sun.reflect.DelegatingMethodAccessorImpl.invoke (DelegatingMethodAccessorImpl.java:43)</div><div class="stackTraceEntry">at java.lang.reflect.Method.invoke (Method.java:498)</div><div class="stackTraceEntry">at org.gradle.internal.dispatch.ReflectionDispatch.dispatch (ReflectionDispatch.java:35)</div><div class="stackTraceEntry">at org.gradle.internal.dispatch.ReflectionDispatch.dispatch (ReflectionDispatch.java:24)</div><div class="stackTraceEntry">at org.gradle.internal.remote.internal.hub.MessageHubBackedObjectConnection$DispatchWrapper.dispatch (MessageHubBackedObjectConnection.java:175)</div><div class="stackTraceEntry">at org.gradle.internal.remote.internal.hub.MessageHubBackedObjectConnection$DispatchWrapper.dispatch (MessageHubBackedObjectConnection.java:157)</div><div class="stackTraceEntry">at org.gradle.internal.remote.internal.hub.MessageHub$Handler.run (MessageHub.java:404)</div><div class="stackTraceEntry">at org.gradle.internal.concurrent.ExecutorPolicy$CatchAndRecordFailures.onExecute (ExecutorPolicy.java:63)</div><div class="stackTraceEntry">at org.gradle.internal.concurrent.ManagedExecutorImpl$1.run (ManagedExecutorImpl.java:46)</div><div class="stackTraceEntry">at java.util.concurrent.ThreadPoolExecutor.runWorker (ThreadPoolExecutor.java:1149)</div><div class="stackTraceEntry">at java.util.concurrent.ThreadPoolExecutor$Worker.run (ThreadPoolExecutor.java:624)</div><div class="stackTraceEntry">at org.gradle.internal.concurrent.ThreadFactoryImpl$ManagedThreadRunnable.run (ThreadFactoryImpl.java:55)</div><div class="stackTraceEntry">at java.lang.Thread.run (Thread.java:748)</div><div class="stackTraceExceptionMessage">java.lang.IllegalArgumentException: Illegal pattern component: XXX</div><div class="stackTraceEntry">at org.joda.time.format.DateTimeFormat.parsePatternTo (DateTimeFormat.java:566)</div><div class="stackTraceEntry">at org.joda.time.format.DateTimeFormat.createFormatterForPattern (DateTimeFormat.java:687)</div><div class="stackTraceEntry">at org.joda.time.format.DateTimeFormat.forPattern (DateTimeFormat.java:177)</div><div class="stackTraceEntry">at com.adven.concordion.extensions.exam.core.utils.HelperSource$date.parseDate (HelperSource.kt:166)</div><div class="stackTraceEntry">at com.adven.concordion.extensions.exam.core.utils.HelperSource$date.parseDate (HelperSource.kt:157)</div><div class="stackTraceEntry">at com.adven.concordion.extensions.exam.core.utils.HelperSource$date.invoke (HelperSource.kt:150)</div><div class="stackTraceEntry">at com.adven.concordion.extensions.exam.core.utils.HelperSource.apply (HelperSource.kt:246)</div><div class="stackTraceEntry">at com.github.jknack.handlebars.internal.Variable.value (Variable.java:181)</div><div class="stackTraceEntry">at com.github.jknack.handlebars.internal.Variable.merge (Variable.java:160)</div><div class="stackTraceEntry">at com.github.jknack.handlebars.internal.BaseTemplate.apply (BaseTemplate.java:130)</div><div class="stackTraceEntry">at com.github.jknack.handlebars.internal.TemplateList.merge (TemplateList.java:95)</div><div class="stackTraceEntry">at com.github.jknack.handlebars.internal.BaseTemplate.apply (BaseTemplate.java:130)</div><div class="stackTraceEntry">at com.github.jknack.handlebars.internal.BaseTemplate.apply (BaseTemplate.java:118)</div><div class="stackTraceEntry">at com.github.jknack.handlebars.internal.ForwardingTemplate.apply (ForwardingTemplate.java:100)</div><div class="stackTraceEntry">at com.adven.concordion.extensions.exam.core.utils.HelperSourceKt.resolve (HelperSource.kt:57)</div><div class="stackTraceEntry">at com.adven.concordion.extensions.exam.core.utils.HelperSourceKt.resolveObj (HelperSource.kt:63)</div><div class="stackTraceEntry">at com.adven.concordion.extensions.exam.core.PlaceholdersResolver.resolveToObj (PlaceholdersResolver.kt:50)</div><div class="stackTraceEntry">at com.adven.concordion.extensions.exam.core.html.RowParser.parseValues (RowParser.kt:44)</div><div class="stackTraceEntry">at com.adven.concordion.extensions.exam.core.html.RowParser.parse (RowParser.kt:26)</div><div class="stackTraceEntry">at com.adven.concordion.extensions.exam.db.commands.DBCommand.setUp (DBCommand.kt:37)</div><div class="stackTraceEntry">at com.adven.concordion.extensions.exam.db.commands.DBSetCommand.setUp (DBSetCommand.kt:27)</div><div class="stackTraceEntry">at org.concordion.api.AbstractCommandDecorator$1.run (AbstractCommandDecorator.java:17)</div><div class="stackTraceEntry">at org.concordion.internal.command.LocalTextDecorator.process (LocalTextDecorator.java:26)</div><div class="stackTraceEntry">at org.concordion.api.AbstractCommandDecorator.setUp (AbstractCommandDecorator.java:15)</div><div class="stackTraceEntry">at org.concordion.api.AbstractCommandDecorator$1.run (AbstractCommandDecorator.java:17)</div><div class="stackTraceEntry">at org.concordion.internal.command.ThrowableCatchingDecorator.process (ThrowableCatchingDecorator.java:38)</div><div class="stackTraceEntry">at org.concordion.api.AbstractCommandDecorator.setUp (AbstractCommandDecorator.java:15)</div><div class="stackTraceEntry">at org.concordion.api.CommandCall.setUp (CommandCall.java:64)</div><div class="stackTraceEntry">at org.concordion.api.CommandCallList.processSequentially (CommandCallList.java:32)</div><div class="stackTraceEntry">at com.adven.concordion.extensions.exam.core.commands.ExamCommand.execute (ExamCommand.kt:14)</div><div class="stackTraceEntry">at org.concordion.api.AbstractCommandDecorator$2.run (AbstractCommandDecorator.java:25)</div><div class="stackTraceEntry">at org.concordion.internal.command.LocalTextDecorator.process (LocalTextDecorator.java:26)</div><div class="stackTraceEntry">at org.concordion.api.AbstractCommandDecorator.execute (AbstractCommandDecorator.java:23)</div><div class="stackTraceEntry">at org.concordion.api.AbstractCommandDecorator$2.run (AbstractCommandDecorator.java:25)</div><div class="stackTraceEntry">at org.concordion.internal.command.ThrowableCatchingDecorator.process (ThrowableCatchingDecorator.java:38)</div><div class="stackTraceEntry">at org.concordion.api.AbstractCommandDecorator.execute (AbstractCommandDecorator.java:23)</div><div class="stackTraceEntry">at org.concordion.api.CommandCall.execute (CommandCall.java:72)</div><div class="stackTraceEntry">at org.concordion.api.CommandCallList.processSequentially (CommandCallList.java:33)</div><div class="stackTraceEntry">at org.concordion.internal.command.ExampleCommand.execute (ExampleCommand.java:42)</div><div class="stackTraceEntry">at org.concordion.api.AbstractCommandDecorator$2.run (AbstractCommandDecorator.java:25)</div><div class="stackTraceEntry">at org.concordion.internal.command.LocalTextDecorator.process (LocalTextDecorator.java:26)</div><div class="stackTraceEntry">at org.concordion.api.AbstractCommandDecorator.execute (AbstractCommandDecorator.java:23)</div><div class="stackTraceEntry">at org.concordion.api.AbstractCommandDecorator$2.run (AbstractCommandDecorator.java:25)</div><div class="stackTraceEntry">at org.concordion.internal.command.ThrowableCatchingDecorator.process (ThrowableCatchingDecorator.java:38)</div><div class="stackTraceEntry">at org.concordion.api.AbstractCommandDecorator.execute (AbstractCommandDecorator.java:23)</div><div class="stackTraceEntry">at org.concordion.api.CommandCall.execute (CommandCall.java:72)</div><div class="stackTraceEntry">at org.concordion.internal.XMLSpecification.processNode (XMLSpecification.java:61)</div><div class="stackTraceEntry">at org.concordion.internal.XMLSpecification.processExample (XMLSpecification.java:85)</div><div class="stackTraceEntry">at org.concordion.Concordion.processExample (Concordion.java:103)</div><div class="stackTraceEntry">at org.concordion.internal.FixtureRunner.run (FixtureRunner.java:37)</div><div class="stackTraceEntry">at org.concordion.integration.junit4.ConcordionRunner.invoke (ConcordionRunner.java:203)</div><div class="stackTraceEntry">at org.concordion.integration.junit4.ConcordionRunner$1.invoke (ConcordionRunner.java:31)</div><div class="stackTraceEntry">at org.concordion.integration.junit4.ConcordionFrameworkMethod.invokeExplosively (ConcordionFrameworkMethod.java:58)</div><div class="stackTraceEntry">at org.junit.internal.runners.statements.InvokeMethod.evaluate (InvokeMethod.java:17)</div><div class="stackTraceEntry">at org.junit.runners.ParentRunner.runLeaf (ParentRunner.java:325)</div><div class="stackTraceEntry">at org.junit.runners.BlockJUnit4ClassRunner.runChild (BlockJUnit4ClassRunner.java:78)</div><div class="stackTraceEntry">at org.concordion.integration.junit4.ConcordionRunner.runChild (ConcordionRunner.java:187)</div><div class="stackTraceEntry">at org.concordion.integration.junit4.ConcordionRunner.runChild (ConcordionRunner.java:23)</div><div class="stackTraceEntry">at org.junit.runners.ParentRunner$3.run (ParentRunner.java:290)</div><div class="stackTraceEntry">at org.junit.runners.ParentRunner$1.schedule (ParentRunner.java:71)</div><div class="stackTraceEntry">at org.junit.runners.ParentRunner.runChildren (ParentRunner.java:288)</div><div class="stackTraceEntry">at org.junit.runners.ParentRunner.access$000 (ParentRunner.java:58)</div><div class="stackTraceEntry">at org.junit.runners.ParentRunner$2.evaluate (ParentRunner.java:268)</div><div class="stackTraceEntry">at org.junit.runners.ParentRunner.run (ParentRunner.java:363)</div><div class="stackTraceEntry">at org.concordion.integration.junit4.ConcordionRunner.run (ConcordionRunner.java:146)</div><div class="stackTraceEntry">at org.junit.runners.Suite.runChild (Suite.java:128)</div><div class="stackTraceEntry">at org.junit.runners.Suite.runChild (Suite.java:27)</div><div class="stackTraceEntry">at org.junit.runners.ParentRunner$3.run (ParentRunner.java:290)</div><div class="stackTraceEntry">at org.junit.runners.ParentRunner$1.schedule (ParentRunner.java:71)</div><div class="stackTraceEntry">at org.junit.runners.ParentRunner.runChildren (ParentRunner.java:288)</div><div class="stackTraceEntry">at org.junit.runners.ParentRunner.access$000 (ParentRunner.java:58)</div><div class="stackTraceEntry">at org.junit.runners.ParentRunner$2.evaluate (ParentRunner.java:268)</div><div class="stackTraceEntry">at org.junit.runners.ParentRunner.run (ParentRunner.java:363)</div><div class="stackTraceEntry">at org.junit.runner.JUnitCore.run (JUnitCore.java:137)</div><div class="stackTraceEntry">at org.junit.runner.JUnitCore.run (JUnitCore.java:115)</div><div class="stackTraceEntry">at org.junit.runner.JUnitCore.run (JUnitCore.java:105)</div><div class="stackTraceEntry">at org.junit.runner.JUnitCore.runClasses (JUnitCore.java:62)</div><div class="stackTraceEntry">at org.junit.runner.JUnitCore.runClasses (JUnitCore.java:49)</div><div class="stackTraceEntry">at org.concordion.internal.runner.DefaultConcordionRunner.runJUnitClass (DefaultConcordionRunner.java:78)</div><div class="stackTraceEntry">at org.concordion.internal.runner.DefaultConcordionRunner.runTestClass (DefaultConcordionRunner.java:44)</div><div class="stackTraceEntry">at org.concordion.internal.runner.DefaultConcordionRunner.execute (DefaultConcordionRunner.java:19)</div><div class="stackTraceEntry">at org.concordion.internal.command.SequentialRunStrategy.call (SequentialRunStrategy.java:10)</div><div class="stackTraceEntry">at org.concordion.internal.command.RunCommand.execute (RunCommand.java:80)</div><div class="stackTraceEntry">at org.concordion.api.AbstractCommandDecorator$2.run (AbstractCommandDecorator.java:25)</div><div class="stackTraceEntry">at org.concordion.internal.command.LocalTextDecorator.process (LocalTextDecorator.java:26)</div><div class="stackTraceEntry">at org.concordion.api.AbstractCommandDecorator.execute (AbstractCommandDecorator.java:23)</div><div class="stackTraceEntry">at org.concordion.api.AbstractCommandDecorator$2.run (AbstractCommandDecorator.java:25)</div><div class="stackTraceEntry">at org.concordion.internal.command.ThrowableCatchingDecorator.process (ThrowableCatchingDecorator.java:38)</div><div class="stackTraceEntry">at org.concordion.api.AbstractCommandDecorator.execute (AbstractCommandDecorator.java:23)</div><div class="stackTraceEntry">at org.concordion.api.CommandCall.execute (CommandCall.java:72)</div><div class="stackTraceEntry">at org.concordion.api.CommandCallList.processSequentially (CommandCallList.java:33)</div><div class="stackTraceEntry">at org.concordion.internal.command.SpecificationCommand.execute (SpecificationCommand.java:36)</div><div class="stackTraceEntry">at org.concordion.api.CommandCall.execute (CommandCall.java:72)</div><div class="stackTraceEntry">at org.concordion.internal.XMLSpecification.processNode (XMLSpecification.java:61)</div><div class="stackTraceEntry">at org.concordion.internal.XMLSpecification.processExample (XMLSpecification.java:78)</div><div class="stackTraceEntry">at org.concordion.Concordion.processExample (Concordion.java:103)</div><div class="stackTraceEntry">at org.concordion.internal.FixtureRunner.run (FixtureRunner.java:37)</div><div class="stackTraceEntry">at org.concordion.integration.junit4.ConcordionRunner.invoke (ConcordionRunner.java:203)</div><div class="stackTraceEntry">at org.concordion.integration.junit4.ConcordionRunner$1.invoke (ConcordionRunner.java:31)</div><div class="stackTraceEntry">at org.concordion.integration.junit4.ConcordionFrameworkMethod.invokeExplosively (ConcordionFrameworkMethod.java:58)</div><div class="stackTraceEntry">at org.junit.internal.runners.statements.InvokeMethod.evaluate (InvokeMethod.java:17)</div><div class="stackTraceEntry">at org.junit.runners.ParentRunner.runLeaf (ParentRunner.java:325)</div><div class="stackTraceEntry">at org.junit.runners.BlockJUnit4ClassRunner.runChild (BlockJUnit4ClassRunner.java:78)</div><div class="stackTraceEntry">at org.concordion.integration.junit4.ConcordionRunner.runChild (ConcordionRunner.java:187)</div><div class="stackTraceEntry">at org.concordion.integration.junit4.ConcordionRunner.runChild (ConcordionRunner.java:23)</div><div class="stackTraceEntry">at org.junit.runners.ParentRunner$3.run (ParentRunner.java:290)</div><div class="stackTraceEntry">at org.junit.runners.ParentRunner$1.schedule (ParentRunner.java:71)</div><div class="stackTraceEntry">at org.junit.runners.ParentRunner.runChildren (ParentRunner.java:288)</div><div class="stackTraceEntry">at org.junit.runners.ParentRunner.access$000 (ParentRunner.java:58)</div><div class="stackTraceEntry">at org.junit.runners.ParentRunner$2.evaluate (ParentRunner.java:268)</div><div class="stackTraceEntry">at org.junit.runners.ParentRunner.run (ParentRunner.java:363)</div><div class="stackTraceEntry">at org.concordion.integration.junit4.ConcordionRunner.run (ConcordionRunner.java:146)</div><div class="stackTraceEntry">at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassExecutor.runTestClass (JUnitTestClassExecutor.java:110)</div><div class="stackTraceEntry">at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassExecutor.execute (JUnitTestClassExecutor.java:58)</div><div class="stackTraceEntry">at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassExecutor.execute (JUnitTestClassExecutor.java:38)</div><div class="stackTraceEntry">at org.gradle.api.internal.tasks.testing.junit.AbstractJUnitTestClassProcessor.processTestClass (AbstractJUnitTestClassProcessor.java:62)</div><div class="stackTraceEntry">at org.gradle.api.internal.tasks.testing.SuiteTestClassProcessor.processTestClass (SuiteTestClassProcessor.java:51)</div><div class="stackTraceEntry">at sun.reflect.NativeMethodAccessorImpl.invoke0 (NativeMethodAccessorImpl.java:-2)</div><div class="stackTraceEntry">at sun.reflect.NativeMethodAccessorImpl.invoke (NativeMethodAccessorImpl.java:62)</div><div class="stackTraceEntry">at sun.reflect.DelegatingMethodAccessorImpl.invoke (DelegatingMethodAccessorImpl.java:43)</div><div class="stackTraceEntry">at java.lang.reflect.Method.invoke (Method.java:498)</div><div class="stackTraceEntry">at org.gradle.internal.dispatch.ReflectionDispatch.dispatch (ReflectionDispatch.java:35)</div><div class="stackTraceEntry">at org.gradle.internal.dispatch.ReflectionDispatch.dispatch (ReflectionDispatch.java:24)</div><div class="stackTraceEntry">at org.gradle.internal.dispatch.ContextClassLoaderDispatch.dispatch (ContextClassLoaderDispatch.java:32)</div><div class="stackTraceEntry">at org.gradle.internal.dispatch.ProxyDispatchAdapter$DispatchingInvocationHandler.invoke (ProxyDispatchAdapter.java:93)</div><div class="stackTraceEntry">at com.sun.proxy.$Proxy2.processTestClass (Unknown Source)</div><div class="stackTraceEntry">at org.gradle.api.internal.tasks.testing.worker.TestWorker.processTestClass (TestWorker.java:118)</div><div class="stackTraceEntry">at sun.reflect.NativeMethodAccessorImpl.invoke0 (NativeMethodAccessorImpl.java:-2)</div><div class="stackTraceEntry">at sun.reflect.NativeMethodAccessorImpl.invoke (NativeMethodAccessorImpl.java:62)</div><div class="stackTraceEntry">at sun.reflect.DelegatingMethodAccessorImpl.invoke (DelegatingMethodAccessorImpl.java:43)</div><div class="stackTraceEntry">at java.lang.reflect.Method.invoke (Method.java:498)</div><div class="stackTraceEntry">at org.gradle.internal.dispatch.ReflectionDispatch.dispatch (ReflectionDispatch.java:35)</div><div class="stackTraceEntry">at org.gradle.internal.dispatch.ReflectionDispatch.dispatch (ReflectionDispatch.java:24)</div><div class="stackTraceEntry">at org.gradle.internal.remote.internal.hub.MessageHubBackedObjectConnection$DispatchWrapper.dispatch (MessageHubBackedObjectConnection.java:175)</div><div class="stackTraceEntry">at org.gradle.internal.remote.internal.hub.MessageHubBackedObjectConnection$DispatchWrapper.dispatch (MessageHubBackedObjectConnection.java:157)</div><div class="stackTraceEntry">at org.gradle.internal.remote.internal.hub.MessageHub$Handler.run (MessageHub.java:404)</div><div class="stackTraceEntry">at org.gradle.internal.concurrent.ExecutorPolicy$CatchAndRecordFailures.onExecute (ExecutorPolicy.java:63)</div><div class="stackTraceEntry">at org.gradle.internal.concurrent.ManagedExecutorImpl$1.run (ManagedExecutorImpl.java:46)</div><div class="stackTraceEntry">at java.util.concurrent.ThreadPoolExecutor.runWorker (ThreadPoolExecutor.java:1149)</div><div class="stackTraceEntry">at java.util.concurrent.ThreadPoolExecutor$Worker.run (ThreadPoolExecutor.java:624)</div><div class="stackTraceEntry">at org.gradle.internal.concurrent.ThreadFactoryImpl$ManagedThreadRunnable.run (ThreadFactoryImpl.java:55)</div><div class="stackTraceEntry">at java.lang.Thread.run (Thread.java:748)</div></div></table><pre class="alert alert-warning small">Error while executing command:
+
+&lt;e:db-set caption="Given widgets:" table="widgets" cols="name, quantity, updated, id=1..10"&gt;
+            &lt;e:row&gt;widget1, 10, {{upd1}}&lt;/e:row&gt;
+            &lt;e:row&gt;widget2, 20, {{upd2}}&lt;/e:row&gt;
+            &lt;e:row&gt;widget3, 30, {{date '01.02.2000 10:20+03:00' format="dd.MM.yyyy HH:mmXXX"}}&lt;/e:row&gt;
+            &lt;e:row&gt;widget4, 40, {{date upd2 plus='12 h'}}&lt;/e:row&gt;
+        &lt;/e:db-set&gt;
+
+Illegal pattern component: XXX</pre>
+    </div>
+    <div cmdId="7a1f666a-f3bd-4f39-9c65-eed2e975df7e" e:get="" class="bd-callout bd-callout-success"><table class="table table-sm"><thead class="thead-default"><thead class="thead-default"><th>Expected response</th><th>Status code</th></thead></thead>
+        <tr desc="Can retrieve stored widgets" cmdId="ba1e8656-0ce8-47da-be32-44c979f3f360" e:case="" data-type="case" id="8) Can retrieve stored widgets"><tr><td colspan="2" class="text-muted">8) Can retrieve stored widgets</td></tr><span class="failure"><del class="expected">
+            
+        <tr><td>
+                [{
+                "id": 1,
+                "name": "widget1",
+                "quantity": 10,
+                "updatedAt": "{{dateFormat upd1 format}}"
+                }, {
+                "id": 2,
+                "name": "widget2",
+                "quantity": 20,
+                "updatedAt": "{{dateFormat upd2 format}}"
+                }, {
+                "id": 3,
+                "name": "widget3",
+                "quantity": 30,
+                "updatedAt": "{{dateFormat (date '01.02.2000 10:20+03:00' format="dd.MM.yyyy HH:mmXXX") format}}"
+                }, {
+                "id": 4,
+                "name": "widget4",
+                "quantity": 40,
+                "updatedAt": "{{dateFormat (date upd2 plus='12 h') format}}"
+                }]
+            </td><td>HTTP/1.1 200 OK</td></tr></del></span><span class="exceptionMessage">inline@64e10692:16:32: java.lang.IllegalArgumentException: Illegal pattern component: XXX
+    inline@64e10692:16:32</span><input class="stackTraceButton" id="stackTraceButton2" type="button" onclick="javascript:toggleStackTrace('2')" value="View Stack" /><div class="stackTrace" id="stackTrace2"><p>While evaluating expression: <code></code></p><div class="stackTraceExceptionMessage">com.github.jknack.handlebars.HandlebarsException: inline@64e10692:16:32: java.lang.IllegalArgumentException: Illegal pattern component: XXX
+    inline@64e10692:16:32</div><div class="stackTraceEntry">at org.joda.time.format.DateTimeFormat.parsePatternTo (DateTimeFormat.java:566)</div><div class="stackTraceEntry">at org.joda.time.format.DateTimeFormat.createFormatterForPattern (DateTimeFormat.java:687)</div><div class="stackTraceEntry">at org.joda.time.format.DateTimeFormat.forPattern (DateTimeFormat.java:177)</div><div class="stackTraceEntry">at com.adven.concordion.extensions.exam.core.utils.HelperSource$date.parseDate (HelperSource.kt:166)</div><div class="stackTraceEntry">at com.adven.concordion.extensions.exam.core.utils.HelperSource$date.parseDate (HelperSource.kt:157)</div><div class="stackTraceEntry">at com.adven.concordion.extensions.exam.core.utils.HelperSource$date.invoke (HelperSource.kt:150)</div><div class="stackTraceEntry">at com.adven.concordion.extensions.exam.core.utils.HelperSource.apply (HelperSource.kt:246)</div><div class="stackTraceEntry">at com.github.jknack.handlebars.internal.Variable.value (Variable.java:181)</div><div class="stackTraceEntry">at com.github.jknack.handlebars.internal.VarParam.apply (VarParam.java:46)</div><div class="stackTraceEntry">at com.github.jknack.handlebars.internal.HelperResolver.determineContext (HelperResolver.java:146)</div><div class="stackTraceEntry">at com.github.jknack.handlebars.internal.Variable.value (Variable.java:181)</div><div class="stackTraceEntry">at com.github.jknack.handlebars.internal.Variable.merge (Variable.java:160)</div><div class="stackTraceEntry">at com.github.jknack.handlebars.internal.BaseTemplate.apply (BaseTemplate.java:130)</div><div class="stackTraceEntry">at com.github.jknack.handlebars.internal.TemplateList.merge (TemplateList.java:95)</div><div class="stackTraceEntry">at com.github.jknack.handlebars.internal.BaseTemplate.apply (BaseTemplate.java:130)</div><div class="stackTraceEntry">at com.github.jknack.handlebars.internal.BaseTemplate.apply (BaseTemplate.java:118)</div><div class="stackTraceEntry">at com.github.jknack.handlebars.internal.ForwardingTemplate.apply (ForwardingTemplate.java:100)</div><div class="stackTraceEntry">at com.adven.concordion.extensions.exam.core.utils.HelperSourceKt.resolve (HelperSource.kt:57)</div><div class="stackTraceEntry">at com.adven.concordion.extensions.exam.core.PlaceholdersResolver.resolve (PlaceholdersResolver.kt:21)</div><div class="stackTraceEntry">at com.adven.concordion.extensions.exam.core.PlaceholdersResolver.resolveTxt (PlaceholdersResolver.kt:26)</div><div class="stackTraceEntry">at com.adven.concordion.extensions.exam.core.PlaceholdersResolver.resolveJson (PlaceholdersResolver.kt:17)</div><div class="stackTraceEntry">at com.adven.concordion.extensions.exam.ws.CaseCommand.resolve (RestCommands.kt:396)</div><div class="stackTraceEntry">at com.adven.concordion.extensions.exam.ws.CaseCommand.check (RestCommands.kt:374)</div><div class="stackTraceEntry">at com.adven.concordion.extensions.exam.ws.CaseCommand.execute (RestCommands.kt:283)</div><div class="stackTraceEntry">at org.concordion.api.AbstractCommandDecorator$2.run (AbstractCommandDecorator.java:25)</div><div class="stackTraceEntry">at org.concordion.internal.command.LocalTextDecorator.process (LocalTextDecorator.java:26)</div><div class="stackTraceEntry">at org.concordion.api.AbstractCommandDecorator.execute (AbstractCommandDecorator.java:23)</div><div class="stackTraceEntry">at org.concordion.api.AbstractCommandDecorator$2.run (AbstractCommandDecorator.java:25)</div><div class="stackTraceEntry">at org.concordion.internal.command.ThrowableCatchingDecorator.process (ThrowableCatchingDecorator.java:38)</div><div class="stackTraceEntry">at org.concordion.api.AbstractCommandDecorator.execute (AbstractCommandDecorator.java:23)</div><div class="stackTraceEntry">at org.concordion.api.CommandCall.execute (CommandCall.java:72)</div><div class="stackTraceEntry">at org.concordion.api.CommandCallList.processSequentially (CommandCallList.java:33)</div><div class="stackTraceEntry">at com.adven.concordion.extensions.exam.core.commands.ExamCommand.execute (ExamCommand.kt:14)</div><div class="stackTraceEntry">at org.concordion.api.AbstractCommandDecorator$2.run (AbstractCommandDecorator.java:25)</div><div class="stackTraceEntry">at org.concordion.internal.command.LocalTextDecorator.process (LocalTextDecorator.java:26)</div><div class="stackTraceEntry">at org.concordion.api.AbstractCommandDecorator.execute (AbstractCommandDecorator.java:23)</div><div class="stackTraceEntry">at org.concordion.api.AbstractCommandDecorator$2.run (AbstractCommandDecorator.java:25)</div><div class="stackTraceEntry">at org.concordion.internal.command.ThrowableCatchingDecorator.process (ThrowableCatchingDecorator.java:38)</div><div class="stackTraceEntry">at org.concordion.api.AbstractCommandDecorator.execute (AbstractCommandDecorator.java:23)</div><div class="stackTraceEntry">at org.concordion.api.CommandCall.execute (CommandCall.java:72)</div><div class="stackTraceEntry">at org.concordion.api.CommandCallList.processSequentially (CommandCallList.java:33)</div><div class="stackTraceEntry">at org.concordion.internal.command.ExampleCommand.execute (ExampleCommand.java:42)</div><div class="stackTraceEntry">at org.concordion.api.AbstractCommandDecorator$2.run (AbstractCommandDecorator.java:25)</div><div class="stackTraceEntry">at org.concordion.internal.command.LocalTextDecorator.process (LocalTextDecorator.java:26)</div><div class="stackTraceEntry">at org.concordion.api.AbstractCommandDecorator.execute (AbstractCommandDecorator.java:23)</div><div class="stackTraceEntry">at org.concordion.api.AbstractCommandDecorator$2.run (AbstractCommandDecorator.java:25)</div><div class="stackTraceEntry">at org.concordion.internal.command.ThrowableCatchingDecorator.process (ThrowableCatchingDecorator.java:38)</div><div class="stackTraceEntry">at org.concordion.api.AbstractCommandDecorator.execute (AbstractCommandDecorator.java:23)</div><div class="stackTraceEntry">at org.concordion.api.CommandCall.execute (CommandCall.java:72)</div><div class="stackTraceEntry">at org.concordion.internal.XMLSpecification.processNode (XMLSpecification.java:61)</div><div class="stackTraceEntry">at org.concordion.internal.XMLSpecification.processExample (XMLSpecification.java:85)</div><div class="stackTraceEntry">at org.concordion.Concordion.processExample (Concordion.java:103)</div><div class="stackTraceEntry">at org.concordion.internal.FixtureRunner.run (FixtureRunner.java:37)</div><div class="stackTraceEntry">at org.concordion.integration.junit4.ConcordionRunner.invoke (ConcordionRunner.java:203)</div><div class="stackTraceEntry">at org.concordion.integration.junit4.ConcordionRunner$1.invoke (ConcordionRunner.java:31)</div><div class="stackTraceEntry">at org.concordion.integration.junit4.ConcordionFrameworkMethod.invokeExplosively (ConcordionFrameworkMethod.java:58)</div><div class="stackTraceEntry">at org.junit.internal.runners.statements.InvokeMethod.evaluate (InvokeMethod.java:17)</div><div class="stackTraceEntry">at org.junit.runners.ParentRunner.runLeaf (ParentRunner.java:325)</div><div class="stackTraceEntry">at org.junit.runners.BlockJUnit4ClassRunner.runChild (BlockJUnit4ClassRunner.java:78)</div><div class="stackTraceEntry">at org.concordion.integration.junit4.ConcordionRunner.runChild (ConcordionRunner.java:187)</div><div class="stackTraceEntry">at org.concordion.integration.junit4.ConcordionRunner.runChild (ConcordionRunner.java:23)</div><div class="stackTraceEntry">at org.junit.runners.ParentRunner$3.run (ParentRunner.java:290)</div><div class="stackTraceEntry">at org.junit.runners.ParentRunner$1.schedule (ParentRunner.java:71)</div><div class="stackTraceEntry">at org.junit.runners.ParentRunner.runChildren (ParentRunner.java:288)</div><div class="stackTraceEntry">at org.junit.runners.ParentRunner.access$000 (ParentRunner.java:58)</div><div class="stackTraceEntry">at org.junit.runners.ParentRunner$2.evaluate (ParentRunner.java:268)</div><div class="stackTraceEntry">at org.junit.runners.ParentRunner.run (ParentRunner.java:363)</div><div class="stackTraceEntry">at org.concordion.integration.junit4.ConcordionRunner.run (ConcordionRunner.java:146)</div><div class="stackTraceEntry">at org.junit.runners.Suite.runChild (Suite.java:128)</div><div class="stackTraceEntry">at org.junit.runners.Suite.runChild (Suite.java:27)</div><div class="stackTraceEntry">at org.junit.runners.ParentRunner$3.run (ParentRunner.java:290)</div><div class="stackTraceEntry">at org.junit.runners.ParentRunner$1.schedule (ParentRunner.java:71)</div><div class="stackTraceEntry">at org.junit.runners.ParentRunner.runChildren (ParentRunner.java:288)</div><div class="stackTraceEntry">at org.junit.runners.ParentRunner.access$000 (ParentRunner.java:58)</div><div class="stackTraceEntry">at org.junit.runners.ParentRunner$2.evaluate (ParentRunner.java:268)</div><div class="stackTraceEntry">at org.junit.runners.ParentRunner.run (ParentRunner.java:363)</div><div class="stackTraceEntry">at org.junit.runner.JUnitCore.run (JUnitCore.java:137)</div><div class="stackTraceEntry">at org.junit.runner.JUnitCore.run (JUnitCore.java:115)</div><div class="stackTraceEntry">at org.junit.runner.JUnitCore.run (JUnitCore.java:105)</div><div class="stackTraceEntry">at org.junit.runner.JUnitCore.runClasses (JUnitCore.java:62)</div><div class="stackTraceEntry">at org.junit.runner.JUnitCore.runClasses (JUnitCore.java:49)</div><div class="stackTraceEntry">at org.concordion.internal.runner.DefaultConcordionRunner.runJUnitClass (DefaultConcordionRunner.java:78)</div><div class="stackTraceEntry">at org.concordion.internal.runner.DefaultConcordionRunner.runTestClass (DefaultConcordionRunner.java:44)</div><div class="stackTraceEntry">at org.concordion.internal.runner.DefaultConcordionRunner.execute (DefaultConcordionRunner.java:19)</div><div class="stackTraceEntry">at org.concordion.internal.command.SequentialRunStrategy.call (SequentialRunStrategy.java:10)</div><div class="stackTraceEntry">at org.concordion.internal.command.RunCommand.execute (RunCommand.java:80)</div><div class="stackTraceEntry">at org.concordion.api.AbstractCommandDecorator$2.run (AbstractCommandDecorator.java:25)</div><div class="stackTraceEntry">at org.concordion.internal.command.LocalTextDecorator.process (LocalTextDecorator.java:26)</div><div class="stackTraceEntry">at org.concordion.api.AbstractCommandDecorator.execute (AbstractCommandDecorator.java:23)</div><div class="stackTraceEntry">at org.concordion.api.AbstractCommandDecorator$2.run (AbstractCommandDecorator.java:25)</div><div class="stackTraceEntry">at org.concordion.internal.command.ThrowableCatchingDecorator.process (ThrowableCatchingDecorator.java:38)</div><div class="stackTraceEntry">at org.concordion.api.AbstractCommandDecorator.execute (AbstractCommandDecorator.java:23)</div><div class="stackTraceEntry">at org.concordion.api.CommandCall.execute (CommandCall.java:72)</div><div class="stackTraceEntry">at org.concordion.api.CommandCallList.processSequentially (CommandCallList.java:33)</div><div class="stackTraceEntry">at org.concordion.internal.command.SpecificationCommand.execute (SpecificationCommand.java:36)</div><div class="stackTraceEntry">at org.concordion.api.CommandCall.execute (CommandCall.java:72)</div><div class="stackTraceEntry">at org.concordion.internal.XMLSpecification.processNode (XMLSpecification.java:61)</div><div class="stackTraceEntry">at org.concordion.internal.XMLSpecification.processExample (XMLSpecification.java:78)</div><div class="stackTraceEntry">at org.concordion.Concordion.processExample (Concordion.java:103)</div><div class="stackTraceEntry">at org.concordion.internal.FixtureRunner.run (FixtureRunner.java:37)</div><div class="stackTraceEntry">at org.concordion.integration.junit4.ConcordionRunner.invoke (ConcordionRunner.java:203)</div><div class="stackTraceEntry">at org.concordion.integration.junit4.ConcordionRunner$1.invoke (ConcordionRunner.java:31)</div><div class="stackTraceEntry">at org.concordion.integration.junit4.ConcordionFrameworkMethod.invokeExplosively (ConcordionFrameworkMethod.java:58)</div><div class="stackTraceEntry">at org.junit.internal.runners.statements.InvokeMethod.evaluate (InvokeMethod.java:17)</div><div class="stackTraceEntry">at org.junit.runners.ParentRunner.runLeaf (ParentRunner.java:325)</div><div class="stackTraceEntry">at org.junit.runners.BlockJUnit4ClassRunner.runChild (BlockJUnit4ClassRunner.java:78)</div><div class="stackTraceEntry">at org.concordion.integration.junit4.ConcordionRunner.runChild (ConcordionRunner.java:187)</div><div class="stackTraceEntry">at org.concordion.integration.junit4.ConcordionRunner.runChild (ConcordionRunner.java:23)</div><div class="stackTraceEntry">at org.junit.runners.ParentRunner$3.run (ParentRunner.java:290)</div><div class="stackTraceEntry">at org.junit.runners.ParentRunner$1.schedule (ParentRunner.java:71)</div><div class="stackTraceEntry">at org.junit.runners.ParentRunner.runChildren (ParentRunner.java:288)</div><div class="stackTraceEntry">at org.junit.runners.ParentRunner.access$000 (ParentRunner.java:58)</div><div class="stackTraceEntry">at org.junit.runners.ParentRunner$2.evaluate (ParentRunner.java:268)</div><div class="stackTraceEntry">at org.junit.runners.ParentRunner.run (ParentRunner.java:363)</div><div class="stackTraceEntry">at org.concordion.integration.junit4.ConcordionRunner.run (ConcordionRunner.java:146)</div><div class="stackTraceEntry">at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassExecutor.runTestClass (JUnitTestClassExecutor.java:110)</div><div class="stackTraceEntry">at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassExecutor.execute (JUnitTestClassExecutor.java:58)</div><div class="stackTraceEntry">at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassExecutor.execute (JUnitTestClassExecutor.java:38)</div><div class="stackTraceEntry">at org.gradle.api.internal.tasks.testing.junit.AbstractJUnitTestClassProcessor.processTestClass (AbstractJUnitTestClassProcessor.java:62)</div><div class="stackTraceEntry">at org.gradle.api.internal.tasks.testing.SuiteTestClassProcessor.processTestClass (SuiteTestClassProcessor.java:51)</div><div class="stackTraceEntry">at sun.reflect.NativeMethodAccessorImpl.invoke0 (NativeMethodAccessorImpl.java:-2)</div><div class="stackTraceEntry">at sun.reflect.NativeMethodAccessorImpl.invoke (NativeMethodAccessorImpl.java:62)</div><div class="stackTraceEntry">at sun.reflect.DelegatingMethodAccessorImpl.invoke (DelegatingMethodAccessorImpl.java:43)</div><div class="stackTraceEntry">at java.lang.reflect.Method.invoke (Method.java:498)</div><div class="stackTraceEntry">at org.gradle.internal.dispatch.ReflectionDispatch.dispatch (ReflectionDispatch.java:35)</div><div class="stackTraceEntry">at org.gradle.internal.dispatch.ReflectionDispatch.dispatch (ReflectionDispatch.java:24)</div><div class="stackTraceEntry">at org.gradle.internal.dispatch.ContextClassLoaderDispatch.dispatch (ContextClassLoaderDispatch.java:32)</div><div class="stackTraceEntry">at org.gradle.internal.dispatch.ProxyDispatchAdapter$DispatchingInvocationHandler.invoke (ProxyDispatchAdapter.java:93)</div><div class="stackTraceEntry">at com.sun.proxy.$Proxy2.processTestClass (Unknown Source)</div><div class="stackTraceEntry">at org.gradle.api.internal.tasks.testing.worker.TestWorker.processTestClass (TestWorker.java:118)</div><div class="stackTraceEntry">at sun.reflect.NativeMethodAccessorImpl.invoke0 (NativeMethodAccessorImpl.java:-2)</div><div class="stackTraceEntry">at sun.reflect.NativeMethodAccessorImpl.invoke (NativeMethodAccessorImpl.java:62)</div><div class="stackTraceEntry">at sun.reflect.DelegatingMethodAccessorImpl.invoke (DelegatingMethodAccessorImpl.java:43)</div><div class="stackTraceEntry">at java.lang.reflect.Method.invoke (Method.java:498)</div><div class="stackTraceEntry">at org.gradle.internal.dispatch.ReflectionDispatch.dispatch (ReflectionDispatch.java:35)</div><div class="stackTraceEntry">at org.gradle.internal.dispatch.ReflectionDispatch.dispatch (ReflectionDispatch.java:24)</div><div class="stackTraceEntry">at org.gradle.internal.remote.internal.hub.MessageHubBackedObjectConnection$DispatchWrapper.dispatch (MessageHubBackedObjectConnection.java:175)</div><div class="stackTraceEntry">at org.gradle.internal.remote.internal.hub.MessageHubBackedObjectConnection$DispatchWrapper.dispatch (MessageHubBackedObjectConnection.java:157)</div><div class="stackTraceEntry">at org.gradle.internal.remote.internal.hub.MessageHub$Handler.run (MessageHub.java:404)</div><div class="stackTraceEntry">at org.gradle.internal.concurrent.ExecutorPolicy$CatchAndRecordFailures.onExecute (ExecutorPolicy.java:63)</div><div class="stackTraceEntry">at org.gradle.internal.concurrent.ManagedExecutorImpl$1.run (ManagedExecutorImpl.java:46)</div><div class="stackTraceEntry">at java.util.concurrent.ThreadPoolExecutor.runWorker (ThreadPoolExecutor.java:1149)</div><div class="stackTraceEntry">at java.util.concurrent.ThreadPoolExecutor$Worker.run (ThreadPoolExecutor.java:624)</div><div class="stackTraceEntry">at org.gradle.internal.concurrent.ThreadFactoryImpl$ManagedThreadRunnable.run (ThreadFactoryImpl.java:55)</div><div class="stackTraceEntry">at java.lang.Thread.run (Thread.java:748)</div><div class="stackTraceExceptionMessage">java.lang.IllegalArgumentException: Illegal pattern component: XXX</div><div class="stackTraceEntry">at org.joda.time.format.DateTimeFormat.parsePatternTo (DateTimeFormat.java:566)</div><div class="stackTraceEntry">at org.joda.time.format.DateTimeFormat.createFormatterForPattern (DateTimeFormat.java:687)</div><div class="stackTraceEntry">at org.joda.time.format.DateTimeFormat.forPattern (DateTimeFormat.java:177)</div><div class="stackTraceEntry">at com.adven.concordion.extensions.exam.core.utils.HelperSource$date.parseDate (HelperSource.kt:166)</div><div class="stackTraceEntry">at com.adven.concordion.extensions.exam.core.utils.HelperSource$date.parseDate (HelperSource.kt:157)</div><div class="stackTraceEntry">at com.adven.concordion.extensions.exam.core.utils.HelperSource$date.invoke (HelperSource.kt:150)</div><div class="stackTraceEntry">at com.adven.concordion.extensions.exam.core.utils.HelperSource.apply (HelperSource.kt:246)</div><div class="stackTraceEntry">at com.github.jknack.handlebars.internal.Variable.value (Variable.java:181)</div><div class="stackTraceEntry">at com.github.jknack.handlebars.internal.VarParam.apply (VarParam.java:46)</div><div class="stackTraceEntry">at com.github.jknack.handlebars.internal.HelperResolver.determineContext (HelperResolver.java:146)</div><div class="stackTraceEntry">at com.github.jknack.handlebars.internal.Variable.value (Variable.java:181)</div><div class="stackTraceEntry">at com.github.jknack.handlebars.internal.Variable.merge (Variable.java:160)</div><div class="stackTraceEntry">at com.github.jknack.handlebars.internal.BaseTemplate.apply (BaseTemplate.java:130)</div><div class="stackTraceEntry">at com.github.jknack.handlebars.internal.TemplateList.merge (TemplateList.java:95)</div><div class="stackTraceEntry">at com.github.jknack.handlebars.internal.BaseTemplate.apply (BaseTemplate.java:130)</div><div class="stackTraceEntry">at com.github.jknack.handlebars.internal.BaseTemplate.apply (BaseTemplate.java:118)</div><div class="stackTraceEntry">at com.github.jknack.handlebars.internal.ForwardingTemplate.apply (ForwardingTemplate.java:100)</div><div class="stackTraceEntry">at com.adven.concordion.extensions.exam.core.utils.HelperSourceKt.resolve (HelperSource.kt:57)</div><div class="stackTraceEntry">at com.adven.concordion.extensions.exam.core.PlaceholdersResolver.resolve (PlaceholdersResolver.kt:21)</div><div class="stackTraceEntry">at com.adven.concordion.extensions.exam.core.PlaceholdersResolver.resolveTxt (PlaceholdersResolver.kt:26)</div><div class="stackTraceEntry">at com.adven.concordion.extensions.exam.core.PlaceholdersResolver.resolveJson (PlaceholdersResolver.kt:17)</div><div class="stackTraceEntry">at com.adven.concordion.extensions.exam.ws.CaseCommand.resolve (RestCommands.kt:396)</div><div class="stackTraceEntry">at com.adven.concordion.extensions.exam.ws.CaseCommand.check (RestCommands.kt:374)</div><div class="stackTraceEntry">at com.adven.concordion.extensions.exam.ws.CaseCommand.execute (RestCommands.kt:283)</div><div class="stackTraceEntry">at org.concordion.api.AbstractCommandDecorator$2.run (AbstractCommandDecorator.java:25)</div><div class="stackTraceEntry">at org.concordion.internal.command.LocalTextDecorator.process (LocalTextDecorator.java:26)</div><div class="stackTraceEntry">at org.concordion.api.AbstractCommandDecorator.execute (AbstractCommandDecorator.java:23)</div><div class="stackTraceEntry">at org.concordion.api.AbstractCommandDecorator$2.run (AbstractCommandDecorator.java:25)</div><div class="stackTraceEntry">at org.concordion.internal.command.ThrowableCatchingDecorator.process (ThrowableCatchingDecorator.java:38)</div><div class="stackTraceEntry">at org.concordion.api.AbstractCommandDecorator.execute (AbstractCommandDecorator.java:23)</div><div class="stackTraceEntry">at org.concordion.api.CommandCall.execute (CommandCall.java:72)</div><div class="stackTraceEntry">at org.concordion.api.CommandCallList.processSequentially (CommandCallList.java:33)</div><div class="stackTraceEntry">at com.adven.concordion.extensions.exam.core.commands.ExamCommand.execute (ExamCommand.kt:14)</div><div class="stackTraceEntry">at org.concordion.api.AbstractCommandDecorator$2.run (AbstractCommandDecorator.java:25)</div><div class="stackTraceEntry">at org.concordion.internal.command.LocalTextDecorator.process (LocalTextDecorator.java:26)</div><div class="stackTraceEntry">at org.concordion.api.AbstractCommandDecorator.execute (AbstractCommandDecorator.java:23)</div><div class="stackTraceEntry">at org.concordion.api.AbstractCommandDecorator$2.run (AbstractCommandDecorator.java:25)</div><div class="stackTraceEntry">at org.concordion.internal.command.ThrowableCatchingDecorator.process (ThrowableCatchingDecorator.java:38)</div><div class="stackTraceEntry">at org.concordion.api.AbstractCommandDecorator.execute (AbstractCommandDecorator.java:23)</div><div class="stackTraceEntry">at org.concordion.api.CommandCall.execute (CommandCall.java:72)</div><div class="stackTraceEntry">at org.concordion.api.CommandCallList.processSequentially (CommandCallList.java:33)</div><div class="stackTraceEntry">at org.concordion.internal.command.ExampleCommand.execute (ExampleCommand.java:42)</div><div class="stackTraceEntry">at org.concordion.api.AbstractCommandDecorator$2.run (AbstractCommandDecorator.java:25)</div><div class="stackTraceEntry">at org.concordion.internal.command.LocalTextDecorator.process (LocalTextDecorator.java:26)</div><div class="stackTraceEntry">at org.concordion.api.AbstractCommandDecorator.execute (AbstractCommandDecorator.java:23)</div><div class="stackTraceEntry">at org.concordion.api.AbstractCommandDecorator$2.run (AbstractCommandDecorator.java:25)</div><div class="stackTraceEntry">at org.concordion.internal.command.ThrowableCatchingDecorator.process (ThrowableCatchingDecorator.java:38)</div><div class="stackTraceEntry">at org.concordion.api.AbstractCommandDecorator.execute (AbstractCommandDecorator.java:23)</div><div class="stackTraceEntry">at org.concordion.api.CommandCall.execute (CommandCall.java:72)</div><div class="stackTraceEntry">at org.concordion.internal.XMLSpecification.processNode (XMLSpecification.java:61)</div><div class="stackTraceEntry">at org.concordion.internal.XMLSpecification.processExample (XMLSpecification.java:85)</div><div class="stackTraceEntry">at org.concordion.Concordion.processExample (Concordion.java:103)</div><div class="stackTraceEntry">at org.concordion.internal.FixtureRunner.run (FixtureRunner.java:37)</div><div class="stackTraceEntry">at org.concordion.integration.junit4.ConcordionRunner.invoke (ConcordionRunner.java:203)</div><div class="stackTraceEntry">at org.concordion.integration.junit4.ConcordionRunner$1.invoke (ConcordionRunner.java:31)</div><div class="stackTraceEntry">at org.concordion.integration.junit4.ConcordionFrameworkMethod.invokeExplosively (ConcordionFrameworkMethod.java:58)</div><div class="stackTraceEntry">at org.junit.internal.runners.statements.InvokeMethod.evaluate (InvokeMethod.java:17)</div><div class="stackTraceEntry">at org.junit.runners.ParentRunner.runLeaf (ParentRunner.java:325)</div><div class="stackTraceEntry">at org.junit.runners.BlockJUnit4ClassRunner.runChild (BlockJUnit4ClassRunner.java:78)</div><div class="stackTraceEntry">at org.concordion.integration.junit4.ConcordionRunner.runChild (ConcordionRunner.java:187)</div><div class="stackTraceEntry">at org.concordion.integration.junit4.ConcordionRunner.runChild (ConcordionRunner.java:23)</div><div class="stackTraceEntry">at org.junit.runners.ParentRunner$3.run (ParentRunner.java:290)</div><div class="stackTraceEntry">at org.junit.runners.ParentRunner$1.schedule (ParentRunner.java:71)</div><div class="stackTraceEntry">at org.junit.runners.ParentRunner.runChildren (ParentRunner.java:288)</div><div class="stackTraceEntry">at org.junit.runners.ParentRunner.access$000 (ParentRunner.java:58)</div><div class="stackTraceEntry">at org.junit.runners.ParentRunner$2.evaluate (ParentRunner.java:268)</div><div class="stackTraceEntry">at org.junit.runners.ParentRunner.run (ParentRunner.java:363)</div><div class="stackTraceEntry">at org.concordion.integration.junit4.ConcordionRunner.run (ConcordionRunner.java:146)</div><div class="stackTraceEntry">at org.junit.runners.Suite.runChild (Suite.java:128)</div><div class="stackTraceEntry">at org.junit.runners.Suite.runChild (Suite.java:27)</div><div class="stackTraceEntry">at org.junit.runners.ParentRunner$3.run (ParentRunner.java:290)</div><div class="stackTraceEntry">at org.junit.runners.ParentRunner$1.schedule (ParentRunner.java:71)</div><div class="stackTraceEntry">at org.junit.runners.ParentRunner.runChildren (ParentRunner.java:288)</div><div class="stackTraceEntry">at org.junit.runners.ParentRunner.access$000 (ParentRunner.java:58)</div><div class="stackTraceEntry">at org.junit.runners.ParentRunner$2.evaluate (ParentRunner.java:268)</div><div class="stackTraceEntry">at org.junit.runners.ParentRunner.run (ParentRunner.java:363)</div><div class="stackTraceEntry">at org.junit.runner.JUnitCore.run (JUnitCore.java:137)</div><div class="stackTraceEntry">at org.junit.runner.JUnitCore.run (JUnitCore.java:115)</div><div class="stackTraceEntry">at org.junit.runner.JUnitCore.run (JUnitCore.java:105)</div><div class="stackTraceEntry">at org.junit.runner.JUnitCore.runClasses (JUnitCore.java:62)</div><div class="stackTraceEntry">at org.junit.runner.JUnitCore.runClasses (JUnitCore.java:49)</div><div class="stackTraceEntry">at org.concordion.internal.runner.DefaultConcordionRunner.runJUnitClass (DefaultConcordionRunner.java:78)</div><div class="stackTraceEntry">at org.concordion.internal.runner.DefaultConcordionRunner.runTestClass (DefaultConcordionRunner.java:44)</div><div class="stackTraceEntry">at org.concordion.internal.runner.DefaultConcordionRunner.execute (DefaultConcordionRunner.java:19)</div><div class="stackTraceEntry">at org.concordion.internal.command.SequentialRunStrategy.call (SequentialRunStrategy.java:10)</div><div class="stackTraceEntry">at org.concordion.internal.command.RunCommand.execute (RunCommand.java:80)</div><div class="stackTraceEntry">at org.concordion.api.AbstractCommandDecorator$2.run (AbstractCommandDecorator.java:25)</div><div class="stackTraceEntry">at org.concordion.internal.command.LocalTextDecorator.process (LocalTextDecorator.java:26)</div><div class="stackTraceEntry">at org.concordion.api.AbstractCommandDecorator.execute (AbstractCommandDecorator.java:23)</div><div class="stackTraceEntry">at org.concordion.api.AbstractCommandDecorator$2.run (AbstractCommandDecorator.java:25)</div><div class="stackTraceEntry">at org.concordion.internal.command.ThrowableCatchingDecorator.process (ThrowableCatchingDecorator.java:38)</div><div class="stackTraceEntry">at org.concordion.api.AbstractCommandDecorator.execute (AbstractCommandDecorator.java:23)</div><div class="stackTraceEntry">at org.concordion.api.CommandCall.execute (CommandCall.java:72)</div><div class="stackTraceEntry">at org.concordion.api.CommandCallList.processSequentially (CommandCallList.java:33)</div><div class="stackTraceEntry">at org.concordion.internal.command.SpecificationCommand.execute (SpecificationCommand.java:36)</div><div class="stackTraceEntry">at org.concordion.api.CommandCall.execute (CommandCall.java:72)</div><div class="stackTraceEntry">at org.concordion.internal.XMLSpecification.processNode (XMLSpecification.java:61)</div><div class="stackTraceEntry">at org.concordion.internal.XMLSpecification.processExample (XMLSpecification.java:78)</div><div class="stackTraceEntry">at org.concordion.Concordion.processExample (Concordion.java:103)</div><div class="stackTraceEntry">at org.concordion.internal.FixtureRunner.run (FixtureRunner.java:37)</div><div class="stackTraceEntry">at org.concordion.integration.junit4.ConcordionRunner.invoke (ConcordionRunner.java:203)</div><div class="stackTraceEntry">at org.concordion.integration.junit4.ConcordionRunner$1.invoke (ConcordionRunner.java:31)</div><div class="stackTraceEntry">at org.concordion.integration.junit4.ConcordionFrameworkMethod.invokeExplosively (ConcordionFrameworkMethod.java:58)</div><div class="stackTraceEntry">at org.junit.internal.runners.statements.InvokeMethod.evaluate (InvokeMethod.java:17)</div><div class="stackTraceEntry">at org.junit.runners.ParentRunner.runLeaf (ParentRunner.java:325)</div><div class="stackTraceEntry">at org.junit.runners.BlockJUnit4ClassRunner.runChild (BlockJUnit4ClassRunner.java:78)</div><div class="stackTraceEntry">at org.concordion.integration.junit4.ConcordionRunner.runChild (ConcordionRunner.java:187)</div><div class="stackTraceEntry">at org.concordion.integration.junit4.ConcordionRunner.runChild (ConcordionRunner.java:23)</div><div class="stackTraceEntry">at org.junit.runners.ParentRunner$3.run (ParentRunner.java:290)</div><div class="stackTraceEntry">at org.junit.runners.ParentRunner$1.schedule (ParentRunner.java:71)</div><div class="stackTraceEntry">at org.junit.runners.ParentRunner.runChildren (ParentRunner.java:288)</div><div class="stackTraceEntry">at org.junit.runners.ParentRunner.access$000 (ParentRunner.java:58)</div><div class="stackTraceEntry">at org.junit.runners.ParentRunner$2.evaluate (ParentRunner.java:268)</div><div class="stackTraceEntry">at org.junit.runners.ParentRunner.run (ParentRunner.java:363)</div><div class="stackTraceEntry">at org.concordion.integration.junit4.ConcordionRunner.run (ConcordionRunner.java:146)</div><div class="stackTraceEntry">at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassExecutor.runTestClass (JUnitTestClassExecutor.java:110)</div><div class="stackTraceEntry">at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassExecutor.execute (JUnitTestClassExecutor.java:58)</div><div class="stackTraceEntry">at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassExecutor.execute (JUnitTestClassExecutor.java:38)</div><div class="stackTraceEntry">at org.gradle.api.internal.tasks.testing.junit.AbstractJUnitTestClassProcessor.processTestClass (AbstractJUnitTestClassProcessor.java:62)</div><div class="stackTraceEntry">at org.gradle.api.internal.tasks.testing.SuiteTestClassProcessor.processTestClass (SuiteTestClassProcessor.java:51)</div><div class="stackTraceEntry">at sun.reflect.NativeMethodAccessorImpl.invoke0 (NativeMethodAccessorImpl.java:-2)</div><div class="stackTraceEntry">at sun.reflect.NativeMethodAccessorImpl.invoke (NativeMethodAccessorImpl.java:62)</div><div class="stackTraceEntry">at sun.reflect.DelegatingMethodAccessorImpl.invoke (DelegatingMethodAccessorImpl.java:43)</div><div class="stackTraceEntry">at java.lang.reflect.Method.invoke (Method.java:498)</div><div class="stackTraceEntry">at org.gradle.internal.dispatch.ReflectionDispatch.dispatch (ReflectionDispatch.java:35)</div><div class="stackTraceEntry">at org.gradle.internal.dispatch.ReflectionDispatch.dispatch (ReflectionDispatch.java:24)</div><div class="stackTraceEntry">at org.gradle.internal.dispatch.ContextClassLoaderDispatch.dispatch (ContextClassLoaderDispatch.java:32)</div><div class="stackTraceEntry">at org.gradle.internal.dispatch.ProxyDispatchAdapter$DispatchingInvocationHandler.invoke (ProxyDispatchAdapter.java:93)</div><div class="stackTraceEntry">at com.sun.proxy.$Proxy2.processTestClass (Unknown Source)</div><div class="stackTraceEntry">at org.gradle.api.internal.tasks.testing.worker.TestWorker.processTestClass (TestWorker.java:118)</div><div class="stackTraceEntry">at sun.reflect.NativeMethodAccessorImpl.invoke0 (NativeMethodAccessorImpl.java:-2)</div><div class="stackTraceEntry">at sun.reflect.NativeMethodAccessorImpl.invoke (NativeMethodAccessorImpl.java:62)</div><div class="stackTraceEntry">at sun.reflect.DelegatingMethodAccessorImpl.invoke (DelegatingMethodAccessorImpl.java:43)</div><div class="stackTraceEntry">at java.lang.reflect.Method.invoke (Method.java:498)</div><div class="stackTraceEntry">at org.gradle.internal.dispatch.ReflectionDispatch.dispatch (ReflectionDispatch.java:35)</div><div class="stackTraceEntry">at org.gradle.internal.dispatch.ReflectionDispatch.dispatch (ReflectionDispatch.java:24)</div><div class="stackTraceEntry">at org.gradle.internal.remote.internal.hub.MessageHubBackedObjectConnection$DispatchWrapper.dispatch (MessageHubBackedObjectConnection.java:175)</div><div class="stackTraceEntry">at org.gradle.internal.remote.internal.hub.MessageHubBackedObjectConnection$DispatchWrapper.dispatch (MessageHubBackedObjectConnection.java:157)</div><div class="stackTraceEntry">at org.gradle.internal.remote.internal.hub.MessageHub$Handler.run (MessageHub.java:404)</div><div class="stackTraceEntry">at org.gradle.internal.concurrent.ExecutorPolicy$CatchAndRecordFailures.onExecute (ExecutorPolicy.java:63)</div><div class="stackTraceEntry">at org.gradle.internal.concurrent.ManagedExecutorImpl$1.run (ManagedExecutorImpl.java:46)</div><div class="stackTraceEntry">at java.util.concurrent.ThreadPoolExecutor.runWorker (ThreadPoolExecutor.java:1149)</div><div class="stackTraceEntry">at java.util.concurrent.ThreadPoolExecutor$Worker.run (ThreadPoolExecutor.java:624)</div><div class="stackTraceEntry">at org.gradle.internal.concurrent.ThreadFactoryImpl$ManagedThreadRunnable.run (ThreadFactoryImpl.java:55)</div><div class="stackTraceEntry">at java.lang.Thread.run (Thread.java:748)</div></div></tr><pre class="alert alert-warning small">Error while executing command:
+
+&lt;e:case desc="Can retrieve stored widgets"&gt;
+            &lt;e:expected&gt;
+                [{
+                "id": 1,
+                "name": "widget1",
+                "quantity": 10,
+                "updatedAt": "{{dateFormat upd1 format}}"
+                }, {
+                "id": 2,
+                "name": "widget2",
+                "quantity": 20,
+                "updatedAt": "{{dateFormat upd2 format}}"
+                }, {
+                "id": 3,
+                "name": "widget3",
+                "quantity": 30,
+                "updatedAt": "{{dateFormat (date '01.02.2000 10:20+03:00' format="dd.MM.yyyy HH:mmXXX") format}}"
+                }, {
+                "id": 4,
+                "name": "widget4",
+                "quantity": 40,
+                "updatedAt": "{{dateFormat (date upd2 plus='12 h') format}}"
+                }]
+            &lt;/e:expected&gt;
+        &lt;/e:case&gt;
+
+Illegal pattern component: XXX</pre>
+    <div><h4><span class="badge badge-success ml-1 mr-1">GET</span><span class="badge badge-info ml-1 mr-1">application/json</span><code>/widgets</code></h4></div></table></div>
+</div><div class="card-footer text-muted" data-toggle="collapse" data-target="#1413626223" aria-expanded="true" aria-controls="1413626223"><small><span class="badge badge-pill badge-success"></span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger">2</span></small></div></div>
+<br />
+<h3>CRUD</h3>
+<blockquote class="blockquote">
+    <p class="mb-0">If graybox-style testing (with direct DB interactions) feels wrong to you, here is the example of blackbox one:</p>
+</blockquote>
+<div xmlns:c="http://www.concordion.org/2007/concordion" name="CRUD" print="true" cmdId="5c32265e-e487-447c-a9dc-3f5b921bcac6" c:example="CRUD" class="card mb-3" e:example="" id="CRUD"><div class="card-header" data-toggle="collapse" data-target="#2077502" aria-expanded="true" aria-controls="2077502"><a name="CRUD" data-type="example">CRUD</a></div><div class="card-body collapse show" id="2077502"><pre class="xml card">
+&lt;e:given&gt;&lt;e:db-set caption="Given no widgets:" table="widgets" /&gt;&lt;/e:given&gt;
+&lt;e:post url="/widgets"&gt;
+        &lt;e:case desc="Create"&gt;
+            &lt;e:body&gt;{"name" : "widget1", "quantity": "10"}&lt;/e:body&gt;
+            &lt;e:expected statusCode="201" reasonPhrase="Created"&gt;
+                {
+                "id": "{{number}}",
+                "name": "widget1",
+                "quantity": 10,
+                "updatedAt": "{{string}}"
+                }
+            &lt;/e:expected&gt;
+        &lt;/e:case&gt;
+    &lt;/e:post&gt;
+&lt;e:then&gt;
+        &lt;e:set var="id" value="{{responseBody 'id'}}" /&gt;
+        &lt;e:set var="updatedAt" value="{{responseBody 'updatedAt'}}" /&gt;
+        Widget has id = &lt;code cc:echo="#id" /&gt; and updatedAt = &lt;code cc:echo="#updatedAt" /&gt;
+    &lt;/e:then&gt;
+&lt;e:get url="/widgets"&gt;
+        &lt;e:case desc="Read"&gt;
+            &lt;e:expected&gt;
+                [{ "id": {{id}}, "name": "widget1", "quantity": 10, "updatedAt": "{{updatedAt}}" }]
+            &lt;/e:expected&gt;
+        &lt;/e:case&gt;
+    &lt;/e:get&gt;
+&lt;e:put url="/widgets"&gt;
+        &lt;e:case desc="Update"&gt;
+            &lt;e:body&gt;{"id": {{id}}, "name": "new name", "quantity": "0"}&lt;/e:body&gt;
+            &lt;e:expected&gt;
+                { "id": {{id}}, "name": "new name", "quantity": 0, "updatedAt": "{{formattedAndWithinNow "yyyy-MM-dd'T'HH:mm:ss.SSSXXX" "5s"}}" }
+            &lt;/e:expected&gt;
+        &lt;/e:case&gt;
+    &lt;/e:put&gt;
+&lt;e:delete url="/widgets/{{id}}"&gt;
+        &lt;e:case desc="Delete"&gt;
+            &lt;e:expected /&gt;
+        &lt;/e:case&gt;
+    &lt;/e:delete&gt;</pre>
+    <div cmdId="2e9127f0-ac73-4c1f-bf1d-5f291ae7b460" e:given="" class="bd-callout bd-callout-info"><table cmdId="8d409ebb-e281-405f-abad-418ed55bedb5" e:db-set="" class="table table-sm"><div></div><span></span><caption>Given no widgets:<i class="fa fa-database fa-pull-left fa-border"></i></caption><thead class="thead-default"><tr /></thead><tbody /></table></div>
+    <div cmdId="4343dc84-2525-4f4c-9a39-90377d663e4e" e:post="" class="bd-callout bd-callout-success"><table class="table table-sm"><thead class="thead-default"><thead class="thead-default"><th>Request</th><th>Expected response</th><th>Status code</th></thead></thead>
+        <tr desc="Create" cmdId="d24f0013-2b43-46b8-a0c9-c361de5b65c2" e:case="" data-type="case" id="9) Create"><tr><td colspan="3" class="text-muted">9) Create</td></tr>
+            
+            
+        <tr><tr><td colspan="3"><div><i>POST </i><code>/widgets</code><span></span></div></td></tr><td class="json" style="max-width:550px">{
+  "name": "widget1",
+  "quantity": "10"
+}</td><td style="max-width:550px" class="json rest-success">{
+  "id": "${json-unit.any-number}",
+  "name": "widget1",
+  "quantity": 10,
+  "updatedAt": "${json-unit.any-string}"
+}</td><td class="rest-success">HTTP/1.1 201 Created</td></tr></tr>
+    <div><h4><span class="badge badge-success ml-1 mr-1">POST</span><span class="badge badge-info ml-1 mr-1">application/json</span><code>/widgets</code></h4></div></table></div>
+    <div cmdId="424701b5-b4b9-4da3-a370-3a5520f96091" e:then="" class="bd-callout bd-callout-success">
+        <pre var="id" value="{{responseBody 'id'}}" cmdId="578e3bee-0bdb-43c1-90d4-f7465ad3fb9f" e:set="" />
+        <pre var="updatedAt" value="{{responseBody 'updatedAt'}}" cmdId="2ce48b67-3a4c-4c60-8002-8014ff794a44" e:set="" />
+        Widget has id = <code cc:echo="#id">4</code> and updatedAt = <code cc:echo="#updatedAt">2020-05-04T17:50:15.123Z</code>
+    </div>
+    <div cmdId="d3940c00-3dfb-4729-8b53-da72dbd1da6f" e:get="" class="bd-callout bd-callout-success"><table class="table table-sm"><thead class="thead-default"><thead class="thead-default"><th>Expected response</th><th>Status code</th></thead></thead>
+        <tr desc="Read" cmdId="229706cc-dd41-49e1-b7ea-562875d1740c" e:case="" data-type="case" id="10) Read"><tr><td colspan="2" class="text-muted">10) Read</td></tr>
+            
+        <tr><tr><td colspan="2"><div><i>GET </i><code>/widgets</code><span></span></div></td></tr><td style="max-width:550px" class="json rest-success">[{
+  "id": 4,
+  "name": "widget1",
+  "quantity": 10,
+  "updatedAt": "2020-05-04T17:50:15.123Z"
+}]</td><td class="rest-success">HTTP/1.1 200 OK</td></tr></tr>
+    <div><h4><span class="badge badge-success ml-1 mr-1">GET</span><span class="badge badge-info ml-1 mr-1">application/json</span><code>/widgets</code></h4></div></table></div>
+    <div cmdId="1e94b28a-685f-4ba4-956f-9a3e7b185160" e:put="" class="bd-callout bd-callout-success"><table class="table table-sm"><thead class="thead-default"><thead class="thead-default"><th>Request</th><th>Expected response</th><th>Status code</th></thead></thead>
+        <tr desc="Update" cmdId="0859ec24-1d6b-4e95-912d-8fb2dafc5f77" e:case="" data-type="case" id="11) Update"><tr><td colspan="3" class="text-muted">11) Update</td></tr>
+            
+            
+        <tr><tr><td colspan="3"><div><i>PUT </i><code>/widgets</code><span></span></div></td></tr><td class="json" style="max-width:550px">{
+  "id": 4,
+  "name": "new name",
+  "quantity": "0"
+}</td><td style="max-width:550px" class="json rest-success">{
+  "id": 4,
+  "name": "new name",
+  "quantity": 0,
+  "updatedAt": "${json-unit.matches:formattedAndWithinNow}[yyyy-MM-dd'T'HH:mm:ss.SSSXXX][5s]"
+}</td><td class="rest-success">HTTP/1.1 200 OK</td></tr></tr>
+    <div><h4><span class="badge badge-success ml-1 mr-1">PUT</span><span class="badge badge-info ml-1 mr-1">application/json</span><code>/widgets</code></h4></div></table></div>
+    <div cmdId="e2bab053-ab06-44b0-bc80-fd6ec0fbba8a" e:delete="" class="bd-callout bd-callout-success"><table class="table table-sm"><thead class="thead-default"><thead class="thead-default"><th>Expected response</th><th>Status code</th></thead></thead>
+        <tr desc="Delete" cmdId="25c852ad-fe6c-4fbd-bdf2-f92feae5a744" e:case="" data-type="case" id="12) Delete"><tr><td colspan="2" class="text-muted">12) Delete</td></tr>
+            
+        <tr><tr><td colspan="2"><div><i>DELETE </i><code>/widgets/4</code><span></span></div></td></tr><td style="max-width:550px" class="json rest-success"> </td><td class="rest-success">HTTP/1.1 200 OK</td></tr></tr>
+    <div><h4><span class="badge badge-success ml-1 mr-1">DELETE</span><span class="badge badge-info ml-1 mr-1">application/json</span><code>/widgets/4</code></h4></div></table></div>
+</div><div class="card-footer text-muted" data-toggle="collapse" data-target="#2077502" aria-expanded="true" aria-controls="2077502"><small><span class="badge badge-pill badge-success">8</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small></div></div>
+<br />
+<h3>Testing asynchronous behavior</h3>
+<blockquote class="blockquote">
+    <p class="mb-0">Assume we need to trigger a job and do checks only after it's finished:</p>
+</blockquote>
+<div xmlns:c="http://www.concordion.org/2007/concordion" name="Trigger job and poll result with custom method" print="true" cmdId="be6cf64b-98ee-4d79-8c2b-0edda98b716e" c:example="Trigger job and poll result with custom method" class="card mb-3" e:example="" id="Trigger job and poll result with custom method"><div class="card-header" data-toggle="collapse" data-target="#1782657164" aria-expanded="true" aria-controls="1782657164"><a name="Trigger job and poll result with custom method" data-type="example">Trigger job and poll result with custom method</a></div><div class="card-body collapse show" id="1782657164"><pre class="xml card">
+&lt;e:post url="/jobs"&gt;
+        &lt;e:case desc="Trigger job with some optional body"&gt;
+            &lt;e:body&gt;{"name" : "value"}&lt;/e:body&gt;
+            &lt;e:expected&gt;{"id" : "{{number}}" }&lt;/e:expected&gt;
+        &lt;/e:case&gt;
+    &lt;/e:post&gt;
+&lt;e:when&gt;
+        &lt;e:set var="id" value="{{responseBody 'id'}}" /&gt;
+        &lt;e:await untilTrue="isDone(#id)" atMostSec="3" pollDelayMillis="500" pollIntervalMillis="1000" /&gt;
+        Job &lt;code cc:echo="#id" /&gt; is finished.
+    &lt;/e:when&gt;
+&lt;e:then&gt;
+        Now we can check result:
+        &lt;e:db-check table="jobResult" cols="result" where="id={{id}}"&gt;
+            &lt;e:row&gt;done&lt;/e:row&gt;
+        &lt;/e:db-check&gt;
+    &lt;/e:then&gt;</pre>
+    <div cmdId="ab1fc58f-4576-465e-914f-679aa7c17402" e:post="" class="bd-callout bd-callout-success"><table class="table table-sm"><thead class="thead-default"><thead class="thead-default"><th>Request</th><th>Expected response</th><th>Status code</th></thead></thead>
+        <tr desc="Trigger job with some optional body" cmdId="02a76afa-153d-4445-990d-b7533199e4ed" e:case="" data-type="case" id="13) Trigger job with some optional body"><tr><td colspan="3" class="text-muted">13) Trigger job with some optional body</td></tr>
+            
+            
+        <tr><tr><td colspan="3"><div><i>POST </i><code>/jobs</code><span></span></div></td></tr><td class="json" style="max-width:550px">{
+  "name": "value"
+}</td><td style="max-width:550px" class="json rest-success">{
+  "id": "${json-unit.any-number}"
+}</td><td class="rest-success">HTTP/1.1 200 OK</td></tr></tr>
+    <div><h4><span class="badge badge-success ml-1 mr-1">POST</span><span class="badge badge-info ml-1 mr-1">application/json</span><code>/jobs</code></h4></div></table></div>
+    <div cmdId="6512ee24-443e-4ab0-9e69-d933f7daa1d8" e:when="" class="bd-callout bd-callout-warning">
+        <pre var="id" value="{{responseBody 'id'}}" cmdId="b6a5e625-e9ad-4992-8d0e-3399bdea8052" e:set="" />
+        <span cmdId="b4d3eada-52ad-48a7-b8ef-4fd4e2a5f74c" e:await="" />
+        Job <code cc:echo="#id">1</code> is finished.
+    </div>
+    <div cmdId="cc4d6b74-abba-489b-8ba9-96efae4eb885" e:then="" class="bd-callout bd-callout-success">
+        Now we can check result:
+        <table cmdId="48cbc0c0-02b2-439b-bab4-bb7a67a6b32a" e:db-check="" class="table table-sm">
+            
+        <div></div><span></span><caption>jobResult<i class="fa fa-database fa-pull-left fa-border"></i></caption><thead class="thead-default"><tr><th>result</th></tr></thead><tr><td class="table-success">done</td></tr></table>
+    </div>
+</div><div class="card-footer text-muted" data-toggle="collapse" data-target="#1782657164" aria-expanded="true" aria-controls="1782657164"><small><span class="badge badge-pill badge-success">3</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small></div></div>
+<blockquote class="blockquote">
+    <p class="mb-0">Equivalent of previous example with explicit http polling:</p>
+</blockquote>
+<div xmlns:c="http://www.concordion.org/2007/concordion" name="Trigger job and poll result with http request" print="true" cmdId="ff2f32ef-e12d-4d46-85f5-bb0a9a39d0d8" c:example="Trigger job and poll result with http request" class="card mb-3" e:example="" id="Trigger job and poll result with http request"><div class="card-header" data-toggle="collapse" data-target="#51349339" aria-expanded="true" aria-controls="51349339"><a name="Trigger job and poll result with http request" data-type="example">Trigger job and poll result with http request</a></div><div class="card-body collapse show" id="51349339"><pre class="xml card">
+&lt;e:when&gt;
+        Trigger job on &lt;code cc:set="#url"&gt;/jobs&lt;/code&gt; with some optional body &lt;code cc:set="#json"&gt;{"name" : "value"}&lt;/code&gt;
+        &lt;e:await untilHttpPost="{{url}}" hasStatusCode="200"&gt;{{json}}&lt;/e:await&gt;
+        &lt;e:set var="id" value="{{responseBody 'id'}}" /&gt;
+        and wait until it's finished.
+        &lt;e:await untilHttpGet="/jobs/{{id}}" hasBodyFrom="/data/getting-started/job-finished.json" /&gt;
+        Job id = &lt;code cc:echo="#id" /&gt;
+    &lt;/e:when&gt;
+&lt;e:then&gt;
+        Now we can check result:
+        &lt;e:db-check table="jobResult" cols="result" where="id={{id}}"&gt;
+            &lt;e:row&gt;done&lt;/e:row&gt;
+        &lt;/e:db-check&gt;
+    &lt;/e:then&gt;</pre>
+    <div cmdId="b056c5b3-1309-4f38-bc31-abc5a93d80fb" e:when="" class="bd-callout bd-callout-warning">
+        Trigger job on <code cc:set="#url">/jobs</code> with some optional body <code cc:set="#json">{"name" : "value"}</code>
+        <span cmdId="9de3af4f-71dd-45e6-8920-dc3cbca197a6" e:await="" />
+        <pre var="id" value="{{responseBody 'id'}}" cmdId="009ae9f6-80c8-4764-a32b-ae91f4622941" e:set="" />
+        and wait until it's finished.
+        <span cmdId="d4da5d8b-84c9-4c9f-99dc-103fcd804ab1" e:await="" />
+        Job id = <code cc:echo="#id">2</code>
+    </div>
+    <div cmdId="dc6d3cc1-fff2-44ad-b98a-6ea376f3e1d4" e:then="" class="bd-callout bd-callout-success">
+        Now we can check result:
+        <table cmdId="be60c4e2-2a6b-4aa9-ac55-7ead93dbabc5" e:db-check="" class="table table-sm">
+            
+        <div></div><span></span><caption>jobResult<i class="fa fa-database fa-pull-left fa-border"></i></caption><thead class="thead-default"><tr><th>result</th></tr></thead><tr><td class="table-success">done</td></tr></table>
+    </div>
+</div><div class="card-footer text-muted" data-toggle="collapse" data-target="#51349339" aria-expanded="true" aria-controls="51349339"><small><span class="badge badge-pill badge-success">1</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small></div></div>
+<blockquote class="blockquote">
+    <p class="mb-0">Equivalent of previous example with awaiting by db-check:</p>
+</blockquote>
+<div xmlns:c="http://www.concordion.org/2007/concordion" name="Trigger job and poll result with db-check" print="true" cmdId="9183c8a3-52e8-46c1-9d90-a51d27a4075c" c:example="Trigger job and poll result with db-check" class="card mb-3" e:example="" id="Trigger job and poll result with db-check"><div class="card-header" data-toggle="collapse" data-target="#1980823901" aria-expanded="true" aria-controls="1980823901"><a name="Trigger job and poll result with db-check" data-type="example">Trigger job and poll result with db-check</a></div><div class="card-body collapse show" id="1980823901"><pre class="xml card">
+&lt;e:when&gt;
+        Trigger job on &lt;code cc:set="#url"&gt;/jobs&lt;/code&gt; with some optional body &lt;code cc:set="#json"&gt;{"name" : "value"}&lt;/code&gt;
+        &lt;e:await untilHttpPost="{{url}}" hasStatusCode="200"&gt;{{json}}&lt;/e:await&gt;
+        &lt;e:set var="id" value="{{responseBody 'id'}}" /&gt;
+        Job id = &lt;code cc:echo="#id" /&gt;
+    &lt;/e:when&gt;
+&lt;e:then&gt;
+        Await for result:
+        &lt;e:db-check table="jobResult" cols="result" where="id={{id}}" awaitAtMostSec="4"&gt;
+            &lt;e:row&gt;done&lt;/e:row&gt;
+        &lt;/e:db-check&gt;
+    &lt;/e:then&gt;</pre>
+    <div cmdId="56f9e060-6e29-495b-a19f-d32199fcabe6" e:when="" class="bd-callout bd-callout-warning">
+        Trigger job on <code cc:set="#url">/jobs</code> with some optional body <code cc:set="#json">{"name" : "value"}</code>
+        <span cmdId="25c336fd-b5bd-4006-8c95-ef918185037d" e:await="" />
+        <pre var="id" value="{{responseBody 'id'}}" cmdId="97d96d63-e23f-4183-b618-6606f27e3656" e:set="" />
+        Job id = <code cc:echo="#id">3</code>
+    </div>
+    <div cmdId="8a76443b-b482-4a24-a57a-88d806666093" e:then="" class="bd-callout bd-callout-success">
+        Await for result:
+        <table cmdId="e0f04192-2e0a-4f47-97d1-16f88096d558" e:db-check="" class="table table-sm">
+            
+        <div></div><span></span><caption>jobResult<i class="fa fa-database fa-pull-left fa-border"></i></caption><thead class="thead-default"><tr><th>result</th></tr></thead><tr><td class="table-success">done</td></tr></table>
+    </div>
+</div><div class="card-footer text-muted" data-toggle="collapse" data-target="#1980823901" aria-expanded="true" aria-controls="1980823901"><small><span class="badge badge-pill badge-success">1</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small></div></div>
+<div class="footer">Results generated by <a href="http://www.concordion.org" style="font-weight: bold; text-decoration: none; color: #89C;">Concordion</a><div class="testTime">in 14409 ms on 04-May-2020 at 17:50:23 UTC</div></div></body>
+<button id="btnToTop" onclick="topFunction()" type="button" class="btn btn-light btn-sm text-muted ml-1"><i class="fa fa-arrow-up fa-3x"></i></button></html>
