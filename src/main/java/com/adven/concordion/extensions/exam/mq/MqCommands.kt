@@ -3,10 +3,10 @@ package com.adven.concordion.extensions.exam.mq
 import com.adven.concordion.extensions.exam.core.commands.ExamCommand
 import com.adven.concordion.extensions.exam.core.commands.ExamVerifyCommand
 import com.adven.concordion.extensions.exam.core.html.*
-import com.adven.concordion.extensions.exam.core.resolve
 import com.adven.concordion.extensions.exam.core.resolveJson
 import com.adven.concordion.extensions.exam.core.utils.content
 import com.adven.concordion.extensions.exam.core.utils.prettyJson
+import com.adven.concordion.extensions.exam.core.vars
 import com.adven.concordion.extensions.exam.ws.RestResultRenderer
 import net.javacrumbs.jsonunit.JsonAssert
 import net.javacrumbs.jsonunit.core.Configuration
@@ -62,7 +62,7 @@ class MqCheckCommand(
         root.removeChildren()(
             tableSlim()(
                 caption(mqName)(italic("", CLASS to "fa fa-envelope-open fa-pull-left fa-border")),
-                caption("Headers: ${expectedHeaders.entries.joinToString()}")(italic("", CLASS to "fa fa-border")),
+                if (expectedHeaders.isNotEmpty()) caption("Headers: ${expectedHeaders.entries.joinToString()}")(italic("", CLASS to "fa fa-border")) else null,
                 trWithTDs(
                     container
                 )
@@ -124,16 +124,16 @@ class MqCheckCommand(
 }
 
 class MqSendCommand(name: String, tag: String, private val mqTesters: Map<String, MqTester>) : ExamCommand(name, tag) {
-    override fun execute(commandCall: CommandCall, eval: Evaluator, resultRecorder: ResultRecorder) {
-        super.execute(commandCall, eval, resultRecorder)
+    override fun execute(commandCall: CommandCall, evaluator: Evaluator, resultRecorder: ResultRecorder) {
+        super.execute(commandCall, evaluator, resultRecorder)
         val root = commandCall.html()
         val mqName = root.takeAwayAttr("name")
-        val headers = headers(root, eval)
-        val message = eval.resolveJson(root.content(eval).trim())
+        val headers = headers(root, evaluator)
+        val message = evaluator.resolveJson(root.content(evaluator).trim())
         root.removeChildren()(
             tableSlim()(
                 caption(mqName)(italic("", CLASS to "fa fa-envelope fa-pull-left fa-border")),
-                caption("Headers: ${headers.entries.joinToString()}")(italic("", CLASS to "fa fa-border")),
+                if (headers.isNotEmpty()) caption("Headers: ${headers.entries.joinToString()}")(italic("", CLASS to "fa fa-border")) else null,
                 trWithTDs(
                     pre(message).css("json")
                 )
@@ -144,13 +144,8 @@ class MqSendCommand(name: String, tag: String, private val mqTesters: Map<String
 
 }
 
-private fun headers(root: Html, eval: Evaluator): Map<String, String> {
-    return root.takeAwayAttr("headers")
-        ?.split(',')
-        ?.map { it.split('=')[0] to eval.resolve(it.split('=')[1]) }
-        ?.toMap()
-        ?: emptyMap()
-}
+private fun headers(root: Html, eval: Evaluator): Map<String, String> =
+    root.takeAwayAttr("headers")?.vars(eval)?.mapValues { it.value.toString() } ?: emptyMap()
 
 private fun Map<String, MqTester>.getOrFail(mqName: String?): MqTester = this[mqName]
     ?: throw IllegalArgumentException("MQ with name $mqName not registered in MqPlugin")

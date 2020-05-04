@@ -1,6 +1,7 @@
 package com.adven.concordion.extensions.exam.db.commands
 
 import com.adven.concordion.extensions.exam.core.html.html
+import com.adven.concordion.extensions.exam.db.DbPlugin
 import com.adven.concordion.extensions.exam.db.DbTester
 import org.concordion.api.CommandCall
 import org.concordion.api.Evaluator
@@ -11,7 +12,7 @@ import org.dbunit.operation.DatabaseOperation
 import org.dbunit.operation.DatabaseOperation.*
 import java.lang.IllegalArgumentException
 
-class DBSetCommand(name: String, tag: String, dbTester: DbTester) : DBCommand(name, tag, dbTester) {
+class DBSetCommand(name: String, tag: String, dbTester: DbTester, pattern: DbPlugin.ValuePrinter) : DBCommand(name, tag, dbTester, pattern) {
     private val operations: Map<String, DatabaseOperation> = mapOf(
             "clean_insert" to CLEAN_INSERT,
             "insert" to INSERT,

@@ -3,6 +3,7 @@ package com.adven.concordion.extensions.exam.db.commands
 import com.adven.concordion.extensions.exam.core.html.*
 import com.adven.concordion.extensions.exam.core.resolveToObj
 import com.adven.concordion.extensions.exam.core.utils.parsePeriod
+import com.adven.concordion.extensions.exam.db.DbPlugin
 import com.adven.concordion.extensions.exam.db.DbResultRenderer
 import com.adven.concordion.extensions.exam.db.DbTester
 import org.awaitility.Awaitility
@@ -31,7 +32,7 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 import java.util.regex.Pattern
 
-class DBCheckCommand(name: String, tag: String, dbTester: DbTester) : DBCommand(name, tag, dbTester) {
+class DBCheckCommand(name: String, tag: String, dbTester: DbTester, valuePrinter: DbPlugin.ValuePrinter) : DBCommand(name, tag, dbTester, valuePrinter) {
     private val listeners = Announcer.to(AssertEqualsListener::class.java)
 
     private val actualTable: ITable
@@ -150,7 +151,7 @@ class DBCheckCommand(name: String, tag: String, dbTester: DbTester) : DBCommand(
                 (0 until expected.rowCount).map { row ->
                     tr()(
                         cols.map {
-                            val expectedValue = expected[row, it]
+                            val expectedValue = valuePrinter.print(expected[row, it])
                             td(expectedValue).apply {
                                 diffs.firstOrNull { diff ->
                                     diff.rowIndex == row && diff.columnName == it
@@ -169,7 +170,7 @@ class DBCheckCommand(name: String, tag: String, dbTester: DbTester) : DBCommand(
     private fun isDbMatcher(text: String) = (text.isRegex() || text.isWithin() || text.isNumber() || text.isNotNull())
     private fun Html.markAsSuccess(resultRecorder: ResultRecorder) = success(resultRecorder, this)
     private fun Difference.markAsFailure(resultRecorder: ResultRecorder, td: Html) =
-        failure(resultRecorder, td, this.actualValue, this.expectedValue?.convertToString() ?: "null")
+        failure(resultRecorder, td, this.actualValue, valuePrinter.print(this.expectedValue))
 }
 
 class WithinValueComparer(tolerance: Long) : IsActualWithinToleranceOfExpectedTimestampValueComparer(0, tolerance) {
@@ -196,6 +197,7 @@ class RegexAndWithinAwareValueComparer(val evaluator: Evaluator) : IsActualEqual
     ): Boolean = when {
         expected.isNotNull() -> setVarIfNeeded(actual, expected) { a, _ -> a != null }
         expected.isNumber() -> setVarIfNeeded(actual, expected) { a, _ -> regexMatches("^\\d+\$", a) }
+        expected.isString() -> setVarIfNeeded(actual, expected) { a, _ -> regexMatches("^\\w+\$", a) }
         expected.isRegex() -> setVarIfNeeded(actual, expected) { a, e -> regexMatches(e, a) }
         expected.isWithin() -> setVarIfNeeded(actual, expected) { a, e ->
             WithinValueComparer(expected.toString().withinPeriod()).isExpected(
@@ -231,6 +233,7 @@ class RegexAndWithinAwareValueComparer(val evaluator: Evaluator) : IsActualEqual
 
 private fun Any?.isNotNull() = this != null && this.toString().startsWith("!{notNull}")
 private fun Any?.isNumber() = this != null && this.toString().startsWith("!{number}")
+private fun Any?.isString() = this != null && this.toString().startsWith("!{string}")
 private fun Any?.isRegex() = this != null && this.toString().startsWith("!{regex}")
 private fun Any?.isWithin() = this != null && this.toString().startsWith("!{within ")
 

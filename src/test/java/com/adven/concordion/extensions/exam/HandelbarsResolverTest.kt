@@ -6,6 +6,7 @@ import com.adven.concordion.extensions.exam.core.utils.HANDLEBARS
 import com.adven.concordion.extensions.exam.core.utils.HelperSource
 import com.adven.concordion.extensions.exam.core.utils.HelperSource.Companion.DEFAULT_FORMAT
 import com.adven.concordion.extensions.exam.core.utils.resolve
+import com.adven.concordion.extensions.exam.core.utils.resolveObj
 import com.github.jknack.handlebars.Handlebars
 import com.github.jknack.handlebars.HandlebarsException
 import org.assertj.core.api.Assertions.assertThat
@@ -21,6 +22,18 @@ class HandlebarsResolverTest {
     private val eval = OgnlEvaluator(Html("div").el)
     private val sut: Handlebars = HANDLEBARS
     private val defaultFormat = DEFAULT_FORMAT.format()
+
+    @Test
+    fun date_defaults() {
+        assertEquals(
+            LocalDateTime(2019, 6, 30, 9, 10).toDate(),
+            sutObj("{{date \"2019-06-30T09:10:00\"}}")
+        )
+        assertEquals(
+            LocalDateTime(2019, 6, 30, 0, 0).toDate(),
+            sutObj("{{date \"2019-06-30\"}}")
+        )
+    }
 
     @Test
     fun dateFormat_defaults() {
@@ -80,4 +93,5 @@ class HandlebarsResolverTest {
     private fun String.format() = DateTimeFormat.forPattern(this)
 
     private fun sut(placeholder: String) = sut.resolve(eval, placeholder)
+    private fun sutObj(placeholder: String) = sut.resolveObj(eval, placeholder)
 }

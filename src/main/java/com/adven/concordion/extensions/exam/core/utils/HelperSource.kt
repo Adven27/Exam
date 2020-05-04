@@ -11,13 +11,13 @@ import io.restassured.internal.RestAssuredResponseImpl
 import io.restassured.response.Response
 import org.apache.commons.lang3.LocaleUtils
 import org.apache.commons.lang3.Validate.isInstanceOf
-import org.apache.commons.lang3.time.DateFormatUtils
 import org.concordion.api.Evaluator
 import org.joda.time.DateTime
 import org.joda.time.DateTimeZone
 import org.joda.time.LocalDate
 import org.joda.time.LocalDateTime
-import java.text.ParseException
+import org.joda.time.format.DateTimeFormat
+import org.joda.time.format.ISODateTimeFormat
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.atomic.AtomicReference
@@ -96,7 +96,7 @@ enum class HelperSource(
         emptyMap(),
         DateTime.now(DateTimeZone.forOffsetHours(3))
             .minusYears(1).minusMonths(2).minusDays(3)
-            .plusHours(4).plusMinutes(5).plusSeconds(6)
+            .plusHours(5).plusMinutes(5).plusSeconds(6)
             .toString("yyyy-MM-dd'T'HH:mm Z"),
         mapOf(TZ to "\"GMT+3\"", PLUS to "\"1 day\"", MINUS to "\"5 hours\"")
     ) {
@@ -117,13 +117,13 @@ enum class HelperSource(
 
     },
     today(
-        """{{today "yyyy-MM-dd'T'HH:mm Z" tz="GMT+3" minus="1 y, 2 months, d 3" plus="4 h, 5 min, 6 s"}}""",
+        """{{today "yyyy-MM-dd" minus="1 y, 2 months, d 3" plus="4 h, 5 min, 6 s"}}""",
         emptyMap(),
         DateTime.now(DateTimeZone.forOffsetHours(3))
             .minusYears(1).minusMonths(2).minusDays(3)
             .plusHours(4).plusMinutes(5).plusSeconds(6)
-            .toString("yyyy-MM-dd'T'HH:mm Z"),
-        mapOf(TZ to "\"GMT+3\"", PLUS to "\"1 day\"", MINUS to "\"5 hours\"")
+            .toString("yyyy-MM-dd"),
+        mapOf(PLUS to "\"1 day\"", MINUS to "\"5 hours\"")
     ) {
         override fun invoke(context: Any?, options: Options): Any? = if (context is String && context.isNotBlank()) {
             dateFormat(
@@ -160,12 +160,11 @@ enum class HelperSource(
         }
 
         private fun parseDate(date: String, format: String?): Date {
-            val pattern = format ?: DateFormatUtils.ISO_8601_EXTENDED_DATE_FORMAT.pattern
-            try {
-                return SimpleDateFormat(pattern).parse(date)
-            } catch (e: ParseException) {
-                throw ParseException("Unparseable date: $date, format: $pattern ", e.errorOffset)
-            }
+            val pattern = if (format == null)
+                ISODateTimeFormat.dateTimeParser().withOffsetParsed()
+            else
+                DateTimeFormat.forPattern(format)
+            return DateTime.parse(date, pattern).toDate()
         }
     },
     string("{{string}}", mapOf(PLACEHOLDER_TYPE to "json"), "\${json-unit.any-string}") {
@@ -225,7 +224,7 @@ enum class HelperSource(
         "adam"
     ) {
         override fun invoke(context: Any?, options: Options): Any? {
-            return ((options.context.model() as Evaluator).getVariable("#exam_response") as Response)
+            return (options.evaluator().getVariable("#exam_response") as Response)
                 .jsonPath().getString("$context")
         }
     },
@@ -233,10 +232,13 @@ enum class HelperSource(
         override fun invoke(context: Any?, options: Options): Any? = null
     },
     eval("{{eval '#var'}}", mapOf("var" to 2), 2) {
-        override fun invoke(context: Any?, options: Options): Any? = (options.context.model() as Evaluator).evaluate("$context")
+        override fun invoke(context: Any?, options: Options): Any? = options.evaluator().evaluate("$context")
     },
-    resolve("{{resolve \"today is {{today}}\"}}", emptyMap(), "today is ${LocalDate.now().toDate()}") {
-        override fun invoke(context: Any?, options: Options): Any? = (options.context.model() as Evaluator).resolve("$context")
+    resolve("{{resolve 'today is {{today}}'}}", emptyMap(), "today is ${LocalDate.now().toDate()}") {
+        override fun invoke(context: Any?, options: Options): Any? = options.evaluator().resolve("$context")
+    },
+    resolveFile("{{resolveFile '/data/hb/some-file.txt'}}", emptyMap(), "today is ${LocalDate.now().toDate()}") {
+        override fun invoke(context: Any?, options: Options): Any? = options.evaluator().resolve(context.toString().readFile())
     };
 
     override fun apply(context: Any?, options: Options): Any? {
@@ -316,6 +318,8 @@ private fun String.response(): Response {
         }
     })
 }
+
+private fun Options.evaluator(): Evaluator = (this.context.model() as Evaluator)
 
 class TestResponse(private val delegate: RestAssuredResponseImpl) : Response by delegate {
     override fun toString(): String {

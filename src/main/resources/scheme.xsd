@@ -78,7 +78,8 @@
             <xs:extension base="xs:string">
                 <xs:attribute type="xs:string" name="actual" use="required" default="variable"/>
                 <xs:attribute type="xs:anyURI" name="from" default="/data"/>
-                <xs:attribute type="xs:string" name="jsonUnitOptions" default="IGNORING_EXTRA_FIELDS;TREATING_NULL_AS_ABSENT">
+                <xs:attribute type="xs:string" name="jsonUnitOptions"
+                              default="IGNORING_EXTRA_FIELDS;TREATING_NULL_AS_ABSENT">
                     <xs:annotation>
                         <xs:documentation>
                             With Options you can configure different compare modes
@@ -139,6 +140,8 @@
             <xs:extension base="xs:string">
                 <xs:attribute type="xs:string" name="var" use="required"/>
                 <xs:attribute type="xs:string" name="value"/>
+                <xs:attribute type="xs:string" name="from" default="/data/value.json"/>
+                <xs:attribute type="xs:string" name="vars" default="v1=value1, v2={{now}}"/>
                 <xs:attribute type="xs:boolean" name="silent"/>
             </xs:extension>
         </xs:simpleContent>
@@ -195,7 +198,7 @@
             <xs:extension base="xs:string">
                 <xs:attribute type="xs:anyURI" name="from" default="/data/mq"/>
                 <xs:attribute type="xs:string" name="name" use="required"/>
-                <xs:attribute type="xs:string" name="headers" default="__TypeId__=String,contentEncoding=UTF-8"/>
+                <xs:attribute type="xs:string" name="headers" default="type=String,contentEncoding=UTF-8"/>
             </xs:extension>
         </xs:simpleContent>
     </xs:complexType>
@@ -207,8 +210,9 @@
                 <xs:attribute type="xs:integer" name="awaitAtMostSec" default="4"/>
                 <xs:attribute type="xs:integer" name="awaitPollDelayMillis" default="0"/>
                 <xs:attribute type="xs:integer" name="awaitPollIntervalMillis" default="1000"/>
-                <xs:attribute type="xs:string" name="headers" default="__TypeId__=String,contentEncoding=UTF-8"/>
-                <xs:attribute type="xs:string" name="jsonUnitOptions" default="IGNORING_EXTRA_FIELDS;TREATING_NULL_AS_ABSENT">
+                <xs:attribute type="xs:string" name="headers" default="type=String,contentEncoding=UTF-8"/>
+                <xs:attribute type="xs:string" name="jsonUnitOptions"
+                              default="IGNORING_EXTRA_FIELDS;TREATING_NULL_AS_ABSENT">
                     <xs:annotation>
                         <xs:documentation>
                             With Options you can configure different compare modes
@@ -226,6 +230,7 @@
             <xs:element name="xml-check" type="xj-info"/>
             <xs:element name="json-check" type="xj-info"/>
             <xs:element name="db-check" type="db-check-info"/>
+            <xs:element name="db-show" type="db-set-info"/>
             <xs:element name="mq-check" type="mq-check-info"/>
             <xs:element name="set" type="set-info"/>
             <xs:element name="include" type="include-info"/>
@@ -259,7 +264,8 @@
                         </xs:documentation>
                     </xs:annotation>
                 </xs:attribute>
-                <xs:attribute type="xs:string" name="jsonUnitOptions" default="IGNORING_EXTRA_FIELDS;TREATING_NULL_AS_ABSENT">
+                <xs:attribute type="xs:string" name="jsonUnitOptions"
+                              default="IGNORING_EXTRA_FIELDS;TREATING_NULL_AS_ABSENT">
                     <xs:annotation>
                         <xs:documentation>
                             With Options you can configure different compare modes

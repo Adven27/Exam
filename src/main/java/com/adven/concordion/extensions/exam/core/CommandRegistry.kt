@@ -17,7 +17,7 @@ class CommandRegistry(jsonUnitCfg: Configuration, nodeMatcher: NodeMatcher) {
         ExamplesSummaryCommand("summary", "div"),
         ScrollToTopCommand("scrollToTop", "div"),
 
-        SetVarCommand("span"),
+        SetVarCommand("pre"),
         WaitCommand("span"),
 
         JsonCheckCommand("json-check", "div", jsonUnitCfg),

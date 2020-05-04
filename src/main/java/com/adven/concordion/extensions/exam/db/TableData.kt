@@ -18,7 +18,7 @@ class TableData(private val table: String, private val columns: Map<String, Any?
     }
 
     fun row(vararg values: Any?): TableData {
-        val colsToSet = columns.filterValues { it == null }.keys
+        val colsToSet = columns.filterValues { it is MarkedHasNoDefaultValue }.keys
         validate(values, colsToSet)
         dataSetBuilder = dataSetBuilder.newRowTo(table)
             .withFields(columns.mapValues { resolveValue(it.value) } + colsToSet.zip(values).toMap())
@@ -29,19 +29,31 @@ class TableData(private val table: String, private val columns: Map<String, Any?
 
     private fun validate(values: Array<out Any?>, columns: Set<String>) {
         if (values.size != columns.size) {
+            fun breakReason(cols: List<String>, vals: List<Any?>) =
+                if (cols.size > vals.size) "column '${cols[vals.size]}' has no value" else "value '${vals[cols.size]}' has no column"
+
+            fun msg(columns: Set<String>, values: Array<out Any?>) =
+                "Zipped " + columns.zip(values) { a, b -> "$a=$b" } + " then breaks because " + breakReason(columns.toList(), values.toList())
             throw IllegalArgumentException(
                 String.format(
-                    "Number of columns (%s) for table %s is different than the number of provided values (%s)",
+                    "Number of columns (%s) for the table %s is different from the number of provided values (%s):\n %s",
                     columns.size,
                     table,
-                    values.size
+                    values.size,
+                    msg(columns, values)
                 )
             )
         }
     }
 
     fun rows(rows: List<List<Any?>>): TableData {
-        rows.forEach { row(*it.toTypedArray()) }
+        rows.forEachIndexed { index, list ->
+            try {
+                row(*list.toTypedArray())
+            } catch (e: Exception) {
+                throw IllegalArgumentException("Table parsing breaks on row ${index + 1} : $list", e)
+            }
+        }
         return this
     }
 
@@ -61,3 +73,5 @@ class TableData(private val table: String, private val columns: Map<String, Any?
         fun filled(table: String, rows: List<List<Any?>>, cols: Map<String, Any?>) = TableData(table, cols).rows(rows).table()
     }
 }
+
+class MarkedHasNoDefaultValue

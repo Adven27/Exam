@@ -1,10 +1,7 @@
 package com.adven.concordion.extensions.exam.core.commands
 
-import com.adven.concordion.extensions.exam.core.ExamExtension
+import com.adven.concordion.extensions.exam.core.*
 import com.adven.concordion.extensions.exam.core.html.html
-import com.adven.concordion.extensions.exam.core.resolve
-import com.adven.concordion.extensions.exam.core.resolveToObj
-import com.adven.concordion.extensions.exam.core.resolveXml
 import com.adven.concordion.extensions.exam.core.utils.readFile
 import io.restassured.RestAssured
 import nu.xom.Attribute
@@ -24,17 +21,30 @@ class SetVarCommand(tag: String) : ExamCommand("set", tag) {
     override fun setUp(cmd: CommandCall, eval: Evaluator, resultRecorder: ResultRecorder) {
         val el = cmd.html()
         val valueAttr = el.attr("value")
-        val value = if (valueAttr == null) {
-            val body = el.text()
-            val silent = el.attr("silent")
-            if (silent != null && silent == "true") {
-                el.removeChildren()
-            }
-            eval.resolveXml(body)
-        } else {
-            eval.resolveToObj(valueAttr)
+        val valueFrom = el.attr("from")
+        val vars = el.takeAwayAttr("vars").vars(eval)
+        vars.forEach {
+            val key = "#${it.key}"
+            if (eval.getVariable(key) != null)
+                throw IllegalStateException("Variable $key already exists and will be shadowed in set command context. Use different variable name.")
+            eval.setVariable(key, it.value)
         }
-        eval.setVariable("#${el.attr("var")!!}", value)
+        eval.setVariable(
+            "#${el.attr("var")!!}",
+            when {
+                valueAttr != null -> eval.resolveToObj(valueAttr)
+                valueFrom != null -> eval.resolveXml(valueFrom.readFile())
+                else -> {
+                    val body = el.text()
+                    val silent = el.attr("silent")
+                    if (silent != null && silent == "true") {
+                        el.removeChildren()
+                    }
+                    eval.resolveXml(body)
+                }
+            }
+        )
+        vars.forEach { eval.setVariable("#${it.key}", null) }
     }
 }
 
