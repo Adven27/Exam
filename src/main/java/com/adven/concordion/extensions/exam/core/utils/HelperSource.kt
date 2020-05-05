@@ -2,6 +2,7 @@ package com.adven.concordion.extensions.exam.core.utils
 
 import com.adven.concordion.extensions.exam.core.parsePeriodFrom
 import com.adven.concordion.extensions.exam.core.resolve
+import com.adven.concordion.extensions.exam.core.resolveToObj
 import com.github.jknack.handlebars.Context
 import com.github.jknack.handlebars.EscapingStrategy.NOOP
 import com.github.jknack.handlebars.Handlebars
@@ -96,7 +97,7 @@ enum class HelperSource(
         emptyMap(),
         DateTime.now(DateTimeZone.forOffsetHours(3))
             .minusYears(1).minusMonths(2).minusDays(3)
-            .plusHours(5).plusMinutes(5).plusSeconds(6)
+            .plusHours(4).plusMinutes(5).plusSeconds(6)
             .toString("yyyy-MM-dd'T'HH:mm Z"),
         mapOf(TZ to "\"GMT+3\"", PLUS to "\"1 day\"", MINUS to "\"5 hours\"")
     ) {
@@ -235,10 +236,18 @@ enum class HelperSource(
         override fun invoke(context: Any?, options: Options): Any? = options.evaluator().evaluate("$context")
     },
     resolve("{{resolve 'today is {{today}}'}}", emptyMap(), "today is ${LocalDate.now().toDate()}") {
-        override fun invoke(context: Any?, options: Options): Any? = options.evaluator().resolve("$context")
+        override fun invoke(context: Any?, options: Options): Any? {
+            val evaluator = options.evaluator()
+            options.hash.forEach { (key, value) -> evaluator.setVariable("#$key", evaluator.resolveToObj(value as String?)) }
+            return evaluator.resolve("$context")
+        }
     },
     resolveFile("{{resolveFile '/data/hb/some-file.txt'}}", emptyMap(), "today is ${LocalDate.now().toDate()}") {
-        override fun invoke(context: Any?, options: Options): Any? = options.evaluator().resolve(context.toString().readFile())
+        override fun invoke(context: Any?, options: Options): Any? {
+            val evaluator = options.evaluator()
+            options.hash.forEach { (key, value) -> evaluator.setVariable("#$key", evaluator.resolveToObj(value as String?)) }
+            return evaluator.resolve(context.toString().readFile())
+        }
     };
 
     override fun apply(context: Any?, options: Options): Any? {
@@ -258,6 +267,7 @@ enum class HelperSource(
     protected abstract operator fun invoke(context: Any?, options: Options): Any?
 
     private fun validate(options: Options) {
+        if ("resolve" == this.name || "resolveFile" == this.name) return
         val unexpected = options.hash.keys - opts.keys
         if (unexpected.isNotEmpty()) throw IllegalArgumentException(
             "Wrong options for helper '${options.fn.text()}': found '$unexpected', expected any of '$opts'"

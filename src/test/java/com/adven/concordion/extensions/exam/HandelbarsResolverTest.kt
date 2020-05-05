@@ -12,6 +12,7 @@ import com.github.jknack.handlebars.HandlebarsException
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.concordion.internal.OgnlEvaluator
+import org.joda.time.LocalDate
 import org.joda.time.LocalDateTime
 import org.joda.time.format.DateTimeFormat
 import org.junit.Test
@@ -22,6 +23,18 @@ class HandlebarsResolverTest {
     private val eval = OgnlEvaluator(Html("div").el)
     private val sut: Handlebars = HANDLEBARS
     private val defaultFormat = DEFAULT_FORMAT.format()
+
+    @Test
+    fun resolve_with_vars() {
+        assertEquals(
+            "var = v, date = ${LocalDate.now().toDate()}",
+            sut("{{resolve 'var = {{var}}, date = {{td}}' var='v' td='{{today}}'}}")
+        )
+        assertEquals(
+            "today is ${LocalDate.now().toDate()}; var1 is v; var2 is ${LocalDate.now().toDate()}",
+            sut("{{resolveFile '/data/hb/resolve-file-vars.txt' var1='v' var2='{{today}}'}}")
+        )
+    }
 
     @Test
     fun date_defaults() {
