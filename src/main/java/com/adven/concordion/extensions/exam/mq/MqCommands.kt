@@ -53,13 +53,17 @@ class MqCheckCommand(
         usedCfg = originalCfg;
         root.attr("jsonUnitOptions")?.let { attr -> overrideJsonUnitOption(attr) }
         val mqName = root.takeAwayAttr("name")!!
+        val layout = root.takeAwayAttr("layout", "VERTICALLY")
 
         val atMostSec = root.takeAwayAttr("awaitAtMostSec")
         val pollDelay = root.takeAwayAttr("awaitPollDelayMillis")
         val pollInterval = root.takeAwayAttr("awaitPollIntervalMillis")
 
         val messageTags = root.childs().filter { it.localName() == "message" }.ifEmpty { listOf(root) }
-        val expectedMessages = messageTags.map { MqTester.Message(eval.resolveJson(it.content(eval).trim()), headers(it, eval)) }
+        val expectedMessages = messageTags.map { html ->
+            html.takeAwayAttr("vars").vars(eval).forEach { eval.setVariable("#${it.key}", it.value) }
+            MqTester.Message(eval.resolveJson(html.content(eval).trim()), headers(html, eval))
+        }
         val actualMessages: MutableList<MqTester.Message> = mqTesters.getOrFail(mqName).receive().toMutableList()
 
         try {
@@ -104,17 +108,29 @@ class MqCheckCommand(
             root.parent().remove(root)
             return
         }
-        val tableSlim = tableSlim()(captionEnvelopOpen(mqName))
-        root.removeChildren()(tableSlim)
+        val tableContainer = tableSlim()(captionEnvelopOpen(mqName))
+        root.removeChildren()(tableContainer)
+
+        var cnt: Html? = null
+        if (layout.toUpperCase() != "VERTICALLY") {
+            cnt = tr()
+            tableContainer(cnt)
+        }
 
         expectedMessages.zip(actualMessages).forEach {
-            val container = jsonEl(it.first.body)
+            val bodyContainer = jsonEl(it.first.body)
             val headersContainer = span("Headers: ${it.first.headers.entries.joinToString()}")(italic("", CLASS to "fa fa-border"))
-            tableSlim(
-                if (it.first.headers.isNotEmpty()) trWithTDs(headersContainer) else null, trWithTDs(container)
-            )
+            if (cnt != null) {
+                cnt(
+                    td()(tableSlim()(if (it.first.headers.isNotEmpty()) trWithTDs(headersContainer) else null, trWithTDs(bodyContainer)))
+                )
+            } else {
+                tableContainer(
+                    if (it.first.headers.isNotEmpty()) trWithTDs(headersContainer) else null, trWithTDs(bodyContainer)
+                )
+            }
             checkHeaders(it.second.headers, it.first.headers, resultRecorder, headersContainer)
-            checkJsonContent(it.second.body, it.first.body, resultRecorder, container)
+            checkJsonContent(it.second.body, it.first.body, resultRecorder, bodyContainer)
         }
     }
 

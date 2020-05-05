@@ -216,11 +216,12 @@
     </xs:complexType>
     <xs:complexType name="mq-check-info">
         <xs:sequence>
-            <xs:element name="message" type="xs:string">
+            <xs:element name="message">
                 <xs:complexType mixed="true">
                     <xs:simpleContent>
                         <xs:extension base="xs:string">
                             <xs:attribute type="xs:anyURI" name="from" default="/data/mq/msg.json"/>
+                            <xs:attribute type="xs:string" name="vars" default="v1=1, v2={{now}}"/>
                         </xs:extension>
                     </xs:simpleContent>
                 </xs:complexType>
@@ -240,6 +241,14 @@
                     <a href="https://github.com/lukas-krecan/JsonUnit#options">Read more...</a>
                 </xs:documentation>
             </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="layout" default="vertically">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="horizontally"/>
+                    <xs:enumeration value="vertically"/>
+                </xs:restriction>
+            </xs:simpleType>
         </xs:attribute>
     </xs:complexType>
 

@@ -20,9 +20,9 @@
         </div>
     </e:when>
     <e:then>
-        <e:mq-check name="myQueue">
+        <e:mq-check name="myQueue" layout="horizontally">
             <e:message>{"msg" : "1"}</e:message>
-            <e:message from="/data/mq/expected.json"/>
+            <e:message from="/data/mq/expected-msg.json" vars="myVar={{now 'yyyy-MM-dd'}}" />
             <e:message>{"msg" : "3"}</e:message>
         </e:mq-check>
     </e:then>
