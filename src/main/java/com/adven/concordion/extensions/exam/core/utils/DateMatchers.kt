@@ -1,25 +1,24 @@
 package com.adven.concordion.extensions.exam.core.utils
 
+import com.adven.concordion.extensions.exam.core.parseDate
+import com.adven.concordion.extensions.exam.core.parseDateTime
 import com.adven.concordion.extensions.exam.core.periodBy
-import com.sun.org.apache.xerces.internal.jaxp.datatype.DatatypeFactoryImpl
 import net.javacrumbs.jsonunit.core.ParametrizedMatcher
 import org.hamcrest.BaseMatcher
 import org.hamcrest.Description
 import org.joda.time.DateTime
 import org.joda.time.base.BaseSingleFieldPeriod
 import java.lang.Character.isDigit
-import java.text.SimpleDateFormat
+import javax.xml.datatype.DatatypeFactory
 
 class DateFormatMatcher : BaseMatcher<Any>(), ParametrizedMatcher {
     private var param: String? = null
 
-    override fun matches(item: Any): Boolean {
-        return try {
-            DateTime(SimpleDateFormat(param!!).parse(item as String).time)
-            true
-        } catch (e: Exception) {
-            false
-        }
+    override fun matches(item: Any): Boolean = try {
+        (item as String).parseDate(param!!)
+        true
+    } catch (e: Exception) {
+        false
     }
 
     override fun describeTo(description: Description) {
@@ -41,7 +40,7 @@ class DateWithin private constructor(private val now: Boolean) : BaseMatcher<Any
     private lateinit var pattern: String
 
     override fun matches(item: Any): Boolean {
-        val actual = if (item is DateTime) item else DateTime(SimpleDateFormat(pattern).parse(item as String).time)
+        val actual = if (item is DateTime) item else (item as String).parseDateTime(pattern)
         return isBetweenInclusive(expected.minus(period), expected.plus(period), actual)
     }
 
@@ -67,7 +66,7 @@ class DateWithin private constructor(private val now: Boolean) : BaseMatcher<Any
         } else {
             param = param.substring(within.length + 2)
             val date = param.substring(1, param.indexOf("]"))
-            expected = DateTime(SimpleDateFormat(pattern).parse(date).time)
+            expected = date.parseDateTime(pattern)
         }
 
         this.period = parsePeriod(within)
@@ -84,7 +83,7 @@ class XMLDateWithin : BaseMatcher<Any>(), ParametrizedMatcher {
     private var period: BaseSingleFieldPeriod? = null
 
     override fun matches(item: Any): Boolean {
-        val xmlGregorianCal = DatatypeFactoryImpl().newXMLGregorianCalendar(item as String)
+        val xmlGregorianCal = DatatypeFactory.newInstance().newXMLGregorianCalendar(item as String)
         val actual = DateTime(xmlGregorianCal.toGregorianCalendar())
         val expected = DateTime.now()
         return isBetweenInclusive(expected.minus(period), expected.plus(period), actual)

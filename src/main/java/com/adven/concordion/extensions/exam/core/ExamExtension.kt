@@ -14,6 +14,9 @@ import org.concordion.api.extension.ConcordionExtender
 import org.concordion.api.extension.ConcordionExtension
 import org.concordion.api.listener.ExampleEvent
 import org.hamcrest.Matcher
+import org.joda.time.DateTime
+import org.joda.time.format.DateTimeFormat
+import org.joda.time.format.ISODateTimeFormat
 import org.xmlunit.diff.DefaultNodeMatcher
 import org.xmlunit.diff.ElementSelectors.byName
 import org.xmlunit.diff.ElementSelectors.byNameAndText
@@ -146,3 +149,9 @@ class ExamExtension : ConcordionExtension {
             .withMatcher("xmlDateWithinNow", XMLDateWithin())
     }
 }
+
+fun String.parseDate(format: String?): Date = this.parseDateTime(format).toDate()
+
+fun String.parseDateTime(format: String?): DateTime = DateTime.parse(
+    this, if (format == null) ISODateTimeFormat.dateTimeParser().withOffsetParsed() else DateTimeFormat.forPattern(format)
+)

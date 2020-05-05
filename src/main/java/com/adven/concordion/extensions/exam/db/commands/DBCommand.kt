@@ -75,8 +75,8 @@ open class DBCommand(name: String, tag: String, protected val dbTester: DbTester
     }
 
     protected fun tableCaption(title: String?, def: String?): Html {
-        return caption(if (title != null && !title.isBlank()) title else def)(
-            italic("", CLASS to "fa fa-database fa-pull-left fa-border")
+        return caption()(
+            italic(" ${if (title != null && !title.isBlank()) title else def}", CLASS to "fa fa-database fa-pull-left fa-border")
         )
     }
 }

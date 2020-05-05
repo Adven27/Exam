@@ -1,5 +1,6 @@
 package com.adven.concordion.extensions.exam.core.utils
 
+import com.adven.concordion.extensions.exam.core.parseDate
 import com.adven.concordion.extensions.exam.core.parsePeriodFrom
 import com.adven.concordion.extensions.exam.core.resolve
 import com.adven.concordion.extensions.exam.core.resolveToObj
@@ -18,8 +19,6 @@ import org.joda.time.DateTimeZone
 import org.joda.time.LocalDate
 import org.joda.time.LocalDateTime
 import org.joda.time.format.DateTimeFormat
-import org.joda.time.format.ISODateTimeFormat
-import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.atomic.AtomicReference
 import java.util.regex.Pattern
@@ -155,17 +154,9 @@ enum class HelperSource(
         }
 
         private fun parseDate(context: Any?, options: Options): Date = if (context is String && context.isNotBlank()) {
-            parseDate(context, options.hash<String>(FORMAT, null))
+            context.parseDate(options.hash<String>(FORMAT, null))
         } else {
             context as Date
-        }
-
-        private fun parseDate(date: String, format: String?): Date {
-            val pattern = if (format == null)
-                ISODateTimeFormat.dateTimeParser().withOffsetParsed()
-            else
-                DateTimeFormat.forPattern(format)
-            return DateTime.parse(date, pattern).toDate()
         }
     },
     string("{{string}}", mapOf(PLACEHOLDER_TYPE to "json"), "\${json-unit.any-string}") {
@@ -293,19 +284,11 @@ enum class HelperSource(
             "Wrong context for helper '${options.fn.text()}', found '%s', expected instance of Date: ${this.example}",
             context
         )
-        val dateFormat = SimpleDateFormat(
-            format,
-            LocaleUtils.toLocale(local)
-        )
+        val dateFormat = DateTimeFormat.forPattern(format).withLocale(LocaleUtils.toLocale(local))
         if (tz != null) {
-            dateFormat.timeZone = tz as? TimeZone ?: TimeZone.getTimeZone(tz.toString())
+            dateFormat.withZone(DateTimeZone.forTimeZone(tz as? TimeZone ?: TimeZone.getTimeZone(tz.toString())))
         }
-        return dateFormat.format(
-            LocalDateTime((context as Date).time)
-                .plus(parsePeriodFrom(plus))
-                .minus(parsePeriodFrom(minus))
-                .toDate()
-        )
+        return dateFormat.print(DateTime((context as Date).time).plus(parsePeriodFrom(plus)).minus(parsePeriodFrom(minus)))
     }
 
     companion object {
