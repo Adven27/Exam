@@ -15,6 +15,7 @@ import net.javacrumbs.jsonunit.core.internal.Options
 import org.awaitility.Awaitility
 import org.concordion.api.CommandCall
 import org.concordion.api.Evaluator
+import org.concordion.api.Result.FAILURE
 import org.concordion.api.ResultRecorder
 import org.junit.Assert
 import java.util.concurrent.TimeUnit
@@ -23,7 +24,7 @@ interface MqTester {
     fun start()
     fun stop()
     fun send(message: String, headers: Map<String, String>)
-    fun receive(): Message
+    fun receive(): List<Message>
     fun purge()
 
     data class Message @JvmOverloads constructor(val body: String = "", val headers: Map<String, String> = emptyMap())
@@ -33,7 +34,7 @@ open class MqTesterAdapter : MqTester {
     override fun start() = Unit
     override fun stop() = Unit
     override fun send(message: String, headers: Map<String, String>) = Unit
-    override fun receive(): MqTester.Message = MqTester.Message()
+    override fun receive(): List<MqTester.Message> = listOf()
     override fun purge() = Unit
 }
 
@@ -51,56 +52,102 @@ class MqCheckCommand(
         val root = cmd.html()
         usedCfg = originalCfg;
         root.attr("jsonUnitOptions")?.let { attr -> overrideJsonUnitOption(attr) }
-        val mqName = root.takeAwayAttr("name")
-        lateinit var actualBody: String
-        val expectedBody = eval.resolveJson(root.content(eval).trim())
-        val expectedHeaders = headers(root, eval)
-        val container = pre(expectedBody).css("json").attr("autoFormat", "true")
+        val mqName = root.takeAwayAttr("name")!!
+
         val atMostSec = root.takeAwayAttr("awaitAtMostSec")
         val pollDelay = root.takeAwayAttr("awaitPollDelayMillis")
         val pollInterval = root.takeAwayAttr("awaitPollIntervalMillis")
-        root.removeChildren()(
-            tableSlim()(
-                caption(mqName)(italic("", CLASS to "fa fa-envelope-open fa-pull-left fa-border")),
-                if (expectedHeaders.isNotEmpty()) caption("Headers: ${expectedHeaders.entries.joinToString()}")(italic("", CLASS to "fa fa-border")) else null,
-                trWithTDs(
-                    container
-                )
-            )
-        )
-        if (atMostSec != null || pollDelay != null || pollInterval != null) {
-            val atMost = atMostSec?.toLong() ?: 4
-            val delay = pollDelay?.toLong() ?: 0
-            val interval = pollInterval?.toLong() ?: 1000
-            try {
-                Awaitility.await("Await MQ $mqName")
-                    .atMost(atMost, TimeUnit.SECONDS)
-                    .pollDelay(delay, TimeUnit.MILLISECONDS)
-                    .pollInterval(interval, TimeUnit.MILLISECONDS)
-                    .untilAsserted {
-                        val message = mqTesters.getOrFail(mqName).receive()
-                        actualBody = message.body
-                        Assert.assertEquals(message.headers, expectedHeaders)
-                        JsonAssert.assertJsonEquals(expectedBody, actualBody, usedCfg)
-                    }
-                resultRecorder.pass(container)
-            } catch (e: Exception) {
-                resultRecorder.failure(container, actualBody.prettyJson(), expectedBody.prettyJson())
-                container.below(
-                    pre("MQ check with poll delay $delay ms " +
-                        "and poll interval $interval ms " +
-                        "didn't complete within $atMost seconds because ${e.cause?.message}")
-                        .css("alert alert-danger small")
-                )
+
+        val messageTags = root.childs().filter { it.localName() == "message" }.ifEmpty { listOf(root) }
+        val expectedMessages = messageTags.map { MqTester.Message(eval.resolveJson(it.content(eval).trim()), headers(it, eval)) }
+        val actualMessages: MutableList<MqTester.Message> = mqTesters.getOrFail(mqName).receive().toMutableList()
+
+        try {
+            if (isPollingEnabled(atMostSec, pollDelay, pollInterval)) {
+                val atMost = atMostSec?.toLong() ?: 4
+                val delay = pollDelay?.toLong() ?: 0
+                val interval = pollInterval?.toLong() ?: 1000
+                try {
+                    Awaitility.await("Await MQ $mqName")
+                        .atMost(atMost, TimeUnit.SECONDS)
+                        .pollDelay(delay, TimeUnit.MILLISECONDS)
+                        .pollInterval(interval, TimeUnit.MILLISECONDS)
+                        .untilAsserted {
+                            actualMessages.addAll(mqTesters.getOrFail(mqName).receive())
+                            Assert.assertEquals(expectedMessages.size, actualMessages.size)
+                        }
+                } catch (e: Exception) {
+                    resultRecorder.record(FAILURE)
+                    root.removeChildren().below(div().css("rest-failure bd-callout bd-callout-danger")(
+                        div(e.cause?.message),
+                        *renderMessages("Expected: ", expectedMessages, mqName).toTypedArray(),
+                        *renderMessages("but was: ", actualMessages, mqName).toTypedArray()
+                    ))
+                    root.below(
+                        pre("MQ check with poll delay $delay ms " +
+                            "and poll interval $interval ms " +
+                            "didn't complete within $atMost seconds because ${e.cause?.message}")
+                            .css("alert alert-danger small")
+                    )
+                }
+            } else {
+                Assert.assertEquals(expectedMessages.size, actualMessages.size)
             }
-        } else {
-            val message = mqTesters.getOrFail(mqName).receive()
-            Assert.assertEquals(message.headers, expectedHeaders)
-            checkJsonContent(message.body, expectedBody, resultRecorder, container)
+        } catch (e: java.lang.AssertionError) {
+            resultRecorder.record(FAILURE)
+            root.below(
+                div().css("rest-failure bd-callout bd-callout-danger")(
+                    div(e.message),
+                    *renderMessages("Expected: ", expectedMessages, mqName).toTypedArray(),
+                    *renderMessages("but was: ", actualMessages, mqName).toTypedArray()
+                ))
+            root.parent().remove(root)
+            return
+        }
+        val tableSlim = tableSlim()(captionEnvelopOpen(mqName))
+        root.removeChildren()(tableSlim)
+
+        expectedMessages.zip(actualMessages).forEach {
+            val container = jsonEl(it.first.body)
+            val headersContainer = span("Headers: ${it.first.headers.entries.joinToString()}")(italic("", CLASS to "fa fa-border"))
+            tableSlim(
+                if (it.first.headers.isNotEmpty()) trWithTDs(headersContainer) else null, trWithTDs(container)
+            )
+            checkHeaders(it.second.headers, it.first.headers, resultRecorder, headersContainer)
+            checkJsonContent(it.second.body, it.first.body, resultRecorder, container)
         }
     }
 
-    private fun checkJsonContent(actual: String, expected: String, resultRecorder: ResultRecorder, root: Html) {
+    private fun isPollingEnabled(atMostSec: String?, pollDelay: String?, pollInterval: String?) =
+        atMostSec != null || pollDelay != null || pollInterval != null
+
+    private fun renderMessages(msg: String, messages: List<MqTester.Message>, mqName: String): List<Html> {
+        return listOf(span(msg), tableSlim()(
+            captionEnvelopOpen(mqName),
+            tbody()(
+                messages.map { trWithTDs(jsonEl(it.body)) }
+            )
+        ))
+    }
+
+    private fun jsonEl(txt: String) =
+        pre(txt).css("json").style("margin: 0").attr("autoFormat", "true")
+
+    private fun checkHeaders(actual: Map<String, String>, expected: Map<String, String>, resultRecorder: ResultRecorder, root: Html) {
+        try {
+            Assert.assertEquals(expected, actual)
+            resultRecorder.pass(root)
+        } catch (e: Throwable) {
+            if (e is AssertionError || e is Exception) {
+                resultRecorder.failure(root, actual.toString(), expected.toString())
+                root.below(
+                    pre(e.message).css("alert alert-danger small")
+                )
+            } else throw e
+        }
+    }
+
+    private fun checkJsonContent(actual: String, expected: String, resultRecorder: ResultRecorder, root: Html) =
         try {
             JsonAssert.assertJsonEquals(expected, actual, usedCfg)
             resultRecorder.pass(root)
@@ -112,7 +159,6 @@ class MqCheckCommand(
                 )
             } else throw e
         }
-    }
 
     private fun overrideJsonUnitOption(attr: String) {
         val first = usedCfg.options.values().first()
@@ -132,7 +178,7 @@ class MqSendCommand(name: String, tag: String, private val mqTesters: Map<String
         val message = evaluator.resolveJson(root.content(evaluator).trim())
         root.removeChildren()(
             tableSlim()(
-                caption(mqName)(italic("", CLASS to "fa fa-envelope fa-pull-left fa-border")),
+                captionEnvelopClosed(mqName),
                 if (headers.isNotEmpty()) caption("Headers: ${headers.entries.joinToString()}")(italic("", CLASS to "fa fa-border")) else null,
                 trWithTDs(
                     pre(message).css("json")
@@ -141,7 +187,20 @@ class MqSendCommand(name: String, tag: String, private val mqTesters: Map<String
         )
         mqTesters.getOrFail(mqName).send(message, headers)
     }
+}
 
+class MqPurgeCommand(name: String, tag: String, private val mqTesters: Map<String, MqTester>) : ExamCommand(name, tag) {
+    override fun execute(commandCall: CommandCall, evaluator: Evaluator, resultRecorder: ResultRecorder) {
+        super.execute(commandCall, evaluator, resultRecorder)
+        val root = commandCall.html()
+        val mqName = root.takeAwayAttr("name")
+        mqTesters.getOrFail(mqName).purge()
+        root.removeChildren()(
+            tableSlim()(
+                caption()(italic(" $mqName purged", CLASS to "fa fa-envelope fa-pull-left fa-border"))
+            )
+        )
+    }
 }
 
 private fun headers(root: Html, eval: Evaluator): Map<String, String> =
@@ -149,3 +208,9 @@ private fun headers(root: Html, eval: Evaluator): Map<String, String> =
 
 private fun Map<String, MqTester>.getOrFail(mqName: String?): MqTester = this[mqName]
     ?: throw IllegalArgumentException("MQ with name $mqName not registered in MqPlugin")
+
+private fun captionEnvelopOpen(mqName: String) =
+    caption()(italic(" $mqName", CLASS to "fa fa-envelope-open fa-pull-left fa-border"))
+
+private fun captionEnvelopClosed(mqName: String?) =
+    caption()(italic(" $mqName", CLASS to "fa fa-envelope fa-pull-left fa-border"))

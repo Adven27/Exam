@@ -58,7 +58,9 @@ open class Specs {
                         queue.add(MqTester.Message(message, headers))
                     }
 
-                    override fun receive() = queue.poll() ?: MqTester.Message()
+                    override fun receive() = queue.map { queue.poll() }
+
+                    override fun purge() = queue.clear()
                 })
             ),
             UiPlugin(screenshotsOnFail = true, screenshotsOnSuccess = false)

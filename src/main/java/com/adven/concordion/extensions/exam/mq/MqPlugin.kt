@@ -20,6 +20,7 @@ class MqPlugin @JvmOverloads constructor(
 
     override fun commands(): List<ExamCommand> = listOf(
         MqCheckCommand("mq-check", "div", jsonUnitCfg, mqTesters),
-        MqSendCommand("mq-send", "div", mqTesters)
+        MqSendCommand("mq-send", "div", mqTesters),
+        MqPurgeCommand("mq-purge", "div", mqTesters)
     )
 }

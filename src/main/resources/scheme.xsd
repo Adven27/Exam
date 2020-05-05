@@ -37,6 +37,7 @@
                 <xs:element name="db-set" type="db-set-info"/>
                 <xs:element name="db-clean" type="db-clean-info"/>
                 <xs:element name="mq-send" type="mq-info"/>
+                <xs:element name="mq-purge" type="mq-purge-info"/>
                 <xs:element name="include" type="include-info"/>
             </xs:all>
         </xs:complexType>
@@ -50,6 +51,7 @@
             <xs:element name="db-clean" type="db-clean-info"/>
             <xs:element name="db-show" type="db-set-info"/>
             <xs:element name="mq-send" type="mq-info"/>
+            <xs:element name="mq-purge" type="mq-purge-info"/>
             <xs:element name="include" type="include-info"/>
             <xs:element name="browser" type="browser-info"/>
         </xs:all>
@@ -194,34 +196,51 @@
     </xs:complexType>
 
     <xs:complexType name="mq-info">
-        <xs:simpleContent>
-            <xs:extension base="xs:string">
-                <xs:attribute type="xs:anyURI" name="from" default="/data/mq"/>
-                <xs:attribute type="xs:string" name="name" use="required"/>
-                <xs:attribute type="xs:string" name="headers" default="type=String,contentEncoding=UTF-8"/>
-            </xs:extension>
-        </xs:simpleContent>
+        <xs:sequence>
+            <xs:element name="message" type="xs:string">
+                <xs:complexType mixed="true">
+                    <xs:simpleContent>
+                        <xs:extension base="xs:string">
+                            <xs:attribute type="xs:anyURI" name="from" default="/data/mq/msg.json"/>
+                        </xs:extension>
+                    </xs:simpleContent>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+        <xs:attribute type="xs:anyURI" name="from" default="/data/mq"/>
+        <xs:attribute type="xs:string" name="name" use="required"/>
+        <xs:attribute type="xs:string" name="headers" default="type=String,contentEncoding=UTF-8"/>
+    </xs:complexType>
+    <xs:complexType name="mq-purge-info">
+        <xs:attribute type="xs:string" name="name" use="required"/>
     </xs:complexType>
     <xs:complexType name="mq-check-info">
-        <xs:simpleContent>
-            <xs:extension base="xs:string">
-                <xs:attribute type="xs:string" name="from" default="/data/mq"/>
-                <xs:attribute type="xs:string" name="name" use="required"/>
-                <xs:attribute type="xs:integer" name="awaitAtMostSec" default="4"/>
-                <xs:attribute type="xs:integer" name="awaitPollDelayMillis" default="0"/>
-                <xs:attribute type="xs:integer" name="awaitPollIntervalMillis" default="1000"/>
-                <xs:attribute type="xs:string" name="headers" default="type=String,contentEncoding=UTF-8"/>
-                <xs:attribute type="xs:string" name="jsonUnitOptions"
-                              default="IGNORING_EXTRA_FIELDS;TREATING_NULL_AS_ABSENT">
-                    <xs:annotation>
-                        <xs:documentation>
-                            With Options you can configure different compare modes
-                            <a href="https://github.com/lukas-krecan/JsonUnit#options">Read more...</a>
-                        </xs:documentation>
-                    </xs:annotation>
-                </xs:attribute>
-            </xs:extension>
-        </xs:simpleContent>
+        <xs:sequence>
+            <xs:element name="message" type="xs:string">
+                <xs:complexType mixed="true">
+                    <xs:simpleContent>
+                        <xs:extension base="xs:string">
+                            <xs:attribute type="xs:anyURI" name="from" default="/data/mq/msg.json"/>
+                        </xs:extension>
+                    </xs:simpleContent>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+        <xs:attribute type="xs:string" name="from" default="/data/mq"/>
+        <xs:attribute type="xs:string" name="name" use="required"/>
+        <xs:attribute type="xs:integer" name="awaitAtMostSec" default="4"/>
+        <xs:attribute type="xs:integer" name="awaitPollDelayMillis" default="0"/>
+        <xs:attribute type="xs:integer" name="awaitPollIntervalMillis" default="1000"/>
+        <xs:attribute type="xs:string" name="headers" default="type=String,contentEncoding=UTF-8"/>
+        <xs:attribute type="xs:string" name="jsonUnitOptions"
+                      default="IGNORING_EXTRA_FIELDS;TREATING_NULL_AS_ABSENT">
+            <xs:annotation>
+                <xs:documentation>
+                    With Options you can configure different compare modes
+                    <a href="https://github.com/lukas-krecan/JsonUnit#options">Read more...</a>
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
     </xs:complexType>
 
     <xs:complexType name="check-info" mixed="true">
