@@ -46,9 +46,9 @@ class PlaceholdersResolverTest {
         val date = Date()
         eval.setVariable("#value", date)
 
-        val expected = forPattern("dd.MM.yyyy HH:mm:ss").print(fromDateFields(date))
-        assertThat(eval.resolveToObj("{{dateFormat value \"dd.MM.yyyy HH:mm:ss\"}}").toString(), `is`(expected))
-        assertThat(eval.resolveToObj("{{dateFormat (now plus='1 d') 'dd.MM.yyyy HH:mm:ss' minus='1 d'}}").toString(), `is`(expected))
+        val expected = forPattern("dd.MM.yyyy HH:mm").print(fromDateFields(date))
+        assertThat(eval.resolveToObj("{{dateFormat value \"dd.MM.yyyy HH:mm\"}}").toString(), `is`(expected))
+        assertThat(eval.resolveToObj("{{dateFormat (now plus='1 d') 'dd.MM.yyyy HH:mm' minus='1 d'}}").toString(), `is`(expected))
     }
 
     @Test

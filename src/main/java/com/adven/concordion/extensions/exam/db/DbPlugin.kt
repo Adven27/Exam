@@ -68,7 +68,7 @@ class DbPlugin(private val dbTester: DbTester, private val valuePrinter: ValuePr
     )
 
     interface ValuePrinter {
-        class Simple @JvmOverloads constructor(private val dateFormat: String = "yyyy-MM-dd hh:mm:ss.sss") : ValuePrinter {
+        class Simple @JvmOverloads constructor(private val dateFormat: String = "yyyy-MM-dd HH:mm:ss.sss") : ValuePrinter {
             override fun print(value: Any?): String = when (value) {
                 value == null -> "(null)"
                 is Array<*> -> value.contentToString()

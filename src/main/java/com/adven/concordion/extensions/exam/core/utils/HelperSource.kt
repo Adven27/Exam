@@ -18,7 +18,7 @@ import org.joda.time.DateTime
 import org.joda.time.DateTimeZone
 import org.joda.time.LocalDate
 import org.joda.time.LocalDateTime
-import org.joda.time.format.DateTimeFormat
+import org.joda.time.format.DateTimeFormat.forPattern
 import java.util.*
 import java.util.concurrent.atomic.AtomicReference
 import java.util.regex.Pattern
@@ -77,8 +77,10 @@ enum class HelperSource(
 ) : Helper<Any?> {
     dateFormat(
         """{{dateFormat date "yyyy-MM-dd'T'HH:mm Z" tz="GMT+3" minus="1 y, 2 months, d 3" plus="4 h, 5 min, 6 s"}}""",
-        mapOf("date" to DateTime(2000, 1, 2, 10, 20, DateTimeZone.forOffsetHours(3)).toDate()),
-        "1998-10-30T14:25 +0300",
+        mapOf("date" to DateTime(2000, 1, 2, 10, 20).toDate()),
+        DateTime(1998, 10, 30, 14, 25)
+            .toDateTime("GMT+3".timeZone())
+            .toString("yyyy-MM-dd'T'HH:mm Z"),
         mapOf(TZ to "\"GMT+3\"", PLUS to "\"1 day\"", MINUS to "\"5 hours\"")
     ) {
         override fun invoke(context: Any?, options: Options): Any? = dateFormat(
@@ -88,15 +90,16 @@ enum class HelperSource(
             options.param(1, Locale.getDefault().toString()),
             options.hash(PLUS, ""),
             options.hash(MINUS, ""),
-            options.hash<Any>(TZ)
+            options.hash(TZ)
         )
     },
     now(
         """{{now "yyyy-MM-dd'T'HH:mm Z" tz="GMT+3" minus="1 y, 2 months, d 3" plus="4 h, 5 min, 6 s"}}""",
         emptyMap(),
-        DateTime.now(DateTimeZone.forOffsetHours(3))
+        DateTime.now()
             .minusYears(1).minusMonths(2).minusDays(3)
             .plusHours(4).plusMinutes(5).plusSeconds(6)
+            .toDateTime("GMT+3".timeZone())
             .toString("yyyy-MM-dd'T'HH:mm Z"),
         mapOf(TZ to "\"GMT+3\"", PLUS to "\"1 day\"", MINUS to "\"5 hours\"")
     ) {
@@ -108,13 +111,12 @@ enum class HelperSource(
                 options.param(0, Locale.getDefault().toString()),
                 options.hash(PLUS, ""),
                 options.hash(MINUS, ""),
-                options.hash<Any>(TZ)
+                options.hash(TZ)
             )
         } else LocalDateTime.now()
             .plus(parsePeriodFrom(options.hash(PLUS, "")))
             .minus(parsePeriodFrom(options.hash(MINUS, "")))
-            .toDate()
-
+            .toDate((options.hash<String?>(TZ)?.timeZone() ?: DateTimeZone.getDefault()).toTimeZone())
     },
     today(
         """{{today "yyyy-MM-dd" minus="1 y, 2 months, d 3" plus="4 h, 5 min, 6 s"}}""",
@@ -133,7 +135,7 @@ enum class HelperSource(
                 options.param(0, Locale.getDefault().toString()),
                 options.hash(PLUS, ""),
                 options.hash(MINUS, ""),
-                options.hash<Any>(TZ)
+                options.hash(TZ)
             )
         } else LocalDateTime.now()
             .plus(parsePeriodFrom(options.hash(PLUS, "")))
@@ -276,7 +278,7 @@ enum class HelperSource(
     protected fun dbActual(context: Context) = (context.model() as Evaluator).getVariable("#$DB_ACTUAL")
 
     protected fun dateFormat(
-        context: Any?, options: Options, format: String, local: String, plus: String, minus: String, tz: Any?
+        context: Any?, options: Options, format: String, local: String, plus: String, minus: String, tz: String?
     ): String? {
         isInstanceOf(
             Date::class.java,
@@ -284,17 +286,19 @@ enum class HelperSource(
             "Wrong context for helper '${options.fn.text()}', found '%s', expected instance of Date: ${this.example}",
             context
         )
-        val dateFormat = DateTimeFormat.forPattern(format).withLocale(LocaleUtils.toLocale(local))
+        var dateFormat = forPattern(format).withLocale(LocaleUtils.toLocale(local))
         if (tz != null) {
-            dateFormat.withZone(DateTimeZone.forTimeZone(tz as? TimeZone ?: TimeZone.getTimeZone(tz.toString())))
+            dateFormat = dateFormat.withZone(tz.timeZone())
         }
-        return dateFormat.print(DateTime((context as Date).time).plus(parsePeriodFrom(plus)).minus(parsePeriodFrom(minus)))
+        return dateFormat.print(LocalDateTime.fromDateFields((context as Date)).toDateTime().plus(parsePeriodFrom(plus)).minus(parsePeriodFrom(minus)))
     }
 
     companion object {
         const val DEFAULT_FORMAT = "yyyy-MM-dd'T'HH:mm:ss"
     }
 }
+
+private fun String.timeZone() = DateTimeZone.forTimeZone(TimeZone.getTimeZone(this))
 
 private fun regexMatches(p: String, actualValue: Any?): Boolean {
     if (actualValue == null) return false
