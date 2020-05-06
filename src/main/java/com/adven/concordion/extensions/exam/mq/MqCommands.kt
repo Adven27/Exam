@@ -62,8 +62,9 @@ class MqCheckCommand(
         val messageTags = root.childs().filter { it.localName() == "message" }.ifEmpty { listOf(root) }
         val expectedMessages = messageTags.map { html ->
             html.takeAwayAttr("vars").vars(eval).forEach { eval.setVariable("#${it.key}", it.value) }
-            MqTester.Message(eval.resolveJson(html.content(eval).trim()), headers(html, eval))
-        }
+            val content = html.content(eval)
+            if ("" == content) return@map null else MqTester.Message(eval.resolveJson(content.trim()), headers(html, eval))
+        }.filterNotNull()
         val actualMessages: MutableList<MqTester.Message> = mqTesters.getOrFail(mqName).receive().toMutableList()
 
         try {

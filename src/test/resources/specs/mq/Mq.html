@@ -26,6 +26,12 @@
             <e:message>{"msg" : "3"}</e:message>
         </e:mq-check>
     </e:then>
+    <e:when>
+        <e:mq-purge name="myQueue"/>
+    </e:when>
+    <e:then>
+        <e:mq-check name="myQueue"/>
+    </e:then>
     <p>Specific configuration for json-unit may be passed through "jsonUnitOptions" attribute separated by ";". </p>
     <e:when>
         <e:mq-send name="myQueue">
