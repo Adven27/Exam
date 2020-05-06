@@ -4,6 +4,8 @@ package app
 
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.joda.JodaModule
+import com.fasterxml.jackson.datatype.joda.cfg.JacksonJodaDateFormat
+import com.fasterxml.jackson.datatype.joda.ser.DateTimeSerializer
 import io.ktor.application.Application
 import io.ktor.application.call
 import io.ktor.application.install
@@ -23,6 +25,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.jetbrains.exposed.sql.*
 import org.joda.time.DateTime
+import org.joda.time.format.DateTimeFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
@@ -32,9 +35,9 @@ fun Application.module() {
     install(ContentNegotiation) {
         jackson {
             setTimeZone(TimeZone.getDefault())
-            registerModule(JodaModule()/*.addSerializer(DateTime::class.java,
+            registerModule(JodaModule().addSerializer(DateTime::class.java,
                 DateTimeSerializer(
-                        JacksonJodaDateFormat(DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss Z")), 2))*/)
+                        JacksonJodaDateFormat(DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZZ")), 2)))
             configure(SerializationFeature.INDENT_OUTPUT, true)
             configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
         }
