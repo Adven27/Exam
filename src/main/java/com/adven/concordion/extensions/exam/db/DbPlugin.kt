@@ -9,17 +9,11 @@ import com.adven.concordion.extensions.exam.db.commands.DBSetCommand
 import com.adven.concordion.extensions.exam.db.commands.DBShowCommand
 import org.joda.time.format.DateTimeFormat
 import java.util.*
-import kotlin.collections.List
-import kotlin.collections.Map
 import kotlin.collections.component1
 import kotlin.collections.component2
-import kotlin.collections.contentToString
-import kotlin.collections.emptyMap
-import kotlin.collections.iterator
-import kotlin.collections.listOf
 import kotlin.collections.set
 
-class DbPlugin(private val dbTester: DbTester, private val valuePrinter: ValuePrinter = ValuePrinter.Simple()) : ExamPlugin {
+class DbPlugin @JvmOverloads constructor(private val dbTester: DbTester, private val valuePrinter: ValuePrinter = ValuePrinter.Simple()) : ExamPlugin {
 
     /***
      * @param dbUnitConfig properties for org.dbunit.database.DatabaseConfig
@@ -54,7 +48,8 @@ class DbPlugin(private val dbTester: DbTester, private val valuePrinter: ValuePr
      *
      */
     @Suppress("unused")
-    constructor(defaultTester: DbTester, others: Map<String, DbTester>) : this(defaultTester) {
+    @JvmOverloads
+    constructor(defaultTester: DbTester, others: Map<String, DbTester>, valuePrinter: ValuePrinter = ValuePrinter.Simple()) : this(defaultTester, valuePrinter) {
         for ((key, value) in others) {
             dbTester.executors[key] = value
         }
@@ -68,13 +63,19 @@ class DbPlugin(private val dbTester: DbTester, private val valuePrinter: ValuePr
     )
 
     interface ValuePrinter {
-        class Simple @JvmOverloads constructor(private val dateFormat: String = "yyyy-MM-dd HH:mm:ss.sss") : ValuePrinter {
+        open class Simple @JvmOverloads constructor(dateFormat: String = "yyyy-MM-dd HH:mm:ss.sss") : AbstractDefault(dateFormat) {
+            override fun orElse(value: Any?): String = value.toString()
+        }
+
+        abstract class AbstractDefault @JvmOverloads constructor(private val dateFormat: String = "yyyy-MM-dd HH:mm:ss.sss") : ValuePrinter {
             override fun print(value: Any?): String = when (value) {
                 value == null -> "(null)"
                 is Array<*> -> value.contentToString()
                 is Date -> DateTimeFormat.forPattern(dateFormat).print(value.time)
-                else -> value.toString()
+                else -> orElse(value)
             }
+
+            abstract fun orElse(value: Any?): String
         }
 
         fun print(value: Any?): String
