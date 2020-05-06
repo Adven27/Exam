@@ -1,0 +1,351 @@
+<?xml version="1.0" encoding="UTF-8"?><html xmlns:concordion="http://www.concordion.org/2007/concordion" xmlns:e="http://exam.extension.io" xmlns:c="http://www.concordion.org/2007/concordion"><head><style>* {
+  font-family: Arial;
+}
+body {
+  padding: 32px;  
+}
+pre {
+  padding: 6px 28px 6px 28px;
+  background-color: #E8EEF7;
+}
+pre, pre *, code, code *, kbd {
+  font-family: Courier New, Courier;
+  font-size: 10pt;
+}
+h1, h1 * {
+  font-size: 24pt;	
+}
+p, td, th, li, .breadcrumbs {
+  font-size: 10pt;
+}
+p, li {
+  line-height: 140%;
+  max-width: 720px;
+}
+table {
+  border-collapse: collapse;
+  empty-cells: show;
+  margin: 8px 0px 8px 0px;
+}
+th, td {
+  border: 1px solid black;
+  padding: 3px;
+}
+td {
+  background-color: white;
+  vertical-align: top;
+}
+th {
+  background-color: #C3D9FF;
+}
+li {
+  margin-top: 6px;
+  margin-bottom: 6px; 
+}
+
+.example, :not(th)[concordion\:example] {
+  padding: 6px 16px 6px 16px;
+  border: 1px solid #C3D9FF;
+  margin: 6px 0px 28px 0px;
+  background-color: #F5F9FD;
+}
+.example h3, [concordion\:example] h3 {
+  margin-top: 8px;
+  margin-bottom: 8px;
+  font-size: 12pt;
+}
+
+p.success {
+  padding: 2px;
+}
+.success, .success * {
+  background-color: #afa !important;
+}
+.success pre {
+  background-color: #bbffbb;
+}
+.failure, .failure * {
+  background-color: #ffb0b0;
+  padding: 1px;
+}
+.failure .expected {
+  text-decoration: line-through;
+  color: #bb5050;
+}
+.ignored, .ignored * {
+  background-color: #f0f0f0 !important;	
+}
+
+ins {
+  text-decoration: none;	
+}
+
+.exceptionMessage {
+  background-color: #fdd;
+  font-family: Courier New, Courier, Monospace;
+  font-size: 10pt;
+  display: block;
+  font-weight: normal;
+  padding: 4px;
+  text-decoration: none !important;
+}
+.stackTrace, .stackTrace * {
+  font-weight: normal;
+}
+.stackTrace {
+  display: none;
+  padding: 1px 4px 4px 4px;
+  background-color: #fdd;
+  border-top: 1px dotted black;
+}
+.stackTraceExceptionMessage {
+  display: block;
+  font-family: Courier New, Courier, Monospace;
+  font-size: 8pt;
+  white-space: wrap;
+  padding: 1px 0px 1px 0px;
+}
+.stackTraceEntry {
+  white-space: nowrap;
+  font-family: Courier New, Courier, Monospace;
+  display: block;
+  font-size: 8pt;
+  padding: 1px 0px 1px 32px;
+}
+.stackTraceButton {
+  font-size: 8pt;
+  margin: 2px 8px 2px 0px;
+  font-weight: normal;
+  font-family: Arial;
+}
+
+.special {
+  font-style: italic;
+}
+.missing, .missing * {
+  background-color: #ff9999;
+  color:#bb5050;
+  text-decoration: line-through;
+}
+.surplus, .surplus * {
+  background-color: #ff9999;
+}
+.footer {
+  text-align: right;
+  margin-top: 40px;
+  font-size: 8pt;
+  width: 100%;
+  color: #999;
+}
+.footer .testTime {
+  padding: 2px 10px 0px 0px;
+}
+
+.idea {
+  font-size: 9pt;
+  color: #888;
+  font-style: italic;	
+}
+.tight li {
+  margin-top: 1px;
+  margin-bottom: 1px; 
+}
+.commentary {
+  float: right;
+  width: 200px;
+  background-color: #ffffd0;
+  padding:8px;
+  border: 3px solid #eeeeb0;	 
+  margin: 10px 0px 10px 10px;	 
+}
+.commentary, .commentary * {
+  font-size: 8pt;
+}
+</style><meta http-equiv="content-type" content="text/html; charset=UTF-8" /><link type="text/css" rel="stylesheet" href="../../../timingExtensionStyle.css" /><script type="text/javascript" src="../../../timingExtensionToggle.js"></script><link type="text/css" rel="stylesheet" href="../../../codemirror/codemirror.css" /><link type="text/css" rel="stylesheet" href="../../../codemirror/merge.css" /><link type="text/css" rel="stylesheet" href="../../../codemirror/enable-codemirror.css" /><script type="text/javascript" src="../../../codemirror/codemirror.js"></script><script type="text/javascript" src="../../../codemirror/javascript.js"></script><script type="text/javascript" src="../../../codemirror/xml.js"></script><script type="text/javascript" src="../../../codemirror/formatting.js"></script><script type="text/javascript" src="../../../codemirror/diff_match_patch.js"></script><script type="text/javascript" src="../../../codemirror/merge.js"></script><script type="text/javascript" src="../../../codemirror/enable-codemirror.js"></script><script type="text/javascript" src="../../../bootstrap/jquery-3.2.1.slim.min.js"></script><script type="text/javascript" src="../../../bootstrap/popper.min.js"></script><script type="text/javascript" src="../../../bootstrap/bootstrap.min.js"></script><script type="text/javascript" src="../../../bootstrap/sidebar.js"></script><link type="text/css" rel="stylesheet" href="../../../bootstrap/enable-bootstrap.css" /><link type="text/css" rel="stylesheet" href="../../../bootstrap/bootstrap.min.css" /><link type="text/css" rel="stylesheet" href="../../../bootstrap/callout.css" /><link type="text/css" rel="stylesheet" href="../../../bootstrap/font-awesome.min.css" /><link type="text/css" rel="stylesheet" href="../../../bootstrap/scrollToTop.css" /><script type="text/javascript" src="../../../bootstrap/scrollToTop.js"></script></head><body><div id="toggle-button"><img id="toggle-on" src="../../../timing-on.svg" height="24" width="24" style="display:none" /><img id="toggle-off" src="../../../timing-off.svg" height="24" width="24" /></div><span class="breadcrumbs"><a href="../../Specs.html">Exam - Concordion extension</a> &gt; <a href="../Fl.html">Working with files</a> &gt; <a href="Check.html">Check directory content</a> &gt;</span><h1>Check directory content</h1>
+<h2><code>&lt;e:fl-check dir="dir"/&gt;</code></h2>
+<p><strong><em>!!! Only XML comparing are supported !!!</em></strong></p>
+<div>
+    <div cmdId="37e89993-94ce-493d-a27b-94603647db84" e:summary="" class="pin"><h4>Summary<button type="button" class="btn btn-light btn-sm text-muted ml-1" data-toggle="collapse" data-target="#summary" aria-expanded="true" aria-controls="summary">collapse</button></h4><div id="summary" class="collapse show"><div class="list-group"><a class="list-group-item list-group-item-action" href="#Happy-path">Happy-path<small class="card-img-overlay m-1" style="padding:0; left:inherit;"><span class="badge badge-pill badge-light">89ms</span><span class="badge badge-pill badge-success">3</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small></a><a class="list-group-item list-group-item-action" href="#Happy-path with parametrized file name">Happy-path with parametrized file name<small class="card-img-overlay m-1" style="padding:0; left:inherit;"><span class="badge badge-pill badge-light">34ms</span><span class="badge badge-pill badge-success">3</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small></a><a class="list-group-item list-group-item-action" href="#Surplus file">Surplus file<small class="card-img-overlay m-1" style="padding:0; left:inherit;"><span class="badge badge-pill badge-light">2ms</span><span class="badge badge-pill badge-success">1</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning">1</span><span class="badge badge-pill badge-danger"></span><span class="badge badge-pill badge-warning">ExpectedToFail</span></small></a><a class="list-group-item list-group-item-action" href="#Missing file">Missing file<small class="card-img-overlay m-1" style="padding:0; left:inherit;"><span class="badge badge-pill badge-light">2ms</span><span class="badge badge-pill badge-success">2</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning">1</span><span class="badge badge-pill badge-danger"></span><span class="badge badge-pill badge-warning">ExpectedToFail</span></small></a><a class="list-group-item list-group-item-action" href="#Wrong file content">Wrong file content<small class="card-img-overlay m-1" style="padding:0; left:inherit;"><span class="badge badge-pill badge-light">117ms</span><span class="badge badge-pill badge-success">2</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning">1</span><span class="badge badge-pill badge-danger"></span><span class="badge badge-pill badge-warning">ExpectedToFail</span></small></a><a class="list-group-item list-group-item-action" href="#All previous checks together">All previous checks together<small class="card-img-overlay m-1" style="padding:0; left:inherit;"><span class="badge badge-pill badge-light">123ms</span><span class="badge badge-pill badge-success">1</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning">3</span><span class="badge badge-pill badge-danger"></span><span class="badge badge-pill badge-warning">ExpectedToFail</span></small></a><a class="list-group-item list-group-item-action" href="#Details">Details<small class="card-img-overlay m-1" style="padding:0; left:inherit;"><span class="badge badge-pill badge-light">443ms</span><span class="badge badge-pill badge-success">4</span><span class="badge badge-pill badge-secondary">1</span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small></a></div></div></div>
+    <div cmdId="83690e36-782f-4f38-8d7b-3016c32b5cf4" e:given="" class="bd-callout bd-callout-info">
+        <table cmdId="452d536c-2cc5-456b-a7eb-fce47e65d0ff" e:fl-set="" class="table table-sm">
+            
+            
+        <caption>/tmp/junit538516786992109<i class="fa fa-folder-open fa-pull-left fa-border"></i></caption><thead class="thead-default"><th style="width:20%">file</th><th>content</th></thead><tr><td><span>not_empty_file</span></td><td><pre class="xml card" autoFormat="false" lineNumbers="false">&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;
+&lt;data&gt;
+    &lt;date&gt;2020-05-06T14:02&lt;/date&gt;
+    &lt;list&gt;
+        &lt;item&gt;
+            &lt;bool&gt;true&lt;/bool&gt;
+            &lt;num&gt;42&lt;/num&gt;
+            &lt;float&gt;0.9&lt;/float&gt;
+            &lt;str&gt;some string&lt;/str&gt;
+            &lt;regex&gt;123&lt;/regex&gt;
+            &lt;ignore&gt;should be ignored&lt;/ignore&gt;
+        &lt;/item&gt;
+    &lt;/list&gt;
+&lt;/data&gt;</pre></td></tr><tr><td><span>empty_file</span></td><td><pre class="xml card" autoFormat="false" lineNumbers="false"></pre></td></tr></table>
+    </div>
+    <div name="Happy-path" cmdId="33d920b8-f599-4027-a199-8828b11568d1" c:example="Happy-path" class="card mb-3" e:example="" id="Happy-path"><div class="card-header" data-toggle="collapse" data-target="#1258051346" aria-expanded="true" aria-controls="1258051346"><a name="Happy-path" data-type="example">Happy-path</a></div><div class="card-body collapse show" id="1258051346">
+        <div print="true" cmdId="f25e18e0-6179-4bed-b5f6-e8ceb781b741" e:then="" class="bd-callout bd-callout-success"><pre class="xml card">
+&lt;e:fl-check dir="dir"&gt;
+                &lt;file name="empty_file" /&gt;
+                &lt;file name="not_empty_file" from="data/actual.xml" /&gt;
+            &lt;/e:fl-check&gt;</pre>
+            <table cmdId="9dbc78e6-a010-414c-a37f-51b2affbe759" e:fl-check="" class="table table-sm">
+                
+                
+            <caption>/tmp/junit538516786992109<i class="fa fa-folder-open fa-pull-left fa-border"></i></caption><thead class="thead-default"><th style="width:20%">file</th><th>content</th></thead><tr><td class="rest-success">empty_file</td><td><pre class="xml card" autoFormat="false" lineNumbers="false"></pre></td></tr><tr><td class="rest-success">not_empty_file</td><td><pre class="xml card rest-success" autoFormat="false" lineNumbers="false">&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;
+&lt;data&gt;
+    &lt;date&gt;2020-05-06T14:02&lt;/date&gt;
+    &lt;list&gt;
+        &lt;item&gt;
+            &lt;bool&gt;true&lt;/bool&gt;
+            &lt;num&gt;42&lt;/num&gt;
+            &lt;float&gt;0.9&lt;/float&gt;
+            &lt;str&gt;some string&lt;/str&gt;
+            &lt;regex&gt;123&lt;/regex&gt;
+            &lt;ignore&gt;should be ignored&lt;/ignore&gt;
+        &lt;/item&gt;
+    &lt;/list&gt;
+&lt;/data&gt;</pre></td></tr></table>
+        </div>
+    </div><div class="card-footer text-muted" data-toggle="collapse" data-target="#1258051346" aria-expanded="true" aria-controls="1258051346"><small><span class="badge badge-pill badge-success">3</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small></div></div>
+     <div name="Happy-path with parametrized file name" cmdId="b12d6f8f-3a74-4f59-9afc-5f262477faeb" c:example="Happy-path with parametrized file name" class="card mb-3" e:example="" id="Happy-path with parametrized file name"><div class="card-header" data-toggle="collapse" data-target="#-2147011551" aria-expanded="true" aria-controls="-2147011551"><a name="Happy-path with parametrized file name" data-type="example">Happy-path with parametrized file name</a></div><div class="card-body collapse show" id="-2147011551">
+        <div print="true" cmdId="e06fcd4e-3c60-4598-b13c-e9afc3743d81" e:then="" class="bd-callout bd-callout-success"><pre class="xml card">
+&lt;e:fl-check dir="dir"&gt;
+                &lt;file name="{{emptyFileNameFromTemplate}}" /&gt;
+                &lt;file name="not_empty_file" from="data/actual.xml" /&gt;
+            &lt;/e:fl-check&gt;</pre>
+            <table cmdId="6bb67eb9-8445-4fa0-93b0-b877569f03b0" e:fl-check="" class="table table-sm">
+                
+                
+            <caption>/tmp/junit538516786992109<i class="fa fa-folder-open fa-pull-left fa-border"></i></caption><thead class="thead-default"><th style="width:20%">file</th><th>content</th></thead><tr><td class="rest-success">empty_file</td><td><pre class="xml card" autoFormat="false" lineNumbers="false"></pre></td></tr><tr><td class="rest-success">not_empty_file</td><td><pre class="xml card rest-success" autoFormat="false" lineNumbers="false">&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;
+&lt;data&gt;
+    &lt;date&gt;2020-05-06T14:02&lt;/date&gt;
+    &lt;list&gt;
+        &lt;item&gt;
+            &lt;bool&gt;true&lt;/bool&gt;
+            &lt;num&gt;42&lt;/num&gt;
+            &lt;float&gt;0.9&lt;/float&gt;
+            &lt;str&gt;some string&lt;/str&gt;
+            &lt;regex&gt;123&lt;/regex&gt;
+            &lt;ignore&gt;should be ignored&lt;/ignore&gt;
+        &lt;/item&gt;
+    &lt;/list&gt;
+&lt;/data&gt;</pre></td></tr></table>
+        </div>
+    </div><div class="card-footer text-muted" data-toggle="collapse" data-target="#-2147011551" aria-expanded="true" aria-controls="-2147011551"><small><span class="badge badge-pill badge-success">3</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small></div></div>
+    <div name="Surplus file" status="ExpectedToFail" cmdId="8085c84b-6b39-4f1a-b1ef-996b5558b5cd" c:example="Surplus file" c:status="ExpectedToFail" class="card mb-3" e:example="" id="Surplus file"><div class="card-header" data-toggle="collapse" data-target="#-131368942" aria-expanded="true" aria-controls="-131368942"><a name="Surplus file" data-type="example">Surplus file</a></div><div class="card-body collapse show" id="-131368942">
+        <div print="true" cmdId="5c2e1b3b-f92d-4ead-9a7e-056bd7043988" e:then="" class="bd-callout bd-callout-success"><pre class="xml card">
+&lt;e:fl-check dir="dir"&gt;
+                &lt;file name="not_empty_file" /&gt;
+            &lt;/e:fl-check&gt;</pre>
+            <table cmdId="48217375-d349-42ef-8f2c-ba485545b5b9" e:fl-check="" class="table table-sm">
+                
+            <caption>/tmp/junit538516786992109<i class="fa fa-folder-open fa-pull-left fa-border"></i></caption><thead class="thead-default"><th style="width:20%">file</th><th>content</th></thead><tr><td class="rest-success">not_empty_file</td><td><div autoFormat="false" lineNumbers="false"><button type="button" class="btn btn-light btn-sm text-muted ml-1" data-toggle="collapse" data-target="#00d40733-5c00-4318-806d-c02dd2ac3f92" aria-expanded="true" aria-controls="00d40733-5c00-4318-806d-c02dd2ac3f92" style="width:100%">show</button><div id="00d40733-5c00-4318-806d-c02dd2ac3f92" class="file collapse"><pre class="xml card">&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;
+&lt;data&gt;
+    &lt;date&gt;2020-05-06T14:02&lt;/date&gt;
+    &lt;list&gt;
+        &lt;item&gt;
+            &lt;bool&gt;true&lt;/bool&gt;
+            &lt;num&gt;42&lt;/num&gt;
+            &lt;float&gt;0.9&lt;/float&gt;
+            &lt;str&gt;some string&lt;/str&gt;
+            &lt;regex&gt;123&lt;/regex&gt;
+            &lt;ignore&gt;should be ignored&lt;/ignore&gt;
+        &lt;/item&gt;
+    &lt;/list&gt;
+&lt;/data&gt;</pre></div></div></td></tr><tr><td class="rest-failure"><del class="expected"> </del>
+<ins class="actual">empty_file (surplus)</ins></td><td><pre class="xml card"></pre></td></tr></table>
+        </div>
+    </div><div class="card-footer text-muted" data-toggle="collapse" data-target="#-131368942" aria-expanded="true" aria-controls="-131368942"><small><span class="badge badge-pill badge-success">1</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning">1</span><span class="badge badge-pill badge-danger"></span><span class="badge badge-pill badge-warning">ExpectedToFail</span></small></div></div>
+    <div name="Missing file" status="ExpectedToFail" cmdId="eecd16a2-a09b-409d-bbd4-482cd0126423" c:example="Missing file" c:status="ExpectedToFail" class="card mb-3" e:example="" id="Missing file"><div class="card-header" data-toggle="collapse" data-target="#-1040799722" aria-expanded="true" aria-controls="-1040799722"><a name="Missing file" data-type="example">Missing file</a></div><div class="card-body collapse show" id="-1040799722">
+        <div print="true" cmdId="167b8161-cbb5-4664-b9e5-d63ec2113fa8" e:then="" class="bd-callout bd-callout-success"><pre class="xml card">
+&lt;e:fl-check dir="dir"&gt;
+                &lt;file name="empty_file" /&gt;
+                &lt;file name="missing_file" /&gt;
+                &lt;file name="not_empty_file" /&gt;
+            &lt;/e:fl-check&gt;</pre>
+            <table cmdId="88c9d1b5-a437-458a-97a4-c63851235d8a" e:fl-check="" class="table table-sm">
+                
+                
+                
+            <caption>/tmp/junit538516786992109<i class="fa fa-folder-open fa-pull-left fa-border"></i></caption><thead class="thead-default"><th style="width:20%">file</th><th>content</th></thead><tr><td class="rest-success">empty_file</td><td><pre class="xml card" autoFormat="false" lineNumbers="false"></pre></td></tr><tr><td class="rest-failure"><del class="expected">missing_file</del>
+<ins class="actual">(absent)</ins></td><td><pre class="xml card" autoFormat="false" lineNumbers="false"></pre></td></tr><tr><td class="rest-success">not_empty_file</td><td><div autoFormat="false" lineNumbers="false"><button type="button" class="btn btn-light btn-sm text-muted ml-1" data-toggle="collapse" data-target="#ac2bb525-2147-4ad0-bbfc-dff33f50ac0c" aria-expanded="true" aria-controls="ac2bb525-2147-4ad0-bbfc-dff33f50ac0c" style="width:100%">show</button><div id="ac2bb525-2147-4ad0-bbfc-dff33f50ac0c" class="file collapse"><pre class="xml card">&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;
+&lt;data&gt;
+    &lt;date&gt;2020-05-06T14:02&lt;/date&gt;
+    &lt;list&gt;
+        &lt;item&gt;
+            &lt;bool&gt;true&lt;/bool&gt;
+            &lt;num&gt;42&lt;/num&gt;
+            &lt;float&gt;0.9&lt;/float&gt;
+            &lt;str&gt;some string&lt;/str&gt;
+            &lt;regex&gt;123&lt;/regex&gt;
+            &lt;ignore&gt;should be ignored&lt;/ignore&gt;
+        &lt;/item&gt;
+    &lt;/list&gt;
+&lt;/data&gt;</pre></div></div></td></tr></table>
+        </div>
+    </div><div class="card-footer text-muted" data-toggle="collapse" data-target="#-1040799722" aria-expanded="true" aria-controls="-1040799722"><small><span class="badge badge-pill badge-success">2</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning">1</span><span class="badge badge-pill badge-danger"></span><span class="badge badge-pill badge-warning">ExpectedToFail</span></small></div></div>
+    <div name="Wrong file content" status="ExpectedToFail" cmdId="800129f1-0224-49df-9656-1f19a7f47318" c:example="Wrong file content" c:status="ExpectedToFail" class="card mb-3" e:example="" id="Wrong file content"><div class="card-header" data-toggle="collapse" data-target="#-1177941624" aria-expanded="true" aria-controls="-1177941624"><a name="Wrong file content" data-type="example">Wrong file content</a></div><div class="card-body collapse show" id="-1177941624">
+        <div print="true" cmdId="f23a9bb2-6b74-4b14-9653-9f424e63f9cd" e:then="" class="bd-callout bd-callout-success"><pre class="xml card">
+&lt;e:fl-check dir="dir"&gt;
+                &lt;file name="empty_file" /&gt;
+                &lt;file name="not_empty_file"&gt;another content was expected&lt;/file&gt;
+            &lt;/e:fl-check&gt;</pre>
+            <table cmdId="9e2a9246-4c45-4091-8ec0-674870b28f9d" e:fl-check="" class="table table-sm">
+                
+                
+            <caption>/tmp/junit538516786992109<i class="fa fa-folder-open fa-pull-left fa-border"></i></caption><thead class="thead-default"><th style="width:20%">file</th><th>content</th></thead><tr><td class="rest-success">empty_file</td><td><pre class="xml card" autoFormat="false" lineNumbers="false"></pre></td></tr><tr><td class="rest-success">not_empty_file</td><td><pre class="xml card rest-failure" autoFormat="false" lineNumbers="false"><del class="expected">another content was expected</del>
+<ins class="actual">&lt;?xml version="1.0" encoding="UTF-8"?&gt;&#x0D;
+&lt;data&gt;&#x0D;
+    &lt;date&gt;2020-05-06T14:02&lt;/date&gt;&#x0D;
+    &lt;list&gt;&#x0D;
+        &lt;item&gt;&#x0D;
+            &lt;bool&gt;true&lt;/bool&gt;&#x0D;
+            &lt;num&gt;42&lt;/num&gt;&#x0D;
+            &lt;float&gt;0.9&lt;/float&gt;&#x0D;
+            &lt;str&gt;some string&lt;/str&gt;&#x0D;
+            &lt;regex&gt;123&lt;/regex&gt;&#x0D;
+            &lt;ignore&gt;should be ignored&lt;/ignore&gt;&#x0D;
+        &lt;/item&gt;&#x0D;
+    &lt;/list&gt;&#x0D;
+&lt;/data&gt;&#x0D;
+</ins></pre></td></tr></table>
+        </div>
+    </div><div class="card-footer text-muted" data-toggle="collapse" data-target="#-1177941624" aria-expanded="true" aria-controls="-1177941624"><small><span class="badge badge-pill badge-success">2</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning">1</span><span class="badge badge-pill badge-danger"></span><span class="badge badge-pill badge-warning">ExpectedToFail</span></small></div></div>
+    <div name="All previous checks together" status="ExpectedToFail" cmdId="d7ceac08-8eb8-4de7-9d65-80fe54a2b803" c:example="All previous checks together" c:status="ExpectedToFail" class="card mb-3" e:example="" id="All previous checks together"><div class="card-header" data-toggle="collapse" data-target="#241105125" aria-expanded="true" aria-controls="241105125"><a name="All previous checks together" data-type="example">All previous checks together</a></div><div class="card-body collapse show" id="241105125">
+        <div print="true" cmdId="fe91011b-b808-4aef-9653-e5b0a505f2c4" e:then="" class="bd-callout bd-callout-success"><pre class="xml card">
+&lt;e:fl-check dir="dir"&gt;
+                &lt;file name="missing_file" /&gt;
+                &lt;file name="not_empty_file"&gt;another content was expected&lt;/file&gt;
+            &lt;/e:fl-check&gt;</pre>
+            <table cmdId="86957438-27a3-48f2-8599-c5d49bd0aba5" e:fl-check="" class="table table-sm">
+                
+                
+            <caption>/tmp/junit538516786992109<i class="fa fa-folder-open fa-pull-left fa-border"></i></caption><thead class="thead-default"><th style="width:20%">file</th><th>content</th></thead><tr><td class="rest-failure"><del class="expected">missing_file</del>
+<ins class="actual">(absent)</ins></td><td><pre class="xml card" autoFormat="false" lineNumbers="false"></pre></td></tr><tr><td class="rest-success">not_empty_file</td><td><pre class="xml card rest-failure" autoFormat="false" lineNumbers="false"><del class="expected">another content was expected</del>
+<ins class="actual">&lt;?xml version="1.0" encoding="UTF-8"?&gt;&#x0D;
+&lt;data&gt;&#x0D;
+    &lt;date&gt;2020-05-06T14:02&lt;/date&gt;&#x0D;
+    &lt;list&gt;&#x0D;
+        &lt;item&gt;&#x0D;
+            &lt;bool&gt;true&lt;/bool&gt;&#x0D;
+            &lt;num&gt;42&lt;/num&gt;&#x0D;
+            &lt;float&gt;0.9&lt;/float&gt;&#x0D;
+            &lt;str&gt;some string&lt;/str&gt;&#x0D;
+            &lt;regex&gt;123&lt;/regex&gt;&#x0D;
+            &lt;ignore&gt;should be ignored&lt;/ignore&gt;&#x0D;
+        &lt;/item&gt;&#x0D;
+    &lt;/list&gt;&#x0D;
+&lt;/data&gt;&#x0D;
+</ins></pre></td></tr><tr><td class="rest-failure"><del class="expected"> </del>
+<ins class="actual">empty_file (surplus)</ins></td><td><pre class="xml card"></pre></td></tr></table>
+        </div>
+    </div><div class="card-footer text-muted" data-toggle="collapse" data-target="#241105125" aria-expanded="true" aria-controls="241105125"><small><span class="badge badge-pill badge-success">1</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning">3</span><span class="badge badge-pill badge-danger"></span><span class="badge badge-pill badge-warning">ExpectedToFail</span></small></div></div>
+    <div name="Details" cmdId="283460c3-0038-4a4f-be16-e5372f5e7631" c:example="Details" class="card mb-3" e:example="" id="Details"><div class="card-header" data-toggle="collapse" data-target="#-1072592350" aria-expanded="true" aria-controls="-1072592350"><a name="Details" data-type="example">Details</a></div><div class="card-body collapse show" id="-1072592350">
+        <ol>
+            <li><a c:run="concordion" href="details/Details.html" class="ignored">File comparing details</a><counts> (Successes: 4, Failures: 0, Ignored: 1)</counts><span class="time-run"> (442ms)</span></li>
+        </ol>
+    </div><div class="card-footer text-muted" data-toggle="collapse" data-target="#-1072592350" aria-expanded="true" aria-controls="-1072592350"><small><span class="badge badge-pill badge-success">4</span><span class="badge badge-pill badge-secondary">1</span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small></div></div>
+</div><div class="footer">Results generated by <a href="http://www.concordion.org" style="font-weight: bold; text-decoration: none; color: #89C;">Concordion</a><div class="testTime">in 830 ms on 06-May-2020 at 14:02:25 UTC</div></div></body><button id="btnToTop" onclick="topFunction()" type="button" class="btn btn-light btn-sm text-muted ml-1"><i class="fa fa-arrow-up fa-3x"></i></button></html>
