@@ -1,0 +1,698 @@
+<?xml version="1.0" encoding="UTF-8"?><html xmlns:e="http://exam.extension.io" xmlns:cc="http://www.concordion.org/2007/concordion"><head><style>* {
+  font-family: Arial;
+}
+body {
+  padding: 32px;  
+}
+pre {
+  padding: 6px 28px 6px 28px;
+  background-color: #E8EEF7;
+}
+pre, pre *, code, code *, kbd {
+  font-family: Courier New, Courier;
+  font-size: 10pt;
+}
+h1, h1 * {
+  font-size: 24pt;	
+}
+p, td, th, li, .breadcrumbs {
+  font-size: 10pt;
+}
+p, li {
+  line-height: 140%;
+  max-width: 720px;
+}
+table {
+  border-collapse: collapse;
+  empty-cells: show;
+  margin: 8px 0px 8px 0px;
+}
+th, td {
+  border: 1px solid black;
+  padding: 3px;
+}
+td {
+  background-color: white;
+  vertical-align: top;
+}
+th {
+  background-color: #C3D9FF;
+}
+li {
+  margin-top: 6px;
+  margin-bottom: 6px; 
+}
+
+.example, :not(th)[cc\:example] {
+  padding: 6px 16px 6px 16px;
+  border: 1px solid #C3D9FF;
+  margin: 6px 0px 28px 0px;
+  background-color: #F5F9FD;
+}
+.example h3, [cc\:example] h3 {
+  margin-top: 8px;
+  margin-bottom: 8px;
+  font-size: 12pt;
+}
+
+p.success {
+  padding: 2px;
+}
+.success, .success * {
+  background-color: #afa !important;
+}
+.success pre {
+  background-color: #bbffbb;
+}
+.failure, .failure * {
+  background-color: #ffb0b0;
+  padding: 1px;
+}
+.failure .expected {
+  text-decoration: line-through;
+  color: #bb5050;
+}
+.ignored, .ignored * {
+  background-color: #f0f0f0 !important;	
+}
+
+ins {
+  text-decoration: none;	
+}
+
+.exceptionMessage {
+  background-color: #fdd;
+  font-family: Courier New, Courier, Monospace;
+  font-size: 10pt;
+  display: block;
+  font-weight: normal;
+  padding: 4px;
+  text-decoration: none !important;
+}
+.stackTrace, .stackTrace * {
+  font-weight: normal;
+}
+.stackTrace {
+  display: none;
+  padding: 1px 4px 4px 4px;
+  background-color: #fdd;
+  border-top: 1px dotted black;
+}
+.stackTraceExceptionMessage {
+  display: block;
+  font-family: Courier New, Courier, Monospace;
+  font-size: 8pt;
+  white-space: wrap;
+  padding: 1px 0px 1px 0px;
+}
+.stackTraceEntry {
+  white-space: nowrap;
+  font-family: Courier New, Courier, Monospace;
+  display: block;
+  font-size: 8pt;
+  padding: 1px 0px 1px 32px;
+}
+.stackTraceButton {
+  font-size: 8pt;
+  margin: 2px 8px 2px 0px;
+  font-weight: normal;
+  font-family: Arial;
+}
+
+.special {
+  font-style: italic;
+}
+.missing, .missing * {
+  background-color: #ff9999;
+  color:#bb5050;
+  text-decoration: line-through;
+}
+.surplus, .surplus * {
+  background-color: #ff9999;
+}
+.footer {
+  text-align: right;
+  margin-top: 40px;
+  font-size: 8pt;
+  width: 100%;
+  color: #999;
+}
+.footer .testTime {
+  padding: 2px 10px 0px 0px;
+}
+
+.idea {
+  font-size: 9pt;
+  color: #888;
+  font-style: italic;	
+}
+.tight li {
+  margin-top: 1px;
+  margin-bottom: 1px; 
+}
+.commentary {
+  float: right;
+  width: 200px;
+  background-color: #ffffd0;
+  padding:8px;
+  border: 3px solid #eeeeb0;	 
+  margin: 10px 0px 10px 10px;	 
+}
+.commentary, .commentary * {
+  font-size: 8pt;
+}
+</style><meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<link type="text/css" rel="stylesheet" href="../../timingExtensionStyle.css" /><script type="text/javascript" src="../../timingExtensionToggle.js"></script><link type="text/css" rel="stylesheet" href="../../codemirror/codemirror.css" /><link type="text/css" rel="stylesheet" href="../../codemirror/merge.css" /><link type="text/css" rel="stylesheet" href="../../codemirror/enable-codemirror.css" /><script type="text/javascript" src="../../codemirror/codemirror.js"></script><script type="text/javascript" src="../../codemirror/javascript.js"></script><script type="text/javascript" src="../../codemirror/xml.js"></script><script type="text/javascript" src="../../codemirror/formatting.js"></script><script type="text/javascript" src="../../codemirror/diff_match_patch.js"></script><script type="text/javascript" src="../../codemirror/merge.js"></script><script type="text/javascript" src="../../codemirror/enable-codemirror.js"></script><script type="text/javascript" src="../../bootstrap/jquery-3.2.1.slim.min.js"></script><script type="text/javascript" src="../../bootstrap/popper.min.js"></script><script type="text/javascript" src="../../bootstrap/bootstrap.min.js"></script><script type="text/javascript" src="../../bootstrap/sidebar.js"></script><link type="text/css" rel="stylesheet" href="../../bootstrap/enable-bootstrap.css" /><link type="text/css" rel="stylesheet" href="../../bootstrap/bootstrap.min.css" /><link type="text/css" rel="stylesheet" href="../../bootstrap/callout.css" /><link type="text/css" rel="stylesheet" href="../../bootstrap/font-awesome.min.css" /><link type="text/css" rel="stylesheet" href="../../bootstrap/scrollToTop.css" /><script type="text/javascript" src="../../bootstrap/scrollToTop.js"></script></head><body><div id="toggle-button"><img id="toggle-on" src="../../timing-on.svg" height="24" width="24" style="display:none" /><img id="toggle-off" src="../../timing-off.svg" height="24" width="24" /></div><span class="breadcrumbs"><a href="../Specs.html">Exam - Concordion extension</a> &gt;</span>
+<h1>Getting started</h1>
+<div cmdId="24b5a95b-35c5-482f-8bc8-af63f486cd81" e:summary="" class="pin"><h4>Summary<button type="button" class="btn btn-light btn-sm text-muted ml-1" data-toggle="collapse" data-target="#summary" aria-expanded="true" aria-controls="summary">collapse</button></h4><div id="summary" class="collapse show"><div class="list-group"><a class="list-group-item list-group-item-action" href="#Successful widget creation">Successful widget creation<small class="card-img-overlay m-1" style="padding:0; left:inherit;"><span class="badge badge-pill badge-light">1s 890ms</span><span class="badge badge-pill badge-success">14</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small><button type="button" class="btn btn-light btn-sm text-muted ml-1" data-toggle="collapse" data-target="#e01d98b5-5b3f-47f5-b1ce-82c59c54b296" aria-expanded="true" aria-controls="e01d98b5-5b3f-47f5-b1ce-82c59c54b296">cases</button></a><div id="e01d98b5-5b3f-47f5-b1ce-82c59c54b296" class="collapse"><a href="#1) Successful creation" class="list-group-item list-group-item-action text-muted">1) Successful creation<i></i></a></div><a class="list-group-item list-group-item-action" href="#Validate creation">Validate creation<small class="card-img-overlay m-1" style="padding:0; left:inherit;"><span class="badge badge-pill badge-light">220ms</span><span class="badge badge-pill badge-success">9</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small><button type="button" class="btn btn-light btn-sm text-muted ml-1" data-toggle="collapse" data-target="#8d39855d-b057-4ad7-913c-0935cd3c7c8a" aria-expanded="true" aria-controls="8d39855d-b057-4ad7-913c-0935cd3c7c8a">cases</button></a><div id="8d39855d-b057-4ad7-913c-0935cd3c7c8a" class="collapse"><a href="#2) quantity is required" class="list-group-item list-group-item-action text-muted">2) quantity is required<i></i></a><a href="#3) name is required" class="list-group-item list-group-item-action text-muted">3) name is required<i></i></a><a href="#4) name should't be blank or more than 10 symbols" class="list-group-item list-group-item-action text-muted">4) name should't be blank or more than 10 symbols<i></i></a></div><a class="list-group-item list-group-item-action" href="#Validate creation - parametrized">Validate creation - parametrized<small class="card-img-overlay m-1" style="padding:0; left:inherit;"><span class="badge badge-pill badge-light">167ms</span><span class="badge badge-pill badge-success">9</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small><button type="button" class="btn btn-light btn-sm text-muted ml-1" data-toggle="collapse" data-target="#b215a64b-77d4-4027-bd47-0a284728ea42" aria-expanded="true" aria-controls="b215a64b-77d4-4027-bd47-0a284728ea42">cases</button></a><div id="b215a64b-77d4-4027-bd47-0a284728ea42" class="collapse"><a href="#5) Name and quantity validation" class="list-group-item list-group-item-action text-muted">5) Name and quantity validation<i></i></a></div><a class="list-group-item list-group-item-action" href="#Successful widget deletion">Successful widget deletion<small class="card-img-overlay m-1" style="padding:0; left:inherit;"><span class="badge badge-pill badge-light">162ms</span><span class="badge badge-pill badge-success">5</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small><button type="button" class="btn btn-light btn-sm text-muted ml-1" data-toggle="collapse" data-target="#4dae4309-0b02-4ebd-8d0f-be2eb638a162" aria-expanded="true" aria-controls="4dae4309-0b02-4ebd-8d0f-be2eb638a162">cases</button></a><div id="4dae4309-0b02-4ebd-8d0f-be2eb638a162" class="collapse"><a href="#6) Successful deletion" class="list-group-item list-group-item-action text-muted">6) Successful deletion<i></i></a><a href="#7) Absent widget deletion" class="list-group-item list-group-item-action text-muted">7) Absent widget deletion<i></i></a></div><a class="list-group-item list-group-item-action" href="#Successful widget retrieving">Successful widget retrieving<small class="card-img-overlay m-1" style="padding:0; left:inherit;"><span class="badge badge-pill badge-light">130ms</span><span class="badge badge-pill badge-success">2</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small><button type="button" class="btn btn-light btn-sm text-muted ml-1" data-toggle="collapse" data-target="#5543c5fa-00e6-43e1-b76c-9a08a155d15c" aria-expanded="true" aria-controls="5543c5fa-00e6-43e1-b76c-9a08a155d15c">cases</button></a><div id="5543c5fa-00e6-43e1-b76c-9a08a155d15c" class="collapse"><a href="#8) Can retrieve stored widgets" class="list-group-item list-group-item-action text-muted">8) Can retrieve stored widgets<i></i></a></div><a class="list-group-item list-group-item-action" href="#CRUD">CRUD<small class="card-img-overlay m-1" style="padding:0; left:inherit;"><span class="badge badge-pill badge-light">290ms</span><span class="badge badge-pill badge-success">8</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small><button type="button" class="btn btn-light btn-sm text-muted ml-1" data-toggle="collapse" data-target="#85db93cf-a34f-43b6-a878-a765f15c5ad7" aria-expanded="true" aria-controls="85db93cf-a34f-43b6-a878-a765f15c5ad7">cases</button></a><div id="85db93cf-a34f-43b6-a878-a765f15c5ad7" class="collapse"><a href="#9) Create" class="list-group-item list-group-item-action text-muted">9) Create<i></i></a><a href="#10) Read" class="list-group-item list-group-item-action text-muted">10) Read<i></i></a><a href="#11) Update" class="list-group-item list-group-item-action text-muted">11) Update<i></i></a><a href="#12) Delete" class="list-group-item list-group-item-action text-muted">12) Delete<i></i></a></div><a class="list-group-item list-group-item-action" href="#Trigger job and poll result with custom method">Trigger job and poll result with custom method<small class="card-img-overlay m-1" style="padding:0; left:inherit;"><span class="badge badge-pill badge-light">2s 786ms</span><span class="badge badge-pill badge-success">3</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small><button type="button" class="btn btn-light btn-sm text-muted ml-1" data-toggle="collapse" data-target="#e5f64582-5fbd-4134-afa2-b218fe011239" aria-expanded="true" aria-controls="e5f64582-5fbd-4134-afa2-b218fe011239">cases</button></a><div id="e5f64582-5fbd-4134-afa2-b218fe011239" class="collapse"><a href="#13) Trigger job with some optional body" class="list-group-item list-group-item-action text-muted">13) Trigger job with some optional body<i></i></a></div><a class="list-group-item list-group-item-action" href="#Trigger job and poll result with http request">Trigger job and poll result with http request<small class="card-img-overlay m-1" style="padding:0; left:inherit;"><span class="badge badge-pill badge-light">2s 255ms</span><span class="badge badge-pill badge-success">1</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small></a><a class="list-group-item list-group-item-action" href="#Trigger job and poll result with db-check">Trigger job and poll result with db-check<small class="card-img-overlay m-1" style="padding:0; left:inherit;"><span class="badge badge-pill badge-light">2s 110ms</span><span class="badge badge-pill badge-success">1</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small></a></div></div></div>
+<div cmdId="a1d70c22-0ffe-4a6c-9a3f-243b3f4d840e" e:given="" class="bd-callout bd-callout-info">
+    We have a simple CRUD App for widgets manipulation.
+    Widgets are stored in DB like this:
+    <table cmdId="93469734-f07c-4076-ba57-d327c750f8fc" e:db-show="" class="table table-sm"><caption><i class="fa fa-database fa-pull-left fa-border"> WIDGETS</i></caption><thead class="thead-default"><tr><th class="">ID</th><th class="">NAME</th><th class="">QUANTITY</th><th class="">UPDATED</th></tr></thead><tbody><tr><td class="">1</td><td class="">widget one</td><td class="">27</td><td class="">2020-05-06 13:38:36.036</td></tr><tr><td class="">2</td><td class="">widget two</td><td class="">14</td><td class="">2020-05-06 13:38:36.036</td></tr></tbody></table>
+</div>
+<h3>Let's test widget creation API:</h3>
+<div xmlns:c="http://www.concordion.org/2007/concordion" name="Successful widget creation" print="true" cmdId="61f44551-ee6d-4a60-b959-522fb7234ae6" c:example="Successful widget creation" class="card mb-3" e:example="" id="Successful widget creation"><div class="card-header" data-toggle="collapse" data-target="#102879189" aria-expanded="true" aria-controls="102879189"><a name="Successful widget creation" data-type="example">Successful widget creation</a></div><div class="card-body collapse show" id="102879189"><pre class="xml card">
+&lt;e:given&gt;
+        &lt;e:db-set caption="There are no widgets" table="widgets" /&gt;
+    &lt;/e:given&gt;
+&lt;e:post url="/widgets"&gt;
+        &lt;e:case desc="Successful creation"&gt;
+            &lt;e:body&gt;{"name" : "widget1", "quantity": "10"}&lt;/e:body&gt;
+            &lt;e:expected statusCode="201" reasonPhrase="Created"&gt;
+                {
+                "id": "{{number}}",
+                "name": "widget1",
+                "quantity": 10,
+                "updatedAt": "{{formattedAndWithinNow "yyyy-MM-dd'T'HH:mm:ss.SSSZZ" "5s"}}"
+                }
+            &lt;/e:expected&gt;
+            &lt;e:check&gt;
+                &lt;e:db-check caption="Widget was created:" table="widgets" cols="id, name, quantity, updated" orderBy="name"&gt;
+                    &lt;e:row&gt;!{number}, widget1, 10, !{within 5s}&lt;/e:row&gt;
+                &lt;/e:db-check&gt;
+                or
+                &lt;e:db-check caption="Widget was created:" table="widgets" cols="id, name, quantity, updated" orderBy="name"&gt;
+                    &lt;e:row&gt;!{regex}\d, widget1, 10, !{notNull}&lt;/e:row&gt;
+                &lt;/e:db-check&gt;
+                or with variable setting:
+                &lt;e:db-check caption="Widget was created:" table="widgets" cols="id, name, quantity, updated" orderBy="name"&gt;
+                    &lt;e:row&gt;!{number}&amp;gt;&amp;gt;id, !{notNull}&amp;gt;&amp;gt;name, !{regex}\d+&amp;gt;&amp;gt;quantity, !{within 5s}&amp;gt;&amp;gt;updated&lt;/e:row&gt;
+                &lt;/e:db-check&gt;
+                #id = &lt;code cc:echo="#id" /&gt; #name = &lt;code cc:echo="#name" /&gt; #quantity = &lt;code cc:echo="#quantity" /&gt; #updated = &lt;code cc:echo="#updated" /&gt;
+            &lt;/e:check&gt;
+        &lt;/e:case&gt;
+    &lt;/e:post&gt;</pre>
+    <div cmdId="467f3821-1a2f-4014-871e-17ba78c2fff4" e:given="" class="bd-callout bd-callout-info">
+        <table cmdId="a66ed75c-bdd8-4e28-83c9-89db7a7e34f8" e:db-set="" class="table table-sm"><div></div><span></span><caption><i class="fa fa-database fa-pull-left fa-border"> There are no widgets</i></caption><thead class="thead-default"><tr /></thead><tbody /></table>
+    </div>
+    <div cmdId="2a541010-d1d3-4bde-bb25-777dc89355b2" e:post="" class="bd-callout bd-callout-success"><table class="table table-sm"><thead class="thead-default"><thead class="thead-default"><th>Request</th><th>Expected response</th><th>Status code</th></thead></thead>
+        <tr desc="Successful creation" cmdId="92be9370-3abd-4c36-bdf2-20b00b96c137" e:case="" data-type="case" id="1) Successful creation"><tr><td colspan="3" class="text-muted">1) Successful creation</td></tr>
+            
+            
+            <div cmdId="a8d45f32-2088-42c6-a11d-9264de586425" e:check="" />
+        <tr><tr><td colspan="3"><div><i>POST </i><code>/widgets</code><span></span></div></td></tr><td class="json" style="max-width:550px">{
+  "name": "widget1",
+  "quantity": "10"
+}</td><td style="max-width:550px" class="json rest-success">{
+  "id": "${json-unit.any-number}",
+  "name": "widget1",
+  "quantity": 10,
+  "updatedAt": "${json-unit.matches:formattedAndWithinNow}[yyyy-MM-dd'T'HH:mm:ss.SSSZZ][5s]"
+}</td><td class="rest-success">HTTP/1.1 201 Created</td></tr></tr><tr><td colspan="3">
+                <table caption="Widget was created:" cmdId="c3cc1afa-e4ef-42f0-837a-f379acd89ebe" e:db-check="" class="table table-sm">
+                    
+                <div></div><span></span><caption><i class="fa fa-database fa-pull-left fa-border"> Widget was created:</i></caption><thead class="thead-default"><tr><th>id</th><th>name</th><th>quantity</th><th>updated</th></tr></thead><tr><td class="table-success">!{number} (3)</td><td class="table-success">widget1</td><td class="table-success">10</td><td class="table-success">!{within 5s} (2020-05-06 13:38:38.12)</td></tr></table>
+                or
+                <table caption="Widget was created:" cmdId="03adb3d7-0579-464e-b284-74c83ca2647a" e:db-check="" class="table table-sm">
+                    
+                <div></div><span></span><caption><i class="fa fa-database fa-pull-left fa-border"> Widget was created:</i></caption><thead class="thead-default"><tr><th>id</th><th>name</th><th>quantity</th><th>updated</th></tr></thead><tr><td class="table-success">!{regex}\d (3)</td><td class="table-success">widget1</td><td class="table-success">10</td><td class="table-success">!{notNull} (2020-05-06 13:38:38.12)</td></tr></table>
+                or with variable setting:
+                <table caption="Widget was created:" cmdId="9a33f226-9a3d-4ebf-9eb5-3cf8c62db0d9" e:db-check="" class="table table-sm">
+                    
+                <div></div><span></span><caption><i class="fa fa-database fa-pull-left fa-border"> Widget was created:</i></caption><thead class="thead-default"><tr><th>id</th><th>name</th><th>quantity</th><th>updated</th></tr></thead><tr><td class="table-success">!{number}&gt;&gt;id (3)</td><td class="table-success">!{notNull}&gt;&gt;name (widget1)</td><td class="table-success">!{regex}\d+&gt;&gt;quantity (10)</td><td class="table-success">!{within 5s}&gt;&gt;updated (2020-05-06 13:38:38.12)</td></tr></table>
+                #id = <code cc:echo="#id">3</code> #name = <code cc:echo="#name">widget1</code> #quantity = <code cc:echo="#quantity">10</code> #updated = <code cc:echo="#updated">2020-05-06 13:38:38.12</code>
+            </td></tr>
+    <div><h4><span class="badge badge-success ml-1 mr-1">POST</span><span class="badge badge-info ml-1 mr-1">application/json</span><code>/widgets</code></h4></div></table></div>
+</div><div class="card-footer text-muted" data-toggle="collapse" data-target="#102879189" aria-expanded="true" aria-controls="102879189"><small><span class="badge badge-pill badge-success">14</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small></div></div>
+<br />
+<blockquote class="blockquote">
+    <p class="mb-0">For testing validation, parametrized (aka <code>where</code>) cases may be used:</p>
+</blockquote>
+<div xmlns:c="http://www.concordion.org/2007/concordion" name="Validate creation" print="true" cmdId="9da011db-4b26-4a86-a1fc-628309d67287" c:example="Validate creation" class="card mb-3" e:example="" id="Validate creation"><div class="card-header" data-toggle="collapse" data-target="#17190537" aria-expanded="true" aria-controls="17190537"><a name="Validate creation" data-type="example">Validate creation</a></div><div class="card-body collapse show" id="17190537"><pre class="xml card">
+&lt;e:given&gt;
+        &lt;e:db-set caption="There are no widgets" table="widgets" /&gt;
+    &lt;/e:given&gt;
+&lt;e:post url="/widgets"&gt;
+        &lt;e:case desc="quantity is required"&gt;
+            &lt;e:body&gt;
+                {"name": "widget1"}
+            &lt;/e:body&gt;
+            &lt;e:expected statusCode="400" reasonPhrase="Bad Request"&gt;
+                { "error": "quantity is required" }
+            &lt;/e:expected&gt;
+        &lt;/e:case&gt;
+        &lt;e:case desc="name is required"&gt;
+            &lt;e:body&gt;
+                {"quantity": "10"}
+            &lt;/e:body&gt;
+            &lt;e:expected statusCode="400" reasonPhrase="Bad Request"&gt;
+                { "error": "name is required" }
+            &lt;/e:expected&gt;
+        &lt;/e:case&gt;
+        &lt;e:case desc="name should't be blank or more than 10 symbols"&gt;
+            &lt;e:body&gt;
+                {"name": "{{invalid}}", "quantity": "10"}
+            &lt;/e:body&gt;
+            &lt;e:expected statusCode="400" reasonPhrase="Bad Request"&gt;
+                { "error": "{{error}}" }
+            &lt;/e:expected&gt;
+            &lt;e:where vars="invalid, error"&gt;
+                &lt;e:vals&gt;''          , blank value not allowed&lt;/e:vals&gt;
+                &lt;e:vals&gt;more_than_10, Value 'more_than_10' can't be stored to database column because exceeds length app.Widgets.name.columnType.colLength&lt;/e:vals&gt;
+            &lt;/e:where&gt;
+        &lt;/e:case&gt;
+        &lt;e:check&gt;
+            &lt;e:db-check caption="No widgets were created:" table="widgets" /&gt;
+        &lt;/e:check&gt;
+    &lt;/e:post&gt;</pre>
+    <div cmdId="04f3d77a-9fa7-4b53-99e6-0a6dd25afcc2" e:given="" class="bd-callout bd-callout-info">
+        <table cmdId="cb2161d2-7d18-48c3-983d-56a0460f2361" e:db-set="" class="table table-sm"><div></div><span></span><caption><i class="fa fa-database fa-pull-left fa-border"> There are no widgets</i></caption><thead class="thead-default"><tr /></thead><tbody /></table>
+    </div>
+    <div cmdId="30ab2970-22eb-4c9c-b5d6-2332edc3342a" e:post="" class="bd-callout bd-callout-success"><table class="table table-sm"><thead class="thead-default"><thead class="thead-default"><th>Request</th><th>Expected response</th><th>Status code</th></thead></thead>
+        <tr desc="quantity is required" cmdId="21a5e464-29b8-4ecb-a98e-d083d3328df6" e:case="" data-type="case" id="2) quantity is required"><tr><td colspan="3" class="text-muted">2) quantity is required</td></tr>
+            
+            
+        <tr><tr><td colspan="3"><div><i>POST </i><code>/widgets</code><span></span></div></td></tr><td class="json" style="max-width:550px">{
+  "name": "widget1"
+}</td><td style="max-width:550px" class="json rest-success">{
+  "error": "quantity is required"
+}</td><td class="rest-success">HTTP/1.1 400 Bad Request</td></tr></tr>
+        <tr desc="name is required" cmdId="9e32c141-21e8-4b70-9c51-aa5cbfb566fc" e:case="" data-type="case" id="3) name is required"><tr><td colspan="3" class="text-muted">3) name is required</td></tr>
+            
+            
+        <tr><tr><td colspan="3"><div><i>POST </i><code>/widgets</code><span></span></div></td></tr><td class="json" style="max-width:550px">{
+  "quantity": "10"
+}</td><td style="max-width:550px" class="json rest-success">{
+  "error": "name is required"
+}</td><td class="rest-success">HTTP/1.1 400 Bad Request</td></tr></tr>
+        <tr desc="name should't be blank or more than 10 symbols" cmdId="dade539d-6c05-40e9-bc3e-f59f88c0a9bf" e:case="" data-type="case" id="4) name should't be blank or more than 10 symbols"><tr><td colspan="3" class="text-muted">4) name should't be blank or more than 10 symbols</td></tr>
+            
+            
+            <e:where>
+                
+                
+            </e:where>
+        <tr><tr><td colspan="3"><div><i>POST </i><code>/widgets</code><span></span></div></td></tr><td class="json" style="max-width:550px">{
+  "name": "",
+  "quantity": "10"
+}</td><td style="max-width:550px" class="json rest-success">{
+  "error": "blank value not allowed"
+}</td><td class="rest-success">HTTP/1.1 400 Bad Request</td></tr><tr><tr><td colspan="3"><div><i>POST </i><code>/widgets</code><span></span></div></td></tr><td class="json" style="max-width:550px">{
+  "name": "more_than_10",
+  "quantity": "10"
+}</td><td style="max-width:550px" class="json rest-success">{
+  "error": "Value 'more_than_10' can't be stored to database column because exceeds length app.Widgets.name.columnType.colLength"
+}</td><td class="rest-success">HTTP/1.1 400 Bad Request</td></tr></tr>
+        <div cmdId="28084b5b-685c-4aa8-8e64-fc214f6ef071" e:check="" />
+    <div><h4><span class="badge badge-success ml-1 mr-1">POST</span><span class="badge badge-info ml-1 mr-1">application/json</span><code>/widgets</code></h4></div></table><tr><td colspan="3">
+            <table caption="No widgets were created:" cmdId="3f664191-883a-403c-ab0d-b519d5372aa8" e:db-check="" class="table table-sm"><div></div><span></span><caption><i class="fa fa-database fa-pull-left fa-border"> No widgets were created:</i></caption><thead class="thead-default"><tr /></thead><tr><td colspan="0" class="table-success">&lt;EMPTY&gt;</td></tr></table>
+        </td></tr></div>
+</div><div class="card-footer text-muted" data-toggle="collapse" data-target="#17190537" aria-expanded="true" aria-controls="17190537"><small><span class="badge badge-pill badge-success">9</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small></div></div>
+<br />
+<blockquote class="blockquote">
+    <p class="mb-0">Or more tricky and compact equivalent of previous example (request/response body templates are hidden in files):</p>
+</blockquote>
+<div xmlns:c="http://www.concordion.org/2007/concordion" name="Validate creation - parametrized" print="true" cmdId="e82c55da-6215-4ff3-8cfb-41ce2faf769c" c:example="Validate creation - parametrized" class="card mb-3" e:example="" id="Validate creation - parametrized"><div class="card-header" data-toggle="collapse" data-target="#-1613731824" aria-expanded="true" aria-controls="-1613731824"><a name="Validate creation - parametrized" data-type="example">Validate creation - parametrized</a></div><div class="card-body collapse show" id="-1613731824"><pre class="xml card">
+&lt;e:given&gt;
+        &lt;e:db-set caption="There are no widgets" table="widgets" /&gt;
+    &lt;/e:given&gt;
+&lt;e:post url="/widgets"&gt;
+        &lt;e:case desc="Name and quantity validation"&gt;
+            &lt;e:body from="/data/getting-started/{{req}}" /&gt;
+            &lt;e:expected from="/data/getting-started/error.json" statusCode="400" reasonPhrase="Bad Request" /&gt;
+            &lt;e:where vars="name, req, error"&gt;
+                &lt;e:vals&gt;ignored     , invalid-no-name.json    , name is required&lt;/e:vals&gt;
+                &lt;e:vals&gt;ignored     , invalid-no-quantity.json, quantity is required&lt;/e:vals&gt;
+                &lt;e:vals&gt;''          , create-req.json         , blank value not allowed&lt;/e:vals&gt;
+                &lt;e:vals&gt;more_than_10, create-req.json         , Value 'more_than_10' can't be stored to database column because exceeds length app.Widgets.name.columnType.colLength&lt;/e:vals&gt;
+            &lt;/e:where&gt;
+        &lt;/e:case&gt;
+        &lt;e:check&gt;
+            &lt;e:db-check caption="No widgets were created:" table="widgets" /&gt;
+        &lt;/e:check&gt;
+    &lt;/e:post&gt;</pre>
+    <div cmdId="110e7f2e-8b0c-4d63-936f-7767cfb4311a" e:given="" class="bd-callout bd-callout-info">
+        <table cmdId="906bdb24-acf3-4e39-a63a-bb8be78a044e" e:db-set="" class="table table-sm"><div></div><span></span><caption><i class="fa fa-database fa-pull-left fa-border"> There are no widgets</i></caption><thead class="thead-default"><tr /></thead><tbody /></table>
+    </div>
+    <div cmdId="fb4e2951-7ba3-486c-9449-bdec98292b6e" e:post="" class="bd-callout bd-callout-success"><table class="table table-sm"><thead class="thead-default"><thead class="thead-default"><th>Request</th><th>Expected response</th><th>Status code</th></thead></thead>
+        <tr desc="Name and quantity validation" cmdId="18610bcc-33d2-4858-9153-d60b5f836ce1" e:case="" data-type="case" id="5) Name and quantity validation"><tr><td colspan="3" class="text-muted">5) Name and quantity validation</td></tr>
+            
+            
+            <e:where>
+                
+                
+                
+                
+            </e:where>
+        <tr><tr><td colspan="3"><div><i>POST </i><code>/widgets</code><span></span></div></td></tr><td from="/data/getting-started/{{req}}" class="json" style="max-width:550px">{
+  "quantity": "10"
+}</td><td from="/data/getting-started/error.json" style="max-width:550px" class="json rest-success">{
+  "error": "name is required"
+}</td><td class="rest-success">HTTP/1.1 400 Bad Request</td></tr><tr><tr><td colspan="3"><div><i>POST </i><code>/widgets</code><span></span></div></td></tr><td from="/data/getting-started/{{req}}" class="json" style="max-width:550px">{
+  "name": "widget1"
+}</td><td from="/data/getting-started/error.json" style="max-width:550px" class="json rest-success">{
+  "error": "quantity is required"
+}</td><td class="rest-success">HTTP/1.1 400 Bad Request</td></tr><tr><tr><td colspan="3"><div><i>POST </i><code>/widgets</code><span></span></div></td></tr><td from="/data/getting-started/{{req}}" class="json" style="max-width:550px">{
+  "name": "",
+  "quantity": "10"
+}</td><td from="/data/getting-started/error.json" style="max-width:550px" class="json rest-success">{
+  "error": "blank value not allowed"
+}</td><td class="rest-success">HTTP/1.1 400 Bad Request</td></tr><tr><tr><td colspan="3"><div><i>POST </i><code>/widgets</code><span></span></div></td></tr><td from="/data/getting-started/{{req}}" class="json" style="max-width:550px">{
+  "name": "more_than_10",
+  "quantity": "10"
+}</td><td from="/data/getting-started/error.json" style="max-width:550px" class="json rest-success">{
+  "error": "Value 'more_than_10' can't be stored to database column because exceeds length app.Widgets.name.columnType.colLength"
+}</td><td class="rest-success">HTTP/1.1 400 Bad Request</td></tr></tr>
+        <div cmdId="71959689-61a8-4639-8f78-8ce3e8dabf77" e:check="" />
+    <div><h4><span class="badge badge-success ml-1 mr-1">POST</span><span class="badge badge-info ml-1 mr-1">application/json</span><code>/widgets</code></h4></div></table><tr><td colspan="3">
+            <table caption="No widgets were created:" cmdId="ce863c1e-a283-42bc-8ace-41731e2b0209" e:db-check="" class="table table-sm"><div></div><span></span><caption><i class="fa fa-database fa-pull-left fa-border"> No widgets were created:</i></caption><thead class="thead-default"><tr /></thead><tr><td colspan="0" class="table-success">&lt;EMPTY&gt;</td></tr></table>
+        </td></tr></div>
+</div><div class="card-footer text-muted" data-toggle="collapse" data-target="#-1613731824" aria-expanded="true" aria-controls="-1613731824"><small><span class="badge badge-pill badge-success">9</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small></div></div>
+<br />
+<h3>Let's test widget deletion API:</h3>
+<div xmlns:c="http://www.concordion.org/2007/concordion" name="Successful widget deletion" print="true" cmdId="aa339961-ff1b-4518-90a1-a4976825edd6" c:example="Successful widget deletion" class="card mb-3" e:example="" id="Successful widget deletion"><div class="card-header" data-toggle="collapse" data-target="#-897825596" aria-expanded="true" aria-controls="-897825596"><a name="Successful widget deletion" data-type="example">Successful widget deletion</a></div><div class="card-body collapse show" id="-897825596"><pre class="xml card">
+&lt;e:given&gt;
+        &lt;e:db-set caption="Given widget:" table="widgets" cols="name, quantity, id=1, updated={{now}}"&gt;
+            &lt;e:row&gt;widget1, 10&lt;/e:row&gt;
+        &lt;/e:db-set&gt;
+    &lt;/e:given&gt;
+&lt;e:delete url="/widgets/1"&gt;
+        &lt;e:case desc="Successful deletion"&gt;
+            &lt;e:expected /&gt;
+            &lt;e:check&gt;
+                &lt;e:db-check caption="Widget was deleted:" table="widgets" /&gt;
+            &lt;/e:check&gt;
+        &lt;/e:case&gt;
+        &lt;e:case desc="Absent widget deletion"&gt;
+            &lt;e:expected statusCode="404" reasonPhrase="Not Found" /&gt;
+        &lt;/e:case&gt;
+    &lt;/e:delete&gt;</pre>
+    <div cmdId="b9226cbb-958d-4f64-9fec-6fc91650f94d" e:given="" class="bd-callout bd-callout-info">
+        <table cmdId="43c33925-ef98-402c-a50c-7b5647955de8" e:db-set="" class="table table-sm">
+            
+        <div></div><span></span><caption><i class="fa fa-database fa-pull-left fa-border"> Given widget:</i></caption><thead class="thead-default"><tr><th class="">name</th><th class="">quantity</th><th class="">id</th><th class="">updated</th></tr></thead><tbody><tr><td class="">widget1</td><td class="">10</td><td class="">1</td><td class="">2020-05-06 13:38:39.039</td></tr></tbody></table>
+    </div>
+    <div cmdId="2e277f28-7b80-40cd-bf1b-9adf246ab828" e:delete="" class="bd-callout bd-callout-success"><table class="table table-sm"><thead class="thead-default"><thead class="thead-default"><th>Expected response</th><th>Status code</th></thead></thead>
+        <tr desc="Successful deletion" cmdId="898434f6-7d6b-4470-b811-9e0db4fbb5da" e:case="" data-type="case" id="6) Successful deletion"><tr><td colspan="2" class="text-muted">6) Successful deletion</td></tr>
+            
+            <div cmdId="b390d5e9-b5f7-4aba-aaa4-72a583e3f2b1" e:check="" />
+        <tr><tr><td colspan="2"><div><i>DELETE </i><code>/widgets/1</code><span></span></div></td></tr><td style="max-width:550px" class="json rest-success"> </td><td class="rest-success">HTTP/1.1 200 OK</td></tr></tr><tr><td colspan="3">
+                <table caption="Widget was deleted:" cmdId="68e9c3d5-50a9-4ee9-9031-e9702a82dbc9" e:db-check="" class="table table-sm"><div></div><span></span><caption><i class="fa fa-database fa-pull-left fa-border"> Widget was deleted:</i></caption><thead class="thead-default"><tr /></thead><tr><td colspan="0" class="table-success">&lt;EMPTY&gt;</td></tr></table>
+            </td></tr>
+        <tr desc="Absent widget deletion" cmdId="81425efe-f16d-4f57-a18c-969be69d212f" e:case="" data-type="case" id="7) Absent widget deletion"><tr><td colspan="2" class="text-muted">7) Absent widget deletion</td></tr>
+            
+        <tr><tr><td colspan="2"><div><i>DELETE </i><code>/widgets/1</code><span></span></div></td></tr><td style="max-width:550px" class="json rest-success"> </td><td class="rest-success">HTTP/1.1 404 Not Found</td></tr></tr>
+    <div><h4><span class="badge badge-success ml-1 mr-1">DELETE</span><span class="badge badge-info ml-1 mr-1">application/json</span><code>/widgets/1</code></h4></div></table></div>
+</div><div class="card-footer text-muted" data-toggle="collapse" data-target="#-897825596" aria-expanded="true" aria-controls="-897825596"><small><span class="badge badge-pill badge-success">5</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small></div></div>
+<h3>Let's test widget retrieving API:</h3>
+<div xmlns:c="http://www.concordion.org/2007/concordion" name="Successful widget retrieving" print="true" cmdId="cd181a9b-69bb-44d2-af88-8842dd0ac36b" c:example="Successful widget retrieving" class="card mb-3" e:example="" id="Successful widget retrieving"><div class="card-header" data-toggle="collapse" data-target="#1413626223" aria-expanded="true" aria-controls="1413626223"><a name="Successful widget retrieving" data-type="example">Successful widget retrieving</a></div><div class="card-body collapse show" id="1413626223"><pre class="xml card">
+&lt;e:given&gt;
+        &lt;e:set var="upd1" value="{{now tz='GMT+1'}}" /&gt;
+        &lt;e:set var="upd2" value="{{now plus='1 day'}}" /&gt;
+        &lt;e:set var="format" value="yyyy-MM-dd'T'HH:mm:ss.SSSZZ" /&gt;
+        &lt;e:db-set caption="Given widgets:" table="widgets" cols="name, quantity, updated, id=1..10"&gt;
+            &lt;e:row&gt;widget1, 10, {{upd1}}&lt;/e:row&gt;
+            &lt;e:row&gt;widget2, 20, {{upd2}}&lt;/e:row&gt;
+            &lt;e:row&gt;widget3, 30, {{date '01.02.2000 10:20+03:00' format="dd.MM.yyyy HH:mmZZ"}}&lt;/e:row&gt;
+            &lt;e:row&gt;widget4, 40, {{date upd2 plus='12 h'}}&lt;/e:row&gt;
+        &lt;/e:db-set&gt;
+    &lt;/e:given&gt;
+&lt;e:get url="/widgets"&gt;
+        &lt;e:case desc="Can retrieve stored widgets"&gt;
+            &lt;e:expected&gt;
+                [{
+                "id": 1,
+                "name": "widget1",
+                "quantity": 10,
+                "updatedAt": "{{dateFormat upd1 format}}"
+                }, {
+                "id": 2,
+                "name": "widget2",
+                "quantity": 20,
+                "updatedAt": "{{dateFormat upd2 format}}"
+                }, {
+                "id": 3,
+                "name": "widget3",
+                "quantity": 30,
+                "updatedAt": "{{dateFormat (date '01.02.2000 10:20+03:00' format="dd.MM.yyyy HH:mmZZ") format}}"
+                }, {
+                "id": 4,
+                "name": "widget4",
+                "quantity": 40,
+                "updatedAt": "{{dateFormat (date upd2 plus='12 h') format}}"
+                }]
+            &lt;/e:expected&gt;
+        &lt;/e:case&gt;
+    &lt;/e:get&gt;</pre>
+    <div cmdId="52438107-4f2e-4b3c-802c-8338acfe1607" e:given="" class="bd-callout bd-callout-info">
+        <span var="upd1" value="{{now tz='GMT+1'}}" cmdId="ad980d88-03f3-43bc-b14a-e1cd3adb9f7f" e:set="" />
+        <span var="upd2" value="{{now plus='1 day'}}" cmdId="3f6025b2-0205-4345-89ae-7ee7c0afdae5" e:set="" />
+        <span var="format" value="yyyy-MM-dd'T'HH:mm:ss.SSSZZ" cmdId="4ae941dd-17a3-42c5-89ee-3c134b7a6d94" e:set="" />
+        <table cmdId="8ca7ff58-8aee-4325-97e6-7415df3d568a" e:db-set="" class="table table-sm">
+            
+            
+            
+            
+        <div></div><span></span><caption><i class="fa fa-database fa-pull-left fa-border"> Given widgets:</i></caption><thead class="thead-default"><tr><th class="">name</th><th class="">quantity</th><th class="">updated</th><th class="">id</th></tr></thead><tbody><tr><td class="">widget1</td><td class="">10</td><td class="">2020-05-06 12:38:39.039</td><td class="">1</td></tr><tr><td class="">widget2</td><td class="">20</td><td class="">2020-05-07 13:38:39.039</td><td class="">2</td></tr><tr><td class="">widget3</td><td class="">30</td><td class="">2000-02-01 07:20:00.000</td><td class="">3</td></tr><tr><td class="">widget4</td><td class="">40</td><td class="">2020-05-08 01:38:39.039</td><td class="">4</td></tr></tbody></table>
+    </div>
+    <div cmdId="053adb4a-7df9-4f4f-831c-d4ba60a242c4" e:get="" class="bd-callout bd-callout-success"><table class="table table-sm"><thead class="thead-default"><thead class="thead-default"><th>Expected response</th><th>Status code</th></thead></thead>
+        <tr desc="Can retrieve stored widgets" cmdId="de241e85-5b21-48ad-a96d-e3fc35532d3f" e:case="" data-type="case" id="8) Can retrieve stored widgets"><tr><td colspan="2" class="text-muted">8) Can retrieve stored widgets</td></tr>
+            
+        <tr><tr><td colspan="2"><div><i>GET </i><code>/widgets</code><span></span></div></td></tr><td style="max-width:550px" class="json rest-success">[{
+  "id": 1,
+  "name": "widget1",
+  "quantity": 10,
+  "updatedAt": "2020-05-06T12:38:39.263+00:00"
+}, {
+  "id": 2,
+  "name": "widget2",
+  "quantity": 20,
+  "updatedAt": "2020-05-07T13:38:39.265+00:00"
+}, {
+  "id": 3,
+  "name": "widget3",
+  "quantity": 30,
+  "updatedAt": "2000-02-01T07:20:00.000+00:00"
+}, {
+  "id": 4,
+  "name": "widget4",
+  "quantity": 40,
+  "updatedAt": "2020-05-08T01:38:39.265+00:00"
+}]</td><td class="rest-success">HTTP/1.1 200 OK</td></tr></tr>
+    <div><h4><span class="badge badge-success ml-1 mr-1">GET</span><span class="badge badge-info ml-1 mr-1">application/json</span><code>/widgets</code></h4></div></table></div>
+</div><div class="card-footer text-muted" data-toggle="collapse" data-target="#1413626223" aria-expanded="true" aria-controls="1413626223"><small><span class="badge badge-pill badge-success">2</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small></div></div>
+<br />
+<h3>CRUD</h3>
+<blockquote class="blockquote">
+    <p class="mb-0">If graybox-style testing (with direct DB interactions) feels wrong to you, here is the example of blackbox one:</p>
+</blockquote>
+<div xmlns:c="http://www.concordion.org/2007/concordion" name="CRUD" print="true" cmdId="d3c0e40e-66c4-4c15-9c71-112e3c759e56" c:example="CRUD" class="card mb-3" e:example="" id="CRUD"><div class="card-header" data-toggle="collapse" data-target="#2077502" aria-expanded="true" aria-controls="2077502"><a name="CRUD" data-type="example">CRUD</a></div><div class="card-body collapse show" id="2077502"><pre class="xml card">
+&lt;e:given&gt;&lt;e:db-set caption="Given no widgets:" table="widgets" /&gt;&lt;/e:given&gt;
+&lt;e:post url="/widgets"&gt;
+        &lt;e:case desc="Create"&gt;
+            &lt;e:body&gt;{"name" : "widget1", "quantity": "10"}&lt;/e:body&gt;
+            &lt;e:expected statusCode="201" reasonPhrase="Created"&gt;
+                {
+                "id": "{{number}}",
+                "name": "widget1",
+                "quantity": 10,
+                "updatedAt": "{{string}}"
+                }
+            &lt;/e:expected&gt;
+        &lt;/e:case&gt;
+    &lt;/e:post&gt;
+&lt;e:then&gt;
+        &lt;e:set var="id" value="{{responseBody 'id'}}" /&gt;
+        &lt;e:set var="updatedAt" value="{{responseBody 'updatedAt'}}" /&gt;
+        Widget has id = &lt;code cc:echo="#id" /&gt; and updatedAt = &lt;code cc:echo="#updatedAt" /&gt;
+    &lt;/e:then&gt;
+&lt;e:get url="/widgets"&gt;
+        &lt;e:case desc="Read"&gt;
+            &lt;e:expected&gt;
+                [{ "id": {{id}}, "name": "widget1", "quantity": 10, "updatedAt": "{{updatedAt}}" }]
+            &lt;/e:expected&gt;
+        &lt;/e:case&gt;
+    &lt;/e:get&gt;
+&lt;e:put url="/widgets"&gt;
+        &lt;e:case desc="Update"&gt;
+            &lt;e:body&gt;{"id": {{id}}, "name": "new name", "quantity": "0"}&lt;/e:body&gt;
+            &lt;e:expected&gt;
+                { "id": {{id}}, "name": "new name", "quantity": 0, "updatedAt": "{{formattedAndWithinNow "yyyy-MM-dd'T'HH:mm:ss.SSSZ" "5s"}}" }
+            &lt;/e:expected&gt;
+        &lt;/e:case&gt;
+    &lt;/e:put&gt;
+&lt;e:delete url="/widgets/{{id}}"&gt;
+        &lt;e:case desc="Delete"&gt;
+            &lt;e:expected /&gt;
+        &lt;/e:case&gt;
+    &lt;/e:delete&gt;</pre>
+    <div cmdId="5a58d93a-5df3-47ae-9104-3a341f6e0eaa" e:given="" class="bd-callout bd-callout-info"><table cmdId="fda395aa-8ffc-4d47-beb8-ff28b6ecf687" e:db-set="" class="table table-sm"><div></div><span></span><caption><i class="fa fa-database fa-pull-left fa-border"> Given no widgets:</i></caption><thead class="thead-default"><tr /></thead><tbody /></table></div>
+    <div cmdId="fc81cc93-5f2e-48c2-91fb-8de14f12b0b3" e:post="" class="bd-callout bd-callout-success"><table class="table table-sm"><thead class="thead-default"><thead class="thead-default"><th>Request</th><th>Expected response</th><th>Status code</th></thead></thead>
+        <tr desc="Create" cmdId="95284813-345f-49b0-a79f-3b7e0db076d3" e:case="" data-type="case" id="9) Create"><tr><td colspan="3" class="text-muted">9) Create</td></tr>
+            
+            
+        <tr><tr><td colspan="3"><div><i>POST </i><code>/widgets</code><span></span></div></td></tr><td class="json" style="max-width:550px">{
+  "name": "widget1",
+  "quantity": "10"
+}</td><td style="max-width:550px" class="json rest-success">{
+  "id": "${json-unit.any-number}",
+  "name": "widget1",
+  "quantity": 10,
+  "updatedAt": "${json-unit.any-string}"
+}</td><td class="rest-success">HTTP/1.1 201 Created</td></tr></tr>
+    <div><h4><span class="badge badge-success ml-1 mr-1">POST</span><span class="badge badge-info ml-1 mr-1">application/json</span><code>/widgets</code></h4></div></table></div>
+    <div cmdId="35765e82-ec4e-4210-854d-1b746e8fdd52" e:then="" class="bd-callout bd-callout-success">
+        <span var="id" value="{{responseBody 'id'}}" cmdId="006ed35f-60cc-489a-9502-c11ec36e4307" e:set="" />
+        <span var="updatedAt" value="{{responseBody 'updatedAt'}}" cmdId="e8a06ad6-0786-4061-828f-b9b4b526273c" e:set="" />
+        Widget has id = <code cc:echo="#id">5</code> and updatedAt = <code cc:echo="#updatedAt">2020-05-06T13:38:39.468+00:00</code>
+    </div>
+    <div cmdId="03465ca5-3ce0-4bbe-9bd3-011c0f4fe677" e:get="" class="bd-callout bd-callout-success"><table class="table table-sm"><thead class="thead-default"><thead class="thead-default"><th>Expected response</th><th>Status code</th></thead></thead>
+        <tr desc="Read" cmdId="2225f8be-e16e-4296-9131-d5e96bc32d20" e:case="" data-type="case" id="10) Read"><tr><td colspan="2" class="text-muted">10) Read</td></tr>
+            
+        <tr><tr><td colspan="2"><div><i>GET </i><code>/widgets</code><span></span></div></td></tr><td style="max-width:550px" class="json rest-success">[{
+  "id": 5,
+  "name": "widget1",
+  "quantity": 10,
+  "updatedAt": "2020-05-06T13:38:39.468+00:00"
+}]</td><td class="rest-success">HTTP/1.1 200 OK</td></tr></tr>
+    <div><h4><span class="badge badge-success ml-1 mr-1">GET</span><span class="badge badge-info ml-1 mr-1">application/json</span><code>/widgets</code></h4></div></table></div>
+    <div cmdId="c9dd977b-5bab-447e-bbba-e6a251509945" e:put="" class="bd-callout bd-callout-success"><table class="table table-sm"><thead class="thead-default"><thead class="thead-default"><th>Request</th><th>Expected response</th><th>Status code</th></thead></thead>
+        <tr desc="Update" cmdId="0069754f-5545-4d4f-a9db-b98873a039f1" e:case="" data-type="case" id="11) Update"><tr><td colspan="3" class="text-muted">11) Update</td></tr>
+            
+            
+        <tr><tr><td colspan="3"><div><i>PUT </i><code>/widgets</code><span></span></div></td></tr><td class="json" style="max-width:550px">{
+  "id": 5,
+  "name": "new name",
+  "quantity": "0"
+}</td><td style="max-width:550px" class="json rest-success">{
+  "id": 5,
+  "name": "new name",
+  "quantity": 0,
+  "updatedAt": "${json-unit.matches:formattedAndWithinNow}[yyyy-MM-dd'T'HH:mm:ss.SSSZ][5s]"
+}</td><td class="rest-success">HTTP/1.1 200 OK</td></tr></tr>
+    <div><h4><span class="badge badge-success ml-1 mr-1">PUT</span><span class="badge badge-info ml-1 mr-1">application/json</span><code>/widgets</code></h4></div></table></div>
+    <div cmdId="25f2e6cf-beda-4972-8285-442b06cb1789" e:delete="" class="bd-callout bd-callout-success"><table class="table table-sm"><thead class="thead-default"><thead class="thead-default"><th>Expected response</th><th>Status code</th></thead></thead>
+        <tr desc="Delete" cmdId="4bccaec8-d434-4599-9e76-96955e7f37fb" e:case="" data-type="case" id="12) Delete"><tr><td colspan="2" class="text-muted">12) Delete</td></tr>
+            
+        <tr><tr><td colspan="2"><div><i>DELETE </i><code>/widgets/5</code><span></span></div></td></tr><td style="max-width:550px" class="json rest-success"> </td><td class="rest-success">HTTP/1.1 200 OK</td></tr></tr>
+    <div><h4><span class="badge badge-success ml-1 mr-1">DELETE</span><span class="badge badge-info ml-1 mr-1">application/json</span><code>/widgets/5</code></h4></div></table></div>
+</div><div class="card-footer text-muted" data-toggle="collapse" data-target="#2077502" aria-expanded="true" aria-controls="2077502"><small><span class="badge badge-pill badge-success">8</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small></div></div>
+<br />
+<h3>Testing asynchronous behavior</h3>
+<blockquote class="blockquote">
+    <p class="mb-0">Assume we need to trigger a job and do checks only after it's finished:</p>
+</blockquote>
+<div xmlns:c="http://www.concordion.org/2007/concordion" name="Trigger job and poll result with custom method" print="true" cmdId="77b415e8-b76e-4000-be1d-cfe18d64c62e" c:example="Trigger job and poll result with custom method" class="card mb-3" e:example="" id="Trigger job and poll result with custom method"><div class="card-header" data-toggle="collapse" data-target="#1782657164" aria-expanded="true" aria-controls="1782657164"><a name="Trigger job and poll result with custom method" data-type="example">Trigger job and poll result with custom method</a></div><div class="card-body collapse show" id="1782657164"><pre class="xml card">
+&lt;e:post url="/jobs"&gt;
+        &lt;e:case desc="Trigger job with some optional body"&gt;
+            &lt;e:body&gt;{"name" : "value"}&lt;/e:body&gt;
+            &lt;e:expected&gt;{"id" : "{{number}}" }&lt;/e:expected&gt;
+        &lt;/e:case&gt;
+    &lt;/e:post&gt;
+&lt;e:when&gt;
+        &lt;e:set var="id" value="{{responseBody 'id'}}" /&gt;
+        &lt;e:await untilTrue="isDone(#id)" atMostSec="3" pollDelayMillis="500" pollIntervalMillis="1000" /&gt;
+        Job &lt;code cc:echo="#id" /&gt; is finished.
+    &lt;/e:when&gt;
+&lt;e:then&gt;
+        Now we can check result:
+        &lt;e:db-check table="jobResult" cols="result" where="id={{id}}"&gt;
+            &lt;e:row&gt;done&lt;/e:row&gt;
+        &lt;/e:db-check&gt;
+    &lt;/e:then&gt;</pre>
+    <div cmdId="28bd2365-b8a0-461f-bedd-986c4fe84020" e:post="" class="bd-callout bd-callout-success"><table class="table table-sm"><thead class="thead-default"><thead class="thead-default"><th>Request</th><th>Expected response</th><th>Status code</th></thead></thead>
+        <tr desc="Trigger job with some optional body" cmdId="34947ad9-b8d4-42f7-90d6-7e9d41cb48e6" e:case="" data-type="case" id="13) Trigger job with some optional body"><tr><td colspan="3" class="text-muted">13) Trigger job with some optional body</td></tr>
+            
+            
+        <tr><tr><td colspan="3"><div><i>POST </i><code>/jobs</code><span></span></div></td></tr><td class="json" style="max-width:550px">{
+  "name": "value"
+}</td><td style="max-width:550px" class="json rest-success">{
+  "id": "${json-unit.any-number}"
+}</td><td class="rest-success">HTTP/1.1 200 OK</td></tr></tr>
+    <div><h4><span class="badge badge-success ml-1 mr-1">POST</span><span class="badge badge-info ml-1 mr-1">application/json</span><code>/jobs</code></h4></div></table></div>
+    <div cmdId="9edd1ec7-9f77-4694-b787-f1e7ccbb9fa5" e:when="" class="bd-callout bd-callout-warning">
+        <span var="id" value="{{responseBody 'id'}}" cmdId="e11fd165-2262-4699-87c0-d77408740901" e:set="" />
+        <span cmdId="5f03f2a0-5ee5-4c3a-93c6-dddc0e39201c" e:await="" />
+        Job <code cc:echo="#id">1</code> is finished.
+    </div>
+    <div cmdId="3a4a4e10-9db5-4715-80e4-c0513d3f1bf4" e:then="" class="bd-callout bd-callout-success">
+        Now we can check result:
+        <table cmdId="16b8919f-ab7d-4a7b-b943-93624e525fdf" e:db-check="" class="table table-sm">
+            
+        <div></div><span></span><caption><i class="fa fa-database fa-pull-left fa-border"> jobResult</i></caption><thead class="thead-default"><tr><th>result</th></tr></thead><tr><td class="table-success">done</td></tr></table>
+    </div>
+</div><div class="card-footer text-muted" data-toggle="collapse" data-target="#1782657164" aria-expanded="true" aria-controls="1782657164"><small><span class="badge badge-pill badge-success">3</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small></div></div>
+<blockquote class="blockquote">
+    <p class="mb-0">Equivalent of previous example with explicit http polling:</p>
+</blockquote>
+<div xmlns:c="http://www.concordion.org/2007/concordion" name="Trigger job and poll result with http request" print="true" cmdId="324f95ad-f58b-4a3e-b76d-e7c1e45a8c59" c:example="Trigger job and poll result with http request" class="card mb-3" e:example="" id="Trigger job and poll result with http request"><div class="card-header" data-toggle="collapse" data-target="#51349339" aria-expanded="true" aria-controls="51349339"><a name="Trigger job and poll result with http request" data-type="example">Trigger job and poll result with http request</a></div><div class="card-body collapse show" id="51349339"><pre class="xml card">
+&lt;e:when&gt;
+        Trigger job on &lt;code cc:set="#url"&gt;/jobs&lt;/code&gt; with some optional body &lt;code cc:set="#json"&gt;{"name" : "value"}&lt;/code&gt;
+        &lt;e:await untilHttpPost="{{url}}" hasStatusCode="200"&gt;{{json}}&lt;/e:await&gt;
+        &lt;e:set var="id" value="{{responseBody 'id'}}" /&gt;
+        and wait until it's finished.
+        &lt;e:await untilHttpGet="/jobs/{{id}}" hasBodyFrom="/data/getting-started/job-finished.json" /&gt;
+        Job id = &lt;code cc:echo="#id" /&gt;
+    &lt;/e:when&gt;
+&lt;e:then&gt;
+        Now we can check result:
+        &lt;e:db-check table="jobResult" cols="result" where="id={{id}}"&gt;
+            &lt;e:row&gt;done&lt;/e:row&gt;
+        &lt;/e:db-check&gt;
+    &lt;/e:then&gt;</pre>
+    <div cmdId="3ec7fa39-b865-4050-979c-a6d733761c0d" e:when="" class="bd-callout bd-callout-warning">
+        Trigger job on <code cc:set="#url">/jobs</code> with some optional body <code cc:set="#json">{"name" : "value"}</code>
+        <span cmdId="3355acc6-e689-455b-b294-48a713a0c3a0" e:await="" />
+        <span var="id" value="{{responseBody 'id'}}" cmdId="aeefd0b2-5d7a-4ce0-ad0b-6107dc834581" e:set="" />
+        and wait until it's finished.
+        <span cmdId="87403c86-158e-474a-8f8e-c12179fce329" e:await="" />
+        Job id = <code cc:echo="#id">2</code>
+    </div>
+    <div cmdId="57322a83-9367-4c4d-934a-dbfa04b5329a" e:then="" class="bd-callout bd-callout-success">
+        Now we can check result:
+        <table cmdId="365d0d68-f03a-4808-a3f0-271e214a7595" e:db-check="" class="table table-sm">
+            
+        <div></div><span></span><caption><i class="fa fa-database fa-pull-left fa-border"> jobResult</i></caption><thead class="thead-default"><tr><th>result</th></tr></thead><tr><td class="table-success">done</td></tr></table>
+    </div>
+</div><div class="card-footer text-muted" data-toggle="collapse" data-target="#51349339" aria-expanded="true" aria-controls="51349339"><small><span class="badge badge-pill badge-success">1</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small></div></div>
+<blockquote class="blockquote">
+    <p class="mb-0">Equivalent of previous example with awaiting by db-check:</p>
+</blockquote>
+<div xmlns:c="http://www.concordion.org/2007/concordion" name="Trigger job and poll result with db-check" print="true" cmdId="edd6dea7-2791-47c6-9af9-209cbe5d508b" c:example="Trigger job and poll result with db-check" class="card mb-3" e:example="" id="Trigger job and poll result with db-check"><div class="card-header" data-toggle="collapse" data-target="#1980823901" aria-expanded="true" aria-controls="1980823901"><a name="Trigger job and poll result with db-check" data-type="example">Trigger job and poll result with db-check</a></div><div class="card-body collapse show" id="1980823901"><pre class="xml card">
+&lt;e:when&gt;
+        Trigger job on &lt;code cc:set="#url"&gt;/jobs&lt;/code&gt; with some optional body &lt;code cc:set="#json"&gt;{"name" : "value"}&lt;/code&gt;
+        &lt;e:await untilHttpPost="{{url}}" hasStatusCode="200"&gt;{{json}}&lt;/e:await&gt;
+        &lt;e:set var="id" value="{{responseBody 'id'}}" /&gt;
+        Job id = &lt;code cc:echo="#id" /&gt;
+    &lt;/e:when&gt;
+&lt;e:then&gt;
+        Await for result:
+        &lt;e:db-check table="jobResult" cols="result" where="id={{id}}" awaitAtMostSec="4"&gt;
+            &lt;e:row&gt;done&lt;/e:row&gt;
+        &lt;/e:db-check&gt;
+    &lt;/e:then&gt;</pre>
+    <div cmdId="8819e44d-67b8-4601-a82b-bae6dfb66501" e:when="" class="bd-callout bd-callout-warning">
+        Trigger job on <code cc:set="#url">/jobs</code> with some optional body <code cc:set="#json">{"name" : "value"}</code>
+        <span cmdId="94b50f25-ad92-4d28-aa2c-95271971e5a1" e:await="" />
+        <span var="id" value="{{responseBody 'id'}}" cmdId="73b07944-650b-470f-be2c-d3801b0a44f6" e:set="" />
+        Job id = <code cc:echo="#id">3</code>
+    </div>
+    <div cmdId="0f43879b-dc71-402c-90de-679ecc38b32a" e:then="" class="bd-callout bd-callout-success">
+        Await for result:
+        <table cmdId="ecbb3585-5610-4b6f-8f83-7b15a99a1b69" e:db-check="" class="table table-sm">
+            
+        <div></div><span></span><caption><i class="fa fa-database fa-pull-left fa-border"> jobResult</i></caption><thead class="thead-default"><tr><th>result</th></tr></thead><tr><td class="table-success">done</td></tr></table>
+    </div>
+</div><div class="card-footer text-muted" data-toggle="collapse" data-target="#1980823901" aria-expanded="true" aria-controls="1980823901"><small><span class="badge badge-pill badge-success">1</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small></div></div>
+<div class="footer">Results generated by <a href="http://www.concordion.org" style="font-weight: bold; text-decoration: none; color: #89C;">Concordion</a><div class="testTime">in 13074 ms on 06-May-2020 at 13:38:46 UTC</div></div></body>
+<button id="btnToTop" onclick="topFunction()" type="button" class="btn btn-light btn-sm text-muted ml-1"><i class="fa fa-arrow-up fa-3x"></i></button></html>
