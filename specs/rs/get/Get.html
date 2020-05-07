@@ -1,0 +1,439 @@
+<?xml version="1.0" encoding="UTF-8"?><html xmlns:concordion="http://www.concordion.org/2007/concordion" xmlns:e="http://exam.extension.io" xmlns:c="http://www.concordion.org/2007/concordion"><head><style>* {
+  font-family: Arial;
+}
+body {
+  padding: 32px;  
+}
+pre {
+  padding: 6px 28px 6px 28px;
+  background-color: #E8EEF7;
+}
+pre, pre *, code, code *, kbd {
+  font-family: Courier New, Courier;
+  font-size: 10pt;
+}
+h1, h1 * {
+  font-size: 24pt;	
+}
+p, td, th, li, .breadcrumbs {
+  font-size: 10pt;
+}
+p, li {
+  line-height: 140%;
+  max-width: 720px;
+}
+table {
+  border-collapse: collapse;
+  empty-cells: show;
+  margin: 8px 0px 8px 0px;
+}
+th, td {
+  border: 1px solid black;
+  padding: 3px;
+}
+td {
+  background-color: white;
+  vertical-align: top;
+}
+th {
+  background-color: #C3D9FF;
+}
+li {
+  margin-top: 6px;
+  margin-bottom: 6px; 
+}
+
+.example, :not(th)[concordion\:example] {
+  padding: 6px 16px 6px 16px;
+  border: 1px solid #C3D9FF;
+  margin: 6px 0px 28px 0px;
+  background-color: #F5F9FD;
+}
+.example h3, [concordion\:example] h3 {
+  margin-top: 8px;
+  margin-bottom: 8px;
+  font-size: 12pt;
+}
+
+p.success {
+  padding: 2px;
+}
+.success, .success * {
+  background-color: #afa !important;
+}
+.success pre {
+  background-color: #bbffbb;
+}
+.failure, .failure * {
+  background-color: #ffb0b0;
+  padding: 1px;
+}
+.failure .expected {
+  text-decoration: line-through;
+  color: #bb5050;
+}
+.ignored, .ignored * {
+  background-color: #f0f0f0 !important;	
+}
+
+ins {
+  text-decoration: none;	
+}
+
+.exceptionMessage {
+  background-color: #fdd;
+  font-family: Courier New, Courier, Monospace;
+  font-size: 10pt;
+  display: block;
+  font-weight: normal;
+  padding: 4px;
+  text-decoration: none !important;
+}
+.stackTrace, .stackTrace * {
+  font-weight: normal;
+}
+.stackTrace {
+  display: none;
+  padding: 1px 4px 4px 4px;
+  background-color: #fdd;
+  border-top: 1px dotted black;
+}
+.stackTraceExceptionMessage {
+  display: block;
+  font-family: Courier New, Courier, Monospace;
+  font-size: 8pt;
+  white-space: wrap;
+  padding: 1px 0px 1px 0px;
+}
+.stackTraceEntry {
+  white-space: nowrap;
+  font-family: Courier New, Courier, Monospace;
+  display: block;
+  font-size: 8pt;
+  padding: 1px 0px 1px 32px;
+}
+.stackTraceButton {
+  font-size: 8pt;
+  margin: 2px 8px 2px 0px;
+  font-weight: normal;
+  font-family: Arial;
+}
+
+.special {
+  font-style: italic;
+}
+.missing, .missing * {
+  background-color: #ff9999;
+  color:#bb5050;
+  text-decoration: line-through;
+}
+.surplus, .surplus * {
+  background-color: #ff9999;
+}
+.footer {
+  text-align: right;
+  margin-top: 40px;
+  font-size: 8pt;
+  width: 100%;
+  color: #999;
+}
+.footer .testTime {
+  padding: 2px 10px 0px 0px;
+}
+
+.idea {
+  font-size: 9pt;
+  color: #888;
+  font-style: italic;	
+}
+.tight li {
+  margin-top: 1px;
+  margin-bottom: 1px; 
+}
+.commentary {
+  float: right;
+  width: 200px;
+  background-color: #ffffd0;
+  padding:8px;
+  border: 3px solid #eeeeb0;	 
+  margin: 10px 0px 10px 10px;	 
+}
+.commentary, .commentary * {
+  font-size: 8pt;
+}
+</style><meta http-equiv="content-type" content="text/html; charset=UTF-8" /><link type="text/css" rel="stylesheet" href="../../../timingExtensionStyle.css" /><script type="text/javascript" src="../../../timingExtensionToggle.js"></script><link type="text/css" rel="stylesheet" href="../../../codemirror/codemirror.css" /><link type="text/css" rel="stylesheet" href="../../../codemirror/merge.css" /><link type="text/css" rel="stylesheet" href="../../../codemirror/enable-codemirror.css" /><script type="text/javascript" src="../../../codemirror/codemirror.js"></script><script type="text/javascript" src="../../../codemirror/javascript.js"></script><script type="text/javascript" src="../../../codemirror/xml.js"></script><script type="text/javascript" src="../../../codemirror/formatting.js"></script><script type="text/javascript" src="../../../codemirror/diff_match_patch.js"></script><script type="text/javascript" src="../../../codemirror/merge.js"></script><script type="text/javascript" src="../../../codemirror/enable-codemirror.js"></script><script type="text/javascript" src="../../../bootstrap/jquery-3.2.1.slim.min.js"></script><script type="text/javascript" src="../../../bootstrap/popper.min.js"></script><script type="text/javascript" src="../../../bootstrap/bootstrap.min.js"></script><script type="text/javascript" src="../../../bootstrap/sidebar.js"></script><link type="text/css" rel="stylesheet" href="../../../bootstrap/enable-bootstrap.css" /><link type="text/css" rel="stylesheet" href="../../../bootstrap/bootstrap.min.css" /><link type="text/css" rel="stylesheet" href="../../../bootstrap/callout.css" /><link type="text/css" rel="stylesheet" href="../../../bootstrap/font-awesome.min.css" /><link type="text/css" rel="stylesheet" href="../../../bootstrap/scrollToTop.css" /><script type="text/javascript" src="../../../bootstrap/scrollToTop.js"></script></head><body><div id="toggle-button"><img id="toggle-on" src="../../../timing-on.svg" height="24" width="24" style="display:none" /><img id="toggle-off" src="../../../timing-off.svg" height="24" width="24" /></div><span class="breadcrumbs"><a href="../../Specs.html">Exam - Concordion extension</a> &gt; <a href="../Rs.html">Rest specification</a> &gt; <a href="Get.html">GET-request</a> &gt;</span><h1>GET-request</h1>
+<h2><code>&lt;e:get url="..." type="&lt;optional&gt;"&gt;</code></h2>
+<div>
+    <div cmdId="09adc722-00bc-4a79-be34-5fc5e73eb3bc" e:summary="" class="pin"><h4>Summary<button type="button" class="btn btn-light btn-sm text-muted ml-1" data-toggle="collapse" data-target="#summary" aria-expanded="true" aria-controls="summary">collapse</button></h4><div id="summary" class="collapse show"><div class="list-group"><a class="list-group-item list-group-item-action" href="#Body check">Body check<small class="card-img-overlay m-1" style="padding:0; left:inherit;"><span class="badge badge-pill badge-light">57ms</span><span class="badge badge-pill badge-success">4</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning">1</span><span class="badge badge-pill badge-danger"></span><span class="badge badge-pill badge-warning">ExpectedToFail</span></small><button type="button" class="btn btn-light btn-sm text-muted ml-1" data-toggle="collapse" data-target="#a77b628a-0056-49a4-acfe-dde2758ccf94" aria-expanded="true" aria-controls="a77b628a-0056-49a4-acfe-dde2758ccf94">cases</button></a><div id="a77b628a-0056-49a4-acfe-dde2758ccf94" class="collapse"><a href="#1) Request with params (happy-path)" class="list-group-item list-group-item-action text-muted">1) Request with params (happy-path)<i></i></a><a href="#2) Request without params (wrong response body)" class="list-group-item list-group-item-action text-muted">2) Request without params (wrong response body)<i></i></a></div><a class="list-group-item list-group-item-action" href="#Status code check">Status code check<small class="card-img-overlay m-1" style="padding:0; left:inherit;"><span class="badge badge-pill badge-light">18ms</span><span class="badge badge-pill badge-success">1</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning">1</span><span class="badge badge-pill badge-danger"></span><span class="badge badge-pill badge-warning">ExpectedToFail</span></small><button type="button" class="btn btn-light btn-sm text-muted ml-1" data-toggle="collapse" data-target="#047e7a93-c8ac-4cad-bb5c-0e6a494a10b0" aria-expanded="true" aria-controls="047e7a93-c8ac-4cad-bb5c-0e6a494a10b0">cases</button></a><div id="047e7a93-c8ac-4cad-bb5c-0e6a494a10b0" class="collapse"><a href="#3) Wrong status code" class="list-group-item list-group-item-action text-muted">3) Wrong status code<i></i></a></div><a class="list-group-item list-group-item-action" href="#Check failed status code">Check failed status code<small class="card-img-overlay m-1" style="padding:0; left:inherit;"><span class="badge badge-pill badge-light">14ms</span><span class="badge badge-pill badge-success">2</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small><button type="button" class="btn btn-light btn-sm text-muted ml-1" data-toggle="collapse" data-target="#c6d0065c-c216-4839-8a89-1ed1b34d8ea6" aria-expanded="true" aria-controls="c6d0065c-c216-4839-8a89-1ed1b34d8ea6">cases</button></a><div id="c6d0065c-c216-4839-8a89-1ed1b34d8ea6" class="collapse"><a href="#4) Wrong status code was expected" class="list-group-item list-group-item-action text-muted">4) Wrong status code was expected<i></i></a></div><a class="list-group-item list-group-item-action" href="#Cookies">Cookies<small class="card-img-overlay m-1" style="padding:0; left:inherit;"><span class="badge badge-pill badge-light">75ms</span><span class="badge badge-pill badge-success">8</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small><button type="button" class="btn btn-light btn-sm text-muted ml-1" data-toggle="collapse" data-target="#045afcc1-07e0-4e46-a04e-573f6dfa5678" aria-expanded="true" aria-controls="045afcc1-07e0-4e46-a04e-573f6dfa5678">cases</button></a><div id="045afcc1-07e0-4e46-a04e-573f6dfa5678" class="collapse"><a href="#5) Can be set in command" class="list-group-item list-group-item-action text-muted">5) Can be set in command<i></i></a><a href="#6) Can be override by case" class="list-group-item list-group-item-action text-muted">6) Can be override by case<i></i></a><a href="#7) Placeholders can be used" class="list-group-item list-group-item-action text-muted">7) Placeholders can be used<i></i></a><a href="#8) If @FullOGNL is enabled, response fields can be accessed" class="list-group-item list-group-item-action text-muted">8) If @FullOGNL is enabled, response fields can be accessed<i></i></a></div><a class="list-group-item list-group-item-action" href="#Ignore json paths">Ignore json paths<small class="card-img-overlay m-1" style="padding:0; left:inherit;"><span class="badge badge-pill badge-light">52ms</span><span class="badge badge-pill badge-success">4</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small><button type="button" class="btn btn-light btn-sm text-muted ml-1" data-toggle="collapse" data-target="#f32c8cb1-3d4f-4bfb-b2bb-d82cf770c146" aria-expanded="true" aria-controls="f32c8cb1-3d4f-4bfb-b2bb-d82cf770c146">cases</button></a><div id="f32c8cb1-3d4f-4bfb-b2bb-d82cf770c146" class="collapse"><a href="#9) JSON nodes can be ignored" class="list-group-item list-group-item-action text-muted">9) JSON nodes can be ignored<i></i></a><a href="#10) JSON nodes in array can be ignored" class="list-group-item list-group-item-action text-muted">10) JSON nodes in array can be ignored<i></i></a></div><a class="list-group-item list-group-item-action" href="#Configure json compare mode">Configure json compare mode<small class="card-img-overlay m-1" style="padding:0; left:inherit;"><span class="badge badge-pill badge-light">25ms</span><span class="badge badge-pill badge-success">2</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small><button type="button" class="btn btn-light btn-sm text-muted ml-1" data-toggle="collapse" data-target="#d4ef8ff0-6f54-404d-b985-d8dd0ffb64ec" aria-expanded="true" aria-controls="d4ef8ff0-6f54-404d-b985-d8dd0ffb64ec">cases</button></a><div id="d4ef8ff0-6f54-404d-b985-d8dd0ffb64ec" class="collapse"><a href="#11) Extra fields can be ignored" class="list-group-item list-group-item-action text-muted">11) Extra fields can be ignored<i></i></a></div><a class="list-group-item list-group-item-action" href="#Configure json compare mode (check)">Configure json compare mode (check)<small class="card-img-overlay m-1" style="padding:0; left:inherit;"><span class="badge badge-pill badge-light">38ms</span><span class="badge badge-pill badge-success">1</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning">1</span><span class="badge badge-pill badge-danger"></span><span class="badge badge-pill badge-warning">ExpectedToFail</span></small><button type="button" class="btn btn-light btn-sm text-muted ml-1" data-toggle="collapse" data-target="#d88642f4-e058-4600-88d9-730d90726e6b" aria-expanded="true" aria-controls="d88642f4-e058-4600-88d9-730d90726e6b">cases</button></a><div id="d88642f4-e058-4600-88d9-730d90726e6b" class="collapse"><a href="#12) Extra fields produce error" class="list-group-item list-group-item-action text-muted">12) Extra fields produce error<i></i></a></div></div></div></div>
+    <div cmdId="2e6b71c6-9d28-45ff-9275-ed27eac3171c" e:given="" class="bd-callout bd-callout-info">
+        Given server, that mirrors GET-request
+    </div>
+    <div name="Body check" status="ExpectedToFail" print="true" cmdId="d9d2ef25-df3e-4075-a766-8dd4e51e10fd" c:example="Body check" c:status="ExpectedToFail" class="card mb-3" e:example="" id="Body check"><div class="card-header" data-toggle="collapse" data-target="#362925354" aria-expanded="true" aria-controls="362925354"><a name="Body check" data-type="example">Body check</a></div><div class="card-body collapse show" id="362925354"><pre class="xml card">
+&lt;e:get url="relative/url"&gt;
+            &lt;e:case desc="Request with params (happy-path)" urlParams="param1=1&amp;amp;param2=2"&gt;
+                &lt;expected&gt;
+                    { "GET": "/relative/url?param1=1&amp;amp;param2=2" }
+                &lt;/expected&gt;
+            &lt;/e:case&gt;
+            &lt;e:case desc="Request without params (wrong response body)"&gt;
+                &lt;expected&gt;
+                    { "GET": "/relative/url?noparams" }
+                &lt;/expected&gt;
+                &lt;e:check&gt;
+                    &lt;span c:assertTrue="true"&gt;Block for additional checks&lt;/span&gt;
+                &lt;/e:check&gt;
+            &lt;/e:case&gt;
+        &lt;/e:get&gt;</pre>
+        <div cmdId="ec2fb134-191b-4c89-a8f2-4fedd57b8a8d" e:get="" class="bd-callout bd-callout-success"><table class="table table-sm"><thead class="thead-default"><thead class="thead-default"><th>Expected response</th><th>Status code</th></thead></thead>
+            <tr desc="Request with params (happy-path)" cmdId="86bcac3e-abff-4d6a-b35b-dfbb9b4a7cc2" e:case="" data-type="case" id="1) Request with params (happy-path)"><tr><td colspan="2" class="text-muted">1) Request with params (happy-path)</td></tr>
+                
+            <tr><tr><td colspan="2"><div><i>GET </i><code>relative/url?param1=1&amp;param2=2</code><span></span></div></td></tr><td style="max-width:550px" class="json rest-success">{
+  "GET": "/relative/url?param1=1&amp;param2=2"
+}</td><td class="rest-success">HTTP/1.1 200 OK</td></tr></tr>
+            <tr desc="Request without params (wrong response body)" cmdId="e7914c1d-b4ac-402c-aa30-ac686a756b95" e:case="" data-type="case" id="2) Request without params (wrong response body)"><tr><td colspan="2" class="text-muted">2) Request without params (wrong response body)</td></tr>
+                
+                <div cmdId="3cd58c69-5392-4169-a179-acfc911607ab" e:check="" />
+            <tr><tr><td colspan="2"><div><i>GET </i><code>relative/url</code><span></span></div></td></tr><td style="max-width:550px" class="json rest-failure"><del class="expected">{
+  "GET": "/relative/url?noparams"
+}</del>
+<ins class="actual">{
+  "GET": "/relative/url"
+}</ins></td><span class="exceptionMessage">JSON documents are different:
+Different value found in node "GET", expected: &lt;"/relative/url?noparams"&gt; but was: &lt;"/relative/url"&gt;.
+</span><td class="rest-success">HTTP/1.1 200 OK</td></tr></tr><tr><td colspan="3">
+                    <span c:assertTrue="true" class="success">Block for additional checks</span>
+                </td></tr>
+        <div><h4><span class="badge badge-success ml-1 mr-1">GET</span><span class="badge badge-info ml-1 mr-1">application/json</span><code>relative/url</code></h4></div></table></div>
+    </div><div class="card-footer text-muted" data-toggle="collapse" data-target="#362925354" aria-expanded="true" aria-controls="362925354"><small><span class="badge badge-pill badge-success">4</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning">1</span><span class="badge badge-pill badge-danger"></span><span class="badge badge-pill badge-warning">ExpectedToFail</span></small></div></div>
+    <div name="Status code check" status="ExpectedToFail" print="true" cmdId="2fbb6665-c320-4a0d-bbe3-8f5930325bd1" c:example="Status code check" c:status="ExpectedToFail" class="card mb-3" e:example="" id="Status code check"><div class="card-header" data-toggle="collapse" data-target="#1177583075" aria-expanded="true" aria-controls="1177583075"><a name="Status code check" data-type="example">Status code check</a></div><div class="card-body collapse show" id="1177583075"><pre class="xml card">
+&lt;e:get url="status/400"&gt;
+            &lt;e:case desc="Wrong status code"&gt;
+                &lt;expected&gt;
+                    {"GET": "/status/400"}
+                &lt;/expected&gt;
+            &lt;/e:case&gt;
+        &lt;/e:get&gt;</pre>
+        <div cmdId="8d206495-d385-47ac-8b18-60b3c001bd17" e:get="" class="bd-callout bd-callout-success"><table class="table table-sm"><thead class="thead-default"><thead class="thead-default"><th>Expected response</th><th>Status code</th></thead></thead>
+            <tr desc="Wrong status code" cmdId="c168a797-4365-4287-b22d-c99771092a75" e:case="" data-type="case" id="3) Wrong status code"><tr><td colspan="2" class="text-muted">3) Wrong status code</td></tr>
+                
+            <tr><tr><td colspan="2"><div><i>GET </i><code>status/400</code><span></span></div></td></tr><td style="max-width:550px" class="json rest-success">{
+  "GET": "/status/400"
+}</td><td class="rest-failure"><del class="expected">HTTP/1.1 200 OK</del>
+<ins class="actual">HTTP/1.1 400 Bad Request</ins></td></tr></tr>
+        <div><h4><span class="badge badge-success ml-1 mr-1">GET</span><span class="badge badge-info ml-1 mr-1">application/json</span><code>status/400</code></h4></div></table></div>
+    </div><div class="card-footer text-muted" data-toggle="collapse" data-target="#1177583075" aria-expanded="true" aria-controls="1177583075"><small><span class="badge badge-pill badge-success">1</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning">1</span><span class="badge badge-pill badge-danger"></span><span class="badge badge-pill badge-warning">ExpectedToFail</span></small></div></div>
+    <div name="Check failed status code" print="true" cmdId="94186350-ff6e-44ec-a1f6-0fa09d9fd0e3" c:example="Check failed status code" class="card mb-3" e:example="" id="Check failed status code"><div class="card-header" data-toggle="collapse" data-target="#-443495376" aria-expanded="true" aria-controls="-443495376"><a name="Check failed status code" data-type="example">Check failed status code</a></div><div class="card-body collapse show" id="-443495376"><pre class="xml card">
+&lt;e:get url="status/400"&gt;
+            &lt;e:case desc="Wrong status code was expected"&gt;
+                &lt;expected statusCode="400" reasonPhrase="Bad Request"&gt;
+                    {"GET": "/status/400"}
+                &lt;/expected&gt;
+            &lt;/e:case&gt;
+        &lt;/e:get&gt;</pre>
+        <div cmdId="5a491a5a-ae7c-44fd-a83d-348b1e567de5" e:get="" class="bd-callout bd-callout-success"><table class="table table-sm"><thead class="thead-default"><thead class="thead-default"><th>Expected response</th><th>Status code</th></thead></thead>
+            <tr desc="Wrong status code was expected" cmdId="8600b801-fd5d-40bb-81be-7785c73d3565" e:case="" data-type="case" id="4) Wrong status code was expected"><tr><td colspan="2" class="text-muted">4) Wrong status code was expected</td></tr>
+                
+            <tr><tr><td colspan="2"><div><i>GET </i><code>status/400</code><span></span></div></td></tr><td style="max-width:550px" class="json rest-success">{
+  "GET": "/status/400"
+}</td><td class="rest-success">HTTP/1.1 400 Bad Request</td></tr></tr>
+        <div><h4><span class="badge badge-success ml-1 mr-1">GET</span><span class="badge badge-info ml-1 mr-1">application/json</span><code>status/400</code></h4></div></table></div>
+    </div><div class="card-footer text-muted" data-toggle="collapse" data-target="#-443495376" aria-expanded="true" aria-controls="-443495376"><small><span class="badge badge-pill badge-success">2</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small></div></div>
+    <div name="Cookies" print="true" cmdId="ec766731-f039-490f-bea8-edbd94312a8f" c:example="Cookies" class="card mb-3" e:example="" id="Cookies"><div class="card-header" data-toggle="collapse" data-target="#-1678124433" aria-expanded="true" aria-controls="-1678124433"><a name="Cookies" data-type="example">Cookies</a></div><div class="card-body collapse show" id="-1678124433"><pre class="xml card">
+&lt;e:get url="relative/url" cookies="cook=from_command"&gt;
+            &lt;e:case desc="Can be set in command"&gt;
+                &lt;expected&gt;
+                    {
+                      "GET": "/relative/url",
+                      "cookies": "{cook=from_command}"
+                    }
+                &lt;/expected&gt;
+            &lt;/e:case&gt;
+            &lt;e:case cookies="cook=from_case" desc="Can be override by case"&gt;
+                &lt;expected&gt;
+                    {
+                      "GET": "/relative/url",
+                      "cookies": "{cook=from_case}"
+                    }
+                &lt;/expected&gt;
+            &lt;/e:case&gt;
+            &lt;e:case cookies="cook={{url}},anotherCook=asd" desc="Placeholders can be used"&gt;
+                &lt;expected&gt;
+                    {
+                      "GET": "/relative/url",
+                      "cookies": "{cook=relative/url, anotherCook=asd}"
+                    }
+                &lt;/expected&gt;
+                &lt;e:check&gt;
+                    Last response saved in variable &lt;var&gt;#exam_response&lt;/var&gt;&lt;br /&gt;
+                    &lt;ol&gt;
+                        &lt;li&gt;&lt;code c:execute="#my_header = #exam_response.header('my_header')"&gt;c:execute="#my_header = #exam_response.header('my_header')&lt;/code&gt;&lt;/li&gt;
+                        &lt;li&gt;echo #exam_response.header('my_header') =&amp;gt; &lt;code c:echo="#exam_response.header('my_header')" /&gt;&lt;/li&gt;
+                        &lt;li&gt;echo #my_header =&amp;gt; &lt;code c:echo="#my_header" /&gt;&lt;/li&gt;
+                    &lt;/ol&gt;
+                &lt;/e:check&gt;
+            &lt;/e:case&gt;
+            &lt;e:case cookies="cook={{eval &amp;quot;#exam_response.header('my_header')&amp;quot;}}" desc="If @FullOGNL is enabled, response fields can be accessed"&gt;
+                &lt;expected&gt;
+                    {
+                      "GET": "/relative/url",
+                      "cookies": "{cook=some value}"
+                    }
+                &lt;/expected&gt;
+            &lt;/e:case&gt;
+        &lt;/e:get&gt;</pre>
+        <div cmdId="36b434d0-4775-4892-bcdb-d0fd3427edd1" e:get="" class="bd-callout bd-callout-success"><table class="table table-sm"><thead class="thead-default"><thead class="thead-default"><th>Expected response</th><th>Status code</th></thead></thead>
+            <tr desc="Can be set in command" cmdId="da7036ef-839a-46d1-ac4a-16b3516d49dd" e:case="" data-type="case" id="5) Can be set in command"><tr><td colspan="2" class="text-muted">5) Can be set in command</td></tr>
+                
+            <tr><tr><td colspan="2"><div><i>GET </i><code>relative/url</code><i> Cookies </i><code>cook=from_command</code></div></td></tr><td style="max-width:550px" class="json rest-success">{
+  "GET": "/relative/url",
+  "cookies": "{cook=from_command}"
+}</td><td class="rest-success">HTTP/1.1 200 OK</td></tr></tr>
+            <tr desc="Can be override by case" cmdId="b380b207-13f4-47d5-a168-98a6a56ed9a2" e:case="" data-type="case" id="6) Can be override by case"><tr><td colspan="2" class="text-muted">6) Can be override by case</td></tr>
+                
+            <tr><tr><td colspan="2"><div><i>GET </i><code>relative/url</code><i> Cookies </i><code>cook=from_case</code></div></td></tr><td style="max-width:550px" class="json rest-success">{
+  "GET": "/relative/url",
+  "cookies": "{cook=from_case}"
+}</td><td class="rest-success">HTTP/1.1 200 OK</td></tr></tr>
+            <tr desc="Placeholders can be used" cmdId="f237afe9-df3a-48ec-b30d-b3f161fb3475" e:case="" data-type="case" id="7) Placeholders can be used"><tr><td colspan="2" class="text-muted">7) Placeholders can be used</td></tr>
+                
+                <div cmdId="8c7f603f-0407-44b8-b471-c9893808dcce" e:check="" />
+            <tr><tr><td colspan="2"><div><i>GET </i><code>relative/url</code><i> Cookies </i><code>cook=relative/url,anotherCook=asd</code></div></td></tr><td style="max-width:550px" class="json rest-success">{
+  "GET": "/relative/url",
+  "cookies": "{cook=relative/url, anotherCook=asd}"
+}</td><td class="rest-success">HTTP/1.1 200 OK</td></tr></tr><tr><td colspan="3">
+                    Last response saved in variable <var>#exam_response</var><br />
+                    <ol>
+                        <li><code c:execute="#my_header = #exam_response.header('my_header')">c:execute="#my_header = #exam_response.header('my_header')</code></li>
+                        <li>echo #exam_response.header('my_header') =&gt; <code c:echo="#exam_response.header('my_header')">some value</code></li>
+                        <li>echo #my_header =&gt; <code c:echo="#my_header">some value</code></li>
+                    </ol>
+                </td></tr>
+            <tr desc="If @FullOGNL is enabled, response fields can be accessed" cmdId="3946ab89-9d7d-449e-9f16-861d334ae0bc" e:case="" data-type="case" id="8) If @FullOGNL is enabled, response fields can be accessed"><tr><td colspan="2" class="text-muted">8) If @FullOGNL is enabled, response fields can be accessed</td></tr>
+                
+            <tr><tr><td colspan="2"><div><i>GET </i><code>relative/url</code><i> Cookies </i><code>cook=some value</code></div></td></tr><td style="max-width:550px" class="json rest-success">{
+  "GET": "/relative/url",
+  "cookies": "{cook=some value}"
+}</td><td class="rest-success">HTTP/1.1 200 OK</td></tr></tr>
+        <div><h4><span class="badge badge-success ml-1 mr-1">GET</span><span class="badge badge-info ml-1 mr-1">application/json</span><code>relative/url</code></h4><h6><span class="badge badge-info ml-1 mr-1">Cookies</span><code>cook=from_command</code></h6></div></table></div>
+    </div><div class="card-footer text-muted" data-toggle="collapse" data-target="#-1678124433" aria-expanded="true" aria-controls="-1678124433"><small><span class="badge badge-pill badge-success">8</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small></div></div>
+    <div name="Ignore json paths" print="true" cmdId="1493b8ea-99e8-4789-8049-bc25cfc5ae10" c:example="Ignore json paths" class="card mb-3" e:example="" id="Ignore json paths"><div class="card-header" data-toggle="collapse" data-target="#-314444124" aria-expanded="true" aria-controls="-314444124"><a name="Ignore json paths" data-type="example">Ignore json paths</a></div><div class="card-body collapse show" id="-314444124"><pre class="xml card">
+&lt;span&gt;ignored JSON paths should be placed in "expected" at "ignoredPaths" attribute separated by ";". &lt;/span&gt;
+&lt;e:get url="ignoreJson"&gt;
+            &lt;e:case desc="JSON nodes can be ignored"&gt;
+                &lt;expected ignoredPaths="param2;arr[*].param4"&gt;
+                    {
+                      "param1":"value1",
+                      "arr":[
+                      {"param3":"value3"},
+                      {"param3":"value3"}
+                      ]
+                    }
+                &lt;/expected&gt;
+            &lt;/e:case&gt;
+        &lt;/e:get&gt;
+&lt;e:get url="ignoreJsonArray"&gt;
+            &lt;e:case desc="JSON nodes in array can be ignored"&gt;
+                &lt;expected ignoredPaths="[*].param4"&gt;
+                    [
+                      {"param3":"value3"},
+                      {"param3":"value3"}
+                    ]
+                &lt;/expected&gt;
+            &lt;/e:case&gt;
+         &lt;/e:get&gt;</pre>
+        <span>ignored JSON paths should be placed in "expected" at "ignoredPaths" attribute separated by ";". </span>
+        <div cmdId="f482ce0e-3242-4264-9235-df44383e7b71" e:get="" class="bd-callout bd-callout-success"><table class="table table-sm"><thead class="thead-default"><thead class="thead-default"><th>Expected response</th><th>Status code</th></thead></thead>
+            <tr desc="JSON nodes can be ignored" cmdId="6344df33-8fc2-435c-b08f-d02478b61a75" e:case="" data-type="case" id="9) JSON nodes can be ignored"><tr><td colspan="2" class="text-muted">9) JSON nodes can be ignored</td></tr>
+                
+            <tr><tr><td colspan="2"><div><i>GET </i><code>ignoreJson</code><span></span></div></td></tr><td style="max-width:550px" class="json rest-success">{
+  "param1": "value1",
+  "arr": [{
+    "param3": "value3"
+  }, {
+    "param3": "value3"
+  }]
+}</td><td class="rest-success">HTTP/1.1 200 OK</td></tr></tr>
+        <div><h4><span class="badge badge-success ml-1 mr-1">GET</span><span class="badge badge-info ml-1 mr-1">application/json</span><code>ignoreJson</code></h4></div></table></div>
+        <div cmdId="817935ca-49f0-4274-ab90-553fdc8dda67" e:get="" class="bd-callout bd-callout-success"><table class="table table-sm"><thead class="thead-default"><thead class="thead-default"><th>Expected response</th><th>Status code</th></thead></thead>
+            <tr desc="JSON nodes in array can be ignored" cmdId="bc80d455-c616-4e7b-972f-13befef838f6" e:case="" data-type="case" id="10) JSON nodes in array can be ignored"><tr><td colspan="2" class="text-muted">10) JSON nodes in array can be ignored</td></tr>
+                
+            <tr><tr><td colspan="2"><div><i>GET </i><code>ignoreJsonArray</code><span></span></div></td></tr><td style="max-width:550px" class="json rest-success">[{
+  "param3": "value3"
+}, {
+  "param3": "value3"
+}]</td><td class="rest-success">HTTP/1.1 200 OK</td></tr></tr>
+         <div><h4><span class="badge badge-success ml-1 mr-1">GET</span><span class="badge badge-info ml-1 mr-1">application/json</span><code>ignoreJsonArray</code></h4></div></table></div>
+    </div><div class="card-footer text-muted" data-toggle="collapse" data-target="#-314444124" aria-expanded="true" aria-controls="-314444124"><small><span class="badge badge-pill badge-success">4</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small></div></div>  
+    <div name="Configure json compare mode" print="true" cmdId="64ae65f1-e63c-455f-b7f1-da4ffc30b4fd" c:example="Configure json compare mode" class="card mb-3" e:example="" id="Configure json compare mode"><div class="card-header" data-toggle="collapse" data-target="#-1051840164" aria-expanded="true" aria-controls="-1051840164"><a name="Configure json compare mode" data-type="example">Configure json compare mode</a></div><div class="card-body collapse show" id="-1051840164"><pre class="xml card">
+&lt;span&gt;Specific configuration for json-unit should be placed in "expected" at "jsonUnitOptions" attribute separated by ";". &lt;/span&gt;
+&lt;e:get url="ignoreJson"&gt;
+            &lt;e:case desc="Extra fields can be ignored"&gt;
+                &lt;expected jsonUnitOptions="IGNORING_EXTRA_FIELDS"&gt;
+                    {
+                      "param1":"value1",
+                      "arr":[
+                      {"param3":"value3"},
+                      {"param3":"value3"}
+                      ]
+                    }
+                &lt;/expected&gt;
+            &lt;/e:case&gt;
+        &lt;/e:get&gt;</pre>
+        <span>Specific configuration for json-unit should be placed in "expected" at "jsonUnitOptions" attribute separated by ";". </span>
+        <div cmdId="74d62234-f988-466b-99d3-a15097ee5d53" e:get="" class="bd-callout bd-callout-success"><table class="table table-sm"><thead class="thead-default"><thead class="thead-default"><th>Expected response</th><th>Status code</th></thead></thead>
+            <tr desc="Extra fields can be ignored" cmdId="2e66b428-952e-4289-a645-0edbc8465a7c" e:case="" data-type="case" id="11) Extra fields can be ignored"><tr><td colspan="2" class="text-muted">11) Extra fields can be ignored</td></tr>
+                
+            <tr><tr><td colspan="2"><div><i>GET </i><code>ignoreJson</code><span></span></div></td></tr><td style="max-width:550px" class="json rest-success">{
+  "param1": "value1",
+  "arr": [{
+    "param3": "value3"
+  }, {
+    "param3": "value3"
+  }]
+}</td><td class="rest-success">HTTP/1.1 200 OK</td></tr></tr>
+        <div><h4><span class="badge badge-success ml-1 mr-1">GET</span><span class="badge badge-info ml-1 mr-1">application/json</span><code>ignoreJson</code></h4></div></table></div>
+    </div><div class="card-footer text-muted" data-toggle="collapse" data-target="#-1051840164" aria-expanded="true" aria-controls="-1051840164"><small><span class="badge badge-pill badge-success">2</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small></div></div>
+    <div name="Configure json compare mode (check)" print="true" status="ExpectedToFail" cmdId="27f79c66-1d5f-4107-91b7-196592a35132" c:example="Configure json compare mode (check)" c:status="ExpectedToFail" class="card mb-3" e:example="" id="Configure json compare mode (check)"><div class="card-header" data-toggle="collapse" data-target="#-467882107" aria-expanded="true" aria-controls="-467882107"><a name="Configure json compare mode (check)" data-type="example">Configure json compare mode (check)</a></div><div class="card-body collapse show" id="-467882107"><pre class="xml card">
+&lt;span&gt;Specific configuration for json-unit should be not affect other examples &lt;/span&gt;
+&lt;e:get url="ignoreJson"&gt;
+            &lt;e:case desc="Extra fields produce error"&gt;
+                &lt;expected&gt;
+                    {
+                      "param1":"value1",
+                      "arr":[
+                      {"param3":"value3"},
+                      {"param3":"value3"}
+                      ]
+                    }
+                &lt;/expected&gt;
+            &lt;/e:case&gt;
+        &lt;/e:get&gt;</pre>
+        <span>Specific configuration for json-unit should be not affect other examples </span>
+        <div cmdId="ea2500fb-3061-4377-9bbc-39f6563da7e9" e:get="" class="bd-callout bd-callout-success"><table class="table table-sm"><thead class="thead-default"><thead class="thead-default"><th>Expected response</th><th>Status code</th></thead></thead>
+            <tr desc="Extra fields produce error" cmdId="5b038288-5489-492a-a3c1-1a63939d6089" e:case="" data-type="case" id="12) Extra fields produce error"><tr><td colspan="2" class="text-muted">12) Extra fields produce error</td></tr>
+                
+            <tr><tr><td colspan="2"><div><i>GET </i><code>ignoreJson</code><span></span></div></td></tr><td style="max-width:550px" class="json rest-failure"><del class="expected">{
+  "param1": "value1",
+  "arr": [{
+    "param3": "value3"
+  }, {
+    "param3": "value3"
+  }]
+}</del>
+<ins class="actual">{
+  "param1": "value1",
+  "param2": "value2",
+  "arr": [{
+    "param3": "value3",
+    "param4": "value4"
+  }, {
+    "param3": "value3",
+    "param4": "value4"
+  }]
+}</ins></td><span class="exceptionMessage">JSON documents are different:
+Different keys found in node "", extra: "param2", expected: &lt;{"arr":[{"param3":"value3"}, {"param3":"value3"}],"param1":"value1"}&gt; but was: &lt;{"arr":[{"param3":"value3","param4":"value4"}, {"param3":"value3","param4":"value4"}],"param1":"value1","param2":"value2"}&gt;
+Array "arr" has different content. Missing values: [{"param3":"value3"}, {"param3":"value3"}], extra values: [{"param3":"value3","param4":"value4"}, {"param3":"value3","param4":"value4"}], expected: &lt;[{"param3":"value3"},{"param3":"value3"}]&gt; but was: &lt;[{"param3":"value3","param4":"value4"},{"param3":"value3","param4":"value4"}]&gt;
+</span><td class="rest-success">HTTP/1.1 200 OK</td></tr></tr>
+        <div><h4><span class="badge badge-success ml-1 mr-1">GET</span><span class="badge badge-info ml-1 mr-1">application/json</span><code>ignoreJson</code></h4></div></table></div>
+    </div><div class="card-footer text-muted" data-toggle="collapse" data-target="#-467882107" aria-expanded="true" aria-controls="-467882107"><small><span class="badge badge-pill badge-success">1</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning">1</span><span class="badge badge-pill badge-danger"></span><span class="badge badge-pill badge-warning">ExpectedToFail</span></small></div></div>
+</div><div class="footer">Results generated by <a href="http://www.concordion.org" style="font-weight: bold; text-decoration: none; color: #89C;">Concordion</a><div class="testTime">in 305 ms on 07-May-2020 at 10:36:42 UTC</div></div></body><button id="btnToTop" onclick="topFunction()" type="button" class="btn btn-light btn-sm text-muted ml-1"><i class="fa fa-arrow-up fa-3x"></i></button></html>
