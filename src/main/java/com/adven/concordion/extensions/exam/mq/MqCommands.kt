@@ -54,6 +54,7 @@ class MqCheckCommand(
         root.attr("jsonUnitOptions")?.let { attr -> overrideJsonUnitOption(attr) }
         val mqName = root.takeAwayAttr("name")!!
         val layout = root.takeAwayAttr("layout", "VERTICALLY")
+        val contains = root.takeAwayAttr("contains", "EXACT")
 
         val atMostSec = root.takeAwayAttr("awaitAtMostSec")
         val pollDelay = root.takeAwayAttr("awaitPollDelayMillis")
@@ -118,7 +119,7 @@ class MqCheckCommand(
             tableContainer(cnt)
         }
 
-        expectedMessages.zip(actualMessages).forEach {
+        prepared(expectedMessages, contains).zip(prepared(actualMessages, contains)).forEach {
             val bodyContainer = jsonEl(it.first.body)
             val headersContainer = span("Headers: ${it.first.headers.entries.joinToString()}")(italic("", CLASS to "fa fa-border"))
             if (cnt != null) {
@@ -134,6 +135,11 @@ class MqCheckCommand(
             checkJsonContent(it.second.body, it.first.body, resultRecorder, bodyContainer)
         }
     }
+
+    private fun prepared(origin: List<MqTester.Message>, contains: String) =
+        if (needSort(contains)) origin.sortedBy { it.body } else origin
+
+    private fun needSort(contains: String) = "EXACT" != contains
 
     private fun isPollingEnabled(atMostSec: String?, pollDelay: String?, pollInterval: String?) =
         atMostSec != null || pollDelay != null || pollInterval != null

@@ -54,17 +54,16 @@ fun resolveToObj(placeholder: String?, evaluator: Evaluator): Any? = evaluator.r
 
 fun String.isRange() = this.matches("^[0-9]+[.]{2}[0-9]+$".toRegex())
 
-fun String.toRange(): IntProgression {
-    if (this.isRange()) {
+fun String.toRange(): IntProgression = when {
+    this.isRange() -> {
         val (start, end) = this.split("[.]{2}".toRegex()).map(String::toInt)
-        return IntProgression.fromClosedRange(start, end, end.compareTo(start))
+        IntProgression.fromClosedRange(start, end, end.compareTo(start))
     }
-    throw IllegalArgumentException("Couldn't parse range from string $this")
+    else -> throw IllegalArgumentException("Couldn't parse range from string $this")
 }
 
-fun String?.vars(eval: Evaluator, setVar: Boolean = false): Map<String, Any?> =
-    this?.split(",")
-        ?.map { it.split('=', limit = 2) }
-        ?.map { (k, v) -> k.trim() to v.trim() }
-        ?.map { (k, v) -> k to eval.resolveToObj(v).apply { if (setVar) eval.setVariable("#$k", this) } }
-        ?.toMap() ?: emptyMap()
+fun String?.vars(eval: Evaluator, setVar: Boolean = false): Map<String, Any?> = this?.split(",")
+    ?.map { it.split('=', limit = 2) }
+    ?.map { (k, v) -> k.trim() to v.trim() }
+    ?.map { (k, v) -> k to eval.resolveToObj(v).apply { if (setVar) eval.setVariable("#$k", this) } }
+    ?.toMap() ?: emptyMap()
