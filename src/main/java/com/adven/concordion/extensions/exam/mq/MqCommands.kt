@@ -61,7 +61,7 @@ class MqCheckCommand(
 
         val messageTags = root.childs().filter { it.localName() == "message" }.ifEmpty { listOf(root) }
         val expectedMessages = messageTags.map { html ->
-            html.takeAwayAttr("vars").vars(eval).forEach { eval.setVariable("#${it.key}", it.value) }
+            html.takeAwayAttr("vars").vars(eval, true)
             val content = html.content(eval)
             if ("" == content) return@map null else MqTester.Message(eval.resolveJson(content.trim()), headers(html, eval))
         }.filterNotNull()
@@ -192,6 +192,7 @@ class MqSendCommand(name: String, tag: String, private val mqTesters: Map<String
         val root = commandCall.html()
         val mqName = root.takeAwayAttr("name")
         val headers = headers(root, evaluator)
+        root.takeAwayAttr("vars").vars(evaluator, true)
         val message = evaluator.resolveJson(root.content(evaluator).trim())
         root.removeChildren()(
             tableSlim()(

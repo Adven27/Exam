@@ -15,14 +15,14 @@
     <e:when>
         <div class="row no-gutters">
             <e:mq-send name="myQueue" style="width: min-content">{"msg" : "1"}</e:mq-send>
-            <e:mq-send name="myQueue" from="/data/mq/send.json" style="width: min-content"/>
+            <e:mq-send name="myQueue" from="/data/mq/msg.json" vars="myVar1={{now 'yyyy-MM-dd'}}, myVar2={{date myVar1 minus='1 d'}}" style="width: min-content"/>
             <e:mq-send name="myQueue" style="width: min-content">{"msg" : "3"}</e:mq-send>
         </div>
     </e:when>
     <e:then>
         <e:mq-check name="myQueue" layout="horizontally">
             <e:message>{"msg" : "1"}</e:message>
-            <e:message from="/data/mq/expected-msg.json" vars="myVar={{now 'yyyy-MM-dd'}}" />
+            <e:message from="/data/mq/msg.json" vars="myVar1={{now 'yyyy-MM-dd'}}, myVar2={{date myVar1 minus='1 d'}}" />
             <e:message>{"msg" : "3"}</e:message>
         </e:mq-check>
     </e:then>
@@ -101,10 +101,10 @@
 </e:example>
 <e:example name="Content from files" print="true">
     <e:when>
-        <e:mq-send name="myQueue" from="/data/mq/send.json"/>
+        <e:mq-send name="myQueue" from="/data/mq/msg.json" vars="myVar1={{now 'yyyy-MM-dd'}}, myVar2={{date myVar1 minus='1 d'}}"/>
     </e:when>
     <e:then>
-        <e:mq-check name="myQueue" from="/data/mq/expected.json"/>
+        <e:mq-check name="myQueue" from="/data/mq/msg.json" vars="myVar1={{now 'yyyy-MM-dd'}}, myVar2={{date myVar1 minus='1 d'}}"/>
     </e:then>
 </e:example>
 <e:example name="Message with headers" print="true">
@@ -112,10 +112,10 @@
         <e:set var="id" value="some-id"/>
     </e:given>
     <e:when>
-        <e:mq-send name="myQueue" from="/data/mq/send.json" headers="id={{id}},contentEncoding=UTF-8"/>
+        <e:mq-send name="myQueue" headers="id={{id}},contentEncoding=UTF-8">{}</e:mq-send>
     </e:when>
     <e:then>
-        <e:mq-check name="myQueue" from="/data/mq/expected.json" headers="contentEncoding=UTF-8,id={{id}}"/>
+        <e:mq-check name="myQueue" headers="contentEncoding=UTF-8,id={{id}}">{}</e:mq-check>
     </e:then>
 </e:example>
 </body>

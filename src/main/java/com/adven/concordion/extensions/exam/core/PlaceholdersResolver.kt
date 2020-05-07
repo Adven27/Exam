@@ -62,6 +62,9 @@ fun String.toRange(): IntProgression {
     throw IllegalArgumentException("Couldn't parse range from string $this")
 }
 
-fun String?.vars(eval: Evaluator): Map<String, Any?> =
-    this?.split(',')?.map { it.split('=')[0].trim() to eval.resolveToObj(it.split('=')[1].trim()) }?.toMap()
-        ?: emptyMap()
+fun String?.vars(eval: Evaluator, setVar: Boolean = false): Map<String, Any?> =
+    this?.split(",")
+        ?.map { it.split('=', limit = 2) }
+        ?.map { (k, v) -> k.trim() to v.trim() }
+        ?.map { (k, v) -> k to eval.resolveToObj(v).apply { if (setVar) eval.setVariable("#$k", this) } }
+        ?.toMap() ?: emptyMap()
