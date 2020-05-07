@@ -6,7 +6,7 @@
 [![Get automatic notifications about new "exam" versions](https://www.bintray.com/docs/images/bintray_badge_bw.png)](https://bintray.com/adven27/exam/exam?source=watch)
 [![Stability: Active](https://masterminds.github.io/stability/active.svg)](https://masterminds.github.io/stability/active.html)
 [![Build Status](https://travis-ci.org/Adven27/Exam.svg?branch=master)](https://travis-ci.org/Adven27/Exam)
-[ ![Download](https://api.bintray.com/packages/adven27/exam/exam/images/download.svg?version=3.3.0) ](https://bintray.com/adven27/exam/exam/3.3.0/link)
+[ ![Download](https://api.bintray.com/packages/adven27/exam/exam/images/download.svg?version=3.3.1) ](https://bintray.com/adven27/exam/exam/3.3.1/link)
 [![](https://jitpack.io/v/Adven27/Exam.svg)](https://jitpack.io/#Adven27/Exam)
 
 **Exam** is oriented on **declarative end-to-end black\graybox** application testing in a way a manual tester would do it: send request, verify response\database\message queue etc.
@@ -33,7 +33,7 @@ Maven
 <dependency>
     <groupId>org.adven.concordion.ext</groupId>
     <artifactId>exam</artifactId>
-    <version>3.3.0</version>
+    <version>3.3.1</version>
 </dependency>
 ```
 
@@ -43,7 +43,7 @@ repositories {
     jcenter()
 }
 
-testCompile "org.adven.concordion.ext:exam:3.3.0"
+testCompile "org.adven.concordion.ext:exam:3.3.1"
 ```
 ### 2) Use
 
