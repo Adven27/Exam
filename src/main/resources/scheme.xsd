@@ -144,6 +144,7 @@
                 <xs:attribute type="xs:string" name="value"/>
                 <xs:attribute type="xs:string" name="from" default="/data/value.json"/>
                 <xs:attribute type="xs:string" name="vars" default="v1=value1, v2={{now}}"/>
+                <xs:attribute type="xs:string" name="varsSeparator" default=","/>
                 <xs:attribute type="xs:boolean" name="silent"/>
             </xs:extension>
         </xs:simpleContent>
@@ -209,6 +210,7 @@
         </xs:sequence>
         <xs:attribute type="xs:anyURI" name="from" default="/data/mq"/>
         <xs:attribute type="xs:string" name="vars" default="v1=1, v2={{now}}"/>
+        <xs:attribute type="xs:string" name="varsSeparator" default=","/>
         <xs:attribute type="xs:string" name="name" use="required"/>
         <xs:attribute type="xs:string" name="headers" default="type=String,contentEncoding=UTF-8"/>
     </xs:complexType>
@@ -223,6 +225,7 @@
                         <xs:extension base="xs:string">
                             <xs:attribute type="xs:anyURI" name="from" default="/data/mq/msg.json"/>
                             <xs:attribute type="xs:string" name="vars" default="v1=1, v2={{now}}"/>
+                            <xs:attribute type="xs:string" name="varsSeparator" default=","/>
                         </xs:extension>
                     </xs:simpleContent>
                 </xs:complexType>
@@ -230,6 +233,7 @@
         </xs:sequence>
         <xs:attribute type="xs:string" name="from" default="/data/mq"/>
         <xs:attribute type="xs:string" name="vars" default="v1=1, v2={{now}}"/>
+        <xs:attribute type="xs:string" name="varsSeparator" default=","/>
         <xs:attribute type="xs:string" name="name" use="required"/>
         <xs:attribute type="xs:integer" name="awaitAtMostSec" default="4"/>
         <xs:attribute type="xs:integer" name="awaitPollDelayMillis" default="0"/>

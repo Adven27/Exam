@@ -2,7 +2,9 @@
 <body>
 <e:summary/>
 <e:before-each>
-    <e:given><e:mq-purge name="myQueue"/></e:given>
+    <e:given>
+        <e:mq-purge name="myQueue"/>
+    </e:given>
 </e:before-each>
 <e:example name="Send -> Get: success" print="true">
     <e:when>
@@ -53,11 +55,13 @@
 <e:example name="Content from files" print="true">
     <e:when>
         <e:mq-send name="myQueue" from="/data/mq/msg.json"
-                   vars="myVar1={{now 'yyyy-MM-dd'}}, myVar2={{date myVar1 minus='1 d'}}"/>
+                   vars="myVar1={{now 'yyyy-MM-dd'}} | myVar2={{date myVar1 minus='1 d'}} | myVar3=str with commas , signs"
+                   varsSeparator="|"/>
     </e:when>
     <e:then>
         <e:mq-check name="myQueue" from="/data/mq/msg.json"
-                    vars="myVar1={{now 'yyyy-MM-dd'}}, myVar2={{date myVar1 minus='1 d'}}"/>
+                    vars="myVar1={{now 'yyyy-MM-dd'}} | myVar2={{date myVar1 minus='1 d'}} | myVar3=str with commas , signs"
+                    varsSeparator="|"/>
     </e:then>
 </e:example>
 <e:example name="Message with headers" print="true">
@@ -77,7 +81,8 @@
         <div class="row no-gutters">
             <e:mq-send name="myQueue" style="width: min-content">{"msg" : "1"}</e:mq-send>
             <e:mq-send name="myQueue" from="/data/mq/msg.json"
-                       vars="myVar1={{now 'yyyy-MM-dd'}}, myVar2={{date myVar1 minus='1 d'}}"
+                       vars="myVar1={{now 'yyyy-MM-dd'}} | myVar2={{date myVar1 minus='1 d'}} | myVar3=str with commas , signs"
+                       varsSeparator="|"
                        style="width: min-content"/>
             <e:mq-send name="myQueue" style="width: min-content">{"msg" : "3"}</e:mq-send>
         </div>
@@ -85,7 +90,9 @@
     <e:then>
         <e:mq-check name="myQueue" layout="horizontally">
             <e:message>{"msg" : "1"}</e:message>
-            <e:message from="/data/mq/msg.json" vars="myVar1={{now 'yyyy-MM-dd'}}, myVar2={{date myVar1 minus='1 d'}}"/>
+            <e:message from="/data/mq/msg.json"
+                       vars="myVar1={{now 'yyyy-MM-dd'}} | myVar2={{date myVar1 minus='1 d'}} | myVar3=str with commas , signs"
+                       varsSeparator="|"/>
             <e:message>{"msg" : "3"}</e:message>
         </e:mq-check>
     </e:then>

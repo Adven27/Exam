@@ -22,7 +22,7 @@ class SetVarCommand(tag: String) : ExamCommand("set", tag) {
         val el = cmd.html()
         val valueAttr = el.attr("value")
         val valueFrom = el.attr("from")
-        val vars = el.takeAwayAttr("vars").vars(eval)
+        val vars = el.takeAwayAttr("vars").vars(eval, separator = el.takeAwayAttr("varsSeparator", ","))
         vars.forEach {
             val key = "#${it.key}"
             if (eval.getVariable(key) != null)
