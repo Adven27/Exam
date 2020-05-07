@@ -48,7 +48,7 @@ open class Specs {
 
         private val EXAM = ExamExtension().withPlugins(
             WsPlugin(PORT),
-            DbPlugin(dbTester, object : DbPlugin.ValuePrinter.AbstractDefault() { override fun orElse(value: Any?): String = value.toString() }),
+            DbPlugin(dbTester),
             FlPlugin(),
             MqPlugin(
                 mapOf("myQueue" to object : MqTesterAdapter() {

@@ -3,10 +3,12 @@ package com.adven.concordion.extensions.exam.db
 import com.adven.concordion.extensions.exam.core.ExamPlugin
 import com.adven.concordion.extensions.exam.core.commands.ExamCommand
 import com.adven.concordion.extensions.exam.core.html.TABLE
+import com.adven.concordion.extensions.exam.core.html.span
 import com.adven.concordion.extensions.exam.db.commands.DBCheckCommand
 import com.adven.concordion.extensions.exam.db.commands.DBCleanCommand
 import com.adven.concordion.extensions.exam.db.commands.DBSetCommand
 import com.adven.concordion.extensions.exam.db.commands.DBShowCommand
+import org.concordion.api.Element
 import org.joda.time.format.DateTimeFormat
 import java.util.*
 import kotlin.collections.component1
@@ -75,9 +77,12 @@ class DbPlugin @JvmOverloads constructor(private val dbTester: DbTester, private
                 else -> orElse(value)
             }
 
+            override fun wrap(value: Any?): Element = span(print(value)).el
+
             abstract fun orElse(value: Any?): String
         }
 
         fun print(value: Any?): String
+        fun wrap(value: Any?): Element
     }
 }

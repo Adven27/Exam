@@ -52,7 +52,7 @@ open class DBCommand(name: String, tag: String, protected val dbTester: DbTester
     protected fun renderTable(root: Html, t: ITable) {
         val cols = t.columnsSortedBy(remarks)
         val rows = t.mapRows { row ->
-            cols.map { col -> valuePrinter.print(t[row, col]) }
+            cols.map { col -> valuePrinter.wrap(t[row, col]) }
         }
         val classFor = { c: Column -> if (remarks.containsKey(c.columnName)) "table-info" else "" }
 
@@ -67,8 +67,8 @@ open class DBCommand(name: String, tag: String, protected val dbTester: DbTester
             tbody()(
                 rows.map {
                     tr()(
-                        it.withIndex().map { (i, text) ->
-                            td(text, CLASS to classFor(cols[i]))
+                        it.withIndex().map { (i, value) ->
+                            td(CLASS to classFor(cols[i]))(Html(value))
                         })
                 })
         )

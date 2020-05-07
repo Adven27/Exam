@@ -152,15 +152,16 @@ class DBCheckCommand(name: String, tag: String, dbTester: DbTester, valuePrinter
                     tr()(
                         cols.map {
                             val expectedValue = valuePrinter.print(expected[row, it])
-                            td(expectedValue).apply {
+                            td().apply {
                                 diffs.firstOrNull { diff ->
                                     diff.rowIndex == row && diff.columnName == it
-                                }?.markAsFailure(resultRecorder, this) ?: markAsSuccess(resultRecorder).text(
-                                    if (isDbMatcher(text()) && actual.rowCount == expected.rowCount)
-                                        " (${actual[row, it]})"
-                                    else
-                                        ""
-                                )
+                                }?.markAsFailure(resultRecorder, this)
+                                    ?: markAsSuccess(resultRecorder)(Html(valuePrinter.wrap(expected[row, it])).text(
+                                        if (isDbMatcher(expectedValue) && actual.rowCount == expected.rowCount)
+                                            " (${actual[row, it]})"
+                                        else
+                                            ""
+                                    ))
                             }
                         })
                 }
@@ -169,8 +170,11 @@ class DBCheckCommand(name: String, tag: String, dbTester: DbTester, valuePrinter
 
     private fun isDbMatcher(text: String) = (text.isRegex() || text.isWithin() || text.isNumber() || text.isNotNull())
     private fun Html.markAsSuccess(resultRecorder: ResultRecorder) = success(resultRecorder, this)
-    private fun Difference.markAsFailure(resultRecorder: ResultRecorder, td: Html) =
-        failure(resultRecorder, td, this.actualValue, valuePrinter.print(this.expectedValue))
+    private fun Difference.markAsFailure(resultRecorder: ResultRecorder, td: Html): Html {
+        val txt = valuePrinter.print(this.expectedValue)
+        td.text(txt)
+        return failure(resultRecorder, td, this.actualValue, txt)
+    }
 }
 
 class WithinValueComparer(tolerance: Long) : IsActualWithinToleranceOfExpectedTimestampValueComparer(0, tolerance) {
