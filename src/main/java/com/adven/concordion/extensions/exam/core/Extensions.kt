@@ -10,16 +10,22 @@ class CodeMirrorExtension : ConcordionExtension {
             listOf(
                 "codemirror.css",
                 "merge.css",
-                "enable-codemirror.css"
+                "enable-codemirror.css",
+                "foldgutter.css",
+                "simplescrollbar.css"
             ).forEach { withLinkedCSS("$BASE$it", Resource("$BASE$it")) }
             listOf(
                 "codemirror.js",
+                "enable-codemirror.js",
                 "javascript.js",
                 "xml.js",
+                "htmlmixed.js",
                 "formatting.js",
+                "markdown.js",
                 "diff_match_patch.js",
                 "merge.js",
-                "enable-codemirror.js"
+                "xml-fold.js",
+                "simplescrollbar.js"
             ).forEach { withLinkedJavaScript("$BASE$it", Resource("$BASE$it")) }
         }
     }

@@ -1,0 +1,163 @@
+<html xmlns:e="http://exam.extension.io" xmlns:cc="http://www.concordion.org/2007/concordion">
+<body>
+<h1>GET-request</h1>
+<e:summary/>
+<e:given>
+    Given server, that mirrors GET-request
+</e:given>
+<e:example name="Body check" status="ExpectedToFail" print="true">
+    <e:get url="relative/url" contentType="application/json">
+        <e:case desc="Request with params (happy-path)" urlParams="param1=1&amp;param2=2">
+            <e:expected>
+                { "GET": "/relative/url?param1=1&amp;param2=2" }
+            </e:expected>
+        </e:case>
+        <e:case desc="Request without params (wrong response body)">
+            <e:expected>
+                { "GET": "/relative/url?noparams", "GET": "/relative/url?noparams", "GET": "/relative/url?noparams", "GET": "/relative/url?noparams", "GET": "/relative/url?noparams", "GET": "/relative/url?noparams", "GET": "/relative/url?noparams", "GET": "/relative/url?noparams", "GET": "/relative/url?noparams", "GET": "/relative/url?noparams", "GET": "/relative/url?noparams", "GET": "/relative/url?noparams", "GET": "/relative/url?noparams", "GET": "/relative/url?noparams", "GET": "/relative/url?noparams", "GET": "/relative/url?noparams", "GET": "/relative/url?noparams" }
+            </e:expected>
+            <e:check>
+                <span cc:assertTrue="true">Block for additional checks</span>
+            </e:check>
+        </e:case>
+    </e:get>
+</e:example>
+<e:example name="Body check custom content type" status="ExpectedToFail" print="true">
+    <e:get url="text" contentType="text/plain">
+        <e:case desc="Success">
+            <e:expected>text to
+compare</e:expected>
+        </e:case>
+        <e:case desc="Success from file">
+            <e:expected from="/data/rs/expected.txt"/>
+        </e:case>
+        <e:case desc="Wrong">
+            <e:expected><![CDATA[ text to compare ]]></e:expected>
+        </e:case>
+    </e:get>
+</e:example>
+<e:example name="Status code check" status="ExpectedToFail" print="true">
+    <e:get url="status/400">
+        <e:case desc="Wrong status code">
+            <e:expected>
+                {"GET": "/status/400"}
+            </e:expected>
+        </e:case>
+    </e:get>
+</e:example>
+<e:example name="Check failed status code" print="true">
+    <e:get url="status/400">
+        <e:case desc="Wrong status code was expected">
+            <e:expected statusCode="400" reasonPhrase="Bad Request">
+                {"GET": "/status/400"}
+            </e:expected>
+        </e:case>
+    </e:get>
+</e:example>
+<e:example name="Cookies" print="true">
+    <e:get url="relative/url" cookies="cook=from_command">
+        <e:case desc="Can be set in command">
+            <e:expected>
+                {
+                "GET": "/relative/url",
+                "cookies": "{cook=from_command}"
+                }
+            </e:expected>
+        </e:case>
+        <e:case cookies="cook=from_case" desc="Can be override by case">
+            <e:expected>
+                {
+                "GET": "/relative/url",
+                "cookies": "{cook=from_case}"
+                }
+            </e:expected>
+        </e:case>
+        <e:case cookies="cook={{url}},anotherCook=asd" desc="Placeholders can be used">
+            <e:expected>
+                {
+                "GET": "/relative/url",
+                "cookies": "{cook=relative/url, anotherCook=asd}"
+                }
+            </e:expected>
+            <e:check>
+                Last response saved in variable <var>#exam_response</var><br/>
+                <ol>
+                    <li><code cc:execute="#my_header = #exam_response.header('my_header')">c:execute="#my_header =
+                        #exam_response.header('my_header')</code></li>
+                    <li>echo #exam_response.header('my_header') => <code cc:echo="#exam_response.header('my_header')"/>
+                    </li>
+                    <li>echo #my_header => <code cc:echo="#my_header"/></li>
+                </ol>
+            </e:check>
+        </e:case>
+        <e:case cookies="cook={{eval &quot;#exam_response.header('my_header')&quot;}}"
+                desc="If @FullOGNL is enabled, response fields can be accessed">
+            <e:expected>
+                {
+                "GET": "/relative/url",
+                "cookies": "{cook=some value}"
+                }
+            </e:expected>
+        </e:case>
+    </e:get>
+</e:example>
+<e:example name="Ignore json paths" print="true">
+    <span>ignored JSON paths should be placed in "expected" at "ignoredPaths" attribute separated by ";". </span>
+    <e:get url="ignoreJson">
+        <e:case desc="JSON nodes can be ignored">
+            <e:expected ignoredPaths="param2;arr[*].param4">
+                {
+                "param1":"value1",
+                "arr":[
+                {"param3":"value3"},
+                {"param3":"value3"}
+                ]
+                }
+            </e:expected>
+        </e:case>
+    </e:get>
+    <e:get url="ignoreJsonArray">
+        <e:case desc="JSON nodes in array can be ignored">
+            <e:expected ignoredPaths="[*].param4">
+                [
+                {"param3":"value3"},
+                {"param3":"value3"}
+                ]
+            </e:expected>
+        </e:case>
+    </e:get>
+</e:example>
+<e:example name="Configure json compare mode" print="true">
+    <span>Specific configuration for json-unit should be placed in "expected" at "jsonUnitOptions" attribute separated by ";". </span>
+    <e:get url="ignoreJson">
+        <e:case desc="Extra fields can be ignored">
+            <e:expected jsonUnitOptions="IGNORING_EXTRA_FIELDS">
+                {
+                "param1":"value1",
+                "arr":[
+                {"param3":"value3"},
+                {"param3":"value3"}
+                ]
+                }
+            </e:expected>
+        </e:case>
+    </e:get>
+</e:example>
+<e:example name="Configure json compare mode (check)" print="true" status="ExpectedToFail">
+    <span>Specific configuration for json-unit should be not affect other examples </span>
+    <e:get url="ignoreJson">
+        <e:case desc="Extra fields produce error">
+            <e:expected>
+                {
+                "param1":"value1",
+                "arr":[
+                {"param3":"value3"},
+                {"param3":"value3"}
+                ]
+                }
+            </e:expected>
+        </e:case>
+    </e:get>
+</e:example>
+</body>
+</html>

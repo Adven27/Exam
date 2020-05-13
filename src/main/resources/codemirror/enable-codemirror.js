@@ -5,6 +5,9 @@ function ready() {
     enableCodeMirrorMerge('.json.rest-failure', {name: 'javascript', json: true});
     enableCodeMirror('.xml:not(.rest-failure)', 'application/xml');
     enableCodeMirrorMerge('.xml.rest-failure', 'application/xml');
+    enableCodeMirror('.text:not(.rest-failure)', 'text/plain');
+    enableCodeMirrorMerge('.text.rest-failure', 'text/plain');
+    enableCodeMirror('.htmlmixed', 'text/html');
 }
 
 function unescape(input) {
@@ -26,45 +29,42 @@ function enableCodeMirror(selector, mode) {
             lineNumbers: (el.getAttribute("lineNumbers") === 'true'),
             mode: mode,
             value: value,
-            readOnly: true
+            readOnly: true,
+            scrollbarStyle: "simple",
+            viewportMargin: Infinity
+            //theme: "idea"
         });
-        if (el.getAttribute("autoFormat") === 'true') {
-            autoFormat(editor);
-        }
     }
 }
 
 function enableCodeMirrorMerge(selector, mode) {
-    var jsons = document.querySelectorAll(selector);
+    var view, jsons = document.querySelectorAll(selector);
     for (var i = 0; i < jsons.length; i++) {
-        mergeView(jsons[i], mode);
+        var target = jsons[i];
+        var expectedValue, actualValue,
+            expected = target.querySelector('.expected'),
+            actual = target.querySelector('.actual');
+
+        expectedValue = unescape(expected.innerHTML);
+        actualValue = unescape(actual.innerHTML);
+
+        actual.parentNode.removeChild(actual);
+        expected.parentNode.removeChild(expected);
+        target.innerHTML = '';
+
+        view = CodeMirror.MergeView(target, {
+            value: expectedValue,
+            readOnly: true,
+            origLeft: null,
+            orig: actualValue,
+            lineNumbers: true,
+            mode: mode,
+            connect: true,
+            highlightDifferences: true,
+            collapseIdentical: true,
+            scrollbarStyle: "simple",
+            viewportMargin: Infinity
+            //theme: "idea"
+        });
     }
-
-}
-function mergeView(target, mode) {
-    var expectedValue, actualValue,
-        expected = target.querySelector('.expected'),
-        actual = target.querySelector('.actual');
-
-    expectedValue = unescape(expected.innerHTML);
-    actualValue = unescape(actual.innerHTML);
-
-    actual.parentNode.removeChild(actual);
-    expected.parentNode.removeChild(expected);
-    target.innerHTML = '';
-
-    CodeMirror.MergeView(target, {
-        value: expectedValue,
-        origLeft: null,
-        orig: actualValue,
-        lineNumbers: false,
-        mode: mode,
-        highlightDifferences: true,
-        collapseIdentical: false
-    });
-}
-
-function autoFormat(editor) {
-    var range = {from: {line: 0, ch: 0}, to: {line: editor.lineCount(), ch: editor.getValue().length}};
-    editor.autoFormatRange(range.from, range.to);
 }

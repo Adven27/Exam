@@ -12,7 +12,7 @@ class RequestExecutor private constructor() {
     private lateinit var response: Response
     private var multiPart: MutableList<MultiPart> = ArrayList()
     private var body: String? = null
-    private var type: String? = null
+    private lateinit var type: String
     private val headers = HashMap<String, String>()
     private var urlParams: String? = null
     internal var cookies: String? = null
@@ -64,7 +64,9 @@ class RequestExecutor private constructor() {
         return this
     }
 
-    fun xml() = type?.contains("xml", true) ?: false
+    fun contentType() = type
+
+    fun xml() = type.contains("xml", true)
     fun xml(type: String) = type.contains("xml", true)
 
     fun responseHeader(attributeValue: String) = response.getHeader(attributeValue)
@@ -95,7 +97,7 @@ class RequestExecutor private constructor() {
                 request.multiPart(it.name, it.value, it.type)
             }
         }
-        type?.let { request.contentType(it) }
+        type.let { request.contentType(it) }
         cookies?.let {
             request.cookies(
                 (if (it.trim().startsWith("{")) it.substring(1, it.lastIndex) else it)

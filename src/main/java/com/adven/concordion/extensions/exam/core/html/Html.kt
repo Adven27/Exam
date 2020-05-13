@@ -295,7 +295,7 @@ fun pre(txt: String? = null) = Html("pre", txt)
 
 fun paragraph(txt: String) = Html("p", txt)
 
-fun codeXml(text: String?) = pre(text ?: "") css "xml card"
+fun codeXml(text: String?) = pre(text ?: "") css "htmlmixed card"
 
 fun tag(tag: String) = Html(tag)
 

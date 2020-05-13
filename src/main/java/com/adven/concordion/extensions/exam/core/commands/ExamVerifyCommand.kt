@@ -38,5 +38,8 @@ open class ExamVerifyCommand(name: String, tag: String, listener: AssertEqualsLi
             failure(this, element, actual, expected)
 
     protected fun ResultRecorder.check(root: Html, actual: String, expected: String, test: (String, String) -> Boolean) =
-            if (test(actual, expected)) this.pass(root) else this.failure(root, actual, expected)
+            if (test(actual, expected)) {
+                root.text(expected)
+                this.pass(root)
+            } else this.failure(root, actual, expected)
 }

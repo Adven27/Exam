@@ -132,6 +132,12 @@ open class Specs {
                             |]""".trimMargin())
                     )
                 )
+                stubFor(
+                    get(urlPathEqualTo("/text")).atPriority(1).willReturn(
+                        aResponse().withBody("""text to
+                            |compare""".trimMargin())
+                    )
+                )
                 stubFor(any(urlPathEqualTo("/method/withParams")).atPriority(1).willReturn(
                     aResponse().withBody(""" { "request" : $method, "body": $req }""")
                 ))

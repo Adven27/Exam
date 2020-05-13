@@ -24,7 +24,7 @@ class XmlCheckCommand(name: String, tag: String, private val cfg: Configuration,
         val root = cmd.html()
         val actual = eval.evaluate(root.takeAwayAttr("actual")).toString().prettyXml()
         val expected = eval.resolveXml(root.content(eval).trim()).prettyXml()
-        val container = pre(expected).css("xml")
+        val container = pre().css("xml")
         root.removeChildren()(
             tableSlim()(
                 trWithTDs(
@@ -37,10 +37,10 @@ class XmlCheckCommand(name: String, tag: String, private val cfg: Configuration,
 
     private fun checkXmlContent(actual: String, expected: String, resultRecorder: ResultRecorder, root: Html) {
         try {
-            resultRecorder.check(root, actual, expected) { a, e ->
-                a.equalToXml(e, nodeMatcher, cfg)
-            }
-        } catch (e: Exception) {
+            actual.equalToXml(expected, nodeMatcher, cfg)
+            root.text(expected)
+            resultRecorder.pass(root)
+        } catch (e: Throwable) {
             resultRecorder.failure(root, actual, expected)
             root.below(
                 span(e.message, CLASS to "exceptionMessage")
@@ -60,7 +60,7 @@ class JsonCheckCommand(name: String, tag: String, private val originalCfg: Confi
         root.attr("jsonUnitOptions")?.let { attr -> overrideJsonUnitOption(attr) }
         val actual = eval.evaluate(root.attr("actual")).toString().prettyJson()
         val expected = eval.resolveJson(root.content(eval).trim()).prettyJson()
-        val container = pre(expected).css("json")
+        val container = pre().css("json")
         root.removeChildren()(
             tableSlim()(
                 trWithTDs(
@@ -83,6 +83,7 @@ class JsonCheckCommand(name: String, tag: String, private val originalCfg: Confi
         try {
             JsonAssert.assertJsonEquals(expected, actual, usedCfg)
             resultRecorder.pass(root)
+            root.text(expected)
         } catch (e: Throwable) {
             if (e is AssertionError || e is Exception) {
                 resultRecorder.failure(root, actual.prettyJson(), expected.prettyJson())

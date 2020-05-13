@@ -120,7 +120,7 @@ class MqCheckCommand(
         }
 
         prepared(expectedMessages, contains).zip(prepared(actualMessages, contains)).forEach {
-            val bodyContainer = jsonEl(it.first.body)
+            val bodyContainer = jsonEl("")
             val headersContainer = span("Headers: ${it.first.headers.entries.joinToString()}")(italic("", CLASS to "fa fa-border"))
             if (cnt != null) {
                 cnt(
@@ -173,6 +173,7 @@ class MqCheckCommand(
     private fun checkJsonContent(actual: String, expected: String, resultRecorder: ResultRecorder, root: Html) =
         try {
             JsonAssert.assertJsonEquals(expected, actual, usedCfg)
+            root.text(expected.prettyJson())
             resultRecorder.pass(root)
         } catch (e: Throwable) {
             if (e is AssertionError || e is Exception) {

@@ -1,11 +1,25 @@
-<xs:schema elementFormDefault="qualified" targetNamespace="http://exam.extension.io"
-           xmlns:xs="http://www.w3.org/2001/XMLSchema">
-    <xs:attribute name="status">
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns="http://exam.extension.io"
+            xmlns:xs="http://www.w3.org/2001/XMLSchema"
+            targetNamespace="http://exam.extension.io"
+            elementFormDefault="qualified">
+    <xs:attribute name="status" default="ExpectedToPass">
         <xs:simpleType>
             <xs:restriction base="xs:string">
                 <xs:enumeration value="ExpectedToFail"/>
                 <xs:enumeration value="ExpectedToPass"/>
                 <xs:enumeration value="Unimplemented"/>
+            </xs:restriction>
+        </xs:simpleType>
+    </xs:attribute>
+    <xs:attribute name="contentType" default="application/json">
+        <xs:simpleType>
+            <xs:restriction base="xs:string">
+                <xs:enumeration value="application/json"/>
+                <xs:enumeration value="application/xml"/>
+                <xs:enumeration value="application/xhtml+xml"/>
+                <xs:enumeration value="text/html"/>
+                <xs:enumeration value="text/plain"/>
             </xs:restriction>
         </xs:simpleType>
     </xs:attribute>
@@ -15,6 +29,7 @@
                 <xs:enumeration value="insert"/>
                 <xs:enumeration value="update"/>
                 <xs:enumeration value="delete"/>
+                <xs:enumeration value="clean_insert"/>
             </xs:restriction>
         </xs:simpleType>
     </xs:attribute>
@@ -43,6 +58,7 @@
         </xs:complexType>
     </xs:element>
 
+
     <xs:complexType name="given-info" mixed="true">
         <xs:all>
             <xs:element name="set" type="set-info"/>
@@ -63,7 +79,7 @@
                 <xs:complexType mixed="true">
                     <xs:simpleContent>
                         <xs:extension base="xs:string">
-                            <xs:attribute type="xs:string" name="name" use="required" default="methodName"/>
+                            <xs:attribute type="xs:string" name="name" use="required"/>
                             <xs:attribute type="xs:string" name="desc"/>
                             <xs:attribute type="xs:string" name="set" default="variableName"/>
                         </xs:extension>
@@ -71,14 +87,14 @@
                 </xs:complexType>
             </xs:element>
         </xs:sequence>
-        <xs:attribute type="xs:anyURI" name="url" use="required" default=":8888/ui"/>
+        <xs:attribute type="xs:anyURI" name="url" use="required"/>
         <xs:attribute type="xs:boolean" name="failFast" default="true"/>
     </xs:complexType>
 
     <xs:complexType name="xj-info" mixed="true">
         <xs:simpleContent>
             <xs:extension base="xs:string">
-                <xs:attribute type="xs:string" name="actual" use="required" default="variable"/>
+                <xs:attribute type="xs:string" name="actual" use="required"/>
                 <xs:attribute type="xs:anyURI" name="from" default="/data"/>
                 <xs:attribute type="xs:string" name="jsonUnitOptions"
                               default="IGNORING_EXTRA_FIELDS;TREATING_NULL_AS_ABSENT">
@@ -153,7 +169,11 @@
     <xs:complexType name="db-clean-info">
         <xs:simpleContent>
             <xs:extension base="xs:string">
-                <xs:attribute type="xs:string" name="tables" default="table1, table2" use="required"/>
+                <xs:attribute type="xs:string" name="tables" use="required">
+                    <xs:annotation>
+                        <xs:documentation>Comma-separated values: table1, table2</xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
                 <xs:attribute type="xs:string" name="ds"/>
             </xs:extension>
         </xs:simpleContent>
@@ -198,7 +218,7 @@
 
     <xs:complexType name="mq-info">
         <xs:sequence>
-            <xs:element name="message" type="xs:string">
+            <xs:element name="message">
                 <xs:complexType mixed="true">
                     <xs:simpleContent>
                         <xs:extension base="xs:string">
@@ -288,7 +308,11 @@
                 </xs:annotation>
             </xs:element>
         </xs:sequence>
-        <xs:attribute type="xs:string" name="vars" default="var1, var2" use="required"/>
+        <xs:attribute type="xs:string" name="vars" use="required">
+            <xs:annotation>
+                <xs:documentation>Comma-separated values: var1, var2</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
         <xs:attribute type="xs:string" name="separator" default=","/>
     </xs:complexType>
 
@@ -326,7 +350,7 @@
                     <xs:simpleContent>
                         <xs:extension base="xs:string">
                             <xs:attribute type="xs:string" name="name"/>
-                            <xs:attribute type="xs:string" name="contentType"/>
+                            <xs:attribute ref="contentType"/>
                             <xs:attribute type="xs:string" name="fileName"/>
                         </xs:extension>
                     </xs:simpleContent>
@@ -359,8 +383,8 @@
             </xs:element>
             <xs:element name="check" type="check-info"/>
         </xs:sequence>
-        <xs:attribute type="xs:string" name="url" use="required" default="/"/>
-        <xs:attribute type="xs:string" name="contentType" default="application/json"/>
+        <xs:attribute type="xs:string" name="url" use="required"/>
+        <xs:attribute ref="contentType"/>
         <xs:attribute type="xs:string" name="cookies" default="one=1, two=2"/>
         <xs:attribute type="xs:string" name="headers"/>
     </xs:complexType>
@@ -375,10 +399,12 @@
                     </xs:sequence>
                     <xs:attribute type="xs:string" name="desc"/>
                     <xs:attribute type="xs:string" name="cookies" default="one=1, two=2"/>
+                    <xs:attribute type="xs:string" name="urlParams" default="param1=1&amp;param2=2"/>
                 </xs:complexType>
             </xs:element>
         </xs:sequence>
         <xs:attribute type="xs:string" name="url" use="required"/>
+        <xs:attribute ref="contentType"/>
         <xs:attribute type="xs:string" name="cookies" default="one=1, two=2"/>
         <xs:attribute type="xs:string" name="headers"/>
     </xs:complexType>
@@ -388,7 +414,7 @@
             <xs:sequence>
                 <xs:element name="given" type="given-info" minOccurs="0"/>
                 <xs:element name="when" type="given-info" minOccurs="0"/>
-                <xs:element name="then" minOccurs="0" type="check-info"/>
+                <xs:element name="then" type="check-info" minOccurs="0"/>
                 <xs:element name="soap" type="post-info" minOccurs="0"/>
                 <xs:element name="post" type="post-info" minOccurs="0"/>
                 <xs:element name="get" type="get-info" minOccurs="0"/>

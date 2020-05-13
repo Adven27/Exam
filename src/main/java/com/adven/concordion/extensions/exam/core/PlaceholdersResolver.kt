@@ -14,6 +14,11 @@ import java.lang.Integer.parseInt
 const val PREFIX = "{{"
 const val POSTFIX = "}}"
 
+fun Evaluator.resolveForContentType(body: String, type: String): String = if (type.contains("xml", true))
+    resolveXml(body) else resolveJson(body)
+
+fun Evaluator.resolveNoType(body: String) = resolveJson(body)
+
 fun Evaluator.resolveJson(body: String): String = resolveTxt(body, "json", this)
 fun Evaluator.resolveXml(body: String): String = resolveTxt(body, "xml", this)
 

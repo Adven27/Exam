@@ -1,14 +1,16 @@
 package com.adven.concordion.extensions.exam.ws
 
+import com.adven.concordion.extensions.exam.core.*
 import com.adven.concordion.extensions.exam.core.commands.ExamCommand
 import com.adven.concordion.extensions.exam.core.commands.ExamVerifyCommand
 import com.adven.concordion.extensions.exam.core.html.*
-import com.adven.concordion.extensions.exam.core.resolveJson
-import com.adven.concordion.extensions.exam.core.resolveXml
-import com.adven.concordion.extensions.exam.core.utils.*
+import com.adven.concordion.extensions.exam.core.utils.PLACEHOLDER_TYPE
+import com.adven.concordion.extensions.exam.core.utils.content
+import com.adven.concordion.extensions.exam.core.utils.prettyJson
+import com.adven.concordion.extensions.exam.core.utils.prettyXml
 import com.adven.concordion.extensions.exam.ws.RequestExecutor.Companion.fromEvaluator
+import io.restassured.http.ContentType
 import io.restassured.http.Method
-import net.javacrumbs.jsonunit.JsonAssert.assertJsonEquals
 import net.javacrumbs.jsonunit.core.Configuration
 import net.javacrumbs.jsonunit.core.Option
 import net.javacrumbs.jsonunit.core.internal.Options
@@ -16,7 +18,6 @@ import org.concordion.api.CommandCall
 import org.concordion.api.Evaluator
 import org.concordion.api.ResultRecorder
 import org.concordion.internal.util.Check
-import org.xmlunit.diff.NodeMatcher
 import java.nio.charset.Charset
 import java.util.*
 
@@ -165,9 +166,17 @@ class CaseCheckCommand(name: String, tag: String) : ExamCommand(name, tag) {
     }
 }
 
-class CaseCommand(tag: String, private var originalCfg: Configuration, private val nodeMatcher: NodeMatcher) :
-    RestVerifyCommand(CASE, tag) {
-    private var usedCfg = originalCfg
+class CaseCommand(
+    tag: String,
+    private val contentResolvers: Map<ContentType, WsPlugin.ContentResolver>,
+    private val contentVerifiers: Map<ContentType, WsPlugin.ContentVerifier>,
+    private val contentPrinters: Map<ContentType, WsPlugin.ContentPrinter>,
+    private val contentTypeResolver: WsPlugin.ContentTypeResolver
+) : RestVerifyCommand(CASE, tag) {
+    private lateinit var contentResolver: WsPlugin.ContentResolver
+    private lateinit var contentVerifier: WsPlugin.ContentVerifier
+    private lateinit var contentPrinter: WsPlugin.ContentPrinter
+
     private val cases = ArrayList<Map<String, Any?>>()
     private var number = 0
 
@@ -187,7 +196,16 @@ class CaseCommand(tag: String, private var originalCfg: Configuration, private v
         val body = caseRoot.first(BODY)
         val multiPart = caseRoot.first(MULTI_PART)
         val expected = caseRoot.firstOrThrow(EXPECTED)
-        setUpJsonUnitConfiguration(expected)
+        val contentType = fromEvaluator(eval).contentType()
+        val resolvedType = contentTypeResolver.resolve(contentType)
+        contentVerifier = contentVerifiers[resolvedType]
+            ?: throw IllegalStateException("Content verifier for type $resolvedType not found. Provide one through WsPlugin constructor.")
+        contentResolver = contentResolvers[resolvedType]
+            ?: throw IllegalStateException("Content resolver for type $resolvedType not found. Provide one through WsPlugin constructor.")
+        contentPrinter = contentPrinters[resolvedType]
+            ?: throw IllegalStateException("Content printer for type $resolvedType not found. Provide one through WsPlugin constructor.")
+
+        setUpJsonUnitConfiguration(expected.attr(IGNORED_PATHS), expected.attr(JSON_UNIT_OPTIONS))
         caseRoot.remove(body, expected, multiPart)(
             cases.map {
                 val expectedToAdd = tag(EXPECTED).text(expected.text())
@@ -220,20 +238,21 @@ class CaseCommand(tag: String, private var originalCfg: Configuration, private v
             })
     }
 
-    private fun setUpJsonUnitConfiguration(expected: Html) {
-        usedCfg = originalCfg;
-        expected.attr(IGNORED_PATHS)?.let { attr ->
-            usedCfg = usedCfg.whenIgnoringPaths(*attr.split(";").filter { it.isNotEmpty() }.toTypedArray())
+    private fun setUpJsonUnitConfiguration(ignorePath: String?, jsonUnitOptions: String?) {
+        var usedCfg = ExamExtension.DEFAULT_JSON_UNIT_CFG
+        ignorePath?.let {
+            usedCfg = usedCfg.whenIgnoringPaths(*it.split(";").filter { it.isNotEmpty() }.toTypedArray())
         }
-        expected.attr(JSON_UNIT_OPTIONS)?.let { attr -> overrideJsonUnitOption(attr) }
+        jsonUnitOptions?.let { usedCfg = overrideJsonUnitOption(it, usedCfg) }
+        contentVerifier.setConfiguration(usedCfg)
     }
 
-    private fun overrideJsonUnitOption(attr: String) {
+    private fun overrideJsonUnitOption(attr: String, usedCfg: Configuration): Configuration {
         val first = usedCfg.options.values().first()
         val other = usedCfg.options.values();
         other.remove(first);
         other.addAll(attr.split(";").filter { it.isNotEmpty() }.map { Option.valueOf(it) }.toSet())
-        usedCfg = usedCfg.withOptions(Options(first, *other.toTypedArray()))
+        return usedCfg.withOptions(Options(first, *other.toTypedArray()))
     }
 
     override fun execute(commandCall: CommandCall, evaluator: Evaluator, resultRecorder: ResultRecorder) {
@@ -241,31 +260,22 @@ class CaseCommand(tag: String, private var originalCfg: Configuration, private v
         val root = commandCall.html()
 
         val executor = fromEvaluator(evaluator)
-        val isJson = !executor.xml()
         val urlParams = root.takeAwayAttr(URL_PARAMS)
         val cookies = root.takeAwayAttr(COOKIES)
 
         for (aCase in cases) {
             aCase.forEach { (key, value) -> evaluator.setVariable(key, value) }
 
-            cookies?.let { executor.cookies(evaluator.resolveJson(it)) }
+            cookies?.let { executor.cookies(evaluator.resolveNoType(it)) }
 
-            executor.urlParams(if (urlParams == null) null else evaluator.resolveJson(urlParams))
+            executor.urlParams(if (urlParams == null) null else evaluator.resolveNoType(urlParams))
 
             val caseTR = tr().insteadOf(root.firstOrThrow(CASE))
             val body = caseTR.first(BODY)
             if (body != null) {
                 val content = body.content(evaluator)
-                var bodyStr: String
-                if (isJson) {
-                    bodyStr = evaluator.resolveJson(content)
-                    td().insteadOf(body).css("json").style(MAX_WIDTH).removeChildren().text(bodyStr.prettyJson())
-                } else {
-                    bodyStr = evaluator.resolveXml(content)
-
-                    td().insteadOf(body).css("xml").style(MAX_WIDTH).removeChildren()
-                        .text(bodyStr.prettyXml())
-                }
+                val bodyStr = contentResolver.resolve(content, evaluator)
+                td().insteadOf(body).css(contentPrinter.style()).removeChildren().text(contentPrinter.print(bodyStr))
                 executor.body(bodyStr)
             }
             processMultipart(caseTR, evaluator, executor)
@@ -280,7 +290,7 @@ class CaseCommand(tag: String, private var originalCfg: Configuration, private v
             childCommands.execute(evaluator, resultRecorder)
             childCommands.verify(evaluator, resultRecorder)
 
-            check(td().insteadOf(expected), evaluator, resultRecorder, isJson)
+            check(td().insteadOf(expected), evaluator, resultRecorder, executor.contentType())
             resultRecorder.check(statusTd, executor.statusLine(), expectedStatus) { a, e ->
                 a.trim() == e.trim()
             }
@@ -298,16 +308,20 @@ class CaseCommand(tag: String, private var originalCfg: Configuration, private v
                 val content = it.content(evaluator)
 
                 table(tr()(td()(badge("Part", "light")), td()(
-                        name?.let { badge(name.toString(), "warning") },
-                        mpType?.let { badge(mpType.toString(), "info") },
-                        fileName?.let { code(fileName.toString()) })))
+                    name?.let { badge(name.toString(), "warning") },
+                    mpType?.let { badge(mpType.toString(), "info") },
+                    fileName?.let { code(fileName.toString()) })))
                 val mpStr: String
                 if (executor.xml(mpType.toString())) {
                     mpStr = evaluator.resolveXml(content)
-                    table(tr()(td()(badge("Content", "dark")), td(mpStr.prettyXml()).css("xml").style(MAX_WIDTH)))
+                    table(tr()(
+                        td()(badge("Content", "dark")),
+                        td(mpStr.prettyXml()).css("xml")))
                 } else {
                     mpStr = evaluator.resolveJson(content)
-                    table(tr()(td()(badge("Content", "dark")), td(mpStr.prettyJson()).css("json").style(MAX_WIDTH)))
+                    table(tr()(
+                        td()(badge("Content", "dark")),
+                        td(mpStr.prettyJson()).css("json")))
                 }
                 if (mpType == null)
                     executor.multiPart(name.toString(), fileName.toString(), mpStr.toByteArray(Charset.forName("UTF-8")))
@@ -317,35 +331,6 @@ class CaseCommand(tag: String, private var originalCfg: Configuration, private v
             }
             multiPart.removeChildren()
             td().insteadOf(multiPart)(table)
-        }
-    }
-
-    private fun checkJsonContent(actual: String, expected: String, resultRecorder: ResultRecorder, root: Html) {
-        val prettyActual = actual.prettyJson()
-        try {
-            assertJsonEquals(expected, prettyActual, usedCfg)
-            resultRecorder.pass(root)
-        } catch (e: Throwable) {
-            if (e is AssertionError || e is Exception) {
-                resultRecorder.failure(root, prettyActual, expected)
-                root.below(
-                    span(e.message, CLASS to "exceptionMessage")
-                )
-            } else throw e
-        }
-    }
-
-    private fun checkXmlContent(actual: String, expected: String, resultRecorder: ResultRecorder, root: Html) {
-        val prettyActual = actual.prettyXml()
-        try {
-            resultRecorder.check(root, prettyActual, expected) { a, e ->
-                a.equalToXml(e, nodeMatcher, usedCfg)
-            }
-        } catch (e: Exception) {
-            resultRecorder.failure(root, prettyActual, expected)
-            root.below(
-                span(e.message, CLASS to "exceptionMessage")
-            )
         }
     }
 
@@ -368,35 +353,28 @@ class CaseCommand(tag: String, private var originalCfg: Configuration, private v
     }
 
     private fun caseDesc(desc: String?, eval: Evaluator): String =
-        "${++number}) " + if (desc == null) "" else eval.resolveJson(desc)
+        "${++number}) " + if (desc == null) "" else contentResolver.resolve(desc, eval)
 
-    private fun check(root: Html, eval: Evaluator, resultRecorder: ResultRecorder, json: Boolean) {
-        val expected = resolve(json, root.content(eval), eval)
-
-        root.removeChildren().text(expected).css(if (json) "json" else "xml").style(MAX_WIDTH)
-
+    private fun check(root: Html, eval: Evaluator, resultRecorder: ResultRecorder, contentType: String) {
         val executor = fromEvaluator(eval)
         fillCaseContext(root, executor)
-        val actual = executor.responseBody()
-        when {
-            expected.isNotEmpty() && actual.isEmpty() -> resultRecorder.failure(root, "(empty)", expected)
-            expected.isEmpty() && actual.isEmpty() -> resultRecorder.pass(root)
-            else -> check(json, actual, expected, resultRecorder, root)
-        }
+        check(executor.responseBody(), eval.resolveForContentType(root.content(eval), contentType), resultRecorder, root)
     }
 
-    private fun check(json: Boolean, actual: String, expected: String, resultRecorder: ResultRecorder, root: Html) =
-        if (json) {
-            checkJsonContent(actual, expected, resultRecorder, root)
-        } else {
-            checkXmlContent(actual, expected, resultRecorder, root)
-        }
-
-    private fun resolve(json: Boolean, content: String, eval: Evaluator): String = if (json) {
-        eval.resolveJson(content).prettyJson()
-    } else {
-        eval.resolveXml(content).prettyXml()
-    }
+    private fun check(actual: String, expected: String, resultRecorder: ResultRecorder, root: Html) =
+        contentVerifier.verify(expected, actual).fail.ifPresentOrElse(
+            {
+                root.removeChildren().css(contentPrinter.style())
+                resultRecorder.failure(root, contentPrinter.print(it.actual), contentPrinter.print(it.expected))
+                root.below(
+                    span(it.details, CLASS to "exceptionMessage")
+                )
+            },
+            {
+                root.removeChildren().text(contentPrinter.print(expected)).css(contentPrinter.style())
+                resultRecorder.pass(root)
+            }
+        )
 
     private fun fillCaseContext(root: Html, executor: RequestExecutor) {
         val cookies = executor.cookies
@@ -420,9 +398,5 @@ class CaseCommand(tag: String, private var originalCfg: Configuration, private v
                 code(cookies)
             )
         } else listOf(span(""))).toTypedArray()
-    }
-
-    companion object {
-        private const val MAX_WIDTH = "max-width:550px"
     }
 }

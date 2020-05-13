@@ -31,7 +31,7 @@ fun String.equalToXml(expected: String, nodeMatcher: NodeMatcher?, configuration
 
     //FIXME Reports are visible only on logs, show them in spec too
     if (diff.hasDifferences()) {
-        throw RuntimeException(diff.toString())
+        throw AssertionError(diff.toString())
     }
     return true
 }

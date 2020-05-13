@@ -11,6 +11,7 @@ open class ExamResultRenderer : AssertEqualsListener, AssertTrueListener, Assert
 
         val expected = Element("del")
         expected.addStyleClass("expected")
+        expected.appendText(event.expected)
         element.moveChildrenTo(expected)
         element.appendChild(expected)
         expected.appendNonBreakingSpaceIfBlank()
