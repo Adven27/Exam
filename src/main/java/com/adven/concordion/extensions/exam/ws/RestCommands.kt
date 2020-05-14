@@ -361,20 +361,20 @@ class CaseCommand(
         check(executor.responseBody(), eval.resolveForContentType(root.content(eval), contentType), resultRecorder, root)
     }
 
-    private fun check(actual: String, expected: String, resultRecorder: ResultRecorder, root: Html) =
-        contentVerifier.verify(expected, actual).fail.ifPresentOrElse(
-            {
-                root.removeChildren().css(contentPrinter.style())
-                resultRecorder.failure(root, contentPrinter.print(it.actual), contentPrinter.print(it.expected))
-                root.below(
-                    span(it.details, CLASS to "exceptionMessage")
-                )
-            },
-            {
-                root.removeChildren().text(contentPrinter.print(expected)).css(contentPrinter.style())
-                resultRecorder.pass(root)
-            }
-        )
+    private fun check(actual: String, expected: String, resultRecorder: ResultRecorder, root: Html) {
+        val fail = contentVerifier.verify(expected, actual).fail
+        if (fail.isPresent) {
+            val it = fail.get()
+            root.removeChildren().css(contentPrinter.style())
+            resultRecorder.failure(root, contentPrinter.print(it.actual), contentPrinter.print(it.expected))
+            root.below(
+                span(it.details, CLASS to "exceptionMessage")
+            )
+        } else {
+            root.removeChildren().text(contentPrinter.print(expected)).css(contentPrinter.style())
+            resultRecorder.pass(root)
+        }
+    }
 
     private fun fillCaseContext(root: Html, executor: RequestExecutor) {
         val cookies = executor.cookies
