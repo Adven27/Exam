@@ -6,6 +6,7 @@ import com.adven.concordion.extensions.exam.core.resolve
 import org.concordion.api.CommandCall
 import org.concordion.api.Element
 import org.concordion.api.Evaluator
+import java.lang.IllegalArgumentException
 
 const val ID = "id"
 const val ONCLICK = "onclick"
@@ -52,6 +53,8 @@ class Html(internal val el: Element) {
     }
 
     fun attr(name: String): String? = el.getAttributeValue(name)
+
+    fun attrOrFail(name: String): String = el.getAttributeValue(name) ?: throw IllegalArgumentException("Attribute $name not found")
 
     fun attr(attr: String, value: String): Html {
         el.addAttribute(attr, value)

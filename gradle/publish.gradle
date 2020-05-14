@@ -1,0 +1,93 @@
+task sourcesJar(type: Jar, dependsOn: classes) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+javadoc.failOnError = false
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+artifacts {
+    archives sourcesJar
+    archives javadocJar
+}
+
+def pomConfig = {
+    licenses {
+        license {
+            name "The Apache Software License, Version 2.0"
+            url "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            distribution "repo"
+        }
+    }
+    developers {
+        developer {
+            id "Adven27"
+            name "Nick Toropanov"
+            email "n.toropanov@gmail.com"
+        }
+    }
+
+    scm {
+        url "https://github.com/Adven27/Exam"
+    }
+}
+
+publishing {
+    publications {
+        mavenPublication(MavenPublication) {
+            from components.java
+            artifact sourcesJar {
+                classifier "sources"
+            }
+            artifact javadocJar {
+                classifier "javadoc"
+            }
+            groupId 'org.adven.concordion.ext'
+            artifactId 'exam'
+            version bintrayVersion
+            pom.withXml {
+                def root = asNode()
+                root.appendNode('description', 'Extension for Concordion BDD Framework')
+                root.appendNode('name', 'Exam')
+                root.appendNode('url', 'https://github.com/Adven27/Exam')
+                root.children().last() + pomConfig
+            }
+        }
+    }
+}
+
+bintray {
+    user = bintrayUser
+    key = bintrayKey
+    publications = ['mavenPublication']
+
+    pkg {
+        repo = 'exam'
+        name = 'exam'
+        userOrg = 'adven27'
+        licenses = ['Apache-2.0']
+        vcsUrl = 'https://github.com/Adven27/Exam.git'
+        version {
+            name = bintrayVersion
+            desc = bintrayVersion
+            released = new Date()
+        }
+    }
+}
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            configuration = configurations.compile
+            repository(id: nexusRepoId, url: nexusUrl) {
+                authentication(userName: nexusUser, password: nexusPassword)
+            }
+            pom.groupId = nexusGroupId
+            pom.artifactId = nexusArtifactId
+            pom.version = nexusArtifactVersion
+        }
+    }
+}

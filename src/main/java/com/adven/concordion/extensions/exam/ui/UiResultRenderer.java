@@ -2,7 +2,11 @@ package com.adven.concordion.extensions.exam.ui;
 
 import com.adven.concordion.extensions.exam.core.html.Html;
 import com.codeborne.selenide.ex.UIAssertionError;
-import org.concordion.api.listener.*;
+import org.concordion.api.listener.AssertEqualsListener;
+import org.concordion.api.listener.AssertFailureEvent;
+import org.concordion.api.listener.AssertFalseListener;
+import org.concordion.api.listener.AssertSuccessEvent;
+import org.concordion.api.listener.AssertTrueListener;
 
 import java.io.File;
 import java.util.concurrent.atomic.AtomicLong;
@@ -35,7 +39,7 @@ public class UiResultRenderer implements AssertEqualsListener, AssertTrueListene
     public void successReported(AssertSuccessEvent event) {
         Html s = new Html(event.getElement());
         Html el = s.parent();
-        String name = s.attr("name");
+        String name = s.attrOrFail("name");
         String desc = s.attr("desc");
         el.remove(s);
         el.childs(

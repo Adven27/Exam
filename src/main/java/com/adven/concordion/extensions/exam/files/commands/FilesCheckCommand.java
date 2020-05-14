@@ -5,11 +5,16 @@ import com.adven.concordion.extensions.exam.core.utils.CheckUtilsKt;
 import com.adven.concordion.extensions.exam.files.FilesLoader;
 import com.adven.concordion.extensions.exam.files.FilesResultRenderer;
 import net.javacrumbs.jsonunit.core.Configuration;
-import org.concordion.api.*;
+import org.concordion.api.CommandCall;
+import org.concordion.api.Element;
+import org.concordion.api.Evaluator;
+import org.concordion.api.Result;
+import org.concordion.api.ResultRecorder;
 import org.concordion.api.listener.AssertEqualsListener;
 import org.concordion.api.listener.AssertFailureEvent;
 import org.concordion.api.listener.AssertSuccessEvent;
 import org.concordion.internal.util.Announcer;
+import org.jetbrains.annotations.NotNull;
 import org.xmlunit.diff.NodeMatcher;
 
 import java.util.ArrayList;
@@ -17,7 +22,12 @@ import java.util.List;
 import java.util.UUID;
 
 import static com.adven.concordion.extensions.exam.core.PlaceholdersResolver.resolveToObj;
-import static com.adven.concordion.extensions.exam.core.html.HtmlBuilder.*;
+import static com.adven.concordion.extensions.exam.core.html.HtmlBuilder.buttonCollapse;
+import static com.adven.concordion.extensions.exam.core.html.HtmlBuilder.codeXml;
+import static com.adven.concordion.extensions.exam.core.html.HtmlBuilder.div;
+import static com.adven.concordion.extensions.exam.core.html.HtmlBuilder.tableSlim;
+import static com.adven.concordion.extensions.exam.core.html.HtmlBuilder.td;
+import static com.adven.concordion.extensions.exam.core.html.HtmlBuilder.tr;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static java.io.File.separator;
 import static java.util.Arrays.asList;
@@ -53,7 +63,7 @@ public class FilesCheckCommand extends BaseCommand {
             String[] names = filesLoader.getFileNames(evalPath);
 
             List<String> surplusFiles = names.length == 0
-                ? new ArrayList<String>()
+                ? new ArrayList<>()
                 : new ArrayList<>(asList(names));
 
             root.childs(flCaption(evalPath));
@@ -92,7 +102,7 @@ public class FilesCheckCommand extends BaseCommand {
                                 evalPath + separator + expectedName,
                                 fileTag.getContent(),
                                 resultRecorder,
-                                pre.text(fileTag.getContent()).el()
+                                toPre(fileTag, pre).el()
                             );
                         }
                     }
@@ -123,6 +133,15 @@ public class FilesCheckCommand extends BaseCommand {
                 addRow(root, EMPTY, "");
             }
         }
+    }
+
+    @NotNull
+    private Html toPre(FilesLoader.FileTag fileTag, Html pre) {
+        String content = fileTag.getContent();
+        if (content != null) {
+            pre.text(content);
+        }
+        return pre;
     }
 
     private void checkContent(String path, String expected, ResultRecorder resultRecorder, Element element) {

@@ -100,8 +100,9 @@ public class BrowserCommand extends ExamVerifyCommand {
             }
             success(resultRecorder, el);
         } catch (Throwable e) {
-            if (e.getCause() instanceof UIAssertionError) {
-                UIAssertionError err = (UIAssertionError) e.getCause();
+            Throwable cause = e.getCause();
+            if (cause instanceof UIAssertionError) {
+                UIAssertionError err = (UIAssertionError) cause;
                 failure(resultRecorder, el, err, name);
                 if (failFast) {
                     return false;

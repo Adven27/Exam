@@ -1,0 +1,41 @@
+checkstyle {
+    toolVersion = "8.10"
+    ignoreFailures = false
+}
+
+tasks.withType(Checkstyle) {
+    reports {
+        xml.enabled false
+        html.enabled true
+    }
+}
+
+spotbugsMain {
+    reports {
+        text {
+            enabled = true
+            destination = file("$buildDir/reports/spotbugs/main/spotbugs.text")
+        }
+    }
+}
+
+spotbugs {
+    ignoreFailures = false
+    showProgress = true
+    effort = 'max'
+    reportLevel = 'low'
+//    visitors = [ 'FindSqlInjection', 'SwitchFallthrough' ]
+//    omitVisitors = [ 'FindNonShortCircuit' ]
+//    onlyAnalyze = ['*.java']
+    excludeFilter = file("$projectDir/config/findbugs-exclude.xml")
+}
+
+task spotbugsReport(type: Task) {
+    doLast {
+        file("$buildDir/reports/spotbugs/main/spotbugs.text").eachLine {
+            System.err.println it
+        }
+    }
+}
+
+spotbugsMain.finalizedBy(spotbugsReport)
