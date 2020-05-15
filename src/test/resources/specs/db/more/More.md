@@ -74,4 +74,19 @@
             </e:db-check>
         </e:then>
     </e:example>
+    <e:example name="Date and Timestamp">
+        <e:given print="true">
+            <e:set var="currentTime" value="{{now}}"/> 
+            <e:db-set table="TYPES" cols="DATE_TYPE, TIMESTAMP_TYPE, DATETIME_TYPE, ID=1..10">
+                <row>{{currentTime}}, {{currentTime}}, {{currentTime}}</row>
+                <row>{{currentTime}}, {{currentTime}}, {{currentTime}}</row>
+            </e:db-set>
+        </e:given>
+        <e:then print="true">
+            <e:db-check table="TYPES" cols="ID=1..10, DATE_TYPE, TIMESTAMP_TYPE, DATETIME_TYPE">
+                <row>          {{today}},     {{currentTime}}, {{currentTime}}</row>
+                <row>!{within 1d}{{now}}, !{within 5s}{{now}}, !{within 1s}{{currentTime}}</row>
+            </e:db-check>
+        </e:then>
+    </e:example>
 </div>

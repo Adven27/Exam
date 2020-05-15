@@ -3,6 +3,7 @@ package specs
 import com.adven.concordion.extensions.exam.core.ExamExtension
 import com.adven.concordion.extensions.exam.db.DbPlugin
 import com.adven.concordion.extensions.exam.db.DbTester
+import com.adven.concordion.extensions.exam.db.commands.RegexAndWithinAwareValueComparer
 import com.adven.concordion.extensions.exam.files.FlPlugin
 import com.adven.concordion.extensions.exam.mq.MqPlugin
 import com.adven.concordion.extensions.exam.mq.MqTester
@@ -24,7 +25,11 @@ import org.concordion.ext.runtotals.RunTotalsExtension
 import org.concordion.ext.timing.TimerExtension
 import org.concordion.integration.junit4.ConcordionRunner
 import org.concordion.internal.ConcordionBuilder.NAMESPACE_CONCORDION_2007
+import org.dbunit.dataset.ITable
+import org.dbunit.dataset.datatype.DataType
+import org.joda.time.LocalDateTime.fromDateFields
 import org.junit.runner.RunWith
+import java.sql.Timestamp
 import java.util.*
 
 @SuppressFBWarnings("ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD")
@@ -48,7 +53,7 @@ open class Specs {
 
         private val EXAM = ExamExtension().withPlugins(
             WsPlugin(PORT),
-            DbPlugin(dbTester),
+            DbPlugin(dbTester, valueComparer = SmallDateTimeColumnComparer()),
             FlPlugin(),
             MqPlugin(
                 mapOf("myQueue" to object : MqTesterAdapter() {
@@ -198,4 +203,18 @@ open class Specs {
             )
         }
     }
+}
+
+class SmallDateTimeColumnComparer : RegexAndWithinAwareValueComparer() {
+    override fun isExpected(
+        expectedTable: ITable?, actualTable: ITable?, rowNum: Int, columnName: String?, dataType: DataType, expected: Any?, actual: Any?
+    ): Boolean {
+        if (!super.isExpected(expectedTable, actualTable, rowNum, columnName, dataType, expected, actual) ) {
+            return if ("DATETIME_TYPE" == columnName) compareIgnoringMillis(expected, actual) else false
+        }
+        return true
+    }
+
+    private fun compareIgnoringMillis(expected: Any?, actual: Any?) =
+        fromDateFields(expected as Date).withMillisOfSecond(0).isEqual(fromDateFields(actual as Timestamp))
 }

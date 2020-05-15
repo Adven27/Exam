@@ -32,7 +32,13 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 import java.util.regex.Pattern
 
-class DBCheckCommand(name: String, tag: String, dbTester: DbTester, valuePrinter: DbPlugin.ValuePrinter) : DBCommand(name, tag, dbTester, valuePrinter) {
+class DBCheckCommand(
+    name: String,
+    tag: String,
+    dbTester: DbTester,
+    valuePrinter: DbPlugin.ValuePrinter,
+    private val valueComparer: RegexAndWithinAwareValueComparer = RegexAndWithinAwareValueComparer()
+) : DBCommand(name, tag, dbTester, valuePrinter) {
     private val listeners = Announcer.to(AssertEqualsListener::class.java)
 
     private val actualTable: ITable
@@ -60,10 +66,10 @@ class DBCheckCommand(name: String, tag: String, dbTester: DbTester, valuePrinter
     }
 
     override fun verify(cmd: CommandCall?, evaluator: Evaluator?, resultRecorder: ResultRecorder?) {
-        assertEq(evaluator!!, cmd.html(), resultRecorder)
+        assertEq(cmd.html(), resultRecorder, valueComparer.setEvaluator(evaluator!!))
     }
 
-    private fun assertEq(evaluator: Evaluator, rootEl: Html, resultRecorder: ResultRecorder?) {
+    private fun assertEq(rootEl: Html, resultRecorder: ResultRecorder?, valueComparer: RegexAndWithinAwareValueComparer) {
         var root = rootEl
         var diffHandler = DiffCollectingFailureHandler()
         val columns: Array<String> = if (orderBy.isEmpty()) expectedTable.columnNamesArray() else orderBy
@@ -89,7 +95,7 @@ class DBCheckCommand(name: String, tag: String, dbTester: DbTester, valuePrinter
                                 expected,
                                 SortedTable(actual, columns),
                                 diffHandler,
-                                RegexAndWithinAwareValueComparer(evaluator),
+                                valueComparer,
                                 null
                             )
                             if (diffHandler.diffList.isNotEmpty()) {
@@ -110,7 +116,7 @@ class DBCheckCommand(name: String, tag: String, dbTester: DbTester, valuePrinter
                     expected,
                     SortedTable(actual, columns),
                     diffHandler,
-                    RegexAndWithinAwareValueComparer(evaluator),
+                    valueComparer,
                     null
                 )
             }
@@ -156,24 +162,27 @@ class DBCheckCommand(name: String, tag: String, dbTester: DbTester, valuePrinter
                                 diffs.firstOrNull { diff ->
                                     diff.rowIndex == row && diff.columnName == it
                                 }?.markAsFailure(resultRecorder, this)
-                                    ?: markAsSuccess(resultRecorder)(Html(valuePrinter.wrap(expected[row, it])).text(
-                                        if (isDbMatcher(expectedValue) && actual.rowCount == expected.rowCount)
-                                            " (${actual[row, it]})"
-                                        else
-                                            ""
-                                    ))
+                                    ?: markAsSuccess(resultRecorder)(
+                                        Html(valuePrinter.wrap(expected[row, it])).text(
+                                            if (isDbMatcher(expectedValue) && actual.rowCount == expected.rowCount)
+                                                " (${actual[row, it]})"
+                                            else
+                                                ""
+                                        )
+                                    )
                             }
                         })
                 }
             })
     }
 
-    private fun isDbMatcher(text: String) = (text.isRegex() || text.isWithin() || text.isNumber() || text.isNotNull())
     private fun Html.markAsSuccess(resultRecorder: ResultRecorder) = success(resultRecorder, this)
     private fun Difference.markAsFailure(resultRecorder: ResultRecorder, td: Html): Html {
-        val txt = valuePrinter.print(this.expectedValue)
-        td.text(txt)
-        return failure(resultRecorder, td, this.actualValue, txt)
+        return failure(resultRecorder, td, this.actualValue, valuePrinter.print(this.expectedValue))
+    }
+
+    companion object {
+        fun isDbMatcher(text: String) = (text.isRegex() || text.isWithin() || text.isNumber() || text.isNotNull())
     }
 }
 
@@ -187,9 +196,19 @@ class WithinValueComparer(tolerance: Long) : IsActualWithinToleranceOfExpectedTi
         expectedValue: Any?,
         actualValue: Any?
     ) = super.isExpected(expectedTable, actualTable, rowNum, columnName, dataType, expectedValue, actualValue)
+
+    override fun convertValueToTimeInMillis(timestampValue: Any?) = if (timestampValue is java.sql.Date) timestampValue.time
+    else super.convertValueToTimeInMillis(timestampValue)
 }
 
-class RegexAndWithinAwareValueComparer(val evaluator: Evaluator) : IsActualEqualToExpectedValueComparer() {
+open class RegexAndWithinAwareValueComparer() : IsActualEqualToExpectedValueComparer() {
+    protected lateinit var evaluator: Evaluator
+
+    fun setEvaluator(evaluator: Evaluator): RegexAndWithinAwareValueComparer {
+        this.evaluator = evaluator
+        return this
+    }
+
     override fun isExpected(
         expectedTable: ITable?,
         actualTable: ITable?,

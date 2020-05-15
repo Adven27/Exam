@@ -138,6 +138,7 @@ sealed class RequestCommand(
 
 open class RestVerifyCommand(name: String, tag: String) : ExamVerifyCommand(name, tag, RestResultRenderer())
 
+//FIXME Dead code?
 class ExpectedStatusCommand(name: String, tag: String) : RestVerifyCommand(name, tag) {
     override fun verify(cmd: CommandCall?, evaluator: Evaluator?, resultRecorder: ResultRecorder) {
         Check.isFalse(
@@ -280,16 +281,15 @@ class CaseCommand(
             }
             processMultipart(caseTR, evaluator, executor)
 
-            val expected = caseTR.firstOrThrow(EXPECTED)
-            val expectedStatus = expectedStatus(expected)
-            val statusTd = td(expectedStatus)
-            caseTR(statusTd)
-
             childCommands.setUp(evaluator, resultRecorder)
             evaluator.setVariable("#exam_response", executor.execute())
             childCommands.execute(evaluator, resultRecorder)
             childCommands.verify(evaluator, resultRecorder)
 
+            val expected = caseTR.firstOrThrow(EXPECTED)
+            val expectedStatus = expectedStatus(expected)
+            val statusTd = td()
+            caseTR(statusTd)
             check(td().insteadOf(expected), evaluator, resultRecorder, executor.contentType())
             resultRecorder.check(statusTd, executor.statusLine(), expectedStatus) { a, e ->
                 a.trim() == e.trim()

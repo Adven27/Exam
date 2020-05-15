@@ -63,7 +63,7 @@ public class FilesCheckCommand extends BaseCommand {
             String[] names = filesLoader.getFileNames(evalPath);
 
             List<String> surplusFiles = names.length == 0
-                ? new ArrayList<>()
+                ? new ArrayList<String>()
                 : new ArrayList<>(asList(names));
 
             root.childs(flCaption(evalPath));

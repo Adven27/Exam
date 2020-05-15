@@ -8,6 +8,7 @@ import com.adven.concordion.extensions.exam.core.resolveXml
 import com.adven.concordion.extensions.exam.core.utils.prettyJson
 import com.adven.concordion.extensions.exam.core.utils.prettyXml
 import com.adven.concordion.extensions.exam.files.commands.PlaceholderSupportDiffEvaluator
+import com.google.common.base.Optional
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings
 import io.restassured.RestAssured
 import io.restassured.http.ContentType
@@ -166,7 +167,7 @@ class WsPlugin @JvmOverloads constructor(
         data class Fail(val details: String, val expected: String, val actual: String)
         data class Result(val fail: Optional<Fail>) {
             companion object {
-                fun passed(): Result = Result(Optional.empty())
+                fun passed(): Result = Result(Optional.absent())
                 fun failed(details: String, actual: String, expected: String): Result = Result(Optional.of(Fail(details, expected, actual)))
             }
         }

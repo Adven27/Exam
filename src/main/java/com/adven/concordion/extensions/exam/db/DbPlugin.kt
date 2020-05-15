@@ -4,10 +4,7 @@ import com.adven.concordion.extensions.exam.core.ExamPlugin
 import com.adven.concordion.extensions.exam.core.commands.ExamCommand
 import com.adven.concordion.extensions.exam.core.html.TABLE
 import com.adven.concordion.extensions.exam.core.html.span
-import com.adven.concordion.extensions.exam.db.commands.DBCheckCommand
-import com.adven.concordion.extensions.exam.db.commands.DBCleanCommand
-import com.adven.concordion.extensions.exam.db.commands.DBSetCommand
-import com.adven.concordion.extensions.exam.db.commands.DBShowCommand
+import com.adven.concordion.extensions.exam.db.commands.*
 import org.concordion.api.Element
 import org.joda.time.format.DateTimeFormat
 import java.util.*
@@ -15,7 +12,11 @@ import kotlin.collections.component1
 import kotlin.collections.component2
 import kotlin.collections.set
 
-class DbPlugin @JvmOverloads constructor(private val dbTester: DbTester, private val valuePrinter: ValuePrinter = ValuePrinter.Simple()) : ExamPlugin {
+class DbPlugin @JvmOverloads constructor(
+    private val dbTester: DbTester,
+    private val valuePrinter: ValuePrinter = ValuePrinter.Simple(),
+    private val valueComparer: RegexAndWithinAwareValueComparer = RegexAndWithinAwareValueComparer()
+) : ExamPlugin {
 
     /***
      * @param dbUnitConfig properties for org.dbunit.database.DatabaseConfig
@@ -29,8 +30,9 @@ class DbPlugin @JvmOverloads constructor(private val dbTester: DbTester, private
         password: String,
         schema: String? = null,
         dbUnitConfig: Map<String, Any?> = emptyMap(),
-        valuePrinter: ValuePrinter = ValuePrinter.Simple()
-    ) : this(DbTester(driver, url, user, password, schema, dbUnitConfig), valuePrinter)
+        valuePrinter: ValuePrinter = ValuePrinter.Simple(),
+        valueComparer: RegexAndWithinAwareValueComparer = RegexAndWithinAwareValueComparer()
+    ) : this(DbTester(driver, url, user, password, schema, dbUnitConfig), valuePrinter, valueComparer)
 
     init {
         dbTester.executors[DbTester.DEFAULT_DATASOURCE] = dbTester
@@ -51,7 +53,12 @@ class DbPlugin @JvmOverloads constructor(private val dbTester: DbTester, private
      */
     @Suppress("unused")
     @JvmOverloads
-    constructor(defaultTester: DbTester, others: Map<String, DbTester>, valuePrinter: ValuePrinter = ValuePrinter.Simple()) : this(defaultTester, valuePrinter) {
+    constructor(
+        defaultTester: DbTester,
+        others: Map<String, DbTester>,
+        valuePrinter: ValuePrinter = ValuePrinter.Simple(),
+        valueComparer: RegexAndWithinAwareValueComparer = RegexAndWithinAwareValueComparer()
+    ) : this(defaultTester, valuePrinter, valueComparer) {
         for ((key, value) in others) {
             dbTester.executors[key] = value
         }
@@ -59,7 +66,7 @@ class DbPlugin @JvmOverloads constructor(private val dbTester: DbTester, private
 
     override fun commands(): List<ExamCommand> = listOf(
         DBShowCommand("db-show", TABLE, dbTester, valuePrinter),
-        DBCheckCommand("db-check", TABLE, dbTester, valuePrinter),
+        DBCheckCommand("db-check", TABLE, dbTester, valuePrinter, valueComparer),
         DBSetCommand("db-set", TABLE, dbTester, valuePrinter),
         DBCleanCommand("db-clean", "span", dbTester)
     )
