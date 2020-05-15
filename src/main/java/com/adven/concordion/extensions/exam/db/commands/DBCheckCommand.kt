@@ -27,6 +27,7 @@ import org.dbunit.dataset.ITable
 import org.dbunit.dataset.SortedTable
 import org.dbunit.dataset.datatype.DataType
 import org.dbunit.util.QualifiedTableName
+import org.joda.time.LocalDateTime
 import java.sql.Timestamp
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -201,7 +202,7 @@ class WithinValueComparer(tolerance: Long) : IsActualWithinToleranceOfExpectedTi
     else super.convertValueToTimeInMillis(timestampValue)
 }
 
-open class RegexAndWithinAwareValueComparer() : IsActualEqualToExpectedValueComparer() {
+open class RegexAndWithinAwareValueComparer : IsActualEqualToExpectedValueComparer() {
     protected lateinit var evaluator: Evaluator
 
     fun setEvaluator(evaluator: Evaluator): RegexAndWithinAwareValueComparer {
@@ -252,6 +253,24 @@ open class RegexAndWithinAwareValueComparer() : IsActualEqualToExpectedValueComp
 
     private fun regexMatches(pattern: String, actualValue: Any?): Boolean =
         if (actualValue == null) false else Pattern.compile(pattern).matcher(actualValue.toString()).matches()
+}
+
+class DateTimeIgnoreMillisColumnComparer(private val column: String) : RegexAndWithinAwareValueComparer() {
+
+    override fun isExpected(
+        expectedTable: ITable?, actualTable: ITable?, rowNum: Int, columnName: String?, dataType: DataType, expected: Any?, actual: Any?
+    ): Boolean {
+        if (!super.isExpected(expectedTable, actualTable, rowNum, columnName, dataType, expected, actual) ) {
+            return if (column == columnName) compareIgnoringMillis(expected, actual) else false
+        }
+        return true
+    }
+
+    private fun compareIgnoringMillis(expected: Any?, actual: Any?): Boolean {
+        val expectedDt = LocalDateTime.fromDateFields(expected as Date).withMillisOfSecond(0)
+        val actualDt = LocalDateTime.fromDateFields(actual as Timestamp)
+        return expectedDt.isEqual(actualDt) || expectedDt.plusSeconds(1).isEqual(actualDt)
+    }
 }
 
 private fun Any?.isNotNull() = this != null && this.toString().startsWith("!{notNull}")
