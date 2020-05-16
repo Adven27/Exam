@@ -18,13 +18,12 @@ import org.concordion.api.listener.AssertEqualsListener
 import org.concordion.api.listener.AssertFailureEvent
 import org.concordion.api.listener.AssertSuccessEvent
 import org.concordion.internal.util.Announcer
+import org.dbunit.Assertion
 import org.dbunit.assertion.DbComparisonFailure
-import org.dbunit.assertion.DbUnitAssert
 import org.dbunit.assertion.Difference
 import org.dbunit.assertion.comparer.value.IsActualEqualToExpectedValueComparer
 import org.dbunit.assertion.comparer.value.IsActualWithinToleranceOfExpectedTimestampValueComparer
-import org.dbunit.dataset.ITable
-import org.dbunit.dataset.SortedTable
+import org.dbunit.dataset.*
 import org.dbunit.dataset.datatype.DataType
 import org.dbunit.util.QualifiedTableName
 import org.joda.time.LocalDateTime
@@ -74,9 +73,9 @@ class DBCheckCommand(
 
     private fun assertEq(rootEl: Html, resultRecorder: ResultRecorder?) {
         var root = rootEl
-        val columns: Array<String> = if (orderBy.isEmpty()) expectedTable.columnNamesArray() else orderBy
-        val expected = sortedTable(expectedTable, columns)
-        lateinit var actual: ITable
+        val sortCols: Array<String> = if (orderBy.isEmpty()) expectedTable.columnNamesArray() else orderBy
+        var actual = sortedTable(actualTable.withColumnsAsIn(expectedTable), sortCols)
+        val expected = sortedTable(CompositeTable(actual.tableMetaData, expectedTable), sortCols)
         val atMostSec = root.takeAwayAttr("awaitAtMostSec")
         val pollDelay = root.takeAwayAttr("awaitPollDelayMillis")
         val pollInterval = root.takeAwayAttr("awaitPollIntervalMillis")
@@ -91,8 +90,8 @@ class DBCheckCommand(
                         .pollDelay(delay, TimeUnit.MILLISECONDS)
                         .pollInterval(interval, TimeUnit.MILLISECONDS)
                         .untilAsserted {
-                            actual = actualTable.withColumnsAsIn(expectedTable)
-                            dbUnitAssert(expected, actual, columns)
+                            actual = sortedTable(actualTable.withColumnsAsIn(expectedTable), sortCols)
+                            dbUnitAssert(expected, actual)
                             if (dbUnitConfig.diffFailureHandler.diffList.isNotEmpty()) {
                                 throw AssertionError()
                             }
@@ -106,8 +105,7 @@ class DBCheckCommand(
                     }
                 }
             } else {
-                actual = actualTable.withColumnsAsIn(expectedTable)
-                dbUnitAssert(expected, actual, columns)
+                dbUnitAssert(expected, actual)
             }
         } catch (f: DbComparisonFailure) {
             //TODO move to ResultRenderer
@@ -123,24 +121,24 @@ class DBCheckCommand(
             renderTable(act, actual)
             div(span("but was: "), act)
         } finally {
-            checkResult(root, expected, sortedTable(actual, columns), dbUnitConfig.diffFailureHandler.diffList as List<Difference>, resultRecorder!!)
+            checkResult(root, expected, actual, dbUnitConfig.diffFailureHandler.diffList as List<Difference>, resultRecorder!!)
         }
     }
 
-    private fun dbUnitAssert(expected: SortedTable, actual: ITable, columns: Array<String>) {
+    private fun dbUnitAssert(expected: SortedTable, actual: ITable) {
         dbUnitConfig.diffFailureHandler.diffList.clear()
-        DbUnitAssert().assertWithValueComparer(
+        Assertion.assertWithValueComparer(
             expected,
-            sortedTable(actual, columns),
+            actual,
             dbUnitConfig.diffFailureHandler,
             dbUnitConfig.valueComparer,
             dbUnitConfig.columnValueComparers
         )
     }
 
-    private fun sortedTable(iTable: ITable, columns: Array<String>) = SortedTable(iTable, columns).apply {
+    private fun sortedTable(table: ITable, columns: Array<String>) = SortedTable(table, columns).apply {
         setUseComparable(true)
-        dbUnitConfig.overrideRowSortingComparer?.let { setRowComparator(it) }
+        dbUnitConfig.overrideRowSortingComparer?.let { setRowComparator(it.init(table, columns)) }
     }
 
     private fun checkResult(root: Html, expected: ITable, actual: ITable, diffs: List<Difference>, resultRecorder: ResultRecorder) {

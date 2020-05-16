@@ -76,16 +76,20 @@
     </e:example>
     <e:example name="Date and Timestamp">
         <e:given print="true">
+            <e:set var="beforePrev" value="{{now minus='2 d'}}"/> 
+            <e:set var="prev" value="{{now minus='1 d'}}"/> 
             <e:set var="currentTime" value="{{now}}"/> 
             <e:db-set table="TYPES" cols="DATE_TYPE, TIMESTAMP_TYPE, DATETIME_TYPE, ID=1..10">
-                <row>{{currentTime}}, {{currentTime}}, {{currentTime}}</row>
+                <row>{{beforePrev}}, {{currentTime}}, {{currentTime}}</row>
+                <row>{{prev}}, {{currentTime}}, {{currentTime}}</row>
                 <row>{{currentTime}}, {{currentTime}}, {{currentTime}}</row>
             </e:db-set>
         </e:given>
         <e:then print="true">
-            <e:db-check table="TYPES" cols="ID=1..10, DATE_TYPE, TIMESTAMP_TYPE, DATETIME_TYPE">
-                <row>          {{today}},     {{currentTime}}, {{currentTime}}</row>
-                <row>!{within 1d}{{now}}, !{within 5s}{{now}}, !{within 1s}{{currentTime}}</row>
+            <e:db-check table="TYPES" cols="ID=1..10, DATE_TYPE, TIMESTAMP_TYPE, DATETIME_TYPE" orderBy="DATE_TYPE">
+                <row>  !{within 3d}{{now}}, !{within 5s}{{now}}, !{within 1s}{{currentTime}}</row>
+                <row>{{today minus="1 d"}},     {{currentTime}}, {{currentTime}}</row>
+                <row>            {{today}}, !{within 5s}{{now}}, !{within 1s}{{currentTime}}</row>
             </e:db-check>
         </e:then>
     </e:example>

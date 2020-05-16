@@ -7,8 +7,10 @@ import com.adven.concordion.extensions.exam.core.html.span
 import com.adven.concordion.extensions.exam.db.commands.*
 import org.concordion.api.Element
 import org.dbunit.assertion.DiffCollectingFailureHandler
-import org.dbunit.assertion.comparer.value.ValueComparer
 import org.dbunit.database.DatabaseConfig
+import org.dbunit.dataset.Column
+import org.dbunit.dataset.Columns.findColumnsByName
+import org.dbunit.dataset.ITable
 import org.dbunit.dataset.SortedTable
 import org.joda.time.format.DateTimeFormat
 import java.util.*
@@ -100,6 +102,33 @@ data class DbUnitConfig @JvmOverloads constructor(
     val databaseConfigProperties: Map<String, Any?> = mapOf(DatabaseConfig.FEATURE_ALLOW_EMPTY_FIELDS to true),
     val valueComparer: RegexAndWithinAwareValueComparer = RegexAndWithinAwareValueComparer(),
     val columnValueComparers: Map<String, RegexAndWithinAwareValueComparer> = emptyMap(),
-    val overrideRowSortingComparer: SortedTable.AbstractRowComparator? = null,
+    val overrideRowSortingComparer: RowComparator = RowComparator(),
     val diffFailureHandler: DiffCollectingFailureHandler = DiffCollectingFailureHandler()
-)
+) {
+    class Builder {
+        var databaseConfigProperties: Map<String, Any?> = mapOf(DatabaseConfig.FEATURE_ALLOW_EMPTY_FIELDS to true)
+        var valueComparer: RegexAndWithinAwareValueComparer = RegexAndWithinAwareValueComparer()
+        var columnValueComparers: Map<String, RegexAndWithinAwareValueComparer> = emptyMap()
+        var overrideRowSortingComparer: RowComparator = RowComparator()
+        var diffFailureHandler: DiffCollectingFailureHandler = DiffCollectingFailureHandler()
+
+        fun databaseConfigProperties(databaseConfigProperties: Map<String, Any?>) = apply { this.databaseConfigProperties = databaseConfigProperties }
+        fun valueComparer(valueComparer: RegexAndWithinAwareValueComparer) = apply { this.valueComparer = valueComparer }
+        fun columnValueComparers(columnValueComparers: Map<String, RegexAndWithinAwareValueComparer>) = apply { this.columnValueComparers = columnValueComparers }
+        fun overrideRowSortingComparer(overrideRowSortingComparer: RowComparator = RowComparator()) = apply { this.overrideRowSortingComparer = overrideRowSortingComparer }
+        fun diffFailureHandler(diffFailureHandler: DiffCollectingFailureHandler) = apply { this.diffFailureHandler = diffFailureHandler }
+        fun build() = DbUnitConfig(databaseConfigProperties, valueComparer, columnValueComparers, overrideRowSortingComparer, diffFailureHandler)
+    }
+}
+
+open class RowComparator {
+    fun init(table: ITable, sortCols: Array<String>) = object : SortedTable.AbstractRowComparator(table, findColumnsByName(sortCols, table.tableMetaData)) {
+        override fun compare(col: Column?, val1: Any?, val2: Any?) = this@RowComparator.compare(col, val1, val2)
+    }
+
+    fun compare(column: Column?, value1: Any?, value2: Any?): Int = try {
+        column!!.dataType.compare(value1, value2)
+    } catch (e: Exception) {
+        0
+    }
+}
