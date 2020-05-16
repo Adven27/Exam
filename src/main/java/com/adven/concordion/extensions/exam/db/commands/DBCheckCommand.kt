@@ -92,7 +92,6 @@ class DBCheckCommand(
                         .pollInterval(interval, TimeUnit.MILLISECONDS)
                         .untilAsserted {
                             actual = actualTable.withColumnsAsIn(expectedTable)
-                            dbUnitConfig.diffFailureHandler.diffList.clear()
                             dbUnitAssert(expected, actual, columns)
                             if (dbUnitConfig.diffFailureHandler.diffList.isNotEmpty()) {
                                 throw AssertionError()
@@ -129,6 +128,7 @@ class DBCheckCommand(
     }
 
     private fun dbUnitAssert(expected: SortedTable, actual: ITable, columns: Array<String>) {
+        dbUnitConfig.diffFailureHandler.diffList.clear()
         DbUnitAssert().assertWithValueComparer(
             expected,
             sortedTable(actual, columns),
