@@ -6,6 +6,10 @@ import com.adven.concordion.extensions.exam.core.html.TABLE
 import com.adven.concordion.extensions.exam.core.html.span
 import com.adven.concordion.extensions.exam.db.commands.*
 import org.concordion.api.Element
+import org.dbunit.assertion.DiffCollectingFailureHandler
+import org.dbunit.assertion.comparer.value.ValueComparer
+import org.dbunit.database.DatabaseConfig
+import org.dbunit.dataset.SortedTable
 import org.joda.time.format.DateTimeFormat
 import java.util.*
 import kotlin.collections.component1
@@ -15,7 +19,7 @@ import kotlin.collections.set
 class DbPlugin @JvmOverloads constructor(
     private val dbTester: DbTester,
     private val valuePrinter: ValuePrinter = ValuePrinter.Simple(),
-    private val valueComparer: RegexAndWithinAwareValueComparer = RegexAndWithinAwareValueComparer()
+    private val dbUnitConfig: DbUnitConfig = DbUnitConfig()
 ) : ExamPlugin {
 
     /***
@@ -29,27 +33,25 @@ class DbPlugin @JvmOverloads constructor(
         user: String,
         password: String,
         schema: String? = null,
-        dbUnitConfig: Map<String, Any?> = emptyMap(),
         valuePrinter: ValuePrinter = ValuePrinter.Simple(),
-        valueComparer: RegexAndWithinAwareValueComparer = RegexAndWithinAwareValueComparer()
-    ) : this(DbTester(driver, url, user, password, schema, dbUnitConfig), valuePrinter, valueComparer)
+        dbUnitConfig: DbUnitConfig = DbUnitConfig()
+    ) : this(DbTester(driver, url, user, password, schema, dbUnitConfig.databaseConfigProperties), valuePrinter, dbUnitConfig)
 
     init {
         dbTester.executors[DbTester.DEFAULT_DATASOURCE] = dbTester
     }
 
     /**
-     * @param defaultTester Default datasource: <e:db-set
-     * @param others map of additional datasources: <e:db-set ds="other"
+     * @param defaultTester Default datasource: used when `ds` attribute is omitted, for example `<e:db-set>`
+     * @param others map of additional datasources: used when `ds` attribute present, for example `<e:db-set ds="other"`
      *
-     *
-     * DbTester(
-     * "org.h2.Driver", "jdbc:h2:mem:test;INIT=CREATE SCHEMA IF NOT EXISTS SA\\;SET SCHEMA SA", "sa", ""
-     * ),
-     * mapOf("other" to DbTester(
-     * "org.postgresql.Driver", "jdbc:postgresql://localhost:5432/postgres", "postgres", "postgres"
-     * ))
-     *
+     *```
+     * DbPlugin(
+     *     DbTester(...),
+     *     mapOf("other" to DbTester(...)),
+     *  ...
+     * )
+     * ```
      */
     @Suppress("unused")
     @JvmOverloads
@@ -57,8 +59,8 @@ class DbPlugin @JvmOverloads constructor(
         defaultTester: DbTester,
         others: Map<String, DbTester>,
         valuePrinter: ValuePrinter = ValuePrinter.Simple(),
-        valueComparer: RegexAndWithinAwareValueComparer = RegexAndWithinAwareValueComparer()
-    ) : this(defaultTester, valuePrinter, valueComparer) {
+        dbUnitConfig: DbUnitConfig = DbUnitConfig()
+    ) : this(defaultTester, valuePrinter, dbUnitConfig) {
         for ((key, value) in others) {
             dbTester.executors[key] = value
         }
@@ -66,7 +68,7 @@ class DbPlugin @JvmOverloads constructor(
 
     override fun commands(): List<ExamCommand> = listOf(
         DBShowCommand("db-show", TABLE, dbTester, valuePrinter),
-        DBCheckCommand("db-check", TABLE, dbTester, valuePrinter, valueComparer),
+        DBCheckCommand("db-check", TABLE, dbTester, valuePrinter, dbUnitConfig),
         DBSetCommand("db-set", TABLE, dbTester, valuePrinter),
         DBCleanCommand("db-clean", "span", dbTester)
     )
@@ -93,3 +95,11 @@ class DbPlugin @JvmOverloads constructor(
         fun wrap(value: Any?): Element
     }
 }
+
+data class DbUnitConfig @JvmOverloads constructor(
+    val databaseConfigProperties: Map<String, Any?> = mapOf(DatabaseConfig.FEATURE_ALLOW_EMPTY_FIELDS to true),
+    val valueComparer: RegexAndWithinAwareValueComparer = RegexAndWithinAwareValueComparer(),
+    val columnValueComparers: Map<String, RegexAndWithinAwareValueComparer> = emptyMap(),
+    val overrideRowSortingComparer: SortedTable.AbstractRowComparator? = null,
+    val diffFailureHandler: DiffCollectingFailureHandler = DiffCollectingFailureHandler()
+)

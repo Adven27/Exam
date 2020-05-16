@@ -3,7 +3,8 @@ package specs
 import com.adven.concordion.extensions.exam.core.ExamExtension
 import com.adven.concordion.extensions.exam.db.DbPlugin
 import com.adven.concordion.extensions.exam.db.DbTester
-import com.adven.concordion.extensions.exam.db.commands.DateTimeIgnoreMillisColumnComparer
+import com.adven.concordion.extensions.exam.db.DbUnitConfig
+import com.adven.concordion.extensions.exam.db.commands.IgnoreMillisComparer
 import com.adven.concordion.extensions.exam.files.FlPlugin
 import com.adven.concordion.extensions.exam.mq.MqPlugin
 import com.adven.concordion.extensions.exam.mq.MqTester
@@ -40,7 +41,8 @@ open class Specs {
     private val exam = EXAM
 
     companion object {
-        @JvmStatic val dbTester = dbTester()
+        @JvmStatic
+        val dbTester = dbTester()
 
         const val PORT = 8888
         protected var server: WireMockServer? = WireMockServer(
@@ -49,7 +51,7 @@ open class Specs {
 
         private val EXAM = ExamExtension().withPlugins(
             WsPlugin(PORT),
-            DbPlugin(dbTester, valueComparer = DateTimeIgnoreMillisColumnComparer("DATETIME_TYPE")),
+            DbPlugin(dbTester, dbUnitConfig = DbUnitConfig(columnValueComparers = mapOf("DATETIME_TYPE" to IgnoreMillisComparer()))),
             FlPlugin(),
             MqPlugin(
                 mapOf("myQueue" to object : MqTesterAdapter() {

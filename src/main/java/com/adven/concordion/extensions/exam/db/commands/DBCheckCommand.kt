@@ -6,6 +6,7 @@ import com.adven.concordion.extensions.exam.core.utils.parsePeriod
 import com.adven.concordion.extensions.exam.db.DbPlugin
 import com.adven.concordion.extensions.exam.db.DbResultRenderer
 import com.adven.concordion.extensions.exam.db.DbTester
+import com.adven.concordion.extensions.exam.db.DbUnitConfig
 import org.awaitility.Awaitility
 import org.awaitility.core.ConditionTimeoutException
 import org.concordion.api.CommandCall
@@ -19,7 +20,6 @@ import org.concordion.api.listener.AssertSuccessEvent
 import org.concordion.internal.util.Announcer
 import org.dbunit.assertion.DbComparisonFailure
 import org.dbunit.assertion.DbUnitAssert
-import org.dbunit.assertion.DiffCollectingFailureHandler
 import org.dbunit.assertion.Difference
 import org.dbunit.assertion.comparer.value.IsActualEqualToExpectedValueComparer
 import org.dbunit.assertion.comparer.value.IsActualWithinToleranceOfExpectedTimestampValueComparer
@@ -38,7 +38,7 @@ class DBCheckCommand(
     tag: String,
     dbTester: DbTester,
     valuePrinter: DbPlugin.ValuePrinter,
-    private val valueComparer: RegexAndWithinAwareValueComparer = RegexAndWithinAwareValueComparer()
+    private val dbUnitConfig: DbUnitConfig
 ) : DBCommand(name, tag, dbTester, valuePrinter) {
     private val listeners = Announcer.to(AssertEqualsListener::class.java)
 
@@ -67,14 +67,15 @@ class DBCheckCommand(
     }
 
     override fun verify(cmd: CommandCall?, evaluator: Evaluator?, resultRecorder: ResultRecorder?) {
-        assertEq(cmd.html(), resultRecorder, valueComparer.setEvaluator(evaluator!!))
+        dbUnitConfig.valueComparer.setEvaluator(evaluator!!)
+        dbUnitConfig.columnValueComparers.forEach { it.value.setEvaluator(evaluator) }
+        assertEq(cmd.html(), resultRecorder)
     }
 
-    private fun assertEq(rootEl: Html, resultRecorder: ResultRecorder?, valueComparer: RegexAndWithinAwareValueComparer) {
+    private fun assertEq(rootEl: Html, resultRecorder: ResultRecorder?) {
         var root = rootEl
-        var diffHandler = DiffCollectingFailureHandler()
         val columns: Array<String> = if (orderBy.isEmpty()) expectedTable.columnNamesArray() else orderBy
-        val expected = SortedTable(expectedTable, columns)
+        val expected = sortedTable(expectedTable, columns)
         lateinit var actual: ITable
         val atMostSec = root.takeAwayAttr("awaitAtMostSec")
         val pollDelay = root.takeAwayAttr("awaitPollDelayMillis")
@@ -91,15 +92,9 @@ class DBCheckCommand(
                         .pollInterval(interval, TimeUnit.MILLISECONDS)
                         .untilAsserted {
                             actual = actualTable.withColumnsAsIn(expectedTable)
-                            diffHandler = DiffCollectingFailureHandler()
-                            DbUnitAssert().assertWithValueComparer(
-                                expected,
-                                SortedTable(actual, columns),
-                                diffHandler,
-                                valueComparer,
-                                null
-                            )
-                            if (diffHandler.diffList.isNotEmpty()) {
+                            dbUnitConfig.diffFailureHandler.diffList.clear()
+                            dbUnitAssert(expected, actual, columns)
+                            if (dbUnitConfig.diffFailureHandler.diffList.isNotEmpty()) {
                                 throw AssertionError()
                             }
                         }
@@ -113,13 +108,7 @@ class DBCheckCommand(
                 }
             } else {
                 actual = actualTable.withColumnsAsIn(expectedTable)
-                DbUnitAssert().assertWithValueComparer(
-                    expected,
-                    SortedTable(actual, columns),
-                    diffHandler,
-                    valueComparer,
-                    null
-                )
+                dbUnitAssert(expected, actual, columns)
             }
         } catch (f: DbComparisonFailure) {
             //TODO move to ResultRenderer
@@ -135,8 +124,23 @@ class DBCheckCommand(
             renderTable(act, actual)
             div(span("but was: "), act)
         } finally {
-            checkResult(root, expected, SortedTable(actual, columns), diffHandler.diffList as List<Difference>, resultRecorder!!)
+            checkResult(root, expected, sortedTable(actual, columns), dbUnitConfig.diffFailureHandler.diffList as List<Difference>, resultRecorder!!)
         }
+    }
+
+    private fun dbUnitAssert(expected: SortedTable, actual: ITable, columns: Array<String>) {
+        DbUnitAssert().assertWithValueComparer(
+            expected,
+            sortedTable(actual, columns),
+            dbUnitConfig.diffFailureHandler,
+            dbUnitConfig.valueComparer,
+            dbUnitConfig.columnValueComparers
+        )
+    }
+
+    private fun sortedTable(iTable: ITable, columns: Array<String>) = SortedTable(iTable, columns).apply {
+        setUseComparable(true)
+        dbUnitConfig.overrideRowSortingComparer?.let { setRowComparator(it) }
     }
 
     private fun checkResult(root: Html, expected: ITable, actual: ITable, diffs: List<Difference>, resultRecorder: ResultRecorder) {
@@ -239,10 +243,10 @@ open class RegexAndWithinAwareValueComparer : IsActualEqualToExpectedValueCompar
 
     private fun resolve(expected: String): Timestamp {
         val expectedDateExpression = expected.substring(expected.indexOf("}") + 1).trim()
-        return Timestamp((
-            if (expectedDateExpression.isBlank()) Date()
-            else (evaluator.resolveToObj(expectedDateExpression) as Date)
-            ).time)
+        return Timestamp(
+            (if (expectedDateExpression.isBlank()) Date() else (evaluator.resolveToObj(expectedDateExpression) as Date))
+                .time
+        )
     }
 
     private fun regexMatches(expectedValue: Any?, actualValue: Any?): Boolean {
@@ -255,16 +259,11 @@ open class RegexAndWithinAwareValueComparer : IsActualEqualToExpectedValueCompar
         if (actualValue == null) false else Pattern.compile(pattern).matcher(actualValue.toString()).matches()
 }
 
-class DateTimeIgnoreMillisColumnComparer(private val column: String) : RegexAndWithinAwareValueComparer() {
-
+class IgnoreMillisComparer : RegexAndWithinAwareValueComparer() {
     override fun isExpected(
         expectedTable: ITable?, actualTable: ITable?, rowNum: Int, columnName: String?, dataType: DataType, expected: Any?, actual: Any?
-    ): Boolean {
-        if (!super.isExpected(expectedTable, actualTable, rowNum, columnName, dataType, expected, actual) ) {
-            return if (column == columnName) compareIgnoringMillis(expected, actual) else false
-        }
-        return true
-    }
+    ): Boolean = if (super.isExpected(expectedTable, actualTable, rowNum, columnName, dataType, expected, actual)) true
+    else compareIgnoringMillis(expected, actual)
 
     private fun compareIgnoringMillis(expected: Any?, actual: Any?): Boolean {
         val expectedDt = LocalDateTime.fromDateFields(expected as Date).withMillisOfSecond(0)
