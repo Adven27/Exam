@@ -26,4 +26,17 @@ open class Db : Specs() {
         }
         return true
     }
+
+    fun addRecordWithField(id: String, name: String, age: String, birthday: String, field: String, value: String): Boolean {
+        addRecord(id, name, age, birthday)
+        try {
+            dbTester.dataSet = DataSetBuilder().newRowTo("PERSON_FIELDS")
+                .withFields(listOf("ID", "NAME", "VALUE", "PERSON_ID").zip(listOf(id, name, age, id)).toMap())
+                .add().build()
+            dbTester.onSetup()
+        } catch (e: Exception) {
+            throw RuntimeException(e)
+        }
+        return true
+    }
 }

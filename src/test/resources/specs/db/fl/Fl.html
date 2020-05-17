@@ -1,0 +1,57 @@
+<html xmlns:e="http://exam.extension.io"  xmlns:cc="http://www.concordion.org/2007/concordion">
+<body>
+<h1>Table setting</h1>
+<e:summary/>
+<e:example name="DbUnit operations support">
+    <e:given>
+        Given record <b cc:set="#id">1</b>
+                     <b cc:set="#name">Bob</b>
+                     <b cc:set="#age">50</b>
+                     <b cc:set="#bd">10.10.2000</b>
+                     <b cc:set="#field">passport</b>
+                     <b cc:set="#value">1234</b>
+        <span cc:assertTrue="addRecordWithField(#id, #name, #age, #bd, #field, #value)">present</span> in PERSON
+        <e:db-show table="PERSON" saveToResources="/data/db/person.xml"/>
+        <e:db-show table="PERSON_FIELDS"/>
+    </e:given>
+    <e:when print="true">
+        <e:db-set operation="insert" caption="Append records" table="PERSON" cols="ID=10..20, NAME, AGE">
+            <e:row>Andrew,30</e:row>
+            <e:row>Carl,20</e:row>
+        </e:db-set>
+    </e:when>
+    <e:then>
+        <e:db-check caption="Records was appended" table="PERSON" cols="NAME, AGE">
+            <e:row>{{name}}, {{age}}</e:row>
+            <e:row>Andrew  , 30     </e:row>
+            <e:row>Carl    , 20     </e:row>
+        </e:db-check>
+    </e:then>
+    <e:when print="true">
+        <e:db-set operation="update" caption="Update by primary key" table="PERSON" cols="ID=1, NAME, AGE">
+            <e:row>not Bob, 500</e:row>
+        </e:db-set>
+    </e:when>
+    <e:then>
+        <e:db-check caption="Record was updated" table="PERSON" cols="NAME, AGE">
+            <e:row>not Bob , 500 </e:row>
+            <e:row>Andrew  , 30  </e:row>
+            <e:row>Carl    , 20  </e:row>
+        </e:db-check>
+    </e:then>
+    <e:when print="true">
+        <e:db-set caption="Clean insert by default" table="PERSON_FIELDS"/>
+        <e:db-set caption="Clean insert by default" table="PERSON" cols="ID=10..20, NAME, AGE, BIRTHDAY">
+            <e:row>' Andrew ', 30 , {{date '1990-10-10'}}</e:row>
+            <e:row>Carl      , 20 , {{date '1980-02-01'}}</e:row>
+        </e:db-set>
+    </e:when>
+    <e:then>
+        <e:db-check caption="Table was cleaned and records was inserted" table="PERSON" cols="NAME, AGE, BIRTHDAY">
+            <e:row>' Andrew ', 30, {{date '1990-10-10'}}</e:row>
+            <e:row>Carl      , 20, {{date '1980-02-01'}}</e:row>
+        </e:db-check>
+    </e:then>
+</e:example>
+</body>
+</html>
