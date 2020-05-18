@@ -1,18 +1,11 @@
 package specs.db
 
 import com.adven.concordion.extensions.exam.db.builder.DataSetBuilder
-import org.concordion.api.BeforeSpecification
 import org.joda.time.LocalDateTime
 import org.joda.time.format.DateTimeFormat.forPattern
 import specs.Specs
 
 open class Db : Specs() {
-
-    @BeforeSpecification
-    fun setUp() {
-        dbTester.dataSet = DataSetBuilder().newRowTo("PERSON").add().build()
-        dbTester.onSetup()
-    }
 
     fun addRecord(id: String, name: String, age: String, birthday: String): Boolean {
         try {
@@ -31,7 +24,7 @@ open class Db : Specs() {
         addRecord(id, name, age, birthday)
         try {
             dbTester.dataSet = DataSetBuilder().newRowTo("PERSON_FIELDS")
-                .withFields(listOf("ID", "NAME", "VALUE", "PERSON_ID").zip(listOf(id, name, age, id)).toMap())
+                .withFields(listOf("ID", "NAME", "VALUE", "PERSON_ID").zip(listOf(id, field, value, id)).toMap())
                 .add().build()
             dbTester.onSetup()
         } catch (e: Exception) {

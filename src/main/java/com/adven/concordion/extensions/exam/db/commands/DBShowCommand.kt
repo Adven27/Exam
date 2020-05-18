@@ -27,7 +27,7 @@ class DBShowCommand(name: String, tag: String, dbTester: DbTester, valuePrinter:
         val where = el.takeAwayAttr("where", eval)
         val saveToResources = el.takeAwayAttr("saveToResources", eval)
         val ds = el.takeAwayAttr("ds", DbTester.DEFAULT_DATASOURCE)
-        val conn = dbTester.executors[ds]!!.connection
+        val conn = dbTester.connectionFor(ds)
 
         renderTable(
             el,
@@ -36,8 +36,11 @@ class DBShowCommand(name: String, tag: String, dbTester: DbTester, valuePrinter:
                     conn.createTable(tableName)
                 else
                     getFilteredTable(conn, tableName, where),
-                parseCols(el, eval!!).keys.toTypedArray()
-            ))
+                parseCols(el).keys.toTypedArray()
+            ),
+            remarks,
+            valuePrinter
+        )
 
         val outputStream = ByteArrayOutputStream().apply {
             FlatXmlDataSet.write(conn.createDataSet(getAllDependentTables(conn, tableName)), this)

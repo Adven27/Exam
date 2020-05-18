@@ -4,53 +4,32 @@
 <e:summary/>
 <e:example name="DbUnit operations support">
     <e:given>
-        Given record <b cc:set="#id">1</b>
-                     <b cc:set="#name">Bob</b>
-                     <b cc:set="#age">50</b>
-                     <b cc:set="#bd">10.10.2000</b>
+        Given record <b cc:set="#id">99</b>
+                     <b cc:set="#name">Don</b>
+                     <b cc:set="#age">40</b>
+                     <b cc:set="#bd">01.01.2000</b>
                      <b cc:set="#field">passport</b>
-                     <b cc:set="#value">1234</b>
+                     <b cc:set="#value">4444</b>
         <span cc:assertTrue="addRecordWithField(#id, #name, #age, #bd, #field, #value)">present</span> in PERSON
         <e:db-show table="PERSON" saveToResources="/data/db/person.xml"/>
         <e:db-show table="PERSON_FIELDS"/>
     </e:given>
-    <e:when print="true">
-        <e:db-set operation="insert" caption="Append records" table="PERSON" cols="ID=10..20, NAME, AGE">
-            <e:row>Andrew,30</e:row>
-            <e:row>Carl,20</e:row>
-        </e:db-set>
-    </e:when>
     <e:then>
-        <e:db-check caption="Records was appended" table="PERSON" cols="NAME, AGE">
-            <e:row>{{name}}, {{age}}</e:row>
-            <e:row>Andrew  , 30     </e:row>
-            <e:row>Carl    , 20     </e:row>
-        </e:db-check>
+        <e:db-verify datasets="/data/db/person.xml"/>
     </e:then>
     <e:when print="true">
-        <e:db-set operation="update" caption="Update by primary key" table="PERSON" cols="ID=1, NAME, AGE">
-            <e:row>not Bob, 500</e:row>
-        </e:db-set>
+        <e:db-execute datasets="/data/db/empty.xml"/>
+        <e:db-show table="PERSON"/>
     </e:when>
     <e:then>
-        <e:db-check caption="Record was updated" table="PERSON" cols="NAME, AGE">
-            <e:row>not Bob , 500 </e:row>
-            <e:row>Andrew  , 30  </e:row>
-            <e:row>Carl    , 20  </e:row>
-        </e:db-check>
+        <e:db-verify datasets="/data/db/empty.xml"/>
     </e:then>
     <e:when print="true">
-        <e:db-set caption="Clean insert by default" table="PERSON_FIELDS"/>
-        <e:db-set caption="Clean insert by default" table="PERSON" cols="ID=10..20, NAME, AGE, BIRTHDAY">
-            <e:row>' Andrew ', 30 , {{date '1990-10-10'}}</e:row>
-            <e:row>Carl      , 20 , {{date '1980-02-01'}}</e:row>
-        </e:db-set>
+        <e:db-execute datasets="/data/db/adam.xml, /data/db/bob.xml"/>
+        <e:db-show table="PERSON"/>
     </e:when>
     <e:then>
-        <e:db-check caption="Table was cleaned and records was inserted" table="PERSON" cols="NAME, AGE, BIRTHDAY">
-            <e:row>' Andrew ', 30, {{date '1990-10-10'}}</e:row>
-            <e:row>Carl      , 20, {{date '1980-02-01'}}</e:row>
-        </e:db-check>
+        <e:db-verify datasets="/data/db/bob.xml, /data/db/adam.xml"/>
     </e:then>
 </e:example>
 </body>

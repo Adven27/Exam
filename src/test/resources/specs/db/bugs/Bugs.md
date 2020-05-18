@@ -2,6 +2,9 @@
 
 <div>
     <e:summary/>
+    <e:given>
+        <e:db-clean tables="PERSON, PERSON_FIELDS"/>
+    </e:given>
     <e:example name="Every db command has independent(from other commands) column order">
         <e:given>
             <e:db-set table="PERSON" cols="*NAME, *AGE, BIRTHDAY={{date '10.10.2010' format='dd.MM.yyyy'}}, ID=1..10">

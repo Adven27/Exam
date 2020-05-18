@@ -20,8 +20,7 @@ import kotlin.collections.set
 
 class DbPlugin @JvmOverloads constructor(
     private val dbTester: DbTester,
-    private val valuePrinter: ValuePrinter = ValuePrinter.Simple(),
-    private val dbUnitConfig: DbUnitConfig = DbUnitConfig()
+    private val valuePrinter: ValuePrinter = ValuePrinter.Simple()
 ) : ExamPlugin {
 
     /***
@@ -37,7 +36,7 @@ class DbPlugin @JvmOverloads constructor(
         schema: String? = null,
         valuePrinter: ValuePrinter = ValuePrinter.Simple(),
         dbUnitConfig: DbUnitConfig = DbUnitConfig()
-    ) : this(DbTester(driver, url, user, password, schema, dbUnitConfig.databaseConfigProperties), valuePrinter, dbUnitConfig)
+    ) : this(DbTester(driver, url, user, password, schema, dbUnitConfig), valuePrinter)
 
     init {
         dbTester.executors[DbTester.DEFAULT_DATASOURCE] = dbTester
@@ -60,17 +59,18 @@ class DbPlugin @JvmOverloads constructor(
     constructor(
         defaultTester: DbTester,
         others: Map<String, DbTester>,
-        valuePrinter: ValuePrinter = ValuePrinter.Simple(),
-        dbUnitConfig: DbUnitConfig = DbUnitConfig()
-    ) : this(defaultTester, valuePrinter, dbUnitConfig) {
+        valuePrinter: ValuePrinter = ValuePrinter.Simple()
+    ) : this(defaultTester, valuePrinter) {
         for ((key, value) in others) {
             dbTester.executors[key] = value
         }
     }
 
     override fun commands(): List<ExamCommand> = listOf(
+        DataSetExecuteCommand("db-execute", "span", dbTester,valuePrinter),
+        DataSetVerifyCommand("db-verify", "span", dbTester,valuePrinter),
         DBShowCommand("db-show", TABLE, dbTester, valuePrinter),
-        DBCheckCommand("db-check", TABLE, dbTester, valuePrinter, dbUnitConfig),
+        DBCheckCommand("db-check", TABLE, dbTester, valuePrinter),
         DBSetCommand("db-set", TABLE, dbTester, valuePrinter),
         DBCleanCommand("db-clean", "span", dbTester)
     )
@@ -103,7 +103,8 @@ data class DbUnitConfig @JvmOverloads constructor(
     val valueComparer: RegexAndWithinAwareValueComparer = RegexAndWithinAwareValueComparer(),
     val columnValueComparers: Map<String, RegexAndWithinAwareValueComparer> = emptyMap(),
     val overrideRowSortingComparer: RowComparator = RowComparator(),
-    val diffFailureHandler: DiffCollectingFailureHandler = DiffCollectingFailureHandler()
+    val diffFailureHandler: DiffCollectingFailureHandler = DiffCollectingFailureHandler(),
+    val isColumnSensing: Boolean = false
 ) {
     class Builder {
         var databaseConfigProperties: Map<String, Any?> = mapOf(DatabaseConfig.FEATURE_ALLOW_EMPTY_FIELDS to true)
@@ -111,13 +112,19 @@ data class DbUnitConfig @JvmOverloads constructor(
         var columnValueComparers: Map<String, RegexAndWithinAwareValueComparer> = emptyMap()
         var overrideRowSortingComparer: RowComparator = RowComparator()
         var diffFailureHandler: DiffCollectingFailureHandler = DiffCollectingFailureHandler()
+        var columnSensing: Boolean = false
 
         fun databaseConfigProperties(databaseConfigProperties: Map<String, Any?>) = apply { this.databaseConfigProperties = databaseConfigProperties }
         fun valueComparer(valueComparer: RegexAndWithinAwareValueComparer) = apply { this.valueComparer = valueComparer }
         fun columnValueComparers(columnValueComparers: Map<String, RegexAndWithinAwareValueComparer>) = apply { this.columnValueComparers = columnValueComparers }
         fun overrideRowSortingComparer(overrideRowSortingComparer: RowComparator = RowComparator()) = apply { this.overrideRowSortingComparer = overrideRowSortingComparer }
         fun diffFailureHandler(diffFailureHandler: DiffCollectingFailureHandler) = apply { this.diffFailureHandler = diffFailureHandler }
-        fun build() = DbUnitConfig(databaseConfigProperties, valueComparer, columnValueComparers, overrideRowSortingComparer, diffFailureHandler)
+        fun columnSensing(columnSensing: Boolean) = apply { this.columnSensing = columnSensing }
+        fun build() = DbUnitConfig(databaseConfigProperties, valueComparer, columnValueComparers, overrideRowSortingComparer, diffFailureHandler, columnSensing)
+    }
+
+    fun isCaseSensitiveTableNames(): Boolean {
+        return databaseConfigProperties.containsKey("caseSensitiveTableNames") && (databaseConfigProperties["caseSensitiveTableNames"].toString().toBoolean())
     }
 }
 
