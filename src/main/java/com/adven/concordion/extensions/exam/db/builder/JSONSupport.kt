@@ -164,7 +164,7 @@ class TableParser {
     }
 
     private fun getMetaData(tableName: String, rows: List<Map<String, Any?>>): ITableMetaData =
-        DefaultTableMetaData(tableName, rows.flatMap { row -> row.keys.map { Column(it, UNKNOWN) } }.toTypedArray())
+        DefaultTableMetaData(tableName, rows.flatMap { row -> row.keys }.toSet().map { Column(it, UNKNOWN) }.toTypedArray())
 
     private fun fillRow(table: DefaultTable, row: Map<String, Any?>, rowIndex: Int) {
         if (row.entries.isNotEmpty()) {

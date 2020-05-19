@@ -2,7 +2,7 @@
 <body>
 <h1>Table setting</h1>
 <e:summary/>
-<e:example name="DbUnit operations support">
+<e:example name="Success">
     <e:given print="true">
         Given record <b cc:set="#id">99</b>
                      <b cc:set="#name">Don</b>
@@ -13,6 +13,7 @@
         <span cc:assertTrue="addRecordWithField(#id, #name, #age, #bd, #field, #value)">present</span> in PERSON
         <e:db-show table="PERSON" saveToResources="/data/db/person.xml"/>
         <e:db-show table="PERSON_FIELDS" saveToResources="/data/db/person.json"/>
+        <e:db-show table="PERSON" saveToResources="/data/db/person.csv"/>
     </e:given>
     <e:then print="true">
         <e:db-verify datasets="/data/db/person.xml"/>
@@ -28,6 +29,53 @@
     </e:when>
     <e:then print="true">
         <e:db-verify dir="/data/db/" datasets="adam.xml, carl/person.csv, bob-expected.json"/>
+    </e:then>
+    <e:when print="true">
+        <span>Clean insert:</span>
+        <e:db-execute datasets="/data/db/adam.xml"  debug="true"/>
+        <span>Append:</span>
+        <e:db-execute operation="insert" datasets="/data/db/bob.json" debug="true"/>
+    </e:when>
+    <e:then print="true">
+        <e:db-verify dir="/data/db/" datasets="adam.xml, bob-expected.json"/>
+    </e:then>
+</e:example>
+<e:example name="Fail" status="ExpectedToFail">
+    <e:when print="true">
+        <e:db-execute datasets="/data/db/empty.xml"/>
+    </e:when>
+    <e:then print="true">
+        <e:db-verify datasets="/data/db/person.xml"/>
+    </e:then>
+    <e:when print="true">
+        <e:db-execute datasets="/data/db/person.xml"/>
+    </e:when>
+    <e:then print="true">
+        <e:db-verify datasets="/data/db/empty.xml"/>
+    </e:then>
+    <e:when print="true">
+        <e:db-execute datasets="/data/db/adam.xml"/>
+    </e:when>
+    <e:then print="true">
+        <e:db-verify dir="/data/db/" datasets="adam.xml, bob-expected.json"/>
+    </e:then>
+    <e:when print="true">
+        <e:db-execute dir="/data/db/" datasets="adam.xml, bob.json"/>
+    </e:when>
+    <e:then print="true">
+        <e:db-verify dir="/data/db/" datasets="adam.xml"/>
+    </e:then>
+    <e:when print="true">
+        <e:db-execute dir="/data/db/" datasets="adam.xml, bob.json, carl/person.csv"/>
+    </e:when>
+    <e:then print="true">
+        <e:db-verify dir="/data/db/" datasets="adam.xml, bob-wrong.json, carl/person.csv"/>
+    </e:then>
+    <e:when print="true">
+        <e:db-execute dir="/data/db/" datasets="adam.xml, bob.json, carl/person.csv"/>
+    </e:when>
+    <e:then print="true">
+        <e:db-verify dir="/data/db/" datasets="adam-wrong.xml, bob-expected.json, carl/person.csv"/>
     </e:then>
 </e:example>
 </body>

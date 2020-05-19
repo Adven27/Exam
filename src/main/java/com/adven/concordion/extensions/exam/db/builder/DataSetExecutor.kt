@@ -9,6 +9,7 @@ import com.adven.concordion.extensions.exam.db.commands.sortedTable
 import org.concordion.api.Evaluator
 import org.dbunit.Assertion
 import org.dbunit.DatabaseUnitException
+import org.dbunit.assertion.DbComparisonFailure
 import org.dbunit.assertion.Difference
 import org.dbunit.assertion.comparer.value.ValueComparer
 import org.dbunit.database.AmbiguousTableNameException
@@ -29,7 +30,9 @@ class DataSetExecutor(private val dbTester: DbTester) {
     private val printDBUnitConfig = AtomicBoolean(true)
 
     fun insertDataSet(dataSetConfig: DataSetConfig, eval: Evaluator): IDataSet {
-        printDBUnitConfiguration()
+        if (dataSetConfig.debug) {
+            printDBUnitConfiguration()
+        }
         return try {
             performTableOrdering(loadDataSets(eval, dataSetConfig.datasets), dataSetConfig.tableOrdering).apply {
                 dataSetConfig.strategy.operation.execute(dbTester.connection, this)
@@ -142,42 +145,52 @@ class DataSetExecutor(private val dbTester: DbTester) {
     @Throws(DatabaseUnitException::class)
     fun compareCurrentDataSetWith(
         expectedDataSetConfig: DataSetConfig, eval: Evaluator, excludeCols: Array<String> = emptyArray(), orderBy: Array<String> = emptyArray(), compareOperation: CompareOperation = EQUALS
-    ): Triple<IDataSet, IDataSet, List<Difference>> {
+    ): DataSetsCompareResult {
         dbTester.dbUnitConfig.diffFailureHandler.diffList.clear()
+        val rowsMismatchFailures = mutableListOf<Triple<ITable, ITable, DbComparisonFailure>>();
         val current: IDataSet = dbTester.connection.createDataSet()
         val expected: IDataSet = loadDataSets(eval, expectedDataSetConfig.datasets)
         return expected.tableNames.map { tableName ->
-            var expectedTable: ITable?
-            var actualTable: ITable?
-            try {
-                expectedTable = expected.getTable(tableName)
-                actualTable = current.getTable(tableName)
-            } catch (e: DataSetException) {
-                throw RuntimeException("DataSet comparison failed due to following exception: ", e)
-            }
+            var expectedTable = expected.getTable(tableName)
             val sortCols: Array<String> = if (orderBy.isEmpty()) expectedTable.columnNamesArray() else orderBy
             expectedTable = sortedTable(expectedTable, sortCols, dbTester.dbUnitConfig.overrideRowSortingComparer)
-            actualTable = sortedTable(actualTable, sortCols, dbTester.dbUnitConfig.overrideRowSortingComparer)
-            var filteredActualTable = DefaultColumnFilter.includedColumnsTable(actualTable, expectedTable.tableMetaData.columns)
-            if (compareOperation == CompareOperation.CONTAINS) {
-                filteredActualTable = ContainsFilterTable(filteredActualTable, expectedTable, listOf(*excludeCols))
-            }
-            Assertion.assertWithValueComparer(
-                expectedTable,
-                filteredActualTable,
-                dbTester.dbUnitConfig.diffFailureHandler,
-                dbTester.dbUnitConfig.valueComparer,
-                dbTester.dbUnitConfig.columnValueComparers as Map<String?, ValueComparer?>
+            var actualTable = DefaultColumnFilter.includedColumnsTable(
+                sortedTable(current.getTable(tableName), sortCols, dbTester.dbUnitConfig.overrideRowSortingComparer),
+                expectedTable.tableMetaData.columns
             )
-            expectedTable to filteredActualTable
+            if (compareOperation == CompareOperation.CONTAINS) {
+                actualTable = ContainsFilterTable(actualTable, expectedTable, listOf(*excludeCols))
+            }
+            try {
+                Assertion.assertWithValueComparer(
+                    expectedTable,
+                    actualTable,
+                    dbTester.dbUnitConfig.diffFailureHandler,
+                    dbTester.dbUnitConfig.valueComparer,
+                    dbTester.dbUnitConfig.columnValueComparers as Map<String?, ValueComparer?>
+                )
+            } catch (f: DbComparisonFailure) {
+                rowsMismatchFailures.add(Triple(expectedTable, actualTable, f))
+            }
+            expectedTable to actualTable
         }.toMap().let {
-            Triple(
+            DataSetsCompareResult(
                 CompositeDataSet(it.keys.toTypedArray()),
                 CompositeDataSet(it.values.toTypedArray()),
-                dbTester.dbUnitConfig.diffFailureHandler.diffList as List<Difference>
-            )
+                dbTester.dbUnitConfig.diffFailureHandler.diffList as List<Difference>,
+                rowsMismatchFailures
+            ).apply {
+                log.info(this.toString())
+            }
         }
     }
+
+    data class DataSetsCompareResult(
+        val expected: IDataSet,
+        val actual: IDataSet,
+        val diff: List<Difference>,
+        val rowsMismatch: List<Triple<ITable, ITable, DbComparisonFailure>>
+    )
 
     companion object {
         private val log = LoggerFactory.getLogger(DataSetExecutor::class.java)

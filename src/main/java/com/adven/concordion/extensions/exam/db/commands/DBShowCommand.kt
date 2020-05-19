@@ -13,6 +13,7 @@ import org.concordion.api.ResultRecorder
 import org.dbunit.database.IDatabaseConnection
 import org.dbunit.database.search.TablesDependencyHelper.getAllDependentTables
 import org.dbunit.dataset.ITable
+import org.dbunit.dataset.csv.CsvDataSetWriter
 import org.dbunit.dataset.excel.XlsDataSet
 import org.dbunit.dataset.filter.DefaultColumnFilter.includedColumnsTable
 import org.dbunit.dataset.xml.FlatXmlDataSet
@@ -44,15 +45,22 @@ class DBShowCommand(name: String, tag: String, dbTester: DbTester, valuePrinter:
             valuePrinter
         )
         val dataSet = conn.createDataSet(getAllDependentTables(conn, tableName))
-        val outputStream = ByteArrayOutputStream().apply {
-            when(saveToResources?.fileExt() ?: "xml") {
-                "json" -> JSONWriter(dataSet, this).write()
-                "xls" -> XlsDataSet.write(dataSet, this)
-                else -> FlatXmlDataSet.write(dataSet, this)
+        ByteArrayOutputStream().use {
+            when (saveToResources?.fileExt() ?: "xml") {
+                "json" -> JSONWriter(dataSet, it).write().run { saveIfNeeded(saveToResources, it) }
+                "xls" -> XlsDataSet.write(dataSet, it).run { saveIfNeeded(saveToResources, it) }
+                "csv" -> {
+                    saveToResources?.apply {
+                        File(Paths.get("src", "test", "resources").toFile(), substringBeforeLast(".")).apply {
+                            mkdirs()
+                            CsvDataSetWriter.write(dataSet, this)
+                        }
+                    }
+                }
+                else -> FlatXmlDataSet.write(dataSet, it).run { saveIfNeeded(saveToResources, it) }
             }
+            el.below(pre(it.toString("UTF-8")))
         }
-        saveIfNeeded(saveToResources, outputStream)
-        el.below(pre(outputStream.toString("UTF-8")))
     }
 
     private fun saveIfNeeded(saveToResources: String?, outputStream: ByteArrayOutputStream) {

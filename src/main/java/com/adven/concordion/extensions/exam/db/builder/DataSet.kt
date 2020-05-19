@@ -111,32 +111,23 @@ class ScriptableTable(private val delegate: ITable) : ITable {
     }
 }
 
-
 class ExamDataSet(caseSensitiveTableNames: Boolean = false, private val delegate: IDataSet, val eval: Evaluator) : AbstractDataSet(caseSensitiveTableNames) {
     constructor(table: ITable, eval: Evaluator, caseSensitiveTableNames: Boolean = false) : this(caseSensitiveTableNames, DefaultDataSet(table), eval)
 
     @Throws(DataSetException::class)
-    override fun createIterator(reversed: Boolean): ITableIterator {
-        return ExamDataSetIterator(if (reversed) delegate.reverseIterator() else delegate.iterator(), eval)
-    }
+    override fun createIterator(reversed: Boolean) =
+        ExamDataSetIterator(if (reversed) delegate.reverseIterator() else delegate.iterator(), eval)
 }
 
 class ExamDataSetIterator(private val delegate: ITableIterator, val eval: Evaluator) : ITableIterator {
     @Throws(DataSetException::class)
-    override fun next(): Boolean {
-        return delegate.next()
-    }
+    override fun next(): Boolean = delegate.next()
 
     @Throws(DataSetException::class)
-    override fun getTableMetaData(): ITableMetaData {
-        return delegate.tableMetaData
-    }
+    override fun getTableMetaData(): ITableMetaData = delegate.tableMetaData
 
     @Throws(DataSetException::class)
-    override fun getTable(): ITable {
-        return ExamTable(delegate.table, eval)
-    }
-
+    override fun getTable(): ITable = ExamTable(delegate.table, eval)
 }
 
 class ExamTable(private val delegate: ITable, private val eval: Evaluator) : ITable {
@@ -339,20 +330,20 @@ class ContainsFilterTable(actualTable: ITable?, expectedTable: ITable?, ignoredC
 enum class SeedStrategy(val operation: DatabaseOperation) {
     CLEAN_INSERT(DatabaseOperation.CLEAN_INSERT),
     TRUNCATE_INSERT(CompositeOperation(DatabaseOperation.TRUNCATE_TABLE, DatabaseOperation.INSERT)),
-    INSERT(DatabaseOperation.INSERT), REFRESH(DatabaseOperation.REFRESH), UPDATE(DatabaseOperation.UPDATE);
-
+    INSERT(DatabaseOperation.INSERT),
+    REFRESH(DatabaseOperation.REFRESH),
+    UPDATE(DatabaseOperation.UPDATE);
 }
 
-enum class CompareOperation {
-    EQUALS, CONTAINS
-}
+enum class CompareOperation { EQUALS, CONTAINS }
 
 class DataBaseSeedingException(message: String?, cause: Throwable?) : RuntimeException(message, cause)
 
 data class DataSetConfig(
-    var datasets: List<String>,
-    var strategy: SeedStrategy = SeedStrategy.CLEAN_INSERT,
-    var isUseSequenceFiltering: Boolean = true,
-    var isFillIdentityColumns: Boolean = false,
-    var tableOrdering: List<String> = listOf()
+    val datasets: List<String>,
+    val strategy: SeedStrategy = SeedStrategy.CLEAN_INSERT,
+    val isUseSequenceFiltering: Boolean = true,
+    val isFillIdentityColumns: Boolean = false,
+    val tableOrdering: List<String> = listOf(),
+    val debug: Boolean = false
 )
