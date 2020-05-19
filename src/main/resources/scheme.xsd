@@ -49,6 +49,7 @@
             <xs:all>
                 <xs:element name="given" type="given-info"/>
                 <xs:element name="set" type="set-info"/>
+                <xs:element name="db-execute" type="db-execute-info"/>
                 <xs:element name="db-set" type="db-set-info"/>
                 <xs:element name="db-clean" type="db-clean-info"/>
                 <xs:element name="mq-send" type="mq-info"/>
@@ -63,6 +64,7 @@
         <xs:all>
             <xs:element name="set" type="set-info"/>
             <xs:element name="await" type="await-info"/>
+            <xs:element name="db-execute" type="db-execute-info"/>
             <xs:element name="db-set" type="db-set-info"/>
             <xs:element name="db-clean" type="db-clean-info"/>
             <xs:element name="db-show" type="db-set-info"/>
@@ -179,6 +181,22 @@
         </xs:simpleContent>
     </xs:complexType>
 
+    <xs:complexType name="db-execute-info">
+        <xs:attribute type="xs:string" name="datasets" use="required"/>
+        <xs:attribute type="xs:string" name="dir" default="/data/db/"/>
+        <xs:attribute type="xs:string" name="ds"/>
+        <xs:attribute type="xs:string" name="debug"/>
+        <xs:attribute ref="operation"/>
+    </xs:complexType>
+    <xs:complexType name="db-verify-info">
+        <xs:attribute type="xs:string" name="datasets" use="required"/>
+        <xs:attribute type="xs:string" name="dir" default="/data/db/"/>
+        <xs:attribute type="xs:string" name="ds"/>
+        <xs:attribute type="xs:string" name="orderBy" default="age, name"/>
+        <xs:attribute type="xs:integer" name="awaitAtMostSec" default="4"/>
+        <xs:attribute type="xs:integer" name="awaitPollDelayMillis" default="0"/>
+        <xs:attribute type="xs:integer" name="awaitPollIntervalMillis" default="1000"/>
+    </xs:complexType>
     <xs:complexType name="db-set-info">
         <xs:sequence>
             <xs:element name="row" type="xs:string">
@@ -291,6 +309,7 @@
             <xs:element name="await" type="await-info"/>
             <xs:element name="xml-check" type="xj-info"/>
             <xs:element name="json-check" type="xj-info"/>
+            <xs:element name="db-verify" type="db-verify-info"/>
             <xs:element name="db-check" type="db-check-info"/>
             <xs:element name="db-show" type="db-set-info"/>
             <xs:element name="mq-check" type="mq-check-info"/>

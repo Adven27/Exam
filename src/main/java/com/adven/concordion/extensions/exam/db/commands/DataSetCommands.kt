@@ -47,7 +47,9 @@ class DataSetVerifyCommand(name: String, tag: String, val dbTester: DbTester, va
         val root = commandCall.html()
         dbTester.dbUnitConfig.valueComparer.setEvaluator(evaluator)
         dbTester.dbUnitConfig.columnValueComparers.forEach { it.value.setEvaluator(evaluator) }
-        DataSetExecutor(commandCall.ds(dbTester)).compareCurrentDataSetWith(DataSetConfig(commandCall.dataSets()), evaluator).apply {
+        DataSetExecutor(commandCall.ds(dbTester)).awaitCompareCurrentDataSetWith(
+            commandCall.awaitConfig(), DataSetConfig(commandCall.dataSets()), evaluator, orderBy = commandCall.orderBy()
+        ).apply {
             val mismatchedTables = rowsMismatch.sortedBy { it.first.tableName() }.map { mismatch ->
                 render(mismatch, root)
                 resultRecorder.record(FAILURE)
@@ -141,3 +143,10 @@ private fun CommandCall?.ds(dbTester: DbTester): DbTester = this.takeAttr("ds", 
     dbTester.executors[it]
         ?: throw IllegalArgumentException("DbTester for datasource [$it] not registered in DbPlugin.")
 }
+
+private fun CommandCall?.orderBy() = this.takeAttr("orderBy", "").split(",").map { it.trim() }.filter { it.isNotEmpty() }.toTypedArray()
+private fun CommandCall?.awaitConfig() = DataSetExecutor.AwaitConfig(
+    this.takeAttr("awaitAtMostSec", "0").toLong(),
+    this.takeAttr("awaitPollDelayMillis", "0").toLong(),
+    this.takeAttr("awaitPollIntervalMillis", "1000").toLong()
+)

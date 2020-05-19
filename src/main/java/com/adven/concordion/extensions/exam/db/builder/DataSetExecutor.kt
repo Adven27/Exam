@@ -6,9 +6,10 @@ import com.adven.concordion.extensions.exam.db.DbTester
 import com.adven.concordion.extensions.exam.db.builder.CompareOperation.EQUALS
 import com.adven.concordion.extensions.exam.db.commands.columnNamesArray
 import com.adven.concordion.extensions.exam.db.commands.sortedTable
+import org.awaitility.Awaitility
+import org.awaitility.core.ConditionTimeoutException
 import org.concordion.api.Evaluator
 import org.dbunit.Assertion
-import org.dbunit.DatabaseUnitException
 import org.dbunit.assertion.DbComparisonFailure
 import org.dbunit.assertion.Difference
 import org.dbunit.assertion.comparer.value.ValueComparer
@@ -24,6 +25,7 @@ import java.io.File
 import java.io.IOException
 import java.io.InputStream
 import java.net.URL
+import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicBoolean
 
 class DataSetExecutor(private val dbTester: DbTester) {
@@ -142,7 +144,6 @@ class DataSetExecutor(private val dbTester: DbTester) {
     }
 
     @JvmOverloads
-    @Throws(DatabaseUnitException::class)
     fun compareCurrentDataSetWith(
         expectedDataSetConfig: DataSetConfig, eval: Evaluator, excludeCols: Array<String> = emptyArray(), orderBy: Array<String> = emptyArray(), compareOperation: CompareOperation = EQUALS
     ): DataSetsCompareResult {
@@ -152,7 +153,7 @@ class DataSetExecutor(private val dbTester: DbTester) {
         val expected: IDataSet = loadDataSets(eval, expectedDataSetConfig.datasets)
         return expected.tableNames.map { tableName ->
             var expectedTable = expected.getTable(tableName)
-            val sortCols: Array<String> = if (orderBy.isEmpty()) expectedTable.columnNamesArray() else orderBy
+            val sortCols = if (orderBy.isEmpty()) expectedTable.columnNamesArray() else orderBy.filterBy(tableName)
             expectedTable = sortedTable(expectedTable, sortCols, dbTester.dbUnitConfig.overrideRowSortingComparer)
             var actualTable = DefaultColumnFilter.includedColumnsTable(
                 sortedTable(current.getTable(tableName), sortCols, dbTester.dbUnitConfig.overrideRowSortingComparer),
@@ -184,6 +185,35 @@ class DataSetExecutor(private val dbTester: DbTester) {
             }
         }
     }
+
+    @JvmOverloads
+    fun awaitCompareCurrentDataSetWith(
+        await: AwaitConfig, expected: DataSetConfig, eval: Evaluator, excludeCols: Array<String> = emptyArray(), orderBy: Array<String> = emptyArray(), compareOperation: CompareOperation = EQUALS
+    ): DataSetsCompareResult {
+        lateinit var result: DataSetsCompareResult
+        if (await.enabled()) {
+            try {
+                Awaitility.await("Await $compareOperation $expected")
+                    .atMost(await.atMostSec, TimeUnit.SECONDS)
+                    .pollDelay(await.pollDelay, TimeUnit.MILLISECONDS)
+                    .pollInterval(await.pollInterval, TimeUnit.MILLISECONDS).until {
+                        result = compareCurrentDataSetWith(expected, eval, excludeCols, orderBy, compareOperation)
+                        result.diff.isEmpty() && result.rowsMismatch.isEmpty()
+                    }
+            } catch (ignore: ConditionTimeoutException) {
+            }
+        } else {
+            result = compareCurrentDataSetWith(expected, eval, excludeCols, orderBy, compareOperation)
+        }
+        return result
+    }
+
+    data class AwaitConfig(val atMostSec: Long, val pollDelay: Long, val pollInterval: Long) {
+        fun enabled(): Boolean = atMostSec > 0
+    }
+
+    private fun Array<String>.filterBy(tableName: String) =
+        this.map { it.toUpperCase() }.filter { it.startsWith("${tableName.toUpperCase()}.") }.map { it.removePrefix("${tableName.toUpperCase()}.") }.toTypedArray()
 
     data class DataSetsCompareResult(
         val expected: IDataSet,

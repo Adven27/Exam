@@ -45,7 +45,7 @@
         <e:db-execute datasets="/data/db/empty.xml"/>
     </e:when>
     <e:then print="true">
-        <e:db-verify datasets="/data/db/person.xml"/>
+        <e:db-verify datasets="/data/db/person.xml" awaitAtMostSec="2" awaitPollDelayMillis="100" awaitPollIntervalMillis="1000"/>
     </e:then>
     <e:when print="true">
         <e:db-execute datasets="/data/db/person.xml"/>
@@ -75,7 +75,7 @@
         <e:db-execute dir="/data/db/" datasets="adam.xml, bob.json, carl/person.csv"/>
     </e:when>
     <e:then print="true">
-        <e:db-verify dir="/data/db/" datasets="adam-wrong.xml, bob-expected.json, carl/person.csv"/>
+        <e:db-verify dir="/data/db/" datasets="adam-wrong.xml, bob-expected.json, carl/person.csv" orderBy="person_fields.value, person.birthday"/>
     </e:then>
 </e:example>
 </body>
