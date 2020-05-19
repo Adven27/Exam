@@ -1,5 +1,8 @@
 package com.adven.concordion.extensions.exam.db.commands
 
+import com.adven.concordion.extensions.exam.core.commands.await
+import com.adven.concordion.extensions.exam.core.commands.awaitConfig
+import com.adven.concordion.extensions.exam.core.commands.timeoutMessage
 import com.adven.concordion.extensions.exam.core.html.*
 import com.adven.concordion.extensions.exam.core.resolveToObj
 import com.adven.concordion.extensions.exam.core.utils.parsePeriod
@@ -7,7 +10,6 @@ import com.adven.concordion.extensions.exam.db.DbPlugin
 import com.adven.concordion.extensions.exam.db.DbResultRenderer
 import com.adven.concordion.extensions.exam.db.DbTester
 import com.adven.concordion.extensions.exam.db.RowComparator
-import org.awaitility.Awaitility
 import org.awaitility.core.ConditionTimeoutException
 import org.concordion.api.CommandCall
 import org.concordion.api.Evaluator
@@ -31,7 +33,6 @@ import org.dbunit.util.QualifiedTableName
 import org.joda.time.LocalDateTime
 import java.sql.Timestamp
 import java.util.*
-import java.util.concurrent.TimeUnit
 import java.util.regex.Pattern
 
 class DBCheckCommand(
@@ -77,30 +78,19 @@ class DBCheckCommand(
         val sortCols: Array<String> = if (orderBy.isEmpty()) expectedTable.columnNamesArray() else orderBy
         var actual = sortedTable(actualTable.withColumnsAsIn(expectedTable), sortCols, dbTester.dbUnitConfig.overrideRowSortingComparer)
         val expected = sortedTable(CompositeTable(actual.tableMetaData, expectedTable), sortCols, dbTester.dbUnitConfig.overrideRowSortingComparer)
-        val atMostSec = root.takeAwayAttr("awaitAtMostSec")
-        val pollDelay = root.takeAwayAttr("awaitPollDelayMillis")
-        val pollInterval = root.takeAwayAttr("awaitPollIntervalMillis")
+        val awaitConfig = root.awaitConfig()
         try {
-            if (atMostSec != null || pollDelay != null || pollInterval != null) {
-                val atMost = atMostSec?.toLong() ?: 4
-                val delay = pollDelay?.toLong() ?: 0
-                val interval = pollInterval?.toLong() ?: 1000
+            if (awaitConfig.enabled()) {
                 try {
-                    Awaitility.await("Await DB table ${expected.tableName()}")
-                        .atMost(atMost, TimeUnit.SECONDS)
-                        .pollDelay(delay, TimeUnit.MILLISECONDS)
-                        .pollInterval(interval, TimeUnit.MILLISECONDS)
-                        .untilAsserted {
-                            actual = sortedTable(actualTable.withColumnsAsIn(expectedTable), sortCols, dbTester.dbUnitConfig.overrideRowSortingComparer)
-                            dbUnitAssert(expected, actual)
-                            if (dbTester.dbUnitConfig.diffFailureHandler.diffList.isNotEmpty()) {
-                                throw AssertionError()
-                            }
+                    awaitConfig.await("Await DB table ${expected.tableName()}").untilAsserted {
+                        actual = sortedTable(actualTable.withColumnsAsIn(expectedTable), sortCols, dbTester.dbUnitConfig.overrideRowSortingComparer)
+                        dbUnitAssert(expected, actual)
+                        if (dbTester.dbUnitConfig.diffFailureHandler.diffList.isNotEmpty()) {
+                            throw AssertionError()
                         }
+                    }
                 } catch (f: ConditionTimeoutException) {
-                    root(pre(
-                        "DB check with poll delay $delay ms and poll interval $interval ms didn't complete within $atMost seconds:"
-                    ).css("alert alert-danger small"))
+                    root(pre(awaitConfig.timeoutMessage(f)).css("alert alert-danger small"))
                     if (f.cause is DbComparisonFailure) {
                         throw f.cause as DbComparisonFailure
                     }

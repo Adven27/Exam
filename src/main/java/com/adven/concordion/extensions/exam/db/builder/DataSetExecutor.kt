@@ -1,5 +1,7 @@
 package com.adven.concordion.extensions.exam.db.builder
 
+import com.adven.concordion.extensions.exam.core.commands.AwaitConfig
+import com.adven.concordion.extensions.exam.core.commands.await
 import com.adven.concordion.extensions.exam.core.fileExt
 import com.adven.concordion.extensions.exam.core.utils.findResource
 import com.adven.concordion.extensions.exam.db.DbTester
@@ -193,23 +195,16 @@ class DataSetExecutor(private val dbTester: DbTester) {
         lateinit var result: DataSetsCompareResult
         if (await.enabled()) {
             try {
-                Awaitility.await("Await $compareOperation $expected")
-                    .atMost(await.atMostSec, TimeUnit.SECONDS)
-                    .pollDelay(await.pollDelay, TimeUnit.MILLISECONDS)
-                    .pollInterval(await.pollInterval, TimeUnit.MILLISECONDS).until {
-                        result = compareCurrentDataSetWith(expected, eval, excludeCols, orderBy, compareOperation)
-                        result.diff.isEmpty() && result.rowsMismatch.isEmpty()
-                    }
+                await.await("Await $compareOperation $expected").until {
+                    result = compareCurrentDataSetWith(expected, eval, excludeCols, orderBy, compareOperation)
+                    result.diff.isEmpty() && result.rowsMismatch.isEmpty()
+                }
             } catch (ignore: ConditionTimeoutException) {
             }
         } else {
             result = compareCurrentDataSetWith(expected, eval, excludeCols, orderBy, compareOperation)
         }
         return result
-    }
-
-    data class AwaitConfig(val atMostSec: Long, val pollDelay: Long, val pollInterval: Long) {
-        fun enabled(): Boolean = atMostSec > 0
     }
 
     private fun Array<String>.filterBy(tableName: String) =

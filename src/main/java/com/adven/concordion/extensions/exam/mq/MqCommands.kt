@@ -1,7 +1,6 @@
 package com.adven.concordion.extensions.exam.mq
 
-import com.adven.concordion.extensions.exam.core.commands.ExamCommand
-import com.adven.concordion.extensions.exam.core.commands.ExamVerifyCommand
+import com.adven.concordion.extensions.exam.core.commands.*
 import com.adven.concordion.extensions.exam.core.html.*
 import com.adven.concordion.extensions.exam.core.resolveJson
 import com.adven.concordion.extensions.exam.core.utils.content
@@ -12,13 +11,11 @@ import net.javacrumbs.jsonunit.JsonAssert
 import net.javacrumbs.jsonunit.core.Configuration
 import net.javacrumbs.jsonunit.core.Option
 import net.javacrumbs.jsonunit.core.internal.Options
-import org.awaitility.Awaitility
 import org.concordion.api.CommandCall
 import org.concordion.api.Evaluator
 import org.concordion.api.Result.FAILURE
 import org.concordion.api.ResultRecorder
 import org.junit.Assert
-import java.util.concurrent.TimeUnit
 
 interface MqTester {
     fun start()
@@ -55,33 +52,23 @@ class MqCheckCommand(
         val mqName = root.takeAwayAttr("name")!!
         val layout = root.takeAwayAttr("layout", "VERTICALLY")
         val contains = root.takeAwayAttr("contains", "EXACT")
-
-        val atMostSec = root.takeAwayAttr("awaitAtMostSec")
-        val pollDelay = root.takeAwayAttr("awaitPollDelayMillis")
-        val pollInterval = root.takeAwayAttr("awaitPollIntervalMillis")
+        val awaitConfig = cmd.awaitConfig()
 
         val messageTags = root.childs().filter { it.localName() == "message" }.ifEmpty { listOf(root) }
         val expectedMessages = messageTags.map { html ->
             html.takeAwayAttr("vars").vars(eval, true, html.takeAwayAttr("varsSeparator", ","))
             val content = html.content(eval)
-            if ("" == content) return@map null else MqTester.Message(eval.resolveJson(content.trim()), headers(html, eval))
+            if (content.isEmpty()) return@map null else MqTester.Message(eval.resolveJson(content.trim()), headers(html, eval))
         }.filterNotNull()
         val actualMessages: MutableList<MqTester.Message> = mqTesters.getOrFail(mqName).receive().toMutableList()
 
         try {
-            if (isPollingEnabled(atMostSec, pollDelay, pollInterval)) {
-                val atMost = atMostSec?.toLong() ?: 4
-                val delay = pollDelay?.toLong() ?: 0
-                val interval = pollInterval?.toLong() ?: 1000
+            if (awaitConfig.enabled()) {
                 try {
-                    Awaitility.await("Await MQ $mqName")
-                        .atMost(atMost, TimeUnit.SECONDS)
-                        .pollDelay(delay, TimeUnit.MILLISECONDS)
-                        .pollInterval(interval, TimeUnit.MILLISECONDS)
-                        .untilAsserted {
-                            actualMessages.addAll(mqTesters.getOrFail(mqName).receive())
-                            Assert.assertEquals(expectedMessages.size, actualMessages.size)
-                        }
+                    awaitConfig.await("Await MQ $mqName").untilAsserted {
+                        actualMessages.addAll(mqTesters.getOrFail(mqName).receive())
+                        Assert.assertEquals(expectedMessages.size, actualMessages.size)
+                    }
                 } catch (e: Exception) {
                     resultRecorder.record(FAILURE)
                     root.removeChildren().below(div().css("rest-failure bd-callout bd-callout-danger")(
@@ -89,12 +76,7 @@ class MqCheckCommand(
                         *renderMessages("Expected: ", expectedMessages, mqName).toTypedArray(),
                         *renderMessages("but was: ", actualMessages, mqName).toTypedArray()
                     ))
-                    root.below(
-                        pre("MQ check with poll delay $delay ms " +
-                            "and poll interval $interval ms " +
-                            "didn't complete within $atMost seconds because ${e.cause?.message}")
-                            .css("alert alert-danger small")
-                    )
+                    root.below(pre(awaitConfig.timeoutMessage(e)).css("alert alert-danger small"))
                 }
             } else {
                 Assert.assertEquals(expectedMessages.size, actualMessages.size)
@@ -140,9 +122,6 @@ class MqCheckCommand(
         if (needSort(contains)) origin.sortedBy { it.body } else origin
 
     private fun needSort(contains: String) = "EXACT" != contains
-
-    private fun isPollingEnabled(atMostSec: String?, pollDelay: String?, pollInterval: String?) =
-        atMostSec != null || pollDelay != null || pollInterval != null
 
     private fun renderMessages(msg: String, messages: List<MqTester.Message>, mqName: String): List<Html> {
         return listOf(span(msg), tableSlim()(

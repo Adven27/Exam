@@ -1,6 +1,7 @@
 package com.adven.concordion.extensions.exam.db.commands
 
 import com.adven.concordion.extensions.exam.core.commands.ExamCommand
+import com.adven.concordion.extensions.exam.core.commands.awaitConfig
 import com.adven.concordion.extensions.exam.core.html.*
 import com.adven.concordion.extensions.exam.db.DbPlugin
 import com.adven.concordion.extensions.exam.db.DbResultRenderer
@@ -145,8 +146,3 @@ private fun CommandCall?.ds(dbTester: DbTester): DbTester = this.takeAttr("ds", 
 }
 
 private fun CommandCall?.orderBy() = this.takeAttr("orderBy", "").split(",").map { it.trim() }.filter { it.isNotEmpty() }.toTypedArray()
-private fun CommandCall?.awaitConfig() = DataSetExecutor.AwaitConfig(
-    this.takeAttr("awaitAtMostSec", "0").toLong(),
-    this.takeAttr("awaitPollDelayMillis", "0").toLong(),
-    this.takeAttr("awaitPollIntervalMillis", "1000").toLong()
-)

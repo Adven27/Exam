@@ -129,7 +129,7 @@ enum class HelperSource(
     ) {
         override fun invoke(context: Any?, options: Options): Any? = if (context is String && context.isNotBlank()) {
             dateFormat(
-                Date(),
+                LocalDate.now().toDateTimeAtStartOfDay().toInstant().toDate(),
                 options,
                 context,
                 options.param(0, Locale.getDefault().toString()),

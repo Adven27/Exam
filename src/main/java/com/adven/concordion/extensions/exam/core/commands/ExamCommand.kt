@@ -1,11 +1,16 @@
 package com.adven.concordion.extensions.exam.core.commands
 
 import com.adven.concordion.extensions.exam.core.ExamExtension
+import com.adven.concordion.extensions.exam.core.html.Html
+import com.adven.concordion.extensions.exam.core.html.takeAttr
 import nu.xom.Attribute
+import org.awaitility.Awaitility
+import org.awaitility.core.ConditionFactory
 import org.concordion.api.*
 import org.concordion.api.listener.ExecuteEvent
 import org.concordion.api.listener.ExecuteListener
 import org.concordion.internal.util.Announcer
+import java.util.concurrent.TimeUnit
 
 open class ExamCommand(private val name: String, private val tag: String) : AbstractCommand() {
     private val listeners = Announcer.to(ExecuteListener::class.java)
@@ -33,3 +38,28 @@ open class ExamCommand(private val name: String, private val tag: String) : Abst
         Element(elem).appendNonBreakingSpaceIfBlank()
     }
 }
+
+fun CommandCall?.awaitConfig() = AwaitConfig(
+    takeAttr("awaitAtMostSec", "0").toLong(),
+    takeAttr("awaitPollDelayMillis", "0").toLong(),
+    takeAttr("awaitPollIntervalMillis", "1000").toLong()
+)
+
+fun Html.awaitConfig() = AwaitConfig(
+    takeAwayAttr("awaitAtMostSec", "0").toLong(),
+    takeAwayAttr("awaitPollDelayMillis", "0").toLong(),
+    takeAwayAttr("awaitPollIntervalMillis", "1000").toLong()
+)
+
+data class AwaitConfig(val atMostSec: Long, val pollDelay: Long, val pollInterval: Long) {
+    fun enabled(): Boolean = atMostSec > 0
+}
+
+fun AwaitConfig.await(desc: String): ConditionFactory = Awaitility.await(desc)
+    .atMost(atMostSec, TimeUnit.SECONDS)
+    .pollDelay(pollDelay, TimeUnit.MILLISECONDS)
+    .pollInterval(pollInterval, TimeUnit.MILLISECONDS)
+
+fun AwaitConfig.timeoutMessage(e: Exception) =
+    "Check with poll delay $pollDelay ms and poll interval $pollInterval ms didn't complete within $atMostSec seconds because ${e.cause?.message}"
+

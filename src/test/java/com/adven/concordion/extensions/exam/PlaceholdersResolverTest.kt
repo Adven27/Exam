@@ -18,22 +18,6 @@ class PlaceholdersResolverTest {
     private val eval = OgnlEvaluator(Object())
 
     @Test
-    fun rangeAscent() {
-        assertThat(
-            (eval.resolveToObj("1..5") as IntProgression).toList(),
-            `is`(listOf(1, 2, 3, 4, 5))
-        )
-    }
-
-    @Test
-    fun rangeDescent() {
-        assertThat(
-            (eval.resolveToObj("5..1") as IntProgression).toList(),
-            `is`(listOf(5, 4, 3, 2, 1))
-        )
-    }
-
-    @Test
     fun canUseConcordionVars() {
         eval.setVariable("#value", 3)
 
