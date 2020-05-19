@@ -334,3 +334,5 @@ fun CommandCall?.htmlCss(styleClass: String) {
 }
 
 fun CommandCall?.html() = Html(this!!.element)
+fun CommandCall?.takeAttr(name: String, def: String) = html().takeAwayAttr(name, def)
+fun CommandCall?.attr(name: String, def: String) = html().attr(name) ?: def

@@ -315,33 +315,6 @@ class ContainsFilterTable(actualTable: ITable?, expectedTable: ITable?, ignoredC
     }
 }
 
-class DataSetImpl(private var value: String, private var strategy: SeedStrategy, private var useSequenceFiltering: Boolean, private var tableOrdering: Array<String>, private var disableConstraints: Boolean, private var fillIdentityColumns: Boolean) {
-
-    fun value(): String {
-        return value
-    }
-
-    fun strategy(): SeedStrategy {
-        return strategy
-    }
-
-    fun useSequenceFiltering(): Boolean {
-        return useSequenceFiltering
-    }
-
-    fun tableOrdering(): Array<String> {
-        return tableOrdering
-    }
-
-    fun disableConstraints(): Boolean {
-        return disableConstraints
-    }
-
-    fun fillIdentityColumns(): Boolean {
-        return fillIdentityColumns
-    }
-}
-
 /**
  * Same as arquillian persistence: https://docs.jboss.org/author/display/ARQ/Persistence
  * Data insert strategies
@@ -375,3 +348,11 @@ enum class CompareOperation {
 }
 
 class DataBaseSeedingException(message: String?, cause: Throwable?) : RuntimeException(message, cause)
+
+data class DataSetConfig(
+    var datasets: List<String>,
+    var strategy: SeedStrategy = SeedStrategy.CLEAN_INSERT,
+    var isUseSequenceFiltering: Boolean = true,
+    var isFillIdentityColumns: Boolean = false,
+    var tableOrdering: List<String> = listOf()
+)

@@ -155,3 +155,5 @@ fun String.parseDate(format: String?): Date = this.parseDateTime(format).toDate(
 fun String.parseDateTime(format: String?): DateTime = DateTime.parse(
     this, if (format == null) ISODateTimeFormat.dateTimeParser().withOffsetParsed() else DateTimeFormat.forPattern(format)
 )
+
+fun String.fileExt() = substring(lastIndexOf('.') + 1).toLowerCase()

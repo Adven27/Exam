@@ -30,5 +30,6 @@ open class ExamCommand(private val name: String, private val tag: String) : Abst
         elem.namespacePrefix = ""
         elem.namespaceURI = null
         elem.localName = tag
+        Element(elem).appendNonBreakingSpaceIfBlank()
     }
 }

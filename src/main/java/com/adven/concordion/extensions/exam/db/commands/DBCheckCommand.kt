@@ -6,6 +6,7 @@ import com.adven.concordion.extensions.exam.core.utils.parsePeriod
 import com.adven.concordion.extensions.exam.db.DbPlugin
 import com.adven.concordion.extensions.exam.db.DbResultRenderer
 import com.adven.concordion.extensions.exam.db.DbTester
+import com.adven.concordion.extensions.exam.db.RowComparator
 import org.awaitility.Awaitility
 import org.awaitility.core.ConditionTimeoutException
 import org.concordion.api.CommandCall
@@ -74,8 +75,8 @@ class DBCheckCommand(
     private fun assertEq(rootEl: Html, resultRecorder: ResultRecorder?) {
         var root = rootEl
         val sortCols: Array<String> = if (orderBy.isEmpty()) expectedTable.columnNamesArray() else orderBy
-        var actual = sortedTable(actualTable.withColumnsAsIn(expectedTable), sortCols)
-        val expected = sortedTable(CompositeTable(actual.tableMetaData, expectedTable), sortCols)
+        var actual = sortedTable(actualTable.withColumnsAsIn(expectedTable), sortCols, dbTester.dbUnitConfig.overrideRowSortingComparer)
+        val expected = sortedTable(CompositeTable(actual.tableMetaData, expectedTable), sortCols, dbTester.dbUnitConfig.overrideRowSortingComparer)
         val atMostSec = root.takeAwayAttr("awaitAtMostSec")
         val pollDelay = root.takeAwayAttr("awaitPollDelayMillis")
         val pollInterval = root.takeAwayAttr("awaitPollIntervalMillis")
@@ -90,7 +91,7 @@ class DBCheckCommand(
                         .pollDelay(delay, TimeUnit.MILLISECONDS)
                         .pollInterval(interval, TimeUnit.MILLISECONDS)
                         .untilAsserted {
-                            actual = sortedTable(actualTable.withColumnsAsIn(expectedTable), sortCols)
+                            actual = sortedTable(actualTable.withColumnsAsIn(expectedTable), sortCols, dbTester.dbUnitConfig.overrideRowSortingComparer)
                             dbUnitAssert(expected, actual)
                             if (dbTester.dbUnitConfig.diffFailureHandler.diffList.isNotEmpty()) {
                                 throw AssertionError()
@@ -142,13 +143,8 @@ class DBCheckCommand(
         )
     }
 
-    private fun sortedTable(table: ITable, columns: Array<String>) = SortedTable(table, columns).apply {
-        setUseComparable(true)
-        setRowComparator(dbTester.dbUnitConfig.overrideRowSortingComparer.init(table, columns))
-    }
-
     private fun checkResult(root: Html, expected: ITable, actual: ITable, diffs: List<Difference>, resultRecorder: ResultRecorder) {
-        val cell: (Html, Int, String) -> Html = { td, row, col ->
+        val markAsSuccessOrFailure: (Html, Int, String) -> Html = { td, row, col ->
             val value = expected[row, col]
             val expectedValue = valuePrinter.wrap(value)
             diffs.firstOrNull { diff ->
@@ -160,7 +156,7 @@ class DBCheckCommand(
                     )
                 )
         }
-        renderTable(root, expected, { "" }, { _, _ -> 0 }, cell, { markAsSuccess(resultRecorder) })
+        renderTable(root, expected, markAsSuccessOrFailure, ifEmpty = { markAsSuccess(resultRecorder) })
     }
 
     private fun appendIf(append: Boolean, actual: ITable, row: Int, col: String): String = if (append) " (${actual[row, col]})" else ""
@@ -171,7 +167,8 @@ class DBCheckCommand(
     }
 
     companion object {
-        fun isDbMatcher(text: Any?) = text is String && (text.isRegex() || text.isWithin() || text.isNumber() || text.isNotNull())
+        fun isDbMatcher(text: Any?) =
+            text is String && (text.isRegex() || text.isWithin() || text.isNumber() || text.isString() || text.isNotNull())
     }
 }
 
@@ -268,3 +265,8 @@ private fun String.withinPeriod() = parsePeriod(
         this.indexOf("}")
     ).trim()
 ).toPeriod().toStandardDuration().millis
+
+fun sortedTable(table: ITable, columns: Array<String>, rowComparator: RowComparator) = SortedTable(table, columns).apply {
+    setUseComparable(true)
+    setRowComparator(rowComparator.init(table, columns))
+}

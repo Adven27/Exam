@@ -1,10 +1,15 @@
 package com.adven.concordion.extensions.exam.db.builder
 
+import com.adven.concordion.extensions.exam.core.fileExt
+import com.adven.concordion.extensions.exam.core.utils.findResource
 import com.adven.concordion.extensions.exam.db.DbTester
 import com.adven.concordion.extensions.exam.db.builder.CompareOperation.EQUALS
+import com.adven.concordion.extensions.exam.db.commands.columnNamesArray
+import com.adven.concordion.extensions.exam.db.commands.sortedTable
 import org.concordion.api.Evaluator
 import org.dbunit.Assertion
 import org.dbunit.DatabaseUnitException
+import org.dbunit.assertion.Difference
 import org.dbunit.assertion.comparer.value.ValueComparer
 import org.dbunit.database.AmbiguousTableNameException
 import org.dbunit.dataset.*
@@ -12,36 +17,24 @@ import org.dbunit.dataset.csv.CsvDataSet
 import org.dbunit.dataset.excel.XlsDataSet
 import org.dbunit.dataset.filter.DefaultColumnFilter
 import org.dbunit.dataset.filter.SequenceTableFilter
-import org.dbunit.dataset.xml.FlatXmlDataSet
 import org.dbunit.dataset.xml.FlatXmlDataSetBuilder
 import org.slf4j.LoggerFactory
 import java.io.File
-import java.io.FileOutputStream
 import java.io.IOException
 import java.io.InputStream
 import java.net.URL
-import java.nio.file.Files
-import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
 
 class DataSetExecutor(private val dbTester: DbTester) {
     private val printDBUnitConfig = AtomicBoolean(true)
 
-    fun insertDataSet(dataSetConfig: DataSetConfig, eval: Evaluator) {
+    fun insertDataSet(dataSetConfig: DataSetConfig, eval: Evaluator): IDataSet {
         printDBUnitConfiguration()
-        var resultingDataSet: IDataSet? = null
-        try {
-            if (dataSetConfig.datasets.isNotEmpty()) {
-                resultingDataSet = loadDataSet(dataSetConfig.datasets, eval)
-                resultingDataSet = performTableOrdering(dataSetConfig, resultingDataSet)
-                dataSetConfig.strategy.operation.execute(dbTester.connection, resultingDataSet)
-            } else {
-                log.warn("Database will not be populated because no dataset has been provided.")
+        return try {
+            performTableOrdering(loadDataSets(eval, dataSetConfig.datasets), dataSetConfig.tableOrdering).apply {
+                dataSetConfig.strategy.operation.execute(dbTester.connection, this)
             }
         } catch (e: Exception) {
-            if (log.isDebugEnabled && resultingDataSet != null) {
-                logDataSet(resultingDataSet, e)
-            }
             throw DataBaseSeedingException("Could not initialize dataset: $dataSetConfig", e)
         }
     }
@@ -59,64 +52,47 @@ class DataSetExecutor(private val dbTester: DbTester) {
         }
     }
 
-    private fun logDataSet(resultingDataSet: IDataSet, e: Exception) {
-        try {
-            val datasetFile = Files.createTempFile("dataset-log", ".xml").toFile()
-            log.info("Saving current dataset to " + datasetFile.absolutePath)
-            FileOutputStream(datasetFile).use { fos -> FlatXmlDataSet.write(resultingDataSet, fos) }
-        } catch (e1: Exception) {
-            log.error("Could not log created dataset.", e)
-        }
-    }
-
     /**
-     * @param name one or more (comma separated) dataset names to instance
+     * @param dataSetNames one or more dataset names to instantiate
      * @return loaded dataset (in case of multiple dataSets they will be merged
      * in one using composite dataset)
      */
     @Throws(DataSetException::class, IOException::class)
-    fun loadDataSet(name: String, eval: Evaluator): IDataSet {
-        val dataSetNames = name.trim().split(",").toTypedArray()
-        val dataSets: MutableList<IDataSet> = ArrayList()
+    fun loadDataSets(eval: Evaluator, dataSetNames: List<String>): IDataSet {
         val sensitiveTableNames = dbTester.dbUnitConfig.isCaseSensitiveTableNames()
-        dataSetNames.forEach { dataSet ->
-            var target: IDataSet? = null
-            val dataSetName = dataSet.trim()
-            when (dataSetName.substring(dataSetName.lastIndexOf('.') + 1).toLowerCase()) {
+        return CompositeDataSet(
+            load(dataSetNames, sensitiveTableNames, eval).toTypedArray(),
+            true,
+            sensitiveTableNames
+        )
+    }
+
+    private fun load(dataSetNames: List<String>, sensitiveTableNames: Boolean, eval: Evaluator) =
+        dataSetNames.mapNotNull { dataSet ->
+            val name = dataSet.trim()
+            when (name.fileExt()) {
                 "xml" -> {
-                    target = try {
-                        ExamDataSet(sensitiveTableNames, FlatXmlDataSetBuilder()
+                    try {
+                        FlatXmlDataSetBuilder()
                             .setColumnSensing(dbTester.dbUnitConfig.isColumnSensing)
                             .setCaseSensitiveTableNames(sensitiveTableNames)
-                            .build(getDataSetUrl(dataSetName)), eval)
+                            .build(getDataSetUrl(name))
                     } catch (e: Exception) {
-                        ExamDataSet(sensitiveTableNames, FlatXmlDataSetBuilder()
+                        FlatXmlDataSetBuilder()
                             .setColumnSensing(dbTester.dbUnitConfig.isColumnSensing)
                             .setCaseSensitiveTableNames(sensitiveTableNames)
-                            .build(getDataSetStream(dataSetName)), eval)
+                            .build(getDataSetStream(name))
                     }
                 }
-                "csv" -> {
-                    target = ExamDataSet(sensitiveTableNames, CsvDataSet(
-                        File(javaClass.classLoader.getResource(dataSetName).file).parentFile), eval)
+                "json" -> JSONDataSet(getDataSetStream(name))
+                "xls" -> XlsDataSet(getDataSetStream(name))
+                "csv" -> CsvDataSet(File(name.findResource().file).parentFile)
+                else -> {
+                    log.error("Unsupported dataset extension")
+                    null
                 }
-                "xls" -> {
-                    target = ExamDataSet(sensitiveTableNames, XlsDataSet(getDataSetStream(dataSetName)), eval)
-                }
-                "json" -> {
-                    target = ExamDataSet(sensitiveTableNames, JSONDataSet(getDataSetStream(dataSetName)), eval)
-                }
-                else -> log.error("Unsupported dataset extension")
             }
-            if (target != null) {
-                dataSets.add(target)
-            }
-        }
-        if (dataSets.isEmpty()) {
-            throw RuntimeException("No dataset loaded for name $name")
-        }
-        return CompositeDataSet(dataSets.toTypedArray(), true, sensitiveTableNames)
-    }
+        }.map { ExamDataSet(sensitiveTableNames, it, eval) }.ifEmpty { throw RuntimeException("No dataset loaded for $dataSetNames") }
 
     private fun getDataSetUrl(ds: String): URL {
         var dataSet = ds
@@ -135,10 +111,13 @@ class DataSetExecutor(private val dbTester: DbTester) {
     }
 
     @Throws(AmbiguousTableNameException::class)
-    private fun performTableOrdering(dataSet: DataSetConfig, target: IDataSet?): IDataSet? {
+    private fun performTableOrdering(target: IDataSet, tableOrdering: List<String>): IDataSet {
         var ordered = target
-        if (dataSet.tableOrdering.isNotEmpty()) {
-            ordered = FilteredDataSet(SequenceTableFilter(dataSet.tableOrdering, dbTester.dbUnitConfig.isCaseSensitiveTableNames()), ordered)
+        if (tableOrdering.isNotEmpty()) {
+            ordered = FilteredDataSet(
+                SequenceTableFilter(tableOrdering.toTypedArray(), dbTester.dbUnitConfig.isCaseSensitiveTableNames()),
+                ordered
+            )
         }
         return ordered
     }
@@ -162,38 +141,24 @@ class DataSetExecutor(private val dbTester: DbTester) {
     @JvmOverloads
     @Throws(DatabaseUnitException::class)
     fun compareCurrentDataSetWith(
-        expectedDataSetConfig: DataSetConfig, eval: Evaluator, excludeCols: Array<String> = emptyArray(), orderBy: Array<String>? = null, compareOperation: CompareOperation = EQUALS
-    ) {
+        expectedDataSetConfig: DataSetConfig, eval: Evaluator, excludeCols: Array<String> = emptyArray(), orderBy: Array<String> = emptyArray(), compareOperation: CompareOperation = EQUALS
+    ): Triple<IDataSet, IDataSet, List<Difference>> {
+        dbTester.dbUnitConfig.diffFailureHandler.diffList.clear()
         val current: IDataSet = dbTester.connection.createDataSet()
-        val expected: IDataSet = loadDataSet(expectedDataSetConfig.datasets, eval)
-        try {
-            expected.tableNames
-        } catch (e: DataSetException) {
-            throw RuntimeException("Could not extract dataset table names.", e)
-        }.forEach { tableName ->
-            var expectedTable: ITable? = null
-            var actualTable: ITable? = null
+        val expected: IDataSet = loadDataSets(eval, expectedDataSetConfig.datasets)
+        return expected.tableNames.map { tableName ->
+            var expectedTable: ITable?
+            var actualTable: ITable?
             try {
                 expectedTable = expected.getTable(tableName)
                 actualTable = current.getTable(tableName)
             } catch (e: DataSetException) {
                 throw RuntimeException("DataSet comparison failed due to following exception: ", e)
             }
-            if (orderBy != null && orderBy.isNotEmpty()) {
-                val validOrderByColumns: MutableList<String> = ArrayList() //gather valid columns for sorting expected dataset
-                for (i in 0 until expectedTable.rowCount) {
-                    for (orderColumn in orderBy) {
-                        try {
-                            validOrderByColumns.add(orderColumn) //add only existing columns on current table
-                        } catch (ignored: NullPointerException) {
-                        }
-                    }
-                }
-                expectedTable = SortedTable(expectedTable, validOrderByColumns.toTypedArray())
-                actualTable = SortedTable(actualTable, validOrderByColumns.toTypedArray())
-            }
-            var filteredActualTable = DefaultColumnFilter.includedColumnsTable(actualTable,
-                expectedTable!!.tableMetaData.columns)
+            val sortCols: Array<String> = if (orderBy.isEmpty()) expectedTable.columnNamesArray() else orderBy
+            expectedTable = sortedTable(expectedTable, sortCols, dbTester.dbUnitConfig.overrideRowSortingComparer)
+            actualTable = sortedTable(actualTable, sortCols, dbTester.dbUnitConfig.overrideRowSortingComparer)
+            var filteredActualTable = DefaultColumnFilter.includedColumnsTable(actualTable, expectedTable.tableMetaData.columns)
             if (compareOperation == CompareOperation.CONTAINS) {
                 filteredActualTable = ContainsFilterTable(filteredActualTable, expectedTable, listOf(*excludeCols))
             }
@@ -203,6 +168,13 @@ class DataSetExecutor(private val dbTester: DbTester) {
                 dbTester.dbUnitConfig.diffFailureHandler,
                 dbTester.dbUnitConfig.valueComparer,
                 dbTester.dbUnitConfig.columnValueComparers as Map<String?, ValueComparer?>
+            )
+            expectedTable to filteredActualTable
+        }.toMap().let {
+            Triple(
+                CompositeDataSet(it.keys.toTypedArray()),
+                CompositeDataSet(it.values.toTypedArray()),
+                dbTester.dbUnitConfig.diffFailureHandler.diffList as List<Difference>
             )
         }
     }

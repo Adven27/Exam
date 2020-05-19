@@ -82,16 +82,22 @@ fun renderTable(root: Html, t: ITable, remarks: HashMap<String, Int>, valuePrint
     renderTable(
         root,
         t,
-        { col: String -> if (remarks.containsKey(col)) "table-info" else "" },
-        { col1, col2 -> -compareValues(remarks[col1], remarks[col2]) },
         { td, row, col -> td()(Html(valuePrinter.wrap(t[row, col]))) },
-        { }
+        { col: String -> if (remarks.containsKey(col)) "table-info" else "" },
+        { col1, col2 -> -compareValues(remarks[col1], remarks[col2]) }
     )
 }
 
-fun renderTable(root: Html, t: ITable, styleCol: (String) -> String, sortCols: (col1: String, col2: String) -> Int, cell: (Html, Int, String) -> Html, ifEmpty: Html.() -> Unit) {
+fun renderTable(
+    root: Html,
+    t: ITable,
+    cell: (Html, Int, String) -> Html,
+    styleCol: (String) -> String = { "" },
+    sortCols: (col1: String, col2: String) -> Int = { _, _ -> 0 },
+    ifEmpty: Html.() -> Unit = { }
+): Html {
     val cols = t.columnsSortedBy(sortCols)
-    root(
+    return root(
         tableCaption(root.takeAwayAttr("caption"), t.tableName()),
         thead()(tr()(cols.map { th(it, CLASS to styleCol(it)) })),
         tbody()(

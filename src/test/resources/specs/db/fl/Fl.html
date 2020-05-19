@@ -3,7 +3,7 @@
 <h1>Table setting</h1>
 <e:summary/>
 <e:example name="DbUnit operations support">
-    <e:given>
+    <e:given print="true">
         Given record <b cc:set="#id">99</b>
                      <b cc:set="#name">Don</b>
                      <b cc:set="#age">40</b>
@@ -12,24 +12,22 @@
                      <b cc:set="#value">4444</b>
         <span cc:assertTrue="addRecordWithField(#id, #name, #age, #bd, #field, #value)">present</span> in PERSON
         <e:db-show table="PERSON" saveToResources="/data/db/person.xml"/>
-        <e:db-show table="PERSON_FIELDS"/>
+        <e:db-show table="PERSON_FIELDS" saveToResources="/data/db/person.json"/>
     </e:given>
-    <e:then>
+    <e:then print="true">
         <e:db-verify datasets="/data/db/person.xml"/>
     </e:then>
     <e:when print="true">
         <e:db-execute datasets="/data/db/empty.xml"/>
-        <e:db-show table="PERSON"/>
     </e:when>
-    <e:then>
+    <e:then print="true">
         <e:db-verify datasets="/data/db/empty.xml"/>
     </e:then>
     <e:when print="true">
-        <e:db-execute datasets="/data/db/adam.xml, /data/db/bob.xml"/>
-        <e:db-show table="PERSON"/>
+        <e:db-execute datasets="/data/db/adam.xml, /data/db/bob.json, /data/db/carl/person.csv"/>
     </e:when>
-    <e:then>
-        <e:db-verify datasets="/data/db/bob.xml, /data/db/adam.xml"/>
+    <e:then print="true">
+        <e:db-verify dir="/data/db/" datasets="adam.xml, carl/person.csv, bob-expected.json"/>
     </e:then>
 </e:example>
 </body>
