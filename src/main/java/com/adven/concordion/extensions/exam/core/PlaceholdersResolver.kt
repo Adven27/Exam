@@ -51,21 +51,10 @@ fun periodBy(value: Int, type: String): BaseSingleFieldPeriod = when (type) {
 fun Evaluator.resolveToObj(placeholder: String?): Any? = when {
     placeholder == null -> null
     placeholder.startsWith("'") && placeholder.endsWith("'") -> placeholder.substring(1, placeholder.lastIndex)
-    placeholder.isRange() -> placeholder.toRange()
     else -> HANDLEBARS.resolveObj(this, placeholder)
 }
 
 fun resolveToObj(placeholder: String?, evaluator: Evaluator): Any? = evaluator.resolveToObj(placeholder)
-
-fun String.isRange() = this.matches("^[0-9]+[.]{2}[0-9]+$".toRegex())
-
-fun String.toRange(): IntProgression = when {
-    this.isRange() -> {
-        val (start, end) = this.split("[.]{2}".toRegex()).map(String::toInt)
-        IntProgression.fromClosedRange(start, end, end.compareTo(start))
-    }
-    else -> throw IllegalArgumentException("Couldn't parse range from string $this")
-}
 
 fun String?.vars(eval: Evaluator, setVar: Boolean = false, separator: String = ","): Map<String, Any?> = this?.split(separator)
     ?.map { it.split('=', limit = 2) }

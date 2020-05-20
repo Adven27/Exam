@@ -18,12 +18,12 @@ import java.util.concurrent.ConcurrentHashMap
  * @param config properties for org.dbunit.database.DatabaseConfig
  */
 open class DbTester @JvmOverloads constructor(
-        driver: String,
-        url: String,
-        user: String,
-        password: String,
-        schema: String? = null,
-        private val config: Map<String, Any?> = emptyMap()
+    driver: String,
+    url: String,
+    user: String,
+    password: String,
+    schema: String? = null,
+    val dbUnitConfig: DbUnitConfig = DbUnitConfig()
 ) : JdbcDatabaseTester(driver, url, user, password, schema) {
 
     companion object {
@@ -31,6 +31,10 @@ open class DbTester @JvmOverloads constructor(
     }
 
     val executors = ConcurrentHashMap<String, DbTester>()
+
+    fun connectionFor(ds: String?): IDatabaseConnection {
+        return executors[ds]?.connection ?: throw IllegalArgumentException("DB tester $ds not found. Registered: $executors")
+    }
 
     override fun getConnection(): IDatabaseConnection {
         val conn = super.getConnection()
@@ -50,7 +54,7 @@ open class DbTester @JvmOverloads constructor(
             }
             else -> System.err.println("No matching database product found $dbName")
         }
-        config.forEach { (k, v) -> cfg.setProperty(k, v) }
+        dbUnitConfig.databaseConfigProperties.forEach { (k, v) -> cfg.setProperty(k, v) }
         return conn
     }
 }

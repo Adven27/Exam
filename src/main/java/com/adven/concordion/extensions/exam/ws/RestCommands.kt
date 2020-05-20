@@ -188,7 +188,7 @@ class CaseCommand(
         val where = caseRoot.first(WHERE)
         if (where != null) {
             val vars = where.takeAwayAttr(VARIABLES, "", eval).split(",").map { it.trim() }
-            val vals = RowParser(where, VALUES, eval).parse()
+            val vals = RowParserEval(where, VALUES, eval).parse()
             cases += vals.map { vars.mapIndexed { i, name -> "#$name" to it[i] }.toMap() }
         } else {
             cases.add(HashMap())

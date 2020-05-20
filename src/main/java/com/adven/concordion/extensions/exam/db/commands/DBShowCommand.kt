@@ -1,15 +1,26 @@
 package com.adven.concordion.extensions.exam.db.commands
 
+import com.adven.concordion.extensions.exam.core.fileExt
 import com.adven.concordion.extensions.exam.core.html.html
+import com.adven.concordion.extensions.exam.core.html.pre
 import com.adven.concordion.extensions.exam.core.html.table
 import com.adven.concordion.extensions.exam.db.DbPlugin
 import com.adven.concordion.extensions.exam.db.DbTester
+import com.adven.concordion.extensions.exam.db.builder.JSONWriter
 import org.concordion.api.CommandCall
 import org.concordion.api.Evaluator
 import org.concordion.api.ResultRecorder
 import org.dbunit.database.IDatabaseConnection
+import org.dbunit.database.search.TablesDependencyHelper.getAllDependentTables
 import org.dbunit.dataset.ITable
+import org.dbunit.dataset.csv.CsvDataSetWriter
+import org.dbunit.dataset.excel.XlsDataSet
 import org.dbunit.dataset.filter.DefaultColumnFilter.includedColumnsTable
+import org.dbunit.dataset.xml.FlatXmlDataSet
+import java.io.ByteArrayOutputStream
+import java.io.File
+import java.io.FileOutputStream
+import java.nio.file.Paths
 
 class DBShowCommand(name: String, tag: String, dbTester: DbTester, valuePrinter: DbPlugin.ValuePrinter) : DBCommand(name, tag, dbTester, valuePrinter) {
 
@@ -17,8 +28,9 @@ class DBShowCommand(name: String, tag: String, dbTester: DbTester, valuePrinter:
         val el = table(cmd.html())
         val tableName = el.takeAwayAttr("table", eval)!!
         val where = el.takeAwayAttr("where", eval)
+        val saveToResources = el.takeAwayAttr("saveToResources", eval)
         val ds = el.takeAwayAttr("ds", DbTester.DEFAULT_DATASOURCE)
-        val conn = dbTester.executors[ds]!!.connection
+        val conn = dbTester.connectionFor(ds)
 
         renderTable(
             el,
@@ -27,11 +39,42 @@ class DBShowCommand(name: String, tag: String, dbTester: DbTester, valuePrinter:
                     conn.createTable(tableName)
                 else
                     getFilteredTable(conn, tableName, where),
-                parseCols(el, eval!!).keys.toTypedArray()
-            ))
+                parseCols(el).keys.toTypedArray()
+            ),
+            remarks,
+            valuePrinter
+        )
+        val dataSet = conn.createDataSet(getAllDependentTables(conn, tableName))
+        ByteArrayOutputStream().use {
+            when (saveToResources?.fileExt() ?: "xml") {
+                "json" -> JSONWriter(dataSet, it).write().run { saveIfNeeded(saveToResources, it) }
+                "xls" -> XlsDataSet.write(dataSet, it).run { saveIfNeeded(saveToResources, it) }
+                "csv" -> {
+                    saveToResources?.apply {
+                        File(Paths.get("src", "test", "resources").toFile(), substringBeforeLast(".")).apply {
+                            mkdirs()
+                            CsvDataSetWriter.write(dataSet, this)
+                        }
+                    }
+                }
+                else -> FlatXmlDataSet.write(dataSet, it).run { saveIfNeeded(saveToResources, it) }
+            }
+            el.below(pre(it.toString("UTF-8")))
+        }
     }
 
-    private fun getFilteredTable(connection: IDatabaseConnection, tableName: String, rowFilter: String): ITable {
-        return connection.createQueryTable(tableName, "SELECT * FROM $tableName WHERE $rowFilter")
+    private fun saveIfNeeded(saveToResources: String?, outputStream: ByteArrayOutputStream) {
+        saveToResources?.apply {
+            FileOutputStream(
+                File(Paths.get("src", "test", "resources").toFile(), this).apply {
+                    parentFile.mkdirs()
+                    createNewFile()
+                },
+                false
+            ).use { outputStream.writeTo(it) }
+        }
     }
+
+    private fun getFilteredTable(connection: IDatabaseConnection, tableName: String, rowFilter: String): ITable =
+        connection.createQueryTable(tableName, "SELECT * FROM $tableName WHERE $rowFilter")
 }

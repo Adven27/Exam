@@ -51,7 +51,7 @@ open class Specs {
 
         private val EXAM = ExamExtension().withPlugins(
             WsPlugin(PORT),
-            DbPlugin(dbTester, dbUnitConfig = DbUnitConfig(columnValueComparers = mapOf("DATETIME_TYPE" to IgnoreMillisComparer()))),
+            DbPlugin(dbTester),
             FlPlugin(),
             MqPlugin(
                 mapOf("myQueue" to object : MqTesterAdapter() {
@@ -197,7 +197,8 @@ open class Specs {
         private fun dbTester(): DbTester {
             return DbTester(
                 "org.h2.Driver", "jdbc:h2:mem:test;DB_CLOSE_DELAY=-1;INIT=RUNSCRIPT FROM 'classpath:sql/populate.sql'",
-                "sa", ""
+                "sa", "",
+                dbUnitConfig = DbUnitConfig(columnValueComparers = mapOf("DATETIME_TYPE" to IgnoreMillisComparer()))
             )
         }
     }

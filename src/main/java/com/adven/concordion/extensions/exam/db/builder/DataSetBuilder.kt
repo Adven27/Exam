@@ -1,7 +1,6 @@
 package com.adven.concordion.extensions.exam.db.builder
 
 import org.dbunit.dataset.CachedDataSet
-import org.dbunit.dataset.CompositeDataSet
 import org.dbunit.dataset.IDataSet
 import org.dbunit.dataset.ITableMetaData
 import org.dbunit.dataset.stream.BufferedConsumer
@@ -26,11 +25,6 @@ class DataSetBuilder(private val stringPolicy: IStringPolicy = CaseInsensitiveSt
         endTableIfNecessary()
         consumer.endDataSet()
         return dataSet
-    }
-
-    fun addDataSet(newDataSet: IDataSet) {
-        this.dataSet = CachedDataSet(CompositeDataSet(arrayOf(build(), newDataSet)))
-        consumer = BufferedConsumer(this.dataSet)
     }
 
     /**

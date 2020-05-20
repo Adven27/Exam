@@ -52,7 +52,7 @@ fun Document.prettyXml(): String {
     }
 }
 
-fun Html.content(eval: Evaluator) = this.attr("from")?.findResource(eval)?.readText() ?: this.text()
+fun Html.content(eval: Evaluator) = this.attr("from")?.findResource(eval)?.readText() ?: this.text().trim()
 fun String.findResource(eval: Evaluator) = ExamExtension::class.java.getResource(eval.resolveJson(this))
     ?: throw FileNotFoundException("File not found: $this")
 
