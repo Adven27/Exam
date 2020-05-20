@@ -27,7 +27,6 @@ import java.io.File
 import java.io.IOException
 import java.io.InputStream
 import java.net.URL
-import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicBoolean
 
 class DataSetExecutor(private val dbTester: DbTester) {
@@ -156,11 +155,11 @@ class DataSetExecutor(private val dbTester: DbTester) {
         return expected.tableNames.map { tableName ->
             var expectedTable = expected.getTable(tableName)
             val sortCols = if (orderBy.isEmpty()) expectedTable.columnNamesArray() else orderBy.filterBy(tableName)
-            expectedTable = sortedTable(expectedTable, sortCols, dbTester.dbUnitConfig.overrideRowSortingComparer)
             var actualTable = DefaultColumnFilter.includedColumnsTable(
                 sortedTable(current.getTable(tableName), sortCols, dbTester.dbUnitConfig.overrideRowSortingComparer),
                 expectedTable.tableMetaData.columns
             )
+            expectedTable = sortedTable(expectedTable.applyTableMetaDataFrom(actualTable), sortCols, dbTester.dbUnitConfig.overrideRowSortingComparer)
             if (compareOperation == CompareOperation.CONTAINS) {
                 actualTable = ContainsFilterTable(actualTable, expectedTable, listOf(*excludeCols))
             }
@@ -187,6 +186,8 @@ class DataSetExecutor(private val dbTester: DbTester) {
             }
         }
     }
+
+    private fun ITable.applyTableMetaDataFrom(source: ITable) = CompositeTable(source.tableMetaData, this)
 
     @JvmOverloads
     fun awaitCompareCurrentDataSetWith(

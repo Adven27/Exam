@@ -51,7 +51,7 @@ class DataSetVerifyCommand(name: String, tag: String, val dbTester: DbTester, va
         DataSetExecutor(commandCall.ds(dbTester)).awaitCompareCurrentDataSetWith(
             commandCall.awaitConfig(), DataSetConfig(commandCall.dataSets()), evaluator, orderBy = commandCall.orderBy()
         ).apply {
-            val mismatchedTables = rowsMismatch.sortedBy { it.first.tableName() }.map { mismatch ->
+            val mismatchedTables = rowsMismatch.sortedAsTables(expected.tableNames).map { mismatch ->
                 render(mismatch, root)
                 resultRecorder.record(FAILURE)
                 mismatch.first.tableName()
@@ -74,7 +74,7 @@ class DataSetVerifyCommand(name: String, tag: String, val dbTester: DbTester, va
                 expected.tableName()
             }.toList()
             val passed: (table: ITable) -> Boolean = { table -> !(diffTables + mismatchedTables).contains(table.tableName()) }
-            expected.reverseIterator().apply {
+            expected.iterator().apply {
                 while (next()) {
                     if (passed(table)) {
                         root(table.let { expected ->
@@ -100,8 +100,11 @@ class DataSetVerifyCommand(name: String, tag: String, val dbTester: DbTester, va
         }
     }
 
+    private fun List<Triple<ITable, ITable, DbComparisonFailure>>.sortedAsTables(tables: Array<String>) =
+        tables.mapNotNull { t -> this.find { it.first.tableName() == t } }
+
     private fun render(mismatch: Triple<ITable, ITable, DbComparisonFailure>, root: Html) {
-        root.below(
+        root(
             div().css("rest-failure bd-callout bd-callout-danger")(div(mismatch.third.message))(
                 span("Expected: "),
                 render(mismatch.first),

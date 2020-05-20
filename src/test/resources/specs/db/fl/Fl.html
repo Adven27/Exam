@@ -1,15 +1,15 @@
-<html xmlns:e="http://exam.extension.io"  xmlns:cc="http://www.concordion.org/2007/concordion">
+<html xmlns:e="http://exam.extension.io" xmlns:cc="http://www.concordion.org/2007/concordion">
 <body>
 <h1>Table setting</h1>
 <e:summary/>
 <e:example name="Success">
     <e:given print="true">
         Given record <b cc:set="#id">99</b>
-                     <b cc:set="#name">Don</b>
-                     <b cc:set="#age">40</b>
-                     <b cc:set="#bd">01.01.2000</b>
-                     <b cc:set="#field">passport</b>
-                     <b cc:set="#value">4444</b>
+        <b cc:set="#name">Don</b>
+        <b cc:set="#age">40</b>
+        <b cc:set="#bd">01.01.2000</b>
+        <b cc:set="#field">passport</b>
+        <b cc:set="#value">4444</b>
         <span cc:assertTrue="addRecordWithField(#id, #name, #age, #bd, #field, #value)">present</span> in PERSON
         <e:db-show table="PERSON" saveToResources="/data/db/person.xml"/>
         <e:db-show table="PERSON_FIELDS" saveToResources="/data/db/person.json"/>
@@ -28,11 +28,13 @@
         <e:db-execute datasets="/data/db/adam.xml, /data/db/bob.json, /data/db/carl/person.csv"/>
     </e:when>
     <e:then print="true">
-        <e:db-verify dir="/data/db/" datasets="adam.xml, carl/person.csv, bob-expected.json"/>
+        <e:db-verify dir="/data/db/" datasets="adam.xml, carl/person.csv, bob-expected.json" orderBy="person_fields.person_id"/>
+        Beware! The first dataset columns metadata will be used as a result of the datasets merge: PERSON_FIELDS.ID column ignored for the whole check
+        <e:db-verify dir="/data/db/" datasets="adam-ignore-id.xml, bob-wrong-id.json, carl/person.csv"/>
     </e:then>
     <e:when print="true">
         <span>Clean insert:</span>
-        <e:db-execute datasets="/data/db/adam.xml"  debug="true"/>
+        <e:db-execute datasets="/data/db/adam.xml" debug="true"/>
         <span>Append:</span>
         <e:db-execute operation="insert" datasets="/data/db/bob.json" debug="true"/>
     </e:when>

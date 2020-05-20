@@ -133,7 +133,7 @@ open class RowComparator {
         override fun compare(col: Column?, val1: Any?, val2: Any?) = this@RowComparator.compare(col, val1, val2)
     }
 
-    fun compare(column: Column?, value1: Any?, value2: Any?): Int = try {
+    open fun compare(column: Column?, value1: Any?, value2: Any?): Int = try {
         column!!.dataType.compare(value1, value2)
     } catch (e: Exception) {
         0
