@@ -1,0 +1,309 @@
+<?xml version="1.0" encoding="UTF-8"?><html xmlns:e="http://exam.extension.io" xmlns:cc="http://www.concordion.org/2007/concordion"><head><style>* {
+  font-family: Arial;
+}
+body {
+  padding: 32px;  
+}
+pre {
+  padding: 6px 28px 6px 28px;
+  background-color: #E8EEF7;
+}
+pre, pre *, code, code *, kbd {
+  font-family: Courier New, Courier;
+  font-size: 10pt;
+}
+h1, h1 * {
+  font-size: 24pt;	
+}
+p, td, th, li, .breadcrumbs {
+  font-size: 10pt;
+}
+p, li {
+  line-height: 140%;
+  max-width: 720px;
+}
+table {
+  border-collapse: collapse;
+  empty-cells: show;
+  margin: 8px 0px 8px 0px;
+}
+th, td {
+  border: 1px solid black;
+  padding: 3px;
+}
+td {
+  background-color: white;
+  vertical-align: top;
+}
+th {
+  background-color: #C3D9FF;
+}
+li {
+  margin-top: 6px;
+  margin-bottom: 6px; 
+}
+
+.example, :not(th)[cc\:example] {
+  padding: 6px 16px 6px 16px;
+  border: 1px solid #C3D9FF;
+  margin: 6px 0px 28px 0px;
+  background-color: #F5F9FD;
+}
+.example h3, [cc\:example] h3 {
+  margin-top: 8px;
+  margin-bottom: 8px;
+  font-size: 12pt;
+}
+
+p.success {
+  padding: 2px;
+}
+.success, .success * {
+  background-color: #afa !important;
+}
+.success pre {
+  background-color: #bbffbb;
+}
+.failure, .failure * {
+  background-color: #ffb0b0;
+  padding: 1px;
+}
+.failure .expected {
+  text-decoration: line-through;
+  color: #bb5050;
+}
+.ignored, .ignored * {
+  background-color: #f0f0f0 !important;	
+}
+
+ins {
+  text-decoration: none;	
+}
+
+.exceptionMessage {
+  background-color: #fdd;
+  font-family: Courier New, Courier, Monospace;
+  font-size: 10pt;
+  display: block;
+  font-weight: normal;
+  padding: 4px;
+  text-decoration: none !important;
+}
+.stackTrace, .stackTrace * {
+  font-weight: normal;
+}
+.stackTrace {
+  display: none;
+  padding: 1px 4px 4px 4px;
+  background-color: #fdd;
+  border-top: 1px dotted black;
+}
+.stackTraceExceptionMessage {
+  display: block;
+  font-family: Courier New, Courier, Monospace;
+  font-size: 8pt;
+  white-space: wrap;
+  padding: 1px 0px 1px 0px;
+}
+.stackTraceEntry {
+  white-space: nowrap;
+  font-family: Courier New, Courier, Monospace;
+  display: block;
+  font-size: 8pt;
+  padding: 1px 0px 1px 32px;
+}
+.stackTraceButton {
+  font-size: 8pt;
+  margin: 2px 8px 2px 0px;
+  font-weight: normal;
+  font-family: Arial;
+}
+
+.special {
+  font-style: italic;
+}
+.missing, .missing * {
+  background-color: #ff9999;
+  color:#bb5050;
+  text-decoration: line-through;
+}
+.surplus, .surplus * {
+  background-color: #ff9999;
+}
+.footer {
+  text-align: right;
+  margin-top: 40px;
+  font-size: 8pt;
+  width: 100%;
+  color: #999;
+}
+.footer .testTime {
+  padding: 2px 10px 0px 0px;
+}
+
+.idea {
+  font-size: 9pt;
+  color: #888;
+  font-style: italic;	
+}
+.tight li {
+  margin-top: 1px;
+  margin-bottom: 1px; 
+}
+.commentary {
+  float: right;
+  width: 200px;
+  background-color: #ffffd0;
+  padding:8px;
+  border: 3px solid #eeeeb0;	 
+  margin: 10px 0px 10px 10px;	 
+}
+.commentary, .commentary * {
+  font-size: 8pt;
+}
+</style><meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<link type="text/css" rel="stylesheet" href="../../../timingExtensionStyle.css" /><script type="text/javascript" src="../../../timingExtensionToggle.js"></script><link type="text/css" rel="stylesheet" href="../../../codemirror/codemirror.css" /><link type="text/css" rel="stylesheet" href="../../../codemirror/merge.css" /><link type="text/css" rel="stylesheet" href="../../../codemirror/enable-codemirror.css" /><link type="text/css" rel="stylesheet" href="../../../codemirror/foldgutter.css" /><link type="text/css" rel="stylesheet" href="../../../codemirror/simplescrollbar.css" /><script type="text/javascript" src="../../../codemirror/codemirror.js"></script><script type="text/javascript" src="../../../codemirror/enable-codemirror.js"></script><script type="text/javascript" src="../../../codemirror/javascript.js"></script><script type="text/javascript" src="../../../codemirror/xml.js"></script><script type="text/javascript" src="../../../codemirror/htmlmixed.js"></script><script type="text/javascript" src="../../../codemirror/formatting.js"></script><script type="text/javascript" src="../../../codemirror/markdown.js"></script><script type="text/javascript" src="../../../codemirror/diff_match_patch.js"></script><script type="text/javascript" src="../../../codemirror/merge.js"></script><script type="text/javascript" src="../../../codemirror/xml-fold.js"></script><script type="text/javascript" src="../../../codemirror/simplescrollbar.js"></script><script type="text/javascript" src="../../../bootstrap/jquery-3.2.1.slim.min.js"></script><script type="text/javascript" src="../../../bootstrap/popper.min.js"></script><script type="text/javascript" src="../../../bootstrap/bootstrap.min.js"></script><script type="text/javascript" src="../../../bootstrap/sidebar.js"></script><link type="text/css" rel="stylesheet" href="../../../bootstrap/enable-bootstrap.css" /><link type="text/css" rel="stylesheet" href="../../../bootstrap/bootstrap.min.css" /><link type="text/css" rel="stylesheet" href="../../../bootstrap/callout.css" /><link type="text/css" rel="stylesheet" href="../../../bootstrap/font-awesome.min.css" /><link type="text/css" rel="stylesheet" href="../../../bootstrap/scrollToTop.css" /><script type="text/javascript" src="../../../bootstrap/scrollToTop.js"></script></head><body><div id="toggle-button"><img id="toggle-on" src="../../../timing-on.svg" height="24" width="24" style="display:none" /><img id="toggle-off" src="../../../timing-off.svg" height="24" width="24" /></div><span class="breadcrumbs"><a href="../../Specs.html">Exam - Concordion extension</a> &gt; <a href="../Db.html">Working with DB</a> &gt;</span>
+<h1>Table setting</h1>
+<div cmdId="01de808c-4add-4d61-84c2-8abb0d686d2d" e:summary="" class="pin"> <h4>Summary<button type="button" class="btn btn-light btn-sm text-muted ml-1" data-toggle="collapse" data-target="#summary" aria-expanded="true" aria-controls="summary">collapse</button></h4><div id="summary" class="collapse show"><div class="list-group"><a class="list-group-item list-group-item-action" href="#DbUnit operations support">DbUnit operations support<small class="card-img-overlay m-1" style="padding:0; left:inherit;"><span class="badge badge-pill badge-light">222ms</span><span class="badge badge-pill badge-success">19</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small></a><a class="list-group-item list-group-item-action" href="#Default values">Default values<small class="card-img-overlay m-1" style="padding:0; left:inherit;"><span class="badge badge-pill badge-light">80ms</span><span class="badge badge-pill badge-success"></span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small></a><a class="list-group-item list-group-item-action" href="#Ranges">Ranges<small class="card-img-overlay m-1" style="padding:0; left:inherit;"><span class="badge badge-pill badge-light">91ms</span><span class="badge badge-pill badge-success">15</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small></a><a class="list-group-item list-group-item-action" href="#Custom cell values separator">Custom cell values separator<small class="card-img-overlay m-1" style="padding:0; left:inherit;"><span class="badge badge-pill badge-light">44ms</span><span class="badge badge-pill badge-success">2</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small></a></div></div></div>
+<div xmlns:c="http://www.concordion.org/2007/concordion" name="DbUnit operations support" cmdId="27124a35-b0a4-46fa-a229-26daf692313e" c:example="DbUnit operations support" class="card mb-3" e:example="" id="DbUnit operations support"><div class="card-header" data-toggle="collapse" data-target="#-505377479" aria-expanded="true" aria-controls="-505377479"><a name="DbUnit operations support" data-type="example">DbUnit operations support</a></div><div class="card-body collapse show" id="-505377479">
+    <div cmdId="0e800346-590b-46a4-b06e-8a9600221ff2" e:given="" class="bd-callout bd-callout-info">
+        Given record <b cc:set="#id">1</b>
+                     <b cc:set="#name">Bob</b>
+                     <b cc:set="#age">50</b>
+                     <b cc:set="#bd">10.10.2000</b>
+        <span cc:assertTrue="addRecord(#id, #name, #age, #bd)" class="success">present</span> in PERSON
+        <table cmdId="294cb868-c599-4bf8-8a67-3fda9ffce877" e:db-show="" class="table table-sm"> <caption><i class="fa fa-database fa-pull-left fa-border"> PERSON</i></caption><thead class="thead-default"><tr><th class="">ID</th><th class="">NAME</th><th class="">AGE</th><th class="">IQ</th><th class="">BIRTHDAY</th></tr></thead><tbody><tr><td class=""><span>1</span></td><td class=""><span>Bob</span></td><td class=""><span>50</span></td><td class=""><span>null</span></td><td class=""><span>2000-10-10 00:00:00.000</span></td></tr></tbody></table><pre>&lt;?xml version='1.0' encoding='UTF-8'?&gt;
+&lt;dataset&gt;
+  &lt;PERSON ID="1" NAME="Bob" AGE="50" BIRTHDAY="2000-10-10 00:00:00.0"/&gt;
+  &lt;PERSON_FIELDS/&gt;
+&lt;/dataset&gt;
+</pre>
+    </div>
+    <div print="true" cmdId="30700511-e409-44c2-a9ca-9ced55cb56b2" e:when="" class="bd-callout bd-callout-warning"><pre class="htmlmixed card">
+&lt;e:db-set operation="insert" caption="Append records" table="PERSON" cols="ID=10..20, NAME, AGE"&gt;
+            &lt;e:row&gt;Andrew,30&lt;/e:row&gt;
+            &lt;e:row&gt;Carl,20&lt;/e:row&gt;
+        &lt;/e:db-set&gt;</pre>
+        <table cmdId="e06dc027-ee56-4048-9fa2-3941540e53b4" e:db-set="" class="table table-sm">
+            
+            
+        <div></div><span></span><caption><i class="fa fa-database fa-pull-left fa-border"> Append records</i></caption><thead class="thead-default"><tr><th class="">ID</th><th class="">NAME</th><th class="">AGE</th></tr></thead><tbody><tr><td class=""><span>10</span></td><td class=""><span>Andrew</span></td><td class=""><span>30</span></td></tr><tr><td class=""><span>11</span></td><td class=""><span>Carl</span></td><td class=""><span>20</span></td></tr></tbody></table>
+    </div>
+    <div cmdId="8f5ba10b-9baf-49dd-b2b2-9cb069140006" e:then="" class="bd-callout bd-callout-success">
+        <table cmdId="1a635933-c951-4e3c-90f5-9b6053c67ed8" e:db-check="" class="table table-sm">
+            
+            
+            
+        <div></div><span></span><caption><i class="fa fa-database fa-pull-left fa-border"> Records was appended</i></caption><thead class="thead-default"><tr><th class="">NAME</th><th class="">AGE</th></tr></thead><tbody><tr><td class=" table-success"> <span>Andrew</span></td><td class=" table-success"> <span>30</span></td></tr><tr><td class=" table-success"> <span>Bob</span></td><td class=" table-success"> <span>50</span></td></tr><tr><td class=" table-success"> <span>Carl</span></td><td class=" table-success"> <span>20</span></td></tr></tbody></table>
+    </div>
+    <div print="true" cmdId="d4426229-08be-4e97-9ea0-de9c7d3fb178" e:when="" class="bd-callout bd-callout-warning"><pre class="htmlmixed card">
+&lt;e:db-set operation="update" caption="Update by primary key" table="PERSON" cols="ID=1, NAME, AGE"&gt;
+            &lt;e:row&gt;not Bob, 500&lt;/e:row&gt;
+        &lt;/e:db-set&gt;</pre>
+        <table cmdId="7af9d2c9-6f6a-4a99-ae75-1c730c08d910" e:db-set="" class="table table-sm">
+            
+        <div></div><span></span><caption><i class="fa fa-database fa-pull-left fa-border"> Update by primary key</i></caption><thead class="thead-default"><tr><th class="">ID</th><th class="">NAME</th><th class="">AGE</th></tr></thead><tbody><tr><td class=""><span>1</span></td><td class=""><span>not Bob</span></td><td class=""><span>500</span></td></tr></tbody></table>
+    </div>
+    <div cmdId="a1a27af7-6867-4240-8369-a62355997f7c" e:then="" class="bd-callout bd-callout-success">
+        <table cmdId="f87763f4-d6d6-4c1f-aaf1-f9df8a551238" e:db-check="" class="table table-sm">
+            
+            
+            
+        <div></div><span></span><caption><i class="fa fa-database fa-pull-left fa-border"> Record was updated</i></caption><thead class="thead-default"><tr><th class="">NAME</th><th class="">AGE</th></tr></thead><tbody><tr><td class=" table-success"> <span>Andrew</span></td><td class=" table-success"> <span>30</span></td></tr><tr><td class=" table-success"> <span>Carl</span></td><td class=" table-success"> <span>20</span></td></tr><tr><td class=" table-success"> <span>not Bob</span></td><td class=" table-success"> <span>500</span></td></tr></tbody></table>
+    </div>
+    <div print="true" cmdId="0159a504-dae4-430e-af89-41f4839a32dd" e:when="" class="bd-callout bd-callout-warning"><pre class="htmlmixed card">
+&lt;e:db-set caption="Clean insert by default" table="PERSON" cols="ID=10..20, NAME, AGE, BIRTHDAY"&gt;
+            &lt;e:row&gt;' Andrew ', 30 , {{date '1990-10-10'}}&lt;/e:row&gt;
+            &lt;e:row&gt;Carl      , 20 , {{date '1980-02-01'}}&lt;/e:row&gt;
+        &lt;/e:db-set&gt;</pre>
+        <table cmdId="51e0437e-3bab-4aac-b302-606cb7e183b9" e:db-set="" class="table table-sm">
+            
+            
+        <div></div><span></span><caption><i class="fa fa-database fa-pull-left fa-border"> Clean insert by default</i></caption><thead class="thead-default"><tr><th class="">ID</th><th class="">NAME</th><th class="">AGE</th><th class="">BIRTHDAY</th></tr></thead><tbody><tr><td class=""><span>10</span></td><td class=""><span> Andrew </span></td><td class=""><span>30</span></td><td class=""><span>1990-10-10 00:00:00.000</span></td></tr><tr><td class=""><span>11</span></td><td class=""><span>Carl</span></td><td class=""><span>20</span></td><td class=""><span>1980-02-01 00:00:00.000</span></td></tr></tbody></table>
+    </div>
+    <div cmdId="795967dd-8524-4bd3-845a-c35c706d0752" e:then="" class="bd-callout bd-callout-success">
+        <table cmdId="2a0cc7f1-bb6e-4380-bfe6-3a28669b3d46" e:db-check="" class="table table-sm">
+            
+            
+        <div></div><span></span><caption><i class="fa fa-database fa-pull-left fa-border"> Table was cleaned and records was inserted</i></caption><thead class="thead-default"><tr><th class="">NAME</th><th class="">AGE</th><th class="">BIRTHDAY</th></tr></thead><tbody><tr><td class=" table-success"> <span> Andrew </span></td><td class=" table-success"> <span>30</span></td><td class=" table-success"> <span>1990-10-10 00:00:00.000</span></td></tr><tr><td class=" table-success"> <span>Carl</span></td><td class=" table-success"> <span>20</span></td><td class=" table-success"> <span>1980-02-01 00:00:00.000</span></td></tr></tbody></table>
+    </div>
+</div><div class="card-footer text-muted" data-toggle="collapse" data-target="#-505377479" aria-expanded="true" aria-controls="-505377479"><small><span class="badge badge-pill badge-success">19</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small></div></div>
+<div xmlns:c="http://www.concordion.org/2007/concordion" name="Default values" cmdId="5446351a-01db-4e30-9a79-f1e853fb1da6" c:example="Default values" class="card mb-3" e:example="" id="Default values"><div class="card-header" data-toggle="collapse" data-target="#1143971841" aria-expanded="true" aria-controls="1143971841"><a name="Default values" data-type="example">Default values</a></div><div class="card-body collapse show" id="1143971841">
+    <div cmdId="cecd35e4-8418-488c-889e-493e8e6d26fe" e:given="" class="bd-callout bd-callout-info">
+        <table cmdId="34ad0ca4-495e-4c6d-8baa-bf4c62751f88" e:db-set="" class="table table-sm"> <div></div><span></span><caption><i class="fa fa-database fa-pull-left fa-border"> Given empty table</i></caption><thead class="thead-default"><tr /></thead><tbody><tr><td colspan="0">&lt;EMPTY&gt;</td></tr></tbody></table>
+    </div>
+    <div print="true" cmdId="88dcd644-4b38-40a0-bcae-34dacfad2c0f" e:then="" class="bd-callout bd-callout-success"><pre class="htmlmixed card">
+&lt;e:db-set caption="Records to add" table="PERSON" cols="NAME, AGE=20, BIRTHDAY={{now minus='1 d'}}, ID=1..10"&gt;
+            &lt;e:row&gt;Andrew&lt;/e:row&gt;
+            &lt;e:row&gt;Carl&lt;/e:row&gt;
+        &lt;/e:db-set&gt;
+&lt;e:db-show caption="New table content" table="PERSON" /&gt;</pre>
+        <table cmdId="aa958118-b3e6-4d9f-b7ff-3244dbe10b6e" e:db-set="" class="table table-sm">
+            
+            
+        <div></div><span></span><caption><i class="fa fa-database fa-pull-left fa-border"> Records to add</i></caption><thead class="thead-default"><tr><th class="">NAME</th><th class="">AGE</th><th class="">BIRTHDAY</th><th class="">ID</th></tr></thead><tbody><tr><td class=""><span>Andrew</span></td><td class=""><span>20</span></td><td class=""><span>2020-05-19 12:55:46.046</span></td><td class=""><span>1</span></td></tr><tr><td class=""><span>Carl</span></td><td class=""><span>20</span></td><td class=""><span>2020-05-19 12:55:46.046</span></td><td class=""><span>2</span></td></tr></tbody></table>
+        <table cmdId="8bc62fc7-9481-49f2-add2-b3ec2f7c6edc" e:db-show="" class="table table-sm"> <caption><i class="fa fa-database fa-pull-left fa-border"> New table content</i></caption><thead class="thead-default"><tr><th class="">ID</th><th class="">NAME</th><th class="">AGE</th><th class="">IQ</th><th class="">BIRTHDAY</th></tr></thead><tbody><tr><td class=""><span>1</span></td><td class=""><span>Andrew</span></td><td class=""><span>20</span></td><td class=""><span>null</span></td><td class=""><span>2020-05-19 12:55:46.046</span></td></tr><tr><td class=""><span>2</span></td><td class=""><span>Carl</span></td><td class=""><span>20</span></td><td class=""><span>null</span></td><td class=""><span>2020-05-19 12:55:46.046</span></td></tr></tbody></table><pre>&lt;?xml version='1.0' encoding='UTF-8'?&gt;
+&lt;dataset&gt;
+  &lt;PERSON ID="1" NAME="Andrew" AGE="20" BIRTHDAY="2020-05-19 12:55:46.368"/&gt;
+  &lt;PERSON ID="2" NAME="Carl" AGE="20" BIRTHDAY="2020-05-19 12:55:46.371"/&gt;
+  &lt;PERSON_FIELDS/&gt;
+&lt;/dataset&gt;
+</pre>
+    </div>
+</div><div class="card-footer text-muted" data-toggle="collapse" data-target="#1143971841" aria-expanded="true" aria-controls="1143971841"><small><span class="badge badge-pill badge-success"></span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small></div></div>
+<div xmlns:c="http://www.concordion.org/2007/concordion" name="Ranges" cmdId="8e4d33bc-ecc3-4d13-8ceb-46516cbe20b2" c:example="Ranges" class="card mb-3" e:example="" id="Ranges"><div class="card-header" data-toggle="collapse" data-target="#-1854416138" aria-expanded="true" aria-controls="-1854416138"><a name="Ranges" data-type="example">Ranges</a></div><div class="card-body collapse show" id="-1854416138">
+    <div cmdId="d0cb984f-21ea-4c95-a762-ac00d52d8910" e:given="" class="bd-callout bd-callout-info">
+        <table cmdId="4791e200-9918-4dd7-8f1e-819d33c0d3a2" e:db-set="" class="table table-sm"> <div></div><span></span><caption><i class="fa fa-database fa-pull-left fa-border"> Given empty table</i></caption><thead class="thead-default"><tr /></thead><tbody><tr><td colspan="0">&lt;EMPTY&gt;</td></tr></tbody></table>
+    </div>
+    <div print="true" cmdId="6879f9ae-82c0-4bf4-8fb4-545721f19729" e:then="" class="bd-callout bd-callout-success"><pre class="htmlmixed card">
+&lt;e:db-set caption="Records to add" table="PERSON" cols="*AGE=2..4, *IQ=4..2, BIRTHDAY={{now minus='1 d'}}, NAME, ID=1..10"&gt;
+            &lt;e:row&gt;age 2 iq 4&lt;/e:row&gt;
+            &lt;e:row&gt;age 3 iq 3&lt;/e:row&gt;
+            &lt;e:row&gt;age 4 iq 2&lt;/e:row&gt;
+            &lt;e:row&gt;again 2 4&lt;/e:row&gt;
+            &lt;e:row&gt;again 3 3&lt;/e:row&gt;
+        &lt;/e:db-set&gt;
+&lt;e:db-check caption="New table content" table="PERSON" cols="*AGE=2..4, NAME, *IQ=4..2"&gt;
+            &lt;e:row&gt;age 2 iq 4&lt;/e:row&gt;
+            &lt;e:row&gt;age 3 iq 3&lt;/e:row&gt;
+            &lt;e:row&gt;age 4 iq 2&lt;/e:row&gt;
+            &lt;e:row&gt;again 2 4&lt;/e:row&gt;
+            &lt;e:row&gt;again 3 3&lt;/e:row&gt;
+        &lt;/e:db-check&gt;</pre>
+        <table cmdId="73147776-1cdf-4480-854b-21b19972b982" e:db-set="" class="table table-sm">
+            
+            
+            
+            
+            
+        <div></div><span></span><caption><i class="fa fa-database fa-pull-left fa-border"> Records to add</i></caption><thead class="thead-default"><tr><th class="table-info">AGE</th><th class="table-info">IQ</th><th class="">BIRTHDAY</th><th class="">NAME</th><th class="">ID</th></tr></thead><tbody><tr><td class="table-info"><span>2</span></td><td class="table-info"><span>4</span></td><td class=""><span>2020-05-19 12:55:46.046</span></td><td class=""><span>age 2 iq 4</span></td><td class=""><span>1</span></td></tr><tr><td class="table-info"><span>3</span></td><td class="table-info"><span>3</span></td><td class=""><span>2020-05-19 12:55:46.046</span></td><td class=""><span>age 3 iq 3</span></td><td class=""><span>2</span></td></tr><tr><td class="table-info"><span>4</span></td><td class="table-info"><span>2</span></td><td class=""><span>2020-05-19 12:55:46.046</span></td><td class=""><span>age 4 iq 2</span></td><td class=""><span>3</span></td></tr><tr><td class="table-info"><span>2</span></td><td class="table-info"><span>4</span></td><td class=""><span>2020-05-19 12:55:46.046</span></td><td class=""><span>again 2 4</span></td><td class=""><span>4</span></td></tr><tr><td class="table-info"><span>3</span></td><td class="table-info"><span>3</span></td><td class=""><span>2020-05-19 12:55:46.046</span></td><td class=""><span>again 3 3</span></td><td class=""><span>5</span></td></tr></tbody></table>
+        <table cmdId="ef88b76c-1a10-4aca-9226-ba2fba2bce3d" e:db-check="" class="table table-sm">
+            
+            
+            
+            
+            
+        <div></div><span></span><caption><i class="fa fa-database fa-pull-left fa-border"> New table content</i></caption><thead class="thead-default"><tr><th class="">NAME</th><th class="">AGE</th><th class="">IQ</th></tr></thead><tbody><tr><td class=" table-success"> <span>again 2 4</span></td><td class=" table-success"> <span>2</span></td><td class=" table-success"> <span>4</span></td></tr><tr><td class=" table-success"> <span>age 2 iq 4</span></td><td class=" table-success"> <span>2</span></td><td class=" table-success"> <span>4</span></td></tr><tr><td class=" table-success"> <span>again 3 3</span></td><td class=" table-success"> <span>3</span></td><td class=" table-success"> <span>3</span></td></tr><tr><td class=" table-success"> <span>age 3 iq 3</span></td><td class=" table-success"> <span>3</span></td><td class=" table-success"> <span>3</span></td></tr><tr><td class=" table-success"> <span>age 4 iq 2</span></td><td class=" table-success"> <span>4</span></td><td class=" table-success"> <span>2</span></td></tr></tbody></table>
+    </div>
+</div><div class="card-footer text-muted" data-toggle="collapse" data-target="#-1854416138" aria-expanded="true" aria-controls="-1854416138"><small><span class="badge badge-pill badge-success">15</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small></div></div>
+<div xmlns:c="http://www.concordion.org/2007/concordion" name="Custom cell values separator" cmdId="19e43658-d5fc-4ee1-8d3e-606a2bec948b" c:example="Custom cell values separator" class="card mb-3" e:example="" id="Custom cell values separator"><div class="card-header" data-toggle="collapse" data-target="#-712220394" aria-expanded="true" aria-controls="-712220394"><a name="Custom cell values separator" data-type="example">Custom cell values separator</a></div><div class="card-body collapse show" id="-712220394">
+    <div cmdId="b9132a24-99c3-4add-8e1f-f548a3ce54c0" e:given="" class="bd-callout bd-callout-info">
+        <table cmdId="65a24a85-23b7-47a3-a2c6-c3ff07a1693d" e:db-set="" class="table table-sm"> <div></div><span></span><caption><i class="fa fa-database fa-pull-left fa-border"> Given empty table</i></caption><thead class="thead-default"><tr /></thead><tbody><tr><td colspan="0">&lt;EMPTY&gt;</td></tr></tbody></table>
+    </div>
+    <div print="true" cmdId="498d7c31-7c0d-45ae-b5c2-1124ef5be15b" e:then="" class="bd-callout bd-callout-success"><pre class="htmlmixed card">
+&lt;e:db-set separator="|" table="PERSON" cols="NAME, AGE, ID=1"&gt;
+            &lt;e:row&gt;If you need commas , inside value, use custom separator -&amp;gt; | 20&lt;/e:row&gt;
+        &lt;/e:db-set&gt;
+&lt;e:db-check separator="|" table="PERSON" cols="NAME, AGE"&gt;
+            &lt;e:row&gt;If you need commas , inside value, use custom separator -&amp;gt; | 20&lt;/e:row&gt;
+        &lt;/e:db-check&gt;</pre>
+        <table cmdId="ed42ec87-9846-4e72-acb7-5eeb46369500" e:db-set="" class="table table-sm">
+            
+        <div></div><span></span><caption><i class="fa fa-database fa-pull-left fa-border"> PERSON</i></caption><thead class="thead-default"><tr><th class="">NAME</th><th class="">AGE</th><th class="">ID</th></tr></thead><tbody><tr><td class=""><span>If you need commas , inside value, use custom separator -&gt;</span></td><td class=""><span>20</span></td><td class=""><span>1</span></td></tr></tbody></table>
+        <table cmdId="1e3f7685-5d2f-4663-8198-5ded3fded9c1" e:db-check="" class="table table-sm">
+            
+        <div></div><span></span><caption><i class="fa fa-database fa-pull-left fa-border"> PERSON</i></caption><thead class="thead-default"><tr><th class="">NAME</th><th class="">AGE</th></tr></thead><tbody><tr><td class=" table-success"> <span>If you need commas , inside value, use custom separator -&gt;</span></td><td class=" table-success"> <span>20</span></td></tr></tbody></table>
+    </div>
+</div><div class="card-footer text-muted" data-toggle="collapse" data-target="#-712220394" aria-expanded="true" aria-controls="-712220394"><small><span class="badge badge-pill badge-success">2</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small></div></div>
+<div class="footer">Results generated by <a href="http://www.concordion.org" style="font-weight: bold; text-decoration: none; color: #89C;">Concordion</a><div class="testTime">in 455 ms on 20-May-2020 at 12:55:46 UTC</div></div></body>
+<button id="btnToTop" onclick="topFunction()" type="button" class="btn btn-light btn-sm text-muted ml-1"><i class="fa fa-arrow-up fa-3x"></i></button></html>
