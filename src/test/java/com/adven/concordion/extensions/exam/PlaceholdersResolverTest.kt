@@ -2,6 +2,7 @@ package com.adven.concordion.extensions.exam
 
 import com.adven.concordion.extensions.exam.core.resolveJson
 import com.adven.concordion.extensions.exam.core.resolveToObj
+import com.adven.concordion.extensions.exam.core.toStringOr
 import org.assertj.core.api.Assertions
 import org.concordion.internal.OgnlEvaluator
 import org.hamcrest.Matchers.`is`
@@ -10,7 +11,7 @@ import org.joda.time.LocalDateTime.now
 import org.joda.time.format.DateTimeFormat.forPattern
 import org.junit.Assert.assertThat
 import org.junit.Test
-import java.util.*
+import java.util.Date
 import kotlin.test.assertEquals
 
 
@@ -33,6 +34,13 @@ class PlaceholdersResolverTest {
         val expected = forPattern("dd.MM.yyyy HH:mm").print(fromDateFields(date))
         assertThat(eval.resolveToObj("{{dateFormat value \"dd.MM.yyyy HH:mm\"}}").toString(), `is`(expected))
         assertThat(eval.resolveToObj("{{dateFormat (now plus='1 d') 'dd.MM.yyyy HH:mm' minus='1 d'}}").toString(), `is`(expected))
+    }
+
+    @Test
+    fun `resolveToObj should skip resolving if starts and ends with apostrophe`() {
+        assertThat(eval.resolveToObj(" '{{resolve \"some\"}}'").toStringOr(""), `is`("some"))
+        assertThat(eval.resolveToObj("'{{resolve \"some\"}}' ").toStringOr(""), `is`("some"))
+        assertThat(eval.resolveToObj("'{{resolve \"some\"}}'").toStringOr(""), `is`("{{resolve \"some\"}}"))
     }
 
     @Test

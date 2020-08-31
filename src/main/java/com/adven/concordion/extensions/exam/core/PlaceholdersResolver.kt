@@ -7,12 +7,15 @@ import com.adven.concordion.extensions.exam.core.utils.PLACEHOLDER_TYPE
 import com.adven.concordion.extensions.exam.core.utils.resolve
 import com.adven.concordion.extensions.exam.core.utils.resolveObj
 import org.concordion.api.Evaluator
-import org.joda.time.*
+import org.joda.time.Days
+import org.joda.time.Hours
+import org.joda.time.Minutes
+import org.joda.time.Months
+import org.joda.time.Period
+import org.joda.time.Seconds
+import org.joda.time.Years
 import org.joda.time.base.BaseSingleFieldPeriod
 import java.lang.Integer.parseInt
-
-const val PREFIX = "{{"
-const val POSTFIX = "}}"
 
 fun Evaluator.resolveForContentType(body: String, type: String): String = if (type.contains("xml", true))
     resolveXml(body) else resolveJson(body)
@@ -22,14 +25,13 @@ fun Evaluator.resolveNoType(body: String) = resolveJson(body)
 fun Evaluator.resolveJson(body: String): String = resolveTxt(body, "json", this)
 fun Evaluator.resolveXml(body: String): String = resolveTxt(body, "xml", this)
 
-fun Evaluator.resolve(body: String): String {
-    return HANDLEBARS.resolve(this, body)
+fun Evaluator.resolve(body: String): String = when {
+    body.insideApostrophes() -> body.substring(1, body.lastIndex)
+    else -> HANDLEBARS.resolve(this, body)
 }
 
-private fun resolveTxt(body: String, type: String, eval: Evaluator): String {
-    eval.setVariable("#$PLACEHOLDER_TYPE", type)
-    return eval.resolve(body)
-}
+private fun resolveTxt(body: String, type: String, eval: Evaluator): String =
+    eval.apply { setVariable("#$PLACEHOLDER_TYPE", type) }.resolve(body)
 
 fun parsePeriodFrom(v: String): Period = v.split(",").filter { it.isNotBlank() }
     .map {
@@ -50,9 +52,11 @@ fun periodBy(value: Int, type: String): BaseSingleFieldPeriod = when (type) {
 
 fun Evaluator.resolveToObj(placeholder: String?): Any? = when {
     placeholder == null -> null
-    placeholder.startsWith("'") && placeholder.endsWith("'") -> placeholder.substring(1, placeholder.lastIndex)
+    placeholder.insideApostrophes() -> placeholder.substring(1, placeholder.lastIndex)
     else -> HANDLEBARS.resolveObj(this, placeholder)
 }
+
+private fun String.insideApostrophes() = this.startsWith("'") && this.endsWith("'")
 
 fun resolveToObj(placeholder: String?, evaluator: Evaluator): Any? = evaluator.resolveToObj(placeholder)
 

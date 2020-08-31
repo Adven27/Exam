@@ -27,7 +27,7 @@ import org.concordion.ext.timing.TimerExtension
 import org.concordion.integration.junit4.ConcordionRunner
 import org.concordion.internal.ConcordionBuilder.NAMESPACE_CONCORDION_2007
 import org.junit.runner.RunWith
-import java.util.*
+import java.util.ArrayDeque
 
 @SuppressFBWarnings("ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD")
 @RunWith(ConcordionRunner::class)
@@ -93,6 +93,16 @@ open class Specs {
                 val req = "{{{request.body}}}"
                 val cookie = """{"cookies":"{{{request.cookies}}}"}"""
                 val method = """{"{{{request.requestLine.method}}}":"{{{request.url}}}"}"""
+                val mirror = """
+                    |{
+                    |   "{{request.requestLine.method}}":"{{request.url}}", 
+                    |   "request.custom.headers":["{{request.headers.h1}}", "{{request.headers.h2}}"]
+                    |}"""
+                    .trimMargin()
+
+                stubFor(
+                    any(urlPathEqualTo("/mirror")).atPriority(1).willReturn(mirror status 200)
+                )
 
                 stubFor(
                     post(anyUrl()).atPriority(1).withHeader(
@@ -105,17 +115,6 @@ open class Specs {
                 stubFor(
                     get(urlPathEqualTo("/ui")).atPriority(1).willReturn(
                         "<html><head></head><body><span>Dummy page</span></body></html>" status 200
-                    )
-                )
-
-                stubFor(
-                    post(urlPathEqualTo("/status/400")).atPriority(1).willReturn(
-                        req status 400
-                    )
-                )
-                stubFor(
-                    put(urlPathEqualTo("/status/400")).atPriority(1).willReturn(
-                        req status 400
                     )
                 )
                 stubFor(

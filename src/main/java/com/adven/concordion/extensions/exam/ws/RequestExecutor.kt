@@ -1,5 +1,6 @@
 package com.adven.concordion.extensions.exam.ws
 
+import com.adven.concordion.extensions.exam.core.toMap
 import io.restassured.RestAssured.given
 import io.restassured.http.Method
 import io.restassured.http.Method.*
@@ -13,8 +14,8 @@ class RequestExecutor private constructor() {
     private var multiPart: MutableList<MultiPart> = ArrayList()
     private var body: String? = null
     private lateinit var type: String
-    private val headers = HashMap<String, String>()
     private var urlParams: String? = null
+    internal val headers: MutableMap<String, String> = HashMap()
     internal var cookies: String? = null
         private set
 
@@ -43,7 +44,7 @@ class RequestExecutor private constructor() {
         return this
     }
 
-    fun header(headersMap: Map<String, String>): RequestExecutor {
+    fun headers(headersMap: Map<String, String>): RequestExecutor {
         headers.clear()
         headers.putAll(headersMap)
         return this
@@ -83,8 +84,6 @@ class RequestExecutor private constructor() {
 
     fun requestMethod() = method.name
 
-    fun requestHeader(header: String) = headers.get(header)
-
     internal fun execute(): Response {
         val request = given()
         request.headers(headers)
@@ -99,14 +98,7 @@ class RequestExecutor private constructor() {
         }
         type.let { request.contentType(it) }
         cookies?.let {
-            request.cookies(
-                (if (it.trim().startsWith("{")) it.substring(1, it.lastIndex) else it)
-                    .split(",")
-                    .map {
-                        val (n, v) = it.split("=")
-                        Pair(n.trim(), v.trim())
-                    }.toMap()
-            )
+            request.cookies(it.toMap())
         }
 
         response = when (method) {
@@ -136,7 +128,7 @@ class RequestExecutor private constructor() {
 }
 
 class MultiPart(
-        val name: String,
-        val value: Any,
-        val type: String? = null //for file used as name
+    val name: String,
+    val value: Any,
+    val type: String? = null //for file used as name
 )

@@ -4,9 +4,9 @@
 <div>
     <e:summary/>
     <e:given>Given server, that mirrors request</e:given>
-    <e:example name="Parametrized cases" status="ExpectedToFail">
+    <e:example name="Parametrized cases: post" status="ExpectedToFail">
         <e:post url="relative/url" print="true">
-            <e:case desc="All cases should fail">
+            <e:case desc="Parametrized request body and response body (All cases should fail)">
                 <e:body>{"exact": "{{p1}}", "template": 1}</e:body>
                 <e:expected>{"exact": "{{p2}}", "template": "{{number}}"}</e:expected>
                 <e:where vars="p1, p2" separator="|">
@@ -17,6 +17,19 @@
                 </e:where>
             </e:case>
         </e:post>
+    </e:example>
+    <e:example name="Parametrized cases: get">
+        <e:get url="mirror" print="true">
+            <e:case desc="Parametrized headers and response body (All cases should fail)" headers="h1 = {{p1}} , h2 =' some text '">
+                <e:expected>{ "GET": "/mirror", "request.custom.headers": ["{{p1}}", "some text"] }</e:expected>
+                <e:where vars="p1" separator="|">
+                    <e:vals>1</e:vals>
+                    <e:vals>2</e:vals>
+                    <e:vals>{{now 'dd.MM.yyyy'}}</e:vals>
+                    <e:vals/>
+                </e:where>
+            </e:case>
+        </e:get>
     </e:example>
 </div>
 </body>

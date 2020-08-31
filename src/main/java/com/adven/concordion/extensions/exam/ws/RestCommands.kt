@@ -1,9 +1,31 @@
 package com.adven.concordion.extensions.exam.ws
 
-import com.adven.concordion.extensions.exam.core.*
+import com.adven.concordion.extensions.exam.core.ExamExtension
 import com.adven.concordion.extensions.exam.core.commands.ExamCommand
 import com.adven.concordion.extensions.exam.core.commands.ExamVerifyCommand
-import com.adven.concordion.extensions.exam.core.html.*
+import com.adven.concordion.extensions.exam.core.html.CLASS
+import com.adven.concordion.extensions.exam.core.html.Html
+import com.adven.concordion.extensions.exam.core.html.NAME
+import com.adven.concordion.extensions.exam.core.html.RowParserEval
+import com.adven.concordion.extensions.exam.core.html.badge
+import com.adven.concordion.extensions.exam.core.html.code
+import com.adven.concordion.extensions.exam.core.html.div
+import com.adven.concordion.extensions.exam.core.html.h
+import com.adven.concordion.extensions.exam.core.html.html
+import com.adven.concordion.extensions.exam.core.html.italic
+import com.adven.concordion.extensions.exam.core.html.span
+import com.adven.concordion.extensions.exam.core.html.table
+import com.adven.concordion.extensions.exam.core.html.tag
+import com.adven.concordion.extensions.exam.core.html.td
+import com.adven.concordion.extensions.exam.core.html.th
+import com.adven.concordion.extensions.exam.core.html.thead
+import com.adven.concordion.extensions.exam.core.html.tr
+import com.adven.concordion.extensions.exam.core.resolveForContentType
+import com.adven.concordion.extensions.exam.core.resolveJson
+import com.adven.concordion.extensions.exam.core.resolveNoType
+import com.adven.concordion.extensions.exam.core.resolveValues
+import com.adven.concordion.extensions.exam.core.resolveXml
+import com.adven.concordion.extensions.exam.core.toMap
 import com.adven.concordion.extensions.exam.core.utils.PLACEHOLDER_TYPE
 import com.adven.concordion.extensions.exam.core.utils.content
 import com.adven.concordion.extensions.exam.core.utils.prettyJson
@@ -19,7 +41,8 @@ import org.concordion.api.Evaluator
 import org.concordion.api.ResultRecorder
 import org.concordion.internal.util.Check
 import java.nio.charset.Charset
-import java.util.*
+import java.util.ArrayList
+import java.util.HashMap
 
 private const val HEADERS = "headers"
 private const val TYPE = "contentType"
@@ -65,12 +88,12 @@ sealed class RequestCommand(
         val url = attr(root, URL, "/", evaluator)
         val type = attr(root, TYPE, contentType, evaluator)
         val cookies = cookies(evaluator, root)
-        val headersMap = headers(root, evaluator)
+        val headers = headers(evaluator, root)
 
-        addRequestDescTo(root, url, type, cookies)
+        addRequestDescTo(root, url, type, cookies, headers)
         startTable(root, executor.hasRequestBody())
 
-        executor.type(type).url(url).header(headersMap).cookies(cookies)
+        executor.type(type).url(url).headers(headers).cookies(cookies)
     }
 
     private fun startTable(html: Html, hasRequestBody: Boolean) {
@@ -90,27 +113,13 @@ sealed class RequestCommand(
         html.dropAllTo(table)
     }
 
-    private fun headers(html: Html, eval: Evaluator?): Map<String, String> {
-        val headers = html.takeAwayAttr(HEADERS, eval)
-        val headersMap = HashMap<String, String>()
-        if (headers != null) {
-            val headersArray = headers.split(",").dropLastWhile { it.isEmpty() }.toTypedArray()
-            for (i in headersArray.indices) {
-                if ((i - 1) % 2 == 0) {
-                    headersMap[headersArray[i - 1]] = headersArray[i]
-                }
-            }
-        }
-        return headersMap
-    }
-
     private fun cookies(eval: Evaluator?, html: Html): String? {
         val cookies = html.takeAwayAttr(COOKIES, eval)
         eval!!.setVariable("#cookies", cookies)
         return cookies
     }
 
-    private fun addRequestDescTo(root: Html, url: String, type: String, cookies: String?) {
+    private fun addRequestDescTo(root: Html, url: String, type: String, cookies: String?, headers: Map<String, String>) {
         val div = div()(
             h(4, "")(
                 badge(method.name, "success"),
@@ -126,6 +135,14 @@ sealed class RequestCommand(
                 )
             )
         }
+        if (headers.isNotEmpty()) {
+            div(
+                h(6, "")(
+                    badge("Headers", "info"),
+                    code(headers.toString())
+                )
+            )
+        }
         root(div)
     }
 
@@ -135,6 +152,9 @@ sealed class RequestCommand(
         return attr
     }
 }
+
+private fun headers(eval: Evaluator, html: Html): Map<String, String> =
+    html.takeAwayAttr(HEADERS)?.toMap()?.resolveValues(eval) ?: emptyMap()
 
 open class RestVerifyCommand(name: String, tag: String) : ExamVerifyCommand(name, tag, RestResultRenderer())
 
@@ -263,11 +283,13 @@ class CaseCommand(
         val executor = fromEvaluator(evaluator)
         val urlParams = root.takeAwayAttr(URL_PARAMS)
         val cookies = root.takeAwayAttr(COOKIES)
+        val headers = root.takeAwayAttr(HEADERS)
 
         for (aCase in cases) {
             aCase.forEach { (key, value) -> evaluator.setVariable(key, value) }
 
             cookies?.let { executor.cookies(evaluator.resolveNoType(it)) }
+            headers?.let { executor.headers(headers.toMap().resolveValues(evaluator)) }
 
             executor.urlParams(if (urlParams == null) null else evaluator.resolveNoType(urlParams))
 
@@ -377,14 +399,14 @@ class CaseCommand(
     }
 
     private fun fillCaseContext(root: Html, executor: RequestExecutor) {
-        val cookies = executor.cookies
         root.parent().above(
             tr()(
                 td("colspan" to if (executor.hasRequestBody()) "3" else "2")(
                     div()(
                         italic("${executor.requestMethod()} "),
                         code(executor.requestUrlWithParams()),
-                        *cookiesTags(cookies)
+                        *cookiesTags(executor.cookies),
+                        *headersTags(executor.headers)
                     )
                 )
             )
@@ -396,6 +418,15 @@ class CaseCommand(
             listOf(
                 italic(" Cookies "),
                 code(cookies)
+            )
+        } else listOf(span(""))).toTypedArray()
+    }
+
+    private fun headersTags(headers: Map<String, String>): Array<Html> {
+        return (if (headers.isNotEmpty()) {
+            listOf(
+                italic(" Headers "),
+                code(headers.toString())
             )
         } else listOf(span(""))).toTypedArray()
     }

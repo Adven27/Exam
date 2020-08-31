@@ -10,6 +10,7 @@ import com.github.jknack.handlebars.Handlebars
 import net.javacrumbs.jsonunit.JsonAssert.`when`
 import net.javacrumbs.jsonunit.core.Configuration
 import net.javacrumbs.jsonunit.core.Option.IGNORING_ARRAY_ORDER
+import org.concordion.api.Evaluator
 import org.concordion.api.extension.ConcordionExtender
 import org.concordion.api.extension.ConcordionExtension
 import org.concordion.api.listener.ExampleEvent
@@ -21,9 +22,9 @@ import org.xmlunit.diff.DefaultNodeMatcher
 import org.xmlunit.diff.ElementSelectors.byName
 import org.xmlunit.diff.ElementSelectors.byNameAndText
 import org.xmlunit.diff.NodeMatcher
-import java.util.*
+import java.util.ArrayList
 import java.util.Collections.addAll
-import kotlin.collections.HashMap
+import java.util.Date
 
 class ExamExtension : ConcordionExtension {
     private var focusOnError: Boolean = true
@@ -157,3 +158,14 @@ fun String.parseDateTime(format: String?): DateTime = DateTime.parse(
 )
 
 fun String.fileExt() = substring(lastIndexOf('.') + 1).toLowerCase()
+
+fun String.toMap(): Map<String, String> = unboxIfNeeded(this)
+    .split(",")
+    .map {
+        val (n, v) = it.split("=")
+        Pair(n.trim(), v.trim())
+    }.toMap()
+
+fun Map<String, String>.resolveValues(eval: Evaluator) = this.mapValues { eval.resolveNoType(it.value) }
+
+private fun unboxIfNeeded(it: String) = if (it.trim().startsWith("{")) it.substring(1, it.lastIndex) else it

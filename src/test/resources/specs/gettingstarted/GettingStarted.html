@@ -268,8 +268,8 @@
     </e:when>
     <e:then>
         Await for result:
-        <e:db-check table="jobResult" cols="result" where="id={{id}}" awaitAtMostSec="4">
-            <e:row>done</e:row>
+        <e:db-check table="jobResult" cols="id, result" where="id={{id}}" awaitAtMostSec="4">
+            <e:row>{{id}}, done</e:row>
         </e:db-check>
     </e:then>
 </e:example>

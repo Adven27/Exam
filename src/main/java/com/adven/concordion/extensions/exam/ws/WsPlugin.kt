@@ -14,6 +14,7 @@ import io.restassured.RestAssured
 import io.restassured.http.ContentType
 import net.javacrumbs.jsonunit.JsonAssert.assertJsonEquals
 import net.javacrumbs.jsonunit.core.Configuration
+import net.javacrumbs.jsonunit.core.internal.JsonUtils
 import org.concordion.api.Evaluator
 import org.hamcrest.Matchers.equalTo
 import org.junit.Assert.assertThat
@@ -21,7 +22,6 @@ import org.xmlunit.builder.DiffBuilder
 import org.xmlunit.diff.Diff
 import org.xmlunit.diff.DifferenceEvaluators
 import org.xmlunit.diff.NodeMatcher
-import java.util.*
 
 @SuppressFBWarnings("ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD")
 class WsPlugin @JvmOverloads constructor(
@@ -148,15 +148,14 @@ class WsPlugin @JvmOverloads constructor(
         open class AssertBased : ContentVerifier {
             override fun verify(expected: String, actual: String) = try {
                 when {
-                    expected.isNotEmpty() && actual.isEmpty() -> Result.failed(details = "Actual is empty", actual = actual, expected = expected)
-                    expected.isEmpty() && actual.isEmpty() -> Result.passed()
+                    actual.isEmpty() -> if (expected.isEmpty()) Result.passed() else Result.failed("Actual is empty", actual, expected)
                     else -> {
                         assertThat(expected, actual)
                         Result.passed()
                     }
                 }
             } catch (e: AssertionError) {
-                Result.failed(details = e.message ?: "$e", actual = actual, expected = expected)
+                Result.failed(e.message ?: "$e", actual, expected)
             }
 
             protected open fun assertThat(expected: String, actual: String) = assertThat(actual, equalTo(expected))
@@ -198,7 +197,18 @@ class WsPlugin @JvmOverloads constructor(
     }
 
     open class JsonVerifier(private var configuration: Configuration) : ContentVerifier.AssertBased() {
-        override fun assertThat(expected: String, actual: String) = assertJsonEquals(expected, actual, configuration)
+        override fun assertThat(expected: String, actual: String) {
+            validate(actual)
+            assertJsonEquals(expected, actual, configuration)
+        }
+
+        private fun validate(actual: String) {
+            try {
+                JsonUtils.convertToJson(actual, "actual", false)
+            } catch (e: RuntimeException) {
+                throw AssertionError("Can not convert actual to json: ${e.cause?.message ?: e.message}", e)
+            }
+        }
 
         override fun setConfiguration(cfg: Configuration) {
             configuration = cfg
