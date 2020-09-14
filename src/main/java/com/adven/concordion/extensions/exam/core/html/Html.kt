@@ -6,7 +6,6 @@ import com.adven.concordion.extensions.exam.core.resolve
 import org.concordion.api.CommandCall
 import org.concordion.api.Element
 import org.concordion.api.Evaluator
-import java.lang.IllegalArgumentException
 
 const val ID = "id"
 const val ONCLICK = "onclick"
@@ -322,6 +321,8 @@ fun menuItemA(txt: String, vararg children: Html) = link(txt, *children) css "li
 fun button(txt: String = "", vararg attrs: Pair<String, String>) = Html("button", txt, *attrs).attrs("type" to "button") css "btn btn-light btn-sm text-muted ml-1"
 
 fun buttonCollapse(txt: String, target: String) = button(txt) collapse target
+
+fun divCollapse(txt: String, target: String) = div(txt) collapse target
 
 fun footerOf(card: Html) = Html(card.el.getChildElements("div")[2])
 

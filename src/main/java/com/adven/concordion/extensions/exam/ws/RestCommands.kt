@@ -13,6 +13,7 @@ import com.adven.concordion.extensions.exam.core.html.div
 import com.adven.concordion.extensions.exam.core.html.h
 import com.adven.concordion.extensions.exam.core.html.html
 import com.adven.concordion.extensions.exam.core.html.italic
+import com.adven.concordion.extensions.exam.core.html.pre
 import com.adven.concordion.extensions.exam.core.html.span
 import com.adven.concordion.extensions.exam.core.html.table
 import com.adven.concordion.extensions.exam.core.html.tag
@@ -101,14 +102,9 @@ sealed class RequestCommand(
         val header = thead()
         val tr = thead()
         if (hasRequestBody) {
-            tr(
-                th("Request")
-            )
+            tr(th("Request"))
         }
-        tr(
-            th("Expected response"),
-            th("Status code")
-        )
+        tr(th("Expected response", "colspan" to (if (hasRequestBody) "1" else "2")))
         table(header(tr))
         html.dropAllTo(table)
     }
@@ -119,7 +115,13 @@ sealed class RequestCommand(
         return cookies
     }
 
-    private fun addRequestDescTo(root: Html, url: String, type: String, cookies: String?, headers: Map<String, String>) {
+    private fun addRequestDescTo(
+        root: Html,
+        url: String,
+        type: String,
+        cookies: String?,
+        headers: Map<String, String>
+    ) {
         val div = div()(
             h(4, "")(
                 badge(method.name, "success"),
@@ -181,7 +183,7 @@ class ExpectedStatusCommand(name: String, tag: String) : RestVerifyCommand(name,
 class CaseCheckCommand(name: String, tag: String) : ExamCommand(name, tag) {
     override fun setUp(cmd: CommandCall?, evaluator: Evaluator?, resultRecorder: ResultRecorder?) {
         val checkTag = cmd.html()
-        val td = td("colspan" to "3")
+        val td = td("colspan" to "2")
         checkTag.moveChildrenTo(td)
         checkTag.parent().below(tr()(td))
     }
@@ -252,8 +254,7 @@ class CaseCommand(
                             }
                         }.toTypedArray()
                         tag(MULTI_PART)(*multiPartArray)
-                    }
-                    ,
+                    },
                     expectedToAdd
                 )
             })
@@ -298,7 +299,7 @@ class CaseCommand(
             if (body != null) {
                 val content = body.content(evaluator)
                 val bodyStr = contentResolver.resolve(content, evaluator)
-                td().insteadOf(body).css(contentPrinter.style()).removeChildren().text(contentPrinter.print(bodyStr))
+                td().insteadOf(body).css(contentPrinter.style() + " exp-body").removeChildren().text(contentPrinter.print(bodyStr))
                 executor.body(bodyStr)
             }
             processMultipart(caseTR, evaluator, executor)
@@ -310,10 +311,15 @@ class CaseCommand(
 
             val expected = caseTR.firstOrThrow(EXPECTED)
             val expectedStatus = expectedStatus(expected)
-            val statusTd = td()
-            caseTR(statusTd)
-            check(td().insteadOf(expected), evaluator, resultRecorder, executor.contentType())
-            resultRecorder.check(statusTd, executor.statusLine(), expectedStatus) { a, e ->
+            val statusEl = pre().css("exp-status")
+            check(
+                td("colspan" to (if (body == null) "2" else "1")).insteadOf(expected),
+                statusEl,
+                evaluator,
+                resultRecorder,
+                executor.contentType()
+            )
+            resultRecorder.check(statusEl, executor.statusLine(), expectedStatus) { a, e ->
                 a.trim() == e.trim()
             }
         }
@@ -329,24 +335,38 @@ class CaseCommand(
                 val fileName = it.takeAwayAttr(FILE_NAME)
                 val content = it.content(evaluator)
 
-                table(tr()(td()(badge("Part", "light")), td()(
-                    name?.let { badge(name.toString(), "warning") },
-                    mpType?.let { badge(mpType.toString(), "info") },
-                    fileName?.let { code(fileName.toString()) })))
+                table(
+                    tr()(
+                        td()(badge("Part", "light")), td()(
+                            name?.let { badge(name.toString(), "warning") },
+                            mpType?.let { badge(mpType.toString(), "info") },
+                            fileName?.let { code(fileName.toString()) })
+                    )
+                )
                 val mpStr: String
                 if (executor.xml(mpType.toString())) {
                     mpStr = evaluator.resolveXml(content)
-                    table(tr()(
-                        td()(badge("Content", "dark")),
-                        td(mpStr.prettyXml()).css("xml")))
+                    table(
+                        tr()(
+                            td()(badge("Content", "dark")),
+                            td(mpStr.prettyXml()).css("xml")
+                        )
+                    )
                 } else {
                     mpStr = evaluator.resolveJson(content)
-                    table(tr()(
-                        td()(badge("Content", "dark")),
-                        td(mpStr.prettyJson()).css("json")))
+                    table(
+                        tr()(
+                            td()(badge("Content", "dark")),
+                            td(mpStr.prettyJson()).css("json")
+                        )
+                    )
                 }
                 if (mpType == null)
-                    executor.multiPart(name.toString(), fileName.toString(), mpStr.toByteArray(Charset.forName("UTF-8")))
+                    executor.multiPart(
+                        name.toString(),
+                        fileName.toString(),
+                        mpStr.toByteArray(Charset.forName("UTF-8"))
+                    )
                 else
                     executor.multiPart(name.toString(), mpType.toString(), mpStr)
 
@@ -363,13 +383,11 @@ class CaseCommand(
     ).joinToString(" ")
 
     override fun verify(cmd: CommandCall, evaluator: Evaluator, resultRecorder: ResultRecorder) {
-        val executor = fromEvaluator(evaluator)
-        val colspan = if (executor.hasRequestBody()) "3" else "2"
         val rt = cmd.html()
         val caseDesc = caseDesc(rt.attr(DESC), evaluator)
         rt.attrs("data-type" to CASE, "id" to caseDesc).above(
             tr()(
-                td(caseDesc, "colspan" to colspan).muted()
+                td(caseDesc, "colspan" to "2").muted()
             )
         )
     }
@@ -377,10 +395,21 @@ class CaseCommand(
     private fun caseDesc(desc: String?, eval: Evaluator): String =
         "${++number}) " + if (desc == null) "" else contentResolver.resolve(desc, eval)
 
-    private fun check(root: Html, eval: Evaluator, resultRecorder: ResultRecorder, contentType: String) {
+    private fun check(
+        root: Html,
+        statusEl: Html,
+        eval: Evaluator,
+        resultRecorder: ResultRecorder,
+        contentType: String
+    ) {
         val executor = fromEvaluator(eval)
-        fillCaseContext(root, executor)
-        check(executor.responseBody(), eval.resolveForContentType(root.content(eval), contentType), resultRecorder, root)
+        fillCaseContext(root, statusEl, executor)
+        check(
+            executor.responseBody(),
+            eval.resolveForContentType(root.content(eval), contentType),
+            resultRecorder,
+            root
+        )
     }
 
     private fun check(actual: String, expected: String, resultRecorder: ResultRecorder, root: Html) {
@@ -398,17 +427,18 @@ class CaseCommand(
         }
     }
 
-    private fun fillCaseContext(root: Html, executor: RequestExecutor) {
+    private fun fillCaseContext(root: Html, statusEl: Html, executor: RequestExecutor) {
         root.parent().above(
             tr()(
-                td("colspan" to if (executor.hasRequestBody()) "3" else "2")(
+                td()(
                     div()(
                         italic("${executor.requestMethod()} "),
                         code(executor.requestUrlWithParams()),
                         *cookiesTags(executor.cookies),
                         *headersTags(executor.headers)
                     )
-                )
+                ),
+                td()(statusEl)
             )
         )
     }

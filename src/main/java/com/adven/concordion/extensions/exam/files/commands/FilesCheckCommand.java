@@ -22,9 +22,9 @@ import java.util.List;
 import java.util.UUID;
 
 import static com.adven.concordion.extensions.exam.core.PlaceholdersResolver.resolveToObj;
-import static com.adven.concordion.extensions.exam.core.html.HtmlBuilder.buttonCollapse;
 import static com.adven.concordion.extensions.exam.core.html.HtmlBuilder.codeXml;
 import static com.adven.concordion.extensions.exam.core.html.HtmlBuilder.div;
+import static com.adven.concordion.extensions.exam.core.html.HtmlBuilder.divCollapse;
 import static com.adven.concordion.extensions.exam.core.html.HtmlBuilder.tableSlim;
 import static com.adven.concordion.extensions.exam.core.html.HtmlBuilder.td;
 import static com.adven.concordion.extensions.exam.core.html.HtmlBuilder.tr;
@@ -90,8 +90,8 @@ public class FilesCheckCommand extends BaseCommand {
                             String id = UUID.randomUUID().toString();
                             final String content = filesLoader.readFile(evalPath, expectedName);
                             if (!isNullOrEmpty(content)) {
-                                pre = div().childs(
-                                    buttonCollapse("show", id).style("width:100%"),
+                                pre = div().style("position: relative").childs(
+                                    divCollapse("", id).css("fa fa-expand collapsed"),
                                     div(to("id", id)).css("file collapse").childs(
                                         pre.text(content)
                                     )
