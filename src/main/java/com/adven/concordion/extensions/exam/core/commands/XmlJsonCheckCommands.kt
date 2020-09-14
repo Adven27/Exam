@@ -1,6 +1,12 @@
 package com.adven.concordion.extensions.exam.core.commands
 
-import com.adven.concordion.extensions.exam.core.html.*
+import com.adven.concordion.extensions.exam.core.html.CLASS
+import com.adven.concordion.extensions.exam.core.html.Html
+import com.adven.concordion.extensions.exam.core.html.html
+import com.adven.concordion.extensions.exam.core.html.span
+import com.adven.concordion.extensions.exam.core.html.tableSlim
+import com.adven.concordion.extensions.exam.core.html.td
+import com.adven.concordion.extensions.exam.core.html.tr
 import com.adven.concordion.extensions.exam.core.resolveJson
 import com.adven.concordion.extensions.exam.core.resolveXml
 import com.adven.concordion.extensions.exam.core.utils.content
@@ -24,12 +30,10 @@ class XmlCheckCommand(name: String, tag: String, private val cfg: Configuration,
         val root = cmd.html()
         val actual = eval.evaluate(root.takeAwayAttr("actual")).toString().prettyXml()
         val expected = eval.resolveXml(root.content(eval).trim()).prettyXml()
-        val container = pre().css("xml")
+        val container = td().css("xml exp-body")
         root.removeChildren()(
             tableSlim()(
-                trWithTDs(
-                    container
-                )
+                tr()(container)
             )
         )
         checkXmlContent(actual, expected, resultRecorder, container)
@@ -60,12 +64,10 @@ class JsonCheckCommand(name: String, tag: String, private val originalCfg: Confi
         root.attr("jsonUnitOptions")?.let { attr -> overrideJsonUnitOption(attr) }
         val actual = eval.evaluate(root.attr("actual")).toString().prettyJson()
         val expected = eval.resolveJson(root.content(eval).trim()).prettyJson()
-        val container = pre().css("json")
+        val container = td().css("json exp-body")
         root.removeChildren()(
             tableSlim()(
-                trWithTDs(
-                    container
-                )
+                tr()(container)
             )
         )
         checkJsonContent(actual, expected, resultRecorder, container)

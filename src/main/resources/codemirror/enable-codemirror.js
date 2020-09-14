@@ -8,6 +8,10 @@ function ready() {
     enableCodeMirror('.text:not(.rest-failure)', 'text/plain');
     enableCodeMirrorMerge('.text.rest-failure', 'text/plain');
     enableCodeMirror('.htmlmixed', 'text/html');
+    document.querySelectorAll('.json, .xml, .htmlmixed').forEach(function(el) {
+        el.style.visibility = "visible";
+    });
+    window.dispatchEvent(new Event('resize'));
 }
 
 function unescape(input) {

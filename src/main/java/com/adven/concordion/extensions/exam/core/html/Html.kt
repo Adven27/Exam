@@ -314,9 +314,9 @@ fun li(text: String? = null) = Html("li", text)
 
 fun menuItemLi() = li() css "list-group-item list-group-item-action d-flex justify-content-between align-items-center"
 
-fun menuItemA(txt: String) = link(txt) css "list-group-item list-group-item-action"
+fun menuItemA(txt: String) = link(txt) css "list-group-item list-group-item-action" style "border-left: none; border-right: none;"
 
-fun menuItemA(txt: String, vararg children: Html) = link(txt, *children) css "list-group-item list-group-item-action"
+fun menuItemA(txt: String, vararg children: Html) = link(txt, *children) css "list-group-item list-group-item-action" style "border-left: none; border-right: none;"
 
 fun button(txt: String = "", vararg attrs: Pair<String, String>) = Html("button", txt, *attrs).attrs("type" to "button") css "btn btn-light btn-sm text-muted ml-1"
 

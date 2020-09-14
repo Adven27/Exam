@@ -1,7 +1,20 @@
 package com.adven.concordion.extensions.exam.core
 
 import com.adven.concordion.extensions.exam.core.ExamExtension.Companion.PARSED_COMMANDS
-import com.adven.concordion.extensions.exam.core.html.*
+import com.adven.concordion.extensions.exam.core.html.CLASS
+import com.adven.concordion.extensions.exam.core.html.Html
+import com.adven.concordion.extensions.exam.core.html.ID
+import com.adven.concordion.extensions.exam.core.html.ONCLICK
+import com.adven.concordion.extensions.exam.core.html.bodyOf
+import com.adven.concordion.extensions.exam.core.html.button
+import com.adven.concordion.extensions.exam.core.html.buttonCollapse
+import com.adven.concordion.extensions.exam.core.html.codeXml
+import com.adven.concordion.extensions.exam.core.html.div
+import com.adven.concordion.extensions.exam.core.html.footerOf
+import com.adven.concordion.extensions.exam.core.html.italic
+import com.adven.concordion.extensions.exam.core.html.menuItemA
+import com.adven.concordion.extensions.exam.core.html.pill
+import com.adven.concordion.extensions.exam.core.html.stat
 import com.adven.concordion.extensions.exam.core.utils.content
 import nu.xom.Attribute
 import nu.xom.Document
@@ -9,15 +22,20 @@ import nu.xom.Element
 import nu.xom.XPathContext
 import nu.xom.converters.DOMConverter
 import org.concordion.api.ImplementationStatus
-import org.concordion.api.ImplementationStatus.*
-import org.concordion.api.listener.*
+import org.concordion.api.ImplementationStatus.EXPECTED_TO_FAIL
+import org.concordion.api.ImplementationStatus.EXPECTED_TO_PASS
+import org.concordion.api.ImplementationStatus.UNIMPLEMENTED
+import org.concordion.api.listener.DocumentParsingListener
+import org.concordion.api.listener.ExampleEvent
+import org.concordion.api.listener.ExampleListener
+import org.concordion.api.listener.SpecificationProcessingEvent
+import org.concordion.api.listener.SpecificationProcessingListener
 import org.concordion.internal.FailFastException
 import java.io.ByteArrayInputStream
 import java.io.File
-import java.util.*
+import java.util.UUID
 import java.util.function.Predicate
 import javax.xml.parsers.DocumentBuilderFactory
-import kotlin.collections.ArrayList
 import kotlin.collections.set
 import org.concordion.api.Element as ConcordionElement
 
@@ -205,7 +223,7 @@ class SpecSummaryListener : SpecificationProcessingListener {
             exampleEl.descendants("tr").filter { "case" == it.attr("data-type") }.map {
                 val anchor = it.attr("id")!!
                 menuItemA(anchor, italic(""))
-                    .attrs("href" to "#$anchor")
+                    .attrs("href" to "#$anchor", "style" to "font-size: small;")
                     .muted()
             })
     }
