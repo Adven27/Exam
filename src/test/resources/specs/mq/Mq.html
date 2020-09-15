@@ -162,5 +162,23 @@
         </e:mq-check>
     </e:then>
 </e:example>
+<e:example name="collapsable view" print="true">
+    <e:when>
+        <e:mq-send name="myQueue" from="/data/mq/big.json" collapsable="true"/>
+    </e:when>
+    <e:then>
+        <e:mq-check name="myQueue" from="/data/mq/big.json" collapsable="true"/>
+    </e:then>
+    <e:when>
+        <e:mq-send name="myQueue" from="/data/mq/big.json" collapsable="true"/>
+        <e:mq-send name="myQueue" from="/data/mq/big.json" collapsable="true"/>
+    </e:when>
+    <e:then>
+        <e:mq-check name="myQueue" collapsable="true" layout="horizontally">
+            <e:message from="/data/mq/big.json"/>
+            <e:message from="/data/mq/big.json"/>
+        </e:mq-check>
+    </e:then>
+</e:example>
 </body>
 </html>

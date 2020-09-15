@@ -1,7 +1,24 @@
 package com.adven.concordion.extensions.exam.mq
 
-import com.adven.concordion.extensions.exam.core.commands.*
-import com.adven.concordion.extensions.exam.core.html.*
+import com.adven.concordion.extensions.exam.core.commands.ExamCommand
+import com.adven.concordion.extensions.exam.core.commands.ExamVerifyCommand
+import com.adven.concordion.extensions.exam.core.commands.await
+import com.adven.concordion.extensions.exam.core.commands.awaitConfig
+import com.adven.concordion.extensions.exam.core.commands.timeoutMessage
+import com.adven.concordion.extensions.exam.core.html.CLASS
+import com.adven.concordion.extensions.exam.core.html.Html
+import com.adven.concordion.extensions.exam.core.html.caption
+import com.adven.concordion.extensions.exam.core.html.div
+import com.adven.concordion.extensions.exam.core.html.divCollapse
+import com.adven.concordion.extensions.exam.core.html.html
+import com.adven.concordion.extensions.exam.core.html.italic
+import com.adven.concordion.extensions.exam.core.html.pre
+import com.adven.concordion.extensions.exam.core.html.span
+import com.adven.concordion.extensions.exam.core.html.tableSlim
+import com.adven.concordion.extensions.exam.core.html.tbody
+import com.adven.concordion.extensions.exam.core.html.td
+import com.adven.concordion.extensions.exam.core.html.tr
+import com.adven.concordion.extensions.exam.core.html.trWithTDs
 import com.adven.concordion.extensions.exam.core.resolveJson
 import com.adven.concordion.extensions.exam.core.utils.content
 import com.adven.concordion.extensions.exam.core.utils.prettyJson
@@ -16,6 +33,7 @@ import org.concordion.api.Evaluator
 import org.concordion.api.Result.FAILURE
 import org.concordion.api.ResultRecorder
 import org.junit.Assert
+import java.util.UUID
 
 interface MqTester {
     fun start()
@@ -40,8 +58,7 @@ class MqCheckCommand(
     tag: String,
     private val originalCfg: Configuration,
     private val mqTesters: Map<String, MqTester>
-) :
-    ExamVerifyCommand(name, tag, RestResultRenderer()) {
+) : ExamVerifyCommand(name, tag, RestResultRenderer()) {
 
     private lateinit var usedCfg: Configuration
 
@@ -52,13 +69,17 @@ class MqCheckCommand(
         val mqName = root.takeAwayAttr("name")!!
         val layout = root.takeAwayAttr("layout", "VERTICALLY")
         val contains = root.takeAwayAttr("contains", "EXACT")
+        val collapsable = root.takeAwayAttr("collapsable", "false").toBoolean()
         val awaitConfig = cmd.awaitConfig()
 
         val messageTags = root.childs().filter { it.localName() == "message" }.ifEmpty { listOf(root) }
         val expectedMessages = messageTags.map { html ->
             html.takeAwayAttr("vars").vars(eval, true, html.takeAwayAttr("varsSeparator", ","))
             val content = html.content(eval)
-            if (content.isEmpty()) return@map null else MqTester.Message(eval.resolveJson(content.trim()), headers(html, eval))
+            if (content.isEmpty()) return@map null else MqTester.Message(
+                eval.resolveJson(content.trim()),
+                headers(html, eval)
+            )
         }.filterNotNull()
         val actualMessages: MutableList<MqTester.Message> = mqTesters.getOrFail(mqName).receive().toMutableList()
 
@@ -71,11 +92,13 @@ class MqCheckCommand(
                     }
                 } catch (e: Exception) {
                     resultRecorder.record(FAILURE)
-                    root.removeChildren().below(div().css("rest-failure bd-callout bd-callout-danger")(
-                        div(e.cause?.message),
-                        *renderMessages("Expected: ", expectedMessages, mqName).toTypedArray(),
-                        *renderMessages("but was: ", actualMessages, mqName).toTypedArray()
-                    ))
+                    root.removeChildren().below(
+                        div().css("rest-failure bd-callout bd-callout-danger")(
+                            div(e.cause?.message),
+                            *renderMessages("Expected: ", expectedMessages, mqName).toTypedArray(),
+                            *renderMessages("but was: ", actualMessages, mqName).toTypedArray()
+                        )
+                    )
                     root.below(pre(awaitConfig.timeoutMessage(e)).css("alert alert-danger small"))
                 }
             } else {
@@ -88,7 +111,8 @@ class MqCheckCommand(
                     div(e.message),
                     *renderMessages("Expected: ", expectedMessages, mqName).toTypedArray(),
                     *renderMessages("but was: ", actualMessages, mqName).toTypedArray()
-                ))
+                )
+            )
             root.parent().remove(root)
             return
         }
@@ -102,15 +126,22 @@ class MqCheckCommand(
         }
 
         prepared(expectedMessages, contains).zip(prepared(actualMessages, contains)).forEach {
-            val bodyContainer = jsonEl("")
-            val headersContainer = span("Headers: ${it.first.headers.entries.joinToString()}")(italic("", CLASS to "fa fa-border"))
+            val bodyContainer = jsonEl("", collapsable)
+            val headersContainer =
+                span("Headers: ${it.first.headers.entries.joinToString()}")(italic("", CLASS to "fa fa-border"))
             if (cnt != null) {
                 cnt(
-                    td()(tableSlim()(if (it.first.headers.isNotEmpty()) trWithTDs(headersContainer) else null, trWithTDs(bodyContainer)))
+                    td()(
+                        tableSlim()(
+                            if (it.first.headers.isNotEmpty()) trWithTDs(headersContainer) else null,
+                            tr()(if (collapsable) collapsed(bodyContainer) else bodyContainer)
+                        )
+                    )
                 )
             } else {
                 tableContainer(
-                    if (it.first.headers.isNotEmpty()) trWithTDs(headersContainer) else null, trWithTDs(bodyContainer)
+                    if (it.first.headers.isNotEmpty()) trWithTDs(headersContainer) else null,
+                    tr()(if (collapsable) collapsed(bodyContainer) else bodyContainer)
                 )
             }
             checkHeaders(it.second.headers, it.first.headers, resultRecorder, headersContainer)
@@ -127,15 +158,17 @@ class MqCheckCommand(
         return listOf(span(msg), tableSlim()(
             captionEnvelopOpen(mqName),
             tbody()(
-                messages.map { trWithTDs(jsonEl(it.body)) }
+                messages.map { tr()(jsonEl(it.body)) }
             )
         ))
     }
 
-    private fun jsonEl(txt: String) =
-        pre(txt).css("json").style("margin: 0").attr("autoFormat", "true")
+    private fun jsonEl(txt: String, collapsable: Boolean = false) =
+        container(txt, "json", collapsable).style("margin: 0").attr("autoFormat", "true")
 
-    private fun checkHeaders(actual: Map<String, String>, expected: Map<String, String>, resultRecorder: ResultRecorder, root: Html) {
+    private fun checkHeaders(
+        actual: Map<String, String>, expected: Map<String, String>, resultRecorder: ResultRecorder, root: Html
+    ) {
         try {
             Assert.assertEquals(expected, actual)
             resultRecorder.pass(root)
@@ -157,8 +190,8 @@ class MqCheckCommand(
         } catch (e: Throwable) {
             if (e is AssertionError || e is Exception) {
                 resultRecorder.failure(root, actual.prettyJson(), expected.prettyJson())
-                root.below(
-                    pre(e.message).css("alert alert-danger small")
+                root.parent().above(
+                    trWithTDs(pre(e.message).css("alert alert-danger small"))
                 )
             } else throw e
         }
@@ -177,15 +210,19 @@ class MqSendCommand(name: String, tag: String, private val mqTesters: Map<String
         super.execute(commandCall, evaluator, resultRecorder)
         val root = commandCall.html()
         val mqName = root.takeAwayAttr("name")
+        val collapsable = root.takeAwayAttr("collapsable", "false").toBoolean()
         val headers = headers(root, evaluator)
         root.takeAwayAttr("vars").vars(evaluator, true, root.takeAwayAttr("varsSeparator", ","))
         val message = evaluator.resolveJson(root.content(evaluator).trim())
         root.removeChildren()(
             tableSlim()(
                 captionEnvelopClosed(mqName),
-                if (headers.isNotEmpty()) caption("Headers: ${headers.entries.joinToString()}")(italic("", CLASS to "fa fa-border")) else null,
-                trWithTDs(
-                    pre(message).css("json")
+                if (headers.isNotEmpty()) caption("Headers: ${headers.entries.joinToString()}")(
+                    italic("", CLASS to "fa fa-border")
+                ) else null,
+                tr()(
+                    if (collapsable) collapsed(collapsableContainer(message, "json"))
+                    else td(message).css("json")//exp-body
                 )
             )
         )
@@ -218,3 +255,26 @@ private fun captionEnvelopOpen(mqName: String) =
 
 private fun captionEnvelopClosed(mqName: String?) =
     caption()(italic(" $mqName", CLASS to "fa fa-envelope fa-pull-left fa-border"))
+
+private fun container(text: String, type: String, collapsable: Boolean): Html {
+    return if (collapsable) collapsableContainer(text, type) else fixedContainer(text, type)
+}
+
+private fun collapsed(container: Html): Html {
+    return td("class" to "exp-body")(
+        div().style("position: relative")(
+            divCollapse("", container.attr("id").toString()).css("fa fa-expand collapsed"),
+            container
+        )
+    )
+}
+
+private fun fixedContainer(text: String, type: String): Html {
+    return td(text).css("$type exp-body")
+}
+
+private fun collapsableContainer(text: String, type: String): Html {
+    val id = UUID.randomUUID().toString()
+    return div(text, "id" to id).css("$type file collapse")
+}
+
