@@ -10,6 +10,9 @@ class Xj : Specs() {
     val actualXml: String
         get() = "<date>$NOW</date>"
 
+    val actualBigXml: String
+        get() = "<root>${(1..50).map { "<num>$it</num>" }.reduce { it, acc -> acc + it }}</root>"
+
     val actualJsonWithFieldsToIgnore: String
         get() = """{ 
             |"param1":"1", 
