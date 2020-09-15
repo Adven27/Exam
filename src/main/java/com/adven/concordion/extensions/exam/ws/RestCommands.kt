@@ -12,7 +12,6 @@ import com.adven.concordion.extensions.exam.core.html.code
 import com.adven.concordion.extensions.exam.core.html.div
 import com.adven.concordion.extensions.exam.core.html.h
 import com.adven.concordion.extensions.exam.core.html.html
-import com.adven.concordion.extensions.exam.core.html.italic
 import com.adven.concordion.extensions.exam.core.html.pre
 import com.adven.concordion.extensions.exam.core.html.span
 import com.adven.concordion.extensions.exam.core.html.table
@@ -123,16 +122,16 @@ sealed class RequestCommand(
         headers: Map<String, String>
     ) {
         val div = div()(
-            h(4, "")(
-                badge(method.name, "success"),
-                badge(type, "info"),
+            h(5, "")(
+                badge(method.name, "info"),
+                badge(type, "light"),
                 code(url)
             )
         )
         if (cookies != null) {
             div(
                 h(6, "")(
-                    badge("Cookies", "info"),
+                    badge("Cookies", "light"),
                     code(cookies)
                 )
             )
@@ -140,7 +139,7 @@ sealed class RequestCommand(
         if (headers.isNotEmpty()) {
             div(
                 h(6, "")(
-                    badge("Headers", "info"),
+                    badge("Headers", "light"),
                     code(headers.toString())
                 )
             )
@@ -299,7 +298,9 @@ class CaseCommand(
             if (body != null) {
                 val content = body.content(evaluator)
                 val bodyStr = contentResolver.resolve(content, evaluator)
-                td().insteadOf(body).css(contentPrinter.style() + " exp-body").removeChildren().text(contentPrinter.print(bodyStr))
+                td().insteadOf(body).css(contentPrinter.style() + " exp-body").style("min-width: 20%;   width: 50%;")
+                    .removeChildren()
+                    .text(contentPrinter.print(bodyStr))
                 executor.body(bodyStr)
             }
             processMultipart(caseTR, evaluator, executor)
@@ -313,7 +314,7 @@ class CaseCommand(
             val expectedStatus = expectedStatus(expected)
             val statusEl = pre().css("exp-status")
             check(
-                td("colspan" to (if (body == null) "2" else "1")).insteadOf(expected),
+                td("colspan" to (if (body == null) "2" else "1")).css("exp-body").insteadOf(expected),
                 statusEl,
                 evaluator,
                 resultRecorder,
@@ -432,7 +433,7 @@ class CaseCommand(
             tr()(
                 td()(
                     div()(
-                        italic("${executor.requestMethod()} "),
+                        badge(executor.requestMethod(), "info"),
                         code(executor.requestUrlWithParams()),
                         *cookiesTags(executor.cookies),
                         *headersTags(executor.headers)
@@ -446,7 +447,7 @@ class CaseCommand(
     private fun cookiesTags(cookies: String?): Array<Html> {
         return (if (cookies != null && cookies.isNotEmpty()) {
             listOf(
-                italic(" Cookies "),
+                badge("Cookies", "light"),
                 code(cookies)
             )
         } else listOf(span(""))).toTypedArray()
@@ -455,7 +456,7 @@ class CaseCommand(
     private fun headersTags(headers: Map<String, String>): Array<Html> {
         return (if (headers.isNotEmpty()) {
             listOf(
-                italic(" Headers "),
+                badge("Headers", "light"),
                 code(headers.toString())
             )
         } else listOf(span(""))).toTypedArray()
