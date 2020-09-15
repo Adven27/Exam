@@ -1,0 +1,314 @@
+<?xml version="1.0" encoding="UTF-8"?><html xmlns:e="http://exam.extension.io" xmlns:cc="http://www.concordion.org/2007/concordion"><head><style>* {
+  font-family: Arial;
+}
+body {
+  padding: 32px;  
+}
+pre {
+  padding: 6px 28px 6px 28px;
+  background-color: #E8EEF7;
+}
+pre, pre *, code, code *, kbd {
+  font-family: Courier New, Courier;
+  font-size: 10pt;
+}
+h1, h1 * {
+  font-size: 24pt;	
+}
+p, td, th, li, .breadcrumbs {
+  font-size: 10pt;
+}
+p, li {
+  line-height: 140%;
+  max-width: 720px;
+}
+table {
+  border-collapse: collapse;
+  empty-cells: show;
+  margin: 8px 0px 8px 0px;
+}
+th, td {
+  border: 1px solid black;
+  padding: 3px;
+}
+td {
+  background-color: white;
+  vertical-align: top;
+}
+th {
+  background-color: #C3D9FF;
+}
+li {
+  margin-top: 6px;
+  margin-bottom: 6px; 
+}
+
+.example, :not(th)[cc\:example] {
+  padding: 6px 16px 6px 16px;
+  border: 1px solid #C3D9FF;
+  margin: 6px 0px 28px 0px;
+  background-color: #F5F9FD;
+}
+.example h3, [cc\:example] h3 {
+  margin-top: 8px;
+  margin-bottom: 8px;
+  font-size: 12pt;
+}
+
+p.success {
+  padding: 2px;
+}
+.success, .success * {
+  background-color: #afa !important;
+}
+.success pre {
+  background-color: #bbffbb;
+}
+.failure, .failure * {
+  background-color: #ffb0b0;
+  padding: 1px;
+}
+.failure .expected {
+  text-decoration: line-through;
+  color: #bb5050;
+}
+.ignored, .ignored * {
+  background-color: #f0f0f0 !important;	
+}
+
+ins {
+  text-decoration: none;	
+}
+
+.exceptionMessage {
+  background-color: #fdd;
+  font-family: Courier New, Courier, Monospace;
+  font-size: 10pt;
+  display: block;
+  font-weight: normal;
+  padding: 4px;
+  text-decoration: none !important;
+}
+.stackTrace, .stackTrace * {
+  font-weight: normal;
+}
+.stackTrace {
+  display: none;
+  padding: 1px 4px 4px 4px;
+  background-color: #fdd;
+  border-top: 1px dotted black;
+}
+.stackTraceExceptionMessage {
+  display: block;
+  font-family: Courier New, Courier, Monospace;
+  font-size: 8pt;
+  white-space: wrap;
+  padding: 1px 0px 1px 0px;
+}
+.stackTraceEntry {
+  white-space: nowrap;
+  font-family: Courier New, Courier, Monospace;
+  display: block;
+  font-size: 8pt;
+  padding: 1px 0px 1px 32px;
+}
+.stackTraceButton {
+  font-size: 8pt;
+  margin: 2px 8px 2px 0px;
+  font-weight: normal;
+  font-family: Arial;
+}
+
+.special {
+  font-style: italic;
+}
+.missing, .missing * {
+  background-color: #ff9999;
+  color:#bb5050;
+  text-decoration: line-through;
+}
+.surplus, .surplus * {
+  background-color: #ff9999;
+}
+.footer {
+  text-align: right;
+  margin-top: 40px;
+  font-size: 8pt;
+  width: 100%;
+  color: #999;
+}
+.footer .testTime {
+  padding: 2px 10px 0px 0px;
+}
+
+.idea {
+  font-size: 9pt;
+  color: #888;
+  font-style: italic;	
+}
+.tight li {
+  margin-top: 1px;
+  margin-bottom: 1px; 
+}
+.commentary {
+  float: right;
+  width: 200px;
+  background-color: #ffffd0;
+  padding:8px;
+  border: 3px solid #eeeeb0;	 
+  margin: 10px 0px 10px 10px;	 
+}
+.commentary, .commentary * {
+  font-size: 8pt;
+}
+</style><meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<link type="text/css" rel="stylesheet" href="../../../timingExtensionStyle.css" /><script type="text/javascript" src="../../../timingExtensionToggle.js"></script><link type="text/css" rel="stylesheet" href="../../../codemirror/codemirror.css" /><link type="text/css" rel="stylesheet" href="../../../codemirror/merge.css" /><link type="text/css" rel="stylesheet" href="../../../codemirror/enable-codemirror.css" /><link type="text/css" rel="stylesheet" href="../../../codemirror/foldgutter.css" /><link type="text/css" rel="stylesheet" href="../../../codemirror/simplescrollbar.css" /><script type="text/javascript" src="../../../codemirror/codemirror.js"></script><script type="text/javascript" src="../../../codemirror/enable-codemirror.js"></script><script type="text/javascript" src="../../../codemirror/javascript.js"></script><script type="text/javascript" src="../../../codemirror/xml.js"></script><script type="text/javascript" src="../../../codemirror/htmlmixed.js"></script><script type="text/javascript" src="../../../codemirror/formatting.js"></script><script type="text/javascript" src="../../../codemirror/markdown.js"></script><script type="text/javascript" src="../../../codemirror/diff_match_patch.js"></script><script type="text/javascript" src="../../../codemirror/merge.js"></script><script type="text/javascript" src="../../../codemirror/xml-fold.js"></script><script type="text/javascript" src="../../../codemirror/simplescrollbar.js"></script><script type="text/javascript" src="../../../bootstrap/jquery-3.2.1.slim.min.js"></script><script type="text/javascript" src="../../../bootstrap/popper.min.js"></script><script type="text/javascript" src="../../../bootstrap/bootstrap.min.js"></script><script type="text/javascript" src="../../../bootstrap/sidebar.js"></script><link type="text/css" rel="stylesheet" href="../../../bootstrap/enable-bootstrap.css" /><link type="text/css" rel="stylesheet" href="../../../bootstrap/bootstrap.min.css" /><link type="text/css" rel="stylesheet" href="../../../bootstrap/callout.css" /><link type="text/css" rel="stylesheet" href="../../../bootstrap/font-awesome.min.css" /><link type="text/css" rel="stylesheet" href="../../../bootstrap/scrollToTop.css" /><script type="text/javascript" src="../../../bootstrap/scrollToTop.js"></script></head><body><div id="toggle-button"><img id="toggle-on" src="../../../timing-on.svg" height="24" width="24" style="display:none" /><img id="toggle-off" src="../../../timing-off.svg" height="24" width="24" /></div><span class="breadcrumbs"><a href="../../Specs.html">Exam - Concordion extension</a> &gt; <a href="../Db.html">Working with DB</a> &gt;</span>
+<h1>Table setting</h1>
+<div cmdId="c065d789-39fa-4db0-98dc-f98c1b7a1e14" e:summary="" class="pin"> <h4>Summary<button type="button" class="btn btn-light btn-sm text-muted ml-1" data-toggle="collapse" data-target="#summary" aria-expanded="true" aria-controls="summary">collapse</button></h4><div id="summary" class="collapse show"><div class="list-group"><a class="list-group-item list-group-item-action" style="border-left: none; border-right: none;" href="#Success">Success<small class="card-img-overlay m-1" style="padding:0; left:inherit;"><span class="badge badge-pill badge-light">764ms</span><span class="badge badge-pill badge-success">94</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small></a><a class="list-group-item list-group-item-action" style="border-left: none; border-right: none;" href="#Fail">Fail<small class="card-img-overlay m-1" style="padding:0; left:inherit;"><span class="badge badge-pill badge-light">2s 797ms</span><span class="badge badge-pill badge-success">52</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning">20</span><span class="badge badge-pill badge-danger"></span><span class="badge badge-pill badge-warning">ExpectedToFail</span></small></a></div></div></div>
+<div xmlns:c="http://www.concordion.org/2007/concordion" name="Success" cmdId="1457c093-91bf-42ca-a089-0222c21d01e3" c:example="Success" class="card mb-3" e:example="" id="Success"><div class="card-header" data-toggle="collapse" data-target="#-202516509" aria-expanded="true" aria-controls="-202516509"><a name="Success" data-type="example">Success</a></div><div class="card-body collapse show" id="-202516509">
+    <div print="true" cmdId="c4ebc743-e7c4-483b-bfe2-380b0525177d" e:given="" class="bd-callout bd-callout-info"><pre class="htmlmixed card">
+&lt;b cc:set="#id"&gt;99&lt;/b&gt;
+&lt;b cc:set="#name"&gt;Don&lt;/b&gt;
+&lt;b cc:set="#age"&gt;40&lt;/b&gt;
+&lt;b cc:set="#bd"&gt;01.01.2000&lt;/b&gt;
+&lt;b cc:set="#field"&gt;passport&lt;/b&gt;
+&lt;b cc:set="#value"&gt;4444&lt;/b&gt;
+&lt;span cc:assertTrue="addRecordWithField(#id, #name, #age, #bd, #field, #value)"&gt;present&lt;/span&gt;
+&lt;e:db-show table="PERSON" saveToResources="/data/db/person.xml" /&gt;
+&lt;e:db-show table="PERSON_FIELDS" saveToResources="/data/db/person.json" /&gt;
+&lt;e:db-show table="PERSON" saveToResources="/data/db/person.csv" /&gt;</pre>
+        Given record <b cc:set="#id">99</b>
+        <b cc:set="#name">Don</b>
+        <b cc:set="#age">40</b>
+        <b cc:set="#bd">01.01.2000</b>
+        <b cc:set="#field">passport</b>
+        <b cc:set="#value">4444</b>
+        <span cc:assertTrue="addRecordWithField(#id, #name, #age, #bd, #field, #value)" class="success">present</span> in PERSON
+        <table cmdId="828bf945-0d87-4985-8d4f-101e1968b484" e:db-show="" class="table table-sm"> <caption><i class="fa fa-database fa-pull-left fa-border"> PERSON</i></caption><thead class="thead-default"><tr><th class="">ID</th><th class="">NAME</th><th class="">AGE</th><th class="">IQ</th><th class="">BIRTHDAY</th></tr></thead><tbody><tr><td class=""><span>99</span></td><td class=""><span>Don</span></td><td class=""><span>40</span></td><td class=""><span>null</span></td><td class=""><span>2000-01-01 00:00:00.000</span></td></tr></tbody></table><pre>&lt;?xml version='1.0' encoding='UTF-8'?&gt;
+&lt;dataset&gt;
+  &lt;PERSON ID="99" NAME="Don" AGE="40" BIRTHDAY="2000-01-01 00:00:00.0"/&gt;
+  &lt;PERSON_FIELDS ID="99" NAME="passport" VALUE="4444" PERSON_ID="99"/&gt;
+&lt;/dataset&gt;
+</pre>
+        <table cmdId="e50c21ec-bb51-44e6-9256-bb428a8080a1" e:db-show="" class="table table-sm"> <caption><i class="fa fa-database fa-pull-left fa-border"> PERSON_FIELDS</i></caption><thead class="thead-default"><tr><th class="">ID</th><th class="">NAME</th><th class="">VALUE</th><th class="">PERSON_ID</th></tr></thead><tbody><tr><td class=""><span>99</span></td><td class=""><span>passport</span></td><td class=""><span>4444</span></td><td class=""><span>99</span></td></tr></tbody></table><pre>{
+  "PERSON": [
+    {
+      "ID": 99,
+      "NAME": "Don",
+      "AGE": 40,
+      "BIRTHDAY": "2000-01-01 00:00:00.0"
+    }
+  ],
+  "PERSON_FIELDS": [
+    {
+      "ID": 99,
+      "NAME": "passport",
+      "VALUE": "4444",
+      "PERSON_ID": 99
+    }
+  ]
+}</pre>
+        <table cmdId="989afc1a-3350-4875-9606-f932f16bae95" e:db-show="" class="table table-sm"> <caption><i class="fa fa-database fa-pull-left fa-border"> PERSON</i></caption><thead class="thead-default"><tr><th class="">ID</th><th class="">NAME</th><th class="">AGE</th><th class="">IQ</th><th class="">BIRTHDAY</th></tr></thead><tbody><tr><td class=""><span>99</span></td><td class=""><span>Don</span></td><td class=""><span>40</span></td><td class=""><span>null</span></td><td class=""><span>2000-01-01 00:00:00.000</span></td></tr></tbody></table><pre></pre>
+    </div>
+    <div print="true" cmdId="a39f5003-4785-4163-804a-9b1a74869da8" e:then="" class="bd-callout bd-callout-success"><pre class="htmlmixed card">
+&lt;e:db-verify datasets="/data/db/person.xml" /&gt;</pre>
+        <span datasets="/data/db/person.xml" cmdId="6ae50d9e-5c89-4476-bc4e-cf5b83ea9be4" e:db-verify=""> <table class="table table-sm"><caption><i class="fa fa-database fa-pull-left fa-border"> PERSON</i></caption><thead class="thead-default"><tr><th class="">ID</th><th class="">NAME</th><th class="">AGE</th><th class="">BIRTHDAY</th></tr></thead><tbody><tr><td class=" table-success"> <span>99</span></td><td class=" table-success"> <span>Don</span></td><td class=" table-success"> <span>40</span></td><td class=" table-success"> <span>2000-01-01 00:00:00.0</span></td></tr></tbody></table><table class="table table-sm"><caption><i class="fa fa-database fa-pull-left fa-border"> PERSON_FIELDS</i></caption><thead class="thead-default"><tr><th class="">ID</th><th class="">NAME</th><th class="">VALUE</th><th class="">PERSON_ID</th></tr></thead><tbody><tr><td class=" table-success"> <span>99</span></td><td class=" table-success"> <span>passport</span></td><td class=" table-success"> <span>4444</span></td><td class=" table-success"> <span>99</span></td></tr></tbody></table></span>
+    </div>
+    <div print="true" cmdId="252e063b-fe36-442f-b62b-5f5ba2e17220" e:when="" class="bd-callout bd-callout-warning"><pre class="htmlmixed card">
+&lt;e:db-execute datasets="/data/db/empty.xml" /&gt;</pre>
+        <span datasets="/data/db/empty.xml" cmdId="9e5699e8-7c62-4fa2-84b2-caebe02492d9" e:db-execute=""> <table class="table table-sm"><caption><i class="fa fa-database fa-pull-left fa-border"> PERSON</i></caption><thead class="thead-default"><tr /></thead><tbody><tr><td colspan="0">&lt;EMPTY&gt;</td></tr></tbody></table><table class="table table-sm"><caption><i class="fa fa-database fa-pull-left fa-border"> PERSON_FIELDS</i></caption><thead class="thead-default"><tr /></thead><tbody><tr><td colspan="0">&lt;EMPTY&gt;</td></tr></tbody></table></span>
+    </div>
+    <div print="true" cmdId="dcc17b72-93da-4a18-8de4-3f9c3a748650" e:then="" class="bd-callout bd-callout-success"><pre class="htmlmixed card">
+&lt;e:db-verify datasets="/data/db/empty.xml" /&gt;</pre>
+        <span datasets="/data/db/empty.xml" cmdId="c6e26acd-db1c-448d-adef-50fc493a22c5" e:db-verify=""> <table class="table table-sm"><caption><i class="fa fa-database fa-pull-left fa-border"> PERSON</i></caption><thead class="thead-default"><tr><th class="">ID</th><th class="">NAME</th><th class="">AGE</th><th class="">IQ</th><th class="">BIRTHDAY</th></tr></thead><tbody><tr><td colspan="5" class="table-success">&lt;EMPTY&gt;</td></tr></tbody></table><table class="table table-sm"><caption><i class="fa fa-database fa-pull-left fa-border"> PERSON_FIELDS</i></caption><thead class="thead-default"><tr><th class="">ID</th><th class="">NAME</th><th class="">VALUE</th><th class="">PERSON_ID</th></tr></thead><tbody><tr><td colspan="4" class="table-success">&lt;EMPTY&gt;</td></tr></tbody></table></span>
+    </div>
+    <div print="true" cmdId="5d65c13c-0de9-4f01-bad2-c7e13b3d4220" e:when="" class="bd-callout bd-callout-warning"><pre class="htmlmixed card">
+&lt;e:db-execute datasets="/data/db/adam.xml, /data/db/bob.json, /data/db/carl/person.csv" /&gt;</pre>
+        <span datasets="/data/db/adam.xml, /data/db/bob.json, /data/db/carl/person.csv" cmdId="706e5101-63a4-4221-bc55-e22a94dc7204" e:db-execute=""> <table class="table table-sm"><caption><i class="fa fa-database fa-pull-left fa-border"> PERSON</i></caption><thead class="thead-default"><tr><th class="">ID</th><th class="">NAME</th><th class="">AGE</th><th class="">BIRTHDAY</th></tr></thead><tbody><tr><td class=""><span>1</span></td><td class=""><span>Adam</span></td><td class=""><span>10</span></td><td class=""><span>2020-09-15 00:00:00.000</span></td></tr><tr><td class=""><span>10</span></td><td class=""><span>Bob</span></td><td class=""><span>20</span></td><td class=""><span>2000-10-10 00:00:00</span></td></tr><tr><td class=""><span>2</span></td><td class=""><span>Carl</span></td><td class=""><span>30</span></td><td class=""><span>2003-03-03 00:00:00.000</span></td></tr></tbody></table><table class="table table-sm"><caption><i class="fa fa-database fa-pull-left fa-border"> PERSON_FIELDS</i></caption><thead class="thead-default"><tr><th class="">ID</th><th class="">NAME</th><th class="">VALUE</th><th class="">PERSON_ID</th></tr></thead><tbody><tr><td class=""><span>11</span></td><td class=""><span>a1</span></td><td class=""><span>1</span></td><td class=""><span>1</span></td></tr><tr><td class=""><span>12</span></td><td class=""><span>a2</span></td><td class=""><span>2</span></td><td class=""><span>1</span></td></tr><tr><td class=""><span>21</span></td><td class=""><span>b1</span></td><td class=""><span>1</span></td><td class=""><span>10</span></td></tr><tr><td class=""><span>22</span></td><td class=""><span>b2</span></td><td class=""><span>2</span></td><td class=""><span>10</span></td></tr><tr><td class=""><span>31</span></td><td class=""><span>c1</span></td><td class=""><span>value with comma &gt;&gt; , &lt;&lt; and quotes "_'</span></td><td class=""><span>2</span></td></tr></tbody></table></span>
+    </div>
+    <div print="true" cmdId="e518afaf-7ef2-4ff7-afdb-4071b67bf362" e:then="" class="bd-callout bd-callout-success"><pre class="htmlmixed card">
+&lt;e:db-verify dir="/data/db/" datasets="adam.xml, carl/person.csv, bob-expected.json" orderBy="person_fields.person_id" /&gt;
+&lt;e:db-verify dir="/data/db/" datasets="adam-ignore-id.xml, bob-wrong-id.json, carl/person.csv" /&gt;</pre>
+        <span dir="/data/db/" datasets="adam.xml, carl/person.csv, bob-expected.json" cmdId="dd297f8a-31cf-4440-99f5-90ae6bedb3e5" e:db-verify=""> <table class="table table-sm"><caption><i class="fa fa-database fa-pull-left fa-border"> PERSON</i></caption><thead class="thead-default"><tr><th class="">ID</th><th class="">NAME</th><th class="">AGE</th><th class="">BIRTHDAY</th></tr></thead><tbody><tr><td class=" table-success"> <span>1</span></td><td class=" table-success"> <span>Adam</span></td><td class=" table-success"> <span>10</span></td><td class=" table-success"> <span>2020-09-15 00:00:00.000</span></td></tr><tr><td class=" table-success"> <span>2</span></td><td class=" table-success"> <span>Carl</span></td><td class=" table-success"> <span>30</span></td><td class=" table-success"> <span>2003-03-03 00:00:00.000</span></td></tr><tr><td class=" table-success"> <span>10</span></td><td class=" table-success"> <span>!{string} (Bob)</span></td><td class=" table-success"> <span>!{number} (20)</span></td><td class=" table-success"> <span>!{within 1d}{{date "2000-10-10"}} (2000-10-10 00:00:00.0)</span></td></tr></tbody></table><table class="table table-sm"><caption><i class="fa fa-database fa-pull-left fa-border"> PERSON_FIELDS</i></caption><thead class="thead-default"><tr><th class="">ID</th><th class="">NAME</th><th class="">VALUE</th><th class="">PERSON_ID</th></tr></thead><tbody><tr><td class=" table-success"> <span>11</span></td><td class=" table-success"> <span>a1</span></td><td class=" table-success"> <span>1</span></td><td class=" table-success"> <span>1</span></td></tr><tr><td class=" table-success"> <span>12</span></td><td class=" table-success"> <span>a2</span></td><td class=" table-success"> <span>2</span></td><td class=" table-success"> <span>1</span></td></tr><tr><td class=" table-success"> <span>31</span></td><td class=" table-success"> <span>c1</span></td><td class=" table-success"> <span>value with comma &gt;&gt; , &lt;&lt; and quotes "_'</span></td><td class=" table-success"> <span>2</span></td></tr><tr><td class=" table-success"> <span>21</span></td><td class=" table-success"> <span>b1</span></td><td class=" table-success"> <span>1</span></td><td class=" table-success"> <span>10</span></td></tr><tr><td class=" table-success"> <span>22</span></td><td class=" table-success"> <span>b2</span></td><td class=" table-success"> <span>2</span></td><td class=" table-success"> <span>10</span></td></tr></tbody></table></span>
+        Beware! The first dataset columns metadata will be used as a result of the datasets merge: PERSON_FIELDS.ID column ignored for the whole check
+        <span dir="/data/db/" datasets="adam-ignore-id.xml, bob-wrong-id.json, carl/person.csv" cmdId="05794229-acc1-44eb-b9d7-62b0354e5d9d" e:db-verify=""> <table class="table table-sm"><caption><i class="fa fa-database fa-pull-left fa-border"> PERSON</i></caption><thead class="thead-default"><tr><th class="">ID</th><th class="">NAME</th><th class="">AGE</th><th class="">BIRTHDAY</th></tr></thead><tbody><tr><td class=" table-success"> <span>1</span></td><td class=" table-success"> <span>Adam</span></td><td class=" table-success"> <span>10</span></td><td class=" table-success"> <span>2020-09-15 00:00:00.000</span></td></tr><tr><td class=" table-success"> <span>2</span></td><td class=" table-success"> <span>Carl</span></td><td class=" table-success"> <span>30</span></td><td class=" table-success"> <span>2003-03-03 00:00:00.000</span></td></tr><tr><td class=" table-success"> <span>10</span></td><td class=" table-success"> <span>!{string} (Bob)</span></td><td class=" table-success"> <span>!{number} (20)</span></td><td class=" table-success"> <span>!{within 1d}{{date "2000-10-10"}} (2000-10-10 00:00:00.0)</span></td></tr></tbody></table><table class="table table-sm"><caption><i class="fa fa-database fa-pull-left fa-border"> PERSON_FIELDS</i></caption><thead class="thead-default"><tr><th class="">NAME</th><th class="">VALUE</th><th class="">PERSON_ID</th></tr></thead><tbody><tr><td class=" table-success"> <span>a1</span></td><td class=" table-success"> <span>1</span></td><td class=" table-success"> <span>1</span></td></tr><tr><td class=" table-success"> <span>a2</span></td><td class=" table-success"> <span>2</span></td><td class=" table-success"> <span>1</span></td></tr><tr><td class=" table-success"> <span>b1</span></td><td class=" table-success"> <span>1</span></td><td class=" table-success"> <span>10</span></td></tr><tr><td class=" table-success"> <span>b2</span></td><td class=" table-success"> <span>2</span></td><td class=" table-success"> <span>10</span></td></tr><tr><td class=" table-success"> <span>c1</span></td><td class=" table-success"> <span>value with comma &gt;&gt; , &lt;&lt; and quotes "_'</span></td><td class=" table-success"> <span>2</span></td></tr></tbody></table></span>
+    </div>
+    <div print="true" cmdId="2115ce73-8be6-4474-98e6-26447e3f5a45" e:when="" class="bd-callout bd-callout-warning"><pre class="htmlmixed card">
+&lt;span&gt;Clean insert:&lt;/span&gt;
+&lt;e:db-execute datasets="/data/db/adam.xml" debug="true" /&gt;
+&lt;span&gt;Append:&lt;/span&gt;
+&lt;e:db-execute operation="insert" datasets="/data/db/bob.json" debug="true" /&gt;</pre>
+        <span>Clean insert:</span>
+        <span datasets="/data/db/adam.xml" cmdId="bf5e128c-999d-4593-ac3d-aba18ae4ae21" e:db-execute=""> <table class="table table-sm"><caption><i class="fa fa-database fa-pull-left fa-border"> PERSON</i></caption><thead class="thead-default"><tr><th class="">ID</th><th class="">NAME</th><th class="">AGE</th><th class="">BIRTHDAY</th></tr></thead><tbody><tr><td class=""><span>1</span></td><td class=""><span>Adam</span></td><td class=""><span>10</span></td><td class=""><span>2020-09-15 00:00:00.000</span></td></tr></tbody></table><table class="table table-sm"><caption><i class="fa fa-database fa-pull-left fa-border"> PERSON_FIELDS</i></caption><thead class="thead-default"><tr><th class="">ID</th><th class="">NAME</th><th class="">VALUE</th><th class="">PERSON_ID</th></tr></thead><tbody><tr><td class=""><span>11</span></td><td class=""><span>a1</span></td><td class=""><span>1</span></td><td class=""><span>1</span></td></tr><tr><td class=""><span>12</span></td><td class=""><span>a2</span></td><td class=""><span>2</span></td><td class=""><span>1</span></td></tr></tbody></table></span>
+        <span>Append:</span>
+        <span datasets="/data/db/bob.json" cmdId="06191c6d-1d7d-444a-838e-cba6a8bd908c" e:db-execute=""> <table class="table table-sm"><caption><i class="fa fa-database fa-pull-left fa-border"> PERSON</i></caption><thead class="thead-default"><tr><th class="">id</th><th class="">name</th><th class="">age</th><th class="">BIRTHDAY</th></tr></thead><tbody><tr><td class=""><span>10</span></td><td class=""><span>Bob</span></td><td class=""><span>20</span></td><td class=""><span>2000-10-10 00:00:00</span></td></tr></tbody></table><table class="table table-sm"><caption><i class="fa fa-database fa-pull-left fa-border"> PERSON_FIELDS</i></caption><thead class="thead-default"><tr><th class="">id</th><th class="">name</th><th class="">value</th><th class="">person_id</th></tr></thead><tbody><tr><td class=""><span>21</span></td><td class=""><span>b1</span></td><td class=""><span>1</span></td><td class=""><span>10</span></td></tr><tr><td class=""><span>22</span></td><td class=""><span>b2</span></td><td class=""><span>2</span></td><td class=""><span>10</span></td></tr></tbody></table></span>
+    </div>
+    <div print="true" cmdId="44e5e94f-bfd4-478b-ac70-0a97b0db30b5" e:then="" class="bd-callout bd-callout-success"><pre class="htmlmixed card">
+&lt;e:db-verify dir="/data/db/" datasets="adam.xml, bob-expected.json" /&gt;</pre>
+        <span dir="/data/db/" datasets="adam.xml, bob-expected.json" cmdId="a51719f1-6d86-4b1b-b043-391c9eb9ff68" e:db-verify=""> <table class="table table-sm"><caption><i class="fa fa-database fa-pull-left fa-border"> PERSON</i></caption><thead class="thead-default"><tr><th class="">ID</th><th class="">NAME</th><th class="">AGE</th><th class="">BIRTHDAY</th></tr></thead><tbody><tr><td class=" table-success"> <span>1</span></td><td class=" table-success"> <span>Adam</span></td><td class=" table-success"> <span>10</span></td><td class=" table-success"> <span>2020-09-15 00:00:00.000</span></td></tr><tr><td class=" table-success"> <span>10</span></td><td class=" table-success"> <span>!{string} (Bob)</span></td><td class=" table-success"> <span>!{number} (20)</span></td><td class=" table-success"> <span>!{within 1d}{{date "2000-10-10"}} (2000-10-10 00:00:00.0)</span></td></tr></tbody></table><table class="table table-sm"><caption><i class="fa fa-database fa-pull-left fa-border"> PERSON_FIELDS</i></caption><thead class="thead-default"><tr><th class="">ID</th><th class="">NAME</th><th class="">VALUE</th><th class="">PERSON_ID</th></tr></thead><tbody><tr><td class=" table-success"> <span>11</span></td><td class=" table-success"> <span>a1</span></td><td class=" table-success"> <span>1</span></td><td class=" table-success"> <span>1</span></td></tr><tr><td class=" table-success"> <span>12</span></td><td class=" table-success"> <span>a2</span></td><td class=" table-success"> <span>2</span></td><td class=" table-success"> <span>1</span></td></tr><tr><td class=" table-success"> <span>21</span></td><td class=" table-success"> <span>b1</span></td><td class=" table-success"> <span>1</span></td><td class=" table-success"> <span>10</span></td></tr><tr><td class=" table-success"> <span>22</span></td><td class=" table-success"> <span>b2</span></td><td class=" table-success"> <span>2</span></td><td class=" table-success"> <span>10</span></td></tr></tbody></table></span>
+    </div>
+</div><div class="card-footer text-muted" data-toggle="collapse" data-target="#-202516509" aria-expanded="true" aria-controls="-202516509"><small><span class="badge badge-pill badge-success">94</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small></div></div>
+<div xmlns:c="http://www.concordion.org/2007/concordion" name="Fail" status="ExpectedToFail" cmdId="2d5d3209-a053-4433-a6c7-ab9e145ff64f" c:example="Fail" c:status="ExpectedToFail" class="card mb-3" e:example="" id="Fail"><div class="card-header" data-toggle="collapse" data-target="#2181950" aria-expanded="true" aria-controls="2181950"><a name="Fail" data-type="example">Fail</a></div><div class="card-body collapse show" id="2181950">
+    <div print="true" cmdId="6a56c4b3-c241-4423-9704-6f793a133c4f" e:when="" class="bd-callout bd-callout-warning"><pre class="htmlmixed card">
+&lt;e:db-execute datasets="/data/db/empty.xml" /&gt;</pre>
+        <span datasets="/data/db/empty.xml" cmdId="518f048c-7057-452a-8d08-0c588b8bbed9" e:db-execute=""> <table class="table table-sm"><caption><i class="fa fa-database fa-pull-left fa-border"> PERSON</i></caption><thead class="thead-default"><tr /></thead><tbody><tr><td colspan="0">&lt;EMPTY&gt;</td></tr></tbody></table><table class="table table-sm"><caption><i class="fa fa-database fa-pull-left fa-border"> PERSON_FIELDS</i></caption><thead class="thead-default"><tr /></thead><tbody><tr><td colspan="0">&lt;EMPTY&gt;</td></tr></tbody></table></span>
+    </div>
+    <div print="true" cmdId="ea40ddac-31ef-45f0-92c5-cfa605db0d04" e:then="" class="bd-callout bd-callout-success"><pre class="htmlmixed card">
+&lt;e:db-verify datasets="/data/db/person.xml" awaitAtMostSec="2" awaitPollDelayMillis="100" awaitPollIntervalMillis="1000" /&gt;</pre>
+        <span datasets="/data/db/person.xml" cmdId="b9049a28-5d1b-4512-9021-4386281408e6" e:db-verify=""> <div class="rest-failure bd-callout bd-callout-danger"><div>row count (table=PERSON) expected:&lt;1&gt; but was:&lt;0&gt;</div><span>Expected: </span><table class="table table-sm"><caption><i class="fa fa-database fa-pull-left fa-border"> PERSON</i></caption><thead class="thead-default"><tr><th class="">ID</th><th class="">NAME</th><th class="">AGE</th><th class="">BIRTHDAY</th></tr></thead><tbody><tr><td class=""><span>99</span></td><td class=""><span>Don</span></td><td class=""><span>40</span></td><td class=""><span>2000-01-01 00:00:00.0</span></td></tr></tbody></table><span>but was: </span><table class="table table-sm"><caption><i class="fa fa-database fa-pull-left fa-border"> PERSON</i></caption><thead class="thead-default"><tr><th class="">ID</th><th class="">NAME</th><th class="">AGE</th><th class="">BIRTHDAY</th></tr></thead><tbody><tr><td colspan="4">&lt;EMPTY&gt;</td></tr></tbody></table></div><div class="rest-failure bd-callout bd-callout-danger"><div>row count (table=PERSON_FIELDS) expected:&lt;1&gt; but was:&lt;0&gt;</div><span>Expected: </span><table class="table table-sm"><caption><i class="fa fa-database fa-pull-left fa-border"> PERSON_FIELDS</i></caption><thead class="thead-default"><tr><th class="">ID</th><th class="">NAME</th><th class="">VALUE</th><th class="">PERSON_ID</th></tr></thead><tbody><tr><td class=""><span>99</span></td><td class=""><span>passport</span></td><td class=""><span>4444</span></td><td class=""><span>99</span></td></tr></tbody></table><span>but was: </span><table class="table table-sm"><caption><i class="fa fa-database fa-pull-left fa-border"> PERSON_FIELDS</i></caption><thead class="thead-default"><tr><th class="">ID</th><th class="">NAME</th><th class="">VALUE</th><th class="">PERSON_ID</th></tr></thead><tbody><tr><td colspan="4">&lt;EMPTY&gt;</td></tr></tbody></table></div></span>
+    </div>
+    <div print="true" cmdId="6e24284f-6488-444b-bf0b-e6d93233b730" e:when="" class="bd-callout bd-callout-warning"><pre class="htmlmixed card">
+&lt;e:db-execute datasets="/data/db/person.xml" /&gt;</pre>
+        <span datasets="/data/db/person.xml" cmdId="10727ce7-f0ea-4cca-b129-0103090028d5" e:db-execute=""> <table class="table table-sm"><caption><i class="fa fa-database fa-pull-left fa-border"> PERSON</i></caption><thead class="thead-default"><tr><th class="">ID</th><th class="">NAME</th><th class="">AGE</th><th class="">BIRTHDAY</th></tr></thead><tbody><tr><td class=""><span>99</span></td><td class=""><span>Don</span></td><td class=""><span>40</span></td><td class=""><span>2000-01-01 00:00:00.0</span></td></tr></tbody></table><table class="table table-sm"><caption><i class="fa fa-database fa-pull-left fa-border"> PERSON_FIELDS</i></caption><thead class="thead-default"><tr><th class="">ID</th><th class="">NAME</th><th class="">VALUE</th><th class="">PERSON_ID</th></tr></thead><tbody><tr><td class=""><span>99</span></td><td class=""><span>passport</span></td><td class=""><span>4444</span></td><td class=""><span>99</span></td></tr></tbody></table></span>
+    </div>
+    <div print="true" cmdId="e532ef62-c735-4d68-b0a2-1fbaa738ef37" e:then="" class="bd-callout bd-callout-success"><pre class="htmlmixed card">
+&lt;e:db-verify datasets="/data/db/empty.xml" /&gt;</pre>
+        <span datasets="/data/db/empty.xml" cmdId="e6c4c706-140e-4f15-bcc9-5d4e68d5936b" e:db-verify=""> <div class="rest-failure bd-callout bd-callout-danger"><div>row count (table=PERSON) expected:&lt;0&gt; but was:&lt;1&gt;</div><span>Expected: </span><table class="table table-sm"><caption><i class="fa fa-database fa-pull-left fa-border"> PERSON</i></caption><thead class="thead-default"><tr><th class="">ID</th><th class="">NAME</th><th class="">AGE</th><th class="">IQ</th><th class="">BIRTHDAY</th></tr></thead><tbody><tr><td colspan="5">&lt;EMPTY&gt;</td></tr></tbody></table><span>but was: </span><table class="table table-sm"><caption><i class="fa fa-database fa-pull-left fa-border"> PERSON</i></caption><thead class="thead-default"><tr><th class="">ID</th><th class="">NAME</th><th class="">AGE</th><th class="">IQ</th><th class="">BIRTHDAY</th></tr></thead><tbody><tr><td class=""><span>99</span></td><td class=""><span>Don</span></td><td class=""><span>40</span></td><td class=""><span>null</span></td><td class=""><span>2000-01-01 00:00:00.000</span></td></tr></tbody></table></div><div class="rest-failure bd-callout bd-callout-danger"><div>row count (table=PERSON_FIELDS) expected:&lt;0&gt; but was:&lt;1&gt;</div><span>Expected: </span><table class="table table-sm"><caption><i class="fa fa-database fa-pull-left fa-border"> PERSON_FIELDS</i></caption><thead class="thead-default"><tr><th class="">ID</th><th class="">NAME</th><th class="">VALUE</th><th class="">PERSON_ID</th></tr></thead><tbody><tr><td colspan="4">&lt;EMPTY&gt;</td></tr></tbody></table><span>but was: </span><table class="table table-sm"><caption><i class="fa fa-database fa-pull-left fa-border"> PERSON_FIELDS</i></caption><thead class="thead-default"><tr><th class="">ID</th><th class="">NAME</th><th class="">VALUE</th><th class="">PERSON_ID</th></tr></thead><tbody><tr><td class=""><span>99</span></td><td class=""><span>passport</span></td><td class=""><span>4444</span></td><td class=""><span>99</span></td></tr></tbody></table></div></span>
+    </div>
+    <div print="true" cmdId="52694228-3526-442f-a300-e10a3d63333c" e:when="" class="bd-callout bd-callout-warning"><pre class="htmlmixed card">
+&lt;e:db-execute datasets="/data/db/adam.xml" /&gt;</pre>
+        <span datasets="/data/db/adam.xml" cmdId="14913681-4bac-49be-9543-bd228fff89a3" e:db-execute=""> <table class="table table-sm"><caption><i class="fa fa-database fa-pull-left fa-border"> PERSON</i></caption><thead class="thead-default"><tr><th class="">ID</th><th class="">NAME</th><th class="">AGE</th><th class="">BIRTHDAY</th></tr></thead><tbody><tr><td class=""><span>1</span></td><td class=""><span>Adam</span></td><td class=""><span>10</span></td><td class=""><span>2020-09-15 00:00:00.000</span></td></tr></tbody></table><table class="table table-sm"><caption><i class="fa fa-database fa-pull-left fa-border"> PERSON_FIELDS</i></caption><thead class="thead-default"><tr><th class="">ID</th><th class="">NAME</th><th class="">VALUE</th><th class="">PERSON_ID</th></tr></thead><tbody><tr><td class=""><span>11</span></td><td class=""><span>a1</span></td><td class=""><span>1</span></td><td class=""><span>1</span></td></tr><tr><td class=""><span>12</span></td><td class=""><span>a2</span></td><td class=""><span>2</span></td><td class=""><span>1</span></td></tr></tbody></table></span>
+    </div>
+    <div print="true" cmdId="95d43b51-3a3c-4507-a5b4-545240d35812" e:then="" class="bd-callout bd-callout-success"><pre class="htmlmixed card">
+&lt;e:db-verify dir="/data/db/" datasets="adam.xml, bob-expected.json" /&gt;</pre>
+        <span dir="/data/db/" datasets="adam.xml, bob-expected.json" cmdId="6418af22-45b7-4557-b834-b50f6c1cd09a" e:db-verify=""> <div class="rest-failure bd-callout bd-callout-danger"><div>row count (table=PERSON) expected:&lt;2&gt; but was:&lt;1&gt;</div><span>Expected: </span><table class="table table-sm"><caption><i class="fa fa-database fa-pull-left fa-border"> PERSON</i></caption><thead class="thead-default"><tr><th class="">ID</th><th class="">NAME</th><th class="">AGE</th><th class="">BIRTHDAY</th></tr></thead><tbody><tr><td class=""><span>1</span></td><td class=""><span>Adam</span></td><td class=""><span>10</span></td><td class=""><span>2020-09-15 00:00:00.000</span></td></tr><tr><td class=""><span>10</span></td><td class=""><span>!{string}</span></td><td class=""><span>!{number}</span></td><td class=""><span>!{within 1d}{{date "2000-10-10"}}</span></td></tr></tbody></table><span>but was: </span><table class="table table-sm"><caption><i class="fa fa-database fa-pull-left fa-border"> PERSON</i></caption><thead class="thead-default"><tr><th class="">ID</th><th class="">NAME</th><th class="">AGE</th><th class="">BIRTHDAY</th></tr></thead><tbody><tr><td class=""><span>1</span></td><td class=""><span>Adam</span></td><td class=""><span>10</span></td><td class=""><span>2020-09-15 00:00:00.000</span></td></tr></tbody></table></div><div class="rest-failure bd-callout bd-callout-danger"><div>row count (table=PERSON_FIELDS) expected:&lt;4&gt; but was:&lt;2&gt;</div><span>Expected: </span><table class="table table-sm"><caption><i class="fa fa-database fa-pull-left fa-border"> PERSON_FIELDS</i></caption><thead class="thead-default"><tr><th class="">ID</th><th class="">NAME</th><th class="">VALUE</th><th class="">PERSON_ID</th></tr></thead><tbody><tr><td class=""><span>11</span></td><td class=""><span>a1</span></td><td class=""><span>1</span></td><td class=""><span>1</span></td></tr><tr><td class=""><span>12</span></td><td class=""><span>a2</span></td><td class=""><span>2</span></td><td class=""><span>1</span></td></tr><tr><td class=""><span>21</span></td><td class=""><span>b1</span></td><td class=""><span>1</span></td><td class=""><span>10</span></td></tr><tr><td class=""><span>22</span></td><td class=""><span>b2</span></td><td class=""><span>2</span></td><td class=""><span>10</span></td></tr></tbody></table><span>but was: </span><table class="table table-sm"><caption><i class="fa fa-database fa-pull-left fa-border"> PERSON_FIELDS</i></caption><thead class="thead-default"><tr><th class="">ID</th><th class="">NAME</th><th class="">VALUE</th><th class="">PERSON_ID</th></tr></thead><tbody><tr><td class=""><span>11</span></td><td class=""><span>a1</span></td><td class=""><span>1</span></td><td class=""><span>1</span></td></tr><tr><td class=""><span>12</span></td><td class=""><span>a2</span></td><td class=""><span>2</span></td><td class=""><span>1</span></td></tr></tbody></table></div></span>
+    </div>
+    <div print="true" cmdId="6cec179c-565c-4d5c-990e-c5207f01fa56" e:when="" class="bd-callout bd-callout-warning"><pre class="htmlmixed card">
+&lt;e:db-execute dir="/data/db/" datasets="adam.xml, bob.json" /&gt;</pre>
+        <span dir="/data/db/" datasets="adam.xml, bob.json" cmdId="52139773-b20d-47f4-82bd-62f6e9bb5ffe" e:db-execute=""> <table class="table table-sm"><caption><i class="fa fa-database fa-pull-left fa-border"> PERSON</i></caption><thead class="thead-default"><tr><th class="">ID</th><th class="">NAME</th><th class="">AGE</th><th class="">BIRTHDAY</th></tr></thead><tbody><tr><td class=""><span>1</span></td><td class=""><span>Adam</span></td><td class=""><span>10</span></td><td class=""><span>2020-09-15 00:00:00.000</span></td></tr><tr><td class=""><span>10</span></td><td class=""><span>Bob</span></td><td class=""><span>20</span></td><td class=""><span>2000-10-10 00:00:00</span></td></tr></tbody></table><table class="table table-sm"><caption><i class="fa fa-database fa-pull-left fa-border"> PERSON_FIELDS</i></caption><thead class="thead-default"><tr><th class="">ID</th><th class="">NAME</th><th class="">VALUE</th><th class="">PERSON_ID</th></tr></thead><tbody><tr><td class=""><span>11</span></td><td class=""><span>a1</span></td><td class=""><span>1</span></td><td class=""><span>1</span></td></tr><tr><td class=""><span>12</span></td><td class=""><span>a2</span></td><td class=""><span>2</span></td><td class=""><span>1</span></td></tr><tr><td class=""><span>21</span></td><td class=""><span>b1</span></td><td class=""><span>1</span></td><td class=""><span>10</span></td></tr><tr><td class=""><span>22</span></td><td class=""><span>b2</span></td><td class=""><span>2</span></td><td class=""><span>10</span></td></tr></tbody></table></span>
+    </div>
+    <div print="true" cmdId="b415c064-059c-4081-87f1-9b82f31f9cf8" e:then="" class="bd-callout bd-callout-success"><pre class="htmlmixed card">
+&lt;e:db-verify dir="/data/db/" datasets="adam.xml" /&gt;</pre>
+        <span dir="/data/db/" datasets="adam.xml" cmdId="091b0b46-c6fb-4167-a6ce-220028c6d367" e:db-verify=""> <div class="rest-failure bd-callout bd-callout-danger"><div>row count (table=PERSON) expected:&lt;1&gt; but was:&lt;2&gt;</div><span>Expected: </span><table class="table table-sm"><caption><i class="fa fa-database fa-pull-left fa-border"> PERSON</i></caption><thead class="thead-default"><tr><th class="">ID</th><th class="">NAME</th><th class="">AGE</th><th class="">BIRTHDAY</th></tr></thead><tbody><tr><td class=""><span>1</span></td><td class=""><span>Adam</span></td><td class=""><span>10</span></td><td class=""><span>2020-09-15 00:00:00.000</span></td></tr></tbody></table><span>but was: </span><table class="table table-sm"><caption><i class="fa fa-database fa-pull-left fa-border"> PERSON</i></caption><thead class="thead-default"><tr><th class="">ID</th><th class="">NAME</th><th class="">AGE</th><th class="">BIRTHDAY</th></tr></thead><tbody><tr><td class=""><span>1</span></td><td class=""><span>Adam</span></td><td class=""><span>10</span></td><td class=""><span>2020-09-15 00:00:00.000</span></td></tr><tr><td class=""><span>10</span></td><td class=""><span>Bob</span></td><td class=""><span>20</span></td><td class=""><span>2000-10-10 00:00:00.000</span></td></tr></tbody></table></div><div class="rest-failure bd-callout bd-callout-danger"><div>row count (table=PERSON_FIELDS) expected:&lt;2&gt; but was:&lt;4&gt;</div><span>Expected: </span><table class="table table-sm"><caption><i class="fa fa-database fa-pull-left fa-border"> PERSON_FIELDS</i></caption><thead class="thead-default"><tr><th class="">ID</th><th class="">NAME</th><th class="">VALUE</th><th class="">PERSON_ID</th></tr></thead><tbody><tr><td class=""><span>11</span></td><td class=""><span>a1</span></td><td class=""><span>1</span></td><td class=""><span>1</span></td></tr><tr><td class=""><span>12</span></td><td class=""><span>a2</span></td><td class=""><span>2</span></td><td class=""><span>1</span></td></tr></tbody></table><span>but was: </span><table class="table table-sm"><caption><i class="fa fa-database fa-pull-left fa-border"> PERSON_FIELDS</i></caption><thead class="thead-default"><tr><th class="">ID</th><th class="">NAME</th><th class="">VALUE</th><th class="">PERSON_ID</th></tr></thead><tbody><tr><td class=""><span>11</span></td><td class=""><span>a1</span></td><td class=""><span>1</span></td><td class=""><span>1</span></td></tr><tr><td class=""><span>12</span></td><td class=""><span>a2</span></td><td class=""><span>2</span></td><td class=""><span>1</span></td></tr><tr><td class=""><span>21</span></td><td class=""><span>b1</span></td><td class=""><span>1</span></td><td class=""><span>10</span></td></tr><tr><td class=""><span>22</span></td><td class=""><span>b2</span></td><td class=""><span>2</span></td><td class=""><span>10</span></td></tr></tbody></table></div></span>
+    </div>
+    <div print="true" cmdId="43e93577-26eb-4ee9-81e5-719bb0698f10" e:when="" class="bd-callout bd-callout-warning"><pre class="htmlmixed card">
+&lt;e:db-execute dir="/data/db/" datasets="adam.xml, bob.json, carl/person.csv" /&gt;</pre>
+        <span dir="/data/db/" datasets="adam.xml, bob.json, carl/person.csv" cmdId="20d0bb6c-8b02-4739-b25f-83d28d4427d2" e:db-execute=""> <table class="table table-sm"><caption><i class="fa fa-database fa-pull-left fa-border"> PERSON</i></caption><thead class="thead-default"><tr><th class="">ID</th><th class="">NAME</th><th class="">AGE</th><th class="">BIRTHDAY</th></tr></thead><tbody><tr><td class=""><span>1</span></td><td class=""><span>Adam</span></td><td class=""><span>10</span></td><td class=""><span>2020-09-15 00:00:00.000</span></td></tr><tr><td class=""><span>10</span></td><td class=""><span>Bob</span></td><td class=""><span>20</span></td><td class=""><span>2000-10-10 00:00:00</span></td></tr><tr><td class=""><span>2</span></td><td class=""><span>Carl</span></td><td class=""><span>30</span></td><td class=""><span>2003-03-03 00:00:00.000</span></td></tr></tbody></table><table class="table table-sm"><caption><i class="fa fa-database fa-pull-left fa-border"> PERSON_FIELDS</i></caption><thead class="thead-default"><tr><th class="">ID</th><th class="">NAME</th><th class="">VALUE</th><th class="">PERSON_ID</th></tr></thead><tbody><tr><td class=""><span>11</span></td><td class=""><span>a1</span></td><td class=""><span>1</span></td><td class=""><span>1</span></td></tr><tr><td class=""><span>12</span></td><td class=""><span>a2</span></td><td class=""><span>2</span></td><td class=""><span>1</span></td></tr><tr><td class=""><span>21</span></td><td class=""><span>b1</span></td><td class=""><span>1</span></td><td class=""><span>10</span></td></tr><tr><td class=""><span>22</span></td><td class=""><span>b2</span></td><td class=""><span>2</span></td><td class=""><span>10</span></td></tr><tr><td class=""><span>31</span></td><td class=""><span>c1</span></td><td class=""><span>value with comma &gt;&gt; , &lt;&lt; and quotes "_'</span></td><td class=""><span>2</span></td></tr></tbody></table></span>
+    </div>
+    <div print="true" cmdId="d0b629de-f94c-46b1-a105-25dffc7088b5" e:then="" class="bd-callout bd-callout-success"><pre class="htmlmixed card">
+&lt;e:db-verify dir="/data/db/" datasets="adam.xml, bob-wrong.json, carl/person.csv" /&gt;</pre>
+        <span dir="/data/db/" datasets="adam.xml, bob-wrong.json, carl/person.csv" cmdId="e7040673-f010-411e-a181-a47183c09075" e:db-verify=""> <table class="table table-sm"><caption><i class="fa fa-database fa-pull-left fa-border"> PERSON</i></caption><thead class="thead-default"><tr><th class="">ID</th><th class="">NAME</th><th class="">AGE</th><th class="">BIRTHDAY</th></tr></thead><tbody><tr><td class=" table-success"> <span>1</span></td><td class=" table-success"> <span>Adam</span></td><td class=" table-success"> <span>10</span></td><td class=" table-success"> <span>2020-09-15 00:00:00.000</span></td></tr><tr><td class=" table-success"> <span>2</span></td><td class=" table-success"> <span>Carl</span></td><td class=" table-success"> <span>30</span></td><td class=" table-success"> <span>2003-03-03 00:00:00.000</span></td></tr><tr><td class=" table-success"> <span>10</span></td><td class=" table-success"> <span>!{string} (Bob)</span></td><td class=" table-success"> <span>!{number} (20)</span></td><td class=" rest-failure"><del class="expected">2020-09-15 15:38:53.053</del>
+<ins class="actual">2000-10-10 00:00:00.0</ins></td></tr></tbody></table><table class="table table-sm"><caption><i class="fa fa-database fa-pull-left fa-border"> PERSON_FIELDS</i></caption><thead class="thead-default"><tr><th class="">ID</th><th class="">NAME</th><th class="">VALUE</th><th class="">PERSON_ID</th></tr></thead><tbody><tr><td class=" table-success"> <span>11</span></td><td class=" table-success"> <span>a1</span></td><td class=" table-success"> <span>1</span></td><td class=" table-success"> <span>1</span></td></tr><tr><td class=" table-success"> <span>12</span></td><td class=" table-success"> <span>a2</span></td><td class=" table-success"> <span>2</span></td><td class=" table-success"> <span>1</span></td></tr><tr><td class=" table-success"> <span>21</span></td><td class=" table-success"> <span>b1</span></td><td class=" table-success"> <span>1</span></td><td class=" table-success"> <span>10</span></td></tr><tr><td class=" table-success"> <span>22</span></td><td class=" table-success"> <span>b2</span></td><td class=" rest-failure"><del class="expected">3</del>
+<ins class="actual">2</ins></td><td class=" table-success"> <span>10</span></td></tr><tr><td class=" table-success"> <span>31</span></td><td class=" table-success"> <span>c1</span></td><td class=" table-success"> <span>value with comma &gt;&gt; , &lt;&lt; and quotes "_'</span></td><td class=" table-success"> <span>2</span></td></tr></tbody></table></span>
+    </div>
+    <div print="true" cmdId="aa9cdf9a-33c3-4dbc-a9da-661b885597af" e:when="" class="bd-callout bd-callout-warning"><pre class="htmlmixed card">
+&lt;e:db-execute dir="/data/db/" datasets="adam.xml, bob.json, carl/person.csv" /&gt;</pre>
+        <span dir="/data/db/" datasets="adam.xml, bob.json, carl/person.csv" cmdId="a4851f03-4798-4200-a48a-65503a9bee12" e:db-execute=""> <table class="table table-sm"><caption><i class="fa fa-database fa-pull-left fa-border"> PERSON</i></caption><thead class="thead-default"><tr><th class="">ID</th><th class="">NAME</th><th class="">AGE</th><th class="">BIRTHDAY</th></tr></thead><tbody><tr><td class=""><span>1</span></td><td class=""><span>Adam</span></td><td class=""><span>10</span></td><td class=""><span>2020-09-15 00:00:00.000</span></td></tr><tr><td class=""><span>10</span></td><td class=""><span>Bob</span></td><td class=""><span>20</span></td><td class=""><span>2000-10-10 00:00:00</span></td></tr><tr><td class=""><span>2</span></td><td class=""><span>Carl</span></td><td class=""><span>30</span></td><td class=""><span>2003-03-03 00:00:00.000</span></td></tr></tbody></table><table class="table table-sm"><caption><i class="fa fa-database fa-pull-left fa-border"> PERSON_FIELDS</i></caption><thead class="thead-default"><tr><th class="">ID</th><th class="">NAME</th><th class="">VALUE</th><th class="">PERSON_ID</th></tr></thead><tbody><tr><td class=""><span>11</span></td><td class=""><span>a1</span></td><td class=""><span>1</span></td><td class=""><span>1</span></td></tr><tr><td class=""><span>12</span></td><td class=""><span>a2</span></td><td class=""><span>2</span></td><td class=""><span>1</span></td></tr><tr><td class=""><span>21</span></td><td class=""><span>b1</span></td><td class=""><span>1</span></td><td class=""><span>10</span></td></tr><tr><td class=""><span>22</span></td><td class=""><span>b2</span></td><td class=""><span>2</span></td><td class=""><span>10</span></td></tr><tr><td class=""><span>31</span></td><td class=""><span>c1</span></td><td class=""><span>value with comma &gt;&gt; , &lt;&lt; and quotes "_'</span></td><td class=""><span>2</span></td></tr></tbody></table></span>
+    </div>
+    <div print="true" cmdId="903d249a-7bcb-4323-bbc3-aa84ba66292a" e:then="" class="bd-callout bd-callout-success"><pre class="htmlmixed card">
+&lt;e:db-verify dir="/data/db/" datasets="adam-wrong.xml, bob-expected.json, carl/person.csv" orderBy="person_fields.value, person.birthday" /&gt;</pre>
+        <span dir="/data/db/" datasets="adam-wrong.xml, bob-expected.json, carl/person.csv" cmdId="8f9eb0a9-7c48-46be-9f3f-a1ec63b6cf22" e:db-verify=""> <table class="table table-sm"><caption><i class="fa fa-database fa-pull-left fa-border"> PERSON</i></caption><thead class="thead-default"><tr><th class="">ID</th><th class="">NAME</th><th class="">AGE</th><th class="">BIRTHDAY</th></tr></thead><tbody><tr><td class=" rest-failure"><del class="expected">1</del>
+<ins class="actual">10</ins></td><td class=" rest-failure"><del class="expected">Adam</del>
+<ins class="actual">Bob</ins></td><td class=" rest-failure"><del class="expected">11</del>
+<ins class="actual">20</ins></td><td class=" rest-failure"><del class="expected">2020-09-15 00:00:00.000</del>
+<ins class="actual">2000-10-10 00:00:00.0</ins></td></tr><tr><td class=" rest-failure"><del class="expected">10</del>
+<ins class="actual">2</ins></td><td class=" table-success"> <span>!{string} (Carl)</span></td><td class=" table-success"> <span>!{number} (30)</span></td><td class=" rest-failure"><del class="expected">!{within 1d}{{date "2000-10-10"}}</del>
+<ins class="actual">2003-03-03 00:00:00.0</ins></td></tr><tr><td class=" rest-failure"><del class="expected">2</del>
+<ins class="actual">1</ins></td><td class=" rest-failure"><del class="expected">Carl</del>
+<ins class="actual">Adam</ins></td><td class=" rest-failure"><del class="expected">30</del>
+<ins class="actual">10</ins></td><td class=" rest-failure"><del class="expected">2003-03-03 00:00:00.000</del>
+<ins class="actual">2020-09-15 00:00:00.0</ins></td></tr></tbody></table><table class="table table-sm"><caption><i class="fa fa-database fa-pull-left fa-border"> PERSON_FIELDS</i></caption><thead class="thead-default"><tr><th class="">ID</th><th class="">NAME</th><th class="">VALUE</th><th class="">PERSON_ID</th></tr></thead><tbody><tr><td class=" table-success"> <span>11</span></td><td class=" table-success"> <span>a1</span></td><td class=" table-success"> <span>1</span></td><td class=" table-success"> <span>1</span></td></tr><tr><td class=" table-success"> <span>21</span></td><td class=" table-success"> <span>b1</span></td><td class=" table-success"> <span>1</span></td><td class=" table-success"> <span>10</span></td></tr><tr><td class=" table-success"> <span>12</span></td><td class=" table-success"> <span>a2</span></td><td class=" table-success"> <span>2</span></td><td class=" table-success"> <span>1</span></td></tr><tr><td class=" table-success"> <span>22</span></td><td class=" table-success"> <span>b2</span></td><td class=" table-success"> <span>2</span></td><td class=" table-success"> <span>10</span></td></tr><tr><td class=" table-success"> <span>31</span></td><td class=" table-success"> <span>c1</span></td><td class=" table-success"> <span>value with comma &gt;&gt; , &lt;&lt; and quotes "_'</span></td><td class=" table-success"> <span>2</span></td></tr></tbody></table></span>
+    </div>
+</div><div class="card-footer text-muted" data-toggle="collapse" data-target="#2181950" aria-expanded="true" aria-controls="2181950"><small><span class="badge badge-pill badge-success">52</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning">20</span><span class="badge badge-pill badge-danger"></span><span class="badge badge-pill badge-warning">ExpectedToFail</span></small></div></div>
+<div class="footer">Results generated by <a href="http://www.concordion.org" style="font-weight: bold; text-decoration: none; color: #89C;">Concordion</a><div class="testTime">in 3574 ms on 15-Sep-2020 at 15:38:53 UTC</div></div></body>
+<button id="btnToTop" onclick="topFunction()" type="button" class="btn btn-light btn-sm text-muted ml-1"><i class="fa fa-arrow-up fa-3x"></i></button></html>
