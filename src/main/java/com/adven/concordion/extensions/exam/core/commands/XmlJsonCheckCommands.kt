@@ -1,5 +1,6 @@
 package com.adven.concordion.extensions.exam.core.commands
 
+import com.adven.concordion.extensions.exam.core.ContentVerifier
 import com.adven.concordion.extensions.exam.core.html.CLASS
 import com.adven.concordion.extensions.exam.core.html.Html
 import com.adven.concordion.extensions.exam.core.html.div
@@ -12,7 +13,6 @@ import com.adven.concordion.extensions.exam.core.html.tr
 import com.adven.concordion.extensions.exam.core.resolveJson
 import com.adven.concordion.extensions.exam.core.resolveXml
 import com.adven.concordion.extensions.exam.core.utils.content
-import com.adven.concordion.extensions.exam.core.utils.equalToXml
 import com.adven.concordion.extensions.exam.core.utils.prettyJson
 import com.adven.concordion.extensions.exam.core.utils.prettyXml
 import com.adven.concordion.extensions.exam.ws.RestResultRenderer
@@ -43,7 +43,7 @@ class XmlCheckCommand(name: String, tag: String, private val cfg: Configuration,
 
     private fun checkXmlContent(actual: String, expected: String, resultRecorder: ResultRecorder, root: Html) {
         try {
-            actual.equalToXml(expected, nodeMatcher, cfg)
+            ContentVerifier.Xml().verify(expected, actual, arrayOf(cfg, nodeMatcher))
             root.text(expected)
             resultRecorder.pass(root)
         } catch (e: Throwable) {

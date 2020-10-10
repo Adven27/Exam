@@ -6,7 +6,9 @@ import com.adven.concordion.extensions.exam.core.utils.DateFormatMatcher
 import com.adven.concordion.extensions.exam.core.utils.DateWithin
 import com.adven.concordion.extensions.exam.core.utils.HANDLEBARS
 import com.adven.concordion.extensions.exam.core.utils.XMLDateWithin
+import com.adven.concordion.extensions.exam.core.utils.equalToXml
 import com.github.jknack.handlebars.Handlebars
+import net.javacrumbs.jsonunit.JsonAssert
 import net.javacrumbs.jsonunit.JsonAssert.`when`
 import net.javacrumbs.jsonunit.core.Configuration
 import net.javacrumbs.jsonunit.core.Option.IGNORING_ARRAY_ORDER
@@ -18,6 +20,7 @@ import org.hamcrest.Matcher
 import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.ISODateTimeFormat
+import org.junit.Assert
 import org.xmlunit.diff.DefaultNodeMatcher
 import org.xmlunit.diff.ElementSelectors.byName
 import org.xmlunit.diff.ElementSelectors.byNameAndText
@@ -128,8 +131,8 @@ class ExamExtension : ConcordionExtension {
             Html(it.element).below(
                 pre(
                     "Error while executing command:\n\n" +
-                        "${PARSED_COMMANDS[it.element.getAttributeValue("cmdId")]}\n\n" +
-                        "${it.throwable.cause?.message ?: it.throwable.message}"
+                            "${PARSED_COMMANDS[it.element.getAttributeValue("cmdId")]}\n\n" +
+                            "${it.throwable.cause?.message ?: it.throwable.message}"
                 ).css("alert alert-warning small")
             )
         }
@@ -154,7 +157,8 @@ class ExamExtension : ConcordionExtension {
 fun String.parseDate(format: String?): Date = this.parseDateTime(format).toDate()
 
 fun String.parseDateTime(format: String?): DateTime = DateTime.parse(
-    this, if (format == null) ISODateTimeFormat.dateTimeParser().withOffsetParsed() else DateTimeFormat.forPattern(format)
+    this,
+    if (format == null) ISODateTimeFormat.dateTimeParser().withOffsetParsed() else DateTimeFormat.forPattern(format)
 )
 
 fun String.fileExt() = substring(lastIndexOf('.') + 1).toLowerCase()
@@ -169,3 +173,25 @@ fun String.toMap(): Map<String, String> = unboxIfNeeded(this)
 fun Map<String, String>.resolveValues(eval: Evaluator) = this.mapValues { eval.resolveNoType(it.value) }
 
 private fun unboxIfNeeded(it: String) = if (it.trim().startsWith("{")) it.substring(1, it.lastIndex) else it
+
+interface ContentVerifier {
+    fun verify(expected: String, actual: String, config: Array<Any?>)
+
+    class Json : ContentVerifier {
+        override fun verify(expected: String, actual: String, config: Array<Any?>) {
+            JsonAssert.assertJsonEquals(expected, actual, config[0] as Configuration)
+        }
+    }
+
+    class Xml : ContentVerifier {
+        override fun verify(expected: String, actual: String, config: Array<Any?>) {
+            actual.equalToXml(expected, config[0] as Configuration, config[1] as NodeMatcher)
+        }
+    }
+
+    class Default : ContentVerifier {
+        override fun verify(expected: String, actual: String, config: Array<Any?>) {
+            Assert.assertEquals("Default content verifier error.", expected, actual)
+        }
+    }
+}

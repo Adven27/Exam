@@ -180,5 +180,21 @@
         </e:mq-check>
     </e:then>
 </e:example>
+<e:example name="verify different formats" print="true">
+    <e:when>
+        <e:mq-send name="myQueue" from="/data/mq/some.xml" formatAs="xml"/>
+    </e:when>
+    <e:then>
+        <e:mq-check name="myQueue" from="/data/mq/some.xml" verifyAs="xml"/>
+    </e:then>
+    <e:when>
+        <e:mq-send name="myQueue" from="/data/mq/some.txt"/>
+    </e:when>
+    <e:then>
+        <e:mq-check name="myQueue" >
+            <e:message from="/data/mq/some.txt" verifyAs="customFormat"/>
+        </e:mq-check>
+    </e:then>
+</e:example>
 </body>
 </html>

@@ -8,7 +8,6 @@ import com.adven.concordion.extensions.exam.db.commands.IgnoreMillisComparer
 import com.adven.concordion.extensions.exam.files.FlPlugin
 import com.adven.concordion.extensions.exam.mq.MqPlugin
 import com.adven.concordion.extensions.exam.mq.MqTester
-import com.adven.concordion.extensions.exam.mq.MqTesterAdapter
 import com.adven.concordion.extensions.exam.ui.UiPlugin
 import com.adven.concordion.extensions.exam.ws.WsPlugin
 import com.github.jknack.handlebars.Helper
@@ -54,7 +53,7 @@ open class Specs {
             DbPlugin(dbTester),
             FlPlugin(),
             MqPlugin(
-                mapOf("myQueue" to object : MqTesterAdapter() {
+                mapOf("myQueue" to object : MqTester.NOOP() {
                     private val queue = ArrayDeque<MqTester.Message>()
 
                     override fun send(message: String, headers: Map<String, String>) {

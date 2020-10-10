@@ -152,7 +152,7 @@ public class FilesCheckCommand extends BaseCommand {
 
         String prettyActual = CheckUtilsKt.prettyXml(filesLoader.documentFrom(path));
         try {
-            if (CheckUtilsKt.equalToXml(prettyActual, expected, nodeMatcher, jsonUnitCfg)) {
+            if (CheckUtilsKt.equalToXml(prettyActual, expected, jsonUnitCfg, nodeMatcher)) {
                 xmlEquals(resultRecorder, element);
             } else {
                 xmlDoesNotEqual(resultRecorder, element, prettyActual, expected);

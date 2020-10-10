@@ -1,5 +1,7 @@
 package com.adven.concordion.extensions.exam.mq
 
+import com.adven.concordion.extensions.exam.core.ContentVerifier
+import com.adven.concordion.extensions.exam.core.commands.AwaitConfig
 import com.adven.concordion.extensions.exam.core.commands.ExamCommand
 import com.adven.concordion.extensions.exam.core.commands.ExamVerifyCommand
 import com.adven.concordion.extensions.exam.core.commands.await
@@ -19,12 +21,12 @@ import com.adven.concordion.extensions.exam.core.html.tbody
 import com.adven.concordion.extensions.exam.core.html.td
 import com.adven.concordion.extensions.exam.core.html.tr
 import com.adven.concordion.extensions.exam.core.html.trWithTDs
+import com.adven.concordion.extensions.exam.core.resolveForContentType
 import com.adven.concordion.extensions.exam.core.resolveJson
 import com.adven.concordion.extensions.exam.core.utils.content
-import com.adven.concordion.extensions.exam.core.utils.prettyJson
+import com.adven.concordion.extensions.exam.core.utils.pretty
 import com.adven.concordion.extensions.exam.core.vars
 import com.adven.concordion.extensions.exam.ws.RestResultRenderer
-import net.javacrumbs.jsonunit.JsonAssert
 import net.javacrumbs.jsonunit.core.Configuration
 import net.javacrumbs.jsonunit.core.Option
 import net.javacrumbs.jsonunit.core.internal.Options
@@ -33,6 +35,7 @@ import org.concordion.api.Evaluator
 import org.concordion.api.Result.FAILURE
 import org.concordion.api.ResultRecorder
 import org.junit.Assert
+import org.xmlunit.diff.NodeMatcher
 import java.util.UUID
 
 interface MqTester {
@@ -42,22 +45,24 @@ interface MqTester {
     fun receive(): List<Message>
     fun purge()
 
-    data class Message @JvmOverloads constructor(val body: String = "", val headers: Map<String, String> = emptyMap())
-}
+    open class NOOP : MqTester {
+        override fun start() = Unit
+        override fun stop() = Unit
+        override fun send(message: String, headers: Map<String, String>) = Unit
+        override fun receive(): List<Message> = listOf()
+        override fun purge() = Unit
+    }
 
-open class MqTesterAdapter : MqTester {
-    override fun start() = Unit
-    override fun stop() = Unit
-    override fun send(message: String, headers: Map<String, String>) = Unit
-    override fun receive(): List<MqTester.Message> = listOf()
-    override fun purge() = Unit
+    data class Message @JvmOverloads constructor(val body: String = "", val headers: Map<String, String> = emptyMap())
 }
 
 class MqCheckCommand(
     name: String,
     tag: String,
     private val originalCfg: Configuration,
-    private val mqTesters: Map<String, MqTester>
+    private val nodeMatcher: NodeMatcher,
+    private val mqTesters: Map<String, MqTester>,
+    private val contentVerifiers: Map<String, ContentVerifier>
 ) : ExamVerifyCommand(name, tag, RestResultRenderer()) {
 
     private lateinit var usedCfg: Configuration
@@ -72,47 +77,17 @@ class MqCheckCommand(
         val collapsable = root.takeAwayAttr("collapsable", "false").toBoolean()
         val awaitConfig = cmd.awaitConfig()
 
-        val messageTags = root.childs().filter { it.localName() == "message" }.ifEmpty { listOf(root) }
-        val expectedMessages = messageTags.map { html ->
-            html.takeAwayAttr("vars").vars(eval, true, html.takeAwayAttr("varsSeparator", ","))
-            val content = html.content(eval)
-            if (content.isEmpty()) return@map null else MqTester.Message(
-                eval.resolveJson(content.trim()),
-                headers(html, eval)
-            )
-        }.filterNotNull()
+        val expectedMessages: List<TypedMessage> = messageTags(root).mapNotNull { html ->
+            setVarsIfPresent(html, eval)
+            nullOrMessage(html.content(eval), html.takeAwayAttr("verifyAs", "json"), eval, headers(html, eval))
+        }
         val actualMessages: MutableList<MqTester.Message> = mqTesters.getOrFail(mqName).receive().toMutableList()
 
         try {
-            if (awaitConfig.enabled()) {
-                try {
-                    awaitConfig.await("Await MQ $mqName").untilAsserted {
-                        actualMessages.addAll(mqTesters.getOrFail(mqName).receive())
-                        Assert.assertEquals(expectedMessages.size, actualMessages.size)
-                    }
-                } catch (e: Exception) {
-                    resultRecorder.record(FAILURE)
-                    root.removeChildren().below(
-                        div().css("rest-failure bd-callout bd-callout-danger")(
-                            div(e.cause?.message),
-                            *renderMessages("Expected: ", expectedMessages, mqName).toTypedArray(),
-                            *renderMessages("but was: ", actualMessages, mqName).toTypedArray()
-                        )
-                    )
-                    root.below(pre(awaitConfig.timeoutMessage(e)).css("alert alert-danger small"))
-                }
-            } else {
-                Assert.assertEquals(expectedMessages.size, actualMessages.size)
-            }
+            checkSize(awaitConfig, mqName, actualMessages, expectedMessages, resultRecorder, root)
         } catch (e: java.lang.AssertionError) {
             resultRecorder.record(FAILURE)
-            root.below(
-                div().css("rest-failure bd-callout bd-callout-danger")(
-                    div(e.message),
-                    *renderMessages("Expected: ", expectedMessages, mqName).toTypedArray(),
-                    *renderMessages("but was: ", actualMessages, mqName).toTypedArray()
-                )
-            )
+            root.below(sizeCheckError(mqName, expectedMessages, actualMessages, e.message))
             root.parent().remove(root)
             return
         }
@@ -125,46 +100,96 @@ class MqCheckCommand(
             tableContainer(cnt)
         }
 
-        prepared(expectedMessages, contains).zip(prepared(actualMessages, contains)).forEach {
-            val bodyContainer = jsonEl("", collapsable)
-            val headersContainer =
-                span("Headers: ${it.first.headers.entries.joinToString()}")(italic("", CLASS to "fa fa-border"))
-            if (cnt != null) {
-                cnt(
-                    td()(
-                        tableSlim()(
-                            if (it.first.headers.isNotEmpty()) trWithTDs(headersContainer) else null,
-                            tr()(if (collapsable) collapsed(bodyContainer) else bodyContainer)
+        expectedMessages.sortedTyped(contains).zip(actualMessages.sorted(contains)) { e, a -> VerifyPair(a, e) }
+            .forEach {
+                val bodyContainer = container("", collapsable, it.expected.type)
+                val headersContainer =
+                    span("Headers: ${it.expected.message.headers.entries.joinToString()}")(
+                        italic("", CLASS to "fa fa-border")
+                    )
+                if (cnt != null) {
+                    cnt(
+                        td()(
+                            tableSlim()(
+                                if (it.expected.message.headers.isNotEmpty()) trWithTDs(headersContainer) else null,
+                                tr()(if (collapsable) collapsed(bodyContainer) else bodyContainer)
+                            )
                         )
                     )
-                )
-            } else {
-                tableContainer(
-                    if (it.first.headers.isNotEmpty()) trWithTDs(headersContainer) else null,
-                    tr()(if (collapsable) collapsed(bodyContainer) else bodyContainer)
-                )
+                } else {
+                    tableContainer(
+                        if (it.expected.message.headers.isNotEmpty()) trWithTDs(headersContainer) else null,
+                        tr()(if (collapsable) collapsed(bodyContainer) else bodyContainer)
+                    )
+                }
+                checkHeaders(it.actual.headers, it.expected.message.headers, resultRecorder, headersContainer)
+                checkContent(it.expected.type, it.actual.body, it.expected.message.body, resultRecorder, bodyContainer)
             }
-            checkHeaders(it.second.headers, it.first.headers, resultRecorder, headersContainer)
-            checkJsonContent(it.second.body, it.first.body, resultRecorder, bodyContainer)
+    }
+
+    private fun checkSize(
+        awaitConfig: AwaitConfig,
+        mqName: String,
+        actual: MutableList<MqTester.Message>,
+        expected: List<TypedMessage>,
+        resultRecorder: ResultRecorder,
+        root: Html
+    ) {
+        if (awaitConfig.enabled()) {
+            try {
+                awaitConfig.await("Await MQ $mqName").untilAsserted {
+                    actual.addAll(mqTesters.getOrFail(mqName).receive())
+                    Assert.assertEquals(expected.size, actual.size)
+                }
+            } catch (e: Exception) {
+                resultRecorder.record(FAILURE)
+                root.removeChildren().below(
+                    sizeCheckError(mqName, expected, actual, e.cause?.message)
+                )
+                root.below(pre(awaitConfig.timeoutMessage(e)).css("alert alert-danger small"))
+            }
+        } else {
+            Assert.assertEquals(expected.size, actual.size)
         }
     }
 
-    private fun prepared(origin: List<MqTester.Message>, contains: String) =
-        if (needSort(contains)) origin.sortedBy { it.body } else origin
+    private fun sizeCheckError(
+        mqName: String, expected: List<TypedMessage>, actual: MutableList<MqTester.Message>, msg: String?
+    ): Html = div().css("rest-failure bd-callout bd-callout-danger")(
+        div(msg),
+        *renderMessages("Expected: ", expected, mqName).toTypedArray(),
+        *renderMessages("but was: ", actual.map { TypedMessage("text", it) }, mqName).toTypedArray()
+    )
+
+    private fun messageTags(root: Html) =
+        root.childs().filter { it.localName() == "message" }.ifEmpty { listOf(root) }
+
+    private fun setVarsIfPresent(html: Html, eval: Evaluator) {
+        html.takeAwayAttr("vars").vars(eval, true, html.takeAwayAttr("varsSeparator", ","))
+    }
+
+    private fun nullOrMessage(content: String, type: String, eval: Evaluator, headers: Map<String, String>) =
+        if (content.isEmpty()) null
+        else TypedMessage(type, MqTester.Message(eval.resolveForContentType(content.trim(), type), headers))
+
+    private fun List<TypedMessage>.sortedTyped(contains: String) =
+        if (needSort(contains)) this.sortedBy { it.message.body } else this
+
+    private fun List<MqTester.Message>.sorted(contains: String) =
+        if (needSort(contains)) this.sortedBy { it.body } else this
 
     private fun needSort(contains: String) = "EXACT" != contains
 
-    private fun renderMessages(msg: String, messages: List<MqTester.Message>, mqName: String): List<Html> {
-        return listOf(span(msg), tableSlim()(
+    private fun renderMessages(msg: String, messages: List<TypedMessage>, mqName: String) =
+        listOf(span(msg), tableSlim()(
             captionEnvelopOpen(mqName),
             tbody()(
-                messages.map { tr()(jsonEl(it.body)) }
+                messages.map { tr()(container(it.message.body, type = it.type)) }
             )
         ))
-    }
 
-    private fun jsonEl(txt: String, collapsable: Boolean = false) =
-        container(txt, "json", collapsable).style("margin: 0").attr("autoFormat", "true")
+    private fun container(txt: String, collapsable: Boolean = false, type: String) =
+        container(txt, type, collapsable).style("margin: 0").attr("autoFormat", "true")
 
     private fun checkHeaders(
         actual: Map<String, String>, expected: Map<String, String>, resultRecorder: ResultRecorder, root: Html
@@ -175,34 +200,41 @@ class MqCheckCommand(
         } catch (e: Throwable) {
             if (e is AssertionError || e is Exception) {
                 resultRecorder.failure(root, actual.toString(), expected.toString())
-                root.below(
-                    pre(e.message).css("alert alert-danger small")
-                )
+                root.below(pre(e.message).css("alert alert-danger small"))
             } else throw e
         }
     }
 
-    private fun checkJsonContent(actual: String, expected: String, resultRecorder: ResultRecorder, root: Html) =
-        try {
-            JsonAssert.assertJsonEquals(expected, actual, usedCfg)
-            root.text(expected.prettyJson())
-            resultRecorder.pass(root)
-        } catch (e: Throwable) {
-            if (e is AssertionError || e is Exception) {
-                resultRecorder.failure(root, actual.prettyJson(), expected.prettyJson())
-                root.parent().above(
-                    trWithTDs(pre(e.message).css("alert alert-danger small"))
-                )
-            } else throw e
-        }
+    private fun checkContent(
+        type: String, actual: String, expected: String, resultRecorder: ResultRecorder, root: Html
+    ) = try {
+        checkAs(type, expected, actual)
+        root.text(expected.pretty(type))
+        resultRecorder.pass(root)
+    } catch (e: Throwable) {
+        if (e is AssertionError || e is Exception) {
+            resultRecorder.failure(root, actual.pretty(type), expected.pretty(type))
+            root.parent().above(
+                trWithTDs(pre(e.message).css("alert alert-danger small"))
+            )
+        } else throw e
+    }
+
+    private fun checkAs(type: String, expected: String, actual: String) {
+        contentVerifiers[type]?.verify(expected, actual, arrayOf(usedCfg, nodeMatcher))
+            ?: ContentVerifier.Default().verify(expected, actual, emptyArray())
+    }
 
     private fun overrideJsonUnitOption(attr: String) {
         val first = usedCfg.options.values().first()
-        val other = usedCfg.options.values();
-        other.remove(first);
+        val other = usedCfg.options.values()
+        other.remove(first)
         other.addAll(attr.split(";").filter { it.isNotEmpty() }.map { Option.valueOf(it) }.toSet())
         usedCfg = usedCfg.withOptions(Options(first, *other.toTypedArray()))
     }
+
+    data class TypedMessage(val type: String, val message: MqTester.Message)
+    data class VerifyPair(val actual: MqTester.Message, val expected: TypedMessage)
 }
 
 class MqSendCommand(name: String, tag: String, private val mqTesters: Map<String, MqTester>) : ExamCommand(name, tag) {
@@ -210,6 +242,7 @@ class MqSendCommand(name: String, tag: String, private val mqTesters: Map<String
         super.execute(commandCall, evaluator, resultRecorder)
         val root = commandCall.html()
         val mqName = root.takeAwayAttr("name")
+        val formatAs = root.takeAwayAttr("formatAs", "json")
         val collapsable = root.takeAwayAttr("collapsable", "false").toBoolean()
         val headers = headers(root, evaluator)
         root.takeAwayAttr("vars").vars(evaluator, true, root.takeAwayAttr("varsSeparator", ","))
@@ -221,8 +254,8 @@ class MqSendCommand(name: String, tag: String, private val mqTesters: Map<String
                     italic("", CLASS to "fa fa-border")
                 ) else null,
                 tr()(
-                    if (collapsable) collapsed(collapsableContainer(message, "json"))
-                    else td(message).css("json")//exp-body
+                    if (collapsable) collapsed(collapsableContainer(message, formatAs))
+                    else td(message).css(formatAs)//exp-body
                 )
             )
         )
@@ -256,25 +289,17 @@ private fun captionEnvelopOpen(mqName: String) =
 private fun captionEnvelopClosed(mqName: String?) =
     caption()(italic(" $mqName", CLASS to "fa fa-envelope fa-pull-left fa-border"))
 
-private fun container(text: String, type: String, collapsable: Boolean): Html {
-    return if (collapsable) collapsableContainer(text, type) else fixedContainer(text, type)
-}
+private fun container(text: String, type: String, collapsable: Boolean) =
+    if (collapsable) collapsableContainer(text, type) else fixedContainer(text, type)
 
-private fun collapsed(container: Html): Html {
-    return td("class" to "exp-body")(
-        div().style("position: relative")(
-            divCollapse("", container.attr("id").toString()).css("fa fa-expand collapsed"),
-            container
-        )
+private fun collapsed(container: Html) = td("class" to "exp-body")(
+    div().style("position: relative")(
+        divCollapse("", container.attr("id").toString()).css("fa fa-expand collapsed"),
+        container
     )
-}
+)
 
-private fun fixedContainer(text: String, type: String): Html {
-    return td(text).css("$type exp-body")
-}
+private fun fixedContainer(text: String, type: String) = td(text).css("$type exp-body")
 
-private fun collapsableContainer(text: String, type: String): Html {
-    val id = UUID.randomUUID().toString()
-    return div(text, "id" to id).css("$type file collapse")
-}
-
+private fun collapsableContainer(text: String, type: String) =
+    div(text, "id" to UUID.randomUUID().toString()).css("$type file collapse")

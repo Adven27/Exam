@@ -17,7 +17,7 @@ import java.io.ByteArrayOutputStream
 import java.io.FileNotFoundException
 import java.io.StringReader
 
-fun String.equalToXml(expected: String, nodeMatcher: NodeMatcher?, configuration: Configuration?): Boolean {
+fun String.equalToXml(expected: String, configuration: Configuration?, nodeMatcher: NodeMatcher?): Boolean {
     val diff = DiffBuilder.compare(expected.trim())
         .checkForSimilar().withNodeMatcher(nodeMatcher)
         .withTest(this.trim())
@@ -39,6 +39,12 @@ fun String.equalToXml(expected: String, nodeMatcher: NodeMatcher?, configuration
 fun String.prettyXml(): String = Builder().build(StringReader(this.trim())).prettyXml()
 
 fun String.prettyJson() = JsonPrettyPrinter().prettyPrint(this)
+
+fun String.pretty(type: String) = when (type) {
+    "json" -> prettyJson()
+    "xml" -> prettyXml()
+    else -> this
+}
 
 fun Document.prettyXml(): String {
     try {
