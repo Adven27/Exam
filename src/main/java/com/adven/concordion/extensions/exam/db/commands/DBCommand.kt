@@ -1,7 +1,19 @@
 package com.adven.concordion.extensions.exam.db.commands
 
 import com.adven.concordion.extensions.exam.core.commands.ExamCommand
-import com.adven.concordion.extensions.exam.core.html.*
+import com.adven.concordion.extensions.exam.core.html.CLASS
+import com.adven.concordion.extensions.exam.core.html.DbRowParser
+import com.adven.concordion.extensions.exam.core.html.Html
+import com.adven.concordion.extensions.exam.core.html.caption
+import com.adven.concordion.extensions.exam.core.html.div
+import com.adven.concordion.extensions.exam.core.html.html
+import com.adven.concordion.extensions.exam.core.html.italic
+import com.adven.concordion.extensions.exam.core.html.span
+import com.adven.concordion.extensions.exam.core.html.tbody
+import com.adven.concordion.extensions.exam.core.html.td
+import com.adven.concordion.extensions.exam.core.html.th
+import com.adven.concordion.extensions.exam.core.html.thead
+import com.adven.concordion.extensions.exam.core.html.tr
 import com.adven.concordion.extensions.exam.db.DbPlugin
 import com.adven.concordion.extensions.exam.db.DbTester
 import com.adven.concordion.extensions.exam.db.MarkedHasNoDefaultValue
@@ -23,10 +35,13 @@ open class DBCommand(name: String, tag: String, protected val dbTester: DbTester
     protected var ds: String? = null
 
     override fun setUp(cmd: CommandCall?, eval: Evaluator?, resultRecorder: ResultRecorder?) {
-        val root = tableSlim(cmd.html())(
+        val root = cmd.html()(
             div(""),
             span("")
-        )
+        ).apply {
+            attr("style")?.let { style(it) }
+            attr("class") ?: css("table table-sm")
+        }
         remarks.clear()
         where = root.takeAwayAttr("where", eval!!)
         orderBy = root.takeAwayAttr("orderBy", eval)?.split(",")?.map { it.trim() }?.toTypedArray() ?: emptyArray()
@@ -99,9 +114,9 @@ fun renderTable(
     val cols = t.columnsSortedBy(sortCols)
     return root(
         tableCaption(root.takeAwayAttr("caption"), t.tableName()),
-        thead()(tr()(cols.map { th(it, CLASS to styleCol(it)) })),
+        if (t.empty()) null else thead()(tr()(cols.map { th(it, CLASS to styleCol(it)) })),
         tbody()(
-            if (t.rowCount == 0) {
+            if (t.empty()) {
                 listOf(tr()(td("<EMPTY>").attrs("colspan" to "${cols.size}").apply(ifEmpty)))
             } else {
                 t.mapRows { row -> cols.map { cell(td(CLASS to styleCol(it)), row, it) } }.map { tr()(*it.toTypedArray()) }
@@ -110,6 +125,8 @@ fun renderTable(
     )
 }
 
-fun tableCaption(title: String?, def: String?): Html = caption()(
+private fun ITable.empty() = this.rowCount == 0
+
+fun tableCaption(title: String?, def: String?): Html = caption().style("width:max-content")(
     italic(" ${if (title != null && !title.isBlank()) title else def}", CLASS to "fa fa-database fa-pull-left fa-border")
 )
