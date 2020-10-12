@@ -4,7 +4,7 @@
 >[![Exam](docs/atdd.png)](#attributions)
 
 [![Get automatic notifications about new "exam" versions](https://www.bintray.com/docs/images/bintray_badge_bw.png)](https://bintray.com/adven27/exam/exam?source=watch)
-[ ![Download](https://api.bintray.com/packages/adven27/exam/exam/images/download.svg?version=3.5.3) ](https://bintray.com/adven27/exam/exam/3.5.3/link)
+[ ![Download](https://api.bintray.com/packages/adven27/exam/exam/images/download.svg?version=3.6.0) ](https://bintray.com/adven27/exam/exam/3.6.0/link)
 [![Stability: Active](https://masterminds.github.io/stability/active.svg)](https://masterminds.github.io/stability/active.html)
 [![Build Status](https://travis-ci.org/Adven27/Exam.svg?branch=master)](https://travis-ci.org/Adven27/Exam)
 ![Github CI](https://github.com/Adven27/Exam/workflows/Java%20CI%20with%20Gradle/badge.svg)
@@ -36,7 +36,7 @@ Maven
 <dependency>
     <groupId>org.adven.concordion.ext</groupId>
     <artifactId>exam</artifactId>
-    <version>3.5.3</version>
+    <version>3.6.0</version>
 </dependency>
 ```
 
@@ -46,7 +46,7 @@ repositories {
     jcenter()
 }
 
-testCompile "org.adven.concordion.ext:exam:3.5.3"
+testCompile "org.adven.concordion.ext:exam:3.6.0"
 ```
 ### 2) Use
 
@@ -118,3 +118,5 @@ public class UserCreation extends Specs {
 </html>
   ```
 For more info, [see live spec](https://adven27.github.io/Exam/specs/Specs.html)
+
+Telegram https://t.me/joinchat/DClprRZ1xDCBtjGexhZOGw
