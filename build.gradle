@@ -1,75 +1,71 @@
 buildscript {
-    ext.kotlin_version = '1.3.31'
-    ext.ktor_version = '1.2.2'
+    ext.kotlin_version = '1.4.10'
+    ext.ktor_version = '1.4.1'
     ext.exposed_version = '0.16.1'
     repositories {
         mavenCentral()
+        jcenter()
     }
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath "io.gitlab.arturbosch.detekt:detekt-gradle-plugin:1.14.2"
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.5'
     }
-}
-
-plugins {
-    id "com.jfrog.bintray" version "1.8.1"
-    id 'maven-publish'
-    id "org.jetbrains.kotlin.jvm" version "1.3.31"
-    id "com.github.spotbugs" version "4.2.0"
 }
 
 group 'org.adven.concordion.ext'
 version = 'develop-SNAPSHOT'
 
-apply plugin: 'maven'
-apply plugin: 'kotlin'
-apply plugin: 'java'
-apply plugin: 'idea'
-apply plugin: 'jacoco'
-apply plugin: 'checkstyle'
+subprojects {
+    apply plugin: "io.gitlab.arturbosch.detekt"
+    apply plugin: 'kotlin'
+    apply plugin: 'java'
+    apply plugin: 'idea'
 
-sourceCompatibility = 1.7
-targetCompatibility = 1.7
-compileJava.options.encoding = 'utf-8'
-compileTestJava.options.encoding = 'utf-8'
-
-repositories {
-    mavenCentral()
-    mavenLocal()
-    jcenter()
-}
-
-dependencies {
-    compile 'org.dbunit:dbunit:2.6.0'
-    compile 'net.javacrumbs.json-unit:json-unit:2.7.0'
-    compile 'org.xmlunit:xmlunit-core:2.6.2'
-    compile 'io.rest-assured:rest-assured:4.0.0'
-    compile 'org.awaitility:awaitility:4.0.0-rc1'
-    compile 'com.fasterxml.jackson.module:jackson-module-kotlin:2.9.8'
-
-    compile 'org.concordion:concordion:2.1.0'
-    compile 'org.concordion:concordion-timing-extension:1.1.0'
-    compile 'org.concordion:concordion-run-totals-extension:1.1.0'
-    compile "net.steppschuh.markdowngenerator:markdowngenerator:1.3.0.0"
-    compile 'com.google.code.findbugs:annotations:3.0.1'
-    compile 'joda-time:joda-time:2.9.9'
-
-    compile 'com.codeborne:selenide:4.14.2'
-    compile 'io.github.bonigarcia:webdrivermanager:3.2.0'
-    compile 'com.github.jknack:handlebars:4.1.2'
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-}
-
-compileKotlin {
-    kotlinOptions {
-        jvmTarget = "1.8"
+    repositories {
+        mavenCentral()
+        jcenter()
     }
-}
-compileTestKotlin {
-    kotlinOptions {
-        jvmTarget = "1.8"
+
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+    compileJava.options.encoding = 'utf-8'
+    compileTestJava.options.encoding = 'utf-8'
+
+    compileKotlin {
+        kotlinOptions {
+            freeCompilerArgs = ['-Xjsr305=strict']
+            jvmTarget = '1.8'
+        }
     }
+
+    compileTestKotlin {
+        kotlinOptions {
+            freeCompilerArgs = ['-Xjsr305=strict']
+            jvmTarget = '1.8'
+        }
+    }
+
+    dependencies {
+        implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+    }
+
+    test {
+        testLogging.showStandardStreams = true
+        testLogging.exceptionFormat = 'full'
+        testLogging.events('FAILED', 'PASSED')
+        maxParallelForks = Runtime.runtime.availableProcessors()
+    }
+
+    apply from: "$rootDir/gradle/linters.gradle"
 }
 
-apply from: "$rootDir/gradle/linters.gradle"
-apply from: "$rootDir/gradle/test.gradle"
-apply from: "$rootDir/gradle/publish.gradle"
+task publishBintray {
+    dependsOn ":exam-core:bintrayUpload"
+    dependsOn ":exam-db:bintrayUpload"
+    dependsOn ":exam-ws:bintrayUpload"
+    dependsOn ":exam-mq:bintrayUpload"
+    dependsOn ":exam-files:bintrayUpload"
+    dependsOn ":exam-ui:bintrayUpload"
+    dependsOn ":exam-ms:bintrayUpload"
+}

@@ -1,41 +1,21 @@
-checkstyle {
-    toolVersion = "8.10"
-    ignoreFailures = false
+configurations.create("ktl")
+
+dependencies {
+    ktl "com.pinterest:ktlint:0.39.0"
 }
 
-tasks.withType(Checkstyle) {
-    reports {
-        xml.enabled false
-        html.enabled true
-    }
+task ktlint(type: JavaExec, group: "verification") {
+    description = "Check Kotlin code style."
+    classpath = configurations.ktl
+    main = "com.pinterest.ktlint.Main"
+    args "src/**/*.kt"
 }
 
-spotbugsMain {
-    reports {
-        text {
-            enabled = true
-            destination = file("$buildDir/reports/spotbugs/main/spotbugs.text")
-        }
-    }
-}
+check.dependsOn ktlint
 
-spotbugs {
-    ignoreFailures = false
-    showProgress = true
-    effort = 'max'
-    reportLevel = 'low'
-//    visitors = [ 'FindSqlInjection', 'SwitchFallthrough' ]
-//    omitVisitors = [ 'FindNonShortCircuit' ]
-//    onlyAnalyze = ['*.java']
-    excludeFilter = file("$projectDir/config/findbugs-exclude.xml")
+task ktlintFormat(type: JavaExec, group: "formatting") {
+    description = "Fix Kotlin code style deviations."
+    classpath = configurations.ktl
+    main = "com.pinterest.ktlint.Main"
+    args "-F", "src/**/*.kt"
 }
-
-task spotbugsReport(type: Task) {
-    doLast {
-        file("$buildDir/reports/spotbugs/main/spotbugs.text").eachLine {
-            System.err.println it
-        }
-    }
-}
-
-spotbugsMain.finalizedBy(spotbugsReport)

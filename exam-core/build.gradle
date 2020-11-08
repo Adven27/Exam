@@ -1,0 +1,22 @@
+plugins {
+    id 'java-library'
+}
+
+apply from: "$rootDir/gradle/publish.gradle"
+
+dependencies {
+    api 'org.awaitility:awaitility:4.0.3'
+    api 'net.javacrumbs.json-unit:json-unit:2.21.0'
+    api 'org.xmlunit:xmlunit-core:2.8.0'
+    api 'com.github.jknack:handlebars:4.2.0'
+    api 'org.concordion:concordion:3.0.1'
+    //FIXME
+    api 'joda-time:joda-time:2.10.8'
+    //FIXME
+    implementation 'io.rest-assured:rest-assured:4.0.0'
+
+    testImplementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
+    testImplementation "org.jetbrains.kotlin:kotlin-test:$kotlin_version"
+    testImplementation "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version"
+    testImplementation 'org.assertj:assertj-core:3.10.0'
+}

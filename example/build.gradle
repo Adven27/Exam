@@ -1,0 +1,25 @@
+dependencies {
+    implementation "io.ktor:ktor-server-jetty:$ktor_version"
+    implementation "io.ktor:ktor-jackson:$ktor_version"
+    implementation "io.ktor:ktor-websockets:$ktor_version"
+    implementation "org.jetbrains.exposed:exposed:$exposed_version"
+    implementation "ch.qos.logback:logback-classic:1.2.1"
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-joda:2.9.5'
+    implementation 'com.fasterxml.jackson.module:jackson-module-kotlin:2.9.8'
+
+//    testImplementation "org.adven.concordion.ext:exam-ms:$bintrayVersion"
+    testImplementation project(':exam-ms')
+    testImplementation project(':exam-ui')
+    testImplementation project(':exam-files')
+
+    testImplementation 'org.concordion:concordion-timing-extension:1.1.0'
+    testImplementation 'org.concordion:concordion-run-totals-extension:1.2.0'
+
+    testImplementation 'com.h2database:h2:1.4.195'
+    testImplementation 'com.github.tomakehurst:wiremock-standalone:2.25.1'
+}
+
+test {
+    include '**/Specs.class'
+    systemProperty 'concordion.output.dir', "$reporting.baseDir/specs"
+}
