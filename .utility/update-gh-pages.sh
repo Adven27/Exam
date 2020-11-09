@@ -2,7 +2,7 @@
 if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
   echo -e "Starting to update gh-pages\n"
 
-  cp -R build/reports/specs $HOME/specs
+  cp -R example/build/reports/specs $HOME/specs
 
   cd $HOME
   git config --global user.email "travis@travis-ci.org"
