@@ -1,6 +1,5 @@
-package specs.el;
+package specs.el
 
-import specs.Specs;
+import specs.Specs
 
-public class El extends Specs {
-}
+class El : Specs()

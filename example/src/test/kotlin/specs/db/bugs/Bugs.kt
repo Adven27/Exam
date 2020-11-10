@@ -1,6 +1,5 @@
-package specs.db.bugs;
+package specs.db.bugs
 
-import specs.db.Db;
+import specs.db.Db
 
-public class Bugs extends Db {
-}
+class Bugs : Db()

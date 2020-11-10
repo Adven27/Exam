@@ -1,6 +1,5 @@
-package specs.db.check;
+package specs.db.check
 
-import specs.db.Db;
+import specs.db.Db
 
-public class Check extends Db {
-}
+class Check : Db()

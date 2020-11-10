@@ -1,6 +1,5 @@
-package specs.db.show;
+package specs.db.show
 
-import specs.db.Db;
+import specs.db.Db
 
-public class Show extends Db {
-}
+class Show : Db()

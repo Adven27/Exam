@@ -1,24 +1,24 @@
-package specs.fl;
+package specs.fl
 
-import org.concordion.api.BeforeSpecification;
-import org.junit.rules.TemporaryFolder;
-import specs.Specs;
+import org.concordion.api.BeforeSpecification
+import org.junit.rules.TemporaryFolder
+import specs.Specs
 
-import java.io.IOException;
+open class Fl : Specs() {
+    val dir: String
+        get() = TEMP_FOLDER.root.path
 
-public class Fl extends Specs {
-    private static final TemporaryFolder TEMP_FOLDER = new TemporaryFolder();
-
-    @BeforeSpecification
-    public static void beforeSpec() throws IOException {
-        TEMP_FOLDER.create();
+    fun addFile(name: String?): Boolean {
+        return TEMP_FOLDER.newFile(name).exists()
     }
 
-    public String getDir() {
-        return TEMP_FOLDER.getRoot().getPath();
-    }
+    companion object {
+        private val TEMP_FOLDER = TemporaryFolder()
 
-    public boolean addFile(String name) throws IOException {
-        return TEMP_FOLDER.newFile(name).exists();
+        @JvmStatic
+        @BeforeSpecification
+        fun beforeSpec() {
+            TEMP_FOLDER.create()
+        }
     }
 }

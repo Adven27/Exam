@@ -1,6 +1,5 @@
-package specs.soap;
+package specs.soap
 
-import specs.Specs;
+import specs.Specs
 
-public class Soap extends Specs {
-}
+class Soap : Specs()

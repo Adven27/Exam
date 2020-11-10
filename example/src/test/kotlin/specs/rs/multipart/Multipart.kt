@@ -1,6 +1,5 @@
-package specs.rs.multipart;
+package specs.rs.multipart
 
-import specs.rs.Rs;
+import specs.rs.Rs
 
-public class Multipart extends Rs {
-}
+class Multipart : Rs()

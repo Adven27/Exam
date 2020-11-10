@@ -1,6 +1,5 @@
-package specs.db.more;
+package specs.db.more
 
-import specs.db.Db;
+import specs.db.Db
 
-public class More extends Db {
-}
+class More : Db()

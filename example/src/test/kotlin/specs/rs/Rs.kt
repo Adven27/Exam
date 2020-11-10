@@ -1,6 +1,5 @@
-package specs.rs;
+package specs.rs
 
-import specs.Specs;
+import specs.Specs
 
-public class Rs extends Specs {
-}
+open class Rs : Specs()

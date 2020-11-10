@@ -1,8 +1,7 @@
-package specs.rs.get;
+package specs.rs.get
 
-import org.concordion.api.FullOGNL;
-import specs.Specs;
+import org.concordion.api.FullOGNL
+import specs.Specs
 
 @FullOGNL
-public class Get extends Specs {
-}
+class Get : Specs()

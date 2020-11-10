@@ -1,24 +1,22 @@
-package specs.ui;
+package specs.ui
 
-import org.openqa.selenium.By;
-import specs.Specs;
+import com.codeborne.selenide.Condition.exist
+import com.codeborne.selenide.Condition.text
+import com.codeborne.selenide.Selenide.`$`
+import org.openqa.selenium.By
+import specs.Specs
 
-import static com.codeborne.selenide.Condition.exist;
-import static com.codeborne.selenide.Condition.text;
-import static com.codeborne.selenide.Selenide.$;
-
-public class Ui extends Specs {
-
-    public void hasText(String text) {
-        $(By.tagName("span")).shouldHave(text(text));
+class Ui : Specs() {
+    fun hasText(text: String?) {
+        `$`(By.tagName("span")).shouldHave(text(text))
     }
 
-    public String noParamsCheck() {
-        $(By.tagName("span")).should(exist);
-        return "valueFromMethodCall";
+    fun noParamsCheck(): String {
+        `$`(By.tagName("span")).should(exist)
+        return "valueFromMethodCall"
     }
 
-    public boolean areEqual(String s1, String s2) {
-        return s1.equals(s2);
+    fun areEqual(s1: String, s2: String): Boolean {
+        return s1 == s2
     }
 }

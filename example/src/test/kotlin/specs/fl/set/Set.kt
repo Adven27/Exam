@@ -1,6 +1,5 @@
-package specs.fl.set;
+package specs.fl.set
 
-import specs.fl.Fl;
+import specs.fl.Fl
 
-public class Set extends Fl {
-}
+class Set : Fl()

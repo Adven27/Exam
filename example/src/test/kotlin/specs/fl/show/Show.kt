@@ -1,6 +1,5 @@
-package specs.fl.show;
+package specs.fl.show
 
-import specs.fl.Fl;
+import specs.fl.Fl
 
-public class Show extends Fl {
-}
+class Show : Fl()

@@ -1,6 +1,5 @@
-package specs.db.set;
+package specs.db.set
 
-import specs.db.Db;
+import specs.db.Db
 
-public class Set extends Db {
-}
+class Set : Db()

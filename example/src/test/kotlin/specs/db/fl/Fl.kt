@@ -1,6 +1,5 @@
-package specs.db.fl;
+package specs.db.fl
 
-import specs.db.Db;
+import specs.db.Db
 
-public class Fl extends Db {
-}
+class Fl : Db()

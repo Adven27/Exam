@@ -1,6 +1,5 @@
-package specs.fl.check.details;
+package specs.fl.check.details
 
-import specs.fl.Fl;
+import specs.fl.Fl
 
-public class Details extends Fl {
-}
+class Details : Fl()

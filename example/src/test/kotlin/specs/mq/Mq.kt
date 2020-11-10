@@ -1,6 +1,5 @@
-package specs.mq;
+package specs.mq
 
-import specs.Specs;
+import specs.Specs
 
-public class Mq extends Specs {
-}
+class Mq : Specs()

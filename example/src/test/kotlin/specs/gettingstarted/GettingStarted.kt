@@ -1,28 +1,33 @@
-package specs.gettingstarted;
+package specs.gettingstarted
 
-import app.SutApp;
-import io.restassured.RestAssured;
-import org.concordion.api.AfterSpecification;
-import org.concordion.api.BeforeSpecification;
-import org.concordion.api.FullOGNL;
-import specs.Specs;
+import app.start
+import app.stop
+import io.restassured.RestAssured
+import io.restassured.RestAssured.get
+import org.concordion.api.AfterSpecification
+import org.concordion.api.BeforeSpecification
+import org.concordion.api.FullOGNL
+import specs.Specs
 
 @FullOGNL
-public class GettingStarted extends Specs {
-
-    @BeforeSpecification
-    public static void setUp() {
-        RestAssured.port = 8080;
-        SutApp.start();
+class GettingStarted : Specs() {
+    fun isDone(id: String): Boolean {
+        return !get("/jobs/$id").body().jsonPath().getBoolean("running")
     }
 
-    @AfterSpecification
-    public static void tearDown() {
-        SutApp.stop();
-        RestAssured.port = Specs.PORT;
-    }
+    companion object {
+        @JvmStatic
+        @BeforeSpecification
+        fun setUp() {
+            RestAssured.port = 8080
+            start()
+        }
 
-    public boolean isDone(String id) {
-        return !RestAssured.get("/jobs/" + id).body().jsonPath().getBoolean("running");
+        @JvmStatic
+        @AfterSpecification
+        fun tearDown() {
+            stop()
+            RestAssured.port = PORT
+        }
     }
 }
