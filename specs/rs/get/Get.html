@@ -1,0 +1,491 @@
+<?xml version="1.0" encoding="UTF-8"?><html xmlns:e="http://exam.extension.io" xmlns:cc="http://www.concordion.org/2007/concordion"><head><style>* {
+  font-family: Arial;
+}
+body {
+  padding: 32px;  
+}
+pre {
+  padding: 6px 28px 6px 28px;
+  background-color: #E8EEF7;
+}
+pre, pre *, code, code *, kbd {
+  font-family: Courier New, Courier;
+  font-size: 10pt;
+}
+h1, h1 * {
+  font-size: 24pt;	
+}
+p, td, th, li, .breadcrumbs {
+  font-size: 10pt;
+}
+p, li {
+  line-height: 140%;
+  max-width: 720px;
+}
+table {
+  border-collapse: collapse;
+  empty-cells: show;
+  margin: 8px 0px 8px 0px;
+}
+th, td {
+  border: 1px solid black;
+  padding: 3px;
+}
+td {
+  background-color: white;
+  vertical-align: top;
+}
+th {
+  background-color: #C3D9FF;
+}
+li {
+  margin-top: 6px;
+  margin-bottom: 6px; 
+}
+
+.example, :not(th)[cc\:example] {
+  padding: 6px 16px 6px 16px;
+  border: 1px solid #C3D9FF;
+  margin: 6px 0px 28px 0px;
+  background-color: #F5F9FD;
+}
+.example h3, [cc\:example] h3 {
+  margin-top: 8px;
+  margin-bottom: 8px;
+  font-size: 12pt;
+}
+
+p.success {
+  padding: 2px;
+}
+.success, .success * {
+  background-color: #afa !important;
+}
+.success pre {
+  background-color: #bbffbb;
+}
+.failure, .failure * {
+  background-color: #ffb0b0;
+  padding: 1px;
+}
+.failure .expected {
+  text-decoration: line-through;
+  color: #bb5050;
+}
+.ignored, .ignored * {
+  background-color: #f0f0f0 !important;	
+}
+
+ins {
+  text-decoration: none;	
+}
+
+.exceptionMessage {
+  background-color: #fdd;
+  font-family: Courier New, Courier, Monospace;
+  font-size: 10pt;
+  display: block;
+  font-weight: normal;
+  padding: 4px;
+  text-decoration: none !important;
+}
+.stackTrace, .stackTrace * {
+  font-weight: normal;
+}
+.stackTrace {
+  display: none;
+  padding: 1px 4px 4px 4px;
+  background-color: #fdd;
+  border-top: 1px dotted black;
+}
+.stackTraceExceptionMessage {
+  display: block;
+  font-family: Courier New, Courier, Monospace;
+  font-size: 8pt;
+  white-space: wrap;
+  padding: 1px 0px 1px 0px;
+}
+.stackTraceEntry {
+  white-space: nowrap;
+  font-family: Courier New, Courier, Monospace;
+  display: block;
+  font-size: 8pt;
+  padding: 1px 0px 1px 32px;
+}
+.stackTraceButton {
+  font-size: 8pt;
+  margin: 2px 8px 2px 0px;
+  font-weight: normal;
+  font-family: Arial;
+}
+
+.special {
+  font-style: italic;
+}
+.missing, .missing * {
+  background-color: #ff9999;
+  color:#bb5050;
+  text-decoration: line-through;
+}
+.surplus, .surplus * {
+  background-color: #ff9999;
+}
+.footer {
+  text-align: right;
+  margin-top: 40px;
+  font-size: 8pt;
+  width: 100%;
+  color: #999;
+}
+.footer .testTime {
+  padding: 2px 10px 0px 0px;
+}
+
+.idea {
+  font-size: 9pt;
+  color: #888;
+  font-style: italic;	
+}
+.tight li {
+  margin-top: 1px;
+  margin-bottom: 1px; 
+}
+.commentary {
+  float: right;
+  width: 200px;
+  background-color: #ffffd0;
+  padding:8px;
+  border: 3px solid #eeeeb0;	 
+  margin: 10px 0px 10px 10px;	 
+}
+.commentary, .commentary * {
+  font-size: 8pt;
+}
+</style><meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<link type="text/css" rel="stylesheet" href="../../../timingExtensionStyle.css" /><script type="text/javascript" src="../../../timingExtensionToggle.js"></script><link type="text/css" rel="stylesheet" href="../../../codemirror/codemirror.css" /><link type="text/css" rel="stylesheet" href="../../../codemirror/merge.css" /><link type="text/css" rel="stylesheet" href="../../../codemirror/enable-codemirror.css" /><link type="text/css" rel="stylesheet" href="../../../codemirror/foldgutter.css" /><link type="text/css" rel="stylesheet" href="../../../codemirror/simplescrollbar.css" /><script type="text/javascript" src="../../../codemirror/codemirror.js"></script><script type="text/javascript" src="../../../codemirror/enable-codemirror.js"></script><script type="text/javascript" src="../../../codemirror/javascript.js"></script><script type="text/javascript" src="../../../codemirror/xml.js"></script><script type="text/javascript" src="../../../codemirror/htmlmixed.js"></script><script type="text/javascript" src="../../../codemirror/formatting.js"></script><script type="text/javascript" src="../../../codemirror/markdown.js"></script><script type="text/javascript" src="../../../codemirror/diff_match_patch.js"></script><script type="text/javascript" src="../../../codemirror/merge.js"></script><script type="text/javascript" src="../../../codemirror/xml-fold.js"></script><script type="text/javascript" src="../../../codemirror/simplescrollbar.js"></script><script type="text/javascript" src="../../../bootstrap/jquery-3.2.1.slim.min.js"></script><script type="text/javascript" src="../../../bootstrap/popper.min.js"></script><script type="text/javascript" src="../../../bootstrap/bootstrap.min.js"></script><script type="text/javascript" src="../../../bootstrap/sidebar.js"></script><link type="text/css" rel="stylesheet" href="../../../bootstrap/enable-bootstrap.css" /><link type="text/css" rel="stylesheet" href="../../../bootstrap/bootstrap.min.css" /><link type="text/css" rel="stylesheet" href="../../../bootstrap/callout.css" /><link type="text/css" rel="stylesheet" href="../../../bootstrap/font-awesome.min.css" /><link type="text/css" rel="stylesheet" href="../../../bootstrap/scrollToTop.css" /><script type="text/javascript" src="../../../bootstrap/scrollToTop.js"></script></head><body><div id="toggle-button"><img id="toggle-on" src="../../../timing-on.svg" height="24" width="24" style="display:none" /><img id="toggle-off" src="../../../timing-off.svg" height="24" width="24" /></div><span class="breadcrumbs"><a href="../../Specs.html">Exam - Concordion extension</a> &gt; <a href="../Rs.html">Rest specification</a> &gt;</span>
+<h1>GET-request</h1>
+<div cmdId="cc3ac94d-7eb2-40d4-85e2-5594da76ffaa" e:summary="" class="pin"> <h4>Summary<button type="button" class="btn btn-light btn-sm text-muted ml-1" data-toggle="collapse" data-target="#summary" aria-expanded="true" aria-controls="summary">collapse</button></h4><div id="summary" class="collapse show"><div class="list-group"><a class="list-group-item list-group-item-action" style="border-left: none; border-right: none;" href="#Body check">Body check<small class="card-img-overlay m-1" style="padding:0; left:inherit;"><span class="badge badge-pill badge-light">40ms</span><span class="badge badge-pill badge-success">4</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning">1</span><span class="badge badge-pill badge-danger"></span><span class="badge badge-pill badge-warning">ExpectedToFail</span></small><button type="button" class="btn btn-light btn-sm text-muted ml-1" data-toggle="collapse" data-target="#36f8734d-b320-4f95-96e4-248e039dc3b2" aria-expanded="true" aria-controls="36f8734d-b320-4f95-96e4-248e039dc3b2">cases</button></a><div id="36f8734d-b320-4f95-96e4-248e039dc3b2" class="collapse"><a href="#1) Request with params (happy-path)" style="font-size: small;" class="list-group-item list-group-item-action text-muted">1) Request with params (happy-path)<i></i></a><a href="#2) Request without params (wrong response body)" style="font-size: small;" class="list-group-item list-group-item-action text-muted">2) Request without params (wrong response body)<i></i></a></div><a class="list-group-item list-group-item-action" style="border-left: none; border-right: none;" href="#Body check custom content type">Body check custom content type<small class="card-img-overlay m-1" style="padding:0; left:inherit;"><span class="badge badge-pill badge-light">68ms</span><span class="badge badge-pill badge-success">5</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning">1</span><span class="badge badge-pill badge-danger"></span><span class="badge badge-pill badge-warning">ExpectedToFail</span></small><button type="button" class="btn btn-light btn-sm text-muted ml-1" data-toggle="collapse" data-target="#70108030-e78e-470e-ad2e-93f03dcd99a5" aria-expanded="true" aria-controls="70108030-e78e-470e-ad2e-93f03dcd99a5">cases</button></a><div id="70108030-e78e-470e-ad2e-93f03dcd99a5" class="collapse"><a href="#3) Success" style="font-size: small;" class="list-group-item list-group-item-action text-muted">3) Success<i></i></a><a href="#4) Success from file" style="font-size: small;" class="list-group-item list-group-item-action text-muted">4) Success from file<i></i></a><a href="#5) Wrong" style="font-size: small;" class="list-group-item list-group-item-action text-muted">5) Wrong<i></i></a></div><a class="list-group-item list-group-item-action" style="border-left: none; border-right: none;" href="#Status code check">Status code check<small class="card-img-overlay m-1" style="padding:0; left:inherit;"><span class="badge badge-pill badge-light">25ms</span><span class="badge badge-pill badge-success">1</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning">1</span><span class="badge badge-pill badge-danger"></span><span class="badge badge-pill badge-warning">ExpectedToFail</span></small><button type="button" class="btn btn-light btn-sm text-muted ml-1" data-toggle="collapse" data-target="#601ea011-3193-4674-9e04-bcfa3f4f166f" aria-expanded="true" aria-controls="601ea011-3193-4674-9e04-bcfa3f4f166f">cases</button></a><div id="601ea011-3193-4674-9e04-bcfa3f4f166f" class="collapse"><a href="#6) Wrong status code" style="font-size: small;" class="list-group-item list-group-item-action text-muted">6) Wrong status code<i></i></a></div><a class="list-group-item list-group-item-action" style="border-left: none; border-right: none;" href="#Check failed status code">Check failed status code<small class="card-img-overlay m-1" style="padding:0; left:inherit;"><span class="badge badge-pill badge-light">25ms</span><span class="badge badge-pill badge-success">2</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span><span class="badge badge-pill badge-success">ExpectedToPass</span></small><button type="button" class="btn btn-light btn-sm text-muted ml-1" data-toggle="collapse" data-target="#b115bfd6-8adb-43ce-acc3-4cc7a9c0aa00" aria-expanded="true" aria-controls="b115bfd6-8adb-43ce-acc3-4cc7a9c0aa00">cases</button></a><div id="b115bfd6-8adb-43ce-acc3-4cc7a9c0aa00" class="collapse"><a href="#7) Wrong status code was expected" style="font-size: small;" class="list-group-item list-group-item-action text-muted">7) Wrong status code was expected<i></i></a></div><a class="list-group-item list-group-item-action" style="border-left: none; border-right: none;" href="#Cookies">Cookies<small class="card-img-overlay m-1" style="padding:0; left:inherit;"><span class="badge badge-pill badge-light">94ms</span><span class="badge badge-pill badge-success">8</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span><span class="badge badge-pill badge-success">ExpectedToPass</span></small><button type="button" class="btn btn-light btn-sm text-muted ml-1" data-toggle="collapse" data-target="#f0c12bbf-dd03-4711-8503-fa773de49743" aria-expanded="true" aria-controls="f0c12bbf-dd03-4711-8503-fa773de49743">cases</button></a><div id="f0c12bbf-dd03-4711-8503-fa773de49743" class="collapse"><a href="#8) Can be set in command" style="font-size: small;" class="list-group-item list-group-item-action text-muted">8) Can be set in command<i></i></a><a href="#9) Can be override by case" style="font-size: small;" class="list-group-item list-group-item-action text-muted">9) Can be override by case<i></i></a><a href="#10) Placeholders can be used" style="font-size: small;" class="list-group-item list-group-item-action text-muted">10) Placeholders can be used<i></i></a><a href="#11) If @FullOGNL is enabled, response fields can be accessed" style="font-size: small;" class="list-group-item list-group-item-action text-muted">11) If @FullOGNL is enabled, response fields can be accessed<i></i></a></div><a class="list-group-item list-group-item-action" style="border-left: none; border-right: none;" href="#Ignore json paths">Ignore json paths<small class="card-img-overlay m-1" style="padding:0; left:inherit;"><span class="badge badge-pill badge-light">41ms</span><span class="badge badge-pill badge-success">4</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span><span class="badge badge-pill badge-success">ExpectedToPass</span></small><button type="button" class="btn btn-light btn-sm text-muted ml-1" data-toggle="collapse" data-target="#6c704753-7666-49d0-93bb-2b69ace134ff" aria-expanded="true" aria-controls="6c704753-7666-49d0-93bb-2b69ace134ff">cases</button></a><div id="6c704753-7666-49d0-93bb-2b69ace134ff" class="collapse"><a href="#12) JSON nodes can be ignored" style="font-size: small;" class="list-group-item list-group-item-action text-muted">12) JSON nodes can be ignored<i></i></a><a href="#13) JSON nodes in array can be ignored" style="font-size: small;" class="list-group-item list-group-item-action text-muted">13) JSON nodes in array can be ignored<i></i></a></div><a class="list-group-item list-group-item-action" style="border-left: none; border-right: none;" href="#Configure json compare mode">Configure json compare mode<small class="card-img-overlay m-1" style="padding:0; left:inherit;"><span class="badge badge-pill badge-light">18ms</span><span class="badge badge-pill badge-success">2</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span><span class="badge badge-pill badge-success">ExpectedToPass</span></small><button type="button" class="btn btn-light btn-sm text-muted ml-1" data-toggle="collapse" data-target="#f6b94267-78d9-4ecf-a142-39e122340d5e" aria-expanded="true" aria-controls="f6b94267-78d9-4ecf-a142-39e122340d5e">cases</button></a><div id="f6b94267-78d9-4ecf-a142-39e122340d5e" class="collapse"><a href="#14) Extra fields can be ignored" style="font-size: small;" class="list-group-item list-group-item-action text-muted">14) Extra fields can be ignored<i></i></a></div><a class="list-group-item list-group-item-action" style="border-left: none; border-right: none;" href="#Configure json compare mode (check)">Configure json compare mode (check)<small class="card-img-overlay m-1" style="padding:0; left:inherit;"><span class="badge badge-pill badge-light">20ms</span><span class="badge badge-pill badge-success">1</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning">1</span><span class="badge badge-pill badge-danger"></span><span class="badge badge-pill badge-warning">ExpectedToFail</span></small><button type="button" class="btn btn-light btn-sm text-muted ml-1" data-toggle="collapse" data-target="#4fb3b2cf-ac9f-4ad5-9337-5c49b57cda6e" aria-expanded="true" aria-controls="4fb3b2cf-ac9f-4ad5-9337-5c49b57cda6e">cases</button></a><div id="4fb3b2cf-ac9f-4ad5-9337-5c49b57cda6e" class="collapse"><a href="#15) Extra fields produce error" style="font-size: small;" class="list-group-item list-group-item-action text-muted">15) Extra fields produce error<i></i></a></div></div></div></div>
+<div cmdId="cf20e219-abd2-405c-b1f4-9d970998ad42" e:given="" class="bd-callout bd-callout-info">
+    Given server, that mirrors GET-request
+</div>
+<div xmlns:c="http://www.concordion.org/2007/concordion" name="Body check" status="ExpectedToFail" print="true" cmdId="7b9bf4f5-7987-4e59-b411-cb70ab2eb811" c:example="Body check" c:status="ExpectedToFail" class="card mb-3" e:example="" id="Body check"><div class="card-header" data-toggle="collapse" data-target="#362925354" aria-expanded="true" aria-controls="362925354"><a name="Body check" data-type="example">Body check</a></div><div class="card-body collapse show" id="362925354"><pre class="htmlmixed card">
+&lt;e:get url="relative/url" contentType="application/json"&gt;
+        &lt;e:case desc="Request with params (happy-path)" urlParams="param1=1&amp;amp;param2=2"&gt;
+            &lt;e:expected&gt;
+                { "GET": "/relative/url?param1=1&amp;amp;param2=2" }
+            &lt;/e:expected&gt;
+        &lt;/e:case&gt;
+        &lt;e:case desc="Request without params (wrong response body)"&gt;
+            &lt;e:expected&gt;
+                { "GET": "/relative/url?noparams", "GET": "/relative/url?noparams", "GET": "/relative/url?noparams", "GET": "/relative/url?noparams", "GET": "/relative/url?noparams", "GET": "/relative/url?noparams", "GET": "/relative/url?noparams", "GET": "/relative/url?noparams", "GET": "/relative/url?noparams", "GET": "/relative/url?noparams", "GET": "/relative/url?noparams", "GET": "/relative/url?noparams", "GET": "/relative/url?noparams", "GET": "/relative/url?noparams", "GET": "/relative/url?noparams", "GET": "/relative/url?noparams", "GET": "/relative/url?noparams" }
+            &lt;/e:expected&gt;
+            &lt;e:check&gt;
+                &lt;span cc:assertTrue="true"&gt;Block for additional checks&lt;/span&gt;
+            &lt;/e:check&gt;
+        &lt;/e:case&gt;
+    &lt;/e:get&gt;</pre>
+    <div cmdId="bf360446-4825-400f-8973-9fb48d4710ef" e:get="" class="bd-callout bd-callout-success"><table class="table table-sm"><thead class="thead-default"><thead class="thead-default"><th colspan="2">Expected response</th></thead></thead>
+        <tr desc="Request with params (happy-path)" cmdId="653ac028-78d8-4cf3-ac71-ca8ec478c2e1" e:case="" data-type="case" id="1) Request with params (happy-path)"><tr><td colspan="2" class="text-muted">1) Request with params (happy-path)</td></tr>
+            
+        <tr><tr><td><div><span class="badge badge-info ml-1 mr-1">GET</span><code>relative/url?param1=1&amp;param2=2</code><span></span><span></span></div></td><td><pre class="exp-status rest-success">HTTP/1.1 200 OK</pre></td></tr><td colspan="2" class="exp-body json rest-success">{
+  "GET": "/relative/url?param1=1&amp;param2=2"
+}</td></tr></tr>
+        <tr desc="Request without params (wrong response body)" cmdId="609c41d2-aeee-46ef-a71c-f89e10fe451f" e:case="" data-type="case" id="2) Request without params (wrong response body)"><tr><td colspan="2" class="text-muted">2) Request without params (wrong response body)</td></tr>
+            
+            <div cmdId="0ab04095-65ab-4c10-87be-ff5ef84dc8d3" e:check="" />
+        <tr><tr><td><div><span class="badge badge-info ml-1 mr-1">GET</span><code>relative/url</code><span></span><span></span></div></td><td><pre class="exp-status rest-success">HTTP/1.1 200 OK</pre></td></tr><td colspan="2" class="exp-body json rest-failure"><del class="expected">{
+  "GET": "/relative/url?noparams",
+  "GET": "/relative/url?noparams",
+  "GET": "/relative/url?noparams",
+  "GET": "/relative/url?noparams",
+  "GET": "/relative/url?noparams",
+  "GET": "/relative/url?noparams",
+  "GET": "/relative/url?noparams",
+  "GET": "/relative/url?noparams",
+  "GET": "/relative/url?noparams",
+  "GET": "/relative/url?noparams",
+  "GET": "/relative/url?noparams",
+  "GET": "/relative/url?noparams",
+  "GET": "/relative/url?noparams",
+  "GET": "/relative/url?noparams",
+  "GET": "/relative/url?noparams",
+  "GET": "/relative/url?noparams",
+  "GET": "/relative/url?noparams"
+}</del>
+<ins class="actual">{
+  "GET": "/relative/url"
+}</ins></td><span class="exceptionMessage">JSON documents are different:
+Different value found in node "GET", expected: &lt;"/relative/url?noparams"&gt; but was: &lt;"/relative/url"&gt;.
+</span></tr></tr><tr><td colspan="2">
+                <span cc:assertTrue="true" class="success">Block for additional checks</span>
+            </td></tr>
+    <div><h5><span class="badge badge-info ml-1 mr-1">GET</span><span class="badge badge-light ml-1 mr-1">application/json</span><code>relative/url</code></h5></div></table></div>
+</div><div class="card-footer text-muted" data-toggle="collapse" data-target="#362925354" aria-expanded="true" aria-controls="362925354"><small><span class="badge badge-pill badge-success">4</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning">1</span><span class="badge badge-pill badge-danger"></span><span class="badge badge-pill badge-warning">ExpectedToFail</span></small></div></div>
+<div xmlns:c="http://www.concordion.org/2007/concordion" name="Body check custom content type" status="ExpectedToFail" print="true" cmdId="c0a29aae-4e06-4c75-af02-5e42587be8ee" c:example="Body check custom content type" c:status="ExpectedToFail" class="card mb-3" e:example="" id="Body check custom content type"><div class="card-header" data-toggle="collapse" data-target="#1863561946" aria-expanded="true" aria-controls="1863561946"><a name="Body check custom content type" data-type="example">Body check custom content type</a></div><div class="card-body collapse show" id="1863561946"><pre class="htmlmixed card">
+&lt;e:get url="text" contentType="text/plain"&gt;
+        &lt;e:case desc="Success"&gt;
+            &lt;e:expected&gt;text to
+compare&lt;/e:expected&gt;
+        &lt;/e:case&gt;
+        &lt;e:case desc="Success from file"&gt;
+            &lt;e:expected from="/data/rs/expected.txt" /&gt;
+        &lt;/e:case&gt;
+        &lt;e:case desc="Wrong"&gt;
+            &lt;e:expected&gt;&lt;![CDATA[ text to compare ]]&gt;&lt;/e:expected&gt;
+        &lt;/e:case&gt;
+    &lt;/e:get&gt;</pre>
+    <div cmdId="592c9507-cce6-4582-8484-7fe0dd66e054" e:get="" class="bd-callout bd-callout-success"><table class="table table-sm"><thead class="thead-default"><thead class="thead-default"><th colspan="2">Expected response</th></thead></thead>
+        <tr desc="Success" cmdId="2a6e7de9-1def-41d7-82c1-4d57f2d359a8" e:case="" data-type="case" id="3) Success"><tr><td colspan="2" class="text-muted">3) Success</td></tr>
+            
+        <tr><tr><td><div><span class="badge badge-info ml-1 mr-1">GET</span><code>text</code><span></span><span></span></div></td><td><pre class="exp-status rest-success">HTTP/1.1 200 OK</pre></td></tr><td colspan="2" class="exp-body text rest-success">text to
+compare</td></tr></tr>
+        <tr desc="Success from file" cmdId="6a7eb21e-3f48-4f3b-b58f-0226ed7b21d1" e:case="" data-type="case" id="4) Success from file"><tr><td colspan="2" class="text-muted">4) Success from file</td></tr>
+            
+         <tr><tr><td><div><span class="badge badge-info ml-1 mr-1">GET</span><code>text</code><span></span><span></span></div></td><td><pre class="exp-status rest-success">HTTP/1.1 200 OK</pre></td></tr><td colspan="2" from="/data/rs/expected.txt" class="exp-body text rest-success">text to
+compare</td></tr></tr>
+        <tr desc="Wrong" cmdId="426d39d1-e32a-4ca3-bab9-0db3be67b5d1" e:case="" data-type="case" id="5) Wrong"><tr><td colspan="2" class="text-muted">5) Wrong</td></tr>
+            
+        <tr><tr><td><div><span class="badge badge-info ml-1 mr-1">GET</span><code>text</code><span></span><span></span></div></td><td><pre class="exp-status rest-success">HTTP/1.1 200 OK</pre></td></tr><td colspan="2" class="exp-body text rest-failure"><del class="expected">text to compare</del>
+<ins class="actual">text to
+compare</ins></td><span class="exceptionMessage">
+Expected: "text to compare"
+     but: was "text to\ncompare"</span></tr></tr>
+    <div><h5><span class="badge badge-info ml-1 mr-1">GET</span><span class="badge badge-light ml-1 mr-1">text/plain</span><code>text</code></h5></div></table></div>
+</div><div class="card-footer text-muted" data-toggle="collapse" data-target="#1863561946" aria-expanded="true" aria-controls="1863561946"><small><span class="badge badge-pill badge-success">5</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning">1</span><span class="badge badge-pill badge-danger"></span><span class="badge badge-pill badge-warning">ExpectedToFail</span></small></div></div>
+<div xmlns:c="http://www.concordion.org/2007/concordion" name="Status code check" status="ExpectedToFail" print="true" cmdId="4b304162-4241-4e6c-bfa8-a32b01414b99" c:example="Status code check" c:status="ExpectedToFail" class="card mb-3" e:example="" id="Status code check"><div class="card-header" data-toggle="collapse" data-target="#1177583075" aria-expanded="true" aria-controls="1177583075"><a name="Status code check" data-type="example">Status code check</a></div><div class="card-body collapse show" id="1177583075"><pre class="htmlmixed card">
+&lt;e:get url="status/400"&gt;
+        &lt;e:case desc="Wrong status code"&gt;
+            &lt;e:expected&gt;
+                {"GET": "/status/400"}
+            &lt;/e:expected&gt;
+        &lt;/e:case&gt;
+    &lt;/e:get&gt;</pre>
+    <div cmdId="c58d73cb-6cf2-4629-87b1-81ccd5224658" e:get="" class="bd-callout bd-callout-success"><table class="table table-sm"><thead class="thead-default"><thead class="thead-default"><th colspan="2">Expected response</th></thead></thead>
+        <tr desc="Wrong status code" cmdId="c7834c33-7959-4a9e-9f36-9400f207441d" e:case="" data-type="case" id="6) Wrong status code"><tr><td colspan="2" class="text-muted">6) Wrong status code</td></tr>
+            
+        <tr><tr><td><div><span class="badge badge-info ml-1 mr-1">GET</span><code>status/400</code><span></span><span></span></div></td><td><pre class="exp-status rest-failure"><del class="expected">HTTP/1.1 200 OK</del>
+<ins class="actual">HTTP/1.1 400 Bad Request</ins></pre></td></tr><td colspan="2" class="exp-body json rest-success">{
+  "GET": "/status/400"
+}</td></tr></tr>
+    <div><h5><span class="badge badge-info ml-1 mr-1">GET</span><span class="badge badge-light ml-1 mr-1">application/json</span><code>status/400</code></h5></div></table></div>
+</div><div class="card-footer text-muted" data-toggle="collapse" data-target="#1177583075" aria-expanded="true" aria-controls="1177583075"><small><span class="badge badge-pill badge-success">1</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning">1</span><span class="badge badge-pill badge-danger"></span><span class="badge badge-pill badge-warning">ExpectedToFail</span></small></div></div>
+<div xmlns:c="http://www.concordion.org/2007/concordion" name="Check failed status code" print="true" cmdId="42b300e4-4e62-43f0-b1d1-5d180144b2f2" c:example="Check failed status code" class="card mb-3" e:example="" id="Check failed status code"><div class="card-header" data-toggle="collapse" data-target="#-443495376" aria-expanded="true" aria-controls="-443495376"><a name="Check failed status code" data-type="example">Check failed status code</a></div><div class="card-body collapse show" id="-443495376"><pre class="htmlmixed card">
+&lt;e:get url="status/400"&gt;
+        &lt;e:case desc="Wrong status code was expected"&gt;
+            &lt;e:expected statusCode="400" reasonPhrase="Bad Request"&gt;
+                {"GET": "/status/400"}
+            &lt;/e:expected&gt;
+        &lt;/e:case&gt;
+    &lt;/e:get&gt;</pre>
+    <div cmdId="d0e2c62a-e799-42ca-a179-52e2b442ea3a" e:get="" class="bd-callout bd-callout-success"><table class="table table-sm"><thead class="thead-default"><thead class="thead-default"><th colspan="2">Expected response</th></thead></thead>
+        <tr desc="Wrong status code was expected" cmdId="02576ec2-39d5-45e1-90d3-b1b6a73d0269" e:case="" data-type="case" id="7) Wrong status code was expected"><tr><td colspan="2" class="text-muted">7) Wrong status code was expected</td></tr>
+            
+        <tr><tr><td><div><span class="badge badge-info ml-1 mr-1">GET</span><code>status/400</code><span></span><span></span></div></td><td><pre class="exp-status rest-success">HTTP/1.1 400 Bad Request</pre></td></tr><td colspan="2" class="exp-body json rest-success">{
+  "GET": "/status/400"
+}</td></tr></tr>
+    <div><h5><span class="badge badge-info ml-1 mr-1">GET</span><span class="badge badge-light ml-1 mr-1">application/json</span><code>status/400</code></h5></div></table></div>
+</div><div class="card-footer text-muted" data-toggle="collapse" data-target="#-443495376" aria-expanded="true" aria-controls="-443495376"><small><span class="badge badge-pill badge-success">2</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span><span class="badge badge-pill badge-success">ExpectedToPass</span></small></div></div>
+<div xmlns:c="http://www.concordion.org/2007/concordion" name="Cookies" print="true" cmdId="8c833175-8476-4d59-be39-6e5e290b79be" c:example="Cookies" class="card mb-3" e:example="" id="Cookies"><div class="card-header" data-toggle="collapse" data-target="#-1678124433" aria-expanded="true" aria-controls="-1678124433"><a name="Cookies" data-type="example">Cookies</a></div><div class="card-body collapse show" id="-1678124433"><pre class="htmlmixed card">
+&lt;e:get url="relative/url" cookies="cook=from_command"&gt;
+        &lt;e:case desc="Can be set in command"&gt;
+            &lt;e:expected&gt;
+                {
+                "GET": "/relative/url",
+                "cookies": "{cook=from_command}"
+                }
+            &lt;/e:expected&gt;
+        &lt;/e:case&gt;
+        &lt;e:case cookies="cook=from_case" desc="Can be override by case"&gt;
+            &lt;e:expected&gt;
+                {
+                "GET": "/relative/url",
+                "cookies": "{cook=from_case}"
+                }
+            &lt;/e:expected&gt;
+        &lt;/e:case&gt;
+        &lt;e:case cookies="cook={{url}},anotherCook=asd" desc="Placeholders can be used"&gt;
+            &lt;e:expected&gt;
+                {
+                "GET": "/relative/url",
+                "cookies": "{cook=relative/url, anotherCook=asd}"
+                }
+            &lt;/e:expected&gt;
+            &lt;e:check&gt;
+                Last response saved in variable &lt;var&gt;#exam_response&lt;/var&gt;&lt;br /&gt;
+                &lt;ol&gt;
+                    &lt;li&gt;&lt;code cc:execute="#my_header = #exam_response.header('my_header')"&gt;c:execute="#my_header =
+                        #exam_response.header('my_header')&lt;/code&gt;&lt;/li&gt;
+                    &lt;li&gt;echo #exam_response.header('my_header') =&amp;gt; &lt;code cc:echo="#exam_response.header('my_header')" /&gt;
+                    &lt;/li&gt;
+                    &lt;li&gt;echo #my_header =&amp;gt; &lt;code cc:echo="#my_header" /&gt;&lt;/li&gt;
+                &lt;/ol&gt;
+            &lt;/e:check&gt;
+        &lt;/e:case&gt;
+        &lt;e:case cookies="cook={{eval &amp;quot;#exam_response.header('my_header')&amp;quot;}}" desc="If @FullOGNL is enabled, response fields can be accessed"&gt;
+            &lt;e:expected&gt;
+                {
+                "GET": "/relative/url",
+                "cookies": "{cook=some value}"
+                }
+            &lt;/e:expected&gt;
+        &lt;/e:case&gt;
+    &lt;/e:get&gt;</pre>
+    <div cmdId="96ff5fa9-4d3e-482b-9a64-cd82f7c3cf23" e:get="" class="bd-callout bd-callout-success"><table class="table table-sm"><thead class="thead-default"><thead class="thead-default"><th colspan="2">Expected response</th></thead></thead>
+        <tr desc="Can be set in command" cmdId="2b009c78-420d-4ef9-add9-e87792972086" e:case="" data-type="case" id="8) Can be set in command"><tr><td colspan="2" class="text-muted">8) Can be set in command</td></tr>
+            
+        <tr><tr><td><div><span class="badge badge-info ml-1 mr-1">GET</span><code>relative/url</code><span class="badge badge-light ml-1 mr-1">Cookies</span><code>cook=from_command</code><span></span></div></td><td><pre class="exp-status rest-success">HTTP/1.1 200 OK</pre></td></tr><td colspan="2" class="exp-body json rest-success">{
+  "GET": "/relative/url",
+  "cookies": "{cook=from_command}"
+}</td></tr></tr>
+        <tr desc="Can be override by case" cmdId="a7beea52-705c-4edf-ba4f-435e5c14ee73" e:case="" data-type="case" id="9) Can be override by case"><tr><td colspan="2" class="text-muted">9) Can be override by case</td></tr>
+            
+        <tr><tr><td><div><span class="badge badge-info ml-1 mr-1">GET</span><code>relative/url</code><span class="badge badge-light ml-1 mr-1">Cookies</span><code>cook=from_case</code><span></span></div></td><td><pre class="exp-status rest-success">HTTP/1.1 200 OK</pre></td></tr><td colspan="2" class="exp-body json rest-success">{
+  "GET": "/relative/url",
+  "cookies": "{cook=from_case}"
+}</td></tr></tr>
+        <tr desc="Placeholders can be used" cmdId="41ba646f-e0e6-4f49-9dc4-714fee3d9db0" e:case="" data-type="case" id="10) Placeholders can be used"><tr><td colspan="2" class="text-muted">10) Placeholders can be used</td></tr>
+            
+            <div cmdId="d7c13bb4-e10f-49cc-88ba-b69abd61713d" e:check="" />
+        <tr><tr><td><div><span class="badge badge-info ml-1 mr-1">GET</span><code>relative/url</code><span class="badge badge-light ml-1 mr-1">Cookies</span><code>cook=relative/url,anotherCook=asd</code><span></span></div></td><td><pre class="exp-status rest-success">HTTP/1.1 200 OK</pre></td></tr><td colspan="2" class="exp-body json rest-success">{
+  "GET": "/relative/url",
+  "cookies": "{cook=relative/url, anotherCook=asd}"
+}</td></tr></tr><tr><td colspan="2">
+                Last response saved in variable <var>#exam_response</var><br />
+                <ol>
+                    <li><code cc:execute="#my_header = #exam_response.header('my_header')">c:execute="#my_header =
+                        #exam_response.header('my_header')</code></li>
+                    <li>echo #exam_response.header('my_header') =&gt; <code cc:echo="#exam_response.header('my_header')">some value</code>
+                    </li>
+                    <li>echo #my_header =&gt; <code cc:echo="#my_header">some value</code></li>
+                </ol>
+            </td></tr>
+        <tr desc="If @FullOGNL is enabled, response fields can be accessed" cmdId="7cfaf519-3f74-4a7d-8c31-87e64bc96308" e:case="" data-type="case" id="11) If @FullOGNL is enabled, response fields can be accessed"><tr><td colspan="2" class="text-muted">11) If @FullOGNL is enabled, response fields can be accessed</td></tr>
+            
+        <tr><tr><td><div><span class="badge badge-info ml-1 mr-1">GET</span><code>relative/url</code><span class="badge badge-light ml-1 mr-1">Cookies</span><code>cook=some value</code><span></span></div></td><td><pre class="exp-status rest-success">HTTP/1.1 200 OK</pre></td></tr><td colspan="2" class="exp-body json rest-success">{
+  "GET": "/relative/url",
+  "cookies": "{cook=some value}"
+}</td></tr></tr>
+    <div><h5><span class="badge badge-info ml-1 mr-1">GET</span><span class="badge badge-light ml-1 mr-1">application/json</span><code>relative/url</code></h5><h6><span class="badge badge-light ml-1 mr-1">Cookies</span><code>cook=from_command</code></h6></div></table></div>
+</div><div class="card-footer text-muted" data-toggle="collapse" data-target="#-1678124433" aria-expanded="true" aria-controls="-1678124433"><small><span class="badge badge-pill badge-success">8</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span><span class="badge badge-pill badge-success">ExpectedToPass</span></small></div></div>
+<div xmlns:c="http://www.concordion.org/2007/concordion" name="Ignore json paths" print="true" cmdId="93d67bd8-ebbc-4496-a077-ae4ef3931027" c:example="Ignore json paths" class="card mb-3" e:example="" id="Ignore json paths"><div class="card-header" data-toggle="collapse" data-target="#-314444124" aria-expanded="true" aria-controls="-314444124"><a name="Ignore json paths" data-type="example">Ignore json paths</a></div><div class="card-body collapse show" id="-314444124"><pre class="htmlmixed card">
+&lt;span&gt;ignored JSON paths should be placed in "expected" at "ignoredPaths" attribute separated by ";". &lt;/span&gt;
+&lt;e:get url="ignoreJson"&gt;
+        &lt;e:case desc="JSON nodes can be ignored"&gt;
+            &lt;e:expected ignoredPaths="param2;arr[*].param4"&gt;
+                {
+                "param1":"value1",
+                "arr":[
+                {"param3":"value3"},
+                {"param3":"value3"}
+                ]
+                }
+            &lt;/e:expected&gt;
+        &lt;/e:case&gt;
+    &lt;/e:get&gt;
+&lt;e:get url="ignoreJsonArray"&gt;
+        &lt;e:case desc="JSON nodes in array can be ignored"&gt;
+            &lt;e:expected ignoredPaths="[*].param4"&gt;
+                [
+                {"param3":"value3"},
+                {"param3":"value3"}
+                ]
+            &lt;/e:expected&gt;
+        &lt;/e:case&gt;
+    &lt;/e:get&gt;</pre>
+    <span>ignored JSON paths should be placed in "expected" at "ignoredPaths" attribute separated by ";". </span>
+    <div cmdId="b80bd37b-21d9-4e52-b5e0-7b655bf1a438" e:get="" class="bd-callout bd-callout-success"><table class="table table-sm"><thead class="thead-default"><thead class="thead-default"><th colspan="2">Expected response</th></thead></thead>
+        <tr desc="JSON nodes can be ignored" cmdId="97e86d20-40b1-4678-bbbf-39ed2b9b686d" e:case="" data-type="case" id="12) JSON nodes can be ignored"><tr><td colspan="2" class="text-muted">12) JSON nodes can be ignored</td></tr>
+            
+        <tr><tr><td><div><span class="badge badge-info ml-1 mr-1">GET</span><code>ignoreJson</code><span></span><span></span></div></td><td><pre class="exp-status rest-success">HTTP/1.1 200 OK</pre></td></tr><td colspan="2" class="exp-body json rest-success">{
+  "param1": "value1",
+  "arr": [{
+    "param3": "value3"
+  }, {
+    "param3": "value3"
+  }]
+}</td></tr></tr>
+    <div><h5><span class="badge badge-info ml-1 mr-1">GET</span><span class="badge badge-light ml-1 mr-1">application/json</span><code>ignoreJson</code></h5></div></table></div>
+    <div cmdId="b39d9b4f-821c-4142-ada9-379312237553" e:get="" class="bd-callout bd-callout-success"><table class="table table-sm"><thead class="thead-default"><thead class="thead-default"><th colspan="2">Expected response</th></thead></thead>
+        <tr desc="JSON nodes in array can be ignored" cmdId="75721308-24a5-4298-823e-b339054ffa8f" e:case="" data-type="case" id="13) JSON nodes in array can be ignored"><tr><td colspan="2" class="text-muted">13) JSON nodes in array can be ignored</td></tr>
+            
+        <tr><tr><td><div><span class="badge badge-info ml-1 mr-1">GET</span><code>ignoreJsonArray</code><span></span><span></span></div></td><td><pre class="exp-status rest-success">HTTP/1.1 200 OK</pre></td></tr><td colspan="2" class="exp-body json rest-success">[{
+  "param3": "value3"
+}, {
+  "param3": "value3"
+}]</td></tr></tr>
+    <div><h5><span class="badge badge-info ml-1 mr-1">GET</span><span class="badge badge-light ml-1 mr-1">application/json</span><code>ignoreJsonArray</code></h5></div></table></div>
+</div><div class="card-footer text-muted" data-toggle="collapse" data-target="#-314444124" aria-expanded="true" aria-controls="-314444124"><small><span class="badge badge-pill badge-success">4</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span><span class="badge badge-pill badge-success">ExpectedToPass</span></small></div></div>
+<div xmlns:c="http://www.concordion.org/2007/concordion" name="Configure json compare mode" print="true" cmdId="4e00ec68-e1d5-40e8-815d-fe00f2d42ca1" c:example="Configure json compare mode" class="card mb-3" e:example="" id="Configure json compare mode"><div class="card-header" data-toggle="collapse" data-target="#-1051840164" aria-expanded="true" aria-controls="-1051840164"><a name="Configure json compare mode" data-type="example">Configure json compare mode</a></div><div class="card-body collapse show" id="-1051840164"><pre class="htmlmixed card">
+&lt;span&gt;Specific configuration for json-unit should be placed in "expected" at "jsonUnitOptions" attribute separated by ";". &lt;/span&gt;
+&lt;e:get url="ignoreJson"&gt;
+        &lt;e:case desc="Extra fields can be ignored"&gt;
+            &lt;e:expected jsonUnitOptions="IGNORING_EXTRA_FIELDS"&gt;
+                {
+                "param1":"value1",
+                "arr":[
+                {"param3":"value3"},
+                {"param3":"value3"}
+                ]
+                }
+            &lt;/e:expected&gt;
+        &lt;/e:case&gt;
+    &lt;/e:get&gt;</pre>
+    <span>Specific configuration for json-unit should be placed in "expected" at "jsonUnitOptions" attribute separated by ";". </span>
+    <div cmdId="6f00fcd9-5aba-4adf-b692-0d35cd0c6395" e:get="" class="bd-callout bd-callout-success"><table class="table table-sm"><thead class="thead-default"><thead class="thead-default"><th colspan="2">Expected response</th></thead></thead>
+        <tr desc="Extra fields can be ignored" cmdId="7da3bd4c-1d63-4fd5-a300-1e2a7aabcf08" e:case="" data-type="case" id="14) Extra fields can be ignored"><tr><td colspan="2" class="text-muted">14) Extra fields can be ignored</td></tr>
+            
+        <tr><tr><td><div><span class="badge badge-info ml-1 mr-1">GET</span><code>ignoreJson</code><span></span><span></span></div></td><td><pre class="exp-status rest-success">HTTP/1.1 200 OK</pre></td></tr><td colspan="2" class="exp-body json rest-success">{
+  "param1": "value1",
+  "arr": [{
+    "param3": "value3"
+  }, {
+    "param3": "value3"
+  }]
+}</td></tr></tr>
+    <div><h5><span class="badge badge-info ml-1 mr-1">GET</span><span class="badge badge-light ml-1 mr-1">application/json</span><code>ignoreJson</code></h5></div></table></div>
+</div><div class="card-footer text-muted" data-toggle="collapse" data-target="#-1051840164" aria-expanded="true" aria-controls="-1051840164"><small><span class="badge badge-pill badge-success">2</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span><span class="badge badge-pill badge-success">ExpectedToPass</span></small></div></div>
+<div xmlns:c="http://www.concordion.org/2007/concordion" name="Configure json compare mode (check)" print="true" status="ExpectedToFail" cmdId="fb75ad98-7ae8-4d0e-87c5-a10cbede9ddc" c:example="Configure json compare mode (check)" c:status="ExpectedToFail" class="card mb-3" e:example="" id="Configure json compare mode (check)"><div class="card-header" data-toggle="collapse" data-target="#-467882107" aria-expanded="true" aria-controls="-467882107"><a name="Configure json compare mode (check)" data-type="example">Configure json compare mode (check)</a></div><div class="card-body collapse show" id="-467882107"><pre class="htmlmixed card">
+&lt;span&gt;Specific configuration for json-unit should be not affect other examples &lt;/span&gt;
+&lt;e:get url="ignoreJson"&gt;
+        &lt;e:case desc="Extra fields produce error"&gt;
+            &lt;e:expected&gt;
+                {
+                "param1":"value1",
+                "arr":[
+                {"param3":"value3"},
+                {"param3":"value3"}
+                ]
+                }
+            &lt;/e:expected&gt;
+        &lt;/e:case&gt;
+    &lt;/e:get&gt;</pre>
+    <span>Specific configuration for json-unit should be not affect other examples </span>
+    <div cmdId="a5b36501-2c6d-4b51-b645-7d233a525f85" e:get="" class="bd-callout bd-callout-success"><table class="table table-sm"><thead class="thead-default"><thead class="thead-default"><th colspan="2">Expected response</th></thead></thead>
+        <tr desc="Extra fields produce error" cmdId="3a207a4c-2813-484f-84b0-aa2c64e242ec" e:case="" data-type="case" id="15) Extra fields produce error"><tr><td colspan="2" class="text-muted">15) Extra fields produce error</td></tr>
+            
+        <tr><tr><td><div><span class="badge badge-info ml-1 mr-1">GET</span><code>ignoreJson</code><span></span><span></span></div></td><td><pre class="exp-status rest-success">HTTP/1.1 200 OK</pre></td></tr><td colspan="2" class="exp-body json rest-failure"><del class="expected">{
+  "param1": "value1",
+  "arr": [{
+    "param3": "value3"
+  }, {
+    "param3": "value3"
+  }]
+}</del>
+<ins class="actual">{
+  "param1": "value1",
+  "param2": "value2",
+  "arr": [{
+    "param3": "value3",
+    "param4": "value4"
+  }, {
+    "param3": "value3",
+    "param4": "value4"
+  }]
+}</ins></td><span class="exceptionMessage">JSON documents are different:
+Different keys found in node "", extra: "param2", expected: &lt;{"arr":[{"param3":"value3"}, {"param3":"value3"}],"param1":"value1"}&gt; but was: &lt;{"arr":[{"param3":"value3","param4":"value4"}, {"param3":"value3","param4":"value4"}],"param1":"value1","param2":"value2"}&gt;
+Array "arr" has different content. Missing values: [{"param3":"value3"}, {"param3":"value3"}], extra values: [{"param3":"value3","param4":"value4"}, {"param3":"value3","param4":"value4"}], expected: &lt;[{"param3":"value3"},{"param3":"value3"}]&gt; but was: &lt;[{"param3":"value3","param4":"value4"},{"param3":"value3","param4":"value4"}]&gt;
+</span></tr></tr>
+    <div><h5><span class="badge badge-info ml-1 mr-1">GET</span><span class="badge badge-light ml-1 mr-1">application/json</span><code>ignoreJson</code></h5></div></table></div>
+</div><div class="card-footer text-muted" data-toggle="collapse" data-target="#-467882107" aria-expanded="true" aria-controls="-467882107"><small><span class="badge badge-pill badge-success">1</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning">1</span><span class="badge badge-pill badge-danger"></span><span class="badge badge-pill badge-warning">ExpectedToFail</span></small></div></div>
+<div class="footer">Results generated by <a href="http://www.concordion.org" style="font-weight: bold; text-decoration: none; color: #89C;">Concordion</a><div class="testTime">in 346 ms on 10-Nov-2020 at 10:21:46 UTC</div></div></body>
+<button id="btnToTop" onclick="topFunction()" type="button" class="btn btn-light btn-sm text-muted ml-1"><i class="fa fa-arrow-up fa-3x"></i></button></html>
