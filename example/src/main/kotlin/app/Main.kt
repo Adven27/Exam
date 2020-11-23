@@ -3,9 +3,8 @@
 package app
 
 import com.fasterxml.jackson.databind.SerializationFeature
-import com.fasterxml.jackson.datatype.joda.JodaModule
-import com.fasterxml.jackson.datatype.joda.cfg.JacksonJodaDateFormat
-import com.fasterxml.jackson.datatype.joda.ser.DateTimeSerializer
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer
 import io.ktor.application.Application
 import io.ktor.application.call
 import io.ktor.application.install
@@ -33,8 +32,8 @@ import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.update
-import org.joda.time.DateTime
-import org.joda.time.format.DateTimeFormat
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.util.TimeZone
 
 @Suppress("LongMethod")
@@ -44,12 +43,8 @@ fun Application.module() {
         jackson {
             setTimeZone(TimeZone.getDefault())
             registerModule(
-                JodaModule().addSerializer(
-                    DateTime::class.java,
-                    DateTimeSerializer(
-                        JacksonJodaDateFormat(DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZZ")), 2
-                    )
-                )
+                JavaTimeModule()
+                    .addSerializer(LocalDateTime::class.java, LocalDateTimeSerializer(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS")))
             )
             configure(SerializationFeature.INDENT_OUTPUT, true)
             configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
@@ -148,7 +143,7 @@ class WidgetService {
                 Widgets.update({ Widgets.id eq id }) {
                     it[name] = widget.name!!
                     it[quantity] = widget.quantity!!
-                    it[updatedAt] = DateTime()
+                    it[updatedAt] = LocalDateTime.now()
                 }
             }
             getBy(id)
@@ -162,7 +157,7 @@ class WidgetService {
                 Widgets.insert {
                     it[name] = if (widget.name!!.isBlank()) throw BlankNotAllowed() else widget.name
                     it[quantity] = widget.quantity!!
-                    it[updatedAt] = DateTime()
+                    it[updatedAt] = LocalDateTime.now()
                 } get Widgets.id
                 )
         }

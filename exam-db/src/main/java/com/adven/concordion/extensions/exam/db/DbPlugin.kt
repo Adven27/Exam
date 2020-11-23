@@ -4,6 +4,7 @@ import com.adven.concordion.extensions.exam.core.ExamPlugin
 import com.adven.concordion.extensions.exam.core.commands.ExamCommand
 import com.adven.concordion.extensions.exam.core.html.TABLE
 import com.adven.concordion.extensions.exam.core.html.span
+import com.adven.concordion.extensions.exam.core.toDatePattern
 import com.adven.concordion.extensions.exam.db.commands.DBCheckCommand
 import com.adven.concordion.extensions.exam.db.commands.DBCleanCommand
 import com.adven.concordion.extensions.exam.db.commands.DBSetCommand
@@ -18,7 +19,7 @@ import org.dbunit.dataset.Column
 import org.dbunit.dataset.Columns.findColumnsByName
 import org.dbunit.dataset.ITable
 import org.dbunit.dataset.SortedTable
-import org.joda.time.format.DateTimeFormat
+import java.time.ZoneId
 import java.util.Date
 import kotlin.collections.component1
 import kotlin.collections.component2
@@ -82,19 +83,22 @@ class DbPlugin @JvmOverloads constructor(
     )
 
     interface ValuePrinter {
-        open class Simple @JvmOverloads constructor(dateFormat: String = "yyyy-MM-dd HH:mm:ss.sss") :
+        open class Simple @JvmOverloads constructor(dateFormat: String = "yyyy-MM-dd HH:mm:ss.SSS") :
             AbstractDefault(dateFormat) {
             override fun orElse(value: Any?): String = value.toString()
         }
 
-        abstract class AbstractDefault @JvmOverloads constructor(private val dateFormat: String = "yyyy-MM-dd HH:mm:ss.sss") :
+        abstract class AbstractDefault @JvmOverloads constructor(private val dateFormat: String = "yyyy-MM-dd HH:mm:ss.SSS") :
             ValuePrinter {
             override fun print(value: Any?): String = when (value) {
                 value == null -> "(null)"
                 is Array<*> -> value.contentToString()
-                is Date -> DateTimeFormat.forPattern(dateFormat).print(value.time)
+                is Date -> printDate(value)
                 else -> orElse(value)
             }
+
+            private fun printDate(value: Date) =
+                dateFormat.toDatePattern().withZone(ZoneId.systemDefault()).format(value.toInstant())
 
             override fun wrap(value: Any?): Element = span(print(value)).el
 
@@ -148,12 +152,8 @@ data class DbUnitConfig @JvmOverloads constructor(
         )
     }
 
-    fun isCaseSensitiveTableNames(): Boolean {
-        return databaseConfigProperties.containsKey("caseSensitiveTableNames") && (
-            databaseConfigProperties["caseSensitiveTableNames"].toString()
-                .toBoolean()
-            )
-    }
+    fun isCaseSensitiveTableNames() = databaseConfigProperties.containsKey("caseSensitiveTableNames") &&
+        databaseConfigProperties["caseSensitiveTableNames"].toString().toBoolean()
 }
 
 open class RowComparator {

@@ -36,7 +36,7 @@ Maven
 <dependency>
     <groupId>org.adven.concordion.ext</groupId>
     <artifactId>exam-ms</artifactId>
-    <version>4.0.0</version>
+    <version>4.0.1</version>
 </dependency>
 ```
 
@@ -46,7 +46,7 @@ repositories {
     jcenter()
 }
 
-testCompile "org.adven.concordion.ext:exam-ms:4.0.0"
+testCompile "org.adven.concordion.ext:exam-ms:4.0.1"
 ```
 ### 2) Use
 

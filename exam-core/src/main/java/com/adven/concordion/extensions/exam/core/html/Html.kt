@@ -295,11 +295,11 @@ fun h(n: Int, text: String) = Html("h$n", text)
 fun caption(txt: String? = null) = Html("caption", txt)
 
 @JvmOverloads
-fun pre(txt: String? = null) = Html("pre", txt)
+fun pre(txt: String? = null, vararg attrs: Pair<String, String>) = Html("pre", txt, *attrs)
 
 fun paragraph(txt: String) = Html("p", txt)
 
-fun codeXml(text: String?) = pre(text ?: "") css "htmlmixed card"
+fun codeXml(text: String?) = pre(text ?: "") css "xml card"
 
 fun tag(tag: String) = Html(tag)
 

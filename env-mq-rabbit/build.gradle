@@ -1,0 +1,12 @@
+plugins {
+    id 'java-library'
+}
+
+apply from: "$rootDir/gradle/publish.gradle"
+
+dependencies {
+    api project(':env-core')
+    api project(':exam-mq')
+    api "com.rabbitmq:amqp-client:5.10.0"
+    api "org.testcontainers:rabbitmq:$testContainers_version"
+}

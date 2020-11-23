@@ -40,7 +40,6 @@ import org.concordion.api.CommandCall
 import org.concordion.api.Evaluator
 import org.concordion.api.Fixture
 import org.concordion.api.ResultRecorder
-import org.concordion.internal.util.Check
 import java.nio.charset.Charset
 import java.util.ArrayList
 import java.util.HashMap
@@ -82,7 +81,12 @@ sealed class RequestCommand(
     private val contentType: String = "application/json"
 ) : ExamCommand(name, tag) {
 
-    override fun setUp(commandCall: CommandCall?, evaluator: Evaluator?, resultRecorder: ResultRecorder?, fixture: Fixture) {
+    override fun setUp(
+        commandCall: CommandCall?,
+        evaluator: Evaluator?,
+        resultRecorder: ResultRecorder?,
+        fixture: Fixture
+    ) {
         val executor = RequestExecutor.newExecutor(evaluator!!).method(method)
         val root = Html(commandCall!!.element).success()
 
@@ -159,26 +163,6 @@ private fun headers(eval: Evaluator, html: Html): Map<String, String> =
     html.takeAwayAttr(HEADERS)?.toMap()?.resolveValues(eval) ?: emptyMap()
 
 open class RestVerifyCommand(name: String, tag: String) : ExamVerifyCommand(name, tag, RestResultRenderer())
-
-// FIXME Dead code?
-class ExpectedStatusCommand(name: String, tag: String) : RestVerifyCommand(name, tag) {
-    override fun verify(cmd: CommandCall?, evaluator: Evaluator?, resultRecorder: ResultRecorder, fixture: Fixture) {
-        Check.isFalse(
-            cmd!!.hasChildCommands(),
-            "Nesting commands inside an 'expectedStatus' is not supported"
-        )
-
-        val element = cmd.html()
-        val expected = element.text()
-        val actual = evaluator!!.evaluate(cmd.expression).toString()
-
-        if (expected == actual) {
-            success(resultRecorder, element)
-        } else {
-            failure(resultRecorder, element, actual, expected)
-        }
-    }
-}
 
 class CaseCheckCommand(name: String, tag: String) : ExamCommand(name, tag) {
     override fun setUp(cmd: CommandCall?, evaluator: Evaluator?, resultRecorder: ResultRecorder?, fixture: Fixture) {
@@ -282,7 +266,12 @@ class CaseCommand(
         return usedCfg.withOptions(Options(first, *other.toTypedArray()))
     }
 
-    override fun execute(commandCall: CommandCall, evaluator: Evaluator, resultRecorder: ResultRecorder, fixture: Fixture) {
+    override fun execute(
+        commandCall: CommandCall,
+        evaluator: Evaluator,
+        resultRecorder: ResultRecorder,
+        fixture: Fixture
+    ) {
         val childCommands = commandCall.children
         val root = commandCall.html()
 
@@ -326,11 +315,22 @@ class CaseCommand(
                 resultRecorder,
                 executor.contentType()
             )
-            resultRecorder.check(statusEl, executor.statusLine(), expectedStatus) { a, e ->
-                a.trim() == e.trim()
+            if (checkStatusLine(expectedStatus)) {
+                resultRecorder.check(statusEl, executor.statusLine(), statusLine(expectedStatus)) { a, e ->
+                    a.trim() == e.trim()
+                }
+            } else {
+                resultRecorder.check(statusEl, executor.statusCode().toString(), expectedStatus.second) { a, e ->
+                    a.trim() == e.trim()
+                }
             }
         }
     }
+
+    private fun statusLine(status: Triple<String?, String, String?>) =
+        "${status.first} ${status.second} ${status.third}"
+
+    private fun checkStatusLine(status: Triple<String?, String, String?>) = status.third != null
 
     private fun processMultipart(caseTR: Html, evaluator: Evaluator, executor: RequestExecutor) {
         val multiPart = caseTR.first(MULTI_PART)
@@ -385,11 +385,11 @@ class CaseCommand(
         }
     }
 
-    private fun expectedStatus(expected: Html) = listOf(
+    private fun expectedStatus(expected: Html) = Triple(
         expected.takeAwayAttr(PROTOCOL, "HTTP/1.1").trim(),
         expected.takeAwayAttr(STATUS_CODE, "200").trim(),
-        expected.takeAwayAttr(REASON_PHRASE, "OK").trim()
-    ).joinToString(" ")
+        expected.takeAwayAttr(REASON_PHRASE)?.trim()
+    )
 
     override fun verify(cmd: CommandCall, evaluator: Evaluator, resultRecorder: ResultRecorder, fixture: Fixture) {
         val rt = cmd.html()
@@ -428,7 +428,7 @@ class CaseCommand(
             root.removeChildren().css(contentPrinter.style())
             resultRecorder.failure(root, contentPrinter.print(it.actual), contentPrinter.print(it.expected))
             root.below(
-                span(it.details, CLASS to "exceptionMessage")
+                pre(it.details, CLASS to "exceptionMessage")
             )
         } else {
             root.removeChildren().text(contentPrinter.print(expected)).css(contentPrinter.style())

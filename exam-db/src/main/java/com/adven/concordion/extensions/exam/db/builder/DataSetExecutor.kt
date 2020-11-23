@@ -8,6 +8,7 @@ import com.adven.concordion.extensions.exam.db.DbTester
 import com.adven.concordion.extensions.exam.db.builder.CompareOperation.EQUALS
 import com.adven.concordion.extensions.exam.db.commands.columnNamesArray
 import com.adven.concordion.extensions.exam.db.commands.sortedTable
+import mu.KLogging
 import org.awaitility.core.ConditionTimeoutException
 import org.concordion.api.Evaluator
 import org.dbunit.Assertion
@@ -26,7 +27,6 @@ import org.dbunit.dataset.excel.XlsDataSet
 import org.dbunit.dataset.filter.DefaultColumnFilter
 import org.dbunit.dataset.filter.SequenceTableFilter
 import org.dbunit.dataset.xml.FlatXmlDataSetBuilder
-import org.slf4j.LoggerFactory
 import java.io.File
 import java.io.IOException
 import java.io.InputStream
@@ -58,7 +58,7 @@ class DataSetExecutor(private val dbTester: DbTester) {
             for ((key, value) in dbTester.dbUnitConfig.databaseConfigProperties) {
                 sb.append(key).append(": ").append(value ?: "").append("\n")
             }
-            log.info(String.format("DBUnit configuration for dataset executor '%s':\n$sb", dbTester))
+            logger.info("DBUnit configuration for dataset executor '{}':\n{}", dbTester, sb)
         }
     }
 
@@ -98,7 +98,7 @@ class DataSetExecutor(private val dbTester: DbTester) {
                 "xls" -> XlsDataSet(getDataSetStream(name))
                 "csv" -> CsvDataSet(File(name.findResource().file).parentFile)
                 else -> {
-                    log.error("Unsupported dataset extension")
+                    logger.error("Unsupported dataset extension")
                     null
                 }
             }
@@ -193,7 +193,7 @@ class DataSetExecutor(private val dbTester: DbTester) {
                 dbTester.dbUnitConfig.diffFailureHandler.diffList as List<Difference>,
                 rowsMismatchFailures
             ).apply {
-                log.info(this.toString())
+                logger.info(this.toString())
             }
         }
     }
@@ -236,7 +236,5 @@ class DataSetExecutor(private val dbTester: DbTester) {
         val rowsMismatch: List<Triple<ITable, ITable, DbComparisonFailure>>
     )
 
-    companion object {
-        private val log = LoggerFactory.getLogger(DataSetExecutor::class.java)
-    }
+    companion object : KLogging()
 }

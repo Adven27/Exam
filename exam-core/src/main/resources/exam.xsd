@@ -1,0 +1,457 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns="http://exam.extension.io"
+            xmlns:xs="http://www.w3.org/2001/XMLSchema"
+            targetNamespace="http://exam.extension.io"
+            elementFormDefault="qualified">
+    <xs:attribute name="status" default="ExpectedToPass">
+        <xs:simpleType>
+            <xs:restriction base="xs:string">
+                <xs:enumeration value="ExpectedToFail"/>
+                <xs:enumeration value="ExpectedToPass"/>
+                <xs:enumeration value="Unimplemented"/>
+                <xs:enumeration value="IgnoreExample"/>
+            </xs:restriction>
+        </xs:simpleType>
+    </xs:attribute>
+    <xs:attribute name="contentType" default="application/json">
+        <xs:simpleType>
+            <xs:restriction base="xs:string">
+                <xs:enumeration value="application/json"/>
+                <xs:enumeration value="application/xml"/>
+                <xs:enumeration value="application/xhtml+xml"/>
+                <xs:enumeration value="text/html"/>
+                <xs:enumeration value="text/plain"/>
+            </xs:restriction>
+        </xs:simpleType>
+    </xs:attribute>
+    <xs:attribute name="operation" default="clean_insert">
+        <xs:simpleType>
+            <xs:restriction base="xs:string">
+                <xs:enumeration value="insert"/>
+                <xs:enumeration value="update"/>
+                <xs:enumeration value="delete"/>
+                <xs:enumeration value="clean_insert"/>
+            </xs:restriction>
+        </xs:simpleType>
+    </xs:attribute>
+
+    <xs:element name="summary">
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute type="xs:string" name="title"/>
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="given" type="given-info"/>
+    <xs:element name="before-each">
+        <xs:complexType mixed="true">
+            <xs:all>
+                <xs:element name="given" type="given-info"/>
+                <xs:element name="set" type="set-info"/>
+                <xs:element name="db-execute" type="db-execute-info"/>
+                <xs:element name="db-set" type="db-set-info"/>
+                <xs:element name="db-clean" type="db-clean-info"/>
+                <xs:element name="mq-send" type="mq-info"/>
+                <xs:element name="mq-purge" type="mq-purge-info"/>
+                <xs:element name="include" type="include-info"/>
+            </xs:all>
+        </xs:complexType>
+    </xs:element>
+
+
+    <xs:complexType name="given-info" mixed="true">
+        <xs:all>
+            <xs:element name="set" type="set-info"/>
+            <xs:element name="await" type="await-info"/>
+            <xs:element name="db-execute" type="db-execute-info"/>
+            <xs:element name="db-set" type="db-set-info"/>
+            <xs:element name="db-clean" type="db-clean-info"/>
+            <xs:element name="db-show" type="db-set-info"/>
+            <xs:element name="mq-send" type="mq-info"/>
+            <xs:element name="mq-purge" type="mq-purge-info"/>
+            <xs:element name="include" type="include-info"/>
+            <xs:element name="browser" type="browser-info"/>
+        </xs:all>
+    </xs:complexType>
+
+    <xs:complexType name="browser-info">
+        <xs:sequence>
+            <xs:element name="step">
+                <xs:complexType mixed="true">
+                    <xs:simpleContent>
+                        <xs:extension base="xs:string">
+                            <xs:attribute type="xs:string" name="name" use="required"/>
+                            <xs:attribute type="xs:string" name="desc"/>
+                            <xs:attribute type="xs:string" name="set" default="variableName"/>
+                        </xs:extension>
+                    </xs:simpleContent>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+        <xs:attribute type="xs:anyURI" name="url" use="required"/>
+        <xs:attribute type="xs:boolean" name="failFast" default="true"/>
+    </xs:complexType>
+
+    <xs:complexType name="xj-info" mixed="true">
+        <xs:simpleContent>
+            <xs:extension base="xs:string">
+                <xs:attribute type="xs:string" name="actual" use="required"/>
+                <xs:attribute type="xs:anyURI" name="from" default="/data"/>
+                <xs:attribute type="xs:boolean" name="collapsable" default="false"/>
+                <xs:attribute type="xs:string" name="jsonUnitOptions"
+                              default="IGNORING_EXTRA_FIELDS;TREATING_NULL_AS_ABSENT">
+                    <xs:annotation>
+                        <xs:documentation>
+                            With Options you can configure different compare modes
+                            <a href="https://github.com/lukas-krecan/JsonUnit#options">Read more...</a>
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+
+    <xs:complexType name="await-info" mixed="true">
+        <xs:simpleContent>
+            <xs:extension base="xs:string">
+                <xs:attribute type="xs:integer" name="seconds" default="2"/>
+                <xs:attribute type="xs:string" name="untilTrue" default="isDone(#param)"/>
+                <xs:attribute type="xs:string" name="untilHttpGet" default="/jobs/{{id}}"/>
+                <xs:attribute type="xs:string" name="untilHttpPost" default="/jobs"/>
+                <xs:attribute type="xs:anyURI" name="withBodyFrom" default="/data/request.json"/>
+                <xs:attribute type="xs:string" name="withContentType" default="application/json"/>
+                <xs:attribute type="xs:string" name="hasBody" default="ok"/>
+                <xs:attribute type="xs:anyURI" name="hasBodyFrom" default="/data/response.json"/>
+                <xs:attribute type="xs:integer" name="hasStatusCode" default="200"/>
+                <xs:attribute type="xs:integer" name="atMostSec" default="4"/>
+                <xs:attribute type="xs:integer" name="pollDelayMillis" default="1000"/>
+                <xs:attribute type="xs:integer" name="pollIntervalMillis" default="100"/>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+
+    <xs:complexType name="include-info" mixed="true">
+        <xs:simpleContent>
+            <xs:extension base="xs:string">
+                <xs:attribute type="xs:anyURI" name="from" default="/data/keywords/clean-tables.xml">
+                    <xs:annotation>
+                        <xs:documentation>
+                            Includes elements from file to current document. Example of usage:
+                            <pre>
+                                Insert in spec:
+                                &lt;e:include from="/data/keywords/clean-tables.xml"/&gt;
+
+                                Create file in resources /data/keywords/clean-tables.xml with content:
+
+                                &lt;anyTagNameWillBeIgnored xmlns:e="http://exam.extension.io"
+                                xmlns:cc="http://www.concordion.org/2007/concordion"&gt;
+                                &lt;span&gt;Clean tables: &lt;e:db-clean tables="table1, table2"/&gt;&lt;/span&gt;
+                                &lt;/anyTagNameWillBeIgnored&gt;
+                            </pre>
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+
+    <xs:complexType name="set-info">
+        <xs:simpleContent>
+            <xs:extension base="xs:string">
+                <xs:attribute type="xs:string" name="var" use="required"/>
+                <xs:attribute type="xs:string" name="value"/>
+                <xs:attribute type="xs:string" name="from" default="/data/value.json"/>
+                <xs:attribute type="xs:string" name="vars" default="v1=value1, v2={{now}}"/>
+                <xs:attribute type="xs:string" name="varsSeparator" default=","/>
+                <xs:attribute type="xs:boolean" name="silent"/>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+
+    <xs:complexType name="db-clean-info">
+        <xs:simpleContent>
+            <xs:extension base="xs:string">
+                <xs:attribute type="xs:string" name="tables" use="required">
+                    <xs:annotation>
+                        <xs:documentation>Comma-separated values: table1, table2</xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+                <xs:attribute type="xs:string" name="ds"/>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+
+    <xs:complexType name="db-execute-info">
+        <xs:attribute type="xs:string" name="datasets" use="required"/>
+        <xs:attribute type="xs:string" name="dir" default="/data/db/"/>
+        <xs:attribute type="xs:string" name="ds"/>
+        <xs:attribute type="xs:string" name="debug"/>
+        <xs:attribute ref="operation"/>
+    </xs:complexType>
+    <xs:complexType name="db-verify-info">
+        <xs:attribute type="xs:string" name="datasets" use="required"/>
+        <xs:attribute type="xs:string" name="dir" default="/data/db/"/>
+        <xs:attribute type="xs:string" name="ds"/>
+        <xs:attribute type="xs:string" name="orderBy" default="age, name"/>
+        <xs:attribute type="xs:integer" name="awaitAtMostSec" default="4"/>
+        <xs:attribute type="xs:integer" name="awaitPollDelayMillis" default="0"/>
+        <xs:attribute type="xs:integer" name="awaitPollIntervalMillis" default="1000"/>
+    </xs:complexType>
+    <xs:complexType name="db-set-info">
+        <xs:sequence>
+            <xs:element name="row" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>Comma-separated values: value 1, ${#variable}, value 2</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+        <xs:attribute type="xs:string" name="table" use="required"/>
+        <xs:attribute type="xs:string" name="cols" default="id=1..10, column2"/>
+        <xs:attribute type="xs:string" name="caption"/>
+        <xs:attribute type="xs:string" name="ds"/>
+        <xs:attribute type="xs:string" name="separator" default=","/>
+        <xs:attribute ref="operation"/>
+    </xs:complexType>
+    <xs:complexType name="db-check-info">
+        <xs:sequence>
+            <xs:element name="row" type="xs:string" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Comma-separated values: value 1, ${#variable}, value 2</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+        <xs:attribute type="xs:string" name="table" use="required"/>
+        <xs:attribute type="xs:string" name="cols" default="column1, column2"/>
+        <xs:attribute type="xs:string" name="caption"/>
+        <xs:attribute type="xs:string" name="ds"/>
+        <xs:attribute type="xs:string" name="where" default="name='andrew'"/>
+        <xs:attribute type="xs:string" name="orderBy" default="age, name"/>
+        <xs:attribute type="xs:string" name="separator" default=","/>
+        <xs:attribute type="xs:integer" name="ignoreRowsBefore" default="1"/>
+        <xs:attribute type="xs:integer" name="ignoreRowsAfter" default="2"/>
+        <xs:attribute type="xs:integer" name="awaitAtMostSec" default="4"/>
+        <xs:attribute type="xs:integer" name="awaitPollDelayMillis" default="0"/>
+        <xs:attribute type="xs:integer" name="awaitPollIntervalMillis" default="1000"/>
+    </xs:complexType>
+
+    <xs:complexType name="mq-info">
+        <xs:sequence>
+            <xs:element name="message">
+                <xs:complexType mixed="true">
+                    <xs:simpleContent>
+                        <xs:extension base="xs:string">
+                            <xs:attribute type="xs:anyURI" name="from" default="/data/mq/msg.json"/>
+                        </xs:extension>
+                    </xs:simpleContent>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+        <xs:attribute type="xs:anyURI" name="from" default="/data/mq"/>
+        <xs:attribute type="xs:string" name="vars" default="v1=1, v2={{now}}"/>
+        <xs:attribute type="xs:string" name="varsSeparator" default=","/>
+        <xs:attribute type="xs:string" name="name" use="required"/>
+        <xs:attribute type="xs:string" name="formatAs" default="json"/>
+        <xs:attribute type="xs:boolean" name="collapsable" default="false"/>
+        <xs:attribute type="xs:string" name="headers" default="type=String,contentEncoding=UTF-8"/>
+    </xs:complexType>
+    <xs:complexType name="mq-purge-info">
+        <xs:attribute type="xs:string" name="name" use="required"/>
+    </xs:complexType>
+    <xs:complexType name="mq-check-info">
+        <xs:sequence>
+            <xs:element name="message">
+                <xs:complexType mixed="true">
+                    <xs:simpleContent>
+                        <xs:extension base="xs:string">
+                            <xs:attribute type="xs:anyURI" name="from" default="/data/mq/msg.json"/>
+                            <xs:attribute type="xs:string" name="vars" default="v1=1, v2={{now}}"/>
+                            <xs:attribute type="xs:string" name="varsSeparator" default=","/>
+                            <xs:attribute type="xs:string" name="verifyAs" default="json"/>
+                        </xs:extension>
+                    </xs:simpleContent>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+        <xs:attribute type="xs:string" name="from" default="/data/mq"/>
+        <xs:attribute type="xs:string" name="vars" default="v1=1, v2={{now}}"/>
+        <xs:attribute type="xs:string" name="varsSeparator" default=","/>
+        <xs:attribute type="xs:string" name="name" use="required"/>
+        <xs:attribute type="xs:string" name="verifyAs" default="json"/>
+        <xs:attribute type="xs:integer" name="awaitAtMostSec" default="4"/>
+        <xs:attribute type="xs:integer" name="awaitPollDelayMillis" default="0"/>
+        <xs:attribute type="xs:integer" name="awaitPollIntervalMillis" default="1000"/>
+        <xs:attribute type="xs:string" name="headers" default="type=String,contentEncoding=UTF-8"/>
+        <xs:attribute type="xs:boolean" name="collapsable" default="false"/>
+        <xs:attribute type="xs:string" name="jsonUnitOptions"
+                      default="IGNORING_EXTRA_FIELDS;TREATING_NULL_AS_ABSENT">
+            <xs:annotation>
+                <xs:documentation>
+                    With Options you can configure different compare modes
+                    <a href="https://github.com/lukas-krecan/JsonUnit#options">Read more...</a>
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="layout" default="vertically">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="horizontally"/>
+                    <xs:enumeration value="vertically"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="contains" default="EXACT">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="EXACT"/>
+                    <xs:enumeration value="EXACT_IN_ANY_ORDER"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+    </xs:complexType>
+
+    <xs:complexType name="check-info" mixed="true">
+        <xs:all>
+            <xs:element name="await" type="await-info"/>
+            <xs:element name="xml-check" type="xj-info"/>
+            <xs:element name="json-check" type="xj-info"/>
+            <xs:element name="db-verify" type="db-verify-info"/>
+            <xs:element name="db-check" type="db-check-info"/>
+            <xs:element name="db-show" type="db-set-info"/>
+            <xs:element name="mq-check" type="mq-check-info"/>
+            <xs:element name="set" type="set-info"/>
+            <xs:element name="include" type="include-info"/>
+            <xs:element name="browser" type="browser-info"/>
+        </xs:all>
+    </xs:complexType>
+
+    <xs:complexType name="where-info">
+        <xs:sequence>
+            <xs:element name="vals" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>Comma-separated values: value 1, ${#variable}, value 2</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+        <xs:attribute type="xs:string" name="vars" use="required">
+            <xs:annotation>
+                <xs:documentation>Comma-separated values: var1, var2</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute type="xs:string" name="separator" default=","/>
+    </xs:complexType>
+
+    <xs:complexType name="expected-info">
+        <xs:simpleContent>
+            <xs:extension base="xs:string">
+                <xs:attribute type="xs:anyURI" name="from" default="/data/ws/expected.json"/>
+                <xs:attribute type="xs:string" name="reasonPhrase" default="Server Error"/>
+                <xs:attribute type="xs:integer" name="statusCode" default="500"/>
+                <xs:attribute type="xs:string" name="ignoredPaths" default="jsonPathToField;arrayField[*].nodeInArray">
+                    <xs:annotation>
+                        <xs:documentation>
+                            Option makes JsonUnit ignore the specified paths in the actual value
+                            <a href="https://github.com/lukas-krecan/JsonUnit#ignoring-paths">Read more...</a>
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+                <xs:attribute type="xs:string" name="jsonUnitOptions"
+                              default="IGNORING_EXTRA_FIELDS;TREATING_NULL_AS_ABSENT">
+                    <xs:annotation>
+                        <xs:documentation>
+                            With Options you can configure different compare modes
+                            <a href="https://github.com/lukas-krecan/JsonUnit#options">Read more...</a>
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+
+    <xs:complexType name="multi-part">
+        <xs:sequence>
+            <xs:element name="part">
+                <xs:complexType>
+                    <xs:simpleContent>
+                        <xs:extension base="xs:string">
+                            <xs:attribute type="xs:string" name="name"/>
+                            <xs:attribute ref="contentType"/>
+                            <xs:attribute type="xs:string" name="fileName"/>
+                        </xs:extension>
+                    </xs:simpleContent>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="post-info">
+        <xs:sequence>
+            <xs:element name="case">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="body">
+                            <xs:complexType mixed="true">
+                                <xs:simpleContent>
+                                    <xs:extension base="xs:string">
+                                        <xs:attribute type="xs:anyURI" name="from" default="/data/ws/request.json"/>
+                                    </xs:extension>
+                                </xs:simpleContent>
+                            </xs:complexType>
+                        </xs:element>
+                        <xs:element name="multiPart" type="multi-part"/>
+                        <xs:element name="expected" type="expected-info"/>
+                        <xs:element name="where" type="where-info"/>
+                        <xs:element name="check" type="check-info"/>
+                    </xs:sequence>
+                    <xs:attribute type="xs:string" name="desc"/>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="check" type="check-info"/>
+        </xs:sequence>
+        <xs:attribute type="xs:string" name="url" use="required"/>
+        <xs:attribute ref="contentType"/>
+        <xs:attribute type="xs:string" name="cookies" default="one=1, two=2"/>
+        <xs:attribute type="xs:string" name="headers"/>
+    </xs:complexType>
+    <xs:complexType name="get-info">
+        <xs:sequence>
+            <xs:element name="case">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="expected" type="expected-info"/>
+                        <xs:element name="where" type="where-info"/>
+                        <xs:element name="check" type="check-info"/>
+                    </xs:sequence>
+                    <xs:attribute type="xs:string" name="desc"/>
+                    <xs:attribute type="xs:string" name="cookies" default="one=1, two=2"/>
+                    <xs:attribute type="xs:string" name="headers" default="one=1, two=2"/>
+                    <xs:attribute type="xs:string" name="urlParams" default="param1=1&amp;param2=2"/>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+        <xs:attribute type="xs:string" name="url" use="required"/>
+        <xs:attribute ref="contentType"/>
+        <xs:attribute type="xs:string" name="cookies" default="one=1, two=2"/>
+        <xs:attribute type="xs:string" name="headers" default="one=1, two=2"/>
+    </xs:complexType>
+
+    <xs:element name="example">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="given" type="given-info" minOccurs="0"/>
+                <xs:element name="when" type="given-info" minOccurs="0"/>
+                <xs:element name="then" type="check-info" minOccurs="0"/>
+                <xs:element name="soap" type="post-info" minOccurs="0"/>
+                <xs:element name="post" type="post-info" minOccurs="0"/>
+                <xs:element name="get" type="get-info" minOccurs="0"/>
+                <xs:element name="delete" type="post-info" minOccurs="0"/>
+                <xs:element name="put" type="post-info" minOccurs="0"/>
+                <xs:element name="browser" type="browser-info"/>
+            </xs:sequence>
+            <xs:attribute type="xs:string" name="name" use="required"/>
+            <xs:attribute type="xs:string" name="print"/>
+            <xs:attribute ref="status"/>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>

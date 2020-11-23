@@ -1,27 +1,28 @@
 package com.adven.concordion.extensions.exam.core.utils
 
+import com.adven.concordion.extensions.exam.core.minus
 import com.adven.concordion.extensions.exam.core.parseDate
 import com.adven.concordion.extensions.exam.core.parsePeriodFrom
+import com.adven.concordion.extensions.exam.core.plus
 import com.adven.concordion.extensions.exam.core.resolve
 import com.adven.concordion.extensions.exam.core.resolveToObj
+import com.adven.concordion.extensions.exam.core.toDate
+import com.adven.concordion.extensions.exam.core.toString
 import com.github.jknack.handlebars.Context
 import com.github.jknack.handlebars.EscapingStrategy.NOOP
 import com.github.jknack.handlebars.Handlebars
 import com.github.jknack.handlebars.Helper
 import com.github.jknack.handlebars.Options
-import io.restassured.internal.RestAssuredResponseImpl
-import io.restassured.response.Response
-import org.apache.commons.lang3.LocaleUtils
-import org.apache.commons.lang3.Validate.isInstanceOf
+import com.github.jknack.handlebars.internal.lang3.LocaleUtils
+import com.github.jknack.handlebars.internal.lang3.Validate.isInstanceOf
 import org.concordion.api.Evaluator
-import org.joda.time.DateTime
-import org.joda.time.DateTimeZone
-import org.joda.time.LocalDate
-import org.joda.time.LocalDateTime
-import org.joda.time.format.DateTimeFormat.forPattern
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 import java.util.Date
 import java.util.Locale
-import java.util.TimeZone
 import java.util.concurrent.atomic.AtomicReference
 import java.util.regex.Pattern
 
@@ -39,23 +40,31 @@ val HANDLEBARS: Handlebars = Handlebars()
     }
     .prettyPrint(false)
     .registerHelpers(HelperSource::class.java)
-    .registerHelperMissing(
-        Helper<Any> { _, opts ->
-            throw IllegalArgumentException(
-                "Variable or helper '${opts.fn.text()}' not found, available helpers:\n\n${HelperSource.values().joinToString(
-                    "\n"
-                )}\n\n" +
-                    "Or register custom one:\n\n" +
-                    "ExamExtension().withHandlebar { hb ->\n" +
-                    "    hb.registerHelper(\"hi\", Helper { context: Any?, options ->\n" +
-                    "        //{{hi '1' 'p1 'p2' o1='a' o2='b'}} => Hello context = 1; params = [p1, p2]; options = {o1=a, o2=b}!\n" +
-                    "        //{{hi variable1 variable2 o1=variable3}} => Hello context = 1; params = [2]; options = {o1=3}!\n" +
-                    "        \"Hello context = \$context; params = \${options.params.map { it.toString() }}; options = \${options.hash}!\"\n" +
-                    "    })\n" +
-                    "}"
-            )
-        }
-    )
+    .registerHelperMissing(HelpHelper())
+
+class HelpHelper : Helper<Any?> {
+    override fun apply(context: Any?, options: Options): Any {
+        throw IllegalArgumentException(
+            """
+Variable or helper '${options.fn.text()}' not found, available helpers:
+
+${helpersDesc()}
+
+Or register custom one:
+
+ExamExtension().withHandlebar { hb ->
+    hb.registerHelper("hi", Helper { context: Any?, options ->
+        //{{hi '1' 'p1 'p2' o1='a' o2='b'}} => Hello context = 1; params = [p1, p2]; options = {o1=a, o2=b}!
+        //{{hi variable1 variable2 o1=variable3}} => Hello context = 1; params = [2]; options = {o1=3}!
+        "Hello context = ${"$"}context; params = ${"$"}{options.params.map { it.toString() }}; options = ${"$"}{options.hash}!"
+    })
+}"""
+        )
+    }
+
+    private fun helpersDesc() =
+        HANDLEBARS.helpers().sortedBy { it.key }.joinToString("\n") { "${it.key.padStart(25)} : ${it.value}" }
+}
 
 fun Handlebars.resolve(eval: Any?, placeholder: String): String =
     this.compileInline(placeholder, START_DELIMITER, END_DELIMITER).apply(
@@ -74,43 +83,48 @@ private const val PLUS = "plus"
 private const val MINUS = "minus"
 
 enum class HelperSource(
-    val example: String,
-    val context: Map<String, Any?> = emptyMap(),
-    val expected: Any? = "",
-    val opts: Map<String, String> = emptyMap()
-) : Helper<Any?> {
+    override val example: String,
+    override val context: Map<String, Any?> = emptyMap(),
+    override val expected: Any? = "",
+    override val opts: Map<String, String> = emptyMap()
+) : ExamHelper<Any?> {
     dateFormat(
-        """{{dateFormat date "yyyy-MM-dd'T'HH:mm Z" tz="GMT+3" minus="1 y, 2 months, d 3" plus="4 h, 5 min, 6 s"}}""",
-        mapOf("date" to DateTime(2000, 1, 2, 10, 20).toDate()),
-        DateTime(1998, 10, 30, 14, 25)
-            .toDateTime("GMT+3".timeZone())
-            .toString("yyyy-MM-dd'T'HH:mm Z"),
+        """{{dateFormat date "yyyy-MM-dd'T'HH:mm O" tz="GMT+3" minus="1 y, 2 months, d 3" plus="4 h, 5 min, 6 s"}}""",
+        mapOf("date" to "2000-01-02T10:20+03".parseDate()),
+        "1998-10-30T14:25 GMT+3",
         mapOf(TZ to "\"GMT+3\"", PLUS to "\"1 day\"", MINUS to "\"5 hours\"")
     ) {
-        override fun invoke(context: Any?, options: Options): Any? = dateFormat(
-            context,
-            options,
-            options.param(0, DEFAULT_FORMAT),
-            options.param(1, Locale.getDefault().toString()),
-            options.hash(PLUS, ""),
-            options.hash(MINUS, ""),
-            options.hash(TZ)
-        )
+        override fun invoke(context: Any?, options: Options): Any? {
+            isInstanceOf(
+                Date::class.java,
+                context,
+                "Wrong context for helper '%s': '%s', expected instance of Date. Example: %s",
+                options.fn.text(),
+                context,
+                example
+            )
+            return dateFormat(
+                context as Date,
+                options.param(0, DEFAULT_FORMAT),
+                options.param(1, Locale.getDefault().toString()),
+                options.hash(PLUS, ""),
+                options.hash(MINUS, ""),
+                options.hash(TZ)
+            )
+        }
     },
     now(
         """{{now "yyyy-MM-dd'T'HH:mm Z" tz="GMT+3" minus="1 y, 2 months, d 3" plus="4 h, 5 min, 6 s"}}""",
         emptyMap(),
-        DateTime.now()
+        ZonedDateTime.now("GMT+3".timeZoneId())
             .minusYears(1).minusMonths(2).minusDays(3)
             .plusHours(4).plusMinutes(5).plusSeconds(6)
-            .toDateTime("GMT+3".timeZone())
             .toString("yyyy-MM-dd'T'HH:mm Z"),
         mapOf(TZ to "\"GMT+3\"", PLUS to "\"1 day\"", MINUS to "\"5 hours\"")
     ) {
         override fun invoke(context: Any?, options: Options): Any? = if (context is String && context.isNotBlank()) {
             dateFormat(
                 Date(),
-                options,
                 context,
                 options.param(0, Locale.getDefault().toString()),
                 options.hash(PLUS, ""),
@@ -120,44 +134,38 @@ enum class HelperSource(
         } else LocalDateTime.now()
             .plus(parsePeriodFrom(options.hash(PLUS, "")))
             .minus(parsePeriodFrom(options.hash(MINUS, "")))
-            .toDate((options.hash<String?>(TZ)?.timeZone() ?: DateTimeZone.getDefault()).toTimeZone())
+            .toDate(options.hash<String?>(TZ)?.timeZoneId() ?: ZoneId.systemDefault())
     },
     today(
-        """{{today "yyyy-MM-dd" minus="1 y, 2 months, d 3" plus="4 h, 5 min, 6 s"}}""",
+        """{{today "yyyy-MM-dd" minus="1 y, 2 months, d 3"}}""",
         emptyMap(),
-        DateTime.now(DateTimeZone.forOffsetHours(3))
-            .minusYears(1).minusMonths(2).minusDays(3)
-            .plusHours(4).plusMinutes(5).plusSeconds(6)
-            .toString("yyyy-MM-dd"),
+        ZonedDateTime.now(ZoneId.systemDefault()).minusYears(1).minusMonths(2).minusDays(3).toString("yyyy-MM-dd"),
         mapOf(PLUS to "\"1 day\"", MINUS to "\"5 hours\"")
     ) {
         override fun invoke(context: Any?, options: Options): Any? = if (context is String && context.isNotBlank()) {
             dateFormat(
-                LocalDate.now().toDateTimeAtStartOfDay().toInstant().toDate(),
-                options,
+                Date.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant()),
                 context,
                 options.param(0, Locale.getDefault().toString()),
                 options.hash(PLUS, ""),
                 options.hash(MINUS, ""),
                 options.hash(TZ)
             )
-        } else LocalDateTime.now()
+        } else LocalDate.now().atStartOfDay()
             .plus(parsePeriodFrom(options.hash(PLUS, "")))
             .minus(parsePeriodFrom(options.hash(MINUS, "")))
-            .toLocalDate().toDateTimeAtStartOfDay().toDate()
+            .toLocalDate().toDate()
     },
     date(
         """{{date '01.02.2000 10:20' format="dd.MM.yyyy HH:mm" minus="1 h" plus="1 h"}}""",
         emptyMap(),
-        LocalDateTime(2000, 2, 1, 10, 20).toDate(),
+        LocalDateTime.of(2000, 2, 1, 10, 20).toDate(),
         mapOf(FORMAT to "\"dd.MM.yyyy\"", PLUS to "\"1 day\"", MINUS to "\"5 hours\"")
     ) {
-        override fun invoke(context: Any?, options: Options): Any? {
-            return LocalDateTime(parseDate(context, options))
-                .plus(parsePeriodFrom(options.hash(PLUS, "")))
-                .minus(parsePeriodFrom(options.hash(MINUS, "")))
-                .toDate()
-        }
+        override fun invoke(context: Any?, options: Options): Any? = parseDate(context, options)
+            .plus(parsePeriodFrom(options.hash(PLUS, "")))
+            .minus(parsePeriodFrom(options.hash(MINUS, "")))
+            .toDate()
 
         private fun parseDate(context: Any?, options: Options): Date = if (context is String && context.isNotBlank()) {
             context.parseDate(options.hash<String>(FORMAT, null))
@@ -198,7 +206,7 @@ enum class HelperSource(
         "\${json-unit.matches:formattedAs}yyyy-MM-dd'T'hh:mm:ss"
     ) {
         override fun invoke(context: Any?, options: Options): Any? =
-            "\${${placeholderType(options.context)}-unit.matches:formattedAs}$context"
+            "\${${placeholderType(options.context)}-unit.matches:$name}$context"
     },
     formattedAndWithinNow(
         "{{formattedAndWithinNow \"yyyy-MM-dd'T'hh:mm:ss\" \"5s\"}}",
@@ -206,7 +214,7 @@ enum class HelperSource(
         "\${json-unit.matches:formattedAndWithinNow}[yyyy-MM-dd'T'hh:mm:ss][5s]"
     ) {
         override fun invoke(context: Any?, options: Options): Any? =
-            "\${${placeholderType(options.context)}-unit.matches:formattedAndWithinNow}[$context][${options.param(0, "5s")}]"
+            "\${${placeholderType(options.context)}-unit.matches:$name}[$context][${options.param(0, "5s")}]"
     },
     formattedAndWithin(
         "{{formattedAndWithin 'yyyy-MM-dd' '5s' '1951-05-13'}}",
@@ -214,17 +222,8 @@ enum class HelperSource(
         "\${json-unit.matches:formattedAndWithin}[yyyy-MM-dd][5s][1951-05-13]"
     ) {
         override fun invoke(context: Any?, options: Options): Any? =
-            "\${${placeholderType(options.context)}-unit.matches:formattedAndWithin}[$context][${options.param(0, "5s")}][${options.param(1, "")}]"
-    },
-    responseBody(
-        "{{responseBody 'name'}}",
-        mapOf("exam_response" to "{\"name\" : \"adam\"}".response()),
-        "adam"
-    ) {
-        override fun invoke(context: Any?, options: Options): Any? {
-            return (options.evaluator().getVariable("#exam_response") as Response)
-                .jsonPath().getString("$context")
-        }
+            "\${${placeholderType(options.context)}-unit.matches:$name}" +
+                "[$context][${options.param(0, "5s")}][${options.param(1, "")}]"
     },
     NULL("{{NULL}}", emptyMap(), null) {
         override fun invoke(context: Any?, options: Options): Any? = null
@@ -235,33 +234,42 @@ enum class HelperSource(
     resolve("{{resolve 'today is {{today}}'}}", emptyMap(), "today is ${LocalDate.now().toDate()}") {
         override fun invoke(context: Any?, options: Options): Any? {
             val evaluator = options.evaluator()
-            options.hash.forEach { (key, value) -> evaluator.setVariable("#$key", evaluator.resolveToObj(value as String?)) }
+            options.hash.forEach { (key, value) ->
+                evaluator.setVariable("#$key", evaluator.resolveToObj(value as String?))
+            }
             return evaluator.resolve("$context")
         }
     },
     resolveFile("{{resolveFile '/hb/some-file.txt'}}", emptyMap(), "today is ${LocalDate.now().toDate()}") {
         override fun invoke(context: Any?, options: Options): Any? {
             val evaluator = options.evaluator()
-            options.hash.forEach { (key, value) -> evaluator.setVariable("#$key", evaluator.resolveToObj(value as String?)) }
+            options.hash.forEach { (key, value) ->
+                evaluator.setVariable("#$key", evaluator.resolveToObj(value as String?))
+            }
             return evaluator.resolve(context.toString().readFile())
         }
     };
 
+    protected fun placeholderType(context: Context) = (context.model() as Evaluator).getVariable("#$PLACEHOLDER_TYPE")
+    protected fun dbActual(context: Context) = (context.model() as Evaluator).getVariable("#$DB_ACTUAL")
+
+    @Suppress("LongParameterList")
+    protected fun dateFormat(date: Date, format: String, local: String, plus: String, minus: String, tz: String?) =
+        DateTimeFormatter.ofPattern(format)
+            .withLocale(LocaleUtils.toLocale(local))
+            .apply { tz?.let { withZone(it.timeZoneId()) } }
+            .format(date.plus(parsePeriodFrom(plus)).minus(parsePeriodFrom(minus)).atZone(ZoneId.systemDefault()))
+
     override fun apply(context: Any?, options: Options): Any? {
         validate(options)
-        val result = this(context, options)
+        val result = try {
+            this(context, options)
+        } catch (expected: Exception) {
+            throw ExamHelper.InvocationFailed(name, context, options, expected)
+        }
         HB_RESULT.set(result)
         return result
     }
-
-    /**
-     * Apply the helper to the context.
-     *
-     * @param context The context object (param=0).
-     * @param options The options object.
-     * @return A string result.
-     */
-    protected abstract operator fun invoke(context: Any?, options: Options): Any?
 
     private fun validate(options: Options) {
         if ("resolve" == this.name || "resolveFile" == this.name) return
@@ -271,45 +279,35 @@ enum class HelperSource(
         )
     }
 
-    override fun toString() =
-        "$name: '$example' ${if (context.isEmpty()) "" else "+ variables:$context "}=> ${when (expected) {
-            is String -> "'$expected'"
-            null -> null
-            else -> "$expected (${expected.javaClass})"
-        }}"
+    override fun toString() = "'$example' ${if (context.isEmpty()) "" else "+ variables:$context "}=> ${expectedStr()}"
 
-    protected fun placeholderType(context: Context) = (context.model() as Evaluator).getVariable("#$PLACEHOLDER_TYPE")
-    protected fun dbActual(context: Context) = (context.model() as Evaluator).getVariable("#$DB_ACTUAL")
-
-    @Suppress("LongParameterList")
-    protected fun dateFormat(
-        context: Any?,
-        options: Options,
-        format: String,
-        local: String,
-        plus: String,
-        minus: String,
-        tz: String?
-    ): String? {
-        isInstanceOf(
-            Date::class.java,
-            context,
-            "Wrong context for helper '${options.fn.text()}', found '%s', expected instance of Date: ${this.example}",
-            context
-        )
-        var dateFormat = forPattern(format).withLocale(LocaleUtils.toLocale(local))
-        if (tz != null) {
-            dateFormat = dateFormat.withZone(tz.timeZone())
-        }
-        return dateFormat.print(LocalDateTime.fromDateFields((context as Date)).toDateTime().plus(parsePeriodFrom(plus)).minus(parsePeriodFrom(minus)))
+    private fun expectedStr() = when (expected) {
+        is String -> "'$expected'"
+        null -> null
+        else -> "$expected (${expected?.javaClass})"
     }
+
+    abstract operator fun invoke(context: Any?, options: Options): Any?
 
     companion object {
         const val DEFAULT_FORMAT = "yyyy-MM-dd'T'HH:mm:ss"
     }
 }
 
-private fun String.timeZone() = DateTimeZone.forTimeZone(TimeZone.getTimeZone(this))
+interface ExamHelper<T> : Helper<T> {
+    val example: String
+    val context: Map<String, Any?>
+    val expected: Any?
+    val opts: Map<String, String>
+
+    class InvocationFailed(name: String, context: Any?, options: Options, throwable: Throwable) :
+        RuntimeException(
+            "Invocation of {{$name}} (context: $context, options: ${options.fn.text()}) failed: ${throwable.message}",
+            throwable
+        )
+}
+
+fun String.timeZoneId() = ZoneId.of(this)
 
 private fun regexMatches(p: String, actualValue: Any?): Boolean {
     if (actualValue == null) return false
@@ -317,22 +315,4 @@ private fun regexMatches(p: String, actualValue: Any?): Boolean {
     return pattern.matcher(actualValue.toString()).matches()
 }
 
-private fun String.response(): Response {
-    val cnt = this
-    return TestResponse(
-        RestAssuredResponseImpl().apply {
-            groovyResponse = io.restassured.internal.RestAssuredResponseOptionsGroovyImpl().apply {
-                config = io.restassured.config.RestAssuredConfig.config()
-                content = cnt
-            }
-        }
-    )
-}
-
-private fun Options.evaluator(): Evaluator = (this.context.model() as Evaluator)
-
-class TestResponse(private val delegate: RestAssuredResponseImpl) : Response by delegate {
-    override fun toString(): String {
-        return asString()
-    }
-}
+fun Options.evaluator(): Evaluator = (this.context.model() as Evaluator)

@@ -24,6 +24,7 @@ import nu.xom.converters.DOMConverter
 import org.concordion.api.ImplementationStatus
 import org.concordion.api.ImplementationStatus.EXPECTED_TO_FAIL
 import org.concordion.api.ImplementationStatus.EXPECTED_TO_PASS
+import org.concordion.api.ImplementationStatus.IGNORED
 import org.concordion.api.ImplementationStatus.UNIMPLEMENTED
 import org.concordion.api.listener.DocumentParsingListener
 import org.concordion.api.listener.ExampleEvent
@@ -77,7 +78,7 @@ internal class ExamExampleListener(private val skipDecider: SkipDecider) : Examp
                 pill(summary.ignoredCount, "secondary"),
                 pill(summary.failureCount, "warning"),
                 pill(summary.exceptionCount, "danger"),
-                if (status != null) badgeFor(status) else null
+                if (status != null && status != EXPECTED_TO_PASS) badgeFor(status) else null
             )
         )
 
@@ -95,6 +96,7 @@ internal class ExamExampleListener(private val skipDecider: SkipDecider) : Examp
             EXPECTED_TO_PASS -> pill(EXPECTED_TO_PASS.tag, "success")
             EXPECTED_TO_FAIL -> pill(EXPECTED_TO_FAIL.tag, "warning")
             UNIMPLEMENTED -> pill(UNIMPLEMENTED.tag, "primary")
+            IGNORED -> pill(IGNORED.tag, "primary")
             else -> throw UnsupportedOperationException("Unsupported spec implementation status $status")
         }
     }

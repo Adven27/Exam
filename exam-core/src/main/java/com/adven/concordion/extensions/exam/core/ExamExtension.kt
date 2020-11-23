@@ -1,3 +1,5 @@
+@file:Suppress("TooManyFunctions")
+
 package com.adven.concordion.extensions.exam.core
 
 import com.adven.concordion.extensions.exam.core.html.Html
@@ -8,6 +10,7 @@ import com.adven.concordion.extensions.exam.core.utils.HANDLEBARS
 import com.adven.concordion.extensions.exam.core.utils.XMLDateWithin
 import com.adven.concordion.extensions.exam.core.utils.equalToXml
 import com.github.jknack.handlebars.Handlebars
+import mu.KotlinLogging
 import net.javacrumbs.jsonunit.JsonAssert
 import net.javacrumbs.jsonunit.JsonAssert.`when`
 import net.javacrumbs.jsonunit.core.Configuration
@@ -17,14 +20,19 @@ import org.concordion.api.extension.ConcordionExtender
 import org.concordion.api.extension.ConcordionExtension
 import org.concordion.api.listener.ExampleEvent
 import org.hamcrest.Matcher
-import org.joda.time.DateTime
-import org.joda.time.format.DateTimeFormat
-import org.joda.time.format.ISODateTimeFormat
 import org.junit.Assert
 import org.xmlunit.diff.DefaultNodeMatcher
 import org.xmlunit.diff.ElementSelectors.byName
 import org.xmlunit.diff.ElementSelectors.byNameAndText
 import org.xmlunit.diff.NodeMatcher
+import java.time.Duration
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.Period
+import java.time.ZoneId
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
+import java.time.format.DateTimeParseException
 import java.util.ArrayList
 import java.util.Collections.addAll
 import java.util.Date
@@ -154,12 +162,61 @@ class ExamExtension : ConcordionExtension {
     }
 }
 
-fun String.parseDate(format: String?): Date = this.parseDateTime(format).toDate()
+private val DEFAULT_ZONED_DATETIME_FORMAT = DateTimeFormatter.ISO_OFFSET_DATE_TIME
+private val DEFAULT_LOCAL_DATETIME_FORMAT = DateTimeFormatter.ISO_DATE_TIME
+private val DEFAULT_LOCAL_DATE_FORMAT = DateTimeFormatter.ISO_DATE
 
-fun String.parseDateTime(format: String?): DateTime = DateTime.parse(
+fun ZonedDateTime.toString(pattern: String): String = this.format(DateTimeFormatter.ofPattern(pattern))
+fun Date.toString(pattern: String): String =
+    pattern.toDatePattern().withZone(ZoneId.systemDefault()).format(this.toInstant())
+
+fun ZonedDateTime.toDate(): Date = Date.from(this.toInstant())
+fun LocalDateTime.toDate(zoneId: ZoneId = ZoneId.systemDefault()): Date = Date.from(this.atZone(zoneId).toInstant())
+fun LocalDate.toDate(zoneId: ZoneId = ZoneId.systemDefault()): Date = Date.from(this.atStartOfDay(zoneId).toInstant())
+fun Date.toZonedDateTime(): ZonedDateTime = ZonedDateTime.from(this.toInstant().atZone(ZoneId.systemDefault()))
+fun Date.toLocalDateTime(zoneId: ZoneId = ZoneId.systemDefault()): LocalDateTime =
+    this.toInstant().atZone(zoneId).toLocalDateTime()
+
+fun Date.toLocalDate(zoneId: ZoneId = ZoneId.systemDefault()): LocalDate =
+    this.toInstant().atZone(zoneId).toLocalDate()
+
+fun Date.plus(period: Pair<Period, Duration>): LocalDateTime =
+    this.toLocalDateTime().plus(period.first).plus(period.second)
+
+fun Date.minus(period: Pair<Period, Duration>): LocalDateTime =
+    this.toLocalDateTime().minus(period.first).minus(period.second)
+
+fun LocalDateTime.plus(period: Pair<Period, Duration>): LocalDateTime = this.plus(period.first).plus(period.second)
+fun LocalDateTime.minus(period: Pair<Period, Duration>): LocalDateTime = this.minus(period.first).minus(period.second)
+
+fun String.parseDate(format: String? = null) = try {
+    this.parseDateTime(format).toDate()
+} catch (e: DateTimeParseException) {
+    logger.debug("Failed to parse ZonedDateTime from $this with pattern '${format ?: DEFAULT_ZONED_DATETIME_FORMAT}'. Try to parse as LocalDateTime.")
+    try {
+        this.parseLocalDateTime(format).toDate()
+    } catch (e: DateTimeParseException) {
+        logger.debug("Failed to parse LocalDateTime from $this with pattern '${format ?: DEFAULT_LOCAL_DATETIME_FORMAT}'. Try to parse as LocalDate.")
+        this.parseLocalDate(format).toDate()
+    }
+}
+
+fun String.parseDateTime(format: String? = null): ZonedDateTime = ZonedDateTime.parse(
     this,
-    if (format == null) ISODateTimeFormat.dateTimeParser().withOffsetParsed() else DateTimeFormat.forPattern(format)
+    format?.toDatePattern() ?: DEFAULT_ZONED_DATETIME_FORMAT
 )
+
+fun String.parseLocalDateTime(format: String? = null): LocalDateTime = LocalDateTime.parse(
+    this,
+    format?.toDatePattern() ?: DEFAULT_LOCAL_DATETIME_FORMAT
+)
+
+fun String.parseLocalDate(format: String? = null): LocalDate = LocalDate.parse(
+    this,
+    format?.toDatePattern() ?: DEFAULT_LOCAL_DATE_FORMAT
+)
+
+fun String.toDatePattern(): DateTimeFormatter = DateTimeFormatter.ofPattern(this)
 
 fun String.fileExt() = substring(lastIndexOf('.') + 1).toLowerCase()
 
@@ -195,3 +252,5 @@ interface ContentVerifier {
         }
     }
 }
+
+private val logger = KotlinLogging.logger {}

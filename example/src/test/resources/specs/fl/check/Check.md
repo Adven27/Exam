@@ -1,7 +1,7 @@
 # Check directory content
 ## `<e:fl-check dir="dir"/>`
 
-***!!! Only XML comparing are supported !!!***
+***!!! Only XML comparing is supported !!!***
 
 <div>
     <e:summary/>

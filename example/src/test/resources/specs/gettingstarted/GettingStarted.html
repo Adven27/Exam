@@ -20,7 +20,7 @@
                 "id": "{{number}}",
                 "name": "widget1",
                 "quantity": 10,
-                "updatedAt": "{{formattedAndWithinNow "yyyy-MM-dd'T'HH:mm:ss.SSSZZ" "5s"}}"
+                "updatedAt": "{{formattedAndWithinNow "yyyy-MM-dd'T'HH:mm:ss.SSS" "5s"}}"
                 }
             </e:expected>
             <e:check>
@@ -74,7 +74,7 @@
             </e:expected>
             <e:where vars="invalid, error">
                 <e:vals>''          , blank value not allowed</e:vals>
-                <e:vals>more_than_10, Value 'more_than_10' can't be stored to database column because exceeds length app.Widgets.name.columnType.colLength</e:vals>
+                <e:vals>more_than_10, Value 'more_than_10' can't be stored to database column because exceeds length 10</e:vals>
             </e:where>
         </e:case>
         <e:check>
@@ -98,7 +98,7 @@
                 <e:vals>ignored     , invalid-no-name.json    , name is required</e:vals>
                 <e:vals>ignored     , invalid-no-quantity.json, quantity is required</e:vals>
                 <e:vals>''          , create-req.json         , blank value not allowed</e:vals>
-                <e:vals>more_than_10, create-req.json         , Value 'more_than_10' can't be stored to database column because exceeds length app.Widgets.name.columnType.colLength</e:vals>
+                <e:vals>more_than_10, create-req.json         , Value 'more_than_10' can't be stored to database column because exceeds length 10</e:vals>
             </e:where>
         </e:case>
         <e:check>
@@ -131,11 +131,11 @@
     <e:given>
         <e:set var="upd1" value="{{now tz='GMT+1'}}"/>
         <e:set var="upd2" value="{{now plus='1 day'}}"/>
-        <e:set var="format" value="yyyy-MM-dd'T'HH:mm:ss.SSSZZ"/>
+        <e:set var="format" value="yyyy-MM-dd'T'HH:mm:ss.SSS"/>
         <e:db-set caption="Given widgets:" table="widgets" cols="name, quantity, updated, id=1..10">
             <e:row>widget1, 10, {{upd1}}</e:row>
             <e:row>widget2, 20, {{upd2}}</e:row>
-            <e:row>widget3, 30, {{date '01.02.2000 10:20+03:00' format="dd.MM.yyyy HH:mmZZ"}}</e:row>
+            <e:row>widget3, 30, {{date '01.02.2000 10:20+03:00' format="dd.MM.yyyy HH:mmz"}}</e:row>
             <e:row>widget4, 40, {{date upd2 plus='12 h'}}</e:row>
         </e:db-set>
     </e:given>
@@ -156,7 +156,7 @@
                 "id": 3,
                 "name": "widget3",
                 "quantity": 30,
-                "updatedAt": "{{dateFormat (date '01.02.2000 10:20+03:00' format="dd.MM.yyyy HH:mmZZ") format}}"
+                "updatedAt": "{{dateFormat (date '01.02.2000 10:20+03:00' format="dd.MM.yyyy HH:mmz") format}}"
                 }, {
                 "id": 4,
                 "name": "widget4",
@@ -203,7 +203,7 @@
         <e:case desc="Update">
             <e:body>{"id": {{id}}, "name": "new name", "quantity": "0"}</e:body>
             <e:expected>
-                { "id": {{id}}, "name": "new name", "quantity": 0, "updatedAt": "{{formattedAndWithinNow "yyyy-MM-dd'T'HH:mm:ss.SSSZ" "5s"}}" }
+                { "id": {{id}}, "name": "new name", "quantity": 0, "updatedAt": "{{formattedAndWithinNow "yyyy-MM-dd'T'HH:mm:ss.SSS" "5s"}}" }
             </e:expected>
         </e:case>
     </e:put>

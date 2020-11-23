@@ -7,7 +7,8 @@ function ready() {
     enableCodeMirrorMerge('.xml.rest-failure', 'application/xml');
     enableCodeMirror('.text:not(.rest-failure)', 'text/plain');
     enableCodeMirrorMerge('.text.rest-failure', 'text/plain');
-    enableCodeMirror('.htmlmixed', 'text/html');
+    enableCodeMirror('.htmlmixed:not(.rest-failure)', 'text/html');
+    enableCodeMirrorMerge('.htmlmixed.rest-failure', 'text/html');
     document.querySelectorAll('.json, .xml, .htmlmixed').forEach(function(el) {
         el.style.visibility = "visible";
     });

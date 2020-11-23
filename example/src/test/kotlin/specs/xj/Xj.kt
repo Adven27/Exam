@@ -1,7 +1,8 @@
 package specs.xj
 
-import org.joda.time.LocalDate
 import specs.Specs
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 class Xj : Specs() {
     val actualJson: String
@@ -21,6 +22,6 @@ class Xj : Specs() {
             |}""".trimMargin()
 
     companion object {
-        private val NOW = LocalDate.now().toString("yyyy-MM-dd")
+        private val NOW = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
     }
 }

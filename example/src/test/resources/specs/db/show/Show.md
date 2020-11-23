@@ -14,7 +14,7 @@
             Given record <b c:set="#id">1</b>
                          <b c:set="#name">Bob</b>
                          <b c:set="#age">50</b>
-                         <b c:set="#bd">10.10.2000</b>
+                         <b c:set="#bd">2000-10-10</b>
             <span c:assertTrue="addRecord(#id, #name, #age, #bd)">present</span> in PERSON
         </e:given>
         <e:then print="true">

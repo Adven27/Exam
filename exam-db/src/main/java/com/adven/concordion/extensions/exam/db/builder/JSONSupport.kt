@@ -2,6 +2,7 @@ package com.adven.concordion.extensions.exam.db.builder
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
+import mu.KLogging
 import org.dbunit.dataset.AbstractDataSet
 import org.dbunit.dataset.Column
 import org.dbunit.dataset.DataSetException
@@ -15,7 +16,6 @@ import org.dbunit.dataset.ITableMetaData
 import org.dbunit.dataset.datatype.DataType.UNKNOWN
 import org.dbunit.dataset.stream.DataSetProducerAdapter
 import org.dbunit.dataset.stream.IDataSetConsumer
-import org.slf4j.LoggerFactory
 import java.io.File
 import java.io.FileInputStream
 import java.io.IOException
@@ -75,8 +75,7 @@ class JSONWriter(private val dataSet: IDataSet, outputStream: OutputStream?) : I
         }
     }
 
-    @Throws(DataSetException::class)
-    override fun row(values: Array<Any>) {
+    override fun row(values: Array<Any?>) {
         rowCount++
         try {
             out.write("$FOUR_SPACES{$NEW_LINE")
@@ -92,25 +91,26 @@ class JSONWriter(private val dataSet: IDataSet, outputStream: OutputStream?) : I
         }
     }
 
-    @Throws(DataSetException::class)
-    private fun createSetFromValues(values: Array<Any>): String {
+    private fun createSetFromValues(values: Array<Any?>): String {
         val sb = StringBuilder()
         for (i in values.indices) {
             val currentValue = values[i]
-            val currentColumn = metaData!!.columns[i]
-            sb.append(FOUR_SPACES + DOUBLE_SPACES + '"').append(metaData!!.columns[i].columnName).append("\": ")
-            val isNumber = currentColumn.dataType.isNumber
-            if (!isNumber) {
-                sb.append('"')
+            if (currentValue != null) {
+                val currentColumn = metaData!!.columns[i]
+                sb.append(FOUR_SPACES + DOUBLE_SPACES + '"').append(metaData!!.columns[i].columnName).append("\": ")
+                val isNumber = currentColumn.dataType.isNumber
+                if (!isNumber) {
+                    sb.append('"')
+                }
+                sb.append(currentValue.toString().replace(NEW_LINE.toRegex(), "\\\\n"))
+                if (!isNumber) {
+                    sb.append('"')
+                }
+                if (i != values.size - 1) {
+                    sb.append(',')
+                }
+                sb.append(NEW_LINE)
             }
-            sb.append(currentValue.toString().replace(NEW_LINE.toRegex(), "\\\\n"))
-            if (!isNumber) {
-                sb.append('"')
-            }
-            if (i != values.size - 1) {
-                sb.append(',')
-            }
-            sb.append(NEW_LINE)
         }
         return replaceExtraCommaInTheEnd(sb)
     }
@@ -130,11 +130,10 @@ class JSONWriter(private val dataSet: IDataSet, outputStream: OutputStream?) : I
         provider.produce()
     }
 
-    companion object {
+    companion object : KLogging() {
         private val NEW_LINE = System.getProperty("line.separator")
         private const val DOUBLE_SPACES = "  "
         private const val FOUR_SPACES = DOUBLE_SPACES + DOUBLE_SPACES
-        private val logger = LoggerFactory.getLogger(JSONWriter::class.java)
     }
 }
 

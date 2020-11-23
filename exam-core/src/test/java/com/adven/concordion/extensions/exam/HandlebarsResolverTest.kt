@@ -1,7 +1,9 @@
 package com.adven.concordion.extensions.exam
 
 import com.adven.concordion.extensions.exam.core.html.Html
+import com.adven.concordion.extensions.exam.core.parseDate
 import com.adven.concordion.extensions.exam.core.resolveToObj
+import com.adven.concordion.extensions.exam.core.toDate
 import com.adven.concordion.extensions.exam.core.utils.HANDLEBARS
 import com.adven.concordion.extensions.exam.core.utils.HelperSource
 import com.adven.concordion.extensions.exam.core.utils.HelperSource.Companion.DEFAULT_FORMAT
@@ -13,10 +15,8 @@ import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.concordion.internal.FixtureInstance
 import org.concordion.internal.OgnlEvaluator
-import org.joda.time.LocalDate
-import org.joda.time.LocalDateTime
-import org.joda.time.format.DateTimeFormat
 import org.junit.Test
+import java.time.LocalDate
 import java.util.Date
 import kotlin.test.assertEquals
 
@@ -40,11 +40,11 @@ class HandlebarsResolverTest {
     @Test
     fun date_defaults() {
         assertEquals(
-            LocalDateTime(2019, 6, 30, 9, 10).toDate(),
+            "2019-06-30T09:10:00".parseDate("yyyy-MM-dd'T'HH:mm:ss"),
             sutObj("{{date \"2019-06-30T09:10:00\"}}")
         )
         assertEquals(
-            LocalDateTime(2019, 6, 30, 0, 0).toDate(),
+            "2019-06-30T00:00:00".parseDate("yyyy-MM-dd'T'HH:mm:ss"),
             sutObj("{{date \"2019-06-30\"}}")
         )
     }
@@ -52,7 +52,7 @@ class HandlebarsResolverTest {
     @Test
     fun dateFormat_defaults() {
         val expected = "2019-06-30T09:10:00"
-        eval.setVariable("#someDate", LocalDateTime.parse(expected, defaultFormat).toDate())
+        eval.setVariable("#someDate", expected.parseDate(defaultFormat))
 
         assertEquals(expected, sut("{{dateFormat someDate}}"))
     }
@@ -62,7 +62,7 @@ class HandlebarsResolverTest {
         val placeholder = """{{dateFormat someDate "yyyy-MM-dd" tz="GMT+3"}}"""
 
         assertThatExceptionOfType(HandlebarsException::class.java).isThrownBy { sut(placeholder) }
-            .withMessageContaining("""Wrong context for helper '$placeholder', found 'null', expected instance of Date: ${HelperSource.dateFormat.example}""")
+            .withMessageContaining("Wrong context for helper '$placeholder': 'null', expected instance of Date. Example: ${HelperSource.dateFormat.example}")
             .withRootCauseExactlyInstanceOf(IllegalArgumentException::class.java)
     }
 
@@ -103,8 +103,6 @@ class HandlebarsResolverTest {
         h.context.forEach { (t, u) -> eval.setVariable("#$t", u) }
         return eval.resolveToObj(h.example)
     }
-
-    private fun String.format() = DateTimeFormat.forPattern(this)
 
     private fun sut(placeholder: String) = sut.resolve(eval, placeholder)
     private fun sutObj(placeholder: String) = sut.resolveObj(eval, placeholder)

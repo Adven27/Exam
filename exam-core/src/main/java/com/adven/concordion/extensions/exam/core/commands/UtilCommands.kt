@@ -8,6 +8,7 @@ import com.adven.concordion.extensions.exam.core.resolveXml
 import com.adven.concordion.extensions.exam.core.utils.readFile
 import com.adven.concordion.extensions.exam.core.vars
 import io.restassured.RestAssured
+import io.restassured.RestAssured.given
 import nu.xom.Attribute
 import nu.xom.Element
 import nu.xom.XPathContext
@@ -105,7 +106,7 @@ class WaitCommand(tag: String) : ExamCommand("await", tag) {
                             expectedStatus
                         )
                     expectedStatus != null -> await.untilAsserted {
-                        RestAssured.given().body(eval.resolve(body)).contentType(withContentType).post(untilPost)
+                        given().body(eval.resolve(body)).contentType(withContentType).post(untilPost)
                             .apply { eval.setVariable("#exam_response", this) }
                             .then().statusCode(expectedStatus.toInt())
                     }

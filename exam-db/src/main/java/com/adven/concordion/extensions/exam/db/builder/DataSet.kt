@@ -309,7 +309,7 @@ class ContainsFilterTable(actualTable: ITable?, expectedTable: ITable?, ignoredC
     override fun getValue(row: Int, column: String): Any {
         if (logger.isDebugEnabled) logger.debug(
             "getValue(row={}, columnName={}) - start",
-            Integer.toString(row),
+            row.toString(),
             column
         )
         val max = filteredRowIndexes.size

@@ -1,21 +1,25 @@
 package com.adven.concordion.extensions.exam.core.utils
 
 import com.adven.concordion.extensions.exam.core.parseDate
-import com.adven.concordion.extensions.exam.core.parseDateTime
 import com.adven.concordion.extensions.exam.core.periodBy
+import com.adven.concordion.extensions.exam.core.toZonedDateTime
+import mu.KLogging
 import net.javacrumbs.jsonunit.core.ParametrizedMatcher
 import org.hamcrest.BaseMatcher
 import org.hamcrest.Description
-import org.joda.time.DateTime
-import org.joda.time.base.BaseSingleFieldPeriod
 import java.lang.Character.isDigit
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.ZonedDateTime
+import java.time.temporal.TemporalAmount
+import java.util.Date
 import javax.xml.datatype.DatatypeFactory
 
 class DateFormatMatcher : BaseMatcher<Any>(), ParametrizedMatcher {
-    private var param: String? = null
+    private lateinit var param: String
 
     override fun matches(item: Any): Boolean = try {
-        (item as String).parseDate(param!!)
+        (item as String).parseDate(param)
         true
     } catch (expected: Exception) {
         false
@@ -35,25 +39,42 @@ class DateFormatMatcher : BaseMatcher<Any>(), ParametrizedMatcher {
 }
 
 class DateWithin private constructor(private val now: Boolean) : BaseMatcher<Any>(), ParametrizedMatcher {
-    private var period: BaseSingleFieldPeriod? = null
-    private lateinit var expected: DateTime
+    private lateinit var period: TemporalAmount
+    private lateinit var expected: ZonedDateTime
     private lateinit var pattern: String
+    private var parseError = false
 
     override fun matches(item: Any): Boolean {
-        val actual = if (item is DateTime) item else (item as String).parseDateTime(pattern)
-        return isBetweenInclusive(expected.minus(period), expected.plus(period), actual)
+        val target = try {
+            date(item)
+        } catch (expected: Exception) {
+            logger.warn("Parsing error: $item, expected to match pattern '$pattern'", expected)
+            parseError = true
+            return false
+        }
+        return isBetweenInclusive(expected.minus(period), expected.plus(period), target)
     }
 
-    private fun isBetweenInclusive(start: DateTime, end: DateTime, target: DateTime): Boolean {
-        return !target.isBefore(start) && !target.isAfter(end)
+    private fun date(item: Any): ZonedDateTime = when (item) {
+        is ZonedDateTime -> item
+        is LocalDateTime -> item.atZone(ZoneId.systemDefault())
+        is Date -> item.toZonedDateTime()
+        else -> item.toString().parseDate(pattern).toZonedDateTime()
     }
+
+    private fun isBetweenInclusive(start: ZonedDateTime, end: ZonedDateTime, target: ZonedDateTime): Boolean =
+        !target.isBefore(start) && !target.isAfter(end)
 
     override fun describeTo(description: Description) {
         description.appendValue(period)
     }
 
     override fun describeMismatch(item: Any, description: Description) {
-        description.appendText("The date should be within ").appendValue(period)
+        if (parseError) {
+            description.appendText("The date is not properly formatted ").appendValue(pattern)
+        } else {
+            description.appendText("The date is not within ").appendValue(expected.minus(period)..expected.plus(period))
+        }
     }
 
     override fun setParameter(p: String) {
@@ -62,17 +83,16 @@ class DateWithin private constructor(private val now: Boolean) : BaseMatcher<Any
         val within = param.substring(1, param.indexOf("]"))
 
         if (now) {
-            expected = DateTime.now()
+            expected = ZonedDateTime.now()
         } else {
             param = param.substring(within.length + 2)
             val date = param.substring(1, param.indexOf("]"))
-            expected = date.parseDateTime(pattern)
+            expected = date.parseDate(pattern).toZonedDateTime()
         }
-
         this.period = parsePeriod(within)
     }
 
-    companion object {
+    companion object : KLogging() {
         fun param() = DateWithin(false)
         fun now() = DateWithin(true)
         fun now(param: String) = DateWithin(true).apply { setParameter("[][$param]") }
@@ -80,16 +100,16 @@ class DateWithin private constructor(private val now: Boolean) : BaseMatcher<Any
 }
 
 class XMLDateWithin : BaseMatcher<Any>(), ParametrizedMatcher {
-    private var period: BaseSingleFieldPeriod? = null
+    private lateinit var period: TemporalAmount
 
     override fun matches(item: Any): Boolean {
         val xmlGregorianCal = DatatypeFactory.newInstance().newXMLGregorianCalendar(item as String)
-        val actual = DateTime(xmlGregorianCal.toGregorianCalendar())
-        val expected = DateTime.now()
+        val actual = xmlGregorianCal.toGregorianCalendar().toZonedDateTime()
+        val expected = ZonedDateTime.now()
         return isBetweenInclusive(expected.minus(period), expected.plus(period), actual)
     }
 
-    private fun isBetweenInclusive(start: DateTime, end: DateTime, target: DateTime): Boolean {
+    private fun isBetweenInclusive(start: ZonedDateTime, end: ZonedDateTime, target: ZonedDateTime): Boolean {
         return !target.isBefore(start) && !target.isAfter(end)
     }
 
@@ -106,7 +126,7 @@ class XMLDateWithin : BaseMatcher<Any>(), ParametrizedMatcher {
     }
 }
 
-fun parsePeriod(within: String): BaseSingleFieldPeriod {
+fun parsePeriod(within: String): TemporalAmount {
     var i = 0
     while (i < within.length && isDigit(within[i])) {
         i++

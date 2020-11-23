@@ -1,11 +1,12 @@
 package com.adven.concordion.extensions.exam.core.html
 
+import com.adven.concordion.extensions.exam.core.toDate
 import org.concordion.internal.FixtureInstance
 import org.concordion.internal.OgnlEvaluator
-import org.joda.time.LocalDate.now
-import org.joda.time.Period
 import org.junit.Test
 import java.text.SimpleDateFormat
+import java.time.LocalDateTime.now
+import java.time.Period
 import kotlin.test.assertEquals
 
 class RowParserTest {
@@ -28,7 +29,7 @@ class RowParserTest {
             Html("row", " {{now 'dd.MM' plus='1 day'}},' 4, 5 '")
         )
 
-        val expectedPeriod = Period().plusDays(1)
+        val expectedPeriod = Period.ofDays(1)
         val expectedDate = SimpleDateFormat("dd.MM").format(now().plus(expectedPeriod).toDate())
         assertEquals(
             listOf(
@@ -47,6 +48,9 @@ class RowParserTest {
         val dd = SimpleDateFormat("dd").format(now().toDate())
         val mm = SimpleDateFormat("MM").format(now().toDate())
 
-        assertEquals(listOf(listOf("$dd $mm", now().toDate().toString())), RowParserEval(html, "row", eval).parse())
+        assertEquals(
+            listOf(listOf("$dd $mm", now().toLocalDate().toDate().toString())),
+            RowParserEval(html, "row", eval).parse()
+        )
     }
 }

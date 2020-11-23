@@ -15,6 +15,8 @@ import org.concordion.api.listener.AssertEqualsListener;
 import org.concordion.api.listener.AssertFailureEvent;
 import org.concordion.api.listener.AssertSuccessEvent;
 import org.concordion.internal.util.Announcer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xmlunit.diff.NodeMatcher;
 
 import java.util.ArrayList;
@@ -33,6 +35,7 @@ import static java.util.Arrays.asList;
 import static kotlin.TuplesKt.to;
 
 public class FilesCheckCommand extends BaseCommand {
+    private static final Logger LOG = LoggerFactory.getLogger(FilesCheckCommand.class);
     //FIXME temporary(HA!) reuse json-unit cfg for matchers retrieving
     private final Configuration jsonUnitCfg;
     private final NodeMatcher nodeMatcher;
@@ -77,7 +80,7 @@ public class FilesCheckCommand extends BaseCommand {
 
                     if (!filesLoader.fileExists(evalPath + separator + expectedName)) {
                         resultRecorder.record(Result.FAILURE);
-                        announceFailure(fileNameTD.el(), expectedName, null);
+                        announceFailure(fileNameTD.el(), "", null);
                     } else {
                         resultRecorder.record(Result.SUCCESS);
                         announceSuccess(fileNameTD.el());
@@ -99,7 +102,7 @@ public class FilesCheckCommand extends BaseCommand {
                                 evalPath + separator + expectedName,
                                 fileTag.getContent(),
                                 resultRecorder,
-                                toPre(fileTag, pre).el()
+                                pre.el()
                             );
                         }
                     }
@@ -149,12 +152,13 @@ public class FilesCheckCommand extends BaseCommand {
         String prettyActual = CheckUtilsKt.prettyXml(filesLoader.documentFrom(path));
         try {
             if (CheckUtilsKt.equalToXml(prettyActual, expected, jsonUnitCfg, nodeMatcher)) {
+                element.appendText(prettyActual);
                 xmlEquals(resultRecorder, element);
             } else {
                 xmlDoesNotEqual(resultRecorder, element, prettyActual, expected);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.debug("Got exception on xml checking: {}", e.getMessage());
             xmlDoesNotEqual(resultRecorder, element, prettyActual, expected);
         }
     }

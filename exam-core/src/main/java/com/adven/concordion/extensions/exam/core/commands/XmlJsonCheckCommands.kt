@@ -7,7 +7,7 @@ import com.adven.concordion.extensions.exam.core.html.Html
 import com.adven.concordion.extensions.exam.core.html.div
 import com.adven.concordion.extensions.exam.core.html.divCollapse
 import com.adven.concordion.extensions.exam.core.html.html
-import com.adven.concordion.extensions.exam.core.html.span
+import com.adven.concordion.extensions.exam.core.html.pre
 import com.adven.concordion.extensions.exam.core.html.tableSlim
 import com.adven.concordion.extensions.exam.core.html.td
 import com.adven.concordion.extensions.exam.core.html.tr
@@ -50,7 +50,7 @@ class XmlCheckCommand(name: String, tag: String, private val cfg: Configuration,
         } catch (expected: Throwable) {
             resultRecorder.failure(root, act, exp)
             root.below(
-                span(expected.message, CLASS to "exceptionMessage")
+                pre(expected.message, CLASS to "exceptionMessage")
             )
         }
     }
@@ -93,7 +93,7 @@ class JsonCheckCommand(name: String, tag: String, private val originalCfg: Confi
             if (expected is AssertionError || expected is Exception) {
                 resultRecorder.failure(root, act.prettyJson(), exp.prettyJson())
                 root.below(
-                    span(expected.message, CLASS to "exceptionMessage")
+                    pre(expected.message, CLASS to "exceptionMessage")
                 )
             } else throw expected
         }
