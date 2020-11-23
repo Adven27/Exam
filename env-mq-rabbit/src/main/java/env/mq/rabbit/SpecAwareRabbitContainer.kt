@@ -2,6 +2,7 @@ package env.mq.rabbit
 
 import env.core.ContainerizedSystem
 import env.core.ExtSystem
+import mu.KLogging
 import org.testcontainers.containers.RabbitMQContainer
 
 open class SpecAwareRabbitContainer @JvmOverloads constructor(
@@ -11,7 +12,8 @@ open class SpecAwareRabbitContainer @JvmOverloads constructor(
 ) : RabbitMQContainer() {
     override fun start() {
         super.start()
-        System.setProperty("specs-mq-port", firstMappedPort.toString())
+        System.setProperty(SYS_PROP_PORT, firstMappedPort.toString())
+            .also { logger.info("System property set: $SYS_PROP_PORT = ${System.getProperty(SYS_PROP_PORT)} ") }
     }
 
     fun port() = if (isRunning) firstMappedPort else fixedPort
@@ -23,7 +25,8 @@ open class SpecAwareRabbitContainer @JvmOverloads constructor(
         }
     }
 
-    companion object {
+    companion object : KLogging() {
+        const val SYS_PROP_PORT = "env.mq.rabbit.port"
         private const val PORT = 5672
         private const val PORT_ADM = 15672
 

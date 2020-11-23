@@ -4,6 +4,7 @@ import com.adven.concordion.extensions.exam.mq.MqTester
 import com.adven.concordion.extensions.exam.mq.MqTester.NOOP
 import env.core.ContainerizedSystem
 import env.core.ExtSystem
+import mu.KLogging
 import org.slf4j.LoggerFactory
 import org.testcontainers.containers.GenericContainer
 import org.testcontainers.containers.output.Slf4jLogConsumer
@@ -18,7 +19,8 @@ class SpecAwareRedisContainer @JvmOverloads constructor(
     private val fixedPort: Int
     override fun start() {
         super.start()
-        System.setProperty("specs-redis-port", firstMappedPort.toString())
+        System.setProperty(SYS_PROP_PORT, firstMappedPort.toString())
+            .also { logger.info("System property set: $SYS_PROP_PORT = ${System.getProperty(SYS_PROP_PORT)} ") }
     }
 
     fun mqTester(): MqTester {
@@ -60,7 +62,8 @@ class SpecAwareRedisContainer @JvmOverloads constructor(
         }
     }
 
-    companion object {
+    companion object : KLogging() {
+        const val SYS_PROP_PORT = "env.mq.redis.port"
         private const val PORT = 6379
         private const val IMAGE = "redis:5.0.3-alpine"
         private const val STARTUP_TIMEOUT = 30L

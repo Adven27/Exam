@@ -1,16 +1,16 @@
-package env.db.mysql
+package env.db.db2
 
 import com.adven.concordion.extensions.exam.db.DbTester
 import env.core.ContainerizedSystem
 import env.core.ExtSystem
 import mu.KLogging
-import org.testcontainers.containers.MySQLContainer
+import org.testcontainers.containers.Db2Container
 
-class SpecAwareMySqlContainer @JvmOverloads constructor(
+class SpecAwareDb2Container @JvmOverloads constructor(
     dockerImageName: String,
-    fixedPort: Int = MYSQL_PORT,
+    fixedPort: Int = DB2_PORT,
     fixedEnv: Boolean = false
-) : MySQLContainer<Nothing>(dockerImageName) {
+) : Db2Container(dockerImageName) {
     override fun start() {
         super.start()
         System.setProperty(SYS_PROP_URL, jdbcUrl)
@@ -18,14 +18,13 @@ class SpecAwareMySqlContainer @JvmOverloads constructor(
     }
 
     @JvmOverloads
-    fun dbTester(port: Int = MYSQL_PORT): DbTester {
-        return dbTester("jdbc:mysql://localhost:$port/test?autoReconnect=true&useSSL=false", "test", "test", "test")
-    }
+    fun dbTester(port: Int = DB2_PORT): DbTester =
+        dbTester("jdbc:db2://localhost:$port/test", "db2inst1", "foobar1234", "test")
 
     fun dbTester(fixedUrl: String?, fixedUser: String?, fixedPassword: String?, fixedDbName: String?): DbTester {
         val running = isRunning
         return DbTester(
-            "com.mysql.cj.jdbc.Driver",
+            "com.ibm.db2.jcc.DB2Driver",
             (if (running) jdbcUrl else fixedUrl)!!,
             (if (running) username else fixedUser)!!,
             (if (running) password else fixedPassword)!!,
@@ -35,19 +34,19 @@ class SpecAwareMySqlContainer @JvmOverloads constructor(
 
     init {
         if (fixedEnv) {
-            addFixedExposedPort(fixedPort, MYSQL_PORT)
+            addFixedExposedPort(fixedPort, DB2_PORT)
         }
     }
 
     companion object : KLogging() {
-        const val SYS_PROP_URL = "env.db.mysql.url"
+        const val SYS_PROP_URL = "env.db.db2.url"
 
         @JvmOverloads
         fun system(
             dockerImageName: String,
-            fixedPort: Int = MYSQL_PORT,
+            fixedPort: Int = DB2_PORT,
             fixedEnv: Boolean = false
-        ): ExtSystem<SpecAwareMySqlContainer> =
-            ContainerizedSystem(SpecAwareMySqlContainer(dockerImageName, fixedPort, fixedEnv))
+        ): ExtSystem<SpecAwareDb2Container> =
+            ContainerizedSystem(SpecAwareDb2Container(dockerImageName, fixedPort, fixedEnv))
     }
 }

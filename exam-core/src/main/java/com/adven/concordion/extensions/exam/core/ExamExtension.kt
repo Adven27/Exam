@@ -33,6 +33,7 @@ import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
+import java.time.format.ResolverStyle.SMART
 import java.util.ArrayList
 import java.util.Collections.addAll
 import java.util.Date
@@ -162,9 +163,9 @@ class ExamExtension : ConcordionExtension {
     }
 }
 
-private val DEFAULT_ZONED_DATETIME_FORMAT = DateTimeFormatter.ISO_OFFSET_DATE_TIME
-private val DEFAULT_LOCAL_DATETIME_FORMAT = DateTimeFormatter.ISO_DATE_TIME
-private val DEFAULT_LOCAL_DATE_FORMAT = DateTimeFormatter.ISO_DATE
+private val DEFAULT_ZONED_DATETIME_FORMAT = DateTimeFormatter.ISO_OFFSET_DATE_TIME.withResolverStyle(SMART)
+private val DEFAULT_LOCAL_DATETIME_FORMAT = DateTimeFormatter.ISO_DATE_TIME.withResolverStyle(SMART)
+private val DEFAULT_LOCAL_DATE_FORMAT = DateTimeFormatter.ISO_DATE.withResolverStyle(SMART)
 
 fun ZonedDateTime.toString(pattern: String): String = this.format(DateTimeFormatter.ofPattern(pattern))
 fun Date.toString(pattern: String): String =

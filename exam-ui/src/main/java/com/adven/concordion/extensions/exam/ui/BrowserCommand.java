@@ -39,7 +39,7 @@ public class BrowserCommand extends ExamVerifyCommand {
     public void setUp(CommandCall commandCall, Evaluator evaluator, ResultRecorder resultRecorder, Fixture fixture) {
         Html root = new Html(commandCall.getElement());
         url = attr(root, URL, "/", evaluator);
-        failFast = Boolean.valueOf(root.takeAwayAttr(FAIL_FAST, "true"));
+        failFast = Boolean.parseBoolean(root.takeAwayAttr(FAIL_FAST, "true"));
     }
 
     @Override

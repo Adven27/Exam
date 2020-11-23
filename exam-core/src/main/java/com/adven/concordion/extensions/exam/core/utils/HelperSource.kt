@@ -90,7 +90,7 @@ enum class HelperSource(
 ) : ExamHelper<Any?> {
     dateFormat(
         """{{dateFormat date "yyyy-MM-dd'T'HH:mm O" tz="GMT+3" minus="1 y, 2 months, d 3" plus="4 h, 5 min, 6 s"}}""",
-        mapOf("date" to "2000-01-02T10:20+03".parseDate()),
+        mapOf("date" to "2000-01-02T10:20+03:00".parseDate()),
         "1998-10-30T14:25 GMT+3",
         mapOf(TZ to "\"GMT+3\"", PLUS to "\"1 day\"", MINUS to "\"5 hours\"")
     ) {
