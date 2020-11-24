@@ -1,22 +1,16 @@
 package env.mq.rabbit
 
-import env.core.ContainerizedSystem
-import env.core.ExtSystem
 import mu.KLogging
 import org.testcontainers.containers.RabbitMQContainer
+import org.testcontainers.utility.DockerImageName
 
 open class SpecAwareRabbitContainer @JvmOverloads constructor(
+    dockerImageName: DockerImageName = DockerImageName.parse("rabbitmq:3.7.25-management-alpine"),
+    fixedEnv: Boolean = false,
     private val fixedPort: Int = PORT,
-    private val fixedPortAdm: Int = PORT_ADM,
-    fixedEnv: Boolean = false
-) : RabbitMQContainer() {
-    override fun start() {
-        super.start()
-        System.setProperty(SYS_PROP_PORT, firstMappedPort.toString())
-            .also { logger.info("System property set: $SYS_PROP_PORT = ${System.getProperty(SYS_PROP_PORT)} ") }
-    }
-
-    fun port() = if (isRunning) firstMappedPort else fixedPort
+    fixedPortAdm: Int = PORT_ADM,
+    val portSystemPropertyName: String = "env.mq.rabbit.port"
+) : RabbitMQContainer(dockerImageName) {
 
     init {
         if (fixedEnv) {
@@ -25,17 +19,18 @@ open class SpecAwareRabbitContainer @JvmOverloads constructor(
         }
     }
 
+    override fun start() {
+        super.start()
+        System.setProperty(portSystemPropertyName, firstMappedPort.toString()).also {
+            logger.info("System property set: $portSystemPropertyName = ${System.getProperty(portSystemPropertyName)} ")
+        }
+    }
+
+    @Suppress("unused")
+    fun port(): Int = if (isRunning) firstMappedPort else fixedPort
+
     companion object : KLogging() {
-        const val SYS_PROP_PORT = "env.mq.rabbit.port"
         private const val PORT = 5672
         private const val PORT_ADM = 15672
-
-        @JvmOverloads
-        fun system(
-            fixedPort: Int = PORT,
-            fixedPortAdm: Int = PORT_ADM,
-            fixedEnv: Boolean = false
-        ): ExtSystem<SpecAwareRabbitContainer> =
-            ContainerizedSystem(SpecAwareRabbitContainer(fixedPort, fixedPortAdm, fixedEnv))
     }
 }

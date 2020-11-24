@@ -1,91 +1,91 @@
 package env.core
 
-import org.slf4j.LoggerFactory
-import org.testcontainers.shaded.com.google.common.util.concurrent.ThreadFactoryBuilder
+import mu.KLogging
 import java.lang.System.currentTimeMillis
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.CompletableFuture.runAsync
 import java.util.concurrent.Executors
+import java.util.concurrent.ThreadFactory
 import java.util.concurrent.TimeUnit.SECONDS
+import java.util.concurrent.atomic.AtomicInteger
 
-class Environment(private val sys: Map<String, ExtSystem<*>>) {
+open class Environment(val systems: Map<String, ExtSystem<*>>) {
 
     init {
-        log.info("Environment settings:\nSystems $sys\nConfig $config")
+        logger.info("Environment settings:\nSystems: $systems\nConfig: $config")
     }
 
     @Suppress("SpreadOperator")
     fun up() {
         val start = currentTimeMillis()
-        CompletableFuture.allOf(*start(sys.entries))
-            .thenRun { log.info(summary(), currentTimeMillis() - start) }[config.upTimeout, SECONDS]
+        CompletableFuture.allOf(*start(systems.entries))
+            .thenRun { logger.info(summary(), currentTimeMillis() - start) }[config.upTimeout, SECONDS]
     }
 
     private fun summary() = "${javaClass.simpleName}\n\n ======= Test environment started {} ms =======\n\n" +
-        sys.entries.joinToString("\n") { "${it.key}: ${it.value.system()}" } +
+        systems.entries.joinToString("\n") { "${it.key}: ${it.value.system()}" } +
         "\n\n ==============================================\n\n"
 
     @Suppress("SpreadOperator")
     fun down() {
-        CompletableFuture.allOf(*sys.values.map { runAsync { it.stop() } }.toTypedArray())[config.downTimeout, SECONDS]
+        CompletableFuture.allOf(
+            *systems.values.map { runAsync { it.stop() } }.toTypedArray()
+        )[config.downTimeout, SECONDS]
     }
 
     @Suppress("SpreadOperator")
     fun down(vararg systems: String) {
         CompletableFuture.allOf(
-            *sys.entries
+            *this.systems.entries
                 .filter { systems.any { s: String -> it.key.toLowerCase().startsWith(s.toLowerCase()) } }
-                .onEach { log.info("Stopping {}...", it.key) }
+                .onEach { logger.info("Stopping {}...", it.key) }
                 .map { it.value }
                 .map { runAsync { it.stop() } }
                 .toTypedArray()
-        ).thenRun { log.info(status()) }[config.downTimeout, SECONDS]
+        ).thenRun { logger.info(status()) }[config.downTimeout, SECONDS]
     }
 
     private fun status() =
-        "Done. Status:\n${sys.entries.joinToString("\n") { "${it.key}: ${if (it.value.running()) "up" else "down"}" }}"
+        "Done. Status:\n${systems.entries.joinToString("\n") { "${it.key}: ${if (it.value.running()) "up" else "down"}" }}"
 
     @Suppress("SpreadOperator")
     fun up(vararg systems: String) {
         CompletableFuture.allOf(
-            *sys.entries
+            *this.systems.entries
                 .filter { systems.any { s: String -> it.key.toLowerCase().startsWith(s.toLowerCase()) } }
-                .onEach { sys: Map.Entry<String, ExtSystem<*>> -> log.info("Starting {}...", sys.key) }
+                .onEach { sys: Map.Entry<String, ExtSystem<*>> -> logger.info("Starting {}...", sys.key) }
                 .map { it.value }
                 .map { runAsync { it.start() } }
                 .toTypedArray()
-        ).thenRun { log.info(status()) }[config.upTimeout, SECONDS]
+        ).thenRun { logger.info(status()) }[config.upTimeout, SECONDS]
     }
 
-    fun find(name: String): ExtSystem<*> = sys[name] ?: error("System $name not found")
+    @Suppress("UNCHECKED_CAST")
+    fun <T> find(name: String): T = (systems[name] ?: error("System $name not found")).system() as T
 
-    companion object {
-        private val log = LoggerFactory.getLogger(Environment::class.java)
+    companion object : KLogging() {
         private val config = Config()
 
         private fun start(systems: Set<Map.Entry<String, ExtSystem<*>>>): Array<CompletableFuture<*>> = systems
-            .filter {
-                ifRegularBuildThenStartAll() ||
-                    ifGradleEnvRunThenStartOnlyContainers(it.value) ||
-                    ifGradleSpecsRunThenSkip(it.value)
-            }
-            .onEach { log.info("Preparing to start {}", it.key) }
-            .map { runAsync({ it.value.start() }, Executors.newCachedThreadPool(named(it.key))) }
+            .filter { config.startEnv }
+            .onEach { logger.info("Preparing to start {}", it.key) }
+            .map { runAsync({ it.value.start() }, Executors.newCachedThreadPool(NamedThreadFactory(it.key))) }
             .toTypedArray()
 
-        private fun ifRegularBuildThenStartAll() = config.startEnv && !config.fixedEnv
-        private fun ifGradleEnvRunThenStartOnlyContainers(system: ExtSystem<*>) =
-            config.startEnv && config.fixedEnv && container(system)
-
-        private fun ifGradleSpecsRunThenSkip(system: ExtSystem<*>) = !config.startEnv && !container(system)
-        private fun container(system: ExtSystem<*>) = system is ContainerizedSystem<*>
-        private fun named(key: String) = ThreadFactoryBuilder().setNameFormat("$key-%d").build()
+        @JvmStatic
+        fun findAvailableTcpPort(): Int = SocketUtils.findAvailableTcpPort()
     }
 
     data class Config(
         val downTimeout: Long = System.getProperty("SPECS_ENV_DOWN_TIMEOUT_SEC", "10").toLong(),
-        val upTimeout: Long = System.getProperty("SPECS_ENV_UP_TIMEOUT_SEC", "180").toLong(),
+        val upTimeout: Long = System.getProperty("SPECS_ENV_UP_TIMEOUT_SEC", "300").toLong(),
         val startEnv: Boolean = System.getProperty("SPECS_ENV_START", "true").toBoolean(),
         val fixedEnv: Boolean = System.getProperty("SPECS_ENV_FIXED", "false").toBoolean()
     )
+}
+
+class NamedThreadFactory(baseName: String) : ThreadFactory {
+    private val threadsNum = AtomicInteger()
+    private val namePattern: String = "$baseName-%d"
+    override fun newThread(runnable: Runnable) = Thread(runnable, String.format(namePattern, threadsNum.addAndGet(1)))
 }

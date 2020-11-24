@@ -2,25 +2,37 @@ package env.mq.redis
 
 import com.adven.concordion.extensions.exam.mq.MqTester
 import com.adven.concordion.extensions.exam.mq.MqTester.NOOP
-import env.core.ContainerizedSystem
-import env.core.ExtSystem
 import mu.KLogging
 import org.slf4j.LoggerFactory
 import org.testcontainers.containers.GenericContainer
 import org.testcontainers.containers.output.Slf4jLogConsumer
+import org.testcontainers.utility.DockerImageName
 import redis.clients.jedis.Jedis
 import java.time.Duration.ofSeconds
 
 class SpecAwareRedisContainer @JvmOverloads constructor(
-    dockerImageName: String = IMAGE,
+    dockerImageName: DockerImageName = DockerImageName.parse(IMAGE),
+    fixedEnv: Boolean = false,
     fixedPort: Int = PORT,
-    fixedEnv: Boolean
+    val portSystemPropertyName: String = "env.mq.redis.port"
 ) : GenericContainer<Nothing>(dockerImageName) {
     private val fixedPort: Int
+
+    init {
+        withExposedPorts(PORT)
+        withLogConsumer(Slf4jLogConsumer(LoggerFactory.getLogger("REDIS")))
+        withStartupTimeout(ofSeconds(STARTUP_TIMEOUT))
+        this.fixedPort = fixedPort
+        if (fixedEnv) {
+            addFixedExposedPort(fixedPort, PORT)
+        }
+    }
+
     override fun start() {
         super.start()
-        System.setProperty(SYS_PROP_PORT, firstMappedPort.toString())
-            .also { logger.info("System property set: $SYS_PROP_PORT = ${System.getProperty(SYS_PROP_PORT)} ") }
+        System.setProperty(portSystemPropertyName, firstMappedPort.toString()).also {
+            logger.info("System property set: $portSystemPropertyName = ${System.getProperty(portSystemPropertyName)}")
+        }
     }
 
     fun mqTester(): MqTester {
@@ -40,40 +52,21 @@ class SpecAwareRedisContainer @JvmOverloads constructor(
 
         override fun send(message: String, headers: Map<String, String>) {
             val kv = message.split("=").toTypedArray()
-            jedis!![kv[0].trim { it <= ' ' }] = kv[1].trim { it <= ' ' }
+            jedis[kv[0].trim { it <= ' ' }] = kv[1].trim { it <= ' ' }
         }
 
         override fun stop() {
-            jedis!!.close()
+            jedis.close()
         }
 
         companion object {
-            private var jedis: Jedis? = null
-        }
-    }
-
-    init {
-        withExposedPorts(PORT)
-        withLogConsumer(Slf4jLogConsumer(LoggerFactory.getLogger("REDIS")))
-        withStartupTimeout(ofSeconds(STARTUP_TIMEOUT))
-        this.fixedPort = fixedPort
-        if (fixedEnv) {
-            addFixedExposedPort(fixedPort, PORT)
+            private lateinit var jedis: Jedis
         }
     }
 
     companion object : KLogging() {
-        const val SYS_PROP_PORT = "env.mq.redis.port"
         private const val PORT = 6379
         private const val IMAGE = "redis:5.0.3-alpine"
         private const val STARTUP_TIMEOUT = 30L
-
-        @JvmOverloads
-        fun system(
-            dockerImageName: String = IMAGE,
-            fixedPort: Int = PORT,
-            fixedEnv: Boolean = false
-        ): ExtSystem<SpecAwareRedisContainer> =
-            ContainerizedSystem(SpecAwareRedisContainer(dockerImageName, fixedPort, fixedEnv))
     }
 }

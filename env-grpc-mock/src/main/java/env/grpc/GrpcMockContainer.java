@@ -8,12 +8,12 @@ import org.testcontainers.containers.output.Slf4jLogConsumer;
 import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.utility.MountableFile;
 
-import java.io.IOException;
-import java.net.ServerSocket;
 import java.time.Duration;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+
+import static env.core.Environment.findAvailableTcpPort;
 
 public class GrpcMockContainer extends FixedHostPortGenericContainer<GrpcMockContainer> {
     private static final Logger log = LoggerFactory.getLogger(GrpcMockContainer.class);
@@ -21,6 +21,10 @@ public class GrpcMockContainer extends FixedHostPortGenericContainer<GrpcMockCon
 
     public GrpcMockContainer(final int serviceId, boolean fixedEnv, final List<String> protos) {
         this(serviceId, fixedEnv, null, protos);
+    }
+
+    public GrpcMockContainer(final int serviceId, final List<String> protos) {
+        this(serviceId, false, null, protos);
     }
 
     public GrpcMockContainer(final int serviceId, boolean fixedEnv, String wiremock, final List<String> protos) {
@@ -51,7 +55,7 @@ public class GrpcMockContainer extends FixedHostPortGenericContainer<GrpcMockCon
     }
 
     private static int findAndSetBasePort(boolean fixedEnv) {
-        return fixedEnv ? 10000 : findPort();
+        return fixedEnv ? 10000 : findAvailableTcpPort();
     }
 
     public int mockPort() {
@@ -60,13 +64,5 @@ public class GrpcMockContainer extends FixedHostPortGenericContainer<GrpcMockCon
 
     public int port() {
         return isRunning() ? getMappedPort(50000) : 10000 + serviceId;
-    }
-
-    private static int findPort() {
-        try (ServerSocket serverSocket = new ServerSocket(0)) {
-            return serverSocket.getLocalPort();
-        } catch (IOException e) {
-            throw new IllegalStateException("Port is not available");
-        }
     }
 }

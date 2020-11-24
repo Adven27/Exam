@@ -4,6 +4,8 @@ buildscript {
     ext.exposed_version = '0.25.1'
     ext.testContainers_version = '1.15.0'
     ext.restAssured_version = '4.3.2'
+    ext.wiremock_version = '2.25.1'
+    ext.klogging_version = '2.0.3'
     repositories {
         mavenCentral()
         jcenter()
@@ -53,6 +55,7 @@ subprojects {
     }
 
     test {
+        systemProperty "user.timezone", "Europe/Moscow"
         testLogging.showStandardStreams = true
         testLogging.exceptionFormat = 'full'
         testLogging.events('FAILED', 'PASSED')

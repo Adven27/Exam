@@ -34,12 +34,8 @@ object EnvStarter {
     private fun exec(cmd: String, env: Environment) {
         val s = cmd.split(" ").toTypedArray()
         when (s[0]) {
-            "u" -> if (s.size > 1) env.up(*s.copyOfRange(1, s.size)) else {
-                env.up()
-            }
-            "d" -> if (s.size > 1) env.down(*s.copyOfRange(1, s.size)) else {
-                env.down()
-            }
+            "u" -> if (s.size > 1) env.up(*s.copyOfRange(1, s.size)) else env.up()
+            "d" -> if (s.size > 1) env.down(*s.copyOfRange(1, s.size)) else env.down()
             "e" -> exitProcess(0)
             else -> printHelp()
         }

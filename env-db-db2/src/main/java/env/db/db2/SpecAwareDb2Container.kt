@@ -1,16 +1,23 @@
 package env.db.db2
 
 import com.adven.concordion.extensions.exam.db.DbTester
-import env.core.ContainerizedSystem
-import env.core.ExtSystem
 import mu.KLogging
 import org.testcontainers.containers.Db2Container
+import org.testcontainers.utility.DockerImageName
 
 class SpecAwareDb2Container @JvmOverloads constructor(
-    dockerImageName: String,
-    fixedPort: Int = DB2_PORT,
-    fixedEnv: Boolean = false
+    dockerImageName: DockerImageName,
+    fixedEnv: Boolean = false,
+    fixedPort: Int = DB2_PORT
 ) : Db2Container(dockerImageName) {
+
+    init {
+        acceptLicense()
+        if (fixedEnv) {
+            addFixedExposedPort(fixedPort, DB2_PORT)
+        }
+    }
+
     override fun start() {
         super.start()
         System.setProperty(SYS_PROP_URL, jdbcUrl)
@@ -32,21 +39,7 @@ class SpecAwareDb2Container @JvmOverloads constructor(
         )
     }
 
-    init {
-        if (fixedEnv) {
-            addFixedExposedPort(fixedPort, DB2_PORT)
-        }
-    }
-
     companion object : KLogging() {
         const val SYS_PROP_URL = "env.db.db2.url"
-
-        @JvmOverloads
-        fun system(
-            dockerImageName: String,
-            fixedPort: Int = DB2_PORT,
-            fixedEnv: Boolean = false
-        ): ExtSystem<SpecAwareDb2Container> =
-            ContainerizedSystem(SpecAwareDb2Container(dockerImageName, fixedPort, fixedEnv))
     }
 }

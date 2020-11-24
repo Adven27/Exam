@@ -1,16 +1,22 @@
 package env.db.mysql
 
 import com.adven.concordion.extensions.exam.db.DbTester
-import env.core.ContainerizedSystem
-import env.core.ExtSystem
 import mu.KLogging
 import org.testcontainers.containers.MySQLContainer
+import org.testcontainers.utility.DockerImageName
 
 class SpecAwareMySqlContainer @JvmOverloads constructor(
-    dockerImageName: String,
-    fixedPort: Int = MYSQL_PORT,
-    fixedEnv: Boolean = false
+    dockerImageName: DockerImageName = DockerImageName.parse("mysql:5.7.22"),
+    fixedEnv: Boolean = false,
+    fixedPort: Int = MYSQL_PORT
 ) : MySQLContainer<Nothing>(dockerImageName) {
+
+    init {
+        if (fixedEnv) {
+            addFixedExposedPort(fixedPort, MYSQL_PORT)
+        }
+    }
+
     override fun start() {
         super.start()
         System.setProperty(SYS_PROP_URL, jdbcUrl)
@@ -33,21 +39,7 @@ class SpecAwareMySqlContainer @JvmOverloads constructor(
         )
     }
 
-    init {
-        if (fixedEnv) {
-            addFixedExposedPort(fixedPort, MYSQL_PORT)
-        }
-    }
-
     companion object : KLogging() {
         const val SYS_PROP_URL = "env.db.mysql.url"
-
-        @JvmOverloads
-        fun system(
-            dockerImageName: String,
-            fixedPort: Int = MYSQL_PORT,
-            fixedEnv: Boolean = false
-        ): ExtSystem<SpecAwareMySqlContainer> =
-            ContainerizedSystem(SpecAwareMySqlContainer(dockerImageName, fixedPort, fixedEnv))
     }
 }

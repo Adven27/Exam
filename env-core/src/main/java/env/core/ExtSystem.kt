@@ -1,6 +1,5 @@
 package env.core
 
-import org.testcontainers.containers.GenericContainer
 import java.util.function.Consumer
 import java.util.function.Function
 
@@ -12,6 +11,11 @@ interface ExtSystem<T> {
     fun configure(consumer: Consumer<T>): ExtSystem<T>? {
         consumer.accept(system())
         return this
+    }
+
+    companion object {
+        fun <T> generic(system: T, start: Consumer<T>, stop: Consumer<T>, running: Function<T, Boolean>) =
+            GenericExtSystem(system, start, stop, running)
     }
 }
 
@@ -29,18 +33,7 @@ open class GenericExtSystem<T>(
         stop.accept(system)
     }
 
-    override fun running(): Boolean {
-        return running.apply(system)
-    }
+    override fun running(): Boolean = running.apply(system)
 
-    override fun system(): T {
-        return system
-    }
+    override fun system(): T = system
 }
-
-class ContainerizedSystem<T : GenericContainer<*>?>(system: T) : GenericExtSystem<T>(
-    system,
-    start = { it!!.start() },
-    stop = { it!!.stop() },
-    running = { it!!.isRunning }
-)

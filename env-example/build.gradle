@@ -1,0 +1,18 @@
+plugins {
+    id 'java-library'
+}
+
+apply from: "$rootDir/gradle/publish.gradle"
+
+dependencies {
+    testImplementation project(":env-db-postgresql")
+    testImplementation project(":env-db-mysql")
+    testImplementation project(":env-db-db2")
+    testImplementation project(":env-mq-rabbit")
+    testImplementation project(":env-mq-redis")
+    testImplementation project(":env-grpc-mock")
+    testImplementation project(":env-wiremock")
+
+    testImplementation 'ch.qos.logback:logback-classic:1.2.3'
+    testImplementation 'mysql:mysql-connector-java:8.0.22'
+}
