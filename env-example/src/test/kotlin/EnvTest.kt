@@ -6,6 +6,7 @@ import env.grpc.GrpcMockContainer
 import env.mq.rabbit.SpecAwareRabbitContainer
 import env.mq.redis.SpecAwareRedisContainer
 import env.wiremock.WiremockSystem
+import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
 import org.junit.Assert.assertTrue
@@ -17,39 +18,44 @@ private const val PG_URL = "jdbc:postgresql://localhost:5432/test?loggerLevel=OF
 
 @Ignore
 class EnvTest {
-    private val environment = Environment(
-        mapOf(
-            "RABBIT" to ContainerizedSystem(
-                SpecAwareRabbitContainer()
-                    .withLogConsumer(Slf4jLogConsumer(SpecAwareRabbitContainer.logger).withPrefix("RABBIT"))
-            ),
-            "RABBIT_FIXED" to ContainerizedSystem(
-                SpecAwareRabbitContainer(fixedEnv = true, portSystemPropertyName = "fixed.rabbit.port")
-            ),
-            "REDIS" to ContainerizedSystem(SpecAwareRedisContainer()),
-            "POSTGRES" to ContainerizedSystem(SpecAwarePostgreSqlContainer()),
-            "POSTGRES_FIXED" to ContainerizedSystem(
-                SpecAwarePostgreSqlContainer(fixedEnv = true, urlSystemPropertyName = "fixed.postgres.url")
-            ),
-            "MYSQL" to ContainerizedSystem(SpecAwareMySqlContainer()),
-            "GRPC" to ContainerizedSystem(GrpcMockContainer(1, listOf("common.proto", "wallet.proto"))),
-            "WIREMOCK" to WiremockSystem()
-        )
-    )
+    private lateinit var environment: Environment
 
     @Test
-    fun test() {
-        environment.up()
+    fun fixedEnvironment() {
+        environment = SomeEnvironment(true).apply { up() }
+
         environment.systems.forEach { (_, s) -> assertTrue(s.running()) }
+        assertEquals(5672, environment.find<SpecAwareRabbitContainer>("RABBIT").port())
+        assertEquals("5672", System.getProperty("env.mq.rabbit.port"))
+        assertEquals(PG_URL, environment.find<SpecAwarePostgreSqlContainer>("POSTGRES").jdbcUrl)
+        assertEquals(PG_URL, System.getProperty("env.db.postgresql.url"))
+    }
 
+    @Test
+    fun dynamicEnvironment() {
+        environment = SomeEnvironment(false).apply { up() }
+
+        environment.systems.forEach { (_, s) -> assertTrue(s.running()) }
         assertNotEquals(5672, environment.find<SpecAwareRabbitContainer>("RABBIT").port())
-        assertEquals(5672, environment.find<SpecAwareRabbitContainer>("RABBIT_FIXED").port())
-        assertEquals("5672", System.getProperty("fixed.rabbit.port"))
-
         assertNotEquals(PG_URL, environment.find<SpecAwarePostgreSqlContainer>("POSTGRES").jdbcUrl)
-        assertEquals(PG_URL, environment.find<SpecAwarePostgreSqlContainer>("POSTGRES_FIXED").jdbcUrl)
-        assertEquals(PG_URL, System.getProperty("fixed.postgres.url"))
+    }
 
+    @After
+    fun tearDown() {
         environment.down()
     }
 }
+
+class SomeEnvironment(fixed: Boolean) : Environment(
+    mapOf(
+        "RABBIT" to ContainerizedSystem(
+            SpecAwareRabbitContainer(fixedEnv = fixed)
+                .withLogConsumer(Slf4jLogConsumer(logger).withPrefix("RABBIT"))
+        ),
+        "REDIS" to ContainerizedSystem(SpecAwareRedisContainer(fixedEnv = fixed)),
+        "POSTGRES" to ContainerizedSystem(SpecAwarePostgreSqlContainer(fixedEnv = fixed)),
+        "MYSQL" to ContainerizedSystem(SpecAwareMySqlContainer(fixedEnv = fixed)),
+        "GRPC" to ContainerizedSystem(GrpcMockContainer(1, fixed, listOf("common.proto", "wallet.proto"))),
+        "WIREMOCK" to WiremockSystem(fixed)
+    )
+)

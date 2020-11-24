@@ -9,7 +9,8 @@ class SpecAwarePostgreSqlContainer @JvmOverloads constructor(
     dockerImageName: DockerImageName = DockerImageName.parse("postgres:9.6.12"),
     fixedEnv: Boolean = false,
     fixedPort: Int = POSTGRESQL_PORT,
-    val urlSystemPropertyName: String = "env.db.postgresql.url"
+    val urlSystemPropertyName: String = "env.db.postgresql.url",
+    private val afterStart: SpecAwarePostgreSqlContainer.() -> Unit = { }
 ) : PostgreSQLContainer<Nothing>(dockerImageName) {
 
     init {
@@ -23,6 +24,7 @@ class SpecAwarePostgreSqlContainer @JvmOverloads constructor(
         System.setProperty(urlSystemPropertyName, jdbcUrl).also {
             logger.info("System property set: $urlSystemPropertyName = ${System.getProperty(urlSystemPropertyName)} ")
         }
+        apply(afterStart)
     }
 
     @JvmOverloads

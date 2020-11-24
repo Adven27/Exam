@@ -65,7 +65,7 @@ subprojects {
     apply from: "$rootDir/gradle/linters.gradle"
 }
 
-task publishBintray {
+task publishExam {
     dependsOn ":exam-core:bintrayUpload"
     dependsOn ":exam-db:bintrayUpload"
     dependsOn ":exam-ws:bintrayUpload"
@@ -73,4 +73,21 @@ task publishBintray {
     dependsOn ":exam-files:bintrayUpload"
     dependsOn ":exam-ui:bintrayUpload"
     dependsOn ":exam-ms:bintrayUpload"
+}
+
+task publishEnv {
+    dependsOn ":env-core:bintrayUpload"
+    dependsOn ":env-container:bintrayUpload"
+    dependsOn ":env-db-db2:bintrayUpload"
+    dependsOn ":env-db-mysql:bintrayUpload"
+    dependsOn ":env-db-postgresql:bintrayUpload"
+    dependsOn ":env-grpc-mock:bintrayUpload"
+    dependsOn ":env-mq-rabbit:bintrayUpload"
+    dependsOn ":env-mq-redis:bintrayUpload"
+    dependsOn ":env-wiremock:bintrayUpload"
+}
+
+task publishAll {
+    dependsOn(publishExam)
+    dependsOn(publishEnv)
 }

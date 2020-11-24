@@ -15,10 +15,11 @@ class WiremockSystem @JvmOverloads constructor(
                 System.setProperty("env.wiremock.port", this.toString())
             }
         )
-    )
+    ),
+    private val afterStart: WireMockServer.() -> Unit = { }
 ) : GenericExtSystem<WireMockServer>(
     server,
-    start = { it.start() },
+    start = { it.start(); it.afterStart() },
     stop = { it.stop() },
     running = { it.isRunning }
 )

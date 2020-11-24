@@ -14,7 +14,8 @@ class SpecAwareRedisContainer @JvmOverloads constructor(
     dockerImageName: DockerImageName = DockerImageName.parse(IMAGE),
     fixedEnv: Boolean = false,
     fixedPort: Int = PORT,
-    val portSystemPropertyName: String = "env.mq.redis.port"
+    val portSystemPropertyName: String = "env.mq.redis.port",
+    private val afterStart: SpecAwareRedisContainer.() -> Unit = { }
 ) : GenericContainer<Nothing>(dockerImageName) {
     private val fixedPort: Int
 
@@ -33,6 +34,7 @@ class SpecAwareRedisContainer @JvmOverloads constructor(
         System.setProperty(portSystemPropertyName, firstMappedPort.toString()).also {
             logger.info("System property set: $portSystemPropertyName = ${System.getProperty(portSystemPropertyName)}")
         }
+        apply(afterStart)
     }
 
     fun mqTester(): MqTester {

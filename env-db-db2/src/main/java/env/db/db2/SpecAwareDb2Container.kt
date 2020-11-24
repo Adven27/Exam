@@ -8,7 +8,8 @@ import org.testcontainers.utility.DockerImageName
 class SpecAwareDb2Container @JvmOverloads constructor(
     dockerImageName: DockerImageName,
     fixedEnv: Boolean = false,
-    fixedPort: Int = DB2_PORT
+    fixedPort: Int = DB2_PORT,
+    private val afterStart: SpecAwareDb2Container.() -> Unit = { }
 ) : Db2Container(dockerImageName) {
 
     init {
@@ -22,6 +23,7 @@ class SpecAwareDb2Container @JvmOverloads constructor(
         super.start()
         System.setProperty(SYS_PROP_URL, jdbcUrl)
             .also { logger.info("System property set: $SYS_PROP_URL = ${System.getProperty(SYS_PROP_URL)} ") }
+        apply(afterStart)
     }
 
     @JvmOverloads

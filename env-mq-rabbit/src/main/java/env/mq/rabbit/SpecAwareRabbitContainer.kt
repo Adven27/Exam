@@ -9,7 +9,8 @@ open class SpecAwareRabbitContainer @JvmOverloads constructor(
     fixedEnv: Boolean = false,
     private val fixedPort: Int = PORT,
     fixedPortAdm: Int = PORT_ADM,
-    val portSystemPropertyName: String = "env.mq.rabbit.port"
+    val portSystemPropertyName: String = "env.mq.rabbit.port",
+    private val afterStart: SpecAwareRabbitContainer.() -> Unit = { }
 ) : RabbitMQContainer(dockerImageName) {
 
     init {
@@ -24,6 +25,7 @@ open class SpecAwareRabbitContainer @JvmOverloads constructor(
         System.setProperty(portSystemPropertyName, firstMappedPort.toString()).also {
             logger.info("System property set: $portSystemPropertyName = ${System.getProperty(portSystemPropertyName)} ")
         }
+        apply(afterStart)
     }
 
     @Suppress("unused")

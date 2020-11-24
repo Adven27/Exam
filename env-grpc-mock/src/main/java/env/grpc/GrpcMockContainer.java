@@ -12,24 +12,31 @@ import java.time.Duration;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Consumer;
 
 import static env.core.Environment.findAvailableTcpPort;
 
 public class GrpcMockContainer extends FixedHostPortGenericContainer<GrpcMockContainer> {
     private static final Logger log = LoggerFactory.getLogger(GrpcMockContainer.class);
     private int serviceId;
+    private final Consumer<GrpcMockContainer> afterStart;
 
     public GrpcMockContainer(final int serviceId, boolean fixedEnv, final List<String> protos) {
-        this(serviceId, fixedEnv, null, protos);
+        this(serviceId, fixedEnv, null, protos, c -> {} );
+    }
+
+    public GrpcMockContainer(final int serviceId, boolean fixedEnv, final List<String> protos, Consumer<GrpcMockContainer> afterStart) {
+        this(serviceId, fixedEnv, null, protos, afterStart);
     }
 
     public GrpcMockContainer(final int serviceId, final List<String> protos) {
-        this(serviceId, false, null, protos);
+        this(serviceId, false, null, protos, c -> {});
     }
 
-    public GrpcMockContainer(final int serviceId, boolean fixedEnv, String wiremock, final List<String> protos) {
+    public GrpcMockContainer(final int serviceId, boolean fixedEnv, String wiremock, final List<String> protos, Consumer<GrpcMockContainer> afterStart) {
         super("adven27/grpc-wiremock");
         this.serviceId = serviceId;
+        this.afterStart = afterStart;
         this.withFixedExposedPort(findAndSetBasePort(fixedEnv) + serviceId, 50000)
             .waitingFor(Wait.forLogMessage(".*Started GrpcWiremock.*\\s", 1))
             .withStartupTimeout(Duration.ofSeconds(180))
@@ -52,6 +59,7 @@ public class GrpcMockContainer extends FixedHostPortGenericContainer<GrpcMockCon
     public void start() {
         super.start();
         log.info("{} started on port {}; mock API port {}", getDockerImageName(), getMappedPort(50000), getMappedPort(8888));
+        afterStart.accept(this);
     }
 
     private static int findAndSetBasePort(boolean fixedEnv) {

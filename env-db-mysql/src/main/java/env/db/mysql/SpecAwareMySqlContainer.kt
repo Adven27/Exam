@@ -8,7 +8,8 @@ import org.testcontainers.utility.DockerImageName
 class SpecAwareMySqlContainer @JvmOverloads constructor(
     dockerImageName: DockerImageName = DockerImageName.parse("mysql:5.7.22"),
     fixedEnv: Boolean = false,
-    fixedPort: Int = MYSQL_PORT
+    fixedPort: Int = MYSQL_PORT,
+    private val afterStart: SpecAwareMySqlContainer.() -> Unit = { }
 ) : MySQLContainer<Nothing>(dockerImageName) {
 
     init {
@@ -21,6 +22,7 @@ class SpecAwareMySqlContainer @JvmOverloads constructor(
         super.start()
         System.setProperty(SYS_PROP_URL, jdbcUrl)
             .also { logger.info("System property set: $SYS_PROP_URL = ${System.getProperty(SYS_PROP_URL)} ") }
+        apply(afterStart)
     }
 
     @JvmOverloads
