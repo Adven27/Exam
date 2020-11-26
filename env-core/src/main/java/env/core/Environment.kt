@@ -1,90 +1,104 @@
 package env.core
 
 import mu.KLogging
-import java.lang.System.currentTimeMillis
 import java.util.concurrent.CompletableFuture
+import java.util.concurrent.CompletableFuture.allOf
 import java.util.concurrent.CompletableFuture.runAsync
-import java.util.concurrent.Executors
+import java.util.concurrent.Executors.newCachedThreadPool
 import java.util.concurrent.ThreadFactory
 import java.util.concurrent.TimeUnit.SECONDS
+import java.util.concurrent.TimeoutException
 import java.util.concurrent.atomic.AtomicInteger
+import kotlin.system.measureTimeMillis
 
-open class Environment(val systems: Map<String, ExtSystem<*>>) {
+open class Environment(val operators: Map<String, Operator<*>>) {
 
     init {
-        logger.info("Environment settings:\nSystems: $systems\nConfig: $config")
+        logger.info("Environment settings:\nOperators: $operators\nConfig: $config")
     }
 
     @Suppress("SpreadOperator")
     fun up() {
-        val start = currentTimeMillis()
-        CompletableFuture.allOf(*start(systems.entries))
-            .thenRun { logger.info(summary(), currentTimeMillis() - start) }[config.upTimeout, SECONDS]
+        try {
+            val elapsed = measureTimeMillis { allOf(*start(operators.entries))[config.upTimeout, SECONDS] }
+            logger.info(summary(), elapsed)
+        } catch (e: TimeoutException) {
+            logger.error("Startup timeout exceeded: expected ${config.upTimeout}s. ${status()}", e)
+            throw StartupFail(e)
+        }
     }
 
-    private fun summary() = "${javaClass.simpleName}\n\n ======= Test environment started {} ms =======\n\n" +
-        systems.entries.joinToString("\n") { "${it.key}: ${it.value.system()}" } +
-        "\n\n ==============================================\n\n"
+    fun up(vararg systems: String) {
+        exec(systems, "Starting {}...", config.upTimeout) { it.start() }
+    }
 
     @Suppress("SpreadOperator")
     fun down() {
-        CompletableFuture.allOf(
-            *systems.values.map { runAsync { it.stop() } }.toTypedArray()
-        )[config.downTimeout, SECONDS]
+        allOf(*operators.values.map { runAsync { it.stop() } }.toTypedArray())[config.downTimeout, SECONDS]
+    }
+
+    fun down(vararg systems: String) {
+        exec(systems, "Stopping {}...", config.downTimeout) { it.stop() }
     }
 
     @Suppress("SpreadOperator")
-    fun down(vararg systems: String) {
-        CompletableFuture.allOf(
-            *this.systems.entries
+    private fun exec(systems: Array<out String>, logDesc: String, timeout: Long, operation: (Operator<*>) -> Unit) {
+        allOf(
+            *this.operators.entries
                 .filter { systems.any { s: String -> it.key.toLowerCase().startsWith(s.toLowerCase()) } }
-                .onEach { logger.info("Stopping {}...", it.key) }
+                .onEach { logger.info(logDesc, it.key) }
                 .map { it.value }
-                .map { runAsync { it.stop() } }
+                .map { runAsync { operation(it) } }
                 .toTypedArray()
-        ).thenRun { logger.info(status()) }[config.downTimeout, SECONDS]
+        ).thenRun { logger.info("Done. ${status()}") }[timeout, SECONDS]
     }
 
     private fun status() =
-        "Done. Status:\n${systems.entries.joinToString("\n") { "${it.key}: ${if (it.value.running()) "up" else "down"}" }}"
+        "Status:\n${operators.entries.joinToString("\n") { "${it.key}: ${if (it.value.running()) "up" else "down"}" }}"
 
-    @Suppress("SpreadOperator")
-    fun up(vararg systems: String) {
-        CompletableFuture.allOf(
-            *this.systems.entries
-                .filter { systems.any { s: String -> it.key.toLowerCase().startsWith(s.toLowerCase()) } }
-                .onEach { sys: Map.Entry<String, ExtSystem<*>> -> logger.info("Starting {}...", sys.key) }
-                .map { it.value }
-                .map { runAsync { it.start() } }
-                .toTypedArray()
-        ).thenRun { logger.info(status()) }[config.upTimeout, SECONDS]
-    }
+    private fun summary() = "${javaClass.simpleName}\n\n ======= Test environment started {} ms =======\n\n" +
+        operators.entries.joinToString("\n") { "${it.key}: ${it.value.system()}" } +
+        "\n\n ==============================================\n\n"
 
     @Suppress("UNCHECKED_CAST")
-    fun <T> find(name: String): T = (systems[name] ?: error("System $name not found")).system() as T
+    fun <T> find(name: String): T = (operators[name] ?: error("System $name not found")).system() as T
 
     companion object : KLogging() {
         private val config = Config()
 
-        private fun start(systems: Set<Map.Entry<String, ExtSystem<*>>>): Array<CompletableFuture<*>> = systems
+        private fun start(operators: Set<Map.Entry<String, Operator<*>>>): Array<CompletableFuture<*>> = operators
             .filter { config.startEnv }
             .onEach { logger.info("Preparing to start {}", it.key) }
-            .map { runAsync({ it.value.start() }, Executors.newCachedThreadPool(NamedThreadFactory(it.key))) }
+            .map { runAsync({ it.value.start() }, newCachedThreadPool(NamedThreadFactory(it.key))) }
             .toTypedArray()
 
         @JvmStatic
         fun findAvailableTcpPort(): Int = SocketUtils.findAvailableTcpPort()
+
+        @JvmStatic
+        fun String.fromPropertyOrElse(orElse: Long) = System.getProperty(this, orElse.toString()).toLong()
+
+        @JvmStatic
+        fun String.fromPropertyOrElse(orElse: Boolean) = System.getProperty(this, orElse.toString()).toBoolean()
+
+        @JvmStatic
+        fun Map<String, String>.setProperties() = this.forEach { (p, v) ->
+            System.setProperty(p, v).also { logger.info("Set system property : $p = ${System.getProperty(p)}") }
+        }
     }
 
+    @Suppress("MagicNumber")
     data class Config(
-        val downTimeout: Long = System.getProperty("SPECS_ENV_DOWN_TIMEOUT_SEC", "10").toLong(),
-        val upTimeout: Long = System.getProperty("SPECS_ENV_UP_TIMEOUT_SEC", "300").toLong(),
-        val startEnv: Boolean = System.getProperty("SPECS_ENV_START", "true").toBoolean(),
-        val fixedEnv: Boolean = System.getProperty("SPECS_ENV_FIXED", "false").toBoolean()
+        val downTimeout: Long = "SPECS_ENV_DOWN_TIMEOUT_SEC".fromPropertyOrElse(10L),
+        val upTimeout: Long = "SPECS_ENV_UP_TIMEOUT_SEC".fromPropertyOrElse(300L),
+        val startEnv: Boolean = "SPECS_ENV_START".fromPropertyOrElse(true),
+        val fixedEnv: Boolean = "SPECS_ENV_FIXED".fromPropertyOrElse(false)
     )
+
+    class StartupFail(t: Throwable): RuntimeException(t)
 }
 
-class NamedThreadFactory(baseName: String) : ThreadFactory {
+private class NamedThreadFactory(baseName: String) : ThreadFactory {
     private val threadsNum = AtomicInteger()
     private val namePattern: String = "$baseName-%d"
     override fun newThread(runnable: Runnable) = Thread(runnable, String.format(namePattern, threadsNum.addAndGet(1)))

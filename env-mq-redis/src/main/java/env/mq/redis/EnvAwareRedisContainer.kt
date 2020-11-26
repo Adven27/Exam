@@ -2,26 +2,26 @@ package env.mq.redis
 
 import com.adven.concordion.extensions.exam.mq.MqTester
 import com.adven.concordion.extensions.exam.mq.MqTester.NOOP
+import env.core.Environment.Companion.setProperties
 import mu.KLogging
-import org.slf4j.LoggerFactory
 import org.testcontainers.containers.GenericContainer
 import org.testcontainers.containers.output.Slf4jLogConsumer
 import org.testcontainers.utility.DockerImageName
 import redis.clients.jedis.Jedis
 import java.time.Duration.ofSeconds
 
-class SpecAwareRedisContainer @JvmOverloads constructor(
+class EnvAwareRedisContainer @JvmOverloads constructor(
     dockerImageName: DockerImageName = DockerImageName.parse(IMAGE),
     fixedEnv: Boolean = false,
     fixedPort: Int = PORT,
     val portSystemPropertyName: String = "env.mq.redis.port",
-    private val afterStart: SpecAwareRedisContainer.() -> Unit = { }
+    private val afterStart: EnvAwareRedisContainer.() -> Unit = { }
 ) : GenericContainer<Nothing>(dockerImageName) {
     private val fixedPort: Int
 
     init {
         withExposedPorts(PORT)
-        withLogConsumer(Slf4jLogConsumer(LoggerFactory.getLogger("REDIS")))
+        withLogConsumer(Slf4jLogConsumer(logger).withPrefix("REDIS"))
         withStartupTimeout(ofSeconds(STARTUP_TIMEOUT))
         this.fixedPort = fixedPort
         if (fixedEnv) {
@@ -31,9 +31,7 @@ class SpecAwareRedisContainer @JvmOverloads constructor(
 
     override fun start() {
         super.start()
-        System.setProperty(portSystemPropertyName, firstMappedPort.toString()).also {
-            logger.info("System property set: $portSystemPropertyName = ${System.getProperty(portSystemPropertyName)}")
-        }
+        mapOf(portSystemPropertyName to firstMappedPort.toString()).setProperties()
         apply(afterStart)
     }
 

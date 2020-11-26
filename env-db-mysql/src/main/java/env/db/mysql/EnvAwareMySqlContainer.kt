@@ -1,15 +1,21 @@
 package env.db.mysql
 
 import com.adven.concordion.extensions.exam.db.DbTester
+import env.core.Environment.Companion.setProperties
 import mu.KLogging
 import org.testcontainers.containers.MySQLContainer
 import org.testcontainers.utility.DockerImageName
 
-class SpecAwareMySqlContainer @JvmOverloads constructor(
+@Suppress("LongParameterList")
+class EnvAwareMySqlContainer @JvmOverloads constructor(
     dockerImageName: DockerImageName = DockerImageName.parse("mysql:5.7.22"),
     fixedEnv: Boolean = false,
     fixedPort: Int = MYSQL_PORT,
-    private val afterStart: SpecAwareMySqlContainer.() -> Unit = { }
+    private val urlSystemPropertyName: String = "env.db.mysql.url",
+    private val usernameSystemPropertyName: String = "env.db.mysql.username",
+    private val passwordSystemPropertyName: String = "env.db.mysql.password",
+    private val driverSystemPropertyName: String = "env.db.mysql.driver",
+    private val afterStart: EnvAwareMySqlContainer.() -> Unit = { }
 ) : MySQLContainer<Nothing>(dockerImageName) {
 
     init {
@@ -20,8 +26,12 @@ class SpecAwareMySqlContainer @JvmOverloads constructor(
 
     override fun start() {
         super.start()
-        System.setProperty(SYS_PROP_URL, jdbcUrl)
-            .also { logger.info("System property set: $SYS_PROP_URL = ${System.getProperty(SYS_PROP_URL)} ") }
+        mapOf(
+            urlSystemPropertyName to jdbcUrl,
+            usernameSystemPropertyName to username,
+            passwordSystemPropertyName to password,
+            driverSystemPropertyName to driverClassName,
+        ).setProperties()
         apply(afterStart)
     }
 
@@ -41,7 +51,5 @@ class SpecAwareMySqlContainer @JvmOverloads constructor(
         )
     }
 
-    companion object : KLogging() {
-        const val SYS_PROP_URL = "env.db.mysql.url"
-    }
+    companion object : KLogging()
 }

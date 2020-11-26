@@ -5,16 +5,16 @@ import org.slf4j.LoggerFactory;
 import org.testcontainers.containers.BindMode;
 import org.testcontainers.containers.FixedHostPortGenericContainer;
 import org.testcontainers.containers.output.Slf4jLogConsumer;
-import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.utility.MountableFile;
 
-import java.time.Duration;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Consumer;
 
 import static env.core.Environment.findAvailableTcpPort;
+import static java.time.Duration.ofSeconds;
+import static org.testcontainers.containers.wait.strategy.Wait.forLogMessage;
 
 public class GrpcMockContainer extends FixedHostPortGenericContainer<GrpcMockContainer> {
     private static final Logger log = LoggerFactory.getLogger(GrpcMockContainer.class);
@@ -38,8 +38,8 @@ public class GrpcMockContainer extends FixedHostPortGenericContainer<GrpcMockCon
         this.serviceId = serviceId;
         this.afterStart = afterStart;
         this.withFixedExposedPort(findAndSetBasePort(fixedEnv) + serviceId, 50000)
-            .waitingFor(Wait.forLogMessage(".*Started GrpcWiremock.*\\s", 1))
-            .withStartupTimeout(Duration.ofSeconds(180))
+            .waitingFor(forLogMessage(".*Started GrpcWiremock.*\\s", 1))
+            .withStartupTimeout(ofSeconds(180))
             .withCreateContainerCmdModifier(cmd -> {
                 String random = UUID.randomUUID().toString();
                 cmd.withHostName("grpc-mock-" + serviceId + "-" + random);

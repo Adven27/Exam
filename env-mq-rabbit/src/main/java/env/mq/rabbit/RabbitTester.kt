@@ -7,7 +7,7 @@ import com.rabbitmq.client.Connection
 import com.rabbitmq.client.ConnectionFactory
 import com.rabbitmq.client.GetResponse
 import com.rabbitmq.client.MessageProperties.MINIMAL_BASIC
-import org.slf4j.LoggerFactory
+import mu.KLogging
 import java.io.IOException
 import java.nio.charset.StandardCharsets.UTF_8
 import java.util.Optional
@@ -70,24 +70,24 @@ open class RabbitTester @JvmOverloads constructor(
     override fun purge() {
         queue.forEach {
             val ok = ch.queuePurge(it)
-            log.info("Purged {} messages", ok.messageCount)
+            logger.info("Purged {} messages", ok.messageCount)
         }
     }
 
     override fun receive(): List<MqTester.Message> {
-        log.info("Receiving message from {}...", queue[0])
+        logger.info("Receiving message from {}...", queue[0])
         val result: MutableList<MqTester.Message> = mutableListOf()
         var response: Optional<GetResponse>
         do {
             response = Optional.ofNullable(ch.basicGet(queue[0], true))
             response.ifPresent { result.add(receiveConverter.apply(it)!!) }
         } while (response.isPresent)
-        log.info("Got messages: {}", result)
+        logger.info("Got messages: {}", result)
         return result
     }
 
     override fun send(message: String, headers: Map<String, String>) {
-        log.info("Publishing message to {} routing key {} : {}", exchange, routingKey, message)
+        logger.info("Publishing message to {} routing key {} : {}", exchange, routingKey, message)
         ch.basicPublish(
             exchange,
             routingKey,
@@ -131,8 +131,7 @@ open class RabbitTester @JvmOverloads constructor(
 
     interface SendConverter : Function<MqTester.Message?, ByteArray?>
     interface ReceiveConverter : Function<GetResponse?, MqTester.Message?>
-    companion object {
-        private val log = LoggerFactory.getLogger(RabbitTester::class.java)
+    companion object : KLogging() {
         val DEFAULT_SEND_CONVERTER: SendConverter = object : SendConverter {
             override fun apply(body: MqTester.Message?): ByteArray? = body?.body?.toByteArray(UTF_8)
         }

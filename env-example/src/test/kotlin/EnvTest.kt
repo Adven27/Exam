@@ -1,11 +1,11 @@
-import env.container.ContainerizedSystem
+import env.container.ContainerOperator
 import env.core.Environment
-import env.db.mysql.SpecAwareMySqlContainer
-import env.db.postgresql.SpecAwarePostgreSqlContainer
+import env.db.mysql.EnvAwareMySqlContainer
+import env.db.postgresql.EnvAwarePostgreSqlContainer
 import env.grpc.GrpcMockContainer
-import env.mq.rabbit.SpecAwareRabbitContainer
-import env.mq.redis.SpecAwareRedisContainer
-import env.wiremock.WiremockSystem
+import env.mq.rabbit.EnvAwareRabbitContainer
+import env.mq.redis.EnvAwareRedisContainer
+import env.wiremock.WiremockOperator
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
@@ -24,10 +24,10 @@ class EnvTest {
     fun fixedEnvironment() {
         environment = SomeEnvironment(true).apply { up() }
 
-        environment.systems.forEach { (_, s) -> assertTrue(s.running()) }
-        assertEquals(5672, environment.find<SpecAwareRabbitContainer>("RABBIT").port())
+        environment.operators.forEach { (_, s) -> assertTrue(s.running()) }
+        assertEquals(5672, environment.find<EnvAwareRabbitContainer>("RABBIT").port())
         assertEquals("5672", System.getProperty("env.mq.rabbit.port"))
-        assertEquals(PG_URL, environment.find<SpecAwarePostgreSqlContainer>("POSTGRES").jdbcUrl)
+        assertEquals(PG_URL, environment.find<EnvAwarePostgreSqlContainer>("POSTGRES").jdbcUrl)
         assertEquals(PG_URL, System.getProperty("env.db.postgresql.url"))
     }
 
@@ -35,9 +35,9 @@ class EnvTest {
     fun dynamicEnvironment() {
         environment = SomeEnvironment(false).apply { up() }
 
-        environment.systems.forEach { (_, s) -> assertTrue(s.running()) }
-        assertNotEquals(5672, environment.find<SpecAwareRabbitContainer>("RABBIT").port())
-        assertNotEquals(PG_URL, environment.find<SpecAwarePostgreSqlContainer>("POSTGRES").jdbcUrl)
+        environment.operators.forEach { (_, s) -> assertTrue(s.running()) }
+        assertNotEquals(5672, environment.find<EnvAwareRabbitContainer>("RABBIT").port())
+        assertNotEquals(PG_URL, environment.find<EnvAwarePostgreSqlContainer>("POSTGRES").jdbcUrl)
     }
 
     @After
@@ -48,14 +48,14 @@ class EnvTest {
 
 class SomeEnvironment(fixed: Boolean) : Environment(
     mapOf(
-        "RABBIT" to ContainerizedSystem(
-            SpecAwareRabbitContainer(fixedEnv = fixed)
+        "RABBIT" to ContainerOperator(
+            EnvAwareRabbitContainer(fixedEnv = fixed)
                 .withLogConsumer(Slf4jLogConsumer(logger).withPrefix("RABBIT"))
         ),
-        "REDIS" to ContainerizedSystem(SpecAwareRedisContainer(fixedEnv = fixed)),
-        "POSTGRES" to ContainerizedSystem(SpecAwarePostgreSqlContainer(fixedEnv = fixed)),
-        "MYSQL" to ContainerizedSystem(SpecAwareMySqlContainer(fixedEnv = fixed)),
-        "GRPC" to ContainerizedSystem(GrpcMockContainer(1, fixed, listOf("common.proto", "wallet.proto"))),
-        "WIREMOCK" to WiremockSystem(fixed)
+        "REDIS" to ContainerOperator(EnvAwareRedisContainer(fixedEnv = fixed)),
+        "POSTGRES" to ContainerOperator(EnvAwarePostgreSqlContainer(fixedEnv = fixed)),
+        "MYSQL" to ContainerOperator(EnvAwareMySqlContainer(fixedEnv = fixed)),
+        "GRPC" to ContainerOperator(GrpcMockContainer(1, fixed, listOf("common.proto", "wallet.proto"))),
+        "WIREMOCK" to WiremockOperator(fixed)
     )
 )
