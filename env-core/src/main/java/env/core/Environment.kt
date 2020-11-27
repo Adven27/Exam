@@ -19,12 +19,16 @@ open class Environment(val operators: Map<String, Operator<*>>) {
 
     @Suppress("SpreadOperator")
     fun up() {
-        try {
-            val elapsed = measureTimeMillis { allOf(*start(operators.entries))[config.upTimeout, SECONDS] }
-            logger.info(summary(), elapsed)
-        } catch (e: TimeoutException) {
-            logger.error("Startup timeout exceeded: expected ${config.upTimeout}s. ${status()}", e)
-            throw StartupFail(e)
+        if (config.startEnv) {
+            try {
+                val elapsed = measureTimeMillis { allOf(*start(operators.entries))[config.upTimeout, SECONDS] }
+                logger.info(summary(), elapsed)
+            } catch (e: TimeoutException) {
+                logger.error("Startup timeout exceeded: expected ${config.upTimeout}s. ${status()}", e)
+                throw StartupFail(e)
+            }
+        } else {
+            logger.info("Skip environment starting.")
         }
     }
 
@@ -34,7 +38,9 @@ open class Environment(val operators: Map<String, Operator<*>>) {
 
     @Suppress("SpreadOperator")
     fun down() {
-        allOf(*operators.values.map { runAsync { it.stop() } }.toTypedArray())[config.downTimeout, SECONDS]
+        if (config.startEnv) {
+            allOf(*operators.values.map { runAsync { it.stop() } }.toTypedArray())[config.downTimeout, SECONDS]
+        }
     }
 
     fun down(vararg systems: String) {
@@ -67,7 +73,6 @@ open class Environment(val operators: Map<String, Operator<*>>) {
         private val config = Config()
 
         private fun start(operators: Set<Map.Entry<String, Operator<*>>>): Array<CompletableFuture<*>> = operators
-            .filter { config.startEnv }
             .onEach { logger.info("Preparing to start {}", it.key) }
             .map { runAsync({ it.value.start() }, newCachedThreadPool(NamedThreadFactory(it.key))) }
             .toTypedArray()

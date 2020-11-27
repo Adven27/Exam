@@ -103,7 +103,7 @@ data class IbmMqConfig @JvmOverloads constructor(
     @Suppress("unused")
     val jmsTester2 = jmsConfig(devQueue2.value)
 
-    private fun jmsConfig(q: String) = JmsTester.Config(host.name, port.value.toInt(), q, manager.value, channel.value)
+    private fun jmsConfig(q: String) = JmsTester.Config(host.value, port.value.toInt(), q, manager.value, channel.value)
 
     constructor(
         host: String = "localhost",
