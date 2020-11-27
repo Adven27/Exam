@@ -23,4 +23,14 @@ class WiremockOperator @JvmOverloads constructor(
     start = { it.start(); it.afterStart() },
     stop = { it.stop() },
     running = { it.isRunning }
-)
+) {
+    constructor(fixedEnv: Boolean, afterStart: WireMockServer.() -> Unit) : this(
+        fixedEnv = fixedEnv,
+        fixedPort = 8888,
+        afterStart = afterStart
+    )
+
+    override fun describe(): String {
+        return "${system().baseUrl()} registered ${system().listAllStubMappings().mappings.size} mappings."
+    }
+}

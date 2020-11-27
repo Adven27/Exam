@@ -1,8 +1,9 @@
 package env.mq.redis
 
-import com.adven.concordion.extensions.exam.mq.MqTester
 import com.adven.concordion.extensions.exam.mq.MqTester.NOOP
 import env.core.Environment.Companion.setProperties
+import env.core.Environment.Prop
+import env.core.Environment.Prop.Companion.set
 import mu.KLogging
 import org.testcontainers.containers.GenericContainer
 import org.testcontainers.containers.output.Slf4jLogConsumer
@@ -14,7 +15,7 @@ class EnvAwareRedisContainer @JvmOverloads constructor(
     dockerImageName: DockerImageName = DockerImageName.parse(IMAGE),
     fixedEnv: Boolean = false,
     fixedPort: Int = PORT,
-    val portSystemPropertyName: String = "env.mq.redis.port",
+    private var config: Config = Config(),
     private val afterStart: EnvAwareRedisContainer.() -> Unit = { }
 ) : GenericContainer<Nothing>(dockerImageName) {
     private val fixedPort: Int
@@ -31,21 +32,22 @@ class EnvAwareRedisContainer @JvmOverloads constructor(
 
     override fun start() {
         super.start()
-        mapOf(portSystemPropertyName to firstMappedPort.toString()).setProperties()
+        config = Config(config.host.name set host, config.port.name set firstMappedPort.toString())
         apply(afterStart)
     }
 
-    fun mqTester(): MqTester {
-        val tester: MqTester = RedisTester(port())
-        tester.start()
-        return tester
+    fun config() = config
+
+    data class Config @JvmOverloads constructor(
+        val host: Prop = "env.mq.redis.host" set "localhost",
+        val port: Prop = "env.mq.redis.port" set PORT.toString()
+    ) {
+        init {
+            mapOf(host.pair(), port.pair()).setProperties()
+        }
     }
 
-    fun port(): Int {
-        return if (isRunning) firstMappedPort else fixedPort
-    }
-
-    internal class RedisTester(private val port: Int) : NOOP() {
+    open class RedisTester(private val port: Int) : NOOP() {
         override fun start() {
             jedis = Jedis("localhost", port)
         }

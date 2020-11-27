@@ -3,7 +3,8 @@ package env.mq.ibmmq
 import com.ibm.mq.jms.MQConnectionFactory
 import com.ibm.msg.client.wmq.WMQConstants.WMQ_CM_CLIENT
 import env.core.Environment.Companion.setProperties
-import env.core.GenericOperator
+import env.core.Environment.Prop
+import env.core.Environment.Prop.Companion.set
 import mu.KLogging
 import org.testcontainers.containers.GenericContainer
 import org.testcontainers.containers.output.Slf4jLogConsumer
@@ -19,9 +20,9 @@ class EnvAwareIbmMQContainer @JvmOverloads constructor(
     fixedEnv: Boolean = false,
     fixedPort: Int = PORT,
     fixedPortAdm: Int = PORT_ADM,
+    private var config: IbmMqConfig = IbmMqConfig(),
     private val afterStart: EnvAwareIbmMQContainer.() -> Unit = { },
 ) : GenericContainer<Nothing>(dockerImageName) {
-    private var config: IbmMqConfig = IbmMqConfig()
 
     init {
         withEnv("MQ_QMGR_NAME", "QM1")
@@ -39,7 +40,7 @@ class EnvAwareIbmMQContainer @JvmOverloads constructor(
 
     override fun start() {
         super.start()
-        config = IbmMqConfig(port = getMappedPort(PORT)).apply { toSystemProperties() }
+        config = IbmMqConfig(port = config.port.name set getMappedPort(PORT).toString())
         apply(afterStart)
     }
 
@@ -53,61 +54,78 @@ class EnvAwareIbmMQContainer @JvmOverloads constructor(
 }
 
 /**
- * Operator connects to the remote mq on start and creates 2 temporary queue.
- * Removing of this temporary queues is a responsibility of the remote queue broker.
+ * Remote mq system representation. On init creates 2 temporary queues.
+ * Removing of this queues is a responsibility of the remote queue broker.
  */
 @Suppress("unused")
-open class RemoteIbmMqOperator(
-    private val host: String,
-    private val port: Int,
-    private val queueManager: String,
-    private val channel: String,
-) : GenericOperator<RemoteMq>(
-    system = RemoteMq(),
-    start = {
-        it.config = MQConnectionFactory().apply {
+data class RemoteMqWithTemporaryQueues(
+    var config: IbmMqConfig = IbmMqConfig()
+) {
+    init {
+        config = MQConnectionFactory().apply {
             this.transportType = WMQ_CM_CLIENT
-            this.hostName = host
-            this.port = port
-            this.queueManager = queueManager
-            this.channel = channel
+            this.hostName = this@RemoteMqWithTemporaryQueues.config.host.value
+            this.port = this@RemoteMqWithTemporaryQueues.config.port.value.toInt()
+            this.queueManager = this@RemoteMqWithTemporaryQueues.config.manager.value
+            this.channel = this@RemoteMqWithTemporaryQueues.config.channel.value
         }.createConnection().createSession(false, AUTO_ACKNOWLEDGE).let { session ->
-            IbmMqConfig(host, port, session.tempQueue(), session.tempQueue(), queueManager, channel)
-                .apply { toSystemProperties() }
+            with(config) {
+                IbmMqConfig(
+                    host = host.name set host.value,
+                    port = port.name set port.value,
+                    manager = manager.name set manager.value,
+                    channel = channel.name set channel.value,
+                    devQueue1 = devQueue1.name set session.tempQueue(),
+                    devQueue2 = devQueue2.name set session.tempQueue(),
+                )
+            }
         }
-    },
-    stop = {},
-    running = { true }
-)
+    }
 
-data class RemoteMq(var config: IbmMqConfig = IbmMqConfig())
+    private fun Session.tempQueue() = this.createTemporaryQueue().queueName
+}
 
 /**
  * Config based on default IBM MQ container configuration.
  * @see <a href="http://github.com/ibm-messaging/mq-container/blob/master/docs/developer-config.md">http://github.com/ibm-messaging</a>
  */
-data class IbmMqConfig(
-    val host: String = "localhost",
-    val port: Int = 1414,
-    val devQueue1: String = "DEV.QUEUE.1",
-    val devQueue2: String = "DEV.QUEUE.2",
-    val manager: String = "QM1",
-    val channel: String = "DEV.APP.SVRCONN",
+data class IbmMqConfig @JvmOverloads constructor(
+    val host: Prop = PROP_HOST set "localhost",
+    val port: Prop = PROP_PORT set "1414",
+    val manager: Prop = PROP_MANAGER set "QM1",
+    val channel: Prop = PROP_CHANNEL set "DEV.APP.SVRCONN",
+    val devQueue1: Prop = "env.mq.ibm.devQueue1" set "DEV.QUEUE.1",
+    val devQueue2: Prop = "env.mq.ibm.devQueue2" set "DEV.QUEUE.2",
 ) {
-    val jmsTester1 = JmsTester.Config(host, port, devQueue1, manager, channel)
-    val jmsTester2 = JmsTester.Config(host, port, devQueue2, manager, channel)
-    fun toSystemProperties() {
-        mapOf(
-            "env.mq.ibm.host" to host,
-            "env.mq.ibm.port" to port.toString(),
-            "env.mq.ibm.manager" to manager,
-            "env.mq.ibm.channel" to channel,
-            "env.mq.ibm.devQueue1" to devQueue1,
-            "env.mq.ibm.devQueue2" to devQueue2
-        ).setProperties()
+    @Suppress("unused")
+    val jmsTester1 = jmsConfig(devQueue1.value)
+
+    @Suppress("unused")
+    val jmsTester2 = jmsConfig(devQueue2.value)
+
+    private fun jmsConfig(q: String) = JmsTester.Config(host.name, port.value.toInt(), q, manager.value, channel.value)
+
+    constructor(
+        host: String = "localhost",
+        port: Int = 1414,
+        manager: String = "QM1",
+        channel: String = "DEV.APP.SVRCONN"
+    ) : this(
+        host = PROP_HOST set host,
+        port = PROP_PORT set port.toString(),
+        manager = PROP_MANAGER set manager,
+        channel = PROP_CHANNEL set channel,
+    )
+
+    init {
+        mapOf(host.pair(), port.pair(), manager.pair(), channel.pair(), devQueue1.pair(), devQueue2.pair())
+            .setProperties()
     }
 
-    companion object : KLogging()
+    companion object : KLogging() {
+        const val PROP_HOST = "env.mq.ibm.host"
+        const val PROP_PORT = "env.mq.ibm.port"
+        const val PROP_MANAGER = "env.mq.ibm.manager"
+        const val PROP_CHANNEL = "env.mq.ibm.channel"
+    }
 }
-
-private fun Session.tempQueue() = this.createTemporaryQueue().queueName

@@ -11,22 +11,32 @@ interface Operator<T> {
     fun stop()
     fun running(): Boolean
     fun system(): T
+    fun describe(): String
     fun configure(consumer: Consumer<T>): Operator<T>? {
         consumer.accept(system())
         return this
     }
 
     companion object {
-        fun <T> generic(system: T, start: Consumer<T>, stop: Consumer<T>, running: Function<T, Boolean>) =
-            GenericOperator(system, start, stop, running)
+        /*
+        TODO https://youtrack.jetbrains.com/issue/KT-35716
+        @JvmStatic
+        @JvmOverloads
+        */
+        fun <T> generic(
+            system: T,
+            start: Consumer<T> = Consumer {},
+            stop: Consumer<T> = Consumer {},
+            running: Function<T, Boolean> = Function { true }
+        ) = GenericOperator(system, start, stop, running)
     }
 }
 
-open class GenericOperator<T>(
+open class GenericOperator<T> @JvmOverloads constructor(
     private val system: T,
-    private val start: Consumer<T>,
-    private val stop: Consumer<T>,
-    private val running: Function<T, Boolean>
+    private val start: Consumer<T> = Consumer {},
+    private val stop: Consumer<T> = Consumer {},
+    private val running: Function<T, Boolean> = Function { true }
 ) : Operator<T> {
     override fun start() {
         start.accept(system)
@@ -37,6 +47,6 @@ open class GenericOperator<T>(
     }
 
     override fun running(): Boolean = running.apply(system)
-
     override fun system(): T = system
+    override fun describe() = system.toString()
 }

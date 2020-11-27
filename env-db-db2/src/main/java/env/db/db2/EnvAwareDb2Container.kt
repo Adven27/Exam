@@ -1,7 +1,8 @@
 package env.db.db2
 
-import com.adven.concordion.extensions.exam.db.DbTester
 import env.core.Environment.Companion.setProperties
+import env.core.Environment.Prop
+import env.core.Environment.Prop.Companion.set
 import mu.KLogging
 import org.testcontainers.containers.Db2Container
 import org.testcontainers.utility.DockerImageName
@@ -11,10 +12,7 @@ class EnvAwareDb2Container @JvmOverloads constructor(
     dockerImageName: DockerImageName,
     fixedEnv: Boolean = false,
     fixedPort: Int = DB2_PORT,
-    private val urlSystemPropertyName: String = "env.db.db2.url",
-    private val usernameSystemPropertyName: String = "env.db.db2.username",
-    private val passwordSystemPropertyName: String = "env.db.db2.password",
-    private val driverSystemPropertyName: String = "env.db.db2.driver",
+    private var config: Config = Config(),
     private val afterStart: EnvAwareDb2Container.() -> Unit = { }
 ) : Db2Container(dockerImageName) {
 
@@ -27,29 +25,40 @@ class EnvAwareDb2Container @JvmOverloads constructor(
 
     override fun start() {
         super.start()
-        mapOf(
-            urlSystemPropertyName to jdbcUrl,
-            usernameSystemPropertyName to username,
-            passwordSystemPropertyName to password,
-            driverSystemPropertyName to driverClassName,
-        ).setProperties()
+        config = config.refreshValues()
         apply(afterStart)
     }
 
-    @JvmOverloads
-    fun dbTester(port: Int = DB2_PORT): DbTester =
-        dbTester("jdbc:db2://localhost:$port/test", "db2inst1", "foobar1234")
+    private fun Config.refreshValues() = Config(
+        jdbcUrl.name set getJdbcUrl(),
+        username.name set getUsername(),
+        password.name set getPassword(),
+        driver.name set driverClassName
+    )
 
-    fun dbTester(fixedUrl: String?, fixedUser: String?, fixedPassword: String?): DbTester {
-        val running = isRunning
-        return DbTester(
-            "com.ibm.db2.jcc.DB2Driver",
-            (if (running) jdbcUrl else fixedUrl)!!,
-            (if (running) username else fixedUser)!!,
-            (if (running) password else fixedPassword)!!,
-            null
+    fun config() = config
+
+    data class Config @JvmOverloads constructor(
+        var jdbcUrl: Prop = PROP_URL set "jdbc:db2://localhost:$DB2_PORT/test",
+        var username: Prop = PROP_USER set "db2inst1",
+        var password: Prop = PROP_PASSWORD set "foobar1234",
+        var driver: Prop = PROP_DRIVER set "com.ibm.db2.jcc.DB2Driver"
+    ) {
+        init {
+            mapOf(jdbcUrl.pair(), username.pair(), password.pair(), driver.pair()).setProperties()
+        }
+
+        constructor(url: String, username: String, password: String) : this(
+            PROP_URL set url,
+            PROP_USER set username,
+            PROP_PASSWORD set password
         )
     }
 
-    companion object : KLogging()
+    companion object : KLogging() {
+        const val PROP_URL = "env.db.db2.url"
+        const val PROP_USER = "env.db.db2.username"
+        const val PROP_PASSWORD = "env.db.db2.password"
+        const val PROP_DRIVER = "env.db.db2.driver"
+    }
 }

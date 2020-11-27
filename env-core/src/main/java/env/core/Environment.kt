@@ -53,11 +53,11 @@ open class Environment(val operators: Map<String, Operator<*>>) {
         ).thenRun { logger.info("Done. ${status()}") }[timeout, SECONDS]
     }
 
-    private fun status() =
+    fun status() =
         "Status:\n${operators.entries.joinToString("\n") { "${it.key}: ${if (it.value.running()) "up" else "down"}" }}"
 
     private fun summary() = "${javaClass.simpleName}\n\n ======= Test environment started {} ms =======\n\n" +
-        operators.entries.joinToString("\n") { "${it.key}: ${it.value.system()}" } +
+        operators.entries.joinToString("\n") { "${it.key}: ${it.value.describe()}" } +
         "\n\n ==============================================\n\n"
 
     @Suppress("UNCHECKED_CAST")
@@ -92,10 +92,17 @@ open class Environment(val operators: Map<String, Operator<*>>) {
         val downTimeout: Long = "SPECS_ENV_DOWN_TIMEOUT_SEC".fromPropertyOrElse(10L),
         val upTimeout: Long = "SPECS_ENV_UP_TIMEOUT_SEC".fromPropertyOrElse(300L),
         val startEnv: Boolean = "SPECS_ENV_START".fromPropertyOrElse(true),
-        val fixedEnv: Boolean = "SPECS_ENV_FIXED".fromPropertyOrElse(false)
     )
 
-    class StartupFail(t: Throwable): RuntimeException(t)
+    class StartupFail(t: Throwable) : RuntimeException(t)
+
+    data class Prop(val name: String, val value: String) {
+        fun pair() = name to value
+
+        companion object {
+            infix fun String.set(value: String) = Prop(this, value)
+        }
+    }
 }
 
 private class NamedThreadFactory(baseName: String) : ThreadFactory {

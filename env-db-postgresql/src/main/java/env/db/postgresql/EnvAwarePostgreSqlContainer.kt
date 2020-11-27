@@ -1,7 +1,8 @@
 package env.db.postgresql
 
-import com.adven.concordion.extensions.exam.db.DbTester
 import env.core.Environment.Companion.setProperties
+import env.core.Environment.Prop
+import env.core.Environment.Prop.Companion.set
 import mu.KLogging
 import org.testcontainers.containers.PostgreSQLContainer
 import org.testcontainers.utility.DockerImageName
@@ -11,10 +12,7 @@ class EnvAwarePostgreSqlContainer @JvmOverloads constructor(
     dockerImageName: DockerImageName = DockerImageName.parse("postgres:9.6.12"),
     fixedEnv: Boolean = false,
     fixedPort: Int = POSTGRESQL_PORT,
-    private val urlSystemPropertyName: String = "env.db.postgresql.url",
-    private val usernameSystemPropertyName: String = "env.db.postgresql.username",
-    private val passwordSystemPropertyName: String = "env.db.postgresql.password",
-    private val driverSystemPropertyName: String = "env.db.postgresql.driver",
+    private var config: Config = Config(),
     private val afterStart: EnvAwarePostgreSqlContainer.() -> Unit = { }
 ) : PostgreSQLContainer<Nothing>(dockerImageName) {
 
@@ -26,29 +24,40 @@ class EnvAwarePostgreSqlContainer @JvmOverloads constructor(
 
     override fun start() {
         super.start()
-        mapOf(
-            urlSystemPropertyName to jdbcUrl,
-            usernameSystemPropertyName to username,
-            passwordSystemPropertyName to password,
-            driverSystemPropertyName to driverClassName,
-        ).setProperties()
+        config = config.refreshValues()
         apply(afterStart)
     }
 
-    @JvmOverloads
-    fun dbTester(port: Int = POSTGRESQL_PORT): DbTester =
-        dbTester("jdbc:postgresql://localhost:$port/postgres?stringtype=unspecified", "test", "test")
+    private fun Config.refreshValues() = Config(
+        jdbcUrl.name set getJdbcUrl(),
+        username.name set getUsername(),
+        password.name set getPassword(),
+        driver.name set driverClassName
+    )
 
-    fun dbTester(fixedUrl: String, fixedUser: String, fixedPassword: String): DbTester {
-        val running = isRunning
-        return DbTester(
-            "org.postgresql.Driver",
-            (if (running) jdbcUrl else fixedUrl)!!,
-            (if (running) username else fixedUser)!!,
-            (if (running) password else fixedPassword)!!,
-            null
+    fun config() = config
+
+    data class Config @JvmOverloads constructor(
+        var jdbcUrl: Prop = PROP_URL set "jdbc:postgresql://localhost:$POSTGRESQL_PORT/postgres?stringtype=unspecified",
+        var username: Prop = PROP_USER set "test",
+        var password: Prop = PROP_PASSWORD set "test",
+        var driver: Prop = PROP_DRIVER set "org.postgresql.Driver"
+    ) {
+        init {
+            mapOf(jdbcUrl.pair(), username.pair(), password.pair(), driver.pair()).setProperties()
+        }
+
+        constructor(url: String, username: String, password: String) : this(
+            PROP_URL set url,
+            PROP_USER set username,
+            PROP_PASSWORD set password
         )
     }
 
-    companion object : KLogging()
+    companion object : KLogging() {
+        const val PROP_URL = "env.db.postgresql.url"
+        const val PROP_USER = "env.db.postgresql.username"
+        const val PROP_PASSWORD = "env.db.postgresql.password"
+        const val PROP_DRIVER = "env.db.postgresql.driver"
+    }
 }

@@ -16,3 +16,14 @@ dependencies {
     testImplementation 'ch.qos.logback:logback-classic:1.2.3'
     testImplementation 'mysql:mysql-connector-java:8.0.22'
 }
+
+task runEnv(type: JavaExec) {
+    group = "Execution"
+    description = "Run some environment"
+    classpath = sourceSets.test.runtimeClasspath
+    main = "env.core.EnvStarter"
+    args 'SomeEnvironment'
+    systemProperty 'SPECS_ENV_START', true
+    systemProperty 'SPECS_FIXED_ENV', true
+    standardInput = System.in
+}

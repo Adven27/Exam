@@ -1,5 +1,6 @@
 import env.container.ContainerOperator
 import env.core.Environment
+import env.core.Environment.Prop
 import env.db.mysql.EnvAwareMySqlContainer
 import env.db.postgresql.EnvAwarePostgreSqlContainer
 import env.grpc.GrpcMockContainer
@@ -18,44 +19,56 @@ private const val PG_URL = "jdbc:postgresql://localhost:5432/test?loggerLevel=OF
 
 @Ignore
 class EnvTest {
-    private lateinit var environment: Environment
+    private lateinit var sut: Environment
 
     @Test
     fun fixedEnvironment() {
-        environment = SomeEnvironment(true).apply { up() }
+        System.setProperty("SPECS_FIXED_ENV", "true")
 
-        environment.operators.forEach { (_, s) -> assertTrue(s.running()) }
-        assertEquals(5672, environment.find<EnvAwareRabbitContainer>("RABBIT").port())
+        sut = SomeEnvironment().apply { up() }
+
+        sut.operators.forEach { (_, s) -> assertTrue(s.running()) }
+        assertEquals(Prop("env.mq.rabbit.port", "5672"), sut.find<EnvAwareRabbitContainer>("RABBIT").config().port)
         assertEquals("5672", System.getProperty("env.mq.rabbit.port"))
-        assertEquals(PG_URL, environment.find<EnvAwarePostgreSqlContainer>("POSTGRES").jdbcUrl)
+        assertEquals(
+            Prop("env.db.postgresql.url", PG_URL),
+            sut.find<EnvAwarePostgreSqlContainer>("POSTGRES").config().jdbcUrl
+        )
         assertEquals(PG_URL, System.getProperty("env.db.postgresql.url"))
     }
 
     @Test
     fun dynamicEnvironment() {
-        environment = SomeEnvironment(false).apply { up() }
+        System.setProperty("SPECS_FIXED_ENV", "false")
 
-        environment.operators.forEach { (_, s) -> assertTrue(s.running()) }
-        assertNotEquals(5672, environment.find<EnvAwareRabbitContainer>("RABBIT").port())
-        assertNotEquals(PG_URL, environment.find<EnvAwarePostgreSqlContainer>("POSTGRES").jdbcUrl)
+        sut = SomeEnvironment().apply { up() }
+
+        sut.operators.forEach { (_, s) -> assertTrue(s.running()) }
+        assertNotEquals("5672", sut.find<EnvAwareRabbitContainer>("RABBIT").config().port.value)
+        assertNotEquals(PG_URL, sut.find<EnvAwarePostgreSqlContainer>("POSTGRES").config().jdbcUrl.value)
     }
 
     @After
     fun tearDown() {
-        environment.down()
+        sut.down()
     }
 }
 
-class SomeEnvironment(fixed: Boolean) : Environment(
+class SomeEnvironment : Environment(
     mapOf(
         "RABBIT" to ContainerOperator(
-            EnvAwareRabbitContainer(fixedEnv = fixed)
+            EnvAwareRabbitContainer(fixedEnv = fixedEnv)
                 .withLogConsumer(Slf4jLogConsumer(logger).withPrefix("RABBIT"))
         ),
-        "REDIS" to ContainerOperator(EnvAwareRedisContainer(fixedEnv = fixed)),
-        "POSTGRES" to ContainerOperator(EnvAwarePostgreSqlContainer(fixedEnv = fixed)),
-        "MYSQL" to ContainerOperator(EnvAwareMySqlContainer(fixedEnv = fixed)),
-        "GRPC" to ContainerOperator(GrpcMockContainer(1, fixed, listOf("common.proto", "wallet.proto"))),
-        "WIREMOCK" to WiremockOperator(fixed)
+        "REDIS" to ContainerOperator(EnvAwareRedisContainer(fixedEnv = fixedEnv)),
+        "POSTGRES" to ContainerOperator(EnvAwarePostgreSqlContainer(fixedEnv = fixedEnv)),
+        "MYSQL" to ContainerOperator(EnvAwareMySqlContainer(fixedEnv = fixedEnv)),
+        "GRPC" to ContainerOperator(GrpcMockContainer(1, fixedEnv, listOf("common.proto", "wallet.proto"))),
+        "WIREMOCK" to WiremockOperator(fixedEnv)
     )
-)
+) {
+    companion object {
+        val fixedEnv
+            get() = "SPECS_FIXED_ENV".fromPropertyOrElse(false)
+    }
+}

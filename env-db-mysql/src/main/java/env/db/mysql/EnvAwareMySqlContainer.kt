@@ -1,7 +1,8 @@
 package env.db.mysql
 
-import com.adven.concordion.extensions.exam.db.DbTester
 import env.core.Environment.Companion.setProperties
+import env.core.Environment.Prop
+import env.core.Environment.Prop.Companion.set
 import mu.KLogging
 import org.testcontainers.containers.MySQLContainer
 import org.testcontainers.utility.DockerImageName
@@ -11,10 +12,7 @@ class EnvAwareMySqlContainer @JvmOverloads constructor(
     dockerImageName: DockerImageName = DockerImageName.parse("mysql:5.7.22"),
     fixedEnv: Boolean = false,
     fixedPort: Int = MYSQL_PORT,
-    private val urlSystemPropertyName: String = "env.db.mysql.url",
-    private val usernameSystemPropertyName: String = "env.db.mysql.username",
-    private val passwordSystemPropertyName: String = "env.db.mysql.password",
-    private val driverSystemPropertyName: String = "env.db.mysql.driver",
+    private var config: Config = Config(),
     private val afterStart: EnvAwareMySqlContainer.() -> Unit = { }
 ) : MySQLContainer<Nothing>(dockerImageName) {
 
@@ -26,30 +24,40 @@ class EnvAwareMySqlContainer @JvmOverloads constructor(
 
     override fun start() {
         super.start()
-        mapOf(
-            urlSystemPropertyName to jdbcUrl,
-            usernameSystemPropertyName to username,
-            passwordSystemPropertyName to password,
-            driverSystemPropertyName to driverClassName,
-        ).setProperties()
+        config = config.refreshValues()
         apply(afterStart)
     }
 
-    @JvmOverloads
-    fun dbTester(port: Int = MYSQL_PORT): DbTester {
-        return dbTester("jdbc:mysql://localhost:$port/test?autoReconnect=true&useSSL=false", "test", "test", "test")
-    }
+    private fun Config.refreshValues() = Config(
+        jdbcUrl.name set getJdbcUrl(),
+        username.name set getUsername(),
+        password.name set getPassword(),
+        driver.name set driverClassName
+    )
 
-    fun dbTester(fixedUrl: String?, fixedUser: String?, fixedPassword: String?, fixedDbName: String?): DbTester {
-        val running = isRunning
-        return DbTester(
-            "com.mysql.cj.jdbc.Driver",
-            (if (running) jdbcUrl else fixedUrl)!!,
-            (if (running) username else fixedUser)!!,
-            (if (running) password else fixedPassword)!!,
-            if (running) databaseName else fixedDbName
+    fun config() = config
+
+    data class Config @JvmOverloads constructor(
+        var jdbcUrl: Prop = PROP_URL set "jdbc:mysql://localhost:$MYSQL_PORT/test?autoReconnect=true&useSSL=false",
+        var username: Prop = PROP_USER set "test",
+        var password: Prop = PROP_PASSWORD set "test",
+        var driver: Prop = PROP_DRIVER set "com.mysql.cj.jdbc.Driver"
+    ) {
+        init {
+            mapOf(jdbcUrl.pair(), username.pair(), password.pair(), driver.pair()).setProperties()
+        }
+
+        constructor(url: String, username: String, password: String) : this(
+            PROP_URL set url,
+            PROP_USER set username,
+            PROP_PASSWORD set password
         )
     }
 
-    companion object : KLogging()
+    companion object : KLogging() {
+        const val PROP_URL = "env.db.mysql.url"
+        const val PROP_USER = "env.db.mysql.username"
+        const val PROP_PASSWORD = "env.db.mysql.password"
+        const val PROP_DRIVER = "env.db.mysql.driver"
+    }
 }
