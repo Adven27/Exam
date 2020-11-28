@@ -11,17 +11,17 @@ import java.util.concurrent.TimeoutException
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.system.measureTimeMillis
 
-open class Environment(val operators: Map<String, Operator<*>>) {
+open class Environment(val systems: Map<String, ExternalSystem>) {
 
     init {
-        logger.info("Environment settings:\nOperators: $operators\nConfig: $config")
+        logger.info("Environment settings:\nOperators: $systems\nConfig: $config")
     }
 
     @Suppress("SpreadOperator")
     fun up() {
         if (config.startEnv) {
             try {
-                val elapsed = measureTimeMillis { allOf(*start(operators.entries))[config.upTimeout, SECONDS] }
+                val elapsed = measureTimeMillis { allOf(*start(systems.entries))[config.upTimeout, SECONDS] }
                 logger.info(summary(), elapsed)
             } catch (e: TimeoutException) {
                 logger.error("Startup timeout exceeded: expected ${config.upTimeout}s. ${status()}", e)
@@ -39,7 +39,7 @@ open class Environment(val operators: Map<String, Operator<*>>) {
     @Suppress("SpreadOperator")
     fun down() {
         if (config.startEnv) {
-            allOf(*operators.values.map { runAsync { it.stop() } }.toTypedArray())[config.downTimeout, SECONDS]
+            allOf(*systems.values.map { runAsync { it.stop() } }.toTypedArray())[config.downTimeout, SECONDS]
         }
     }
 
@@ -48,9 +48,9 @@ open class Environment(val operators: Map<String, Operator<*>>) {
     }
 
     @Suppress("SpreadOperator")
-    private fun exec(systems: Array<out String>, logDesc: String, timeout: Long, operation: (Operator<*>) -> Unit) {
+    private fun exec(systems: Array<out String>, logDesc: String, timeout: Long, operation: (ExternalSystem) -> Unit) {
         allOf(
-            *this.operators.entries
+            *this.systems.entries
                 .filter { systems.any { s: String -> it.key.toLowerCase().startsWith(s.toLowerCase()) } }
                 .onEach { logger.info(logDesc, it.key) }
                 .map { it.value }
@@ -60,19 +60,19 @@ open class Environment(val operators: Map<String, Operator<*>>) {
     }
 
     fun status() =
-        "Status:\n${operators.entries.joinToString("\n") { "${it.key}: ${if (it.value.running()) "up" else "down"}" }}"
+        "Status:\n${systems.entries.joinToString("\n") { "${it.key}: ${if (it.value.running()) "up" else "down"}" }}"
 
     private fun summary() = "${javaClass.simpleName}\n\n ======= Test environment started {} ms =======\n\n" +
-        operators.entries.joinToString("\n") { "${it.key}: ${it.value.describe()}" } +
+        systems.entries.joinToString("\n") { "${it.key}: ${it.value.describe()}" } +
         "\n\n ==============================================\n\n"
 
     @Suppress("UNCHECKED_CAST")
-    fun <T> find(name: String): T = (operators[name] ?: error("System $name not found")).system() as T
+    fun <T : ExternalSystem> find(name: String): T = (systems[name] ?: error("System $name not found")) as T
 
     companion object : KLogging() {
         private val config = Config()
 
-        private fun start(operators: Set<Map.Entry<String, Operator<*>>>): Array<CompletableFuture<*>> = operators
+        private fun start(operators: Set<Map.Entry<String, ExternalSystem>>): Array<CompletableFuture<*>> = operators
             .onEach { logger.info("Preparing to start {}", it.key) }
             .map { runAsync({ it.value.start() }, newCachedThreadPool(NamedThreadFactory(it.key))) }
             .toTypedArray()

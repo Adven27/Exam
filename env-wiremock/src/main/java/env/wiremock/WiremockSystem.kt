@@ -5,9 +5,9 @@ import com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig
 import com.github.tomakehurst.wiremock.extension.responsetemplating.ResponseTemplateTransformer
 import env.core.Environment.Companion.findAvailableTcpPort
 import env.core.Environment.Companion.setProperties
-import env.core.GenericOperator
+import env.core.GenericExternalSystem
 
-class WiremockOperator @JvmOverloads constructor(
+class WiremockSystem @JvmOverloads constructor(
     fixedEnv: Boolean = false,
     fixedPort: Int = 8888,
     server: WireMockServer = WireMockServer(
@@ -18,7 +18,7 @@ class WiremockOperator @JvmOverloads constructor(
         )
     ),
     private val afterStart: WireMockServer.() -> Unit = { }
-) : GenericOperator<WireMockServer>(
+) : GenericExternalSystem<WireMockServer>(
     system = server,
     start = { it.start(); it.afterStart() },
     stop = { it.stop() },
@@ -30,7 +30,5 @@ class WiremockOperator @JvmOverloads constructor(
         afterStart = afterStart
     )
 
-    override fun describe(): String {
-        return "${system().baseUrl()} registered ${system().listAllStubMappings().mappings.size} mappings."
-    }
+    override fun describe() = "${system.baseUrl()} registered ${system.listAllStubMappings().mappings.size} mappings."
 }

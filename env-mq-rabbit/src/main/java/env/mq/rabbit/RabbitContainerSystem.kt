@@ -3,18 +3,19 @@ package env.mq.rabbit
 import env.core.Environment.Companion.setProperties
 import env.core.Environment.Prop
 import env.core.Environment.Prop.Companion.set
+import env.core.ExternalSystem
 import mu.KLogging
 import org.testcontainers.containers.RabbitMQContainer
 import org.testcontainers.utility.DockerImageName
 
-open class EnvAwareRabbitContainer @JvmOverloads constructor(
+open class RabbitContainerSystem @JvmOverloads constructor(
     dockerImageName: DockerImageName = DockerImageName.parse("rabbitmq:3.7.25-management-alpine"),
     fixedEnv: Boolean = false,
     fixedPort: Int = PORT,
     fixedPortAdm: Int = PORT_ADM,
     private var config: Config = Config(),
-    private val afterStart: EnvAwareRabbitContainer.() -> Unit = { }
-) : RabbitMQContainer(dockerImageName) {
+    private val afterStart: RabbitContainerSystem.() -> Unit = { }
+) : RabbitMQContainer(dockerImageName), ExternalSystem {
 
     init {
         if (fixedEnv) {
@@ -28,6 +29,8 @@ open class EnvAwareRabbitContainer @JvmOverloads constructor(
         config = Config(config.host.name set host, config.port.name set amqpPort.toString())
         apply(afterStart)
     }
+
+    override fun running() = isRunning
 
     @Suppress("unused")
     fun config(): Config = config

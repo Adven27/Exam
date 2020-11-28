@@ -3,18 +3,19 @@ package env.db.db2
 import env.core.Environment.Companion.setProperties
 import env.core.Environment.Prop
 import env.core.Environment.Prop.Companion.set
+import env.core.ExternalSystem
 import mu.KLogging
 import org.testcontainers.containers.Db2Container
 import org.testcontainers.utility.DockerImageName
 
 @Suppress("unused", "LongParameterList")
-class EnvAwareDb2Container @JvmOverloads constructor(
+class Db2ContainerSystem @JvmOverloads constructor(
     dockerImageName: DockerImageName,
     fixedEnv: Boolean = false,
     fixedPort: Int = DB2_PORT,
     private var config: Config = Config(),
-    private val afterStart: EnvAwareDb2Container.() -> Unit = { }
-) : Db2Container(dockerImageName) {
+    private val afterStart: Db2ContainerSystem.() -> Unit = { }
+) : Db2Container(dockerImageName), ExternalSystem {
 
     init {
         acceptLicense()
@@ -35,6 +36,8 @@ class EnvAwareDb2Container @JvmOverloads constructor(
         password.name set getPassword(),
         driver.name set driverClassName
     )
+
+    override fun running() = isRunning
 
     fun config() = config
 

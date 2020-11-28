@@ -4,25 +4,24 @@ import com.adven.concordion.extensions.exam.mq.MqTester.NOOP
 import env.core.Environment.Companion.setProperties
 import env.core.Environment.Prop
 import env.core.Environment.Prop.Companion.set
+import env.core.ExternalSystem
 import mu.KLogging
 import org.testcontainers.containers.GenericContainer
-import org.testcontainers.containers.output.Slf4jLogConsumer
 import org.testcontainers.utility.DockerImageName
 import redis.clients.jedis.Jedis
 import java.time.Duration.ofSeconds
 
-class EnvAwareRedisContainer @JvmOverloads constructor(
+class RedisContainerSystem @JvmOverloads constructor(
     dockerImageName: DockerImageName = DockerImageName.parse(IMAGE),
     fixedEnv: Boolean = false,
     fixedPort: Int = PORT,
     private var config: Config = Config(),
-    private val afterStart: EnvAwareRedisContainer.() -> Unit = { }
-) : GenericContainer<Nothing>(dockerImageName) {
+    private val afterStart: RedisContainerSystem.() -> Unit = { }
+) : GenericContainer<Nothing>(dockerImageName), ExternalSystem {
     private val fixedPort: Int
 
     init {
         withExposedPorts(PORT)
-        withLogConsumer(Slf4jLogConsumer(logger).withPrefix("REDIS"))
         withStartupTimeout(ofSeconds(STARTUP_TIMEOUT))
         this.fixedPort = fixedPort
         if (fixedEnv) {
@@ -71,4 +70,6 @@ class EnvAwareRedisContainer @JvmOverloads constructor(
         private const val IMAGE = "redis:5.0.3-alpine"
         private const val STARTUP_TIMEOUT = 30L
     }
+
+    override fun running() = isRunning
 }

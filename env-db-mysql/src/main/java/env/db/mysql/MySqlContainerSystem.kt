@@ -1,24 +1,25 @@
-package env.db.postgresql
+package env.db.mysql
 
 import env.core.Environment.Companion.setProperties
 import env.core.Environment.Prop
 import env.core.Environment.Prop.Companion.set
+import env.core.ExternalSystem
 import mu.KLogging
-import org.testcontainers.containers.PostgreSQLContainer
+import org.testcontainers.containers.MySQLContainer
 import org.testcontainers.utility.DockerImageName
 
 @Suppress("LongParameterList")
-class EnvAwarePostgreSqlContainer @JvmOverloads constructor(
-    dockerImageName: DockerImageName = DockerImageName.parse("postgres:9.6.12"),
+class MySqlContainerSystem @JvmOverloads constructor(
+    dockerImageName: DockerImageName = DockerImageName.parse("mysql:5.7.22"),
     fixedEnv: Boolean = false,
-    fixedPort: Int = POSTGRESQL_PORT,
+    fixedPort: Int = MYSQL_PORT,
     private var config: Config = Config(),
-    private val afterStart: EnvAwarePostgreSqlContainer.() -> Unit = { }
-) : PostgreSQLContainer<Nothing>(dockerImageName) {
+    private val afterStart: MySqlContainerSystem.() -> Unit = { }
+) : MySQLContainer<Nothing>(dockerImageName), ExternalSystem {
 
     init {
         if (fixedEnv) {
-            addFixedExposedPort(fixedPort, POSTGRESQL_PORT)
+            addFixedExposedPort(fixedPort, MYSQL_PORT)
         }
     }
 
@@ -27,6 +28,8 @@ class EnvAwarePostgreSqlContainer @JvmOverloads constructor(
         config = config.refreshValues()
         apply(afterStart)
     }
+
+    override fun running() = isRunning
 
     private fun Config.refreshValues() = Config(
         jdbcUrl.name set getJdbcUrl(),
@@ -38,10 +41,10 @@ class EnvAwarePostgreSqlContainer @JvmOverloads constructor(
     fun config() = config
 
     data class Config @JvmOverloads constructor(
-        var jdbcUrl: Prop = PROP_URL set "jdbc:postgresql://localhost:$POSTGRESQL_PORT/postgres?stringtype=unspecified",
+        var jdbcUrl: Prop = PROP_URL set "jdbc:mysql://localhost:$MYSQL_PORT/test?autoReconnect=true&useSSL=false",
         var username: Prop = PROP_USER set "test",
         var password: Prop = PROP_PASSWORD set "test",
-        var driver: Prop = PROP_DRIVER set "org.postgresql.Driver"
+        var driver: Prop = PROP_DRIVER set "com.mysql.cj.jdbc.Driver"
     ) {
         init {
             mapOf(jdbcUrl.pair(), username.pair(), password.pair(), driver.pair()).setProperties()
@@ -55,9 +58,9 @@ class EnvAwarePostgreSqlContainer @JvmOverloads constructor(
     }
 
     companion object : KLogging() {
-        const val PROP_URL = "env.db.postgresql.url"
-        const val PROP_USER = "env.db.postgresql.username"
-        const val PROP_PASSWORD = "env.db.postgresql.password"
-        const val PROP_DRIVER = "env.db.postgresql.driver"
+        const val PROP_URL = "env.db.mysql.url"
+        const val PROP_USER = "env.db.mysql.username"
+        const val PROP_PASSWORD = "env.db.mysql.password"
+        const val PROP_DRIVER = "env.db.mysql.driver"
     }
 }

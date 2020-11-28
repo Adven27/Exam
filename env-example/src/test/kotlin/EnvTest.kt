@@ -1,12 +1,11 @@
-import env.container.ContainerOperator
 import env.core.Environment
 import env.core.Environment.Prop
-import env.db.mysql.EnvAwareMySqlContainer
-import env.db.postgresql.EnvAwarePostgreSqlContainer
-import env.grpc.GrpcMockContainer
-import env.mq.rabbit.EnvAwareRabbitContainer
-import env.mq.redis.EnvAwareRedisContainer
-import env.wiremock.WiremockOperator
+import env.db.mysql.MySqlContainerSystem
+import env.db.postgresql.PostgreSqlContainerSystem
+import env.grpc.GrpcMockContainerSystem
+import env.mq.rabbit.RabbitContainerSystem
+import env.mq.redis.RedisContainerSystem
+import env.wiremock.WiremockSystem
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
@@ -19,7 +18,7 @@ private const val PG_URL = "jdbc:postgresql://localhost:5432/test?loggerLevel=OF
 
 @Ignore
 class EnvTest {
-    private lateinit var sut: Environment
+    private lateinit var sut: SomeEnvironment
 
     @Test
     fun fixedEnvironment() {
@@ -27,13 +26,10 @@ class EnvTest {
 
         sut = SomeEnvironment().apply { up() }
 
-        sut.operators.forEach { (_, s) -> assertTrue(s.running()) }
-        assertEquals(Prop("env.mq.rabbit.port", "5672"), sut.find<EnvAwareRabbitContainer>("RABBIT").config().port)
+        sut.systems.forEach { (_, s) -> assertTrue(s.running()) }
+        assertEquals(Prop("env.mq.rabbit.port", "5672"), sut.rabbit().config().port)
         assertEquals("5672", System.getProperty("env.mq.rabbit.port"))
-        assertEquals(
-            Prop("env.db.postgresql.url", PG_URL),
-            sut.find<EnvAwarePostgreSqlContainer>("POSTGRES").config().jdbcUrl
-        )
+        assertEquals(Prop("env.db.postgresql.url", PG_URL), sut.postgres().config().jdbcUrl)
         assertEquals(PG_URL, System.getProperty("env.db.postgresql.url"))
     }
 
@@ -43,9 +39,9 @@ class EnvTest {
 
         sut = SomeEnvironment().apply { up() }
 
-        sut.operators.forEach { (_, s) -> assertTrue(s.running()) }
-        assertNotEquals("5672", sut.find<EnvAwareRabbitContainer>("RABBIT").config().port.value)
-        assertNotEquals(PG_URL, sut.find<EnvAwarePostgreSqlContainer>("POSTGRES").config().jdbcUrl.value)
+        sut.systems.forEach { (_, s) -> assertTrue(s.running()) }
+        assertNotEquals("5672", sut.rabbit().config().port.value)
+        assertNotEquals(PG_URL, sut.postgres().config().jdbcUrl.value)
     }
 
     @After
@@ -56,17 +52,19 @@ class EnvTest {
 
 class SomeEnvironment : Environment(
     mapOf(
-        "RABBIT" to ContainerOperator(
-            EnvAwareRabbitContainer(fixedEnv = fixedEnv)
-                .withLogConsumer(Slf4jLogConsumer(logger).withPrefix("RABBIT"))
-        ),
-        "REDIS" to ContainerOperator(EnvAwareRedisContainer(fixedEnv = fixedEnv)),
-        "POSTGRES" to ContainerOperator(EnvAwarePostgreSqlContainer(fixedEnv = fixedEnv)),
-        "MYSQL" to ContainerOperator(EnvAwareMySqlContainer(fixedEnv = fixedEnv)),
-        "GRPC" to ContainerOperator(GrpcMockContainer(1, fixedEnv, listOf("common.proto", "wallet.proto"))),
-        "WIREMOCK" to WiremockOperator(fixedEnv)
+        "RABBIT" to RabbitContainerSystem(fixedEnv = fixedEnv),
+        "REDIS" to RedisContainerSystem(fixedEnv = fixedEnv),
+        "POSTGRES" to PostgreSqlContainerSystem(fixedEnv = fixedEnv),
+        "MYSQL" to MySqlContainerSystem(fixedEnv = fixedEnv),
+        "GRPC" to GrpcMockContainerSystem(1, fixedEnv, listOf("common.proto", "wallet.proto")).apply {
+            withLogConsumer(Slf4jLogConsumer(logger).withPrefix("GRPC-$serviceId"))
+        },
+        "WIREMOCK" to WiremockSystem(fixedEnv)
     )
 ) {
+    fun rabbit() = find<RabbitContainerSystem>("RABBIT")
+    fun postgres() = systems["POSTGRES"] as PostgreSqlContainerSystem
+
     companion object {
         val fixedEnv
             get() = "SPECS_FIXED_ENV".fromPropertyOrElse(false)

@@ -5,6 +5,7 @@ import com.ibm.msg.client.wmq.WMQConstants.WMQ_CM_CLIENT
 import env.core.Environment.Companion.setProperties
 import env.core.Environment.Prop
 import env.core.Environment.Prop.Companion.set
+import env.core.ExternalSystem
 import mu.KLogging
 import org.testcontainers.containers.GenericContainer
 import org.testcontainers.containers.output.Slf4jLogConsumer
@@ -15,14 +16,14 @@ import javax.jms.Session
 import javax.jms.Session.AUTO_ACKNOWLEDGE
 
 @Suppress("unused", "MagicNumber")
-class EnvAwareIbmMQContainer @JvmOverloads constructor(
+class IbmMQContainerSystem @JvmOverloads constructor(
     dockerImageName: DockerImageName = DockerImageName.parse(IMAGE),
     fixedEnv: Boolean = false,
     fixedPort: Int = PORT,
     fixedPortAdm: Int = PORT_ADM,
     private var config: IbmMqConfig = IbmMqConfig(),
-    private val afterStart: EnvAwareIbmMQContainer.() -> Unit = { },
-) : GenericContainer<Nothing>(dockerImageName) {
+    private val afterStart: IbmMQContainerSystem.() -> Unit = { },
+) : GenericContainer<Nothing>(dockerImageName), ExternalSystem {
 
     init {
         withEnv("MQ_QMGR_NAME", "QM1")
@@ -43,6 +44,8 @@ class EnvAwareIbmMQContainer @JvmOverloads constructor(
         config = IbmMqConfig(port = config.port.name set getMappedPort(PORT).toString())
         apply(afterStart)
     }
+
+    override fun running() = isRunning
 
     fun config() = config
 

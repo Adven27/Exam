@@ -1,10 +1,11 @@
 package env.grpc;
 
+import env.core.ExternalSystem;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testcontainers.containers.BindMode;
 import org.testcontainers.containers.FixedHostPortGenericContainer;
-import org.testcontainers.containers.output.Slf4jLogConsumer;
 import org.testcontainers.utility.MountableFile;
 
 import java.util.List;
@@ -16,24 +17,24 @@ import static env.core.Environment.findAvailableTcpPort;
 import static java.time.Duration.ofSeconds;
 import static org.testcontainers.containers.wait.strategy.Wait.forLogMessage;
 
-public class GrpcMockContainer extends FixedHostPortGenericContainer<GrpcMockContainer> {
-    private static final Logger log = LoggerFactory.getLogger(GrpcMockContainer.class);
-    private int serviceId;
-    private final Consumer<GrpcMockContainer> afterStart;
+public class GrpcMockContainerSystem extends FixedHostPortGenericContainer<GrpcMockContainerSystem> implements ExternalSystem {
+    private static final Logger log = LoggerFactory.getLogger(GrpcMockContainerSystem.class);
+    private final int serviceId;
+    private final Consumer<GrpcMockContainerSystem> afterStart;
 
-    public GrpcMockContainer(final int serviceId, boolean fixedEnv, final List<String> protos) {
-        this(serviceId, fixedEnv, null, protos, c -> {} );
+    public GrpcMockContainerSystem(final int serviceId, boolean fixedEnv, final List<String> protos) {
+        this(serviceId, fixedEnv, null, protos, c -> { });
     }
 
-    public GrpcMockContainer(final int serviceId, boolean fixedEnv, final List<String> protos, Consumer<GrpcMockContainer> afterStart) {
+    public GrpcMockContainerSystem(final int serviceId, boolean fixedEnv, final List<String> protos, Consumer<GrpcMockContainerSystem> afterStart) {
         this(serviceId, fixedEnv, null, protos, afterStart);
     }
 
-    public GrpcMockContainer(final int serviceId, final List<String> protos) {
-        this(serviceId, false, null, protos, c -> {});
+    public GrpcMockContainerSystem(final int serviceId, final List<String> protos) {
+        this(serviceId, false, null, protos, c -> { });
     }
 
-    public GrpcMockContainer(final int serviceId, boolean fixedEnv, String wiremock, final List<String> protos, Consumer<GrpcMockContainer> afterStart) {
+    public GrpcMockContainerSystem(final int serviceId, boolean fixedEnv, String wiremock, final List<String> protos, Consumer<GrpcMockContainerSystem> afterStart) {
         super("adven27/grpc-wiremock");
         this.serviceId = serviceId;
         this.afterStart = afterStart;
@@ -44,8 +45,7 @@ public class GrpcMockContainer extends FixedHostPortGenericContainer<GrpcMockCon
                 String random = UUID.randomUUID().toString();
                 cmd.withHostName("grpc-mock-" + serviceId + "-" + random);
                 cmd.withName("grpc-mock-" + serviceId + "-" + random);
-            })
-            .withLogConsumer(new Slf4jLogConsumer(LoggerFactory.getLogger("SERVICE-ID-" + serviceId)));
+            });
 
         protos.forEach(p -> this.withCopyFileToContainer(MountableFile.forClasspathResource(p), "/proto/" + p));
         Optional.ofNullable(wiremock).ifPresent(w -> this.withClasspathResourceMapping(w, "/wiremock", BindMode.READ_WRITE));
@@ -72,5 +72,20 @@ public class GrpcMockContainer extends FixedHostPortGenericContainer<GrpcMockCon
 
     public int port() {
         return isRunning() ? getMappedPort(50000) : 10000 + serviceId;
+    }
+
+    public int getServiceId() {
+        return serviceId;
+    }
+
+    @Override
+    public boolean running() {
+        return isRunning();
+    }
+
+    @NotNull
+    @Override
+    public String describe() {
+        return toString();
     }
 }
