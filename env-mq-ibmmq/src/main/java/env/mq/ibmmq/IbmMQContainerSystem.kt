@@ -61,17 +61,22 @@ class IbmMQContainerSystem @JvmOverloads constructor(
  * Removing of this queues is a responsibility of the remote queue broker.
  */
 @Suppress("unused")
-data class RemoteMqWithTemporaryQueues(
-    var config: IbmMqConfig = IbmMqConfig()
-) {
-    init {
-        config = MQConnectionFactory().apply {
+data class RemoteMqWithTemporaryQueues(private val connectionFactory: MQConnectionFactory) {
+    lateinit var config: IbmMqConfig
+
+    constructor(host: String, port: Int, manager: String, channel: String) : this(
+        MQConnectionFactory().apply {
             this.transportType = WMQ_CM_CLIENT
-            this.hostName = this@RemoteMqWithTemporaryQueues.config.host.value
-            this.port = this@RemoteMqWithTemporaryQueues.config.port.value.toInt()
-            this.queueManager = this@RemoteMqWithTemporaryQueues.config.manager.value
-            this.channel = this@RemoteMqWithTemporaryQueues.config.channel.value
-        }.createConnection().createSession(false, AUTO_ACKNOWLEDGE).let { session ->
+            this.hostName = host
+            this.port = port
+            this.queueManager = manager
+            this.channel = channel
+            this.temporaryModel = "SYSTEM.JMS.TEMPQ.MODEL"
+        }
+    )
+
+    init {
+        config = connectionFactory.createConnection().createSession(false, AUTO_ACKNOWLEDGE).let { session ->
             with(config) {
                 IbmMqConfig(
                     host = host.name set host.value,
