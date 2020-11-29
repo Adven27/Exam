@@ -36,5 +36,7 @@ class WiremockSystem @JvmOverloads constructor(
         afterStart = afterStart
     )
 
+    constructor(server: WireMockServer) : this(server = server, fixedPort = 8888)
+
     override fun describe() = "${system.baseUrl()} registered ${system.listAllStubMappings().mappings.size} mappings."
 }

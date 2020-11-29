@@ -12,7 +12,7 @@ import java.util.concurrent.TimeoutException
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.system.measureTimeMillis
 
-open class Environment(private val config: Config, val systems: Map<String, ExternalSystem>) {
+open class Environment(val config: Config, val systems: Map<String, ExternalSystem>) {
     @JvmOverloads
     constructor(
         systems: Map<String, ExternalSystem>,
@@ -20,7 +20,7 @@ open class Environment(private val config: Config, val systems: Map<String, Exte
     ) : this(configResolver.resolve(), systems)
 
     init {
-        logger.info("Environment settings:\nOperators: $systems\nConfig: $config")
+        logger.info("Environment settings:\nSystems: $systems\nConfig: $config")
     }
 
     @Suppress("SpreadOperator")
@@ -76,7 +76,7 @@ open class Environment(private val config: Config, val systems: Map<String, Exte
     fun <T : ExternalSystem> find(name: String): T = (systems[name] ?: error("System $name not found")) as T
 
     companion object : KLogging() {
-        private fun start(operators: Set<Map.Entry<String, ExternalSystem>>): Array<CompletableFuture<*>> = operators
+        private fun start(systems: Set<Map.Entry<String, ExternalSystem>>): Array<CompletableFuture<*>> = systems
             .onEach { logger.info("Preparing to start {}", it.key) }
             .map { runAsync({ it.value.start() }, newCachedThreadPool(NamedThreadFactory(it.key))) }
             .toTypedArray()
