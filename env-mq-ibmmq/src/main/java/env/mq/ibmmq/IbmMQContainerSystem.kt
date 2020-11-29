@@ -6,6 +6,14 @@ import env.core.Environment.Companion.setProperties
 import env.core.Environment.Prop
 import env.core.Environment.Prop.Companion.set
 import env.core.ExternalSystem
+import env.core.PortsExposingStrategy
+import env.core.PortsExposingStrategy.SystemPropertyToggle
+import env.mq.ibmmq.IbmMqConfig.Companion.PROP_CHANNEL
+import env.mq.ibmmq.IbmMqConfig.Companion.PROP_DEV_Q1
+import env.mq.ibmmq.IbmMqConfig.Companion.PROP_DEV_Q2
+import env.mq.ibmmq.IbmMqConfig.Companion.PROP_HOST
+import env.mq.ibmmq.IbmMqConfig.Companion.PROP_MANAGER
+import env.mq.ibmmq.IbmMqConfig.Companion.PROP_PORT
 import mu.KLogging
 import org.testcontainers.containers.GenericContainer
 import org.testcontainers.containers.output.Slf4jLogConsumer
@@ -18,7 +26,7 @@ import javax.jms.Session.AUTO_ACKNOWLEDGE
 @Suppress("unused", "MagicNumber")
 class IbmMQContainerSystem @JvmOverloads constructor(
     dockerImageName: DockerImageName = DockerImageName.parse(IMAGE),
-    fixedEnv: Boolean = false,
+    portsExposingStrategy: PortsExposingStrategy = SystemPropertyToggle(),
     fixedPort: Int = PORT,
     fixedPortAdm: Int = PORT_ADM,
     private var config: IbmMqConfig = IbmMqConfig(),
@@ -33,7 +41,7 @@ class IbmMQContainerSystem @JvmOverloads constructor(
             forLogMessage(".*The queue manager task 'AUTOCONFIG' has ended.*", 1).withStartupTimeout(ofSeconds(120))
         )
         withLogConsumer(Slf4jLogConsumer(logger).withPrefix("IBMMQ"))
-        if (fixedEnv) {
+        if (portsExposingStrategy.fixedPorts()) {
             addFixedExposedPort(fixedPort, PORT)
             addFixedExposedPort(fixedPortAdm, PORT_ADM)
         }
@@ -62,7 +70,7 @@ class IbmMQContainerSystem @JvmOverloads constructor(
  */
 @Suppress("unused")
 data class RemoteMqWithTemporaryQueues(private val connectionFactory: MQConnectionFactory) {
-    lateinit var config: IbmMqConfig
+    val config: IbmMqConfig
 
     constructor(host: String, port: Int, manager: String, channel: String) : this(
         MQConnectionFactory().apply {
@@ -77,16 +85,14 @@ data class RemoteMqWithTemporaryQueues(private val connectionFactory: MQConnecti
 
     init {
         config = connectionFactory.createConnection().createSession(false, AUTO_ACKNOWLEDGE).let { session ->
-            with(config) {
-                IbmMqConfig(
-                    host = host.name set host.value,
-                    port = port.name set port.value,
-                    manager = manager.name set manager.value,
-                    channel = channel.name set channel.value,
-                    devQueue1 = devQueue1.name set session.tempQueue(),
-                    devQueue2 = devQueue2.name set session.tempQueue(),
-                )
-            }
+            IbmMqConfig(
+                host = PROP_HOST set connectionFactory.hostName,
+                port = PROP_PORT set connectionFactory.port.toString(),
+                manager = PROP_MANAGER set connectionFactory.queueManager,
+                channel = PROP_CHANNEL set connectionFactory.channel,
+                devQueue1 = PROP_DEV_Q1 set session.tempQueue(),
+                devQueue2 = PROP_DEV_Q2 set session.tempQueue(),
+            )
         }
     }
 
@@ -102,8 +108,8 @@ data class IbmMqConfig @JvmOverloads constructor(
     val port: Prop = PROP_PORT set "1414",
     val manager: Prop = PROP_MANAGER set "QM1",
     val channel: Prop = PROP_CHANNEL set "DEV.APP.SVRCONN",
-    val devQueue1: Prop = "env.mq.ibm.devQueue1" set "DEV.QUEUE.1",
-    val devQueue2: Prop = "env.mq.ibm.devQueue2" set "DEV.QUEUE.2",
+    val devQueue1: Prop = PROP_DEV_Q1 set "DEV.QUEUE.1",
+    val devQueue2: Prop = PROP_DEV_Q2 set "DEV.QUEUE.2",
 ) {
     @Suppress("unused")
     val jmsTester1 = jmsConfig(devQueue1.value)
@@ -135,5 +141,7 @@ data class IbmMqConfig @JvmOverloads constructor(
         const val PROP_PORT = "env.mq.ibm.port"
         const val PROP_MANAGER = "env.mq.ibm.manager"
         const val PROP_CHANNEL = "env.mq.ibm.channel"
+        const val PROP_DEV_Q1 = "env.mq.ibm.devQueue1"
+        const val PROP_DEV_Q2 = "env.mq.ibm.devQueue2"
     }
 }

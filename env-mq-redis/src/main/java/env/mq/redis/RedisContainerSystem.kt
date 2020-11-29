@@ -5,6 +5,8 @@ import env.core.Environment.Companion.setProperties
 import env.core.Environment.Prop
 import env.core.Environment.Prop.Companion.set
 import env.core.ExternalSystem
+import env.core.PortsExposingStrategy
+import env.core.PortsExposingStrategy.SystemPropertyToggle
 import mu.KLogging
 import org.testcontainers.containers.GenericContainer
 import org.testcontainers.utility.DockerImageName
@@ -13,7 +15,7 @@ import java.time.Duration.ofSeconds
 
 class RedisContainerSystem @JvmOverloads constructor(
     dockerImageName: DockerImageName = DockerImageName.parse(IMAGE),
-    fixedEnv: Boolean = false,
+    portsExposingStrategy: PortsExposingStrategy = SystemPropertyToggle(),
     fixedPort: Int = PORT,
     private var config: Config = Config(),
     private val afterStart: RedisContainerSystem.() -> Unit = { }
@@ -24,7 +26,7 @@ class RedisContainerSystem @JvmOverloads constructor(
         withExposedPorts(PORT)
         withStartupTimeout(ofSeconds(STARTUP_TIMEOUT))
         this.fixedPort = fixedPort
-        if (fixedEnv) {
+        if (portsExposingStrategy.fixedPorts()) {
             addFixedExposedPort(fixedPort, PORT)
         }
     }

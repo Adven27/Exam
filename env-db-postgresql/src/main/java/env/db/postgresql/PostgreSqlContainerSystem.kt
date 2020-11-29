@@ -1,24 +1,27 @@
 package env.db.postgresql
 
+import env.container.parseImage
 import env.core.Environment.Companion.setProperties
 import env.core.Environment.Prop
 import env.core.Environment.Prop.Companion.set
 import env.core.ExternalSystem
+import env.core.PortsExposingStrategy
+import env.core.PortsExposingStrategy.SystemPropertyToggle
 import mu.KLogging
 import org.testcontainers.containers.PostgreSQLContainer
 import org.testcontainers.utility.DockerImageName
 
 @Suppress("LongParameterList")
 class PostgreSqlContainerSystem @JvmOverloads constructor(
-    dockerImageName: DockerImageName = DockerImageName.parse("postgres:9.6.12"),
-    fixedEnv: Boolean = false,
+    dockerImageName: DockerImageName = "postgres:9.6.12".parseImage(),
+    portsExposingStrategy: PortsExposingStrategy = SystemPropertyToggle(),
     fixedPort: Int = POSTGRESQL_PORT,
     private var config: Config = Config(),
     private val afterStart: PostgreSqlContainerSystem.() -> Unit = { }
 ) : PostgreSQLContainer<Nothing>(dockerImageName), ExternalSystem {
 
     init {
-        if (fixedEnv) {
+        if (portsExposingStrategy.fixedPorts()) {
             addFixedExposedPort(fixedPort, POSTGRESQL_PORT)
         }
     }

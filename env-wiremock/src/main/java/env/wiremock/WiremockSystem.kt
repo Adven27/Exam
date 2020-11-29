@@ -6,13 +6,15 @@ import com.github.tomakehurst.wiremock.extension.responsetemplating.ResponseTemp
 import env.core.Environment.Companion.findAvailableTcpPort
 import env.core.Environment.Companion.setProperties
 import env.core.GenericExternalSystem
+import env.core.PortsExposingStrategy
+import env.core.PortsExposingStrategy.SystemPropertyToggle
 
 class WiremockSystem @JvmOverloads constructor(
-    fixedEnv: Boolean = false,
+    portsExposingStrategy: PortsExposingStrategy = SystemPropertyToggle(),
     fixedPort: Int = 8888,
     server: WireMockServer = WireMockServer(
         wireMockConfig().extensions(ResponseTemplateTransformer(true)).port(
-            (if (fixedEnv) fixedPort else findAvailableTcpPort()).apply {
+            (if (portsExposingStrategy.fixedPorts()) fixedPort else findAvailableTcpPort()).apply {
                 mapOf("env.wiremock.port" to this.toString()).setProperties()
             }
         )
@@ -24,8 +26,12 @@ class WiremockSystem @JvmOverloads constructor(
     stop = { it.stop() },
     running = { it.isRunning }
 ) {
-    constructor(fixedEnv: Boolean, afterStart: WireMockServer.() -> Unit) : this(
-        fixedEnv = fixedEnv,
+    @JvmOverloads
+    constructor(
+        portsExposingStrategy: PortsExposingStrategy = SystemPropertyToggle(),
+        afterStart: WireMockServer.() -> Unit
+    ) : this(
+        portsExposingStrategy = portsExposingStrategy,
         fixedPort = 8888,
         afterStart = afterStart
     )

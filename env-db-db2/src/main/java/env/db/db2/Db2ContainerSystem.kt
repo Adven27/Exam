@@ -4,6 +4,7 @@ import env.core.Environment.Companion.setProperties
 import env.core.Environment.Prop
 import env.core.Environment.Prop.Companion.set
 import env.core.ExternalSystem
+import env.core.PortsExposingStrategy
 import mu.KLogging
 import org.testcontainers.containers.Db2Container
 import org.testcontainers.utility.DockerImageName
@@ -11,7 +12,7 @@ import org.testcontainers.utility.DockerImageName
 @Suppress("unused", "LongParameterList")
 class Db2ContainerSystem @JvmOverloads constructor(
     dockerImageName: DockerImageName,
-    fixedEnv: Boolean = false,
+    portsExposingStrategy: PortsExposingStrategy = PortsExposingStrategy.SystemPropertyToggle(),
     fixedPort: Int = DB2_PORT,
     private var config: Config = Config(),
     private val afterStart: Db2ContainerSystem.() -> Unit = { }
@@ -19,7 +20,7 @@ class Db2ContainerSystem @JvmOverloads constructor(
 
     init {
         acceptLicense()
-        if (fixedEnv) {
+        if (portsExposingStrategy.fixedPorts()) {
             addFixedExposedPort(fixedPort, DB2_PORT)
         }
     }

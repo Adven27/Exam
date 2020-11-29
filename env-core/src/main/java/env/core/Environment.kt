@@ -1,5 +1,6 @@
 package env.core
 
+import env.core.Environment.ConfigResolver.FromSystemProperty
 import mu.KLogging
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.CompletableFuture.allOf
@@ -11,7 +12,12 @@ import java.util.concurrent.TimeoutException
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.system.measureTimeMillis
 
-open class Environment(val systems: Map<String, ExternalSystem>) {
+open class Environment(private val config: Config, val systems: Map<String, ExternalSystem>) {
+    @JvmOverloads
+    constructor(
+        systems: Map<String, ExternalSystem>,
+        configResolver: ConfigResolver = FromSystemProperty()
+    ) : this(configResolver.resolve(), systems)
 
     init {
         logger.info("Environment settings:\nOperators: $systems\nConfig: $config")
@@ -70,8 +76,6 @@ open class Environment(val systems: Map<String, ExternalSystem>) {
     fun <T : ExternalSystem> find(name: String): T = (systems[name] ?: error("System $name not found")) as T
 
     companion object : KLogging() {
-        private val config = Config()
-
         private fun start(operators: Set<Map.Entry<String, ExternalSystem>>): Array<CompletableFuture<*>> = operators
             .onEach { logger.info("Preparing to start {}", it.key) }
             .map { runAsync({ it.value.start() }, newCachedThreadPool(NamedThreadFactory(it.key))) }
@@ -92,13 +96,6 @@ open class Environment(val systems: Map<String, ExternalSystem>) {
         }
     }
 
-    @Suppress("MagicNumber")
-    data class Config(
-        val downTimeout: Long = "SPECS_ENV_DOWN_TIMEOUT_SEC".fromPropertyOrElse(10L),
-        val upTimeout: Long = "SPECS_ENV_UP_TIMEOUT_SEC".fromPropertyOrElse(300L),
-        val startEnv: Boolean = "SPECS_ENV_START".fromPropertyOrElse(true),
-    )
-
     class StartupFail(t: Throwable) : RuntimeException(t)
 
     data class Prop(val name: String, val value: String) {
@@ -106,6 +103,25 @@ open class Environment(val systems: Map<String, ExternalSystem>) {
 
         companion object {
             infix fun String.set(value: String) = Prop(this, value)
+        }
+    }
+
+    data class Config(val downTimeout: Long, val upTimeout: Long, val startEnv: Boolean)
+
+    interface ConfigResolver {
+        fun resolve(): Config
+
+        @Suppress("MagicNumber")
+        class FromSystemProperty(
+            private val startEnvProperty: String = "SPECS_ENV_START",
+            private val upTimeoutProperty: String = "SPECS_ENV_UP_TIMEOUT_SEC",
+            private val downTimeoutProperty: String = "SPECS_ENV_DOWN_TIMEOUT_SEC",
+        ) : ConfigResolver {
+            override fun resolve() = Config(
+                startEnv = startEnvProperty.fromPropertyOrElse(true),
+                upTimeout = upTimeoutProperty.fromPropertyOrElse(300L),
+                downTimeout = downTimeoutProperty.fromPropertyOrElse(10L),
+            )
         }
     }
 }

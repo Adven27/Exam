@@ -9,6 +9,7 @@ dependencies {
     testImplementation project(":env-db-mysql")
     testImplementation project(":env-db-db2")
     testImplementation project(":env-mq-rabbit")
+    testImplementation project(":env-mq-ibmmq")
     testImplementation project(":env-mq-redis")
     testImplementation project(":env-grpc-mock")
     testImplementation project(":env-wiremock")
@@ -24,6 +25,6 @@ task runEnv(type: JavaExec) {
     main = "env.core.EnvStarter"
     args 'SomeEnvironment'
     systemProperty 'SPECS_ENV_START', true
-    systemProperty 'SPECS_FIXED_ENV', true
+    systemProperty 'SPECS_ENV_FIXED', true
     standardInput = System.in
 }

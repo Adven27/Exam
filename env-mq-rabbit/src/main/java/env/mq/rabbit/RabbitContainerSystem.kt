@@ -4,13 +4,15 @@ import env.core.Environment.Companion.setProperties
 import env.core.Environment.Prop
 import env.core.Environment.Prop.Companion.set
 import env.core.ExternalSystem
+import env.core.PortsExposingStrategy
+import env.core.PortsExposingStrategy.SystemPropertyToggle
 import mu.KLogging
 import org.testcontainers.containers.RabbitMQContainer
 import org.testcontainers.utility.DockerImageName
 
 open class RabbitContainerSystem @JvmOverloads constructor(
     dockerImageName: DockerImageName = DockerImageName.parse("rabbitmq:3.7.25-management-alpine"),
-    fixedEnv: Boolean = false,
+    portsExposingStrategy: PortsExposingStrategy = SystemPropertyToggle(),
     fixedPort: Int = PORT,
     fixedPortAdm: Int = PORT_ADM,
     private var config: Config = Config(),
@@ -18,7 +20,7 @@ open class RabbitContainerSystem @JvmOverloads constructor(
 ) : RabbitMQContainer(dockerImageName), ExternalSystem {
 
     init {
-        if (fixedEnv) {
+        if (portsExposingStrategy.fixedPorts()) {
             addFixedExposedPort(fixedPort, PORT)
             addFixedExposedPort(fixedPortAdm, PORT_ADM)
         }

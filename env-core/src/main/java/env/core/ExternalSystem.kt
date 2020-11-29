@@ -44,3 +44,15 @@ open class GenericExternalSystem<T> @JvmOverloads constructor(
     override fun running(): Boolean = running.apply(system)
     override fun describe() = system.toString()
 }
+
+interface PortsExposingStrategy {
+
+    fun fixedPorts(): Boolean
+
+    class SystemPropertyToggle @JvmOverloads constructor(
+        private val property: String = "SPECS_ENV_FIXED",
+        private val orElse: Boolean = false
+    ) : PortsExposingStrategy {
+        override fun fixedPorts(): Boolean = System.getProperty(property, orElse.toString()).toBoolean()
+    }
+}
