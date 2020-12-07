@@ -2,10 +2,10 @@ buildscript {
     ext.kotlin_version = '1.4.10'
     ext.ktor_version = '1.4.1'
     ext.exposed_version = '0.25.1'
-    ext.testContainers_version = '1.15.0'
     ext.restAssured_version = '4.3.2'
     ext.wiremock_version = '2.25.1'
     ext.klogging_version = '2.0.3'
+    ext.libVersion = '4.2.0'
     repositories {
         mavenCentral()
         jcenter()
@@ -18,7 +18,7 @@ buildscript {
 }
 
 group 'org.adven.concordion.ext'
-version = 'develop-SNAPSHOT'
+version = libVersion
 
 subprojects {
     apply plugin: "io.gitlab.arturbosch.detekt"
@@ -65,7 +65,7 @@ subprojects {
     apply from: "$rootDir/gradle/linters.gradle"
 }
 
-task publishExam {
+task publish {
     dependsOn ":exam-core:bintrayUpload"
     dependsOn ":exam-db:bintrayUpload"
     dependsOn ":exam-ws:bintrayUpload"
@@ -73,22 +73,4 @@ task publishExam {
     dependsOn ":exam-files:bintrayUpload"
     dependsOn ":exam-ui:bintrayUpload"
     dependsOn ":exam-ms:bintrayUpload"
-}
-
-task publishEnv {
-    dependsOn ":env-core:bintrayUpload"
-    dependsOn ":env-container:bintrayUpload"
-    dependsOn ":env-db-db2:bintrayUpload"
-    dependsOn ":env-db-mysql:bintrayUpload"
-    dependsOn ":env-db-postgresql:bintrayUpload"
-    dependsOn ":env-grpc-mock:bintrayUpload"
-    dependsOn ":env-mq-rabbit:bintrayUpload"
-    dependsOn ":env-mq-redis:bintrayUpload"
-    dependsOn ":env-mq-ibmmq:bintrayUpload"
-    dependsOn ":env-wiremock:bintrayUpload"
-}
-
-task publishAll {
-    dependsOn(publishExam)
-    dependsOn(publishEnv)
 }

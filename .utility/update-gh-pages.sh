@@ -1,23 +1,21 @@
 #!/usr/bin/env bash
-if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
-  echo -e "Starting to update gh-pages\n"
+echo -e "Starting to update gh-pages\n"
 
-  cp -R example/build/reports/specs $HOME/specs
+cp -R example/build/reports/specs $HOME/specs
 
-  cd $HOME
-  git config --global user.email "travis@travis-ci.org"
-  git config --global user.name "Travis"
-  git clone --quiet --branch=gh-pages https://${GH_TOKEN}@github.com/Adven27/Exam.git  gh-pages > /dev/null
+cd $HOME
+git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
+git config --global user.name "${GITHUB_ACTOR}"
+git clone --quiet --branch=gh-pages https://${GH_TOKEN}@github.com/Adven27/Exam.git  gh-pages > /dev/null
 
-  cd gh-pages
-  git rm -rf .
-  git commit -m "Travis build $TRAVIS_BUILD_NUMBER remove old files"
+cd gh-pages
+git rm -rf .
+git commit -m "${GITHUB_ACTOR} build ${GITHUB_RUN_NUMBER} remove old files"
 
-  cp -Rf $HOME/specs/* .
+cp -Rf $HOME/specs/* .
 
-  git add -f .
-  git commit -m "Travis build $TRAVIS_BUILD_NUMBER pushed to gh-pages"
-  git push -fq origin gh-pages > /dev/null
+git add -f .
+git commit -m "${GITHUB_ACTOR} build ${GITHUB_RUN_NUMBER} pushed to gh-pages"
+git push -fq origin gh-pages > /dev/null
 
-  echo -e "Done magic with specs\n"
-fi
+echo -e "Update finished\n"
