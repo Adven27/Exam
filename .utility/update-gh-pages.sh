@@ -6,7 +6,7 @@ cp -R example/build/reports/specs $HOME/specs
 cd $HOME
 git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
 git config --global user.name "${GITHUB_ACTOR}"
-git clone --quiet --branch=gh-pages https://${GH_TOKEN}@github.com/Adven27/Exam.git  gh-pages > /dev/null
+git clone --quiet --branch=gh-pages https://${GITHUB_TOKEN}@github.com/Adven27/Exam.git  gh-pages > /dev/null
 
 cd gh-pages
 git rm -rf .
