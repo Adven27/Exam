@@ -16,6 +16,6 @@ cp -Rf $HOME/specs/* .
 
 git add -f .
 git commit -m "${GITHUB_ACTOR} build ${GITHUB_RUN_NUMBER} pushed to gh-pages"
-git push -fq origin gh-pages > /dev/null
+git push -f origin gh-pages
 
 echo -e "Update finished\n"
