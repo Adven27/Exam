@@ -16,6 +16,7 @@ import com.adven.concordion.extensions.exam.core.html.pre
 import com.adven.concordion.extensions.exam.core.html.span
 import com.adven.concordion.extensions.exam.core.html.table
 import com.adven.concordion.extensions.exam.core.html.tag
+import com.adven.concordion.extensions.exam.core.html.tbody
 import com.adven.concordion.extensions.exam.core.html.td
 import com.adven.concordion.extensions.exam.core.html.th
 import com.adven.concordion.extensions.exam.core.html.thead
@@ -137,8 +138,11 @@ sealed class RequestCommand(
             div(
                 h(6, "")(
                     badge("Cookies", "light"),
-                    code(cookies)
-                )
+                    if (cookies.length > 100)
+                        longCookies(cookies)
+                    else
+                        code(cookies))
+
             )
         }
         if (headers.isNotEmpty()) {
@@ -150,6 +154,12 @@ sealed class RequestCommand(
             )
         }
         root(div)
+    }
+
+    private fun longCookies(cookies: String?): Html {
+        if (cookies != null && cookies.isNotEmpty()) {
+            return div("data-title" to cookies)(code(cookies.substring(0, 100)))
+        } else return span("")
     }
 
     private fun attr(html: Html, attrName: String, defaultValue: String, evaluator: Evaluator?): String {
@@ -454,13 +464,27 @@ class CaseCommand(
     }
 
     private fun cookiesTags(cookies: String?) = (
-        if (cookies != null && cookies.isNotEmpty()) {
-            listOf(
-                badge("Cookies", "light"),
-                code(cookies)
-            )
-        } else listOf(span(""))
-        ).toTypedArray()
+            if (cookies != null && cookies.isNotEmpty()) {
+                listOf(
+                         table(NAME to "table", CLASS to "cookie")(
+                                thead()(
+                                        tr()(
+                                                th("Cookies")
+                                        )
+                                ),
+                                tbody(NAME to "tbody")(
+                                        tr()(
+                                                td(
+                                                        cookies
+                                                )
+
+                                        )
+
+                                )
+                        )
+                )
+            } else listOf(span(""))
+            ).toTypedArray()
 
     private fun headersTags(headers: Map<String, String>): Array<Html> {
         return (
