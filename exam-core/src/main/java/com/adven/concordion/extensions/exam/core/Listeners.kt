@@ -181,11 +181,9 @@ internal class ExamDocumentParsingListener(private val registry: CommandRegistry
     }
 }
 
-fun loadXMLFromString(xml: String): org.w3c.dom.Document? {
-    return DocumentBuilderFactory.newInstance().let {
-        it.isNamespaceAware = true
-        it.newDocumentBuilder().parse(ByteArrayInputStream(xml.toByteArray()))
-    }
+fun loadXMLFromString(xml: String): org.w3c.dom.Document? = DocumentBuilderFactory.newInstance().let {
+    it.isNamespaceAware = true
+    it.newDocumentBuilder().parse(ByteArrayInputStream(xml.toByteArray()))
 }
 
 class SpecSummaryListener : SpecificationProcessingListener {

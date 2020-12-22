@@ -3,20 +3,17 @@ package com.adven.concordion.extensions.exam.ws
 import com.adven.concordion.extensions.exam.core.ExamExtension
 import com.adven.concordion.extensions.exam.core.commands.ExamCommand
 import com.adven.concordion.extensions.exam.core.commands.ExamVerifyCommand
-import com.adven.concordion.extensions.exam.core.html.CLASS
 import com.adven.concordion.extensions.exam.core.html.Html
 import com.adven.concordion.extensions.exam.core.html.NAME
 import com.adven.concordion.extensions.exam.core.html.RowParserEval
 import com.adven.concordion.extensions.exam.core.html.badge
 import com.adven.concordion.extensions.exam.core.html.code
 import com.adven.concordion.extensions.exam.core.html.div
-import com.adven.concordion.extensions.exam.core.html.h
 import com.adven.concordion.extensions.exam.core.html.html
-import com.adven.concordion.extensions.exam.core.html.pre
+import com.adven.concordion.extensions.exam.core.html.pill
 import com.adven.concordion.extensions.exam.core.html.span
 import com.adven.concordion.extensions.exam.core.html.table
 import com.adven.concordion.extensions.exam.core.html.tag
-import com.adven.concordion.extensions.exam.core.html.tbody
 import com.adven.concordion.extensions.exam.core.html.td
 import com.adven.concordion.extensions.exam.core.html.th
 import com.adven.concordion.extensions.exam.core.html.thead
@@ -26,6 +23,7 @@ import com.adven.concordion.extensions.exam.core.resolveJson
 import com.adven.concordion.extensions.exam.core.resolveNoType
 import com.adven.concordion.extensions.exam.core.resolveValues
 import com.adven.concordion.extensions.exam.core.resolveXml
+import com.adven.concordion.extensions.exam.core.toHtml
 import com.adven.concordion.extensions.exam.core.toMap
 import com.adven.concordion.extensions.exam.core.utils.PLACEHOLDER_TYPE
 import com.adven.concordion.extensions.exam.core.utils.content
@@ -44,6 +42,7 @@ import org.concordion.api.ResultRecorder
 import java.nio.charset.Charset
 import java.util.ArrayList
 import java.util.HashMap
+import java.util.Random
 
 private const val HEADERS = "headers"
 private const val TYPE = "contentType"
@@ -51,6 +50,7 @@ private const val URL = "url"
 private const val DESC = "desc"
 private const val URL_PARAMS = "urlParams"
 private const val COOKIES = "cookies"
+private const val HEADER_MAX_LENGTH = 200
 private const val VARIABLES = "vars"
 private const val VALUES = "vals"
 private const val BODY = "body"
@@ -67,6 +67,36 @@ private const val PROTOCOL = "protocol"
 private const val STATUS_CODE = "statusCode"
 private const val REASON_PHRASE = "reasonPhrase"
 private const val FROM = "from"
+private const val RESPONSE_CHECK_FAIL_TMPL = //language=xml
+    """
+    <div class="card border-danger bg-warning">
+      <div class="card-body mb-1 mt-1">
+        <pre id='%s' class="card-text" style='white-space: pre-wrap;'/>
+      </div>
+    </div>
+    """
+private const val ENDPOINT_HEADER_TMPL = //language=xml
+    """
+    <div class="input-group input-group-sm">
+      <div class="input-group-prepend">
+        <span class="input-group-text" style='border:none;'>%s</span>
+      </div>
+      <div class="form-control bg-light text-dark font-weight-light" style='border:none;'>
+        <span id='%s'></span>
+      </div>
+    </div>
+    """
+private const val ENDPOINT_TMPL = //language=xml
+    """
+    <div class="input-group mb-1">
+      <div class="input-group-prepend">
+        <span class="input-group-text %s text-white">%s</span>
+      </div>
+      <div class="form-control bg-light text-primary font-weight-light">
+        <span id='%s'></span>
+      </div>
+    </div>
+    """
 
 class PutCommand(name: String, tag: String) : RequestCommand(name, tag, Method.PUT)
 class GetCommand(name: String, tag: String) : RequestCommand(name, tag, Method.GET)
@@ -89,29 +119,33 @@ sealed class RequestCommand(
         fixture: Fixture
     ) {
         val executor = RequestExecutor.newExecutor(evaluator!!).method(method)
-        val root = Html(commandCall!!.element).success()
+        val root = commandCall.html()
 
         val url = attr(root, URL, "/", evaluator)
         val type = attr(root, TYPE, contentType, evaluator)
         val cookies = cookies(evaluator, root)
         val headers = headers(evaluator, root)
 
-        addRequestDescTo(root, url, type, cookies, headers)
-        startTable(root, executor.hasRequestBody())
-
+        startTable(root, executor.hasRequestBody()).above(
+            addRequestDescTo(url, type, cookies, headers)
+        )
         executor.type(type).url(url).headers(headers).cookies(cookies)
     }
 
-    private fun startTable(html: Html, hasRequestBody: Boolean) {
-        val table = table()
-        val header = thead()
-        val tr = thead()
-        if (hasRequestBody) {
-            tr(th("Request"))
-        }
-        tr(th("Expected response", "colspan" to (if (hasRequestBody) "1" else "2")))
-        table(header(tr))
+    private fun startTable(html: Html, hasRequestBody: Boolean): Html {
+        val table = table()(
+            thead()(
+                if (hasRequestBody) th("Request", "style" to "text-align:center;", "class" to "bg-light") else null,
+                th(
+                    "Expected response",
+                    "colspan" to (if (hasRequestBody) "1" else "2"),
+                    "style" to "text-align:center;",
+                    "class" to "bg-light"
+                )
+            )
+        )
         html.dropAllTo(table)
+        return table
     }
 
     private fun cookies(eval: Evaluator?, html: Html): String? {
@@ -120,47 +154,14 @@ sealed class RequestCommand(
         return cookies
     }
 
-    private fun addRequestDescTo(
-        root: Html,
-        url: String,
-        type: String,
-        cookies: String?,
-        headers: Map<String, String>
-    ) {
-        val div = div()(
-            h(5, "")(
-                badge(method.name, "info"),
-                badge(type, "light"),
-                code(url)
-            )
+    @Suppress("SpreadOperator")
+    private fun addRequestDescTo(url: String, type: String, cookies: String?, headers: Map<String, String>) =
+        div()(
+            endpoint(url, method),
+            contentType(type),
+            if (cookies != null) cookies(cookies) else null,
+            *headers.map { header(it) }.toTypedArray()
         )
-        if (cookies != null) {
-            div(
-                h(6, "")(
-                    badge("Cookies", "light"),
-                    if (cookies.length > 100)
-                        longCookies(cookies)
-                    else
-                        code(cookies))
-
-            )
-        }
-        if (headers.isNotEmpty()) {
-            div(
-                h(6, "")(
-                    badge("Headers", "light"),
-                    code(headers.toString())
-                )
-            )
-        }
-        root(div)
-    }
-
-    private fun longCookies(cookies: String?): Html {
-        if (cookies != null && cookies.isNotEmpty()) {
-            return div("data-title" to cookies)(code(cookies.substring(0, 100)))
-        } else return span("")
-    }
 
     private fun attr(html: Html, attrName: String, defaultValue: String, evaluator: Evaluator?): String {
         val attr = html.takeAwayAttr(attrName, defaultValue, evaluator!!)
@@ -317,7 +318,7 @@ class CaseCommand(
 
             val expected = caseTR.firstOrThrow(EXPECTED)
             val expectedStatus = expectedStatus(expected)
-            val statusEl = pre().css("exp-status")
+            val statusEl = span().css("exp-status")
             check(
                 td("colspan" to (if (body == null) "2" else "1")).css("exp-body").insteadOf(expected),
                 statusEl,
@@ -406,7 +407,7 @@ class CaseCommand(
         val caseDesc = caseDesc(rt.attr(DESC), evaluator)
         rt.attrs("data-type" to CASE, "id" to caseDesc).above(
             tr()(
-                td(caseDesc, "colspan" to "2").muted()
+                td(caseDesc, "colspan" to "2").muted().css("bg-light")
             )
         )
     }
@@ -435,65 +436,66 @@ class CaseCommand(
         val fail = contentVerifier.verify(expected, actual).fail
         if (fail.isPresent) {
             val it = fail.get()
-            root.removeChildren().css(contentPrinter.style())
-            resultRecorder.failure(root, contentPrinter.print(it.actual), contentPrinter.print(it.expected))
-            root.below(
-                pre(it.details, CLASS to "exceptionMessage")
-            )
+            val diff = div().css(contentPrinter.style())
+            val errorMsg = errorMessage(it.details, diff)
+            root.removeChildren()(errorMsg)
+            resultRecorder.failure(diff, contentPrinter.print(it.actual), contentPrinter.print(it.expected))
         } else {
             root.removeChildren().text(contentPrinter.print(expected)).css(contentPrinter.style())
             resultRecorder.pass(root)
         }
     }
 
+    private fun errorMessage(txt: String, diff: Html): Html = "error-${Random().nextInt()}".let { id ->
+        String.format(RESPONSE_CHECK_FAIL_TMPL, id).toHtml().apply { findBy(id)!!.text(txt).below(diff) }
+    }
+
     @Suppress("SpreadOperator")
     private fun fillCaseContext(root: Html, statusEl: Html, executor: RequestExecutor) {
         root.parent().above(
             tr()(
-                td()(
-                    div()(
-                        badge(executor.requestMethod(), "info"),
-                        code(executor.requestUrlWithParams()),
-                        *cookiesTags(executor.cookies),
-                        *headersTags(executor.headers)
+                td().css("httpstyle").style("max-width: 1px;")(
+                    tag("textarea").css("http").text(
+                        "${executor.requestMethod()} ${executor.requestUrlWithParams()} HTTP/1.1" +
+                            (if (!executor.cookies.isNullOrEmpty()) "\nCookies: ${executor.cookies}" else "") +
+                            executor.headers.map { "\n${it.key}: ${it.value}" }.joinToString()
                     )
                 ),
-                td()(statusEl)
+                td("style" to "padding-left: 0;")(tag("small")(statusEl, pill("${executor.responseTime()}ms", "light")))
             )
         )
     }
+}
 
-    private fun cookiesTags(cookies: String?) = (
-            if (cookies != null && cookies.isNotEmpty()) {
-                listOf(
-                         table(NAME to "table", CLASS to "cookie")(
-                                thead()(
-                                        tr()(
-                                                th("Cookies")
-                                        )
-                                ),
-                                tbody(NAME to "tbody")(
-                                        tr()(
-                                                td(
-                                                        cookies
-                                                )
+private fun endpoint(url: String, method: Method): Html = "endpoint-${Random().nextInt()}".let { id ->
+    String.format(ENDPOINT_TMPL, bgByMethod(method), method.name, id).toHtml().apply { findBy(id)?.text(url) }
+}
 
-                                        )
+private fun bgByMethod(method: Method) = when (method) {
+    Method.GET -> "bg-primary"
+    Method.POST -> "bg-success"
+    Method.PUT -> "bg-warning"
+    Method.PATCH -> "bg-warning"
+    Method.DELETE -> "bg-danger"
+    else -> "bg-dark"
+}
 
-                                )
-                        )
-                )
-            } else listOf(span(""))
-            ).toTypedArray()
-
-    private fun headersTags(headers: Map<String, String>): Array<Html> {
-        return (
-            if (headers.isNotEmpty()) {
-                listOf(
-                    badge("Headers", "light"),
-                    code(headers.toString())
-                )
-            } else listOf(span(""))
-            ).toTypedArray()
+private fun header(it: Map.Entry<String, String>) = "header-${Random().nextInt()}".let { id ->
+    String.format(ENDPOINT_HEADER_TMPL, it.key, id).toHtml().apply {
+        findBy(id)?.text(it.value.cutString(HEADER_MAX_LENGTH))
     }
 }
+
+private fun cookies(cookies: String) = "header-${Random().nextInt()}".let { id ->
+    String.format(ENDPOINT_HEADER_TMPL, "Cookies", id).toHtml().apply {
+        findBy(id)?.text(cookies.cutString(HEADER_MAX_LENGTH))
+    }
+}
+
+private fun contentType(type: String) = "header-${Random().nextInt()}".let { id ->
+    String.format(ENDPOINT_HEADER_TMPL, "Content-Type", id).toHtml().apply {
+        findBy(id)?.text(type.cutString(HEADER_MAX_LENGTH))
+    }
+}
+
+private fun String.cutString(max: Int) = if (length > max) take(max) + "..." else this

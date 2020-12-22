@@ -9,23 +9,23 @@
     <e:example name="Body check" status="ExpectedToFail" print="true">
          <e:post url="relative/url">
             <e:case desc="Happy-path">
-                <body>
+                <e:body>
                     {"exact": "ok", "template": 1}
-                </body>
-                <expected>
+                </e:body>
+                <e:expected>
                     {"exact": "ok", "template": "{{number}}"}
-                </expected>
+                </e:expected>
                 <e:check>
                   <span c:assertTrue="true">Block for additional checks</span>
                 </e:check>
             </e:case>
             <e:case desc="Неверный ответ">
-                <body>
+                <e:body>
                     {"exact": "not ok", "template": "not number"}
-                </body>
-                <expected>
+                </e:body>
+                <e:expected>
                     {"exact": "ok", "template": "{{number}}"}
-                </expected>
+                </e:expected>
             </e:case>
         </e:post>
     </e:example>

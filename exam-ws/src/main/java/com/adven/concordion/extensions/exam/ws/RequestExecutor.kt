@@ -5,6 +5,8 @@ import io.restassured.RestAssured.given
 import io.restassured.http.Method
 import io.restassured.http.Method.DELETE
 import io.restassured.http.Method.GET
+import io.restassured.http.Method.HEAD
+import io.restassured.http.Method.OPTIONS
 import io.restassured.http.Method.PATCH
 import io.restassured.http.Method.POST
 import io.restassured.http.Method.PUT
@@ -81,13 +83,15 @@ class RequestExecutor private constructor() {
 
     fun statusCode() = response.statusCode
 
+    fun responseTime() = response.time
+
     fun responseBody() = response.body().asString()
 
     fun requestUrlWithParams() = url + if (urlParams != null) "?$urlParams" else ""
 
     fun hasRequestBody() = method == POST || method == PUT
 
-    fun requestMethod() = method.name
+    fun requestMethod() = method
 
     internal fun execute(): Response {
         val request = given()
@@ -105,13 +109,14 @@ class RequestExecutor private constructor() {
         cookies?.let {
             request.cookies(it.toMap())
         }
-
         response = when (method) {
             PUT -> request.put(requestUrlWithParams())
             GET -> request.get(requestUrlWithParams())
             POST -> request.post(requestUrlWithParams())
             PATCH -> request.patch(url)
             DELETE -> request.delete(requestUrlWithParams())
+            OPTIONS -> request.options(requestUrlWithParams())
+            HEAD -> request.head(requestUrlWithParams())
             else -> throw UnsupportedOperationException(method.name)
         }
         return response
