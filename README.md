@@ -35,7 +35,7 @@ Maven
 <dependency>
     <groupId>org.adven.concordion.ext</groupId>
     <artifactId>exam-ms</artifactId>
-    <version>4.2.1</version>
+    <version>4.2.2</version>
 </dependency>
 ```
 
