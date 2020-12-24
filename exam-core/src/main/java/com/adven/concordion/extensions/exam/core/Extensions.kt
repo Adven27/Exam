@@ -20,6 +20,7 @@ class CodeMirrorExtension : ConcordionExtension {
                 "javascript.js",
                 "xml.js",
                 "htmlmixed.js",
+                "http.js",
                 "formatting.js",
                 "markdown.js",
                 "diff_match_patch.js",

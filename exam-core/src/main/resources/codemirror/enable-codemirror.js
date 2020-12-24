@@ -9,24 +9,36 @@ function ready() {
     enableCodeMirrorMerge('.text.rest-failure', 'text/plain');
     enableCodeMirror('.htmlmixed:not(.rest-failure)', 'text/html');
     enableCodeMirrorMerge('.htmlmixed.rest-failure', 'text/html');
-    document.querySelectorAll('.json, .xml, .htmlmixed').forEach(function(el) {
+    enableCodeMirrorHttp('.http:not(.rest-failure)')
+    document.querySelectorAll('.http, .text, .json, .xml, .htmlmixed').forEach(function(el) {
         el.style.visibility = "visible";
     });
     window.dispatchEvent(new Event('resize'));
 }
 
 function unescape(input) {
-    var e = document.createElement('div');
+    const e = document.createElement('div');
     e.innerHTML = input;
     return e.childNodes.length === 0 ? "" : e.childNodes[0].nodeValue;
 }
 
-function enableCodeMirror(selector, mode) {
-    var value, editor,
-        jsons = document.querySelectorAll(selector);
+function enableCodeMirrorHttp(selector) {
+    let editor, jsons = document.querySelectorAll(selector);
+    for (let i = 0; i < jsons.length; i++) {
+        editor = CodeMirror.fromTextArea(jsons[i], {
+            mode: 'message/http',
+            readOnly: true,
+            scrollbarStyle: "simple",
+            viewportMargin: Infinity
+        });
+    }
+}
 
-    for (var i = 0; i < jsons.length; i++) {
-        var el = jsons[i];
+function enableCodeMirror(selector, mode) {
+    let value, editor, jsons = document.querySelectorAll(selector);
+
+    for (let i = 0; i < jsons.length; i++) {
+        const el = jsons[i];
         value = unescape(el.innerHTML);
         el.innerHTML = "";
 

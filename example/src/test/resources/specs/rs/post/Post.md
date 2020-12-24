@@ -9,23 +9,23 @@
     <e:example name="Body check" status="ExpectedToFail" print="true">
          <e:post url="relative/url">
             <e:case desc="Happy-path">
-                <body>
+                <e:body>
                     {"exact": "ok", "template": 1}
-                </body>
-                <expected>
+                </e:body>
+                <e:expected>
                     {"exact": "ok", "template": "{{number}}"}
-                </expected>
+                </e:expected>
                 <e:check>
                   <span c:assertTrue="true">Block for additional checks</span>
                 </e:check>
             </e:case>
             <e:case desc="Неверный ответ">
-                <body>
+                <e:body>
                     {"exact": "not ok", "template": "not number"}
-                </body>
-                <expected>
+                </e:body>
+                <e:expected>
                     {"exact": "ok", "template": "{{number}}"}
-                </expected>
+                </e:expected>
             </e:case>
         </e:post>
     </e:example>
@@ -64,6 +64,18 @@
                 <expected>
                     {
                       "cookies": "{cook=cookies}"
+                    }
+                </expected>
+            </e:case>
+        </e:post>
+    </e:example>
+    <e:example name="Long Cookies display" print="true">
+        <e:post url="cookies" cookies="cook=long_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_value">
+            <e:case desc="Can be set in command">
+                <body/>
+                <expected>
+                    {
+                      "cookies": "{cook=long_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_valuelong_long_value}"
                     }
                 </expected>
             </e:case>

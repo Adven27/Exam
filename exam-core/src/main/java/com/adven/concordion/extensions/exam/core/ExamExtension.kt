@@ -15,6 +15,8 @@ import net.javacrumbs.jsonunit.JsonAssert
 import net.javacrumbs.jsonunit.JsonAssert.`when`
 import net.javacrumbs.jsonunit.core.Configuration
 import net.javacrumbs.jsonunit.core.Option.IGNORING_ARRAY_ORDER
+import nu.xom.Builder
+import org.concordion.api.Element
 import org.concordion.api.Evaluator
 import org.concordion.api.extension.ConcordionExtender
 import org.concordion.api.extension.ConcordionExtension
@@ -25,6 +27,7 @@ import org.xmlunit.diff.DefaultNodeMatcher
 import org.xmlunit.diff.ElementSelectors.byName
 import org.xmlunit.diff.ElementSelectors.byNameAndText
 import org.xmlunit.diff.NodeMatcher
+import java.io.StringReader
 import java.time.Duration
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -162,6 +165,9 @@ class ExamExtension : ConcordionExtension {
             .withMatcher("xmlDateWithinNow", XMLDateWithin())
     }
 }
+
+fun String.toHtml() = parseTemplate(this)
+fun parseTemplate(tmpl: String) = Html(Element(Builder().build(StringReader(tmpl)).rootElement).deepClone())
 
 private val DEFAULT_ZONED_DATETIME_FORMAT = DateTimeFormatter.ISO_OFFSET_DATE_TIME.withResolverStyle(SMART)
 private val DEFAULT_LOCAL_DATETIME_FORMAT = DateTimeFormatter.ISO_DATE_TIME.withResolverStyle(SMART)
