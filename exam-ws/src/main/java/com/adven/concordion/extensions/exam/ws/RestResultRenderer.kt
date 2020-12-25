@@ -28,8 +28,15 @@ private fun template(id: Long) = //language=xml
     <div>
         <nav>
           <div class="nav nav-tabs" id="nav-tab" role="tablist">
-            <a class="nav-item nav-link active small text-success" id="nav-et-$id-tab" data-toggle="tab" href="#nav-et-$id" role="tab" aria-controls="nav-et-$id" aria-selected="true">Expected</a>
-            <a class="nav-item nav-link small" id="nav-at-$id-tab" data-toggle="tab" href="#nav-at-$id" role="tab" aria-controls="nav-at-$id" aria-selected="false" onclick="$('#a-$id').delay(200).queue(function() { window.dispatchEvent(new Event('resize'));; ${'$'}(this).dequeue(); });">Actual</a>
+            <a class="nav-item nav-link active small text-success" id="nav-et-$id-tab" data-toggle="tab" 
+            href="#nav-et-$id" role="tab" aria-controls="nav-et-$id" aria-selected="true">
+                Expected
+            </a>
+            <a class="nav-item nav-link small" id="nav-at-$id-tab" data-toggle="tab" href="#nav-at-$id" 
+            role="tab" aria-controls="nav-at-$id" aria-selected="false" 
+            onclick="$('#a-$id').delay(200).queue(function() { window.dispatchEvent(new Event('resize'));; ${'$'}(this).dequeue(); });">
+                Actual
+            </a>
           </div>
         </nav>
         <div class="tab-content" id="nav-tabContent">
