@@ -88,7 +88,7 @@ private const val ENDPOINT_HEADER_TMPL = //language=xml
     """
 private const val ENDPOINT_TMPL = //language=xml
     """
-    <div class="input-group mb-1">
+    <div class="input-group mb-1 mt-1">
       <div class="input-group-prepend">
         <span class="input-group-text %s text-white">%s</span>
       </div>
@@ -304,7 +304,7 @@ class CaseCommand(
             if (body != null) {
                 val content = body.content(evaluator)
                 val bodyStr = contentResolver.resolve(content, evaluator)
-                td().insteadOf(body).css(contentPrinter.style() + " exp-body").style("min-width: 20%;   width: 50%;")
+                td().insteadOf(body).css(contentPrinter.style() + " exp-body").style("min-width: 20%; width: 50%;")
                     .removeChildren()
                     .text(contentPrinter.print(bodyStr))
                 executor.body(bodyStr)
@@ -441,7 +441,10 @@ class CaseCommand(
             root.removeChildren()(errorMsg)
             resultRecorder.failure(diff, contentPrinter.print(it.actual), contentPrinter.print(it.expected))
         } else {
-            root.removeChildren().text(contentPrinter.print(expected)).css(contentPrinter.style())
+            root.removeChildren()(
+                tag("exp").text(contentPrinter.print(expected)) css contentPrinter.style(),
+                tag("act").text(contentPrinter.print(actual)) css contentPrinter.style()
+            )
             resultRecorder.pass(root)
         }
     }
@@ -450,18 +453,25 @@ class CaseCommand(
         String.format(RESPONSE_CHECK_FAIL_TMPL, id).toHtml().apply { findBy(id)!!.text(txt).below(diff) }
     }
 
-    @Suppress("SpreadOperator")
+    @Suppress("SpreadOperator", "MagicNumber")
     private fun fillCaseContext(root: Html, statusEl: Html, executor: RequestExecutor) {
         root.parent().above(
             tr()(
-                td().css("httpstyle").style("max-width: 1px;")(
-                    tag("textarea").css("http").text(
-                        "${executor.requestMethod()} ${executor.requestUrlWithParams()} HTTP/1.1" +
-                            (if (!executor.cookies.isNullOrEmpty()) "\nCookies: ${executor.cookies}" else "") +
-                            executor.headers.map { "\n${it.key}: ${it.value}" }.joinToString()
+                td().style("max-width: 1px; width: ${if (executor.hasRequestBody()) 50 else 100}%;")(
+                    div().css("httpstyle")(
+                        tag("textarea").css("http").text(
+                            "${executor.requestMethod()} ${executor.requestUrlWithParams()} HTTP/1.1" +
+                                (if (!executor.cookies.isNullOrEmpty()) "\nCookies: ${executor.cookies}" else "") +
+                                executor.headers.map { "\n${it.key}: ${it.value}" }.joinToString()
+                        )
+                    ),
+                    td("style" to "padding-left: 0;")(
+                        tag("small")(
+                            statusEl,
+                            pill("${executor.responseTime()}ms", "light")
+                        )
                     )
-                ),
-                td("style" to "padding-left: 0;")(tag("small")(statusEl, pill("${executor.responseTime()}ms", "light")))
+                )
             )
         )
     }

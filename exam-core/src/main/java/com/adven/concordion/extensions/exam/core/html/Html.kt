@@ -301,6 +301,8 @@ fun paragraph(txt: String) = Html("p", txt)
 
 fun codeXml(text: String?) = pre(text ?: "") css "xml card"
 
+fun codeXmlBlack(text: String?) = pre(text ?: "").attr("lineNumbers", "true") css "htmlmixed darcula"
+
 fun tag(tag: String) = Html(tag)
 
 fun body() = Html("body")

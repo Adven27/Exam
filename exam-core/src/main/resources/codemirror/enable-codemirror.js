@@ -7,9 +7,10 @@ function ready() {
     enableCodeMirrorMerge('.xml.rest-failure', 'application/xml');
     enableCodeMirror('.text:not(.rest-failure)', 'text/plain');
     enableCodeMirrorMerge('.text.rest-failure', 'text/plain');
-    enableCodeMirror('.htmlmixed:not(.rest-failure)', 'text/html');
+    enableCodeMirrorWithTheme('.htmlmixed.darcula', 'text/html', 'darcula');
+    enableCodeMirror('.htmlmixed:not(.rest-failure) .htmlmixed:not(.darcula)', 'text/html');
     enableCodeMirrorMerge('.htmlmixed.rest-failure', 'text/html');
-    enableCodeMirrorHttp('.http:not(.rest-failure)')
+    enableCodeMirrorHttp('.http:not(.rest-failure)');
     document.querySelectorAll('.http, .text, .json, .xml, .htmlmixed').forEach(function(el) {
         el.style.visibility = "visible";
     });
@@ -34,7 +35,7 @@ function enableCodeMirrorHttp(selector) {
     }
 }
 
-function enableCodeMirror(selector, mode) {
+function enableCodeMirrorWithTheme(selector, mode, theme) {
     let value, editor, jsons = document.querySelectorAll(selector);
 
     for (let i = 0; i < jsons.length; i++) {
@@ -48,10 +49,14 @@ function enableCodeMirror(selector, mode) {
             value: value,
             readOnly: true,
             scrollbarStyle: "simple",
-            viewportMargin: Infinity
-            //theme: "idea"
+            viewportMargin: Infinity,
+            theme: theme
         });
     }
+}
+
+function enableCodeMirror(selector, mode) {
+    enableCodeMirrorWithTheme(selector, mode, "default");
 }
 
 function enableCodeMirrorMerge(selector, mode) {

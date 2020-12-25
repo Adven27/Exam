@@ -8,7 +8,7 @@ import com.adven.concordion.extensions.exam.core.html.ONCLICK
 import com.adven.concordion.extensions.exam.core.html.bodyOf
 import com.adven.concordion.extensions.exam.core.html.button
 import com.adven.concordion.extensions.exam.core.html.buttonCollapse
-import com.adven.concordion.extensions.exam.core.html.codeXml
+import com.adven.concordion.extensions.exam.core.html.codeXmlBlack
 import com.adven.concordion.extensions.exam.core.html.div
 import com.adven.concordion.extensions.exam.core.html.footerOf
 import com.adven.concordion.extensions.exam.core.html.italic
@@ -172,11 +172,7 @@ internal class ExamDocumentParsingListener(private val registry: CommandRegistry
 
     private fun log(elem: ConcordionElement) {
         if ((elem.getAttributeValue("print") ?: "false").toBoolean()) {
-            val sb = StringBuilder()
-            for (e in elem.childElements) {
-                sb.append("\n" + e.toXML())
-            }
-            elem.prependChild(codeXml(sb.toString()).el())
+            elem.prependChild(codeXmlBlack(elem.childElements.joinToString { it.toXML() }).css("mt-2").el())
         }
     }
 }

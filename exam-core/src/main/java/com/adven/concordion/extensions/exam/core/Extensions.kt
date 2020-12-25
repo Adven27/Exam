@@ -28,6 +28,7 @@ class CodeMirrorExtension : ConcordionExtension {
                 "xml-fold.js",
                 "simplescrollbar.js"
             ).forEach { withLinkedJavaScript("$BASE$it", Resource("$BASE$it")) }
+            withLinkedCSS("${BASE}theme/darcula.css", Resource("${BASE}theme/darcula.css"))
         }
     }
 
