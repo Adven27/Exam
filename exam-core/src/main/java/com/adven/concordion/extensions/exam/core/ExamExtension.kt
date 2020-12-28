@@ -3,7 +3,8 @@
 package com.adven.concordion.extensions.exam.core
 
 import com.adven.concordion.extensions.exam.core.html.Html
-import com.adven.concordion.extensions.exam.core.html.pre
+import com.adven.concordion.extensions.exam.core.html.codeXmlBlack
+import com.adven.concordion.extensions.exam.core.html.span
 import com.adven.concordion.extensions.exam.core.utils.DateFormatMatcher
 import com.adven.concordion.extensions.exam.core.utils.DateWithin
 import com.adven.concordion.extensions.exam.core.utils.HANDLEBARS
@@ -40,6 +41,7 @@ import java.time.format.ResolverStyle.SMART
 import java.util.ArrayList
 import java.util.Collections.addAll
 import java.util.Date
+import java.util.Random
 
 class ExamExtension : ConcordionExtension {
     private var focusOnError: Boolean = true
@@ -140,12 +142,12 @@ class ExamExtension : ConcordionExtension {
         ex.withDocumentParsingListener(ExamDocumentParsingListener(registry))
         ex.withSpecificationProcessingListener(SpecSummaryListener())
         ex.withThrowableListener {
-            Html(it.element).below(
-                pre(
-                    "Error while executing command:\n\n" +
-                        "${PARSED_COMMANDS[it.element.getAttributeValue("cmdId")]}\n\n" +
-                        "${it.throwable.cause?.message ?: it.throwable.message}"
-                ).css("alert alert-warning small")
+            Html(it.element).above(
+                errorMessage(
+                    "Error while executing command",
+                    "${it.throwable.cause?.message ?: it.throwable.message}",
+                    codeXmlBlack(PARSED_COMMANDS[it.element.getAttributeValue("cmdId")]?.fixIndent())
+                )
             )
         }
         if (focusOnError) {
@@ -261,3 +263,20 @@ interface ContentVerifier {
 }
 
 private val logger = KotlinLogging.logger {}
+
+private fun failTemplate(header: String = "", cntId: String) = //language=xml
+    """
+    <div class="card border-danger alert-warning">
+      ${if (header.isNotEmpty()) "<div class='card-header bg-danger text-white'>$header</div>" else ""}
+      <div class="card-body mb-1 mt-1">
+        <pre id='$cntId' class="card-text" style='white-space: pre-wrap;'/>
+      </div>
+    </div>
+    """
+
+fun errorMessage(header: String = "", message: String, html: Html = span()): Html =
+    "error-${Random().nextInt()}".let { id ->
+        failTemplate(header, id).toHtml().apply { findBy(id)!!.text(message).below(html) }
+    }
+
+fun String.fixIndent() = this.replace("\n            ", "\n")

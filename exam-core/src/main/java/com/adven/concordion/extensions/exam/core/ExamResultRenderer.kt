@@ -11,6 +11,7 @@ open class ExamResultRenderer : AssertEqualsListener, AssertTrueListener, Assert
 
     override fun failureReported(event: AssertFailureEvent) {
         val element = event.element
+        addFailMarker(event)
         element.addStyleClass("rest-failure")
 
         val expected = Element("del")
@@ -27,6 +28,10 @@ open class ExamResultRenderer : AssertEqualsListener, AssertTrueListener, Assert
 
         element.appendText("\n")
         element.appendChild(actual)
+    }
+
+    private fun addFailMarker(event: AssertFailureEvent) {
+        event.element.appendSister(Element("fail").apply { addAttribute("style", "display: none;") })
     }
 
     protected open fun actualText(event: AssertFailureEvent): String {

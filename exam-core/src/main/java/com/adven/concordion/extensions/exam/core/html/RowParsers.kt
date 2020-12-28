@@ -26,14 +26,13 @@ class DbRowParser(private val el: Html, private val tag: String, ignoreRowsBefor
 class RowParserEval(private val el: Html, private val tag: String, private val eval: Evaluator) {
     private val separator: Char = el.takeAwayAttr("separator", ",").first()
 
-    fun parse(): List<List<Any?>> {
-        val result = ArrayList<List<Any?>>()
-        el.childs().filter { it.localName().contains(tag) }.forEach { html ->
-            result.add(parseValues(html.text(), separator).map { eval.resolveToObj(it) })
-            el.remove(html)
-        }
-        return result
-    }
+    fun parse(): Map<String, List<Any?>> = el.childs().filter { it.localName().contains(tag) }
+        .mapIndexed { i, html ->
+            (html.attr("desc") ?: (i + 1).toString()) to parseValues(
+                html.text(),
+                separator
+            ).map { eval.resolveToObj(it) }
+        }.toMap()
 }
 
 internal fun parseValues(text: String, separator: Char): List<String> {

@@ -2,14 +2,11 @@ package com.adven.concordion.extensions.exam.core.commands
 
 import com.adven.concordion.extensions.exam.core.html.CLASS
 import com.adven.concordion.extensions.exam.core.html.ID
-import com.adven.concordion.extensions.exam.core.html.ONCLICK
-import com.adven.concordion.extensions.exam.core.html.button
 import com.adven.concordion.extensions.exam.core.html.buttonCollapse
 import com.adven.concordion.extensions.exam.core.html.div
 import com.adven.concordion.extensions.exam.core.html.h
 import com.adven.concordion.extensions.exam.core.html.html
 import com.adven.concordion.extensions.exam.core.html.htmlCss
-import com.adven.concordion.extensions.exam.core.html.italic
 import org.concordion.api.CommandCall
 import org.concordion.api.Evaluator
 import org.concordion.api.Fixture
@@ -30,16 +27,6 @@ class WhenCommand(tag: String) : ExamCommand("when", tag) {
 class ThenCommand(tag: String) : ExamCommand("then", tag) {
     override fun setUp(cmd: CommandCall?, evaluator: Evaluator?, resultRecorder: ResultRecorder?, fixture: Fixture) {
         cmd.htmlCss("bd-callout bd-callout-success")
-    }
-}
-
-class ScrollToTopCommand(name: String, tag: String) : ExamCommand(name, tag) {
-    override fun setUp(cmd: CommandCall?, evaluator: Evaluator?, resultRecorder: ResultRecorder?, fixture: Fixture) {
-        cmd.html()(
-            button("", ID to "btnToTop", ONCLICK to "topFunction()")(
-                italic("").css("fa fa-arrow-up fa-3x")
-            )
-        )
     }
 }
 

@@ -7,7 +7,6 @@ import com.adven.concordion.extensions.exam.core.commands.ExamExampleCommand
 import com.adven.concordion.extensions.exam.core.commands.ExamplesSummaryCommand
 import com.adven.concordion.extensions.exam.core.commands.GivenCommand
 import com.adven.concordion.extensions.exam.core.commands.JsonCheckCommand
-import com.adven.concordion.extensions.exam.core.commands.ScrollToTopCommand
 import com.adven.concordion.extensions.exam.core.commands.SetVarCommand
 import com.adven.concordion.extensions.exam.core.commands.ThenCommand
 import com.adven.concordion.extensions.exam.core.commands.WaitCommand
@@ -27,7 +26,6 @@ class CommandRegistry(jsonUnitCfg: Configuration, nodeMatcher: NodeMatcher) {
         ExamBeforeExampleCommand("div"),
         BeforeEachExampleCommand("div"),
         ExamplesSummaryCommand("summary", "div"),
-        ScrollToTopCommand("scrollToTop", "div"),
 
         SetVarCommand("span"),
         WaitCommand("span"),

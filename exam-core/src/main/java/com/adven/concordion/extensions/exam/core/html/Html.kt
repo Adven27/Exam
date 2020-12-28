@@ -6,6 +6,7 @@ import com.adven.concordion.extensions.exam.core.resolve
 import org.concordion.api.CommandCall
 import org.concordion.api.Element
 import org.concordion.api.Evaluator
+import java.util.Optional
 
 const val ID = "id"
 const val ONCLICK = "onclick"
@@ -94,6 +95,11 @@ class Html(val el: Element) {
         return this
     }
 
+    infix fun aboveF(html: Html): Html {
+        el.parentElement.prependChild(html.el)
+        return this
+    }
+
     infix fun below(html: Html): Html {
         el.appendSister(html.el)
         return this
@@ -172,6 +178,8 @@ class Html(val el: Element) {
         return if (first == null) null else Html(first)
     }
 
+    fun firstOptional(tag: String): Optional<Html> = Optional.ofNullable(first(tag))
+
     fun all(tag: String): Collection<Html> {
         return el.childElements.asList().filter { it.localName == tag }.map { Html(it) }
     }
@@ -201,6 +209,10 @@ class Html(val el: Element) {
 
     fun span(txt: String? = null, vararg attrs: Pair<String, String>) {
         (Html("span", txt, *attrs))
+    }
+
+    override fun toString(): String {
+        return el.toXML()
     }
 }
 

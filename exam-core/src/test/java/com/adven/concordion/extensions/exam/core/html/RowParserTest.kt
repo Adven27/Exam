@@ -19,7 +19,10 @@ class RowParserTest {
             Html("row", " 3 , 4")
         )
 
-        assertEquals(listOf(listOf("1 1", "2"), listOf("3", "4")), RowParserEval(html, "row", eval).parse())
+        assertEquals(
+            mapOf("1" to listOf("1 1", "2"), "2" to listOf("3", "4")),
+            RowParserEval(html, "row", eval).parse()
+        )
     }
 
     @Test
@@ -32,9 +35,9 @@ class RowParserTest {
         val expectedPeriod = Period.ofDays(1)
         val expectedDate = SimpleDateFormat("dd.MM").format(now().plus(expectedPeriod).toDate())
         assertEquals(
-            listOf(
-                listOf("1'", " 2"),
-                listOf(expectedDate, " 4, 5 ")
+            mapOf(
+                "1" to listOf("1'", " 2"),
+                "2" to listOf(expectedDate, " 4, 5 ")
             ),
             RowParserEval(html, "row", eval).parse()
         )
@@ -49,7 +52,7 @@ class RowParserTest {
         val mm = SimpleDateFormat("MM").format(now().toDate())
 
         assertEquals(
-            listOf(listOf("$dd $mm", now().toLocalDate().toDate().toString())),
+            mapOf("1" to listOf("$dd $mm", now().toLocalDate().toDate().toString())),
             RowParserEval(html, "row", eval).parse()
         )
     }

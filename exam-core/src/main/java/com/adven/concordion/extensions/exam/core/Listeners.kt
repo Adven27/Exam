@@ -149,7 +149,7 @@ internal class ExamDocumentParsingListener(private val registry: CommandRegistry
     private fun addToTopButton(elem: Element) {
         Html(ConcordionElement(elem))(
             button("", ID to "btnToTop", ONCLICK to "topFunction()")(
-                italic("").css("fa fa-arrow-up fa-3x")
+                italic("").css("fa fa-arrow-up")
             )
         )
     }
@@ -172,7 +172,11 @@ internal class ExamDocumentParsingListener(private val registry: CommandRegistry
 
     private fun log(elem: ConcordionElement) {
         if ((elem.getAttributeValue("print") ?: "false").toBoolean()) {
-            elem.prependChild(codeXmlBlack(elem.childElements.joinToString { it.toXML() }).css("mt-2").el())
+            elem.prependChild(
+                codeXmlBlack(
+                    elem.childElements.joinToString("\n") { it.toXML() }.fixIndent()
+                ).css("mt-2").el()
+            )
         }
     }
 }

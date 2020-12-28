@@ -125,9 +125,8 @@ class RequestExecutor private constructor() {
     companion object {
         private const val REQUEST_EXECUTOR_VARIABLE = "#request"
 
-        internal fun fromEvaluator(evaluator: Evaluator): RequestExecutor {
-            return evaluator.getVariable(REQUEST_EXECUTOR_VARIABLE) as RequestExecutor
-        }
+        internal fun fromEvaluator(evaluator: Evaluator): RequestExecutor =
+            evaluator.getVariable(REQUEST_EXECUTOR_VARIABLE) as RequestExecutor
 
         internal fun newExecutor(evaluator: Evaluator): RequestExecutor {
             val variable = RequestExecutor()
@@ -142,3 +141,7 @@ class MultiPart(
     val value: Any,
     val type: String? = null // for file used as name
 )
+
+fun RequestExecutor.httpDesc() = "${requestMethod()} ${requestUrlWithParams()} HTTP/1.1\n" +
+    (if (!cookies.isNullOrEmpty()) "Cookies: ${cookies}\n" else "") +
+    headers.map { "${it.key}: ${it.value}" }.joinToString("\n")

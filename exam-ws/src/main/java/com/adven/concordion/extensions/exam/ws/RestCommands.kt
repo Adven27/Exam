@@ -3,6 +3,7 @@ package com.adven.concordion.extensions.exam.ws
 import com.adven.concordion.extensions.exam.core.ExamExtension
 import com.adven.concordion.extensions.exam.core.commands.ExamCommand
 import com.adven.concordion.extensions.exam.core.commands.ExamVerifyCommand
+import com.adven.concordion.extensions.exam.core.errorMessage
 import com.adven.concordion.extensions.exam.core.html.Html
 import com.adven.concordion.extensions.exam.core.html.NAME
 import com.adven.concordion.extensions.exam.core.html.RowParserEval
@@ -10,6 +11,7 @@ import com.adven.concordion.extensions.exam.core.html.badge
 import com.adven.concordion.extensions.exam.core.html.code
 import com.adven.concordion.extensions.exam.core.html.div
 import com.adven.concordion.extensions.exam.core.html.html
+import com.adven.concordion.extensions.exam.core.html.link
 import com.adven.concordion.extensions.exam.core.html.pill
 import com.adven.concordion.extensions.exam.core.html.span
 import com.adven.concordion.extensions.exam.core.html.table
@@ -36,11 +38,11 @@ import net.javacrumbs.jsonunit.core.Configuration
 import net.javacrumbs.jsonunit.core.Option
 import net.javacrumbs.jsonunit.core.internal.Options
 import org.concordion.api.CommandCall
+import org.concordion.api.Element
 import org.concordion.api.Evaluator
 import org.concordion.api.Fixture
 import org.concordion.api.ResultRecorder
 import java.nio.charset.Charset
-import java.util.ArrayList
 import java.util.HashMap
 import java.util.Random
 
@@ -67,14 +69,6 @@ private const val PROTOCOL = "protocol"
 private const val STATUS_CODE = "statusCode"
 private const val REASON_PHRASE = "reasonPhrase"
 private const val FROM = "from"
-private const val RESPONSE_CHECK_FAIL_TMPL = //language=xml
-    """
-    <div class="card border-danger bg-warning">
-      <div class="card-body mb-1 mt-1">
-        <pre id='%s' class="card-text" style='white-space: pre-wrap;'/>
-      </div>
-    </div>
-    """
 private const val ENDPOINT_HEADER_TMPL = //language=xml
     """
     <div class="input-group input-group-sm">
@@ -196,7 +190,7 @@ class CaseCommand(
     private lateinit var contentVerifier: WsPlugin.ContentVerifier
     private lateinit var contentPrinter: WsPlugin.ContentPrinter
 
-    private val cases = ArrayList<Map<String, Any?>>()
+    private val cases: MutableMap<String, Map<String, Any?>> = LinkedHashMap()
     private var number = 0
 
     @Suppress("SpreadOperator", "ComplexMethod")
@@ -204,14 +198,16 @@ class CaseCommand(
         val caseRoot = cmd.html()
         eval.setVariable("#$PLACEHOLDER_TYPE", if (fromEvaluator(eval).xml()) "xml" else "json")
         cases.clear()
-        val where = caseRoot.first(WHERE)
-        if (where != null) {
+        caseRoot.firstOptional(WHERE).map { where ->
             val vars = where.takeAwayAttr(VARIABLES, "", eval).split(",").map { it.trim() }
             val vals = RowParserEval(where, VALUES, eval).parse()
-            cases += vals.map { vars.mapIndexed { i, name -> "#$name" to it[i] }.toMap() }
-        } else {
-            cases.add(HashMap())
-        }
+            caseRoot.remove(where)
+            cases.putAll(
+                vals.map {
+                    it.key to vars.mapIndexed { i, name -> "#$name" to it.value[i] }.toMap()
+                }.toMap()
+            )
+        }.orElseGet { cases["single"] = HashMap() }
 
         val body = caseRoot.first(BODY)
         val multiPart = caseRoot.first(MULTI_PART)
@@ -292,7 +288,7 @@ class CaseCommand(
         val headers = root.takeAwayAttr(HEADERS)
 
         for (aCase in cases) {
-            aCase.forEach { (key, value) -> evaluator.setVariable(key, value) }
+            aCase.value.forEach { (key, value) -> evaluator.setVariable(key, value) }
 
             cookies?.let { executor.cookies(evaluator.resolveNoType(it)) }
             headers?.let { executor.headers(headers.toMap().resolveValues(evaluator)) }
@@ -324,7 +320,8 @@ class CaseCommand(
                 statusEl,
                 evaluator,
                 resultRecorder,
-                executor.contentType()
+                executor.contentType(),
+                aCase.key
             )
             if (checkStatusLine(expectedStatus)) {
                 resultRecorder.check(statusEl, executor.statusLine(), statusLine(expectedStatus)) { a, e ->
@@ -404,6 +401,19 @@ class CaseCommand(
 
     override fun verify(cmd: CommandCall, evaluator: Evaluator, resultRecorder: ResultRecorder, fixture: Fixture) {
         val rt = cmd.html()
+        val wheres = rt.el.getChildElements("tr")
+        if (wheres.size > 2) {
+            rt.below(
+                tr()(
+                    td("colspan" to "2")(
+                        whereCaseTemplate(
+                            wheres.withIndex().groupBy { it.index / 2 }
+                                .map { entry -> tab(System.currentTimeMillis(), entry.value.map { it.value }) }
+                        )
+                    )
+                )
+            )
+        }
         val caseDesc = caseDesc(rt.attr(DESC), evaluator)
         rt.attrs("data-type" to CASE, "id" to caseDesc).above(
             tr()(
@@ -415,32 +425,38 @@ class CaseCommand(
     private fun caseDesc(desc: String?, eval: Evaluator): String =
         "${++number}) " + if (desc == null) "" else contentResolver.resolve(desc, eval)
 
+    @Suppress("LongParameterList")
     private fun check(
         root: Html,
         statusEl: Html,
         eval: Evaluator,
         resultRecorder: ResultRecorder,
-        contentType: String
+        contentType: String,
+        caseTitle: String
     ) {
         val executor = fromEvaluator(eval)
-        fillCaseContext(root, statusEl, executor)
         check(
             executor.responseBody(),
             eval.resolveForContentType(root.content(eval), contentType),
             resultRecorder,
             root
         )
+        val trBodies = root.parent().deepClone()
+        val case = root.parent().parent()
+        case.remove(root.parent())
+        case()(
+            trCaseDesc(caseTitle, statusEl, executor.hasRequestBody(), executor.responseTime(), executor.httpDesc()),
+            trBodies
+        )
     }
 
     private fun check(actual: String, expected: String, resultRecorder: ResultRecorder, root: Html) {
-        val fail = contentVerifier.verify(expected, actual).fail
-        if (fail.isPresent) {
-            val it = fail.get()
+        contentVerifier.verify(expected, actual).fail.map {
             val diff = div().css(contentPrinter.style())
-            val errorMsg = errorMessage(it.details, diff)
+            val errorMsg = errorMessage(message = it.details, html = diff)
             root.removeChildren()(errorMsg)
             resultRecorder.failure(diff, contentPrinter.print(it.actual), contentPrinter.print(it.expected))
-        } else {
+        }.orElseGet {
             root.removeChildren()(
                 tag("exp").text(contentPrinter.print(expected)) css contentPrinter.style(),
                 tag("act").text(contentPrinter.print(actual)) css contentPrinter.style()
@@ -449,32 +465,21 @@ class CaseCommand(
         }
     }
 
-    private fun errorMessage(txt: String, diff: Html): Html = "error-${Random().nextInt()}".let { id ->
-        String.format(RESPONSE_CHECK_FAIL_TMPL, id).toHtml().apply { findBy(id)!!.text(txt).below(diff) }
-    }
-
     @Suppress("SpreadOperator", "MagicNumber")
-    private fun fillCaseContext(root: Html, statusEl: Html, executor: RequestExecutor) {
-        root.parent().above(
-            tr()(
-                td().style("max-width: 1px; width: ${if (executor.hasRequestBody()) 50 else 100}%;")(
-                    div().css("httpstyle")(
-                        tag("textarea").css("http").text(
-                            "${executor.requestMethod()} ${executor.requestUrlWithParams()} HTTP/1.1" +
-                                (if (!executor.cookies.isNullOrEmpty()) "\nCookies: ${executor.cookies}" else "") +
-                                executor.headers.map { "\n${it.key}: ${it.value}" }.joinToString()
-                        )
-                    ),
-                    td("style" to "padding-left: 0;")(
-                        tag("small")(
-                            statusEl,
-                            pill("${executor.responseTime()}ms", "light")
-                        )
-                    )
+    private fun trCaseDesc(caseTitle: String, statusEl: Html, hasReqBody: Boolean, responseTime: Long, desc: String) =
+        tr("data-case-title" to caseTitle)(
+            td().style("max-width: 1px; width: ${if (hasReqBody) 50 else 100}%;")(
+                div().css("httpstyle")(
+                    tag("textarea").css("http").text(desc)
+                )
+            ),
+            td("style" to "padding-left: 0;")(
+                tag("small")(
+                    statusEl,
+                    pill("${responseTime}ms", "light")
                 )
             )
         )
-    }
 }
 
 private fun endpoint(url: String, method: Method): Html = "endpoint-${Random().nextInt()}".let { id ->
@@ -509,3 +514,43 @@ private fun contentType(type: String) = "header-${Random().nextInt()}".let { id 
 }
 
 private fun String.cutString(max: Int) = if (length > max) take(max) + "..." else this
+
+private fun whereCaseTemplate(tabs: List<Pair<Html, Html>>): Html = tabs.let { list ->
+    val failed = tabs.indexOfFirst { it.first.attr("class")?.contains("rest-failure") ?: false }
+    val active = if (failed == -1) 0 else failed
+    return div()(
+        tag("nav")(
+            div("class" to "nav nav-tabs", "role" to "tablist")(
+                list.mapIndexed { i, p -> p.first.apply { if (i == active) css("active show") } }
+            )
+        ),
+        div()(
+            div("class" to "tab-content")(
+                list.mapIndexed { i, p -> p.second.apply { if (i == active) css("active show") } }
+            )
+        )
+    )
+}
+
+private fun tab(id: Long, trs: List<Element>): Pair<Html, Html> {
+    val cnt = trs.map { Html(it.deepClone()) }
+    val parentElement = trs[0].parentElement
+    parentElement.removeChild(trs[0])
+    parentElement.removeChild(trs[1])
+    val fail = cnt.any { it.descendants("fail").isNotEmpty() }
+    val name = Random().nextInt()
+    return link(cnt[0].attrOrFail("data-case-title"), "#nav-$name-$id").attrs(
+        "id" to "nav-$name-$id-tab",
+        "class" to "nav-item nav-link small ${if (fail) "rest-failure" else "text-success"} ",
+        "data-toggle" to "tab",
+        "role" to "tab",
+        "aria-controls" to "nav-$name-$id",
+        "aria-selected" to "false",
+        "onclick" to "setTimeout(() => { window.dispatchEvent(new Event('resize')); }, 200)"
+    ) to div(
+        "class" to "tab-pane fade",
+        "id" to "nav-$name-$id",
+        "role" to "tabpanel",
+        "aria-labelledby" to "nav-$name-$id-tab",
+    )(table()(cnt))
+}
