@@ -3,7 +3,6 @@ package com.adven.concordion.extensions.exam.db.commands
 import com.adven.concordion.extensions.exam.core.fileExt
 import com.adven.concordion.extensions.exam.core.html.html
 import com.adven.concordion.extensions.exam.core.html.pre
-import com.adven.concordion.extensions.exam.core.html.table
 import com.adven.concordion.extensions.exam.db.DbPlugin
 import com.adven.concordion.extensions.exam.db.DbTester
 import com.adven.concordion.extensions.exam.db.builder.JSONWriter
@@ -24,33 +23,36 @@ import java.io.File
 import java.io.FileOutputStream
 import java.nio.file.Paths
 
-class DBShowCommand(name: String, tag: String, dbTester: DbTester, valuePrinter: DbPlugin.ValuePrinter) : DBCommand(name, tag, dbTester, valuePrinter) {
+class DBShowCommand(name: String, tag: String, dbTester: DbTester, valuePrinter: DbPlugin.ValuePrinter) :
+    DBCommand(name, tag, dbTester, valuePrinter) {
 
     override fun setUp(cmd: CommandCall?, eval: Evaluator?, resultRecorder: ResultRecorder?, fixture: Fixture) {
-        val el = table(cmd.html())
+        val el = cmd.html()
         val tableName = el.takeAwayAttr("table", eval)!!
         val where = el.takeAwayAttr("where", eval)
         val saveToResources = el.takeAwayAttr("saveToResources", eval)
         val ds = el.takeAwayAttr("ds", DbTester.DEFAULT_DATASOURCE)
         val conn = dbTester.connectionFor(ds)
 
-        renderTable(
-            el,
-            includedColumnsTable(
-                if (where == null || where.isEmpty()) {
-                    conn.createTable(tableName)
-                } else {
-                    getFilteredTable(conn, tableName, where)
-                },
-                parseCols(el).keys.toTypedArray()
-            ),
-            remarks,
-            valuePrinter
+        el(
+            renderTable(
+                el.takeAwayAttr("caption"),
+                includedColumnsTable(
+                    if (where == null || where.isEmpty()) {
+                        conn.createTable(tableName)
+                    } else {
+                        getFilteredTable(conn, tableName, where)
+                    },
+                    parseCols(el).keys.toTypedArray()
+                ),
+                remarks,
+                valuePrinter
+            )
         )
         val dataSet = conn.createDataSet(getAllDependentTables(conn, tableName))
         ByteArrayOutputStream().use {
             save(saveToResources, dataSet, it)
-            el.below(pre(it.toString("UTF-8")))
+            el(pre(it.toString("UTF-8")))
         }
     }
 

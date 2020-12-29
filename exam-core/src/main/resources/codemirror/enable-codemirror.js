@@ -8,6 +8,7 @@ function ready() {
     enableCodeMirror('.text:not(.rest-failure)', 'text/plain');
     enableCodeMirrorMerge('.text.rest-failure', 'text/plain');
     enableCodeMirrorWithTheme('.htmlmixed.darcula', 'text/html', 'darcula');
+    enableCodeMirrorWithTheme('.handlebars.darcula', {name: "handlebars", base: "text/html"}, 'darcula');
     enableCodeMirror('.htmlmixed:not(.rest-failure) .htmlmixed:not(.darcula)', 'text/html');
     enableCodeMirrorMerge('.htmlmixed.rest-failure', 'text/html');
     enableCodeMirrorHttp('.http:not(.rest-failure)');

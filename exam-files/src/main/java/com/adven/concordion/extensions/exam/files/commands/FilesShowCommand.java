@@ -8,7 +8,7 @@ import org.concordion.api.Fixture;
 import org.concordion.api.ResultRecorder;
 
 import static com.adven.concordion.extensions.exam.core.html.HtmlBuilder.italic;
-import static com.adven.concordion.extensions.exam.core.html.HtmlBuilder.tableSlim;
+import static com.adven.concordion.extensions.exam.core.html.HtmlBuilder.table;
 import static com.adven.concordion.extensions.exam.core.html.HtmlBuilder.th;
 import static com.adven.concordion.extensions.exam.core.html.HtmlBuilder.thead;
 
@@ -23,7 +23,7 @@ public class FilesShowCommand extends BaseCommand {
 
     @Override
     public void setUp(CommandCall commandCall, Evaluator evaluator, ResultRecorder resultRecorder, Fixture fixture) {
-        final Html element = tableSlim(commandCall.getElement());
+        final Html element = table(commandCall.getElement());
         final String path = element.takeAwayAttr("dir");
 
         if (path != null) {
@@ -32,7 +32,7 @@ public class FilesShowCommand extends BaseCommand {
             element.childs(
                 thead().childs(
                     th().childs(
-                        italic("").css("fa fa-folder-open fa-pull-left fa-border")
+                        italic("").css("fa fa-folder-open ml-1")
                     ).text(evalPath)
                 )
             );

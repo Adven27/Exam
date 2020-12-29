@@ -8,6 +8,7 @@ import com.adven.concordion.extensions.exam.core.commands.ExamVerifyCommand
 import com.adven.concordion.extensions.exam.core.commands.await
 import com.adven.concordion.extensions.exam.core.commands.awaitConfig
 import com.adven.concordion.extensions.exam.core.commands.timeoutMessage
+import com.adven.concordion.extensions.exam.core.errorMessage
 import com.adven.concordion.extensions.exam.core.html.CLASS
 import com.adven.concordion.extensions.exam.core.html.Html
 import com.adven.concordion.extensions.exam.core.html.caption
@@ -17,7 +18,7 @@ import com.adven.concordion.extensions.exam.core.html.html
 import com.adven.concordion.extensions.exam.core.html.italic
 import com.adven.concordion.extensions.exam.core.html.pre
 import com.adven.concordion.extensions.exam.core.html.span
-import com.adven.concordion.extensions.exam.core.html.tableSlim
+import com.adven.concordion.extensions.exam.core.html.table
 import com.adven.concordion.extensions.exam.core.html.tbody
 import com.adven.concordion.extensions.exam.core.html.td
 import com.adven.concordion.extensions.exam.core.html.tr
@@ -93,8 +94,8 @@ class MqCheckCommand(
             root.parent().remove(root)
             return
         }
-        val tableContainer = tableSlim()(captionEnvelopOpen(mqName))
-        root.removeChildren()(tableContainer)
+        val tableContainer = table()(captionEnvelopOpen(mqName))
+        root.removeChildren().attrs("class" to "mq-check")(tableContainer)
 
         var cnt: Html? = null
         if (layout.toUpperCase() != "VERTICALLY") {
@@ -112,7 +113,7 @@ class MqCheckCommand(
                 if (cnt != null) {
                     cnt(
                         td()(
-                            tableSlim()(
+                            table()(
                                 if (it.expected.message.headers.isNotEmpty()) trWithTDs(headersContainer) else null,
                                 tr()(if (collapsable) collapsed(bodyContainer) else bodyContainer)
                             )
@@ -165,7 +166,7 @@ class MqCheckCommand(
     ): Html = div().css("rest-failure bd-callout bd-callout-danger")(
         div(msg),
         *renderMessages("Expected: ", expected, mqName).toTypedArray(),
-        *renderMessages("but was: ", actual.map { TypedMessage("text", it) }, mqName).toTypedArray()
+        *renderMessages("but was: ", actual.map { TypedMessage("xml", it) }, mqName).toTypedArray()
     )
 
     private fun messageTags(root: Html) =
@@ -190,7 +191,7 @@ class MqCheckCommand(
     private fun renderMessages(msg: String, messages: List<TypedMessage>, mqName: String) =
         listOf(
             span(msg),
-            tableSlim()(
+            table()(
                 captionEnvelopOpen(mqName),
                 tbody()(
                     messages.map { tr()(container(it.message.body, type = it.type)) }
@@ -232,10 +233,11 @@ class MqCheckCommand(
         resultRecorder.pass(root)
     } catch (e: Throwable) {
         if (e is AssertionError || e is Exception) {
-            resultRecorder.failure(root, actual.pretty(type), expected.pretty(type))
-            root.parent().above(
-                trWithTDs(pre(e.message).css("alert alert-danger small"))
-            )
+            root.attr("class", "")
+            val diff = div().css(type)
+            val errorMsg = errorMessage(message = e.message ?: "", html = diff)
+            resultRecorder.failure(diff, actual.pretty(type), expected.pretty(type))
+            root(errorMsg)
         } else throw e
     }
 
@@ -267,8 +269,8 @@ class MqSendCommand(name: String, tag: String, private val mqTesters: Map<String
         val headers = headers(root, evaluator)
         root.takeAwayAttr("vars").vars(evaluator, true, root.takeAwayAttr("varsSeparator", ","))
         val message = evaluator.resolveJson(root.content(evaluator).trim())
-        root.removeChildren()(
-            tableSlim()(
+        root.removeChildren().attrs("class" to "mq-send")(
+            table()(
                 captionEnvelopClosed(mqName),
                 if (headers.isNotEmpty()) caption("Headers: ${headers.entries.joinToString()}")(
                     italic("", CLASS to "fa fa-border")
@@ -290,8 +292,8 @@ class MqPurgeCommand(name: String, tag: String, private val mqTesters: Map<Strin
         val mqName = root.takeAwayAttr("name")
         mqTesters.getOrFail(mqName).purge()
         root.removeChildren()(
-            tableSlim()(
-                caption()(italic(" $mqName purged", CLASS to "fa fa-envelope fa-pull-left fa-border"))
+            table()(
+                caption()(italic(" $mqName purged", CLASS to "fa fa-envelope ml-1"))
             )
         )
     }
@@ -304,10 +306,10 @@ private fun Map<String, MqTester>.getOrFail(mqName: String?): MqTester = this[mq
     ?: throw IllegalArgumentException("MQ with name $mqName not registered in MqPlugin")
 
 private fun captionEnvelopOpen(mqName: String) =
-    caption()(italic(" $mqName", CLASS to "fa fa-envelope-open fa-pull-left fa-border"))
+    caption()(italic(" $mqName", CLASS to "fa fa-envelope-open ml-1"))
 
 private fun captionEnvelopClosed(mqName: String?) =
-    caption()(italic(" $mqName", CLASS to "fa fa-envelope fa-pull-left fa-border"))
+    caption()(italic(" $mqName", CLASS to "fa fa-envelope ml-1"))
 
 private fun container(text: String, type: String, collapsable: Boolean) =
     if (collapsable) collapsableContainer(text, type) else fixedContainer(text, type)

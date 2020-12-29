@@ -226,11 +226,6 @@ fun table(el: Html): Html = el.css("table table-sm")
 
 fun table(el: Element): Html = table(Html(el))
 
-@JvmOverloads
-fun tableSlim(el: Element = Element("table")) = tableSlim(Html(el))
-
-fun tableSlim(el: Html) = el.css("table table-sm")
-
 fun thead(vararg attrs: Pair<String, String>) = Html("thead", *attrs).css("thead-default")
 
 @JvmOverloads

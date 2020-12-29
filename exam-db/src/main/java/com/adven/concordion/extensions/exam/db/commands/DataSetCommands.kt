@@ -8,7 +8,6 @@ import com.adven.concordion.extensions.exam.core.html.div
 import com.adven.concordion.extensions.exam.core.html.html
 import com.adven.concordion.extensions.exam.core.html.span
 import com.adven.concordion.extensions.exam.core.html.table
-import com.adven.concordion.extensions.exam.core.html.tableSlim
 import com.adven.concordion.extensions.exam.core.html.takeAttr
 import com.adven.concordion.extensions.exam.db.DbPlugin
 import com.adven.concordion.extensions.exam.db.DbResultRenderer
@@ -46,7 +45,7 @@ class DataSetExecuteCommand(
                 commandCall.html()(
                     table.let {
                         renderTable(
-                            table(),
+                            null,
                             it,
                             { td, row, col -> td()(Html(valuePrinter.wrap(it[row, col]))) }
                         )
@@ -93,7 +92,7 @@ class DataSetVerifyCommand(name: String, tag: String, val dbTester: DbTester, va
                         table.let { expected ->
                             val actual = actual.getTable(expected.tableName())
                             renderTable(
-                                table(),
+                                null,
                                 expected,
                                 markAsSuccess(expected, actual, resultRecorder),
                                 ifEmpty = { markAsSuccess(resultRecorder) }
@@ -124,7 +123,7 @@ class DataSetVerifyCommand(name: String, tag: String, val dbTester: DbTester, va
             }
             root(
                 renderTable(
-                    tableSlim(),
+                    null,
                     expected,
                     markAsSuccessOrFailure,
                     ifEmpty = { markAsSuccess(recorder) }
@@ -165,7 +164,7 @@ class DataSetVerifyCommand(name: String, tag: String, val dbTester: DbTester, va
     }
 
     private fun render(tbl: ITable): Html =
-        renderTable(tableSlim(), tbl, { td, row, col -> td()(Html(valuePrinter.wrap(tbl[row, col]))) })
+        renderTable(null, tbl, { td, row, col -> td()(Html(valuePrinter.wrap(tbl[row, col]))) })
 
     private fun appendIf(append: Boolean, actual: ITable, row: Int, col: String): String =
         if (append) " (${actual[row, col]})" else ""

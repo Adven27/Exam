@@ -1,4 +1,5 @@
 @file:Suppress("TooManyFunctions")
+
 package com.adven.concordion.extensions.exam.db.commands
 
 import com.adven.concordion.extensions.exam.core.commands.ExamCommand
@@ -10,6 +11,7 @@ import com.adven.concordion.extensions.exam.core.html.div
 import com.adven.concordion.extensions.exam.core.html.html
 import com.adven.concordion.extensions.exam.core.html.italic
 import com.adven.concordion.extensions.exam.core.html.span
+import com.adven.concordion.extensions.exam.core.html.table
 import com.adven.concordion.extensions.exam.core.html.tbody
 import com.adven.concordion.extensions.exam.core.html.td
 import com.adven.concordion.extensions.exam.core.html.th
@@ -47,7 +49,7 @@ open class DBCommand(
             span("")
         ).apply {
             attr("style")?.let { style(it) }
-            attr("class") ?: css("table table-sm")
+            attr("class") ?: css("table table-sm table-hover")
         }
         remarks.clear()
         where = root.takeAwayAttr("where", eval!!)
@@ -100,19 +102,23 @@ operator fun ITable.get(row: Int, col: Column): Any? = this[row, col.columnName]
 
 fun <R> ITable.mapRows(transform: (Int) -> R): List<R> = (0 until this.rowCount).map(transform)
 
-fun renderTable(root: Html, t: ITable, remarks: HashMap<String, Int>, valuePrinter: DbPlugin.ValuePrinter) {
+fun renderTable(
+    caption: String? = null,
+    t: ITable,
+    remarks: HashMap<String, Int>,
+    valuePrinter: DbPlugin.ValuePrinter
+): Html =
     renderTable(
-        root,
+        caption,
         t,
         { td, row, col -> td()(Html(valuePrinter.wrap(t[row, col]))) },
         { col: String -> if (remarks.containsKey(col)) "table-info" else "" },
         { col1, col2 -> -compareValues(remarks[col1], remarks[col2]) }
     )
-}
 
 @Suppress("LongParameterList", "SpreadOperator")
 fun renderTable(
-    root: Html,
+    caption: String? = null,
     t: ITable,
     cell: (Html, Int, String) -> Html,
     styleCol: (String) -> String = { "" },
@@ -120,16 +126,18 @@ fun renderTable(
     ifEmpty: Html.() -> Unit = { }
 ): Html {
     val cols = t.columnsSortedBy(sortCols)
-    return root(
-        tableCaption(root.takeAwayAttr("caption"), t.tableName()),
-        if (t.empty()) null else thead()(tr()(cols.map { th(it, CLASS to styleCol(it)) })),
-        tbody()(
-            if (t.empty()) {
-                listOf(tr()(td("<EMPTY>").attrs("colspan" to "${cols.size}").apply(ifEmpty)))
-            } else {
-                t.mapRows { row -> cols.map { cell(td(CLASS to styleCol(it)), row, it) } }
-                    .map { tr()(*it.toTypedArray()) }
-            }
+    return div("class" to "table-responsive mb-1 p-1")(
+        table()(
+            tableCaption(caption, t.tableName()),
+            if (t.empty()) null else thead()(tr()(cols.map { th(it, CLASS to styleCol(it)) })),
+            tbody()(
+                if (t.empty()) {
+                    listOf(tr()(td("<EMPTY>").attrs("colspan" to "${cols.size}").apply(ifEmpty)))
+                } else {
+                    t.mapRows { row -> cols.map { cell(td(CLASS to styleCol(it)), row, it) } }
+                        .map { tr()(*it.toTypedArray()) }
+                }
+            )
         )
     )
 }
@@ -138,7 +146,7 @@ private fun ITable.empty() = this.rowCount == 0
 
 fun tableCaption(title: String?, def: String?): Html = caption().style("width:max-content")(
     italic(
-        " ${if (title != null && !title.isBlank()) title else def}",
-        CLASS to "fa fa-database fa-pull-left fa-border"
+        " ${if (!title.isNullOrBlank()) title else def}",
+        CLASS to "fa fa-database ml-1"
     )
 )

@@ -8,7 +8,7 @@ import com.adven.concordion.extensions.exam.core.html.div
 import com.adven.concordion.extensions.exam.core.html.divCollapse
 import com.adven.concordion.extensions.exam.core.html.html
 import com.adven.concordion.extensions.exam.core.html.pre
-import com.adven.concordion.extensions.exam.core.html.tableSlim
+import com.adven.concordion.extensions.exam.core.html.table
 import com.adven.concordion.extensions.exam.core.html.td
 import com.adven.concordion.extensions.exam.core.html.tr
 import com.adven.concordion.extensions.exam.core.resolveJson
@@ -107,7 +107,7 @@ private fun container(root: Html, type: String, collapsable: Boolean): Html {
 private fun fixedContainer(root: Html, type: String): Html {
     val container = td().css("$type exp-body")
     root.removeChildren()(
-        tableSlim()(
+        table()(
             tr()(container)
         )
     )
@@ -118,7 +118,7 @@ private fun collapsableContainer(root: Html, type: String): Html {
     val id = UUID.randomUUID().toString()
     val container = div("id" to id).css("$type file collapse")
     root.removeChildren()(
-        tableSlim()(
+        table()(
             tr()(
                 td("class" to "exp-body")(
                     div().style("position: relative")(

@@ -8,7 +8,6 @@ import com.adven.concordion.extensions.exam.core.html.div
 import com.adven.concordion.extensions.exam.core.html.html
 import com.adven.concordion.extensions.exam.core.html.pre
 import com.adven.concordion.extensions.exam.core.html.span
-import com.adven.concordion.extensions.exam.core.html.tableSlim
 import com.adven.concordion.extensions.exam.core.resolveToObj
 import com.adven.concordion.extensions.exam.core.toLocalDateTime
 import com.adven.concordion.extensions.exam.core.utils.parsePeriod
@@ -149,16 +148,15 @@ class DBCheckCommand(
     ): Html {
         var root1 = root
         resultRecorder!!.record(FAILURE)
-        val div = div().css("rest-failure bd-callout bd-callout-danger")(div(f.message))
-        root1.below(div)
+        val errorContainer = div().css("rest-failure bd-callout bd-callout-danger")(div(f.message))
+        root1.below(errorContainer)
 
-        val exp = tableSlim()
-        div(span("Expected: "), exp)
+        val exp = div()
+        errorContainer(span("Expected: "), exp)
         root1 = exp
 
-        val act = tableSlim()
-        renderTable(act, actual, remarks, valuePrinter)
-        div(span("but was: "), act)
+        val act = renderTable(null, actual, remarks, valuePrinter)
+        errorContainer(span("but was: "), act)
         return root1
     }
 
@@ -192,7 +190,14 @@ class DBCheckCommand(
                     )
                 )
         }
-        renderTable(root, expected, markAsSuccessOrFailure, ifEmpty = { markAsSuccess(resultRecorder) })
+        root(
+            renderTable(
+                root.takeAwayAttr("caption"),
+                expected,
+                markAsSuccessOrFailure,
+                ifEmpty = { markAsSuccess(resultRecorder) }
+            )
+        )
     }
 
     private fun appendIf(append: Boolean, actual: ITable, row: Int, col: String): String =

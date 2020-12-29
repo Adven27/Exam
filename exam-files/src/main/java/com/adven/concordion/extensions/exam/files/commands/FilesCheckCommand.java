@@ -27,7 +27,7 @@ import static com.adven.concordion.extensions.exam.core.PlaceholdersResolver.res
 import static com.adven.concordion.extensions.exam.core.html.HtmlBuilder.codeXml;
 import static com.adven.concordion.extensions.exam.core.html.HtmlBuilder.div;
 import static com.adven.concordion.extensions.exam.core.html.HtmlBuilder.divCollapse;
-import static com.adven.concordion.extensions.exam.core.html.HtmlBuilder.tableSlim;
+import static com.adven.concordion.extensions.exam.core.html.HtmlBuilder.table;
 import static com.adven.concordion.extensions.exam.core.html.HtmlBuilder.td;
 import static com.adven.concordion.extensions.exam.core.html.HtmlBuilder.tr;
 import static java.io.File.separator;
@@ -53,7 +53,7 @@ public class FilesCheckCommand extends BaseCommand {
 
     @Override
     public void verify(CommandCall commandCall, Evaluator evaluator, ResultRecorder resultRecorder, Fixture fixture) {
-        Html root = tableSlim(commandCall.getElement());
+        Html root = table(commandCall.getElement());
 
         final String path = root.takeAwayAttr("dir", evaluator);
         if (path != null) {

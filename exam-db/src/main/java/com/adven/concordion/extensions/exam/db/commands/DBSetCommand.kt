@@ -31,7 +31,7 @@ class DBSetCommand(name: String, tag: String, dbTester: DbTester, pattern: DbPlu
     override fun setUp(cmd: CommandCall?, eval: Evaluator?, resultRecorder: ResultRecorder?, fixture: Fixture) {
         super.setUp(cmd, eval, resultRecorder, fixture)
         val el = cmd.html()
-        renderTable(el, expectedTable, remarks, valuePrinter)
+        el(renderTable(el.takeAwayAttr("caption"), expectedTable, remarks, valuePrinter))
         operations.getOrElse(
             el.takeAwayAttr("operation", "clean_insert").toLowerCase(),
             { throw IllegalArgumentException("Unsupported dbunit operation. Supported: ${operations.keys}") }

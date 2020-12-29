@@ -9,7 +9,7 @@ import org.concordion.api.ResultRecorder;
 
 import static com.adven.concordion.extensions.exam.core.html.HtmlBuilder.codeXml;
 import static com.adven.concordion.extensions.exam.core.html.HtmlBuilder.span;
-import static com.adven.concordion.extensions.exam.core.html.HtmlBuilder.tableSlim;
+import static com.adven.concordion.extensions.exam.core.html.HtmlBuilder.table;
 import static com.adven.concordion.extensions.exam.core.html.HtmlBuilder.trWithTDs;
 import static java.io.File.separator;
 import static kotlin.TuplesKt.to;
@@ -24,7 +24,7 @@ public class FilesSetCommand extends BaseCommand {
 
     @Override
     public void setUp(CommandCall commandCall, Evaluator evaluator, ResultRecorder resultRecorder, Fixture fixture) {
-        Html root = tableSlim(commandCall.getElement());
+        Html root = table(commandCall.getElement());
 
         final String path = root.takeAwayAttr("dir");
         if (path != null) {

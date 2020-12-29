@@ -31,7 +31,7 @@ open class ExamResultRenderer : AssertEqualsListener, AssertTrueListener, Assert
     }
 
     private fun addFailMarker(event: AssertFailureEvent) {
-        event.element.appendSister(Element("fail").apply { addAttribute("style", "display: none;") })
+        event.element.appendChild(Element("fail").apply { addAttribute("style", "display: none;") })
     }
 
     protected open fun actualText(event: AssertFailureEvent): String {

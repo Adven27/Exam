@@ -2,7 +2,6 @@ package com.adven.concordion.extensions.exam.db
 
 import com.adven.concordion.extensions.exam.core.ExamPlugin
 import com.adven.concordion.extensions.exam.core.commands.ExamCommand
-import com.adven.concordion.extensions.exam.core.html.TABLE
 import com.adven.concordion.extensions.exam.core.html.span
 import com.adven.concordion.extensions.exam.core.toDatePattern
 import com.adven.concordion.extensions.exam.db.commands.DBCheckCommand
@@ -76,9 +75,9 @@ class DbPlugin @JvmOverloads constructor(
     override fun commands(): List<ExamCommand> = listOf(
         DataSetExecuteCommand("db-execute", "span", dbTester, valuePrinter),
         DataSetVerifyCommand("db-verify", "span", dbTester, valuePrinter),
-        DBShowCommand("db-show", TABLE, dbTester, valuePrinter),
-        DBCheckCommand("db-check", TABLE, dbTester, valuePrinter),
-        DBSetCommand("db-set", TABLE, dbTester, valuePrinter),
+        DBShowCommand("db-show", "div", dbTester, valuePrinter),
+        DBCheckCommand("db-check", "div", dbTester, valuePrinter),
+        DBSetCommand("db-set", "div", dbTester, valuePrinter),
         DBCleanCommand("db-clean", "span", dbTester)
     )
 
