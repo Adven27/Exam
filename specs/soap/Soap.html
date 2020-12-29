@@ -1,0 +1,892 @@
+<?xml version="1.0" encoding="UTF-8"?><html xmlns:e="http://exam.extension.io"><head><style>* {
+  font-family: Arial;
+}
+body {
+  padding: 32px;  
+}
+pre {
+  padding: 6px 28px 6px 28px;
+  background-color: #E8EEF7;
+}
+pre, pre *, code, code *, kbd {
+  font-family: Courier New, Courier;
+  font-size: 10pt;
+}
+h1, h1 * {
+  font-size: 24pt;	
+}
+p, td, th, li, .breadcrumbs {
+  font-size: 10pt;
+}
+p, li {
+  line-height: 140%;
+  max-width: 720px;
+}
+table {
+  border-collapse: collapse;
+  empty-cells: show;
+  margin: 8px 0px 8px 0px;
+}
+th, td {
+  border: 1px solid black;
+  padding: 3px;
+}
+td {
+  background-color: white;
+  vertical-align: top;
+}
+th {
+  background-color: #C3D9FF;
+}
+li {
+  margin-top: 6px;
+  margin-bottom: 6px; 
+}
+
+.example, :not(th)[concordion\:example] {
+  padding: 6px 16px 6px 16px;
+  border: 1px solid #C3D9FF;
+  margin: 6px 0px 28px 0px;
+  background-color: #F5F9FD;
+}
+.example h3, [concordion\:example] h3 {
+  margin-top: 8px;
+  margin-bottom: 8px;
+  font-size: 12pt;
+}
+
+p.success {
+  padding: 2px;
+}
+.success, .success * {
+  background-color: #afa !important;
+}
+.success pre {
+  background-color: #bbffbb;
+}
+.failure, .failure * {
+  background-color: #ffb0b0;
+  padding: 1px;
+}
+.failure .expected {
+  text-decoration: line-through;
+  color: #bb5050;
+}
+.ignored, .ignored * {
+  background-color: #f0f0f0 !important;	
+}
+
+ins {
+  text-decoration: none;	
+}
+
+.exceptionMessage {
+  background-color: #fdd;
+  font-family: Courier New, Courier, Monospace;
+  font-size: 10pt;
+  display: block;
+  font-weight: normal;
+  padding: 4px;
+  text-decoration: none !important;
+}
+.stackTrace, .stackTrace * {
+  font-weight: normal;
+}
+.stackTrace {
+  display: none;
+  padding: 1px 4px 4px 4px;
+  background-color: #fdd;
+  border-top: 1px dotted black;
+}
+.stackTraceExceptionMessage {
+  display: block;
+  font-family: Courier New, Courier, Monospace;
+  font-size: 8pt;
+  white-space: wrap;
+  padding: 1px 0px 1px 0px;
+}
+.stackTraceEntry {
+  white-space: nowrap;
+  font-family: Courier New, Courier, Monospace;
+  display: block;
+  font-size: 8pt;
+  padding: 1px 0px 1px 32px;
+}
+.stackTraceButton {
+  font-size: 8pt;
+  margin: 2px 8px 2px 0px;
+  font-weight: normal;
+  font-family: Arial;
+}
+
+.special {
+  font-style: italic;
+}
+.missing, .missing * {
+  background-color: #ff9999;
+  color:#bb5050;
+  text-decoration: line-through;
+}
+.surplus, .surplus * {
+  background-color: #ff9999;
+}
+.footer {
+  text-align: right;
+  margin-top: 40px;
+  font-size: 8pt;
+  width: 100%;
+  color: #999;
+}
+.footer .testTime {
+  padding: 2px 10px 0px 0px;
+}
+
+.idea {
+  font-size: 9pt;
+  color: #888;
+  font-style: italic;	
+}
+.tight li {
+  margin-top: 1px;
+  margin-bottom: 1px; 
+}
+.commentary {
+  float: right;
+  width: 200px;
+  background-color: #ffffd0;
+  padding:8px;
+  border: 3px solid #eeeeb0;	 
+  margin: 10px 0px 10px 10px;	 
+}
+.commentary, .commentary * {
+  font-size: 8pt;
+}
+</style><meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<link type="text/css" rel="stylesheet" href="../../timingExtensionStyle.css" /><script type="text/javascript" src="../../timingExtensionToggle.js"></script><link type="text/css" rel="stylesheet" href="../../codemirror/codemirror.css" /><link type="text/css" rel="stylesheet" href="../../codemirror/merge.css" /><link type="text/css" rel="stylesheet" href="../../codemirror/enable-codemirror.css" /><link type="text/css" rel="stylesheet" href="../../codemirror/foldgutter.css" /><link type="text/css" rel="stylesheet" href="../../codemirror/simplescrollbar.css" /><script type="text/javascript" src="../../codemirror/codemirror.js"></script><script type="text/javascript" src="../../codemirror/enable-codemirror.js"></script><script type="text/javascript" src="../../codemirror/javascript.js"></script><script type="text/javascript" src="../../codemirror/xml.js"></script><script type="text/javascript" src="../../codemirror/htmlmixed.js"></script><script type="text/javascript" src="../../codemirror/http.js"></script><script type="text/javascript" src="../../codemirror/formatting.js"></script><script type="text/javascript" src="../../codemirror/markdown.js"></script><script type="text/javascript" src="../../codemirror/diff_match_patch.js"></script><script type="text/javascript" src="../../codemirror/merge.js"></script><script type="text/javascript" src="../../codemirror/xml-fold.js"></script><script type="text/javascript" src="../../codemirror/simplescrollbar.js"></script><link type="text/css" rel="stylesheet" href="../../codemirror/theme/darcula.css" /><script type="text/javascript" src="../../bootstrap/jquery-3.2.1.slim.min.js"></script><script type="text/javascript" src="../../bootstrap/popper.min.js"></script><script type="text/javascript" src="../../bootstrap/bootstrap.min.js"></script><script type="text/javascript" src="../../bootstrap/sidebar.js"></script><link type="text/css" rel="stylesheet" href="../../bootstrap/enable-bootstrap.css" /><link type="text/css" rel="stylesheet" href="../../bootstrap/bootstrap.min.css" /><link type="text/css" rel="stylesheet" href="../../bootstrap/callout.css" /><link type="text/css" rel="stylesheet" href="../../bootstrap/font-awesome.min.css" /><link type="text/css" rel="stylesheet" href="../../bootstrap/scrollToTop.css" /><script type="text/javascript" src="../../bootstrap/scrollToTop.js"></script></head><body><div id="toggle-button"><img id="toggle-on" src="../../timing-on.svg" height="24" width="24" style="display:none" /><img id="toggle-off" src="../../timing-off.svg" height="24" width="24" /></div><span class="breadcrumbs"><a href="../Specs.html">Exam - Concordion extension</a> &gt;</span>
+<div cmdId="aad444c4-5b7d-4a82-b844-c0f988d8d924" e:summary="" class="pin"> <h4>Summary<button type="button" class="btn btn-light btn-sm text-muted ml-1" data-toggle="collapse" data-target="#summary" aria-expanded="true" aria-controls="summary">collapse</button></h4><div id="summary" class="collapse show"><div class="list-group"><a class="list-group-item list-group-item-action" style="border-left: none; border-right: none;" href="#Check body - success">Check body - success<small class="card-img-overlay m-1" style="padding:0; left:inherit;"><span class="badge badge-pill badge-light">46ms</span><span class="badge badge-pill badge-success">4</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small><button type="button" class="btn btn-light btn-sm text-muted ml-1" data-toggle="collapse" data-target="#890b63db-4382-4b6a-b7e7-c2b707c0d630" aria-expanded="true" aria-controls="890b63db-4382-4b6a-b7e7-c2b707c0d630">cases</button></a><div id="890b63db-4382-4b6a-b7e7-c2b707c0d630" class="collapse"><a href="#1) Content can be inlined" style="font-size: small;" class="list-group-item list-group-item-action text-muted">1) Content can be inlined<i></i></a><a href="#2) Or stored in file" style="font-size: small;" class="list-group-item list-group-item-action text-muted">2) Or stored in file<i></i></a></div><a class="list-group-item list-group-item-action" style="border-left: none; border-right: none;" href="#Check body - failed">Check body - failed<small class="card-img-overlay m-1" style="padding:0; left:inherit;"><span class="badge badge-pill badge-light">22ms</span><span class="badge badge-pill badge-success">1</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning">1</span><span class="badge badge-pill badge-danger"></span><span class="badge badge-pill badge-warning">ExpectedToFail</span></small><button type="button" class="btn btn-light btn-sm text-muted ml-1" data-toggle="collapse" data-target="#0825c9ed-b692-4fb4-9ffd-1dcc38c81465" aria-expanded="true" aria-controls="0825c9ed-b692-4fb4-9ffd-1dcc38c81465">cases</button></a><div id="0825c9ed-b692-4fb4-9ffd-1dcc38c81465" class="collapse"><a href="#3) Happy-path" style="font-size: small;" class="list-group-item list-group-item-action text-muted">3) Happy-path<i></i></a></div><a class="list-group-item list-group-item-action" style="border-left: none; border-right: none;" href="#Placeholder support">Placeholder support<small class="card-img-overlay m-1" style="padding:0; left:inherit;"><span class="badge badge-pill badge-light">132ms</span><span class="badge badge-pill badge-success">12</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small><button type="button" class="btn btn-light btn-sm text-muted ml-1" data-toggle="collapse" data-target="#eab9d5d1-2e52-4645-b985-4cd591af4356" aria-expanded="true" aria-controls="eab9d5d1-2e52-4645-b985-4cd591af4356">cases</button></a><div id="eab9d5d1-2e52-4645-b985-4cd591af4356" class="collapse"><a href="#4) Happy-path" style="font-size: small;" class="list-group-item list-group-item-action text-muted">4) Happy-path<i></i></a></div><a class="list-group-item list-group-item-action" style="border-left: none; border-right: none;" href="#Placeholder support - fail">Placeholder support - fail<small class="card-img-overlay m-1" style="padding:0; left:inherit;"><span class="badge badge-pill badge-light">131ms</span><span class="badge badge-pill badge-success">5</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning">5</span><span class="badge badge-pill badge-danger"></span><span class="badge badge-pill badge-warning">ExpectedToFail</span></small><button type="button" class="btn btn-light btn-sm text-muted ml-1" data-toggle="collapse" data-target="#81dab6aa-5913-4cd4-9bcd-32b9ec8d45dd" aria-expanded="true" aria-controls="81dab6aa-5913-4cd4-9bcd-32b9ec8d45dd">cases</button></a><div id="81dab6aa-5913-4cd4-9bcd-32b9ec8d45dd" class="collapse"><a href="#5) Happy-path" style="font-size: small;" class="list-group-item list-group-item-action text-muted">5) Happy-path<i></i></a></div></div></div></div>
+<div cmdId="32853b71-dfb5-4d99-b7db-dcd25500e3e7" e:given="" class="bd-callout bd-callout-info">Given server, that mirrors request</div>
+<div xmlns:c="http://www.concordion.org/2007/concordion" name="Check body - success" print="true" cmdId="58cb48e4-f17a-48db-ac14-3ad88ec85364" c:example="Check body - success" class="card mb-3" e:example="" id="Check body - success"><div class="card-header" data-toggle="collapse" data-target="#-662994870" aria-expanded="true" aria-controls="-662994870"><a name="Check body - success" data-type="example">Check body - success</a></div><div class="card-body collapse show" id="-662994870"><pre lineNumbers="true" class="htmlmixed darcula mt-2">&lt;e:soap url="relative/url"&gt;
+        &lt;e:case desc="Content can be inlined"&gt;
+&lt;e:body&gt;
+    
+    &amp;lt;soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"&amp;gt;
+        &amp;lt;soap:Body&amp;gt;
+            &amp;lt;ns2:getItemRequest xmlns:ns2="http://ws.io"&amp;gt;
+                &amp;lt;date&amp;gt;{{now 'yyyy-MM-dd'}}&amp;lt;/date&amp;gt;
+            &amp;lt;/ns2:getItemRequest&amp;gt;
+        &amp;lt;/soap:Body&amp;gt;
+    &amp;lt;/soap:Envelope&amp;gt;
+    
+&lt;/e:body&gt;
+&lt;e:expected&gt;
+    
+    &amp;lt;soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"&amp;gt;
+        &amp;lt;soap:Body&amp;gt;
+            &amp;lt;ns2:getItemRequest xmlns:ns2="http://ws.io"&amp;gt;
+                &amp;lt;date&amp;gt;{{now 'yyyy-MM-dd'}}&amp;lt;/date&amp;gt;
+            &amp;lt;/ns2:getItemRequest&amp;gt;
+        &amp;lt;/soap:Body&amp;gt;
+    &amp;lt;/soap:Envelope&amp;gt;
+    
+&lt;/e:expected&gt;
+        &lt;/e:case&gt;
+        &lt;e:case desc="Or stored in file"&gt;
+&lt;e:body from="/data/soap/{{body}}" /&gt;
+&lt;e:expected from="/data/soap/expected.xml" /&gt;
+&lt;e:where vars="body"&gt;
+    &lt;e:vals&gt;body.xml&lt;/e:vals&gt;
+&lt;/e:where&gt;
+        &lt;/e:case&gt;
+    &lt;/e:soap&gt;</pre>
+    <div cmdId="9130b550-7fd4-495f-94df-1942d20f5d62" e:soap=""><table class="table table-sm"><div><div class="input-group mb-1 mt-1">
+      <div class="input-group-prepend">
+        <span class="input-group-text bg-success text-white">POST</span>
+      </div>
+      <div class="form-control bg-light text-primary font-weight-light">
+        <span id="endpoint--1460405972">relative/url</span>
+      </div>
+    </div><div class="input-group input-group-sm">
+      <div class="input-group-prepend">
+        <span class="input-group-text" style="border:none;">Content-Type</span>
+      </div>
+      <div class="form-control bg-light text-dark font-weight-light" style="border:none;">
+        <span id="header--286215552">application/soap+xml; charset=UTF-8;</span>
+      </div>
+    </div></div><thead class="thead-default"><th style="text-align:center;" class="bg-light">Request</th><th colspan="1" style="text-align:center;" class="bg-light">Expected response</th></thead>
+        <tr desc="Content can be inlined" cmdId="c7d8303c-c391-41ed-9339-a2fc83b1ca5d" e:case="" data-type="case" id="1) Content can be inlined"><tr><td colspan="2" class="text-muted bg-light">1) Content can be inlined</td></tr>
+            
+            
+        <tr data-case-title="single"><td style="max-width: 1px; width: 50%;"><div class="httpstyle"><textarea class="http">POST relative/url HTTP/1.1
+</textarea></div></td><td style="padding-left: 0;"><small><span class="exp-status rest-success">200</span><span class="badge badge-pill badge-light">6ms</span></small></td></tr><tr><td class="xml exp-body" style="min-width: 20%; width: 50%;">&lt;?xml version="1.0" encoding="UTF-8"?&gt;&#x0D;
+&lt;soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"&gt;&#x0D;
+    &lt;soap:Body&gt;&#x0D;
+        &lt;ns2:getItemRequest xmlns:ns2="http://ws.io"&gt;&#x0D;
+            &lt;date&gt;2020-12-29&lt;/date&gt;&#x0D;
+        &lt;/ns2:getItemRequest&gt;&#x0D;
+    &lt;/soap:Body&gt;&#x0D;
+&lt;/soap:Envelope&gt;&#x0D;
+</td><td colspan="1" class="exp-body"><div>
+        <nav>
+          <div class="nav nav-tabs" role="tablist">
+            <a class="nav-item nav-link active small text-success" id="nav-et-1609245619947-tab" data-toggle="tab" href="#nav-et-1609245619947" role="tab" aria-controls="nav-et-1609245619947" aria-selected="true"> Expected </a>
+            <a class="nav-item nav-link small" id="nav-at-1609245619947-tab" data-toggle="tab" href="#nav-at-1609245619947" role="tab" aria-controls="nav-at-1609245619947" aria-selected="false" onclick="setTimeout(() =&gt; { window.dispatchEvent(new Event('resize')); }, 200)"> Actual </a>
+          </div>
+        </nav>
+        <div class="tab-content">
+          <div class="tab-pane fade show active" id="nav-et-1609245619947" role="tabpanel" aria-labelledby="nav-et-1609245619947-tab">
+            <pre id="e-1609245619947" class="rest-success xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;&#x0D;
+&lt;soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"&gt;&#x0D;
+    &lt;soap:Body&gt;&#x0D;
+        &lt;ns2:getItemRequest xmlns:ns2="http://ws.io"&gt;&#x0D;
+            &lt;date&gt;2020-12-29&lt;/date&gt;&#x0D;
+        &lt;/ns2:getItemRequest&gt;&#x0D;
+    &lt;/soap:Body&gt;&#x0D;
+&lt;/soap:Envelope&gt;&#x0D;
+</pre>
+          </div>
+          <div class="tab-pane fade" id="nav-at-1609245619947" role="tabpanel" aria-labelledby="nav-at-1609245619947-tab">
+            <pre id="a-1609245619947" class="rest-success xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;&#x0D;
+&lt;soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"&gt;&#x0D;
+    &lt;soap:Body&gt;&#x0D;
+        &lt;ns2:getItemRequest xmlns:ns2="http://ws.io"&gt;&#x0D;
+            &lt;date&gt;2020-12-29&lt;/date&gt;&#x0D;
+        &lt;/ns2:getItemRequest&gt;&#x0D;
+    &lt;/soap:Body&gt;&#x0D;
+&lt;/soap:Envelope&gt;&#x0D;
+</pre>
+          </div>
+        </div>
+    </div></td></tr></tr>
+        <tr desc="Or stored in file" cmdId="b6a38e5e-db75-48c8-ba1b-6af0255d725e" e:case="" data-type="case" id="2) Or stored in file"><tr><td colspan="2" class="text-muted bg-light">2) Or stored in file</td></tr>
+            
+            
+            
+        <tr data-case-title="1"><td style="max-width: 1px; width: 50%;"><div class="httpstyle"><textarea class="http">POST relative/url HTTP/1.1
+</textarea></div></td><td style="padding-left: 0;"><small><span class="exp-status rest-success">200</span><span class="badge badge-pill badge-light">5ms</span></small></td></tr><tr><td from="/data/soap/{{body}}" class="xml exp-body" style="min-width: 20%; width: 50%;">&lt;?xml version="1.0" encoding="UTF-8"?&gt;&#x0D;
+&lt;soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"&gt;&#x0D;
+    &lt;soap:Body&gt;&#x0D;
+        &lt;ns2:getItemRequest xmlns:ns2="http://ws.io"&gt;&#x0D;
+            &lt;date&gt;2019-12-29&lt;/date&gt;&#x0D;
+        &lt;/ns2:getItemRequest&gt;&#x0D;
+    &lt;/soap:Body&gt;&#x0D;
+&lt;/soap:Envelope&gt;&#x0D;
+</td><td colspan="1" class="exp-body" from="/data/soap/expected.xml"><div>
+        <nav>
+          <div class="nav nav-tabs" role="tablist">
+            <a class="nav-item nav-link active small text-success" id="nav-et-1609245619969-tab" data-toggle="tab" href="#nav-et-1609245619969" role="tab" aria-controls="nav-et-1609245619969" aria-selected="true"> Expected </a>
+            <a class="nav-item nav-link small" id="nav-at-1609245619969-tab" data-toggle="tab" href="#nav-at-1609245619969" role="tab" aria-controls="nav-at-1609245619969" aria-selected="false" onclick="setTimeout(() =&gt; { window.dispatchEvent(new Event('resize')); }, 200)"> Actual </a>
+          </div>
+        </nav>
+        <div class="tab-content">
+          <div class="tab-pane fade show active" id="nav-et-1609245619969" role="tabpanel" aria-labelledby="nav-et-1609245619969-tab">
+            <pre id="e-1609245619969" class="rest-success xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;&#x0D;
+&lt;soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"&gt;&#x0D;
+    &lt;soap:Body&gt;&#x0D;
+        &lt;ns2:getItemRequest xmlns:ns2="http://ws.io"&gt;&#x0D;
+            &lt;date&gt;2019-12-29&lt;/date&gt;&#x0D;
+        &lt;/ns2:getItemRequest&gt;&#x0D;
+    &lt;/soap:Body&gt;&#x0D;
+&lt;/soap:Envelope&gt;&#x0D;
+</pre>
+          </div>
+          <div class="tab-pane fade" id="nav-at-1609245619969" role="tabpanel" aria-labelledby="nav-at-1609245619969-tab">
+            <pre id="a-1609245619969" class="rest-success xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;&#x0D;
+&lt;soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"&gt;&#x0D;
+    &lt;soap:Body&gt;&#x0D;
+        &lt;ns2:getItemRequest xmlns:ns2="http://ws.io"&gt;&#x0D;
+            &lt;date&gt;2019-12-29&lt;/date&gt;&#x0D;
+        &lt;/ns2:getItemRequest&gt;&#x0D;
+    &lt;/soap:Body&gt;&#x0D;
+&lt;/soap:Envelope&gt;&#x0D;
+</pre>
+          </div>
+        </div>
+    </div></td></tr></tr>
+    </table></div>
+</div><div class="card-footer text-muted" data-toggle="collapse" data-target="#-662994870" aria-expanded="true" aria-controls="-662994870"><small><span class="badge badge-pill badge-success">4</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small></div></div>
+<div xmlns:c="http://www.concordion.org/2007/concordion" name="Check body - failed" status="ExpectedToFail" print="true" cmdId="ccf7dd84-69a7-4757-b672-0dcc9c982064" c:example="Check body - failed" c:status="ExpectedToFail" class="card mb-3" e:example="" id="Check body - failed"><div class="card-header" data-toggle="collapse" data-target="#-411848938" aria-expanded="true" aria-controls="-411848938"><a name="Check body - failed" data-type="example">Check body - failed</a></div><div class="card-body collapse show" id="-411848938"><pre lineNumbers="true" class="htmlmixed darcula mt-2">&lt;e:soap url="relative/url"&gt;
+        &lt;e:case desc="Happy-path"&gt;
+&lt;e:body&gt;
+    
+    &amp;lt;soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"&amp;gt;
+        &amp;lt;soap:Body&amp;gt;
+            &amp;lt;ns2:getItemRequest xmlns:ns2="http://ws.io"&amp;gt;
+                &amp;lt;date&amp;gt;{{now 'yyyy-MM-dd'}}&amp;lt;/date&amp;gt;
+            &amp;lt;/ns2:getItemRequest&amp;gt;
+        &amp;lt;/soap:Body&amp;gt;
+    &amp;lt;/soap:Envelope&amp;gt;
+    
+&lt;/e:body&gt;
+&lt;e:expected&gt;
+    
+    &amp;lt;soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"&amp;gt;
+        &amp;lt;soap:Body&amp;gt;
+            &amp;lt;ns2:getItemRequest xmlns:ns2="http://ws.io"&amp;gt;
+                &amp;lt;date&amp;gt;{{now 'yyyy-MM-dd' plus='1 day'}}&amp;lt;/date&amp;gt;
+            &amp;lt;/ns2:getItemRequest&amp;gt;
+        &amp;lt;/soap:Body&amp;gt;
+    &amp;lt;/soap:Envelope&amp;gt;
+    
+&lt;/e:expected&gt;
+        &lt;/e:case&gt;
+    &lt;/e:soap&gt;</pre>
+    <div cmdId="cfb14bbd-791c-4bc1-82fe-a1cecbc408e2" e:soap=""><table class="table table-sm"><div><div class="input-group mb-1 mt-1">
+      <div class="input-group-prepend">
+        <span class="input-group-text bg-success text-white">POST</span>
+      </div>
+      <div class="form-control bg-light text-primary font-weight-light">
+        <span id="endpoint--1832568474">relative/url</span>
+      </div>
+    </div><div class="input-group input-group-sm">
+      <div class="input-group-prepend">
+        <span class="input-group-text" style="border:none;">Content-Type</span>
+      </div>
+      <div class="form-control bg-light text-dark font-weight-light" style="border:none;">
+        <span id="header-1897155658">application/soap+xml; charset=UTF-8;</span>
+      </div>
+    </div></div><thead class="thead-default"><th style="text-align:center;" class="bg-light">Request</th><th colspan="1" style="text-align:center;" class="bg-light">Expected response</th></thead>
+        <tr desc="Happy-path" cmdId="79556fb3-4f7b-45dc-be87-e10f479ba499" e:case="" data-type="case" id="3) Happy-path"><tr><td colspan="2" class="text-muted bg-light">3) Happy-path</td></tr>
+            
+            
+        <tr data-case-title="single"><td style="max-width: 1px; width: 50%;"><div class="httpstyle"><textarea class="http">POST relative/url HTTP/1.1
+</textarea></div></td><td style="padding-left: 0;"><small><span class="exp-status rest-success">200</span><span class="badge badge-pill badge-light">4ms</span></small></td></tr><tr><td class="xml exp-body" style="min-width: 20%; width: 50%;">&lt;?xml version="1.0" encoding="UTF-8"?&gt;&#x0D;
+&lt;soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"&gt;&#x0D;
+    &lt;soap:Body&gt;&#x0D;
+        &lt;ns2:getItemRequest xmlns:ns2="http://ws.io"&gt;&#x0D;
+            &lt;date&gt;2020-12-29&lt;/date&gt;&#x0D;
+        &lt;/ns2:getItemRequest&gt;&#x0D;
+    &lt;/soap:Body&gt;&#x0D;
+&lt;/soap:Envelope&gt;&#x0D;
+</td><td colspan="1" class="exp-body"><div class="card border-danger alert-warning">
+      
+      <div class="card-body mb-1 mt-1">
+        <pre id="error--1385994070" class="card-text" style="white-space: pre-wrap;">Expected text value '2020-12-30' but was '2020-12-29' - comparing &lt;date ...&gt;2020-12-30&lt;/date&gt; at /Envelope[1]/Body[1]/getItemRequest[1]/date[1]/text()[1] to &lt;date ...&gt;2020-12-29&lt;/date&gt; at /Envelope[1]/Body[1]/getItemRequest[1]/date[1]/text()[1]</pre><div class="xml rest-failure"><del class="expected">&lt;?xml version="1.0" encoding="UTF-8"?&gt;&#x0D;
+&lt;soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"&gt;&#x0D;
+    &lt;soap:Body&gt;&#x0D;
+        &lt;ns2:getItemRequest xmlns:ns2="http://ws.io"&gt;&#x0D;
+            &lt;date&gt;2020-12-30&lt;/date&gt;&#x0D;
+        &lt;/ns2:getItemRequest&gt;&#x0D;
+    &lt;/soap:Body&gt;&#x0D;
+&lt;/soap:Envelope&gt;&#x0D;
+</del>
+<ins class="actual">&lt;?xml version="1.0" encoding="UTF-8"?&gt;&#x0D;
+&lt;soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"&gt;&#x0D;
+    &lt;soap:Body&gt;&#x0D;
+        &lt;ns2:getItemRequest xmlns:ns2="http://ws.io"&gt;&#x0D;
+            &lt;date&gt;2020-12-29&lt;/date&gt;&#x0D;
+        &lt;/ns2:getItemRequest&gt;&#x0D;
+    &lt;/soap:Body&gt;&#x0D;
+&lt;/soap:Envelope&gt;&#x0D;
+</ins></div><fail style="display: none;" />
+      </div>
+    </div></td></tr></tr>
+    </table></div>
+</div><div class="card-footer text-muted" data-toggle="collapse" data-target="#-411848938" aria-expanded="true" aria-controls="-411848938"><small><span class="badge badge-pill badge-success">1</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning">1</span><span class="badge badge-pill badge-danger"></span><span class="badge badge-pill badge-warning">ExpectedToFail</span></small></div></div>
+<div xmlns:c="http://www.concordion.org/2007/concordion" name="Placeholder support" print="true" cmdId="680e5cba-b2ee-411a-8827-81c034799d14" c:example="Placeholder support" class="card mb-3" e:example="" id="Placeholder support"><div class="card-header" data-toggle="collapse" data-target="#-60996094" aria-expanded="true" aria-controls="-60996094"><a name="Placeholder support" data-type="example">Placeholder support</a></div><div class="card-body collapse show" id="-60996094"><pre lineNumbers="true" class="htmlmixed darcula mt-2">&lt;e:soap url="relative/url"&gt;
+        &lt;e:case desc="Happy-path"&gt;
+&lt;e:body&gt;
+    
+    &amp;lt;soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"&amp;gt;
+        &amp;lt;soap:Body&amp;gt;
+            &amp;lt;ns2:getItemRequest xmlns:ns2="http://ws.io"&amp;gt;
+                &amp;lt;val&amp;gt;{{val}}&amp;lt;/val&amp;gt;
+            &amp;lt;/ns2:getItemRequest&amp;gt;
+        &amp;lt;/soap:Body&amp;gt;
+    &amp;lt;/soap:Envelope&amp;gt;
+    
+&lt;/e:body&gt;
+&lt;e:expected&gt;
+    
+    &amp;lt;soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"&amp;gt;
+        &amp;lt;soap:Body&amp;gt;
+            &amp;lt;ns2:getItemRequest xmlns:ns2="http://ws.io"&amp;gt;
+                &amp;lt;val&amp;gt;{{placeholder}}&amp;lt;/val&amp;gt;
+            &amp;lt;/ns2:getItemRequest&amp;gt;
+        &amp;lt;/soap:Body&amp;gt;
+    &amp;lt;/soap:Envelope&amp;gt;
+    
+&lt;/e:expected&gt;
+&lt;e:where vars="val, placeholder"&gt;
+    &lt;e:vals&gt;3,           {{number}}&lt;/e:vals&gt;
+    &lt;e:vals&gt;hi,          {{string}}&lt;/e:vals&gt;
+    &lt;e:vals&gt;true,        {{bool}}&lt;/e:vals&gt;
+    &lt;e:vals&gt;a,           {{regex '[abc]'}}&lt;/e:vals&gt;
+    &lt;e:vals&gt;22.01.2000,  {{formattedAs 'dd.MM.yyyy'}}&lt;/e:vals&gt;
+    &lt;e:vals&gt;anything,    {{ignore}}&lt;/e:vals&gt;
+&lt;/e:where&gt;
+        &lt;/e:case&gt;
+    &lt;/e:soap&gt;</pre>
+    <div cmdId="5df9d0f8-ef91-47ad-ad53-78bb72827e82" e:soap=""><table class="table table-sm"><div><div class="input-group mb-1 mt-1">
+      <div class="input-group-prepend">
+        <span class="input-group-text bg-success text-white">POST</span>
+      </div>
+      <div class="form-control bg-light text-primary font-weight-light">
+        <span id="endpoint--1046455541">relative/url</span>
+      </div>
+    </div><div class="input-group input-group-sm">
+      <div class="input-group-prepend">
+        <span class="input-group-text" style="border:none;">Content-Type</span>
+      </div>
+      <div class="form-control bg-light text-dark font-weight-light" style="border:none;">
+        <span id="header-1160438226">application/soap+xml; charset=UTF-8;</span>
+      </div>
+    </div></div><thead class="thead-default"><th style="text-align:center;" class="bg-light">Request</th><th colspan="1" style="text-align:center;" class="bg-light">Expected response</th></thead>
+        <tr desc="Happy-path" cmdId="47130746-1db8-46de-817d-9c18a270bae4" e:case="" data-type="case" id="4) Happy-path"><tr><td colspan="2" class="text-muted bg-light">4) Happy-path</td></tr>
+            
+            
+            
+        </tr><tr><td colspan="2"><div><nav><div class="nav nav-tabs" role="tablist"><a href="#nav--625865310-1609245620125" id="nav--625865310-1609245620125-tab" data-toggle="tab" role="tab" aria-controls="nav--625865310-1609245620125" aria-selected="false" onclick="setTimeout(() =&gt; { window.dispatchEvent(new Event('resize')); }, 200)" class="nav-item nav-link small text-success  active show">1</a><a href="#nav-985918140-1609245620125" id="nav-985918140-1609245620125-tab" class="nav-item nav-link small text-success " data-toggle="tab" role="tab" aria-controls="nav-985918140-1609245620125" aria-selected="false" onclick="setTimeout(() =&gt; { window.dispatchEvent(new Event('resize')); }, 200)">2</a><a href="#nav-348108511-1609245620125" id="nav-348108511-1609245620125-tab" class="nav-item nav-link small text-success " data-toggle="tab" role="tab" aria-controls="nav-348108511-1609245620125" aria-selected="false" onclick="setTimeout(() =&gt; { window.dispatchEvent(new Event('resize')); }, 200)">3</a><a href="#nav--856144718-1609245620125" id="nav--856144718-1609245620125-tab" class="nav-item nav-link small text-success " data-toggle="tab" role="tab" aria-controls="nav--856144718-1609245620125" aria-selected="false" onclick="setTimeout(() =&gt; { window.dispatchEvent(new Event('resize')); }, 200)">4</a><a href="#nav--1029019152-1609245620125" id="nav--1029019152-1609245620125-tab" class="nav-item nav-link small text-success " data-toggle="tab" role="tab" aria-controls="nav--1029019152-1609245620125" aria-selected="false" onclick="setTimeout(() =&gt; { window.dispatchEvent(new Event('resize')); }, 200)">5</a><a href="#nav-962030804-1609245620125" id="nav-962030804-1609245620125-tab" class="nav-item nav-link small text-success " data-toggle="tab" role="tab" aria-controls="nav-962030804-1609245620125" aria-selected="false" onclick="setTimeout(() =&gt; { window.dispatchEvent(new Event('resize')); }, 200)">6</a></div></nav><div><div class="tab-content"><div id="nav--625865310-1609245620125" role="tabpanel" aria-labelledby="nav--625865310-1609245620125-tab" class="tab-pane fade active show"><table class="table table-sm"><tr data-case-title="1"><td style="max-width: 1px; width: 50%;"><div class="httpstyle"><textarea class="http">POST relative/url HTTP/1.1
+</textarea></div></td><td style="padding-left: 0;"><small><span class="exp-status rest-success">200</span><span class="badge badge-pill badge-light">4ms</span></small></td></tr><tr><td class="xml exp-body" style="min-width: 20%; width: 50%;">&lt;?xml version="1.0" encoding="UTF-8"?&gt;&#x0D;
+&lt;soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"&gt;&#x0D;
+    &lt;soap:Body&gt;&#x0D;
+        &lt;ns2:getItemRequest xmlns:ns2="http://ws.io"&gt;&#x0D;
+            &lt;val&gt;3&lt;/val&gt;&#x0D;
+        &lt;/ns2:getItemRequest&gt;&#x0D;
+    &lt;/soap:Body&gt;&#x0D;
+&lt;/soap:Envelope&gt;&#x0D;
+</td><td colspan="1" class="exp-body"><div>
+        <nav>
+          <div class="nav nav-tabs" role="tablist">
+            <a class="nav-item nav-link active small text-success" id="nav-et-1609245620022-tab" data-toggle="tab" href="#nav-et-1609245620022" role="tab" aria-controls="nav-et-1609245620022" aria-selected="true"> Expected </a>
+            <a class="nav-item nav-link small" id="nav-at-1609245620022-tab" data-toggle="tab" href="#nav-at-1609245620022" role="tab" aria-controls="nav-at-1609245620022" aria-selected="false" onclick="setTimeout(() =&gt; { window.dispatchEvent(new Event('resize')); }, 200)"> Actual </a>
+          </div>
+        </nav>
+        <div class="tab-content">
+          <div class="tab-pane fade show active" id="nav-et-1609245620022" role="tabpanel" aria-labelledby="nav-et-1609245620022-tab">
+            <pre id="e-1609245620022" class="rest-success xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;&#x0D;
+&lt;soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"&gt;&#x0D;
+    &lt;soap:Body&gt;&#x0D;
+        &lt;ns2:getItemRequest xmlns:ns2="http://ws.io"&gt;&#x0D;
+            &lt;val&gt;${xml-unit.any-number}&lt;/val&gt;&#x0D;
+        &lt;/ns2:getItemRequest&gt;&#x0D;
+    &lt;/soap:Body&gt;&#x0D;
+&lt;/soap:Envelope&gt;&#x0D;
+</pre>
+          </div>
+          <div class="tab-pane fade" id="nav-at-1609245620022" role="tabpanel" aria-labelledby="nav-at-1609245620022-tab">
+            <pre id="a-1609245620022" class="rest-success xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;&#x0D;
+&lt;soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"&gt;&#x0D;
+    &lt;soap:Body&gt;&#x0D;
+        &lt;ns2:getItemRequest xmlns:ns2="http://ws.io"&gt;&#x0D;
+            &lt;val&gt;3&lt;/val&gt;&#x0D;
+        &lt;/ns2:getItemRequest&gt;&#x0D;
+    &lt;/soap:Body&gt;&#x0D;
+&lt;/soap:Envelope&gt;&#x0D;
+</pre>
+          </div>
+        </div>
+    </div></td></tr></table></div><div class="tab-pane fade" id="nav-985918140-1609245620125" role="tabpanel" aria-labelledby="nav-985918140-1609245620125-tab"><table class="table table-sm"><tr data-case-title="2"><td style="max-width: 1px; width: 50%;"><div class="httpstyle"><textarea class="http">POST relative/url HTTP/1.1
+</textarea></div></td><td style="padding-left: 0;"><small><span class="exp-status rest-success">200</span><span class="badge badge-pill badge-light">4ms</span></small></td></tr><tr><td class="xml exp-body" style="min-width: 20%; width: 50%;">&lt;?xml version="1.0" encoding="UTF-8"?&gt;&#x0D;
+&lt;soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"&gt;&#x0D;
+    &lt;soap:Body&gt;&#x0D;
+        &lt;ns2:getItemRequest xmlns:ns2="http://ws.io"&gt;&#x0D;
+            &lt;val&gt;hi&lt;/val&gt;&#x0D;
+        &lt;/ns2:getItemRequest&gt;&#x0D;
+    &lt;/soap:Body&gt;&#x0D;
+&lt;/soap:Envelope&gt;&#x0D;
+</td><td colspan="1" class="exp-body"><div>
+        <nav>
+          <div class="nav nav-tabs" role="tablist">
+            <a class="nav-item nav-link active small text-success" id="nav-et-1609245620041-tab" data-toggle="tab" href="#nav-et-1609245620041" role="tab" aria-controls="nav-et-1609245620041" aria-selected="true"> Expected </a>
+            <a class="nav-item nav-link small" id="nav-at-1609245620041-tab" data-toggle="tab" href="#nav-at-1609245620041" role="tab" aria-controls="nav-at-1609245620041" aria-selected="false" onclick="setTimeout(() =&gt; { window.dispatchEvent(new Event('resize')); }, 200)"> Actual </a>
+          </div>
+        </nav>
+        <div class="tab-content">
+          <div class="tab-pane fade show active" id="nav-et-1609245620041" role="tabpanel" aria-labelledby="nav-et-1609245620041-tab">
+            <pre id="e-1609245620041" class="rest-success xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;&#x0D;
+&lt;soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"&gt;&#x0D;
+    &lt;soap:Body&gt;&#x0D;
+        &lt;ns2:getItemRequest xmlns:ns2="http://ws.io"&gt;&#x0D;
+            &lt;val&gt;${xml-unit.any-string}&lt;/val&gt;&#x0D;
+        &lt;/ns2:getItemRequest&gt;&#x0D;
+    &lt;/soap:Body&gt;&#x0D;
+&lt;/soap:Envelope&gt;&#x0D;
+</pre>
+          </div>
+          <div class="tab-pane fade" id="nav-at-1609245620041" role="tabpanel" aria-labelledby="nav-at-1609245620041-tab">
+            <pre id="a-1609245620041" class="rest-success xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;&#x0D;
+&lt;soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"&gt;&#x0D;
+    &lt;soap:Body&gt;&#x0D;
+        &lt;ns2:getItemRequest xmlns:ns2="http://ws.io"&gt;&#x0D;
+            &lt;val&gt;hi&lt;/val&gt;&#x0D;
+        &lt;/ns2:getItemRequest&gt;&#x0D;
+    &lt;/soap:Body&gt;&#x0D;
+&lt;/soap:Envelope&gt;&#x0D;
+</pre>
+          </div>
+        </div>
+    </div></td></tr></table></div><div class="tab-pane fade" id="nav-348108511-1609245620125" role="tabpanel" aria-labelledby="nav-348108511-1609245620125-tab"><table class="table table-sm"><tr data-case-title="3"><td style="max-width: 1px; width: 50%;"><div class="httpstyle"><textarea class="http">POST relative/url HTTP/1.1
+</textarea></div></td><td style="padding-left: 0;"><small><span class="exp-status rest-success">200</span><span class="badge badge-pill badge-light">5ms</span></small></td></tr><tr><td class="xml exp-body" style="min-width: 20%; width: 50%;">&lt;?xml version="1.0" encoding="UTF-8"?&gt;&#x0D;
+&lt;soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"&gt;&#x0D;
+    &lt;soap:Body&gt;&#x0D;
+        &lt;ns2:getItemRequest xmlns:ns2="http://ws.io"&gt;&#x0D;
+            &lt;val&gt;true&lt;/val&gt;&#x0D;
+        &lt;/ns2:getItemRequest&gt;&#x0D;
+    &lt;/soap:Body&gt;&#x0D;
+&lt;/soap:Envelope&gt;&#x0D;
+</td><td colspan="1" class="exp-body"><div>
+        <nav>
+          <div class="nav nav-tabs" role="tablist">
+            <a class="nav-item nav-link active small text-success" id="nav-et-1609245620062-tab" data-toggle="tab" href="#nav-et-1609245620062" role="tab" aria-controls="nav-et-1609245620062" aria-selected="true"> Expected </a>
+            <a class="nav-item nav-link small" id="nav-at-1609245620062-tab" data-toggle="tab" href="#nav-at-1609245620062" role="tab" aria-controls="nav-at-1609245620062" aria-selected="false" onclick="setTimeout(() =&gt; { window.dispatchEvent(new Event('resize')); }, 200)"> Actual </a>
+          </div>
+        </nav>
+        <div class="tab-content">
+          <div class="tab-pane fade show active" id="nav-et-1609245620062" role="tabpanel" aria-labelledby="nav-et-1609245620062-tab">
+            <pre id="e-1609245620062" class="rest-success xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;&#x0D;
+&lt;soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"&gt;&#x0D;
+    &lt;soap:Body&gt;&#x0D;
+        &lt;ns2:getItemRequest xmlns:ns2="http://ws.io"&gt;&#x0D;
+            &lt;val&gt;${xml-unit.any-boolean}&lt;/val&gt;&#x0D;
+        &lt;/ns2:getItemRequest&gt;&#x0D;
+    &lt;/soap:Body&gt;&#x0D;
+&lt;/soap:Envelope&gt;&#x0D;
+</pre>
+          </div>
+          <div class="tab-pane fade" id="nav-at-1609245620062" role="tabpanel" aria-labelledby="nav-at-1609245620062-tab">
+            <pre id="a-1609245620062" class="rest-success xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;&#x0D;
+&lt;soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"&gt;&#x0D;
+    &lt;soap:Body&gt;&#x0D;
+        &lt;ns2:getItemRequest xmlns:ns2="http://ws.io"&gt;&#x0D;
+            &lt;val&gt;true&lt;/val&gt;&#x0D;
+        &lt;/ns2:getItemRequest&gt;&#x0D;
+    &lt;/soap:Body&gt;&#x0D;
+&lt;/soap:Envelope&gt;&#x0D;
+</pre>
+          </div>
+        </div>
+    </div></td></tr></table></div><div class="tab-pane fade" id="nav--856144718-1609245620125" role="tabpanel" aria-labelledby="nav--856144718-1609245620125-tab"><table class="table table-sm"><tr data-case-title="4"><td style="max-width: 1px; width: 50%;"><div class="httpstyle"><textarea class="http">POST relative/url HTTP/1.1
+</textarea></div></td><td style="padding-left: 0;"><small><span class="exp-status rest-success">200</span><span class="badge badge-pill badge-light">4ms</span></small></td></tr><tr><td class="xml exp-body" style="min-width: 20%; width: 50%;">&lt;?xml version="1.0" encoding="UTF-8"?&gt;&#x0D;
+&lt;soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"&gt;&#x0D;
+    &lt;soap:Body&gt;&#x0D;
+        &lt;ns2:getItemRequest xmlns:ns2="http://ws.io"&gt;&#x0D;
+            &lt;val&gt;a&lt;/val&gt;&#x0D;
+        &lt;/ns2:getItemRequest&gt;&#x0D;
+    &lt;/soap:Body&gt;&#x0D;
+&lt;/soap:Envelope&gt;&#x0D;
+</td><td colspan="1" class="exp-body"><div>
+        <nav>
+          <div class="nav nav-tabs" role="tablist">
+            <a class="nav-item nav-link active small text-success" id="nav-et-1609245620080-tab" data-toggle="tab" href="#nav-et-1609245620080" role="tab" aria-controls="nav-et-1609245620080" aria-selected="true"> Expected </a>
+            <a class="nav-item nav-link small" id="nav-at-1609245620080-tab" data-toggle="tab" href="#nav-at-1609245620080" role="tab" aria-controls="nav-at-1609245620080" aria-selected="false" onclick="setTimeout(() =&gt; { window.dispatchEvent(new Event('resize')); }, 200)"> Actual </a>
+          </div>
+        </nav>
+        <div class="tab-content">
+          <div class="tab-pane fade show active" id="nav-et-1609245620080" role="tabpanel" aria-labelledby="nav-et-1609245620080-tab">
+            <pre id="e-1609245620080" class="rest-success xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;&#x0D;
+&lt;soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"&gt;&#x0D;
+    &lt;soap:Body&gt;&#x0D;
+        &lt;ns2:getItemRequest xmlns:ns2="http://ws.io"&gt;&#x0D;
+            &lt;val&gt;${xml-unit.regex}[abc]&lt;/val&gt;&#x0D;
+        &lt;/ns2:getItemRequest&gt;&#x0D;
+    &lt;/soap:Body&gt;&#x0D;
+&lt;/soap:Envelope&gt;&#x0D;
+</pre>
+          </div>
+          <div class="tab-pane fade" id="nav-at-1609245620080" role="tabpanel" aria-labelledby="nav-at-1609245620080-tab">
+            <pre id="a-1609245620080" class="rest-success xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;&#x0D;
+&lt;soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"&gt;&#x0D;
+    &lt;soap:Body&gt;&#x0D;
+        &lt;ns2:getItemRequest xmlns:ns2="http://ws.io"&gt;&#x0D;
+            &lt;val&gt;a&lt;/val&gt;&#x0D;
+        &lt;/ns2:getItemRequest&gt;&#x0D;
+    &lt;/soap:Body&gt;&#x0D;
+&lt;/soap:Envelope&gt;&#x0D;
+</pre>
+          </div>
+        </div>
+    </div></td></tr></table></div><div class="tab-pane fade" id="nav--1029019152-1609245620125" role="tabpanel" aria-labelledby="nav--1029019152-1609245620125-tab"><table class="table table-sm"><tr data-case-title="5"><td style="max-width: 1px; width: 50%;"><div class="httpstyle"><textarea class="http">POST relative/url HTTP/1.1
+</textarea></div></td><td style="padding-left: 0;"><small><span class="exp-status rest-success">200</span><span class="badge badge-pill badge-light">4ms</span></small></td></tr><tr><td class="xml exp-body" style="min-width: 20%; width: 50%;">&lt;?xml version="1.0" encoding="UTF-8"?&gt;&#x0D;
+&lt;soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"&gt;&#x0D;
+    &lt;soap:Body&gt;&#x0D;
+        &lt;ns2:getItemRequest xmlns:ns2="http://ws.io"&gt;&#x0D;
+            &lt;val&gt;22.01.2000&lt;/val&gt;&#x0D;
+        &lt;/ns2:getItemRequest&gt;&#x0D;
+    &lt;/soap:Body&gt;&#x0D;
+&lt;/soap:Envelope&gt;&#x0D;
+</td><td colspan="1" class="exp-body"><div>
+        <nav>
+          <div class="nav nav-tabs" role="tablist">
+            <a class="nav-item nav-link active small text-success" id="nav-et-1609245620104-tab" data-toggle="tab" href="#nav-et-1609245620104" role="tab" aria-controls="nav-et-1609245620104" aria-selected="true"> Expected </a>
+            <a class="nav-item nav-link small" id="nav-at-1609245620104-tab" data-toggle="tab" href="#nav-at-1609245620104" role="tab" aria-controls="nav-at-1609245620104" aria-selected="false" onclick="setTimeout(() =&gt; { window.dispatchEvent(new Event('resize')); }, 200)"> Actual </a>
+          </div>
+        </nav>
+        <div class="tab-content">
+          <div class="tab-pane fade show active" id="nav-et-1609245620104" role="tabpanel" aria-labelledby="nav-et-1609245620104-tab">
+            <pre id="e-1609245620104" class="rest-success xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;&#x0D;
+&lt;soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"&gt;&#x0D;
+    &lt;soap:Body&gt;&#x0D;
+        &lt;ns2:getItemRequest xmlns:ns2="http://ws.io"&gt;&#x0D;
+            &lt;val&gt;${xml-unit.matches:formattedAs}dd.MM.yyyy&lt;/val&gt;&#x0D;
+        &lt;/ns2:getItemRequest&gt;&#x0D;
+    &lt;/soap:Body&gt;&#x0D;
+&lt;/soap:Envelope&gt;&#x0D;
+</pre>
+          </div>
+          <div class="tab-pane fade" id="nav-at-1609245620104" role="tabpanel" aria-labelledby="nav-at-1609245620104-tab">
+            <pre id="a-1609245620104" class="rest-success xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;&#x0D;
+&lt;soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"&gt;&#x0D;
+    &lt;soap:Body&gt;&#x0D;
+        &lt;ns2:getItemRequest xmlns:ns2="http://ws.io"&gt;&#x0D;
+            &lt;val&gt;22.01.2000&lt;/val&gt;&#x0D;
+        &lt;/ns2:getItemRequest&gt;&#x0D;
+    &lt;/soap:Body&gt;&#x0D;
+&lt;/soap:Envelope&gt;&#x0D;
+</pre>
+          </div>
+        </div>
+    </div></td></tr></table></div><div class="tab-pane fade" id="nav-962030804-1609245620125" role="tabpanel" aria-labelledby="nav-962030804-1609245620125-tab"><table class="table table-sm"><tr data-case-title="6"><td style="max-width: 1px; width: 50%;"><div class="httpstyle"><textarea class="http">POST relative/url HTTP/1.1
+</textarea></div></td><td style="padding-left: 0;"><small><span class="exp-status rest-success">200</span><span class="badge badge-pill badge-light">4ms</span></small></td></tr><tr><td class="xml exp-body" style="min-width: 20%; width: 50%;">&lt;?xml version="1.0" encoding="UTF-8"?&gt;&#x0D;
+&lt;soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"&gt;&#x0D;
+    &lt;soap:Body&gt;&#x0D;
+        &lt;ns2:getItemRequest xmlns:ns2="http://ws.io"&gt;&#x0D;
+            &lt;val&gt;anything&lt;/val&gt;&#x0D;
+        &lt;/ns2:getItemRequest&gt;&#x0D;
+    &lt;/soap:Body&gt;&#x0D;
+&lt;/soap:Envelope&gt;&#x0D;
+</td><td colspan="1" class="exp-body"><div>
+        <nav>
+          <div class="nav nav-tabs" role="tablist">
+            <a class="nav-item nav-link active small text-success" id="nav-et-1609245620124-tab" data-toggle="tab" href="#nav-et-1609245620124" role="tab" aria-controls="nav-et-1609245620124" aria-selected="true"> Expected </a>
+            <a class="nav-item nav-link small" id="nav-at-1609245620124-tab" data-toggle="tab" href="#nav-at-1609245620124" role="tab" aria-controls="nav-at-1609245620124" aria-selected="false" onclick="setTimeout(() =&gt; { window.dispatchEvent(new Event('resize')); }, 200)"> Actual </a>
+          </div>
+        </nav>
+        <div class="tab-content">
+          <div class="tab-pane fade show active" id="nav-et-1609245620124" role="tabpanel" aria-labelledby="nav-et-1609245620124-tab">
+            <pre id="e-1609245620124" class="rest-success xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;&#x0D;
+&lt;soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"&gt;&#x0D;
+    &lt;soap:Body&gt;&#x0D;
+        &lt;ns2:getItemRequest xmlns:ns2="http://ws.io"&gt;&#x0D;
+            &lt;val&gt;${xml-unit.ignore}&lt;/val&gt;&#x0D;
+        &lt;/ns2:getItemRequest&gt;&#x0D;
+    &lt;/soap:Body&gt;&#x0D;
+&lt;/soap:Envelope&gt;&#x0D;
+</pre>
+          </div>
+          <div class="tab-pane fade" id="nav-at-1609245620124" role="tabpanel" aria-labelledby="nav-at-1609245620124-tab">
+            <pre id="a-1609245620124" class="rest-success xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;&#x0D;
+&lt;soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"&gt;&#x0D;
+    &lt;soap:Body&gt;&#x0D;
+        &lt;ns2:getItemRequest xmlns:ns2="http://ws.io"&gt;&#x0D;
+            &lt;val&gt;anything&lt;/val&gt;&#x0D;
+        &lt;/ns2:getItemRequest&gt;&#x0D;
+    &lt;/soap:Body&gt;&#x0D;
+&lt;/soap:Envelope&gt;&#x0D;
+</pre>
+          </div>
+        </div>
+    </div></td></tr></table></div></div></div></div></td></tr>
+    </table></div>
+</div><div class="card-footer text-muted" data-toggle="collapse" data-target="#-60996094" aria-expanded="true" aria-controls="-60996094"><small><span class="badge badge-pill badge-success">12</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small></div></div>
+<div xmlns:c="http://www.concordion.org/2007/concordion" name="Placeholder support - fail" status="ExpectedToFail" print="true" cmdId="cceba28b-992c-414f-871b-dd146a207516" c:example="Placeholder support - fail" c:status="ExpectedToFail" class="card mb-3" e:example="" id="Placeholder support - fail"><div class="card-header" data-toggle="collapse" data-target="#512661263" aria-expanded="true" aria-controls="512661263"><a name="Placeholder support - fail" data-type="example">Placeholder support - fail</a></div><div class="card-body collapse show" id="512661263"><pre lineNumbers="true" class="htmlmixed darcula mt-2">&lt;e:soap url="relative/url"&gt;
+        &lt;e:case desc="Happy-path"&gt;
+&lt;e:body&gt;
+    
+    &amp;lt;soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"&amp;gt;
+        &amp;lt;soap:Body&amp;gt;
+            &amp;lt;ns2:getItemRequest xmlns:ns2="http://ws.io"&amp;gt;
+                &amp;lt;val&amp;gt;{{val}}&amp;lt;/val&amp;gt;
+            &amp;lt;/ns2:getItemRequest&amp;gt;
+        &amp;lt;/soap:Body&amp;gt;
+    &amp;lt;/soap:Envelope&amp;gt;
+    
+&lt;/e:body&gt;
+&lt;e:expected&gt;
+    
+    &amp;lt;soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"&amp;gt;
+        &amp;lt;soap:Body&amp;gt;
+            &amp;lt;ns2:getItemRequest xmlns:ns2="http://ws.io"&amp;gt;
+                &amp;lt;val&amp;gt;{{placeholder}}&amp;lt;/val&amp;gt;
+            &amp;lt;/ns2:getItemRequest&amp;gt;
+        &amp;lt;/soap:Body&amp;gt;
+    &amp;lt;/soap:Envelope&amp;gt;
+    
+&lt;/e:expected&gt;
+&lt;e:where vars="val, placeholder"&gt;
+    &lt;e:vals&gt;three,       {{number}}&lt;/e:vals&gt;
+    &lt;e:vals&gt;3,           {{string}}&lt;/e:vals&gt;
+    &lt;e:vals&gt;1,           {{bool}}&lt;/e:vals&gt;
+    &lt;e:vals&gt;d,           {{regex '[abc]'}}&lt;/e:vals&gt;
+    &lt;e:vals&gt;22/01/2000,  {{formattedAs 'dd.MM.yyyy'}}&lt;/e:vals&gt;
+&lt;/e:where&gt;
+        &lt;/e:case&gt;
+    &lt;/e:soap&gt;</pre>
+    <div cmdId="385fbb9c-fb92-4228-afd7-57208fd782ff" e:soap=""><table class="table table-sm"><div><div class="input-group mb-1 mt-1">
+      <div class="input-group-prepend">
+        <span class="input-group-text bg-success text-white">POST</span>
+      </div>
+      <div class="form-control bg-light text-primary font-weight-light">
+        <span id="endpoint--344702218">relative/url</span>
+      </div>
+    </div><div class="input-group input-group-sm">
+      <div class="input-group-prepend">
+        <span class="input-group-text" style="border:none;">Content-Type</span>
+      </div>
+      <div class="form-control bg-light text-dark font-weight-light" style="border:none;">
+        <span id="header--1886270009">application/soap+xml; charset=UTF-8;</span>
+      </div>
+    </div></div><thead class="thead-default"><th style="text-align:center;" class="bg-light">Request</th><th colspan="1" style="text-align:center;" class="bg-light">Expected response</th></thead>
+        <tr desc="Happy-path" cmdId="35fbd398-b78c-439f-a3ec-ca2786de9a0f" e:case="" data-type="case" id="5) Happy-path"><tr><td colspan="2" class="text-muted bg-light">5) Happy-path</td></tr>
+            
+            
+            
+        </tr><tr><td colspan="2"><div><nav><div class="nav nav-tabs" role="tablist"><a href="#nav-335628133-1609245620257" id="nav-335628133-1609245620257-tab" data-toggle="tab" role="tab" aria-controls="nav-335628133-1609245620257" aria-selected="false" onclick="setTimeout(() =&gt; { window.dispatchEvent(new Event('resize')); }, 200)" class="nav-item nav-link small rest-failure  active show">1</a><a href="#nav-1812855147-1609245620258" id="nav-1812855147-1609245620258-tab" class="nav-item nav-link small rest-failure " data-toggle="tab" role="tab" aria-controls="nav-1812855147-1609245620258" aria-selected="false" onclick="setTimeout(() =&gt; { window.dispatchEvent(new Event('resize')); }, 200)">2</a><a href="#nav-234792125-1609245620258" id="nav-234792125-1609245620258-tab" class="nav-item nav-link small rest-failure " data-toggle="tab" role="tab" aria-controls="nav-234792125-1609245620258" aria-selected="false" onclick="setTimeout(() =&gt; { window.dispatchEvent(new Event('resize')); }, 200)">3</a><a href="#nav-1241958421-1609245620258" id="nav-1241958421-1609245620258-tab" class="nav-item nav-link small rest-failure " data-toggle="tab" role="tab" aria-controls="nav-1241958421-1609245620258" aria-selected="false" onclick="setTimeout(() =&gt; { window.dispatchEvent(new Event('resize')); }, 200)">4</a><a href="#nav-1164441472-1609245620258" id="nav-1164441472-1609245620258-tab" class="nav-item nav-link small rest-failure " data-toggle="tab" role="tab" aria-controls="nav-1164441472-1609245620258" aria-selected="false" onclick="setTimeout(() =&gt; { window.dispatchEvent(new Event('resize')); }, 200)">5</a></div></nav><div><div class="tab-content"><div id="nav-335628133-1609245620257" role="tabpanel" aria-labelledby="nav-335628133-1609245620257-tab" class="tab-pane fade active show"><table class="table table-sm"><tr data-case-title="1"><td style="max-width: 1px; width: 50%;"><div class="httpstyle"><textarea class="http">POST relative/url HTTP/1.1
+</textarea></div></td><td style="padding-left: 0;"><small><span class="exp-status rest-success">200</span><span class="badge badge-pill badge-light">5ms</span></small></td></tr><tr><td class="xml exp-body" style="min-width: 20%; width: 50%;">&lt;?xml version="1.0" encoding="UTF-8"?&gt;&#x0D;
+&lt;soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"&gt;&#x0D;
+    &lt;soap:Body&gt;&#x0D;
+        &lt;ns2:getItemRequest xmlns:ns2="http://ws.io"&gt;&#x0D;
+            &lt;val&gt;three&lt;/val&gt;&#x0D;
+        &lt;/ns2:getItemRequest&gt;&#x0D;
+    &lt;/soap:Body&gt;&#x0D;
+&lt;/soap:Envelope&gt;&#x0D;
+</td><td colspan="1" class="exp-body"><div class="card border-danger alert-warning">
+      
+      <div class="card-body mb-1 mt-1">
+        <pre id="error-481606862" class="card-text" style="white-space: pre-wrap;">Expected text value '${xml-unit.any-number}' but was 'three' - comparing &lt;val ...&gt;${xml-unit.any-number}&lt;/val&gt; at /Envelope[1]/Body[1]/getItemRequest[1]/val[1]/text()[1] to &lt;val ...&gt;three&lt;/val&gt; at /Envelope[1]/Body[1]/getItemRequest[1]/val[1]/text()[1]</pre><div class="xml rest-failure"><del class="expected">&lt;?xml version="1.0" encoding="UTF-8"?&gt;&#x0D;
+&lt;soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"&gt;&#x0D;
+    &lt;soap:Body&gt;&#x0D;
+        &lt;ns2:getItemRequest xmlns:ns2="http://ws.io"&gt;&#x0D;
+            &lt;val&gt;${xml-unit.any-number}&lt;/val&gt;&#x0D;
+        &lt;/ns2:getItemRequest&gt;&#x0D;
+    &lt;/soap:Body&gt;&#x0D;
+&lt;/soap:Envelope&gt;&#x0D;
+</del>
+<ins class="actual">&lt;?xml version="1.0" encoding="UTF-8"?&gt;&#x0D;
+&lt;soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"&gt;&#x0D;
+    &lt;soap:Body&gt;&#x0D;
+        &lt;ns2:getItemRequest xmlns:ns2="http://ws.io"&gt;&#x0D;
+            &lt;val&gt;three&lt;/val&gt;&#x0D;
+        &lt;/ns2:getItemRequest&gt;&#x0D;
+    &lt;/soap:Body&gt;&#x0D;
+&lt;/soap:Envelope&gt;&#x0D;
+</ins></div><fail style="display: none;" />
+      </div>
+    </div></td></tr></table></div><div class="tab-pane fade" id="nav-1812855147-1609245620258" role="tabpanel" aria-labelledby="nav-1812855147-1609245620258-tab"><table class="table table-sm"><tr data-case-title="2"><td style="max-width: 1px; width: 50%;"><div class="httpstyle"><textarea class="http">POST relative/url HTTP/1.1
+</textarea></div></td><td style="padding-left: 0;"><small><span class="exp-status rest-success">200</span><span class="badge badge-pill badge-light">5ms</span></small></td></tr><tr><td class="xml exp-body" style="min-width: 20%; width: 50%;">&lt;?xml version="1.0" encoding="UTF-8"?&gt;&#x0D;
+&lt;soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"&gt;&#x0D;
+    &lt;soap:Body&gt;&#x0D;
+        &lt;ns2:getItemRequest xmlns:ns2="http://ws.io"&gt;&#x0D;
+            &lt;val&gt;3&lt;/val&gt;&#x0D;
+        &lt;/ns2:getItemRequest&gt;&#x0D;
+    &lt;/soap:Body&gt;&#x0D;
+&lt;/soap:Envelope&gt;&#x0D;
+</td><td colspan="1" class="exp-body"><div class="card border-danger alert-warning">
+      
+      <div class="card-body mb-1 mt-1">
+        <pre id="error-1886169979" class="card-text" style="white-space: pre-wrap;">Expected text value '${xml-unit.any-string}' but was '3' - comparing &lt;val ...&gt;${xml-unit.any-string}&lt;/val&gt; at /Envelope[1]/Body[1]/getItemRequest[1]/val[1]/text()[1] to &lt;val ...&gt;3&lt;/val&gt; at /Envelope[1]/Body[1]/getItemRequest[1]/val[1]/text()[1]</pre><div class="xml rest-failure"><del class="expected">&lt;?xml version="1.0" encoding="UTF-8"?&gt;&#x0D;
+&lt;soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"&gt;&#x0D;
+    &lt;soap:Body&gt;&#x0D;
+        &lt;ns2:getItemRequest xmlns:ns2="http://ws.io"&gt;&#x0D;
+            &lt;val&gt;${xml-unit.any-string}&lt;/val&gt;&#x0D;
+        &lt;/ns2:getItemRequest&gt;&#x0D;
+    &lt;/soap:Body&gt;&#x0D;
+&lt;/soap:Envelope&gt;&#x0D;
+</del>
+<ins class="actual">&lt;?xml version="1.0" encoding="UTF-8"?&gt;&#x0D;
+&lt;soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"&gt;&#x0D;
+    &lt;soap:Body&gt;&#x0D;
+        &lt;ns2:getItemRequest xmlns:ns2="http://ws.io"&gt;&#x0D;
+            &lt;val&gt;3&lt;/val&gt;&#x0D;
+        &lt;/ns2:getItemRequest&gt;&#x0D;
+    &lt;/soap:Body&gt;&#x0D;
+&lt;/soap:Envelope&gt;&#x0D;
+</ins></div><fail style="display: none;" />
+      </div>
+    </div></td></tr></table></div><div class="tab-pane fade" id="nav-234792125-1609245620258" role="tabpanel" aria-labelledby="nav-234792125-1609245620258-tab"><table class="table table-sm"><tr data-case-title="3"><td style="max-width: 1px; width: 50%;"><div class="httpstyle"><textarea class="http">POST relative/url HTTP/1.1
+</textarea></div></td><td style="padding-left: 0;"><small><span class="exp-status rest-success">200</span><span class="badge badge-pill badge-light">5ms</span></small></td></tr><tr><td class="xml exp-body" style="min-width: 20%; width: 50%;">&lt;?xml version="1.0" encoding="UTF-8"?&gt;&#x0D;
+&lt;soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"&gt;&#x0D;
+    &lt;soap:Body&gt;&#x0D;
+        &lt;ns2:getItemRequest xmlns:ns2="http://ws.io"&gt;&#x0D;
+            &lt;val&gt;1&lt;/val&gt;&#x0D;
+        &lt;/ns2:getItemRequest&gt;&#x0D;
+    &lt;/soap:Body&gt;&#x0D;
+&lt;/soap:Envelope&gt;&#x0D;
+</td><td colspan="1" class="exp-body"><div class="card border-danger alert-warning">
+      
+      <div class="card-body mb-1 mt-1">
+        <pre id="error-924148386" class="card-text" style="white-space: pre-wrap;">Expected text value '${xml-unit.any-boolean}' but was '1' - comparing &lt;val ...&gt;${xml-unit.any-boolean}&lt;/val&gt; at /Envelope[1]/Body[1]/getItemRequest[1]/val[1]/text()[1] to &lt;val ...&gt;1&lt;/val&gt; at /Envelope[1]/Body[1]/getItemRequest[1]/val[1]/text()[1]</pre><div class="xml rest-failure"><del class="expected">&lt;?xml version="1.0" encoding="UTF-8"?&gt;&#x0D;
+&lt;soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"&gt;&#x0D;
+    &lt;soap:Body&gt;&#x0D;
+        &lt;ns2:getItemRequest xmlns:ns2="http://ws.io"&gt;&#x0D;
+            &lt;val&gt;${xml-unit.any-boolean}&lt;/val&gt;&#x0D;
+        &lt;/ns2:getItemRequest&gt;&#x0D;
+    &lt;/soap:Body&gt;&#x0D;
+&lt;/soap:Envelope&gt;&#x0D;
+</del>
+<ins class="actual">&lt;?xml version="1.0" encoding="UTF-8"?&gt;&#x0D;
+&lt;soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"&gt;&#x0D;
+    &lt;soap:Body&gt;&#x0D;
+        &lt;ns2:getItemRequest xmlns:ns2="http://ws.io"&gt;&#x0D;
+            &lt;val&gt;1&lt;/val&gt;&#x0D;
+        &lt;/ns2:getItemRequest&gt;&#x0D;
+    &lt;/soap:Body&gt;&#x0D;
+&lt;/soap:Envelope&gt;&#x0D;
+</ins></div><fail style="display: none;" />
+      </div>
+    </div></td></tr></table></div><div class="tab-pane fade" id="nav-1241958421-1609245620258" role="tabpanel" aria-labelledby="nav-1241958421-1609245620258-tab"><table class="table table-sm"><tr data-case-title="4"><td style="max-width: 1px; width: 50%;"><div class="httpstyle"><textarea class="http">POST relative/url HTTP/1.1
+</textarea></div></td><td style="padding-left: 0;"><small><span class="exp-status rest-success">200</span><span class="badge badge-pill badge-light">9ms</span></small></td></tr><tr><td class="xml exp-body" style="min-width: 20%; width: 50%;">&lt;?xml version="1.0" encoding="UTF-8"?&gt;&#x0D;
+&lt;soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"&gt;&#x0D;
+    &lt;soap:Body&gt;&#x0D;
+        &lt;ns2:getItemRequest xmlns:ns2="http://ws.io"&gt;&#x0D;
+            &lt;val&gt;d&lt;/val&gt;&#x0D;
+        &lt;/ns2:getItemRequest&gt;&#x0D;
+    &lt;/soap:Body&gt;&#x0D;
+&lt;/soap:Envelope&gt;&#x0D;
+</td><td colspan="1" class="exp-body"><div class="card border-danger alert-warning">
+      
+      <div class="card-body mb-1 mt-1">
+        <pre id="error--632319258" class="card-text" style="white-space: pre-wrap;">Expected text value '${xml-unit.regex}[abc]' but was 'd' - comparing &lt;val ...&gt;${xml-unit.regex}[abc]&lt;/val&gt; at /Envelope[1]/Body[1]/getItemRequest[1]/val[1]/text()[1] to &lt;val ...&gt;d&lt;/val&gt; at /Envelope[1]/Body[1]/getItemRequest[1]/val[1]/text()[1]</pre><div class="xml rest-failure"><del class="expected">&lt;?xml version="1.0" encoding="UTF-8"?&gt;&#x0D;
+&lt;soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"&gt;&#x0D;
+    &lt;soap:Body&gt;&#x0D;
+        &lt;ns2:getItemRequest xmlns:ns2="http://ws.io"&gt;&#x0D;
+            &lt;val&gt;${xml-unit.regex}[abc]&lt;/val&gt;&#x0D;
+        &lt;/ns2:getItemRequest&gt;&#x0D;
+    &lt;/soap:Body&gt;&#x0D;
+&lt;/soap:Envelope&gt;&#x0D;
+</del>
+<ins class="actual">&lt;?xml version="1.0" encoding="UTF-8"?&gt;&#x0D;
+&lt;soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"&gt;&#x0D;
+    &lt;soap:Body&gt;&#x0D;
+        &lt;ns2:getItemRequest xmlns:ns2="http://ws.io"&gt;&#x0D;
+            &lt;val&gt;d&lt;/val&gt;&#x0D;
+        &lt;/ns2:getItemRequest&gt;&#x0D;
+    &lt;/soap:Body&gt;&#x0D;
+&lt;/soap:Envelope&gt;&#x0D;
+</ins></div><fail style="display: none;" />
+      </div>
+    </div></td></tr></table></div><div class="tab-pane fade" id="nav-1164441472-1609245620258" role="tabpanel" aria-labelledby="nav-1164441472-1609245620258-tab"><table class="table table-sm"><tr data-case-title="5"><td style="max-width: 1px; width: 50%;"><div class="httpstyle"><textarea class="http">POST relative/url HTTP/1.1
+</textarea></div></td><td style="padding-left: 0;"><small><span class="exp-status rest-success">200</span><span class="badge badge-pill badge-light">8ms</span></small></td></tr><tr><td class="xml exp-body" style="min-width: 20%; width: 50%;">&lt;?xml version="1.0" encoding="UTF-8"?&gt;&#x0D;
+&lt;soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"&gt;&#x0D;
+    &lt;soap:Body&gt;&#x0D;
+        &lt;ns2:getItemRequest xmlns:ns2="http://ws.io"&gt;&#x0D;
+            &lt;val&gt;22/01/2000&lt;/val&gt;&#x0D;
+        &lt;/ns2:getItemRequest&gt;&#x0D;
+    &lt;/soap:Body&gt;&#x0D;
+&lt;/soap:Envelope&gt;&#x0D;
+</td><td colspan="1" class="exp-body"><div class="card border-danger alert-warning">
+      
+      <div class="card-body mb-1 mt-1">
+        <pre id="error-1028647306" class="card-text" style="white-space: pre-wrap;">Expected text value '${xml-unit.matches:formattedAs}dd.MM.yyyy' but was '22/01/2000' - comparing &lt;val ...&gt;${xml-unit.matches:formattedAs}dd.MM.yyyy&lt;/val&gt; at /Envelope[1]/Body[1]/getItemRequest[1]/val[1]/text()[1] to &lt;val ...&gt;22/01/2000&lt;/val&gt; at /Envelope[1]/Body[1]/getItemRequest[1]/val[1]/text()[1]</pre><div class="xml rest-failure"><del class="expected">&lt;?xml version="1.0" encoding="UTF-8"?&gt;&#x0D;
+&lt;soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"&gt;&#x0D;
+    &lt;soap:Body&gt;&#x0D;
+        &lt;ns2:getItemRequest xmlns:ns2="http://ws.io"&gt;&#x0D;
+            &lt;val&gt;${xml-unit.matches:formattedAs}dd.MM.yyyy&lt;/val&gt;&#x0D;
+        &lt;/ns2:getItemRequest&gt;&#x0D;
+    &lt;/soap:Body&gt;&#x0D;
+&lt;/soap:Envelope&gt;&#x0D;
+</del>
+<ins class="actual">&lt;?xml version="1.0" encoding="UTF-8"?&gt;&#x0D;
+&lt;soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"&gt;&#x0D;
+    &lt;soap:Body&gt;&#x0D;
+        &lt;ns2:getItemRequest xmlns:ns2="http://ws.io"&gt;&#x0D;
+            &lt;val&gt;22/01/2000&lt;/val&gt;&#x0D;
+        &lt;/ns2:getItemRequest&gt;&#x0D;
+    &lt;/soap:Body&gt;&#x0D;
+&lt;/soap:Envelope&gt;&#x0D;
+</ins></div><fail style="display: none;" />
+      </div>
+    </div></td></tr></table></div></div></div></div></td></tr>
+    </table></div>
+</div><div class="card-footer text-muted" data-toggle="collapse" data-target="#512661263" aria-expanded="true" aria-controls="512661263"><small><span class="badge badge-pill badge-success">5</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning">5</span><span class="badge badge-pill badge-danger"></span><span class="badge badge-pill badge-warning">ExpectedToFail</span></small></div></div>
+<div class="footer">Results generated by <a href="http://www.concordion.org" style="font-weight: bold; text-decoration: none; color: #89C;">Concordion</a><div class="testTime">in 340 ms on 29-Dec-2020 at 15:40:20 MSK</div></div></body>
+<button id="btnToTop" onclick="topFunction()" type="button" class="btn btn-light btn-sm text-muted ml-1"><i class="fa fa-arrow-up"></i></button></html>
