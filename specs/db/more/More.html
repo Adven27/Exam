@@ -1,0 +1,313 @@
+<?xml version="1.0" encoding="UTF-8"?><html xmlns:concordion="http://www.concordion.org/2007/concordion" xmlns:e="http://exam.extension.io" xmlns:c="http://www.concordion.org/2007/concordion"><head><style>* {
+  font-family: Arial;
+}
+body {
+  padding: 32px;  
+}
+pre {
+  padding: 6px 28px 6px 28px;
+  background-color: #E8EEF7;
+}
+pre, pre *, code, code *, kbd {
+  font-family: Courier New, Courier;
+  font-size: 10pt;
+}
+h1, h1 * {
+  font-size: 24pt;	
+}
+p, td, th, li, .breadcrumbs {
+  font-size: 10pt;
+}
+p, li {
+  line-height: 140%;
+  max-width: 720px;
+}
+table {
+  border-collapse: collapse;
+  empty-cells: show;
+  margin: 8px 0px 8px 0px;
+}
+th, td {
+  border: 1px solid black;
+  padding: 3px;
+}
+td {
+  background-color: white;
+  vertical-align: top;
+}
+th {
+  background-color: #C3D9FF;
+}
+li {
+  margin-top: 6px;
+  margin-bottom: 6px; 
+}
+
+.example, :not(th)[concordion\:example] {
+  padding: 6px 16px 6px 16px;
+  border: 1px solid #C3D9FF;
+  margin: 6px 0px 28px 0px;
+  background-color: #F5F9FD;
+}
+.example h3, [concordion\:example] h3 {
+  margin-top: 8px;
+  margin-bottom: 8px;
+  font-size: 12pt;
+}
+
+p.success {
+  padding: 2px;
+}
+.success, .success * {
+  background-color: #afa !important;
+}
+.success pre {
+  background-color: #bbffbb;
+}
+.failure, .failure * {
+  background-color: #ffb0b0;
+  padding: 1px;
+}
+.failure .expected {
+  text-decoration: line-through;
+  color: #bb5050;
+}
+.ignored, .ignored * {
+  background-color: #f0f0f0 !important;	
+}
+
+ins {
+  text-decoration: none;	
+}
+
+.exceptionMessage {
+  background-color: #fdd;
+  font-family: Courier New, Courier, Monospace;
+  font-size: 10pt;
+  display: block;
+  font-weight: normal;
+  padding: 4px;
+  text-decoration: none !important;
+}
+.stackTrace, .stackTrace * {
+  font-weight: normal;
+}
+.stackTrace {
+  display: none;
+  padding: 1px 4px 4px 4px;
+  background-color: #fdd;
+  border-top: 1px dotted black;
+}
+.stackTraceExceptionMessage {
+  display: block;
+  font-family: Courier New, Courier, Monospace;
+  font-size: 8pt;
+  white-space: wrap;
+  padding: 1px 0px 1px 0px;
+}
+.stackTraceEntry {
+  white-space: nowrap;
+  font-family: Courier New, Courier, Monospace;
+  display: block;
+  font-size: 8pt;
+  padding: 1px 0px 1px 32px;
+}
+.stackTraceButton {
+  font-size: 8pt;
+  margin: 2px 8px 2px 0px;
+  font-weight: normal;
+  font-family: Arial;
+}
+
+.special {
+  font-style: italic;
+}
+.missing, .missing * {
+  background-color: #ff9999;
+  color:#bb5050;
+  text-decoration: line-through;
+}
+.surplus, .surplus * {
+  background-color: #ff9999;
+}
+.footer {
+  text-align: right;
+  margin-top: 40px;
+  font-size: 8pt;
+  width: 100%;
+  color: #999;
+}
+.footer .testTime {
+  padding: 2px 10px 0px 0px;
+}
+
+.idea {
+  font-size: 9pt;
+  color: #888;
+  font-style: italic;	
+}
+.tight li {
+  margin-top: 1px;
+  margin-bottom: 1px; 
+}
+.commentary {
+  float: right;
+  width: 200px;
+  background-color: #ffffd0;
+  padding:8px;
+  border: 3px solid #eeeeb0;	 
+  margin: 10px 0px 10px 10px;	 
+}
+.commentary, .commentary * {
+  font-size: 8pt;
+}
+</style><meta http-equiv="content-type" content="text/html; charset=UTF-8" /><link type="text/css" rel="stylesheet" href="../../../timingExtensionStyle.css" /><script type="text/javascript" src="../../../timingExtensionToggle.js"></script><link type="text/css" rel="stylesheet" href="../../../codemirror/codemirror.css" /><link type="text/css" rel="stylesheet" href="../../../codemirror/merge.css" /><link type="text/css" rel="stylesheet" href="../../../codemirror/enable-codemirror.css" /><link type="text/css" rel="stylesheet" href="../../../codemirror/foldgutter.css" /><link type="text/css" rel="stylesheet" href="../../../codemirror/simplescrollbar.css" /><script type="text/javascript" src="../../../codemirror/codemirror.js"></script><script type="text/javascript" src="../../../codemirror/enable-codemirror.js"></script><script type="text/javascript" src="../../../codemirror/javascript.js"></script><script type="text/javascript" src="../../../codemirror/xml.js"></script><script type="text/javascript" src="../../../codemirror/htmlmixed.js"></script><script type="text/javascript" src="../../../codemirror/handelbar.js"></script><script type="text/javascript" src="../../../codemirror/addon/mode/simple.js"></script><script type="text/javascript" src="../../../codemirror/http.js"></script><script type="text/javascript" src="../../../codemirror/formatting.js"></script><script type="text/javascript" src="../../../codemirror/markdown.js"></script><script type="text/javascript" src="../../../codemirror/diff_match_patch.js"></script><script type="text/javascript" src="../../../codemirror/merge.js"></script><script type="text/javascript" src="../../../codemirror/xml-fold.js"></script><script type="text/javascript" src="../../../codemirror/simplescrollbar.js"></script><link type="text/css" rel="stylesheet" href="../../../codemirror/theme/darcula.css" /><script type="text/javascript" src="../../../bootstrap/jquery-3.2.1.slim.min.js"></script><script type="text/javascript" src="../../../bootstrap/popper.min.js"></script><script type="text/javascript" src="../../../bootstrap/bootstrap.min.js"></script><script type="text/javascript" src="../../../bootstrap/sidebar.js"></script><link type="text/css" rel="stylesheet" href="../../../bootstrap/enable-bootstrap.css" /><link type="text/css" rel="stylesheet" href="../../../bootstrap/bootstrap.min.css" /><link type="text/css" rel="stylesheet" href="../../../bootstrap/callout.css" /><link type="text/css" rel="stylesheet" href="../../../bootstrap/font-awesome.min.css" /><link type="text/css" rel="stylesheet" href="../../../bootstrap/scrollToTop.css" /><script type="text/javascript" src="../../../bootstrap/scrollToTop.js"></script></head><body><div id="toggle-button"><img id="toggle-on" src="../../../timing-on.svg" height="24" width="24" style="display:none" /><img id="toggle-off" src="../../../timing-off.svg" height="24" width="24" /></div><span class="breadcrumbs"><a href="../../Specs.html">Exam - Concordion extension</a> &gt; <a href="../Db.html">Working with DB</a> &gt; <a href="More.html">More examples with tables</a> &gt;</span><h1>More examples with tables</h1>
+<div>
+    <div cmdId="3a14602d-75c3-4224-be9f-e50c9bf7089e" e:summary="" class="pin"> <h4>Summary<button type="button" class="btn btn-light btn-sm text-muted ml-1" data-toggle="collapse" data-target="#summary" aria-expanded="true" aria-controls="summary">collapse</button></h4><div id="summary" class="collapse show"><div class="list-group"><a class="list-group-item list-group-item-action" style="border-left: none; border-right: none;" href="#Using of vars and EL">Using of vars and EL<small class="card-img-overlay m-1" style="padding:0; left:inherit;"><span class="badge badge-pill badge-light">63ms</span><span class="badge badge-pill badge-success">9</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small></a><a class="list-group-item list-group-item-action" style="border-left: none; border-right: none;" href="#Check within tolerance of expected timestamp">Check within tolerance of expected timestamp<small class="card-img-overlay m-1" style="padding:0; left:inherit;"><span class="badge badge-pill badge-light">35ms</span><span class="badge badge-pill badge-success">5</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning">1</span><span class="badge badge-pill badge-danger"></span><span class="badge badge-pill badge-warning">ExpectedToFail</span></small></a><a class="list-group-item list-group-item-action" style="border-left: none; border-right: none;" href="#Check with regex">Check with regex<small class="card-img-overlay m-1" style="padding:0; left:inherit;"><span class="badge badge-pill badge-light">24ms</span><span class="badge badge-pill badge-success">2</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning">1</span><span class="badge badge-pill badge-danger"></span><span class="badge badge-pill badge-warning">ExpectedToFail</span></small></a><a class="list-group-item list-group-item-action" style="border-left: none; border-right: none;" href="#Check with order by">Check with order by<small class="card-img-overlay m-1" style="padding:0; left:inherit;"><span class="badge badge-pill badge-light">46ms</span><span class="badge badge-pill badge-success">6</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning">2</span><span class="badge badge-pill badge-danger"></span><span class="badge badge-pill badge-warning">ExpectedToFail</span></small></a><a class="list-group-item list-group-item-action" style="border-left: none; border-right: none;" href="#Date and Timestamp">Date and Timestamp<small class="card-img-overlay m-1" style="padding:0; left:inherit;"><span class="badge badge-pill badge-light">56ms</span><span class="badge badge-pill badge-success">12</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small></a></div></div></div>
+    <div name="Using of vars and EL" cmdId="9e55642d-1bcb-457f-8ede-36d91a4539d4" c:example="Using of vars and EL" class="card mb-3" e:example="" id="Using of vars and EL"><div class="card-header" data-toggle="collapse" data-target="#-1439507849" aria-expanded="true" aria-controls="-1439507849"><a name="Using of vars and EL" data-type="example">Using of vars and EL</a></div><div class="card-body collapse show" id="-1439507849">
+        <div print="true" cmdId="7d49bf62-5a7b-4054-92dc-0b170ea943d5" e:given="" class="bd-callout bd-callout-info"><pre lineNumbers="true" class="htmlmixed darcula mt-2">&lt;span&gt;Concordion variable age = &lt;span c:set="#age"&gt;99&lt;/span&gt;&lt;/span&gt;
+&lt;e:db-set table="PERSON" cols="NAME, AGE, BIRTHDAY, ID=1..10"&gt;
+    &lt;row&gt;Andrew                                     , 30      , {{now "yyyy-MM-dd"}}&lt;/row&gt;
+    &lt;row&gt;Carl                                       , {{age}} , {{now "yyyy-MM-dd" plus="day 1"}}&lt;/row&gt;
+    &lt;row&gt;' untrimmed string with commas, inside it ', {{NULL}}, {{date "1951-05-14"}}&lt;/row&gt;
+&lt;/e:db-set&gt;</pre>
+            <span>Concordion variable age = <span c:set="#age">99</span></span>    
+            <div cmdId="6aa4cd3a-2fb2-4a3d-8031-ed1f4bc88c44" e:db-set="" class="table table-sm table-hover">
+                
+                
+                
+            <div></div><span></span><div class="table-responsive mb-1 p-1"><table class="table table-sm"><caption style="width:max-content"><i class="fa fa-database ml-1"> PERSON</i></caption><thead class="thead-default"><tr><th class="">NAME</th><th class="">AGE</th><th class="">BIRTHDAY</th><th class="">ID</th></tr></thead><tbody><tr><td class=""><span>Andrew</span></td><td class=""><span>30</span></td><td class=""><span>2020-12-29</span></td><td class=""><span>1</span></td></tr><tr><td class=""><span>Carl</span></td><td class=""><span>99</span></td><td class=""><span>2020-12-30</span></td><td class=""><span>2</span></td></tr><tr><td class=""><span> untrimmed string with commas, inside it </span></td><td class=""><span>null</span></td><td class=""><span>1951-05-14 00:00:00.000</span></td><td class=""><span>3</span></td></tr></tbody></table></div></div>
+        </div>
+        <div print="true" cmdId="56eb42ba-36c6-49de-8cf7-8e00419dbe48" e:then="" class="bd-callout bd-callout-success"><pre lineNumbers="true" class="htmlmixed darcula mt-2">&lt;e:db-check table="PERSON" cols="NAME, AGE, BIRTHDAY"&gt;
+    &lt;row&gt;Andrew                                     , 30      , {{now "yyyy-MM-dd"}}&lt;/row&gt;
+    &lt;row&gt;  Carl                                     , {{age}} , {{now "yyyy-MM-dd" plus="day 1"}}&lt;/row&gt;
+    &lt;row&gt;' untrimmed string with commas, inside it ', {{NULL}}, {{dateFormat (date "1951-05-14") "yyyy-MM-dd"}}&lt;/row&gt;
+&lt;/e:db-check&gt;</pre>
+            <div cmdId="d7c28404-90ff-47b0-b2f4-5c83f2f68198" e:db-check="" class="table table-sm table-hover">
+                
+                
+                
+            <div></div><span></span><div class="table-responsive mb-1 p-1"><table class="table table-sm"><caption style="width:max-content"><i class="fa fa-database ml-1"> PERSON</i></caption><thead class="thead-default"><tr><th class="">NAME</th><th class="">AGE</th><th class="">BIRTHDAY</th></tr></thead><tbody><tr><td class=" table-success"> <span> untrimmed string with commas, inside it </span></td><td class=" table-success"> <span>null</span></td><td class=" table-success"> <span>1951-05-14</span></td></tr><tr><td class=" table-success"> <span>Andrew</span></td><td class=" table-success"> <span>30</span></td><td class=" table-success"> <span>2020-12-29</span></td></tr><tr><td class=" table-success"> <span>Carl</span></td><td class=" table-success"> <span>99</span></td><td class=" table-success"> <span>2020-12-30</span></td></tr></tbody></table></div></div>
+        </div>
+    </div><div class="card-footer text-muted" data-toggle="collapse" data-target="#-1439507849" aria-expanded="true" aria-controls="-1439507849"><small><span class="badge badge-pill badge-success">9</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small></div></div>
+    <div name="Check within tolerance of expected timestamp" status="ExpectedToFail" cmdId="1322103e-f19d-46bd-be14-7ffa1fcaa7b9" c:example="Check within tolerance of expected timestamp" c:status="ExpectedToFail" class="card mb-3" e:example="" id="Check within tolerance of expected timestamp"><div class="card-header" data-toggle="collapse" data-target="#-789241529" aria-expanded="true" aria-controls="-789241529"><a name="Check within tolerance of expected timestamp" data-type="example">Check within tolerance of expected timestamp</a></div><div class="card-body collapse show" id="-789241529">
+        <div print="true" cmdId="5e6fda30-d356-4230-811b-a689a18d7c3c" e:given="" class="bd-callout bd-callout-info"><pre lineNumbers="true" class="htmlmixed darcula mt-2">&lt;e:db-set table="PERSON" cols="NAME, BIRTHDAY, ID=1..10"&gt;
+    &lt;row&gt;withinNow pass, {{now plus="5 min"}}&lt;/row&gt;
+    &lt;row&gt;withinNow fail, {{now plus="5 min"}}&lt;/row&gt;
+    &lt;row&gt;within pass   , {{now}}&lt;/row&gt;
+&lt;/e:db-set&gt;</pre>
+            <div cmdId="c3985aa2-1a66-4c63-b67e-7de8ae69d40c" e:db-set="" class="table table-sm table-hover">
+                
+                
+                
+            <div></div><span></span><div class="table-responsive mb-1 p-1"><table class="table table-sm"><caption style="width:max-content"><i class="fa fa-database ml-1"> PERSON</i></caption><thead class="thead-default"><tr><th class="">NAME</th><th class="">BIRTHDAY</th><th class="">ID</th></tr></thead><tbody><tr><td class=""><span>withinNow pass</span></td><td class=""><span>2020-12-29 22:13:17.918</span></td><td class=""><span>1</span></td></tr><tr><td class=""><span>withinNow fail</span></td><td class=""><span>2020-12-29 22:13:17.918</span></td><td class=""><span>2</span></td></tr><tr><td class=""><span>within pass</span></td><td class=""><span>2020-12-29 22:08:17.919</span></td><td class=""><span>3</span></td></tr></tbody></table></div></div>
+        </div>
+        <div print="true" cmdId="cf33692c-97de-44a5-8310-934dbc64abbd" e:then="" class="bd-callout bd-callout-success"><pre lineNumbers="true" class="htmlmixed darcula mt-2">&lt;e:db-check table="PERSON" cols="NAME, BIRTHDAY"&gt;
+    &lt;row&gt;withinNow pass, !{within 10min}&lt;/row&gt;
+    &lt;row&gt;withinNow fail, !{within 1min}&lt;/row&gt;
+    &lt;row&gt;within pass   , !{within 25hours}{{now plus="1 day"}}&lt;/row&gt;
+&lt;/e:db-check&gt;</pre>
+            <div cmdId="fc204b18-5c77-433e-abcd-0a3623e33b84" e:db-check="" class="table table-sm table-hover">
+                
+                
+                
+            <div></div><span></span><div class="table-responsive mb-1 p-1"><table class="table table-sm"><caption style="width:max-content"><i class="fa fa-database ml-1"> PERSON</i></caption><thead class="thead-default"><tr><th class="">NAME</th><th class="">BIRTHDAY</th></tr></thead><tbody><tr><td class=" table-success"> <span>within pass</span></td><td class=" table-success"> <span>!{within 25hours}{{now plus="1 day"}} (2020-12-29 22:08:17.936)</span></td></tr><tr><td class=" table-success"> <span>withinNow fail</span></td><td class=" rest-failure"><del class="expected">!{within 1min}<fail style="display: none;" /></del>
+<ins class="actual">2020-12-29 22:13:17.933</ins></td></tr><tr><td class=" table-success"> <span>withinNow pass</span></td><td class=" table-success"> <span>!{within 10min} (2020-12-29 22:13:17.932)</span></td></tr></tbody></table></div></div>
+        </div>
+    </div><div class="card-footer text-muted" data-toggle="collapse" data-target="#-789241529" aria-expanded="true" aria-controls="-789241529"><small><span class="badge badge-pill badge-success">5</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning">1</span><span class="badge badge-pill badge-danger"></span><span class="badge badge-pill badge-warning">ExpectedToFail</span></small></div></div>
+    <div name="Check with regex" status="ExpectedToFail" cmdId="c35d4bb9-95ad-4053-965f-d97240697950" c:example="Check with regex" c:status="ExpectedToFail" class="card mb-3" e:example="" id="Check with regex"><div class="card-header" data-toggle="collapse" data-target="#-500610395" aria-expanded="true" aria-controls="-500610395"><a name="Check with regex" data-type="example">Check with regex</a></div><div class="card-body collapse show" id="-500610395">
+        <div print="true" cmdId="df8c9d14-240a-4319-88d3-171dd530bdbb" e:given="" class="bd-callout bd-callout-info"><pre lineNumbers="true" class="htmlmixed darcula mt-2">&lt;e:db-set table="PERSON" cols="NAME, AGE, ID=1..10"&gt;
+    &lt;row&gt;'', 30&lt;/row&gt;
+&lt;/e:db-set&gt;</pre>
+            <div cmdId="97565bb8-9916-4857-ba2b-0f7f23033533" e:db-set="" class="table table-sm table-hover">
+                
+            <div></div><span></span><div class="table-responsive mb-1 p-1"><table class="table table-sm"><caption style="width:max-content"><i class="fa fa-database ml-1"> PERSON</i></caption><thead class="thead-default"><tr><th class="">NAME</th><th class="">AGE</th><th class="">ID</th></tr></thead><tbody><tr><td class=""><span></span></td><td class=""><span>30</span></td><td class=""><span>1</span></td></tr></tbody></table></div></div>
+        </div>
+        <div print="true" cmdId="59f8f6ee-906c-4ef6-af7c-136ef13d0fec" e:then="" class="bd-callout bd-callout-success"><pre lineNumbers="true" class="htmlmixed darcula mt-2">&lt;p&gt;Check that NAME and BIRTHDAY are "NOT NULL" and AGE is a digit:&lt;/p&gt;
+&lt;e:db-check table="PERSON" cols="NAME, AGE, BIRTHDAY"&gt;
+    &lt;row&gt;!{regex}.*, !{number}, !{notNull}&lt;/row&gt;
+&lt;/e:db-check&gt;</pre>
+            <p>Check that NAME and BIRTHDAY are "NOT NULL" and AGE is a digit:</p>
+            <div cmdId="6de18409-9d8e-4280-8665-c2fabbfb364d" e:db-check="" class="table table-sm table-hover">
+                
+            <div></div><span></span><div class="table-responsive mb-1 p-1"><table class="table table-sm"><caption style="width:max-content"><i class="fa fa-database ml-1"> PERSON</i></caption><thead class="thead-default"><tr><th class="">NAME</th><th class="">AGE</th><th class="">BIRTHDAY</th></tr></thead><tbody><tr><td class=" table-success"> <span>!{regex}.* ()</span></td><td class=" table-success"> <span>!{number} (30)</span></td><td class=" rest-failure"><del class="expected">!{notNull}<fail style="display: none;" /></del>
+<ins class="actual">(null)</ins></td></tr></tbody></table></div></div>
+        </div>
+    </div><div class="card-footer text-muted" data-toggle="collapse" data-target="#-500610395" aria-expanded="true" aria-controls="-500610395"><small><span class="badge badge-pill badge-success">2</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning">1</span><span class="badge badge-pill badge-danger"></span><span class="badge badge-pill badge-warning">ExpectedToFail</span></small></div></div>
+    <div name="Check with order by" status="ExpectedToFail" cmdId="f7692387-1200-4f93-b8c9-7ad215ef8308" c:example="Check with order by" c:status="ExpectedToFail" class="card mb-3" e:example="" id="Check with order by"><div class="card-header" data-toggle="collapse" data-target="#370291531" aria-expanded="true" aria-controls="370291531"><a name="Check with order by" data-type="example">Check with order by</a></div><div class="card-body collapse show" id="370291531">
+        <div print="true" cmdId="e5e8636a-3c0b-412a-8043-402ef855c3cc" e:given="" class="bd-callout bd-callout-info"><pre lineNumbers="true" class="htmlmixed darcula mt-2">&lt;e:db-set table="PERSON" cols="NAME, AGE, ID=1..10"&gt;
+    &lt;row&gt;A, 2&lt;/row&gt;
+    &lt;row&gt;B, 1&lt;/row&gt;
+&lt;/e:db-set&gt;</pre>
+            <div cmdId="f78d657e-6261-4b5c-be7a-b05a91f7c147" e:db-set="" class="table table-sm table-hover">
+                
+                
+            <div></div><span></span><div class="table-responsive mb-1 p-1"><table class="table table-sm"><caption style="width:max-content"><i class="fa fa-database ml-1"> PERSON</i></caption><thead class="thead-default"><tr><th class="">NAME</th><th class="">AGE</th><th class="">ID</th></tr></thead><tbody><tr><td class=""><span>A</span></td><td class=""><span>2</span></td><td class=""><span>1</span></td></tr><tr><td class=""><span>B</span></td><td class=""><span>1</span></td><td class=""><span>2</span></td></tr></tbody></table></div></div>
+        </div>
+        <div print="true" cmdId="d07d1870-5b2c-4b65-8562-b07462cffe37" e:then="" class="bd-callout bd-callout-success"><pre lineNumbers="true" class="htmlmixed darcula mt-2">&lt;p&gt;
+    By default, db-check compares datasets sorted by all columns from "cols" attribute.
+    This works fine in most cases. However in case of using "!{regex}" pattern as field value, 
+    sorting of actual and expected datasets may give different results and false-negative fails like this:
+&lt;/p&gt;
+&lt;e:db-check table="PERSON" cols="NAME, AGE"&gt;
+    &lt;row&gt;!{regex}.*, 1&lt;/row&gt;
+    &lt;row&gt;!{regex}.*, 2&lt;/row&gt;
+&lt;/e:db-check&gt;
+&lt;p&gt;
+    In order to fix this, order and columns for sorting may be set explicitly: 
+&lt;/p&gt;
+&lt;e:db-check table="PERSON" cols="NAME, AGE" orderBy="AGE, NAME"&gt;
+    &lt;row&gt;!{regex}.*, 1&lt;/row&gt;
+    &lt;row&gt;!{regex}.*, 2&lt;/row&gt;
+&lt;/e:db-check&gt;</pre>
+            <p>
+                By default, db-check compares datasets sorted by all columns from "cols" attribute.
+                This works fine in most cases. However in case of using "!{regex}" pattern as field value, 
+                sorting of actual and expected datasets may give different results and false-negative fails like this:
+            </p>
+            <div cmdId="8596806c-a108-4421-bdd5-da726d2ed25a" e:db-check="" class="table table-sm table-hover">
+                
+                
+            <div></div><span></span><div class="table-responsive mb-1 p-1"><table class="table table-sm"><caption style="width:max-content"><i class="fa fa-database ml-1"> PERSON</i></caption><thead class="thead-default"><tr><th class="">NAME</th><th class="">AGE</th></tr></thead><tbody><tr><td class=" table-success"> <span>!{regex}.* (A)</span></td><td class=" rest-failure"><del class="expected">1<fail style="display: none;" /></del>
+<ins class="actual">2</ins></td></tr><tr><td class=" table-success"> <span>!{regex}.* (B)</span></td><td class=" rest-failure"><del class="expected">2<fail style="display: none;" /></del>
+<ins class="actual">1</ins></td></tr></tbody></table></div></div>
+            <p>
+                In order to fix this, order and columns for sorting may be set explicitly: 
+            </p>
+            <div cmdId="5eafd286-40c8-47c8-bf32-47c63c299cd7" e:db-check="" class="table table-sm table-hover">
+                
+                
+            <div></div><span></span><div class="table-responsive mb-1 p-1"><table class="table table-sm"><caption style="width:max-content"><i class="fa fa-database ml-1"> PERSON</i></caption><thead class="thead-default"><tr><th class="">NAME</th><th class="">AGE</th></tr></thead><tbody><tr><td class=" table-success"> <span>!{regex}.* (B)</span></td><td class=" table-success"> <span>1</span></td></tr><tr><td class=" table-success"> <span>!{regex}.* (A)</span></td><td class=" table-success"> <span>2</span></td></tr></tbody></table></div></div>
+        </div>
+    </div><div class="card-footer text-muted" data-toggle="collapse" data-target="#370291531" aria-expanded="true" aria-controls="370291531"><small><span class="badge badge-pill badge-success">6</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning">2</span><span class="badge badge-pill badge-danger"></span><span class="badge badge-pill badge-warning">ExpectedToFail</span></small></div></div>
+    <div name="Date and Timestamp" cmdId="f634d637-9843-4c63-ad60-3327b1c28b21" c:example="Date and Timestamp" class="card mb-3" e:example="" id="Date and Timestamp"><div class="card-header" data-toggle="collapse" data-target="#-2017878757" aria-expanded="true" aria-controls="-2017878757"><a name="Date and Timestamp" data-type="example">Date and Timestamp</a></div><div class="card-body collapse show" id="-2017878757">
+        <div print="true" cmdId="3e6ec603-1bf2-4034-be63-8e974d8d0bdc" e:given="" class="bd-callout bd-callout-info"><pre lineNumbers="true" class="htmlmixed darcula mt-2">&lt;e:set var="beforePrev" value="{{now minus='2 d'}}" /&gt;
+&lt;e:set var="prev" value="{{now minus='1 d'}}" /&gt;
+&lt;e:set var="currentTime" value="{{now}}" /&gt;
+&lt;e:db-set table="TYPES" cols="DATE_TYPE, TIMESTAMP_TYPE, DATETIME_TYPE, ID=1..10"&gt;
+    &lt;row&gt;{{beforePrev}}, {{currentTime}}, {{currentTime}}&lt;/row&gt;
+    &lt;row&gt;{{prev}}, {{currentTime}}, {{currentTime}}&lt;/row&gt;
+    &lt;row&gt;{{currentTime}}, {{currentTime}}, {{currentTime}}&lt;/row&gt;
+&lt;/e:db-set&gt;</pre>
+            <span var="beforePrev" value="{{now minus='2 d'}}" cmdId="a0858663-68eb-4b58-adce-663ef96cd20c" e:set=""> </span> 
+            <span var="prev" value="{{now minus='1 d'}}" cmdId="924083f4-1c4b-462c-af15-b4ba4c132192" e:set=""> </span> 
+            <span var="currentTime" value="{{now}}" cmdId="73d61055-dc11-47e0-a09c-d959d2270a79" e:set=""> </span> 
+            <div cmdId="0610b1eb-0882-47b2-adf9-2e118093b4fe" e:db-set="" class="table table-sm table-hover">
+                
+                
+                
+            <div></div><span></span><div class="table-responsive mb-1 p-1"><table class="table table-sm"><caption style="width:max-content"><i class="fa fa-database ml-1"> TYPES</i></caption><thead class="thead-default"><tr><th class="">DATE_TYPE</th><th class="">TIMESTAMP_TYPE</th><th class="">DATETIME_TYPE</th><th class="">ID</th></tr></thead><tbody><tr><td class=""><span>2020-12-27 22:08:18.030</span></td><td class=""><span>2020-12-29 22:08:18.033</span></td><td class=""><span>2020-12-29 22:08:18.033</span></td><td class=""><span>1</span></td></tr><tr><td class=""><span>2020-12-28 22:08:18.033</span></td><td class=""><span>2020-12-29 22:08:18.033</span></td><td class=""><span>2020-12-29 22:08:18.033</span></td><td class=""><span>2</span></td></tr><tr><td class=""><span>2020-12-29 22:08:18.033</span></td><td class=""><span>2020-12-29 22:08:18.033</span></td><td class=""><span>2020-12-29 22:08:18.033</span></td><td class=""><span>3</span></td></tr></tbody></table></div></div>
+        </div>
+        <div print="true" cmdId="02bf1989-387e-4d0c-b7a0-4b6ae00508bf" e:then="" class="bd-callout bd-callout-success"><pre lineNumbers="true" class="htmlmixed darcula mt-2">&lt;e:db-check table="TYPES" cols="ID=1..10, DATE_TYPE, TIMESTAMP_TYPE, DATETIME_TYPE" orderBy="DATE_TYPE"&gt;
+    &lt;row&gt;  !{within 3d}{{now}}, !{within 5s}{{now}}, !{within 1s}{{currentTime}}&lt;/row&gt;
+    &lt;row&gt;{{today minus="1 d"}},     {{currentTime}}, {{currentTime}}&lt;/row&gt;
+    &lt;row&gt;            {{today}}, !{within 5s}{{now}}, !{within 1s}{{currentTime}}&lt;/row&gt;
+&lt;/e:db-check&gt;</pre>
+            <div cmdId="f7ce255f-d329-4389-ac7f-af504a1051c2" e:db-check="" class="table table-sm table-hover">
+                
+                
+                
+            <div></div><span></span><div class="table-responsive mb-1 p-1"><table class="table table-sm"><caption style="width:max-content"><i class="fa fa-database ml-1"> TYPES</i></caption><thead class="thead-default"><tr><th class="">ID</th><th class="">TIMESTAMP_TYPE</th><th class="">DATETIME_TYPE</th><th class="">DATE_TYPE</th></tr></thead><tbody><tr><td class=" table-success"> <span>1</span></td><td class=" table-success"> <span>!{within 5s}{{now}} (2020-12-29 22:08:18.033)</span></td><td class=" table-success"> <span>!{within 1s}{{currentTime}} (2020-12-29 22:08:18.0)</span></td><td class=" table-success"> <span>!{within 3d}{{now}} (2020-12-27)</span></td></tr><tr><td class=" table-success"> <span>2</span></td><td class=" table-success"> <span>2020-12-29 22:08:18.033</span></td><td class=" table-success"> <span>2020-12-29 22:08:18.033</span></td><td class=" table-success"> <span>2020-12-28 00:00:00.000</span></td></tr><tr><td class=" table-success"> <span>3</span></td><td class=" table-success"> <span>!{within 5s}{{now}} (2020-12-29 22:08:18.033)</span></td><td class=" table-success"> <span>!{within 1s}{{currentTime}} (2020-12-29 22:08:18.0)</span></td><td class=" table-success"> <span>2020-12-29 00:00:00.000</span></td></tr></tbody></table></div></div>
+        </div>
+    </div><div class="card-footer text-muted" data-toggle="collapse" data-target="#-2017878757" aria-expanded="true" aria-controls="-2017878757"><small><span class="badge badge-pill badge-success">12</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small></div></div>
+</div><div class="footer">Results generated by <a href="http://www.concordion.org" style="font-weight: bold; text-decoration: none; color: #89C;">Concordion</a><div class="testTime">in 257 ms on 29-Dec-2020 at 22:08:18 MSK</div></div></body><button id="btnToTop" onclick="topFunction()" type="button" class="btn btn-light btn-sm text-muted ml-1"><i class="fa fa-arrow-up"></i></button></html>
