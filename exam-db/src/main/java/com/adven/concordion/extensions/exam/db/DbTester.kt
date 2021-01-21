@@ -30,11 +30,17 @@ open class DbTester @JvmOverloads constructor(
     }
 
     val executors = ConcurrentHashMap<String, DbTester>()
+    private var conn: IDatabaseConnection? = null
 
     fun connectionFor(ds: String?): IDatabaseConnection = executors[ds]?.connection
         ?: throw IllegalArgumentException("DB tester $ds not found. Registered: $executors")
 
-    override fun getConnection(): IDatabaseConnection {
+    override fun getConnection(): IDatabaseConnection = if (conn == null || conn!!.connection.isClosed)
+        createConnection().also { conn = it }
+    else
+        conn!!
+
+    private fun createConnection(): IDatabaseConnection {
         val conn = super.getConnection()
         val cfg = conn.config
 
