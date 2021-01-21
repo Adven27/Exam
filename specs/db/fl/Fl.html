@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="UTF-8"?><html xmlns:e="http://exam.extension.io" xmlns:cc="http://www.concordion.org/2007/concordion"><head><style>* {
+  font-family: Arial;
+}
+body {
+  padding: 32px;  
+}
+pre {
+  padding: 6px 28px 6px 28px;
+  background-color: #E8EEF7;
+}
+pre, pre *, code, code *, kbd {
+  font-family: Courier New, Courier;
+  font-size: 10pt;
+}
+h1, h1 * {
+  font-size: 24pt;	
+}
+p, td, th, li, .breadcrumbs {
+  font-size: 10pt;
+}
+p, li {
+  line-height: 140%;
+  max-width: 720px;
+}
+table {
+  border-collapse: collapse;
+  empty-cells: show;
+  margin: 8px 0px 8px 0px;
+}
+th, td {
+  border: 1px solid black;
+  padding: 3px;
+}
+td {
+  background-color: white;
+  vertical-align: top;
+}
+th {
+  background-color: #C3D9FF;
+}
+li {
+  margin-top: 6px;
+  margin-bottom: 6px; 
+}
+
+.example, :not(th)[cc\:example] {
+  padding: 6px 16px 6px 16px;
+  border: 1px solid #C3D9FF;
+  margin: 6px 0px 28px 0px;
+  background-color: #F5F9FD;
+}
+.example h3, [cc\:example] h3 {
+  margin-top: 8px;
+  margin-bottom: 8px;
+  font-size: 12pt;
+}
+
+p.success {
+  padding: 2px;
+}
+.success, .success * {
+  background-color: #afa !important;
+}
+.success pre {
+  background-color: #bbffbb;
+}
+.failure, .failure * {
+  background-color: #ffb0b0;
+  padding: 1px;
+}
+.failure .expected {
+  text-decoration: line-through;
+  color: #bb5050;
+}
+.ignored, .ignored * {
+  background-color: #f0f0f0 !important;	
+}
+
+ins {
+  text-decoration: none;	
+}
+
+.exceptionMessage {
+  background-color: #fdd;
+  font-family: Courier New, Courier, Monospace;
+  font-size: 10pt;
+  display: block;
+  font-weight: normal;
+  padding: 4px;
+  text-decoration: none !important;
+}
+.stackTrace, .stackTrace * {
+  font-weight: normal;
+}
+.stackTrace {
+  display: none;
+  padding: 1px 4px 4px 4px;
+  background-color: #fdd;
+  border-top: 1px dotted black;
+}
+.stackTraceExceptionMessage {
+  display: block;
+  font-family: Courier New, Courier, Monospace;
+  font-size: 8pt;
+  white-space: wrap;
+  padding: 1px 0px 1px 0px;
+}
+.stackTraceEntry {
+  white-space: nowrap;
+  font-family: Courier New, Courier, Monospace;
+  display: block;
+  font-size: 8pt;
+  padding: 1px 0px 1px 32px;
+}
+.stackTraceButton {
+  font-size: 8pt;
+  margin: 2px 8px 2px 0px;
+  font-weight: normal;
+  font-family: Arial;
+}
+
+.special {
+  font-style: italic;
+}
+.missing, .missing * {
+  background-color: #ff9999;
+  color:#bb5050;
+  text-decoration: line-through;
+}
+.surplus, .surplus * {
+  background-color: #ff9999;
+}
+.footer {
+  text-align: right;
+  margin-top: 40px;
+  font-size: 8pt;
+  width: 100%;
+  color: #999;
+}
+.footer .testTime {
+  padding: 2px 10px 0px 0px;
+}
+
+.idea {
+  font-size: 9pt;
+  color: #888;
+  font-style: italic;	
+}
+.tight li {
+  margin-top: 1px;
+  margin-bottom: 1px; 
+}
+.commentary {
+  float: right;
+  width: 200px;
+  background-color: #ffffd0;
+  padding:8px;
+  border: 3px solid #eeeeb0;	 
+  margin: 10px 0px 10px 10px;	 
+}
+.commentary, .commentary * {
+  font-size: 8pt;
+}
+</style><meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<link type="text/css" rel="stylesheet" href="../../../timingExtensionStyle.css" /><script type="text/javascript" src="../../../timingExtensionToggle.js"></script><link type="text/css" rel="stylesheet" href="../../../codemirror/codemirror.css" /><link type="text/css" rel="stylesheet" href="../../../codemirror/merge.css" /><link type="text/css" rel="stylesheet" href="../../../codemirror/enable-codemirror.css" /><link type="text/css" rel="stylesheet" href="../../../codemirror/foldgutter.css" /><link type="text/css" rel="stylesheet" href="../../../codemirror/simplescrollbar.css" /><script type="text/javascript" src="../../../codemirror/codemirror.js"></script><script type="text/javascript" src="../../../codemirror/enable-codemirror.js"></script><script type="text/javascript" src="../../../codemirror/javascript.js"></script><script type="text/javascript" src="../../../codemirror/xml.js"></script><script type="text/javascript" src="../../../codemirror/htmlmixed.js"></script><script type="text/javascript" src="../../../codemirror/handelbar.js"></script><script type="text/javascript" src="../../../codemirror/addon/mode/simple.js"></script><script type="text/javascript" src="../../../codemirror/http.js"></script><script type="text/javascript" src="../../../codemirror/formatting.js"></script><script type="text/javascript" src="../../../codemirror/markdown.js"></script><script type="text/javascript" src="../../../codemirror/diff_match_patch.js"></script><script type="text/javascript" src="../../../codemirror/merge.js"></script><script type="text/javascript" src="../../../codemirror/xml-fold.js"></script><script type="text/javascript" src="../../../codemirror/simplescrollbar.js"></script><link type="text/css" rel="stylesheet" href="../../../codemirror/theme/darcula.css" /><script type="text/javascript" src="../../../bootstrap/jquery-3.2.1.slim.min.js"></script><script type="text/javascript" src="../../../bootstrap/popper.min.js"></script><script type="text/javascript" src="../../../bootstrap/bootstrap.min.js"></script><script type="text/javascript" src="../../../bootstrap/sidebar.js"></script><link type="text/css" rel="stylesheet" href="../../../bootstrap/enable-bootstrap.css" /><link type="text/css" rel="stylesheet" href="../../../bootstrap/bootstrap.min.css" /><link type="text/css" rel="stylesheet" href="../../../bootstrap/callout.css" /><link type="text/css" rel="stylesheet" href="../../../bootstrap/font-awesome.min.css" /><link type="text/css" rel="stylesheet" href="../../../bootstrap/scrollToTop.css" /><script type="text/javascript" src="../../../bootstrap/scrollToTop.js"></script></head><body><div id="toggle-button"><img id="toggle-on" src="../../../timing-on.svg" height="24" width="24" style="display:none" /><img id="toggle-off" src="../../../timing-off.svg" height="24" width="24" /></div><span class="breadcrumbs"><a href="../../Specs.html">Exam - Concordion extension</a> &gt; <a href="../Db.html">Working with DB</a> &gt;</span>
+<h1>Table setting</h1>
+<div cmdId="34817d3c-a66b-4c1b-8bc2-dfba9fb8f244" e:summary="" class="pin"> <h4>Summary<button type="button" class="btn btn-light btn-sm text-muted ml-1" data-toggle="collapse" data-target="#summary" aria-expanded="true" aria-controls="summary">collapse</button></h4><div id="summary" class="collapse show"><div class="list-group"><a class="list-group-item list-group-item-action" style="border-left: none; border-right: none;" href="#Success">Success<small class="card-img-overlay m-1" style="padding:0; left:inherit;"><span class="badge badge-pill badge-light">216ms</span><span class="badge badge-pill badge-success">94</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small></a><a class="list-group-item list-group-item-action" style="border-left: none; border-right: none;" href="#Fail">Fail<small class="card-img-overlay m-1" style="padding:0; left:inherit;"><span class="badge badge-pill badge-light">2s 188ms</span><span class="badge badge-pill badge-success">52</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning">20</span><span class="badge badge-pill badge-danger"></span><span class="badge badge-pill badge-warning">ExpectedToFail</span></small></a></div></div></div>
+<div xmlns:c="http://www.concordion.org/2007/concordion" name="Success" cmdId="cafd2b1a-d27a-4390-8c6b-94aec5672386" c:example="Success" class="card mb-3" e:example="" id="Success"><div class="card-header" data-toggle="collapse" data-target="#-202516509" aria-expanded="true" aria-controls="-202516509"><a name="Success" data-type="example">Success</a></div><div class="card-body collapse show" id="-202516509">
+    <div print="true" cmdId="d386eb7d-961a-46b5-8e1b-485c488c0a7b" e:given="" class="bd-callout bd-callout-info"><pre lineNumbers="true" class="htmlmixed darcula mt-2">&lt;b cc:set="#id"&gt;99&lt;/b&gt;
+&lt;b cc:set="#name"&gt;Don&lt;/b&gt;
+&lt;b cc:set="#age"&gt;40&lt;/b&gt;
+&lt;b cc:set="#bd"&gt;2000-01-01&lt;/b&gt;
+&lt;b cc:set="#field"&gt;passport&lt;/b&gt;
+&lt;b cc:set="#value"&gt;4444&lt;/b&gt;
+&lt;span cc:assertTrue="addRecordWithField(#id, #name, #age, #bd, #field, #value)"&gt;present&lt;/span&gt;
+&lt;e:db-show table="PERSON" saveToResources="/data/db/person.xml" /&gt;
+&lt;e:db-show table="PERSON_FIELDS" saveToResources="/data/db/person.json" /&gt;
+&lt;e:db-show table="PERSON" saveToResources="/data/db/person.csv" /&gt;</pre>
+        Given record <b cc:set="#id">99</b>
+        <b cc:set="#name">Don</b>
+        <b cc:set="#age">40</b>
+        <b cc:set="#bd">2000-01-01</b>
+        <b cc:set="#field">passport</b>
+        <b cc:set="#value">4444</b>
+        <span cc:assertTrue="addRecordWithField(#id, #name, #age, #bd, #field, #value)" class="success">present</span> in PERSON
+        <div cmdId="46aa293a-7752-43dc-89cd-984da14fd2f8" e:db-show=""> <div class="table-responsive mb-1 p-1"><table class="table table-sm"><caption style="width:max-content"><i class="fa fa-database ml-1"> PERSON</i></caption><thead class="thead-default"><tr><th class="">ID</th><th class="">NAME</th><th class="">AGE</th><th class="">IQ</th><th class="">BIRTHDAY</th></tr></thead><tbody><tr><td class=""><span>99</span></td><td class=""><span>Don</span></td><td class=""><span>40</span></td><td class=""><span>null</span></td><td class=""><span>2000-01-01 00:00:00.000</span></td></tr></tbody></table></div><pre>&lt;?xml version='1.0' encoding='UTF-8'?&gt;
+&lt;dataset&gt;
+  &lt;PERSON ID="99" NAME="Don" AGE="40" BIRTHDAY="2000-01-01 00:00:00.0"/&gt;
+  &lt;PERSON_FIELDS ID="99" NAME="passport" VALUE="4444" PERSON_ID="99"/&gt;
+&lt;/dataset&gt;
+</pre></div>
+        <div cmdId="7ef04653-e850-4ef3-a1e4-1714c0ac16f3" e:db-show=""> <div class="table-responsive mb-1 p-1"><table class="table table-sm"><caption style="width:max-content"><i class="fa fa-database ml-1"> PERSON_FIELDS</i></caption><thead class="thead-default"><tr><th class="">ID</th><th class="">NAME</th><th class="">VALUE</th><th class="">PERSON_ID</th></tr></thead><tbody><tr><td class=""><span>99</span></td><td class=""><span>passport</span></td><td class=""><span>4444</span></td><td class=""><span>99</span></td></tr></tbody></table></div><pre>{
+  "PERSON": [
+    {
+      "ID": 99,
+      "NAME": "Don",
+      "AGE": 40,
+      "BIRTHDAY": "2000-01-01 00:00:00.0"
+    }
+  ],
+  "PERSON_FIELDS": [
+    {
+      "ID": 99,
+      "NAME": "passport",
+      "VALUE": "4444",
+      "PERSON_ID": 99
+    }
+  ]
+}</pre></div>
+        <div cmdId="9f76f3a1-4d86-4f01-a3b7-50b1213bba11" e:db-show=""> <div class="table-responsive mb-1 p-1"><table class="table table-sm"><caption style="width:max-content"><i class="fa fa-database ml-1"> PERSON</i></caption><thead class="thead-default"><tr><th class="">ID</th><th class="">NAME</th><th class="">AGE</th><th class="">IQ</th><th class="">BIRTHDAY</th></tr></thead><tbody><tr><td class=""><span>99</span></td><td class=""><span>Don</span></td><td class=""><span>40</span></td><td class=""><span>null</span></td><td class=""><span>2000-01-01 00:00:00.000</span></td></tr></tbody></table></div><pre></pre></div>
+    </div>
+    <div print="true" cmdId="310cb3eb-1912-47ef-aaa2-88c35caaab6a" e:then="" class="bd-callout bd-callout-success"><pre lineNumbers="true" class="htmlmixed darcula mt-2">&lt;e:db-verify datasets="/data/db/person.xml" /&gt;</pre>
+        <span datasets="/data/db/person.xml" cmdId="c23dfae1-8ad7-4504-b948-763643c92326" e:db-verify=""> <div class="table-responsive mb-1 p-1"><table class="table table-sm"><caption style="width:max-content"><i class="fa fa-database ml-1"> PERSON</i></caption><thead class="thead-default"><tr><th class="">ID</th><th class="">NAME</th><th class="">AGE</th><th class="">BIRTHDAY</th></tr></thead><tbody><tr><td class=" table-success"> <span>99</span></td><td class=" table-success"> <span>Don</span></td><td class=" table-success"> <span>40</span></td><td class=" table-success"> <span>2000-01-01 00:00:00.0</span></td></tr></tbody></table></div><div class="table-responsive mb-1 p-1"><table class="table table-sm"><caption style="width:max-content"><i class="fa fa-database ml-1"> PERSON_FIELDS</i></caption><thead class="thead-default"><tr><th class="">ID</th><th class="">NAME</th><th class="">VALUE</th><th class="">PERSON_ID</th></tr></thead><tbody><tr><td class=" table-success"> <span>99</span></td><td class=" table-success"> <span>passport</span></td><td class=" table-success"> <span>4444</span></td><td class=" table-success"> <span>99</span></td></tr></tbody></table></div></span>
+    </div>
+    <div print="true" cmdId="67c6ac4e-4f1a-4d92-9dbc-16b578bc2506" e:when="" class="bd-callout bd-callout-warning"><pre lineNumbers="true" class="htmlmixed darcula mt-2">&lt;e:db-execute datasets="/data/db/empty.xml" /&gt;</pre>
+        <span datasets="/data/db/empty.xml" cmdId="8b38b23d-ad69-45a2-9331-8e05ce02b756" e:db-execute=""> <div class="table-responsive mb-1 p-1"><table class="table table-sm"><caption style="width:max-content"><i class="fa fa-database ml-1"> PERSON</i></caption><tbody><tr><td colspan="0">&lt;EMPTY&gt;</td></tr></tbody></table></div><div class="table-responsive mb-1 p-1"><table class="table table-sm"><caption style="width:max-content"><i class="fa fa-database ml-1"> PERSON_FIELDS</i></caption><tbody><tr><td colspan="0">&lt;EMPTY&gt;</td></tr></tbody></table></div></span>
+    </div>
+    <div print="true" cmdId="b53dc1b5-254a-41ae-a209-8ba4b3e2bec8" e:then="" class="bd-callout bd-callout-success"><pre lineNumbers="true" class="htmlmixed darcula mt-2">&lt;e:db-verify datasets="/data/db/empty.xml" /&gt;</pre>
+        <span datasets="/data/db/empty.xml" cmdId="b4a710f1-85d9-44e5-8a47-5dbcd280a96e" e:db-verify=""> <div class="table-responsive mb-1 p-1"><table class="table table-sm"><caption style="width:max-content"><i class="fa fa-database ml-1"> PERSON</i></caption><tbody><tr><td colspan="5" class="table-success">&lt;EMPTY&gt;</td></tr></tbody></table></div><div class="table-responsive mb-1 p-1"><table class="table table-sm"><caption style="width:max-content"><i class="fa fa-database ml-1"> PERSON_FIELDS</i></caption><tbody><tr><td colspan="4" class="table-success">&lt;EMPTY&gt;</td></tr></tbody></table></div></span>
+    </div>
+    <div print="true" cmdId="bd4a3f9f-8c77-4523-868e-5ced028919ed" e:when="" class="bd-callout bd-callout-warning"><pre lineNumbers="true" class="htmlmixed darcula mt-2">&lt;e:db-execute datasets="/data/db/adam.xml, /data/db/bob.json, /data/db/carl/person.csv" /&gt;</pre>
+        <span datasets="/data/db/adam.xml, /data/db/bob.json, /data/db/carl/person.csv" cmdId="664ac8cc-ede3-4aea-8591-e9582402f4e1" e:db-execute=""> <div class="table-responsive mb-1 p-1"><table class="table table-sm"><caption style="width:max-content"><i class="fa fa-database ml-1"> PERSON</i></caption><thead class="thead-default"><tr><th class="">ID</th><th class="">NAME</th><th class="">AGE</th><th class="">BIRTHDAY</th></tr></thead><tbody><tr><td class=""><span>1</span></td><td class=""><span>Adam</span></td><td class=""><span>10</span></td><td class=""><span>2021-01-21 00:00:00.000</span></td></tr><tr><td class=""><span>10</span></td><td class=""><span>Bob</span></td><td class=""><span>20</span></td><td class=""><span>2000-10-10 00:00:00</span></td></tr><tr><td class=""><span>2</span></td><td class=""><span>Carl</span></td><td class=""><span>30</span></td><td class=""><span>2003-03-03 00:00:00.000</span></td></tr></tbody></table></div><div class="table-responsive mb-1 p-1"><table class="table table-sm"><caption style="width:max-content"><i class="fa fa-database ml-1"> PERSON_FIELDS</i></caption><thead class="thead-default"><tr><th class="">ID</th><th class="">NAME</th><th class="">VALUE</th><th class="">PERSON_ID</th></tr></thead><tbody><tr><td class=""><span>11</span></td><td class=""><span>a1</span></td><td class=""><span>1</span></td><td class=""><span>1</span></td></tr><tr><td class=""><span>12</span></td><td class=""><span>a2</span></td><td class=""><span>2</span></td><td class=""><span>1</span></td></tr><tr><td class=""><span>21</span></td><td class=""><span>b1</span></td><td class=""><span>1</span></td><td class=""><span>10</span></td></tr><tr><td class=""><span>22</span></td><td class=""><span>b2</span></td><td class=""><span>2</span></td><td class=""><span>10</span></td></tr><tr><td class=""><span>31</span></td><td class=""><span>c1</span></td><td class=""><span>value with comma &gt;&gt; , &lt;&lt; and quotes "_'</span></td><td class=""><span>2</span></td></tr></tbody></table></div></span>
+    </div>
+    <div print="true" cmdId="7cbeeb7d-f20f-4e4b-8f58-4383cd4e2585" e:then="" class="bd-callout bd-callout-success"><pre lineNumbers="true" class="htmlmixed darcula mt-2">&lt;e:db-verify dir="/data/db/" datasets="adam.xml, carl/person.csv, bob-expected.json" orderBy="person_fields.person_id" /&gt;
+&lt;e:db-verify dir="/data/db/" datasets="adam-ignore-id.xml, bob-wrong-id.json, carl/person.csv" /&gt;</pre>
+        <span dir="/data/db/" datasets="adam.xml, carl/person.csv, bob-expected.json" cmdId="df219cf3-33d3-40e1-ab95-928b25c4e41a" e:db-verify=""> <div class="table-responsive mb-1 p-1"><table class="table table-sm"><caption style="width:max-content"><i class="fa fa-database ml-1"> PERSON</i></caption><thead class="thead-default"><tr><th class="">ID</th><th class="">NAME</th><th class="">AGE</th><th class="">BIRTHDAY</th></tr></thead><tbody><tr><td class=" table-success"> <span>1</span></td><td class=" table-success"> <span>Adam</span></td><td class=" table-success"> <span>10</span></td><td class=" table-success"> <span>2021-01-21 00:00:00.000</span></td></tr><tr><td class=" table-success"> <span>2</span></td><td class=" table-success"> <span>Carl</span></td><td class=" table-success"> <span>30</span></td><td class=" table-success"> <span>2003-03-03 00:00:00.000</span></td></tr><tr><td class=" table-success"> <span>10</span></td><td class=" table-success"> <span>!{string} (Bob)</span></td><td class=" table-success"> <span>!{number} (20)</span></td><td class=" table-success"> <span>!{within 1d}{{date "2000-10-10"}} (2000-10-10 00:00:00.0)</span></td></tr></tbody></table></div><div class="table-responsive mb-1 p-1"><table class="table table-sm"><caption style="width:max-content"><i class="fa fa-database ml-1"> PERSON_FIELDS</i></caption><thead class="thead-default"><tr><th class="">ID</th><th class="">NAME</th><th class="">VALUE</th><th class="">PERSON_ID</th></tr></thead><tbody><tr><td class=" table-success"> <span>11</span></td><td class=" table-success"> <span>a1</span></td><td class=" table-success"> <span>1</span></td><td class=" table-success"> <span>1</span></td></tr><tr><td class=" table-success"> <span>12</span></td><td class=" table-success"> <span>a2</span></td><td class=" table-success"> <span>2</span></td><td class=" table-success"> <span>1</span></td></tr><tr><td class=" table-success"> <span>31</span></td><td class=" table-success"> <span>c1</span></td><td class=" table-success"> <span>value with comma &gt;&gt; , &lt;&lt; and quotes "_'</span></td><td class=" table-success"> <span>2</span></td></tr><tr><td class=" table-success"> <span>21</span></td><td class=" table-success"> <span>b1</span></td><td class=" table-success"> <span>1</span></td><td class=" table-success"> <span>10</span></td></tr><tr><td class=" table-success"> <span>22</span></td><td class=" table-success"> <span>b2</span></td><td class=" table-success"> <span>2</span></td><td class=" table-success"> <span>10</span></td></tr></tbody></table></div></span>
+        Beware! The first dataset columns metadata will be used as a result of the datasets merge: PERSON_FIELDS.ID column ignored for the whole check
+        <span dir="/data/db/" datasets="adam-ignore-id.xml, bob-wrong-id.json, carl/person.csv" cmdId="068307a6-0006-455a-85b0-ae7b01b6c2ef" e:db-verify=""> <div class="table-responsive mb-1 p-1"><table class="table table-sm"><caption style="width:max-content"><i class="fa fa-database ml-1"> PERSON</i></caption><thead class="thead-default"><tr><th class="">ID</th><th class="">NAME</th><th class="">AGE</th><th class="">BIRTHDAY</th></tr></thead><tbody><tr><td class=" table-success"> <span>1</span></td><td class=" table-success"> <span>Adam</span></td><td class=" table-success"> <span>10</span></td><td class=" table-success"> <span>2021-01-21 00:00:00.000</span></td></tr><tr><td class=" table-success"> <span>2</span></td><td class=" table-success"> <span>Carl</span></td><td class=" table-success"> <span>30</span></td><td class=" table-success"> <span>2003-03-03 00:00:00.000</span></td></tr><tr><td class=" table-success"> <span>10</span></td><td class=" table-success"> <span>!{string} (Bob)</span></td><td class=" table-success"> <span>!{number} (20)</span></td><td class=" table-success"> <span>!{within 1d}{{date "2000-10-10"}} (2000-10-10 00:00:00.0)</span></td></tr></tbody></table></div><div class="table-responsive mb-1 p-1"><table class="table table-sm"><caption style="width:max-content"><i class="fa fa-database ml-1"> PERSON_FIELDS</i></caption><thead class="thead-default"><tr><th class="">NAME</th><th class="">VALUE</th><th class="">PERSON_ID</th></tr></thead><tbody><tr><td class=" table-success"> <span>a1</span></td><td class=" table-success"> <span>1</span></td><td class=" table-success"> <span>1</span></td></tr><tr><td class=" table-success"> <span>a2</span></td><td class=" table-success"> <span>2</span></td><td class=" table-success"> <span>1</span></td></tr><tr><td class=" table-success"> <span>b1</span></td><td class=" table-success"> <span>1</span></td><td class=" table-success"> <span>10</span></td></tr><tr><td class=" table-success"> <span>b2</span></td><td class=" table-success"> <span>2</span></td><td class=" table-success"> <span>10</span></td></tr><tr><td class=" table-success"> <span>c1</span></td><td class=" table-success"> <span>value with comma &gt;&gt; , &lt;&lt; and quotes "_'</span></td><td class=" table-success"> <span>2</span></td></tr></tbody></table></div></span>
+    </div>
+    <div print="true" cmdId="8682a401-b4c9-446e-8d3d-89f86760ace2" e:when="" class="bd-callout bd-callout-warning"><pre lineNumbers="true" class="htmlmixed darcula mt-2">&lt;span&gt;Clean insert:&lt;/span&gt;
+&lt;e:db-execute datasets="/data/db/adam.xml" debug="true" /&gt;
+&lt;span&gt;Append:&lt;/span&gt;
+&lt;e:db-execute operation="insert" datasets="/data/db/bob.json" debug="true" /&gt;</pre>
+        <span>Clean insert:</span>
+        <span datasets="/data/db/adam.xml" cmdId="aff8714c-6a9e-4767-88a3-93c9ba5b95c2" e:db-execute=""> <div class="table-responsive mb-1 p-1"><table class="table table-sm"><caption style="width:max-content"><i class="fa fa-database ml-1"> PERSON</i></caption><thead class="thead-default"><tr><th class="">ID</th><th class="">NAME</th><th class="">AGE</th><th class="">BIRTHDAY</th></tr></thead><tbody><tr><td class=""><span>1</span></td><td class=""><span>Adam</span></td><td class=""><span>10</span></td><td class=""><span>2021-01-21 00:00:00.000</span></td></tr></tbody></table></div><div class="table-responsive mb-1 p-1"><table class="table table-sm"><caption style="width:max-content"><i class="fa fa-database ml-1"> PERSON_FIELDS</i></caption><thead class="thead-default"><tr><th class="">ID</th><th class="">NAME</th><th class="">VALUE</th><th class="">PERSON_ID</th></tr></thead><tbody><tr><td class=""><span>11</span></td><td class=""><span>a1</span></td><td class=""><span>1</span></td><td class=""><span>1</span></td></tr><tr><td class=""><span>12</span></td><td class=""><span>a2</span></td><td class=""><span>2</span></td><td class=""><span>1</span></td></tr></tbody></table></div></span>
+        <span>Append:</span>
+        <span datasets="/data/db/bob.json" cmdId="45634f5f-5c6d-4c23-a95a-8ecf78c4808f" e:db-execute=""> <div class="table-responsive mb-1 p-1"><table class="table table-sm"><caption style="width:max-content"><i class="fa fa-database ml-1"> PERSON</i></caption><thead class="thead-default"><tr><th class="">id</th><th class="">name</th><th class="">age</th><th class="">BIRTHDAY</th></tr></thead><tbody><tr><td class=""><span>10</span></td><td class=""><span>Bob</span></td><td class=""><span>20</span></td><td class=""><span>2000-10-10 00:00:00</span></td></tr></tbody></table></div><div class="table-responsive mb-1 p-1"><table class="table table-sm"><caption style="width:max-content"><i class="fa fa-database ml-1"> PERSON_FIELDS</i></caption><thead class="thead-default"><tr><th class="">id</th><th class="">name</th><th class="">value</th><th class="">person_id</th></tr></thead><tbody><tr><td class=""><span>21</span></td><td class=""><span>b1</span></td><td class=""><span>1</span></td><td class=""><span>10</span></td></tr><tr><td class=""><span>22</span></td><td class=""><span>b2</span></td><td class=""><span>2</span></td><td class=""><span>10</span></td></tr></tbody></table></div></span>
+    </div>
+    <div print="true" cmdId="4cfb0c4f-6024-4e2f-ba6e-f793fc91a305" e:then="" class="bd-callout bd-callout-success"><pre lineNumbers="true" class="htmlmixed darcula mt-2">&lt;e:db-verify dir="/data/db/" datasets="adam.xml, bob-expected.json" /&gt;</pre>
+        <span dir="/data/db/" datasets="adam.xml, bob-expected.json" cmdId="c08f30ff-4803-41b8-9040-7f5404d2c5ff" e:db-verify=""> <div class="table-responsive mb-1 p-1"><table class="table table-sm"><caption style="width:max-content"><i class="fa fa-database ml-1"> PERSON</i></caption><thead class="thead-default"><tr><th class="">ID</th><th class="">NAME</th><th class="">AGE</th><th class="">BIRTHDAY</th></tr></thead><tbody><tr><td class=" table-success"> <span>1</span></td><td class=" table-success"> <span>Adam</span></td><td class=" table-success"> <span>10</span></td><td class=" table-success"> <span>2021-01-21 00:00:00.000</span></td></tr><tr><td class=" table-success"> <span>10</span></td><td class=" table-success"> <span>!{string} (Bob)</span></td><td class=" table-success"> <span>!{number} (20)</span></td><td class=" table-success"> <span>!{within 1d}{{date "2000-10-10"}} (2000-10-10 00:00:00.0)</span></td></tr></tbody></table></div><div class="table-responsive mb-1 p-1"><table class="table table-sm"><caption style="width:max-content"><i class="fa fa-database ml-1"> PERSON_FIELDS</i></caption><thead class="thead-default"><tr><th class="">ID</th><th class="">NAME</th><th class="">VALUE</th><th class="">PERSON_ID</th></tr></thead><tbody><tr><td class=" table-success"> <span>11</span></td><td class=" table-success"> <span>a1</span></td><td class=" table-success"> <span>1</span></td><td class=" table-success"> <span>1</span></td></tr><tr><td class=" table-success"> <span>12</span></td><td class=" table-success"> <span>a2</span></td><td class=" table-success"> <span>2</span></td><td class=" table-success"> <span>1</span></td></tr><tr><td class=" table-success"> <span>21</span></td><td class=" table-success"> <span>b1</span></td><td class=" table-success"> <span>1</span></td><td class=" table-success"> <span>10</span></td></tr><tr><td class=" table-success"> <span>22</span></td><td class=" table-success"> <span>b2</span></td><td class=" table-success"> <span>2</span></td><td class=" table-success"> <span>10</span></td></tr></tbody></table></div></span>
+    </div>
+</div><div class="card-footer text-muted" data-toggle="collapse" data-target="#-202516509" aria-expanded="true" aria-controls="-202516509"><small><span class="badge badge-pill badge-success">94</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small></div></div>
+<div xmlns:c="http://www.concordion.org/2007/concordion" name="Fail" status="ExpectedToFail" cmdId="7c17946a-c7b0-4b93-b25a-7208c1ec8a26" c:example="Fail" c:status="ExpectedToFail" class="card mb-3" e:example="" id="Fail"><div class="card-header" data-toggle="collapse" data-target="#2181950" aria-expanded="true" aria-controls="2181950"><a name="Fail" data-type="example">Fail</a></div><div class="card-body collapse show" id="2181950">
+    <div print="true" cmdId="3bfc6ea3-44ac-40d2-8b34-6a5cb8249612" e:when="" class="bd-callout bd-callout-warning"><pre lineNumbers="true" class="htmlmixed darcula mt-2">&lt;e:db-execute datasets="/data/db/empty.xml" /&gt;</pre>
+        <span datasets="/data/db/empty.xml" cmdId="10c31818-8b7a-4edc-92e4-9baf449f502d" e:db-execute=""> <div class="table-responsive mb-1 p-1"><table class="table table-sm"><caption style="width:max-content"><i class="fa fa-database ml-1"> PERSON</i></caption><tbody><tr><td colspan="0">&lt;EMPTY&gt;</td></tr></tbody></table></div><div class="table-responsive mb-1 p-1"><table class="table table-sm"><caption style="width:max-content"><i class="fa fa-database ml-1"> PERSON_FIELDS</i></caption><tbody><tr><td colspan="0">&lt;EMPTY&gt;</td></tr></tbody></table></div></span>
+    </div>
+    <div print="true" cmdId="a14d1d41-596b-4911-8bb9-79523d947afb" e:then="" class="bd-callout bd-callout-success"><pre lineNumbers="true" class="htmlmixed darcula mt-2">&lt;e:db-verify datasets="/data/db/person.xml" awaitAtMostSec="2" awaitPollDelayMillis="100" awaitPollIntervalMillis="1000" /&gt;</pre>
+        <span datasets="/data/db/person.xml" cmdId="cedd9d25-4edd-406f-a766-28c9df03826c" e:db-verify=""> <div class="rest-failure bd-callout bd-callout-danger"><div>row count (table=PERSON) expected:&lt;1&gt; but was:&lt;0&gt;</div><span>Expected: </span><div class="table-responsive mb-1 p-1"><table class="table table-sm"><caption style="width:max-content"><i class="fa fa-database ml-1"> PERSON</i></caption><thead class="thead-default"><tr><th class="">ID</th><th class="">NAME</th><th class="">AGE</th><th class="">BIRTHDAY</th></tr></thead><tbody><tr><td class=""><span>99</span></td><td class=""><span>Don</span></td><td class=""><span>40</span></td><td class=""><span>2000-01-01 00:00:00.0</span></td></tr></tbody></table></div><span>but was: </span><div class="table-responsive mb-1 p-1"><table class="table table-sm"><caption style="width:max-content"><i class="fa fa-database ml-1"> PERSON</i></caption><tbody><tr><td colspan="4">&lt;EMPTY&gt;</td></tr></tbody></table></div></div><div class="rest-failure bd-callout bd-callout-danger"><div>row count (table=PERSON_FIELDS) expected:&lt;1&gt; but was:&lt;0&gt;</div><span>Expected: </span><div class="table-responsive mb-1 p-1"><table class="table table-sm"><caption style="width:max-content"><i class="fa fa-database ml-1"> PERSON_FIELDS</i></caption><thead class="thead-default"><tr><th class="">ID</th><th class="">NAME</th><th class="">VALUE</th><th class="">PERSON_ID</th></tr></thead><tbody><tr><td class=""><span>99</span></td><td class=""><span>passport</span></td><td class=""><span>4444</span></td><td class=""><span>99</span></td></tr></tbody></table></div><span>but was: </span><div class="table-responsive mb-1 p-1"><table class="table table-sm"><caption style="width:max-content"><i class="fa fa-database ml-1"> PERSON_FIELDS</i></caption><tbody><tr><td colspan="4">&lt;EMPTY&gt;</td></tr></tbody></table></div></div></span>
+    </div>
+    <div print="true" cmdId="f188b5f3-2d22-4f28-8cfd-bba74797a526" e:when="" class="bd-callout bd-callout-warning"><pre lineNumbers="true" class="htmlmixed darcula mt-2">&lt;e:db-execute datasets="/data/db/person.xml" /&gt;</pre>
+        <span datasets="/data/db/person.xml" cmdId="361686bc-6b79-4a35-b680-327441e1ac73" e:db-execute=""> <div class="table-responsive mb-1 p-1"><table class="table table-sm"><caption style="width:max-content"><i class="fa fa-database ml-1"> PERSON</i></caption><thead class="thead-default"><tr><th class="">ID</th><th class="">NAME</th><th class="">AGE</th><th class="">BIRTHDAY</th></tr></thead><tbody><tr><td class=""><span>99</span></td><td class=""><span>Don</span></td><td class=""><span>40</span></td><td class=""><span>2000-01-01 00:00:00.0</span></td></tr></tbody></table></div><div class="table-responsive mb-1 p-1"><table class="table table-sm"><caption style="width:max-content"><i class="fa fa-database ml-1"> PERSON_FIELDS</i></caption><thead class="thead-default"><tr><th class="">ID</th><th class="">NAME</th><th class="">VALUE</th><th class="">PERSON_ID</th></tr></thead><tbody><tr><td class=""><span>99</span></td><td class=""><span>passport</span></td><td class=""><span>4444</span></td><td class=""><span>99</span></td></tr></tbody></table></div></span>
+    </div>
+    <div print="true" cmdId="0c82a2b0-4e91-4714-8019-c5199c1362cb" e:then="" class="bd-callout bd-callout-success"><pre lineNumbers="true" class="htmlmixed darcula mt-2">&lt;e:db-verify datasets="/data/db/empty.xml" /&gt;</pre>
+        <span datasets="/data/db/empty.xml" cmdId="059fb01e-7369-403a-9953-2ebe35ba50ea" e:db-verify=""> <div class="rest-failure bd-callout bd-callout-danger"><div>row count (table=PERSON) expected:&lt;0&gt; but was:&lt;1&gt;</div><span>Expected: </span><div class="table-responsive mb-1 p-1"><table class="table table-sm"><caption style="width:max-content"><i class="fa fa-database ml-1"> PERSON</i></caption><tbody><tr><td colspan="5">&lt;EMPTY&gt;</td></tr></tbody></table></div><span>but was: </span><div class="table-responsive mb-1 p-1"><table class="table table-sm"><caption style="width:max-content"><i class="fa fa-database ml-1"> PERSON</i></caption><thead class="thead-default"><tr><th class="">ID</th><th class="">NAME</th><th class="">AGE</th><th class="">IQ</th><th class="">BIRTHDAY</th></tr></thead><tbody><tr><td class=""><span>99</span></td><td class=""><span>Don</span></td><td class=""><span>40</span></td><td class=""><span>null</span></td><td class=""><span>2000-01-01 00:00:00.000</span></td></tr></tbody></table></div></div><div class="rest-failure bd-callout bd-callout-danger"><div>row count (table=PERSON_FIELDS) expected:&lt;0&gt; but was:&lt;1&gt;</div><span>Expected: </span><div class="table-responsive mb-1 p-1"><table class="table table-sm"><caption style="width:max-content"><i class="fa fa-database ml-1"> PERSON_FIELDS</i></caption><tbody><tr><td colspan="4">&lt;EMPTY&gt;</td></tr></tbody></table></div><span>but was: </span><div class="table-responsive mb-1 p-1"><table class="table table-sm"><caption style="width:max-content"><i class="fa fa-database ml-1"> PERSON_FIELDS</i></caption><thead class="thead-default"><tr><th class="">ID</th><th class="">NAME</th><th class="">VALUE</th><th class="">PERSON_ID</th></tr></thead><tbody><tr><td class=""><span>99</span></td><td class=""><span>passport</span></td><td class=""><span>4444</span></td><td class=""><span>99</span></td></tr></tbody></table></div></div></span>
+    </div>
+    <div print="true" cmdId="4dd3daaa-f0a1-4b27-aa84-5ca072ea0689" e:when="" class="bd-callout bd-callout-warning"><pre lineNumbers="true" class="htmlmixed darcula mt-2">&lt;e:db-execute datasets="/data/db/adam.xml" /&gt;</pre>
+        <span datasets="/data/db/adam.xml" cmdId="171dc109-8bb6-4c01-94b2-77e8fd87788a" e:db-execute=""> <div class="table-responsive mb-1 p-1"><table class="table table-sm"><caption style="width:max-content"><i class="fa fa-database ml-1"> PERSON</i></caption><thead class="thead-default"><tr><th class="">ID</th><th class="">NAME</th><th class="">AGE</th><th class="">BIRTHDAY</th></tr></thead><tbody><tr><td class=""><span>1</span></td><td class=""><span>Adam</span></td><td class=""><span>10</span></td><td class=""><span>2021-01-21 00:00:00.000</span></td></tr></tbody></table></div><div class="table-responsive mb-1 p-1"><table class="table table-sm"><caption style="width:max-content"><i class="fa fa-database ml-1"> PERSON_FIELDS</i></caption><thead class="thead-default"><tr><th class="">ID</th><th class="">NAME</th><th class="">VALUE</th><th class="">PERSON_ID</th></tr></thead><tbody><tr><td class=""><span>11</span></td><td class=""><span>a1</span></td><td class=""><span>1</span></td><td class=""><span>1</span></td></tr><tr><td class=""><span>12</span></td><td class=""><span>a2</span></td><td class=""><span>2</span></td><td class=""><span>1</span></td></tr></tbody></table></div></span>
+    </div>
+    <div print="true" cmdId="cca2554c-9ee3-49fd-94be-c24e622b0872" e:then="" class="bd-callout bd-callout-success"><pre lineNumbers="true" class="htmlmixed darcula mt-2">&lt;e:db-verify dir="/data/db/" datasets="adam.xml, bob-expected.json" /&gt;</pre>
+        <span dir="/data/db/" datasets="adam.xml, bob-expected.json" cmdId="f36be5e5-da34-47ad-8e31-0e066d62f66c" e:db-verify=""> <div class="rest-failure bd-callout bd-callout-danger"><div>row count (table=PERSON) expected:&lt;2&gt; but was:&lt;1&gt;</div><span>Expected: </span><div class="table-responsive mb-1 p-1"><table class="table table-sm"><caption style="width:max-content"><i class="fa fa-database ml-1"> PERSON</i></caption><thead class="thead-default"><tr><th class="">ID</th><th class="">NAME</th><th class="">AGE</th><th class="">BIRTHDAY</th></tr></thead><tbody><tr><td class=""><span>1</span></td><td class=""><span>Adam</span></td><td class=""><span>10</span></td><td class=""><span>2021-01-21 00:00:00.000</span></td></tr><tr><td class=""><span>10</span></td><td class=""><span>!{string}</span></td><td class=""><span>!{number}</span></td><td class=""><span>!{within 1d}{{date "2000-10-10"}}</span></td></tr></tbody></table></div><span>but was: </span><div class="table-responsive mb-1 p-1"><table class="table table-sm"><caption style="width:max-content"><i class="fa fa-database ml-1"> PERSON</i></caption><thead class="thead-default"><tr><th class="">ID</th><th class="">NAME</th><th class="">AGE</th><th class="">BIRTHDAY</th></tr></thead><tbody><tr><td class=""><span>1</span></td><td class=""><span>Adam</span></td><td class=""><span>10</span></td><td class=""><span>2021-01-21 00:00:00.000</span></td></tr></tbody></table></div></div><div class="rest-failure bd-callout bd-callout-danger"><div>row count (table=PERSON_FIELDS) expected:&lt;4&gt; but was:&lt;2&gt;</div><span>Expected: </span><div class="table-responsive mb-1 p-1"><table class="table table-sm"><caption style="width:max-content"><i class="fa fa-database ml-1"> PERSON_FIELDS</i></caption><thead class="thead-default"><tr><th class="">ID</th><th class="">NAME</th><th class="">VALUE</th><th class="">PERSON_ID</th></tr></thead><tbody><tr><td class=""><span>11</span></td><td class=""><span>a1</span></td><td class=""><span>1</span></td><td class=""><span>1</span></td></tr><tr><td class=""><span>12</span></td><td class=""><span>a2</span></td><td class=""><span>2</span></td><td class=""><span>1</span></td></tr><tr><td class=""><span>21</span></td><td class=""><span>b1</span></td><td class=""><span>1</span></td><td class=""><span>10</span></td></tr><tr><td class=""><span>22</span></td><td class=""><span>b2</span></td><td class=""><span>2</span></td><td class=""><span>10</span></td></tr></tbody></table></div><span>but was: </span><div class="table-responsive mb-1 p-1"><table class="table table-sm"><caption style="width:max-content"><i class="fa fa-database ml-1"> PERSON_FIELDS</i></caption><thead class="thead-default"><tr><th class="">ID</th><th class="">NAME</th><th class="">VALUE</th><th class="">PERSON_ID</th></tr></thead><tbody><tr><td class=""><span>11</span></td><td class=""><span>a1</span></td><td class=""><span>1</span></td><td class=""><span>1</span></td></tr><tr><td class=""><span>12</span></td><td class=""><span>a2</span></td><td class=""><span>2</span></td><td class=""><span>1</span></td></tr></tbody></table></div></div></span>
+    </div>
+    <div print="true" cmdId="cafd055d-8096-4dce-8db5-6fa54a037ee1" e:when="" class="bd-callout bd-callout-warning"><pre lineNumbers="true" class="htmlmixed darcula mt-2">&lt;e:db-execute dir="/data/db/" datasets="adam.xml, bob.json" /&gt;</pre>
+        <span dir="/data/db/" datasets="adam.xml, bob.json" cmdId="6cb601d9-46b7-4656-a97b-85c3f7de6b8b" e:db-execute=""> <div class="table-responsive mb-1 p-1"><table class="table table-sm"><caption style="width:max-content"><i class="fa fa-database ml-1"> PERSON</i></caption><thead class="thead-default"><tr><th class="">ID</th><th class="">NAME</th><th class="">AGE</th><th class="">BIRTHDAY</th></tr></thead><tbody><tr><td class=""><span>1</span></td><td class=""><span>Adam</span></td><td class=""><span>10</span></td><td class=""><span>2021-01-21 00:00:00.000</span></td></tr><tr><td class=""><span>10</span></td><td class=""><span>Bob</span></td><td class=""><span>20</span></td><td class=""><span>2000-10-10 00:00:00</span></td></tr></tbody></table></div><div class="table-responsive mb-1 p-1"><table class="table table-sm"><caption style="width:max-content"><i class="fa fa-database ml-1"> PERSON_FIELDS</i></caption><thead class="thead-default"><tr><th class="">ID</th><th class="">NAME</th><th class="">VALUE</th><th class="">PERSON_ID</th></tr></thead><tbody><tr><td class=""><span>11</span></td><td class=""><span>a1</span></td><td class=""><span>1</span></td><td class=""><span>1</span></td></tr><tr><td class=""><span>12</span></td><td class=""><span>a2</span></td><td class=""><span>2</span></td><td class=""><span>1</span></td></tr><tr><td class=""><span>21</span></td><td class=""><span>b1</span></td><td class=""><span>1</span></td><td class=""><span>10</span></td></tr><tr><td class=""><span>22</span></td><td class=""><span>b2</span></td><td class=""><span>2</span></td><td class=""><span>10</span></td></tr></tbody></table></div></span>
+    </div>
+    <div print="true" cmdId="e5be1b84-e80b-4eea-aad2-23f5ec4c1a84" e:then="" class="bd-callout bd-callout-success"><pre lineNumbers="true" class="htmlmixed darcula mt-2">&lt;e:db-verify dir="/data/db/" datasets="adam.xml" /&gt;</pre>
+        <span dir="/data/db/" datasets="adam.xml" cmdId="c3e60621-de01-4db9-ae74-52220d2ebfdf" e:db-verify=""> <div class="rest-failure bd-callout bd-callout-danger"><div>row count (table=PERSON) expected:&lt;1&gt; but was:&lt;2&gt;</div><span>Expected: </span><div class="table-responsive mb-1 p-1"><table class="table table-sm"><caption style="width:max-content"><i class="fa fa-database ml-1"> PERSON</i></caption><thead class="thead-default"><tr><th class="">ID</th><th class="">NAME</th><th class="">AGE</th><th class="">BIRTHDAY</th></tr></thead><tbody><tr><td class=""><span>1</span></td><td class=""><span>Adam</span></td><td class=""><span>10</span></td><td class=""><span>2021-01-21 00:00:00.000</span></td></tr></tbody></table></div><span>but was: </span><div class="table-responsive mb-1 p-1"><table class="table table-sm"><caption style="width:max-content"><i class="fa fa-database ml-1"> PERSON</i></caption><thead class="thead-default"><tr><th class="">ID</th><th class="">NAME</th><th class="">AGE</th><th class="">BIRTHDAY</th></tr></thead><tbody><tr><td class=""><span>1</span></td><td class=""><span>Adam</span></td><td class=""><span>10</span></td><td class=""><span>2021-01-21 00:00:00.000</span></td></tr><tr><td class=""><span>10</span></td><td class=""><span>Bob</span></td><td class=""><span>20</span></td><td class=""><span>2000-10-10 00:00:00.000</span></td></tr></tbody></table></div></div><div class="rest-failure bd-callout bd-callout-danger"><div>row count (table=PERSON_FIELDS) expected:&lt;2&gt; but was:&lt;4&gt;</div><span>Expected: </span><div class="table-responsive mb-1 p-1"><table class="table table-sm"><caption style="width:max-content"><i class="fa fa-database ml-1"> PERSON_FIELDS</i></caption><thead class="thead-default"><tr><th class="">ID</th><th class="">NAME</th><th class="">VALUE</th><th class="">PERSON_ID</th></tr></thead><tbody><tr><td class=""><span>11</span></td><td class=""><span>a1</span></td><td class=""><span>1</span></td><td class=""><span>1</span></td></tr><tr><td class=""><span>12</span></td><td class=""><span>a2</span></td><td class=""><span>2</span></td><td class=""><span>1</span></td></tr></tbody></table></div><span>but was: </span><div class="table-responsive mb-1 p-1"><table class="table table-sm"><caption style="width:max-content"><i class="fa fa-database ml-1"> PERSON_FIELDS</i></caption><thead class="thead-default"><tr><th class="">ID</th><th class="">NAME</th><th class="">VALUE</th><th class="">PERSON_ID</th></tr></thead><tbody><tr><td class=""><span>11</span></td><td class=""><span>a1</span></td><td class=""><span>1</span></td><td class=""><span>1</span></td></tr><tr><td class=""><span>12</span></td><td class=""><span>a2</span></td><td class=""><span>2</span></td><td class=""><span>1</span></td></tr><tr><td class=""><span>21</span></td><td class=""><span>b1</span></td><td class=""><span>1</span></td><td class=""><span>10</span></td></tr><tr><td class=""><span>22</span></td><td class=""><span>b2</span></td><td class=""><span>2</span></td><td class=""><span>10</span></td></tr></tbody></table></div></div></span>
+    </div>
+    <div print="true" cmdId="e966244d-6d46-46f4-8ba9-6c059bb23058" e:when="" class="bd-callout bd-callout-warning"><pre lineNumbers="true" class="htmlmixed darcula mt-2">&lt;e:db-execute dir="/data/db/" datasets="adam.xml, bob.json, carl/person.csv" /&gt;</pre>
+        <span dir="/data/db/" datasets="adam.xml, bob.json, carl/person.csv" cmdId="74c3143b-2abf-4513-bc1e-e1723045a595" e:db-execute=""> <div class="table-responsive mb-1 p-1"><table class="table table-sm"><caption style="width:max-content"><i class="fa fa-database ml-1"> PERSON</i></caption><thead class="thead-default"><tr><th class="">ID</th><th class="">NAME</th><th class="">AGE</th><th class="">BIRTHDAY</th></tr></thead><tbody><tr><td class=""><span>1</span></td><td class=""><span>Adam</span></td><td class=""><span>10</span></td><td class=""><span>2021-01-21 00:00:00.000</span></td></tr><tr><td class=""><span>10</span></td><td class=""><span>Bob</span></td><td class=""><span>20</span></td><td class=""><span>2000-10-10 00:00:00</span></td></tr><tr><td class=""><span>2</span></td><td class=""><span>Carl</span></td><td class=""><span>30</span></td><td class=""><span>2003-03-03 00:00:00.000</span></td></tr></tbody></table></div><div class="table-responsive mb-1 p-1"><table class="table table-sm"><caption style="width:max-content"><i class="fa fa-database ml-1"> PERSON_FIELDS</i></caption><thead class="thead-default"><tr><th class="">ID</th><th class="">NAME</th><th class="">VALUE</th><th class="">PERSON_ID</th></tr></thead><tbody><tr><td class=""><span>11</span></td><td class=""><span>a1</span></td><td class=""><span>1</span></td><td class=""><span>1</span></td></tr><tr><td class=""><span>12</span></td><td class=""><span>a2</span></td><td class=""><span>2</span></td><td class=""><span>1</span></td></tr><tr><td class=""><span>21</span></td><td class=""><span>b1</span></td><td class=""><span>1</span></td><td class=""><span>10</span></td></tr><tr><td class=""><span>22</span></td><td class=""><span>b2</span></td><td class=""><span>2</span></td><td class=""><span>10</span></td></tr><tr><td class=""><span>31</span></td><td class=""><span>c1</span></td><td class=""><span>value with comma &gt;&gt; , &lt;&lt; and quotes "_'</span></td><td class=""><span>2</span></td></tr></tbody></table></div></span>
+    </div>
+    <div print="true" cmdId="843b649a-be6d-40fa-9449-f7a00fa2bfa5" e:then="" class="bd-callout bd-callout-success"><pre lineNumbers="true" class="htmlmixed darcula mt-2">&lt;e:db-verify dir="/data/db/" datasets="adam.xml, bob-wrong.json, carl/person.csv" /&gt;</pre>
+        <span dir="/data/db/" datasets="adam.xml, bob-wrong.json, carl/person.csv" cmdId="248b366b-c2be-4d9a-b83b-33e52f4c0788" e:db-verify=""> <div class="table-responsive mb-1 p-1"><table class="table table-sm"><caption style="width:max-content"><i class="fa fa-database ml-1"> PERSON</i></caption><thead class="thead-default"><tr><th class="">ID</th><th class="">NAME</th><th class="">AGE</th><th class="">BIRTHDAY</th></tr></thead><tbody><tr><td class=" table-success"> <span>1</span></td><td class=" table-success"> <span>Adam</span></td><td class=" table-success"> <span>10</span></td><td class=" table-success"> <span>2021-01-21 00:00:00.000</span></td></tr><tr><td class=" table-success"> <span>2</span></td><td class=" table-success"> <span>Carl</span></td><td class=" table-success"> <span>30</span></td><td class=" table-success"> <span>2003-03-03 00:00:00.000</span></td></tr><tr><td class=" table-success"> <span>10</span></td><td class=" table-success"> <span>!{string} (Bob)</span></td><td class=" table-success"> <span>!{number} (20)</span></td><td class=" rest-failure"><del class="expected">2021-01-21 10:21:11.331<fail style="display: none;" /></del>
+<ins class="actual">2000-10-10 00:00:00.0</ins></td></tr></tbody></table></div><div class="table-responsive mb-1 p-1"><table class="table table-sm"><caption style="width:max-content"><i class="fa fa-database ml-1"> PERSON_FIELDS</i></caption><thead class="thead-default"><tr><th class="">ID</th><th class="">NAME</th><th class="">VALUE</th><th class="">PERSON_ID</th></tr></thead><tbody><tr><td class=" table-success"> <span>11</span></td><td class=" table-success"> <span>a1</span></td><td class=" table-success"> <span>1</span></td><td class=" table-success"> <span>1</span></td></tr><tr><td class=" table-success"> <span>12</span></td><td class=" table-success"> <span>a2</span></td><td class=" table-success"> <span>2</span></td><td class=" table-success"> <span>1</span></td></tr><tr><td class=" table-success"> <span>21</span></td><td class=" table-success"> <span>b1</span></td><td class=" table-success"> <span>1</span></td><td class=" table-success"> <span>10</span></td></tr><tr><td class=" table-success"> <span>22</span></td><td class=" table-success"> <span>b2</span></td><td class=" rest-failure"><del class="expected">3<fail style="display: none;" /></del>
+<ins class="actual">2</ins></td><td class=" table-success"> <span>10</span></td></tr><tr><td class=" table-success"> <span>31</span></td><td class=" table-success"> <span>c1</span></td><td class=" table-success"> <span>value with comma &gt;&gt; , &lt;&lt; and quotes "_'</span></td><td class=" table-success"> <span>2</span></td></tr></tbody></table></div></span>
+    </div>
+    <div print="true" cmdId="aa26998b-b0d0-47d1-8224-87163fe83594" e:when="" class="bd-callout bd-callout-warning"><pre lineNumbers="true" class="htmlmixed darcula mt-2">&lt;e:db-execute dir="/data/db/" datasets="adam.xml, bob.json, carl/person.csv" /&gt;</pre>
+        <span dir="/data/db/" datasets="adam.xml, bob.json, carl/person.csv" cmdId="91f7cf82-602e-4940-be29-10d1006e21be" e:db-execute=""> <div class="table-responsive mb-1 p-1"><table class="table table-sm"><caption style="width:max-content"><i class="fa fa-database ml-1"> PERSON</i></caption><thead class="thead-default"><tr><th class="">ID</th><th class="">NAME</th><th class="">AGE</th><th class="">BIRTHDAY</th></tr></thead><tbody><tr><td class=""><span>1</span></td><td class=""><span>Adam</span></td><td class=""><span>10</span></td><td class=""><span>2021-01-21 00:00:00.000</span></td></tr><tr><td class=""><span>10</span></td><td class=""><span>Bob</span></td><td class=""><span>20</span></td><td class=""><span>2000-10-10 00:00:00</span></td></tr><tr><td class=""><span>2</span></td><td class=""><span>Carl</span></td><td class=""><span>30</span></td><td class=""><span>2003-03-03 00:00:00.000</span></td></tr></tbody></table></div><div class="table-responsive mb-1 p-1"><table class="table table-sm"><caption style="width:max-content"><i class="fa fa-database ml-1"> PERSON_FIELDS</i></caption><thead class="thead-default"><tr><th class="">ID</th><th class="">NAME</th><th class="">VALUE</th><th class="">PERSON_ID</th></tr></thead><tbody><tr><td class=""><span>11</span></td><td class=""><span>a1</span></td><td class=""><span>1</span></td><td class=""><span>1</span></td></tr><tr><td class=""><span>12</span></td><td class=""><span>a2</span></td><td class=""><span>2</span></td><td class=""><span>1</span></td></tr><tr><td class=""><span>21</span></td><td class=""><span>b1</span></td><td class=""><span>1</span></td><td class=""><span>10</span></td></tr><tr><td class=""><span>22</span></td><td class=""><span>b2</span></td><td class=""><span>2</span></td><td class=""><span>10</span></td></tr><tr><td class=""><span>31</span></td><td class=""><span>c1</span></td><td class=""><span>value with comma &gt;&gt; , &lt;&lt; and quotes "_'</span></td><td class=""><span>2</span></td></tr></tbody></table></div></span>
+    </div>
+    <div print="true" cmdId="cf34e6b3-886a-4848-af0e-aa7e4fdae87e" e:then="" class="bd-callout bd-callout-success"><pre lineNumbers="true" class="htmlmixed darcula mt-2">&lt;e:db-verify dir="/data/db/" datasets="adam-wrong.xml, bob-expected.json, carl/person.csv" orderBy="person_fields.value, person.birthday" /&gt;</pre>
+        <span dir="/data/db/" datasets="adam-wrong.xml, bob-expected.json, carl/person.csv" cmdId="9535f590-ebc3-447b-bd73-80cd8cc9a6e8" e:db-verify=""> <div class="table-responsive mb-1 p-1"><table class="table table-sm"><caption style="width:max-content"><i class="fa fa-database ml-1"> PERSON</i></caption><thead class="thead-default"><tr><th class="">ID</th><th class="">NAME</th><th class="">AGE</th><th class="">BIRTHDAY</th></tr></thead><tbody><tr><td class=" rest-failure"><del class="expected">1<fail style="display: none;" /></del>
+<ins class="actual">10</ins></td><td class=" rest-failure"><del class="expected">Adam<fail style="display: none;" /></del>
+<ins class="actual">Bob</ins></td><td class=" rest-failure"><del class="expected">11<fail style="display: none;" /></del>
+<ins class="actual">20</ins></td><td class=" rest-failure"><del class="expected">2021-01-21 00:00:00.000<fail style="display: none;" /></del>
+<ins class="actual">2000-10-10 00:00:00.0</ins></td></tr><tr><td class=" rest-failure"><del class="expected">10<fail style="display: none;" /></del>
+<ins class="actual">2</ins></td><td class=" table-success"> <span>!{string} (Carl)</span></td><td class=" table-success"> <span>!{number} (30)</span></td><td class=" rest-failure"><del class="expected">!{within 1d}{{date "2000-10-10"}}<fail style="display: none;" /></del>
+<ins class="actual">2003-03-03 00:00:00.0</ins></td></tr><tr><td class=" rest-failure"><del class="expected">2<fail style="display: none;" /></del>
+<ins class="actual">1</ins></td><td class=" rest-failure"><del class="expected">Carl<fail style="display: none;" /></del>
+<ins class="actual">Adam</ins></td><td class=" rest-failure"><del class="expected">30<fail style="display: none;" /></del>
+<ins class="actual">10</ins></td><td class=" rest-failure"><del class="expected">2003-03-03 00:00:00.000<fail style="display: none;" /></del>
+<ins class="actual">2021-01-21 00:00:00.0</ins></td></tr></tbody></table></div><div class="table-responsive mb-1 p-1"><table class="table table-sm"><caption style="width:max-content"><i class="fa fa-database ml-1"> PERSON_FIELDS</i></caption><thead class="thead-default"><tr><th class="">ID</th><th class="">NAME</th><th class="">VALUE</th><th class="">PERSON_ID</th></tr></thead><tbody><tr><td class=" table-success"> <span>11</span></td><td class=" table-success"> <span>a1</span></td><td class=" table-success"> <span>1</span></td><td class=" table-success"> <span>1</span></td></tr><tr><td class=" table-success"> <span>21</span></td><td class=" table-success"> <span>b1</span></td><td class=" table-success"> <span>1</span></td><td class=" table-success"> <span>10</span></td></tr><tr><td class=" table-success"> <span>12</span></td><td class=" table-success"> <span>a2</span></td><td class=" table-success"> <span>2</span></td><td class=" table-success"> <span>1</span></td></tr><tr><td class=" table-success"> <span>22</span></td><td class=" table-success"> <span>b2</span></td><td class=" table-success"> <span>2</span></td><td class=" table-success"> <span>10</span></td></tr><tr><td class=" table-success"> <span>31</span></td><td class=" table-success"> <span>c1</span></td><td class=" table-success"> <span>value with comma &gt;&gt; , &lt;&lt; and quotes "_'</span></td><td class=" table-success"> <span>2</span></td></tr></tbody></table></div></span>
+    </div>
+</div><div class="card-footer text-muted" data-toggle="collapse" data-target="#2181950" aria-expanded="true" aria-controls="2181950"><small><span class="badge badge-pill badge-success">52</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning">20</span><span class="badge badge-pill badge-danger"></span><span class="badge badge-pill badge-warning">ExpectedToFail</span></small></div></div>
+<div class="footer">Results generated by <a href="http://www.concordion.org" style="font-weight: bold; text-decoration: none; color: #89C;">Concordion</a><div class="testTime">in 2411 ms on 21-Jan-2021 at 10:21:11 MSK</div></div></body>
+<button id="btnToTop" onclick="topFunction()" type="button" class="btn btn-light btn-sm text-muted ml-1"><i class="fa fa-arrow-up"></i></button></html>
