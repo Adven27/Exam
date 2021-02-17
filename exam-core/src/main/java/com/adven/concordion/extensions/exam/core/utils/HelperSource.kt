@@ -8,6 +8,11 @@ import com.adven.concordion.extensions.exam.core.resolve
 import com.adven.concordion.extensions.exam.core.resolveToObj
 import com.adven.concordion.extensions.exam.core.toDate
 import com.adven.concordion.extensions.exam.core.toString
+import com.github.freva.asciitable.AsciiTable
+import com.github.freva.asciitable.AsciiTable.FANCY_ASCII
+import com.github.freva.asciitable.Column
+import com.github.freva.asciitable.HorizontalAlign.CENTER
+import com.github.freva.asciitable.HorizontalAlign.LEFT
 import com.github.jknack.handlebars.Context
 import com.github.jknack.handlebars.EscapingStrategy.NOOP
 import com.github.jknack.handlebars.Handlebars
@@ -63,7 +68,16 @@ ExamExtension().withHandlebar { hb ->
     }
 
     private fun helpersDesc() =
-        HANDLEBARS.helpers().sortedBy { it.key }.joinToString("\n") { "${it.key.padStart(25)} : ${it.value}" }
+        HANDLEBARS.helpers().groupBy { it.value.javaClass.`package` }.map { e ->
+            e.key to AsciiTable.getTable(
+                FANCY_ASCII,
+                e.value.filterNot { it.key == "helperMissing" }.sortedBy { it.key },
+                listOf(
+                    Column().header("Name").headerAlign(CENTER).with { it.key },
+                    Column().header("Desc").headerAlign(CENTER).dataAlign(LEFT).with { it.value.toString() },
+                )
+            )
+        }.joinToString("\n\n") { "${it.first}:\n${it.second}" }
 }
 
 fun Handlebars.resolve(eval: Any?, placeholder: String): String =

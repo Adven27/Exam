@@ -7,7 +7,6 @@ import com.adven.concordion.extensions.exam.core.html.attr
 import com.adven.concordion.extensions.exam.core.html.div
 import com.adven.concordion.extensions.exam.core.html.html
 import com.adven.concordion.extensions.exam.core.html.span
-import com.adven.concordion.extensions.exam.core.html.table
 import com.adven.concordion.extensions.exam.core.html.takeAttr
 import com.adven.concordion.extensions.exam.db.DbPlugin
 import com.adven.concordion.extensions.exam.db.DbResultRenderer
@@ -171,7 +170,7 @@ class DataSetVerifyCommand(name: String, tag: String, val dbTester: DbTester, va
 
     private fun Html.markAsSuccess(resultRecorder: ResultRecorder) = success(resultRecorder, this)
     private fun Difference.markAsFailure(resultRecorder: ResultRecorder, td: Html): Html {
-        return failure(resultRecorder, td, this.actualValue, valuePrinter.print(this.expectedValue))
+        return failure(resultRecorder, td, valuePrinter.print(this.actualValue), valuePrinter.print(this.expectedValue))
     }
 
     private fun failure(resultRecorder: ResultRecorder, html: Html, actual: Any?, expected: String): Html {

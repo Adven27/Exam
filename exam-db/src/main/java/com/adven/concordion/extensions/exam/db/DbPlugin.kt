@@ -81,16 +81,20 @@ class DbPlugin @JvmOverloads constructor(
         DBCleanCommand("db-clean", "span", dbTester)
     )
 
+    /***
+     * Defines how to print and render values in '<e:db-*' commands
+     * @see JsonValuePrinter
+     */
     interface ValuePrinter {
         open class Simple @JvmOverloads constructor(dateFormat: String = "yyyy-MM-dd HH:mm:ss.SSS") :
             AbstractDefault(dateFormat) {
-            override fun orElse(value: Any?): String = value.toString()
+            override fun orElse(value: Any): String = value.toString()
         }
 
         abstract class AbstractDefault @JvmOverloads constructor(private val dateFormat: String = "yyyy-MM-dd HH:mm:ss.SSS") :
             ValuePrinter {
             override fun print(value: Any?): String = when (value) {
-                value == null -> "(null)"
+                null -> "(null)"
                 is Array<*> -> value.contentToString()
                 is Date -> printDate(value)
                 else -> orElse(value)
@@ -101,11 +105,18 @@ class DbPlugin @JvmOverloads constructor(
 
             override fun wrap(value: Any?): Element = span(print(value)).el
 
-            abstract fun orElse(value: Any?): String
+            abstract fun orElse(value: Any): String
         }
 
         fun print(value: Any?): String
         fun wrap(value: Any?): Element
+    }
+
+    open class JsonValuePrinter : ValuePrinter.Simple() {
+        override fun wrap(value: Any?): Element =
+            if (isJson(value)) Element("pre").addStyleClass("json").appendText(print(value)) else super.wrap(value)
+
+        protected fun isJson(value: Any?): Boolean = value is String && value.startsWith("{") && value.endsWith("}")
     }
 }
 
@@ -117,6 +128,7 @@ data class DbUnitConfig @JvmOverloads constructor(
     val diffFailureHandler: DiffCollectingFailureHandler = DiffCollectingFailureHandler(),
     val isColumnSensing: Boolean = false
 ) {
+    @Suppress("unused")
     class Builder {
         var databaseConfigProperties: Map<String, Any?> = mapOf(DatabaseConfig.FEATURE_ALLOW_EMPTY_FIELDS to true)
         var valueComparer: RegexAndWithinAwareValueComparer = RegexAndWithinAwareValueComparer()
@@ -126,7 +138,7 @@ data class DbUnitConfig @JvmOverloads constructor(
         var columnSensing: Boolean = false
 
         fun databaseConfigProperties(databaseConfigProperties: Map<String, Any?>) =
-            apply { this.databaseConfigProperties = databaseConfigProperties }
+            apply { this.databaseConfigProperties += databaseConfigProperties }
 
         fun valueComparer(valueComparer: RegexAndWithinAwareValueComparer) =
             apply { this.valueComparer = valueComparer }

@@ -205,7 +205,7 @@ class DBCheckCommand(
 
     private fun Html.markAsSuccess(resultRecorder: ResultRecorder) = success(resultRecorder, this)
     private fun Difference.markAsFailure(resultRecorder: ResultRecorder, td: Html): Html {
-        return failure(resultRecorder, td, this.actualValue, valuePrinter.print(this.expectedValue))
+        return failure(resultRecorder, td, valuePrinter.print(this.actualValue), valuePrinter.print(this.expectedValue))
     }
 
     companion object {
@@ -268,25 +268,26 @@ open class RegexAndWithinAwareValueComparer : IsActualEqualToExpectedValueCompar
         return check(actual, split[0])
     }
 
-    private fun resolve(expected: String): Timestamp {
-        val expectedDateExpression = expected.substring(expected.indexOf("}") + 1).trim()
-        return Timestamp(
-            (if (expectedDateExpression.isBlank()) Date() else (evaluator.resolveToObj(expectedDateExpression) as Date))
-                .time
-        )
+    private fun resolve(expected: String): Timestamp = expected.expression().let {
+        Timestamp((if (it.isBlank()) Date() else (evaluator.resolveToObj(it) as Date)).time)
     }
 
     private fun regexMatches(expectedValue: Any?, actualValue: Any?): Boolean {
         if (actualValue == null) return false
-        val expected = expectedValue.toString()
-        return regexMatches(expected.substring(expected.indexOf("}") + 1).trim(), actualValue)
+        return regexMatches(expectedValue.toString().expression(), actualValue)
     }
+
+    private fun String.expression() = substring(indexOf("}") + 1).trim()
 
     private fun regexMatches(pattern: String, actualValue: Any?): Boolean =
         if (actualValue == null) false else Pattern.compile(pattern).matcher(actualValue.toString()).matches()
 }
 
-class IgnoreMillisComparer : RegexAndWithinAwareValueComparer() {
+/***
+ * Base class for default comparer overriding
+ * @see IgnoreMillisComparer
+ */
+abstract class AbstractFallbackComparer : RegexAndWithinAwareValueComparer() {
     override fun isExpected(
         expectedTable: ITable?,
         actualTable: ITable?,
@@ -296,9 +297,13 @@ class IgnoreMillisComparer : RegexAndWithinAwareValueComparer() {
         expected: Any?,
         actual: Any?
     ): Boolean = if (super.isExpected(expectedTable, actualTable, rowNum, columnName, dataType, expected, actual)) true
-    else compareIgnoringMillis(expected, actual)
+    else compare(expected, actual)
 
-    private fun compareIgnoringMillis(expected: Any?, actual: Any?): Boolean {
+    abstract fun compare(expected: Any?, actual: Any?): Boolean
+}
+
+class IgnoreMillisComparer : AbstractFallbackComparer() {
+    override fun compare(expected: Any?, actual: Any?): Boolean {
         val expectedDt = (expected as Date).toLocalDateTime().withNano(0)
         val actualDt = (actual as Timestamp).toLocalDateTime()
         return expectedDt.isEqual(actualDt) || expectedDt.plusSeconds(1).isEqual(actualDt)

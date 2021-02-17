@@ -103,6 +103,10 @@ class MqCheckCommand(
             tableContainer(cnt)
         }
 
+        if (expectedMessages.isEmpty()) {
+            if (cnt == null) tableContainer(tr()(td("<EMPTY>"))) else cnt(td("<EMPTY>"))
+        }
+
         expectedMessages.sortedTyped(contains).zip(actualMessages.sorted(contains)) { e, a -> VerifyPair(a, e) }
             .forEach {
                 val bodyContainer = container("", collapsable, it.expected.type)
@@ -260,11 +264,16 @@ class MqCheckCommand(
 }
 
 class MqSendCommand(name: String, tag: String, private val mqTesters: Map<String, MqTester>) : ExamCommand(name, tag) {
-    override fun execute(commandCall: CommandCall, evaluator: Evaluator, resultRecorder: ResultRecorder, fixture: Fixture) {
+    override fun execute(
+        commandCall: CommandCall,
+        evaluator: Evaluator,
+        resultRecorder: ResultRecorder,
+        fixture: Fixture
+    ) {
         super.execute(commandCall, evaluator, resultRecorder, fixture)
         val root = commandCall.html()
         val mqName = root.takeAwayAttr("name")
-        val formatAs = root.takeAwayAttr("formatAs", "json")
+        val formatAs = root.takeAwayAttr("formatAs", root.attr("from")?.substringAfterLast(".", "json") ?: "json")
         val collapsable = root.takeAwayAttr("collapsable", "false").toBoolean()
         val headers = headers(root, evaluator)
         root.takeAwayAttr("vars").vars(evaluator, true, root.takeAwayAttr("varsSeparator", ","))
@@ -286,7 +295,12 @@ class MqSendCommand(name: String, tag: String, private val mqTesters: Map<String
 }
 
 class MqPurgeCommand(name: String, tag: String, private val mqTesters: Map<String, MqTester>) : ExamCommand(name, tag) {
-    override fun execute(commandCall: CommandCall, evaluator: Evaluator, resultRecorder: ResultRecorder, fixture: Fixture) {
+    override fun execute(
+        commandCall: CommandCall,
+        evaluator: Evaluator,
+        resultRecorder: ResultRecorder,
+        fixture: Fixture
+    ) {
         super.execute(commandCall, evaluator, resultRecorder, fixture)
         val root = commandCall.html()
         val mqName = root.takeAwayAttr("name")
