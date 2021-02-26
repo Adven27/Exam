@@ -41,6 +41,7 @@ abstract class AbstractSpecs {
 
     companion object {
         const val PROP_SPECS_SUT_START = "SPECS_SUT_START"
+        @JvmField
         val SPECS_SUT_START: Boolean = System.getProperty(PROP_SPECS_SUT_START, "true").toBoolean()
         private var EXAM: ExamExtension? = null
     }
