@@ -8,7 +8,7 @@ import net.javacrumbs.jsonunit.core.Configuration
 import org.xmlunit.diff.NodeMatcher
 
 class MqPlugin @JvmOverloads constructor(
-    private val mqTesters: Map<String, MqTester>,
+    private val testers: Map<String, MqTester>,
     private var jsonUnitCfg: Configuration = ExamExtension.DEFAULT_JSON_UNIT_CFG,
     private val nodeMatcher: NodeMatcher = ExamExtension.DEFAULT_NODE_MATCHER,
     private val addContentVerifiers: Map<String, ContentVerifier> = mapOf()
@@ -19,10 +19,18 @@ class MqPlugin @JvmOverloads constructor(
             "div",
             jsonUnitCfg,
             nodeMatcher,
-            mqTesters,
+            testers,
             mapOf("json" to ContentVerifier.Json(), "xml" to ContentVerifier.Xml()) + addContentVerifiers
         ),
-        MqSendCommand("mq-send", "div", mqTesters),
-        MqPurgeCommand("mq-purge", "div", mqTesters)
+        MqSendCommand("mq-send", "div", testers),
+        MqPurgeCommand("mq-purge", "div", testers)
     )
+
+    override fun setUp() {
+        testers.forEach { (_, t) -> t.start() }
+    }
+
+    override fun tearDown() {
+        testers.forEach { (_, t) -> t.stop() }
+    }
 }

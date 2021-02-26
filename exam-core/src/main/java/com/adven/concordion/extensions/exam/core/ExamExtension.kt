@@ -156,6 +156,14 @@ class ExamExtension : ConcordionExtension {
         ex.withExampleListener(ExamExampleListener(skipDecider))
     }
 
+    fun setUp() {
+        plugins.forEach { it.setUp() }
+    }
+
+    fun tearDown() {
+        plugins.forEach { it.tearDown() }
+    }
+
     companion object {
         val PARSED_COMMANDS: MutableMap<String, String> = HashMap()
         const val NS = "http://exam.extension.io"

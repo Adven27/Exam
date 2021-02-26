@@ -27,7 +27,7 @@ import kotlin.collections.set
 class DbPlugin @JvmOverloads constructor(
     private val dbTester: DbTester,
     private val valuePrinter: ValuePrinter = ValuePrinter.Simple()
-) : ExamPlugin {
+) : ExamPlugin.NoSetUp() {
 
     /***
      * @param dbUnitConfig properties for org.dbunit.database.DatabaseConfig

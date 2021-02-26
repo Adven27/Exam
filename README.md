@@ -35,7 +35,7 @@ Maven
 <dependency>
     <groupId>org.adven.concordion.ext</groupId>
     <artifactId>exam-ms</artifactId>
-    <version>4.2.7</version>
+    <version>4.3.0</version>
 </dependency>
 ```
 
@@ -45,7 +45,7 @@ repositories {
     jcenter()
 }
 
-testCompile "org.adven.concordion.ext:exam-ms:4.2.7"
+testCompile "org.adven.concordion.ext:exam-ms:4.3.0"
 ```
 ### 2) Use
 
@@ -53,14 +53,29 @@ For detailed info, [see original tutorial](http://concordion.org/tutorial/java/m
 
 `specs.Specs.java`
 ```java
-@RunWith(ConcordionRunner.class)
-@ConcordionOptions(declareNamespaces = {"c", "http://www.concordion.org/2007/concordion", "e", ExamExtension.NS})
-public class Specs {
-    @Extension
-    private final ExamExtension exam = new ExamExtension().withPlugins(
-        new WsPlugin("/app", 8888),
-        new DbPlugin("org.postgresql.Driver", "jdbc:postgresql://localhost:5432/postgres", "postgres", "postgres")
-    );
+public class Specs extends AbstractSpecs {
+    private static ConfigurableApplicationContext SUT;
+
+    @Override
+    protected ExamExtension init() {
+        return new ExamExtension().withPlugins(
+            new WsPlugin(8080),
+            new DbPlugin("org.postgresql.Driver", "jdbc:postgresql://localhost:5432/postgres", "postgres", "postgres"),
+            new MqPlugin(Map.of("kafka", new KafkaTester("PLAINTEXT://localhost:9092", "topic")))
+        );
+    }
+
+    @Override
+    protected void startSut() {
+        SpringApplication app = new SpringApplication(Main.class);
+        app.setAdditionalProfiles("qa");
+        SUT = app.run();
+    }
+
+    @Override
+    protected void stopSut() {
+        SUT.stop();
+    }
 }
 ```
 
@@ -82,6 +97,7 @@ public class UserCreation extends Specs {
 <html xmlns:e="http://exam.extension.io">
 <body>
     <h1>User creation</h1>
+    <e:summary/>
     <e:example name="My dummy user creation example">
         <e:given>
           Given users:

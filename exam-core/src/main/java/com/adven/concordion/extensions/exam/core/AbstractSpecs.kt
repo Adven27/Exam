@@ -1,0 +1,47 @@
+package com.adven.concordion.extensions.exam.core
+
+import org.concordion.api.AfterSuite
+import org.concordion.api.BeforeSuite
+import org.concordion.api.extension.Extension
+import org.concordion.api.option.ConcordionOptions
+import org.concordion.integration.junit4.ConcordionRunner
+import org.junit.runner.RunWith
+
+@Suppress("unused")
+@RunWith(ConcordionRunner::class)
+@ConcordionOptions(declareNamespaces = ["c", "http://www.concordion.org/2007/concordion", "e", ExamExtension.NS])
+abstract class AbstractSpecs {
+
+    @Extension
+    private val exam = if (EXAM == null) this.init().also { EXAM = it } else EXAM
+
+    @BeforeSuite
+    fun setUp() {
+        EXAM!!.setUp()
+        beforeSutStart()
+        if (SPECS_SUT_START) {
+            startSut()
+        }
+    }
+
+    @AfterSuite
+    fun tearDown() {
+        if (SPECS_SUT_START) {
+            stopSut()
+        }
+        afterSutStop()
+        EXAM!!.tearDown()
+    }
+
+    protected abstract fun init(): ExamExtension
+    protected fun beforeSutStart() = Unit
+    protected abstract fun startSut()
+    protected abstract fun stopSut()
+    protected fun afterSutStop() = Unit
+
+    companion object {
+        const val PROP_SPECS_SUT_START = "SPECS_SUT_START"
+        val SPECS_SUT_START: Boolean = System.getProperty(PROP_SPECS_SUT_START, "true").toBoolean()
+        private var EXAM: ExamExtension? = null
+    }
+}

@@ -39,7 +39,7 @@ class WsPlugin @JvmOverloads constructor(
     additionalContentTypeVerifiers: Map<ContentType, ContentVerifier> = emptyMap(),
     additionalContentTypePrinters: Map<ContentType, ContentPrinter> = emptyMap(),
     private val contentTypeResolver: ContentTypeResolver = MultiPartAware()
-) : ExamPlugin {
+) : ExamPlugin.NoSetUp() {
 
     constructor(withPort: Int) : this(port = withPort)
     constructor(withBasePath: String, withPort: Int) : this(basePath = withBasePath, port = withPort)
