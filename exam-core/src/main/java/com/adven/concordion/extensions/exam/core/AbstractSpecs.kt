@@ -16,7 +16,7 @@ abstract class AbstractSpecs {
     private val exam = if (EXAM == null) this.init().also { EXAM = it } else EXAM
 
     @BeforeSuite
-    fun setUp() {
+    fun specsSetUp() {
         EXAM!!.setUp()
         beforeSutStart()
         if (SPECS_SUT_START) {
@@ -25,7 +25,7 @@ abstract class AbstractSpecs {
     }
 
     @AfterSuite
-    fun tearDown() {
+    fun specsTearDown() {
         if (SPECS_SUT_START) {
             stopSut()
         }

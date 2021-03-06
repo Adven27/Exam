@@ -38,25 +38,21 @@ import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
 import java.time.format.ResolverStyle.SMART
-import java.util.ArrayList
-import java.util.Collections.addAll
 import java.util.Date
 import java.util.Random
 
-class ExamExtension : ConcordionExtension {
+class ExamExtension constructor(private vararg var plugins: ExamPlugin) : ConcordionExtension {
     private var focusOnError: Boolean = true
     private var jsonUnitCfg: Configuration = DEFAULT_JSON_UNIT_CFG
     private var nodeMatcher: NodeMatcher = DEFAULT_NODE_MATCHER
     private var skipDecider: SkipDecider = SkipDecider.NoSkip()
-    private val plugins = ArrayList<ExamPlugin>()
 
     /**
      * Attach xmlunit/jsonunit matchers.
      *
      * @param matcherName name to reference in placeholder.
      * @param matcher     implementation.
-     * <br></br>usage:<br></br>
-     * !{matcherName param1 param2}
+     * usage: {{matcherName param1 param2}}
      */
     @Suppress("unused")
     fun addPlaceholderMatcher(matcherName: String, matcher: Matcher<*>): ExamExtension {
@@ -76,15 +72,10 @@ class ExamExtension : ConcordionExtension {
         return this
     }
 
-    @Suppress("unused")
-    fun addPlugin(plugin: ExamPlugin): ExamExtension {
-        plugins.add(plugin)
-        return this
-    }
-
+    @Deprecated(message = "Use the constructor")
     @Suppress("unused")
     fun withPlugins(vararg plugins: ExamPlugin): ExamExtension {
-        addAll(this.plugins, *plugins)
+        this.plugins = plugins
         return this
     }
 
@@ -167,7 +158,11 @@ class ExamExtension : ConcordionExtension {
     companion object {
         val PARSED_COMMANDS: MutableMap<String, String> = HashMap()
         const val NS = "http://exam.extension.io"
+
+        @JvmField
         val DEFAULT_NODE_MATCHER = DefaultNodeMatcher(byNameAndText, byName)
+
+        @JvmField
         val DEFAULT_JSON_UNIT_CFG: Configuration = `when`(IGNORING_ARRAY_ORDER)
             .withMatcher("formattedAs", DateFormatMatcher())
             .withMatcher("formattedAndWithin", DateWithin.param())

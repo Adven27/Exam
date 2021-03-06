@@ -1,5 +1,6 @@
 package specs
 
+import com.adven.concordion.extensions.exam.core.AbstractSpecs
 import com.adven.concordion.extensions.exam.core.ExamExtension
 import com.adven.concordion.extensions.exam.db.DbPlugin
 import com.adven.concordion.extensions.exam.db.DbTester
@@ -23,26 +24,53 @@ import com.github.tomakehurst.wiremock.client.WireMock.put
 import com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig
 import com.github.tomakehurst.wiremock.extension.responsetemplating.ResponseTemplateTransformer
-import org.concordion.api.AfterSuite
-import org.concordion.api.BeforeSuite
-import org.concordion.api.extension.Extension
 import org.concordion.api.extension.Extensions
-import org.concordion.api.option.ConcordionOptions
 import org.concordion.ext.runtotals.RunTotalsExtension
 import org.concordion.ext.timing.TimerExtension
-import org.concordion.integration.junit4.ConcordionRunner
-import org.concordion.internal.ConcordionBuilder.NAMESPACE_CONCORDION_2007
-import org.junit.runner.RunWith
 import java.util.ArrayDeque
 
-@RunWith(ConcordionRunner::class)
 @Extensions(value = [TimerExtension::class, RunTotalsExtension::class])
-@ConcordionOptions(declareNamespaces = ["c", NAMESPACE_CONCORDION_2007, "e", ExamExtension.NS])
-open class Specs {
+open class Specs : AbstractSpecs() {
 
-    @Suppress("unused")
-    @Extension
-    private val exam = EXAM
+    override fun init() = ExamExtension(
+        WsPlugin(PORT),
+        DbPlugin(dbTester),
+        FlPlugin(),
+        MqPlugin(
+            mapOf(
+                "myQueue" to object : MqTester.NOOP() {
+                    private val queue = ArrayDeque<MqTester.Message>()
+
+                    override fun send(message: String, headers: Map<String, String>) {
+                        queue += MqTester.Message(message, headers)
+                    }
+
+                    override fun receive() = queue.map { queue.poll() }
+
+                    override fun purge() = queue.clear()
+                }
+            )
+        ),
+        UiPlugin(screenshotsOnFail = true, screenshotsOnSuccess = false)
+    ).withHandlebar { hb ->
+        hb.registerHelper(
+            "hi",
+            Helper { context: Any?, options ->
+                // {{hi '1' 'p1 'p2' o1='a' o2='b'}} => Hello context = 1; params = [p1, p2]; options = {o1=a, o2=b}!
+                // {{hi variable1 variable2 o1=variable3}} => Hello context = 1; params = [2]; options = {o1=3}!
+                "Hello context = $context; params = ${options.params.map { it.toString() }}; options = ${options.hash}!"
+            }
+        )
+    }.withFocusOnFailed(false)
+
+    override fun startSut() {
+        server.apply {
+            configure()
+            start()
+        }
+    }
+
+    override fun stopSut() = server.stop()
 
     companion object {
         @JvmStatic
@@ -52,54 +80,6 @@ open class Specs {
         protected var server: WireMockServer = WireMockServer(
             wireMockConfig().extensions(ResponseTemplateTransformer(true)).port(PORT)
         )
-
-        private val EXAM = ExamExtension().withPlugins(
-            WsPlugin(PORT),
-            DbPlugin(dbTester),
-            FlPlugin(),
-            MqPlugin(
-                mapOf(
-                    "myQueue" to object : MqTester.NOOP() {
-                        private val queue = ArrayDeque<MqTester.Message>()
-
-                        override fun send(message: String, headers: Map<String, String>) {
-                            queue.add(MqTester.Message(message, headers))
-                        }
-
-                        override fun receive() = queue.map { queue.poll() }
-
-                        override fun purge() = queue.clear()
-                    }
-                )
-            ),
-            UiPlugin(screenshotsOnFail = true, screenshotsOnSuccess = false)
-        ).withHandlebar { hb ->
-            hb.registerHelper(
-                "hi",
-                Helper { context: Any?, options ->
-                    // {{hi '1' 'p1 'p2' o1='a' o2='b'}} => Hello context = 1; params = [p1, p2]; options = {o1=a, o2=b}!
-                    // {{hi variable1 variable2 o1=variable3}} => Hello context = 1; params = [2]; options = {o1=3}!
-                    "Hello context = $context; params = ${options.params.map { it.toString() }}; options = ${options.hash}!"
-                }
-            )
-        }.withFocusOnFailed(false)
-
-        @JvmStatic
-        @BeforeSuite
-        @Suppress("unused")
-        fun startServer() {
-            server.apply {
-                configure()
-                start()
-            }
-        }
-
-        @JvmStatic
-        @AfterSuite
-        @Suppress("unused")
-        fun stopServer() {
-            server.stop()
-        }
 
         private fun dbTester() = DbTester(
             "org.h2.Driver", "jdbc:h2:mem:test;DB_CLOSE_DELAY=-1;INIT=RUNSCRIPT FROM 'classpath:sql/populate.sql'",

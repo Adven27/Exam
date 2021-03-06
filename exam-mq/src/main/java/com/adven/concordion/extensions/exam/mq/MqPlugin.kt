@@ -26,11 +26,7 @@ class MqPlugin @JvmOverloads constructor(
         MqPurgeCommand("mq-purge", "div", testers)
     )
 
-    override fun setUp() {
-        testers.forEach { (_, t) -> t.start() }
-    }
+    override fun setUp() = testers.forEach { (_, t) -> t.start() }
 
-    override fun tearDown() {
-        testers.forEach { (_, t) -> t.stop() }
-    }
+    override fun tearDown() = testers.forEach { (_, t) -> t.stop() }
 }

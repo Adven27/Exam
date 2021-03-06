@@ -126,27 +126,20 @@ sealed class RequestCommand(
         executor.type(type).url(url).headers(headers).cookies(cookies)
     }
 
-    private fun startTable(html: Html, hasRequestBody: Boolean): Html {
-        val table = table()(
-            thead()(
-                if (hasRequestBody) th("Request", "style" to "text-align:center;", "class" to "bg-light") else null,
-                th(
-                    "Expected response",
-                    "colspan" to (if (hasRequestBody) "1" else "2"),
-                    "style" to "text-align:center;",
-                    "class" to "bg-light"
-                )
+    private fun startTable(html: Html, hasRequestBody: Boolean): Html = table()(
+        thead()(
+            if (hasRequestBody) th("Request", "style" to "text-align:center;", "class" to "bg-light") else null,
+            th(
+                "Expected response",
+                "colspan" to (if (hasRequestBody) "1" else "2"),
+                "style" to "text-align:center;",
+                "class" to "bg-light"
             )
         )
-        html.dropAllTo(table)
-        return table
-    }
+    ).apply { html.dropAllTo(this) }
 
-    private fun cookies(eval: Evaluator?, html: Html): String? {
-        val cookies = html.takeAwayAttr(COOKIES, eval)
-        eval!!.setVariable("#cookies", cookies)
-        return cookies
-    }
+    private fun cookies(eval: Evaluator?, html: Html): String? =
+        html.takeAwayAttr(COOKIES, eval).apply { eval!!.setVariable("#cookies", this) }
 
     @Suppress("SpreadOperator")
     private fun addRequestDescTo(url: String, type: String, cookies: String?, headers: Map<String, String>) =
@@ -157,11 +150,8 @@ sealed class RequestCommand(
             *headers.map { header(it) }.toTypedArray()
         )
 
-    private fun attr(html: Html, attrName: String, defaultValue: String, evaluator: Evaluator?): String {
-        val attr = html.takeAwayAttr(attrName, defaultValue, evaluator!!)
-        evaluator.setVariable("#$attrName", attr)
-        return attr
-    }
+    private fun attr(html: Html, attrName: String, defaultValue: String, eval: Evaluator?): String =
+        html.takeAwayAttr(attrName, defaultValue, eval!!).apply { eval.setVariable("#$attrName", this) }
 }
 
 private fun headers(eval: Evaluator, html: Html): Map<String, String> =
@@ -483,10 +473,10 @@ class CaseCommand(
 }
 
 private fun endpoint(url: String, method: Method): Html = "endpoint-${Random().nextInt()}".let { id ->
-    String.format(ENDPOINT_TMPL, bgByMethod(method), method.name, id).toHtml().apply { findBy(id)?.text(url) }
+    String.format(ENDPOINT_TMPL, method.background(), method.name, id).toHtml().apply { findBy(id)?.text(url) }
 }
 
-private fun bgByMethod(method: Method) = when (method) {
+private fun Method.background() = when (this) {
     Method.GET -> "bg-primary"
     Method.POST -> "bg-success"
     Method.PUT -> "bg-warning"

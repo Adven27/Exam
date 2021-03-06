@@ -33,11 +33,11 @@ class WsPlugin @JvmOverloads constructor(
     uri: String = "http://localhost",
     basePath: String = "",
     port: Int = 8080,
-    private val nodeMatcher: NodeMatcher = ExamExtension.DEFAULT_NODE_MATCHER,
+    additionalContentVerifiers: Map<ContentType, ContentVerifier> = emptyMap(),
+    additionalContentResolvers: Map<ContentType, ContentResolver> = emptyMap(),
+    additionalContentPrinters: Map<ContentType, ContentPrinter> = emptyMap(),
     private val jsonUnitCfg: Configuration = ExamExtension.DEFAULT_JSON_UNIT_CFG,
-    additionalContentTypeResolvers: Map<ContentType, ContentResolver> = emptyMap(),
-    additionalContentTypeVerifiers: Map<ContentType, ContentVerifier> = emptyMap(),
-    additionalContentTypePrinters: Map<ContentType, ContentPrinter> = emptyMap(),
+    private val nodeMatcher: NodeMatcher = ExamExtension.DEFAULT_NODE_MATCHER,
     private val contentTypeResolver: ContentTypeResolver = MultiPartAware()
 ) : ExamPlugin.NoSetUp() {
 
@@ -57,26 +57,29 @@ class WsPlugin @JvmOverloads constructor(
         withPort: Int,
         withNodeMatcher: NodeMatcher,
         withJsonUnitCfg: Configuration
-    ) : this(
-        basePath = withBasePath, port = withPort, nodeMatcher = withNodeMatcher, jsonUnitCfg = withJsonUnitCfg
-    )
+    ) : this(basePath = withBasePath, port = withPort, nodeMatcher = withNodeMatcher, jsonUnitCfg = withJsonUnitCfg)
 
-    constructor(withNodeMatcher: NodeMatcher) : this(nodeMatcher = withNodeMatcher)
-    constructor(withJsonUnitCfg: Configuration) : this(jsonUnitCfg = withJsonUnitCfg)
-    constructor(withNodeMatcher: NodeMatcher, withJsonUnitCfg: Configuration) :
-        this(nodeMatcher = withNodeMatcher, jsonUnitCfg = withJsonUnitCfg)
+    constructor(withPort: Int, withNodeMatcher: NodeMatcher) : this(port = withPort, nodeMatcher = withNodeMatcher)
+    constructor(withPort: Int, withJsonUnitCfg: Configuration) : this(port = withPort, jsonUnitCfg = withJsonUnitCfg)
+    constructor(withPort: Int, withNodeMatcher: NodeMatcher, withJsonUnitCfg: Configuration) :
+        this(port = withPort, nodeMatcher = withNodeMatcher, jsonUnitCfg = withJsonUnitCfg)
 
-    private val contentTypeResolvers: MutableMap<ContentType, ContentResolver> = mutableMapOf(
+    constructor(
+        withPort: Int,
+        withAdditionalContentVerifiers: Map<ContentType, ContentVerifier>
+    ) : this(port = withPort, additionalContentVerifiers = withAdditionalContentVerifiers)
+
+    private val contentResolvers: MutableMap<ContentType, ContentResolver> = mutableMapOf(
         ContentType.JSON to JsonResolver(),
         ContentType.XML to XmlResolver(),
         ContentType.TEXT to JsonResolver()
     )
-    private val contentTypeVerifiers: MutableMap<ContentType, ContentVerifier> = mutableMapOf(
+    private val contentVerifiers: MutableMap<ContentType, ContentVerifier> = mutableMapOf(
         ContentType.JSON to JsonVerifier(jsonUnitCfg),
         ContentType.XML to XmlVerifier(nodeMatcher, jsonUnitCfg),
         ContentType.TEXT to ContentVerifier.AssertBased()
     )
-    private val contentTypePrinters: MutableMap<ContentType, ContentPrinter> = mutableMapOf(
+    private val contentPrinters: MutableMap<ContentType, ContentPrinter> = mutableMapOf(
         ContentType.JSON to JsonPrinter(),
         ContentType.XML to XmlPrinter(),
         ContentType.TEXT to ContentPrinter.AsIs()
@@ -86,9 +89,9 @@ class WsPlugin @JvmOverloads constructor(
         RestAssured.baseURI = uri
         RestAssured.basePath = basePath
         RestAssured.port = port
-        contentTypeResolvers += additionalContentTypeResolvers
-        contentTypeVerifiers += additionalContentTypeVerifiers
-        contentTypePrinters += additionalContentTypePrinters
+        contentResolvers += additionalContentResolvers
+        contentVerifiers += additionalContentVerifiers
+        contentPrinters += additionalContentPrinters
         HANDLEBARS.registerHelpers(WsHelperSource::class.java)
     }
 
@@ -98,15 +101,13 @@ class WsPlugin @JvmOverloads constructor(
         GetCommand("get", "div"),
         PutCommand("put", "div"),
         DeleteCommand("delete", "div"),
-        CaseCommand("tr", contentTypeResolvers, contentTypeVerifiers, contentTypePrinters, contentTypeResolver),
+        CaseCommand("tr", contentResolvers, contentVerifiers, contentPrinters, contentTypeResolver),
         CaseCheckCommand("check", "div")
     )
 
     interface ContentTypeResolver {
         open class Simple : ContentTypeResolver {
-            override fun resolve(contentType: String): ContentType {
-                return ContentType.fromContentType(contentType) ?: ContentType.TEXT
-            }
+            override fun resolve(contentType: String) = ContentType.fromContentType(contentType) ?: ContentType.TEXT
         }
 
         fun resolve(contentType: String): ContentType
