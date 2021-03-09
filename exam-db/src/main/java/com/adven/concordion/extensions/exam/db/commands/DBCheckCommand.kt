@@ -40,6 +40,7 @@ import java.sql.Timestamp
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 import java.util.Date
+import java.util.UUID
 import java.util.regex.Pattern
 
 @Suppress("TooManyFunctions")
@@ -209,7 +210,8 @@ class DBCheckCommand(
     }
 
     companion object {
-        fun Any?.isDbMatcher() = this is String && (isRegex() || isWithin() || isNumber() || isString() || isNotNull())
+        fun Any?.isDbMatcher() =
+            this is String && (isUuid() || isRegex() || isWithin() || isNumber() || isString() || isNotNull())
     }
 }
 
@@ -249,6 +251,7 @@ open class RegexAndWithinAwareValueComparer : IsActualEqualToExpectedValueCompar
         expected.isNotNull() -> setVarIfNeeded(actual, expected) { a, _ -> a != null }
         expected.isNumber() -> setVarIfNeeded(actual, expected) { a, _ -> regexMatches("^\\d+\$", a) }
         expected.isString() -> setVarIfNeeded(actual, expected) { a, _ -> regexMatches("^\\w+\$", a) }
+        expected.isUuid() -> setVarIfNeeded(actual, expected) { a, _ -> isUuid(a) }
         expected.isRegex() -> setVarIfNeeded(actual, expected) { a, e -> regexMatches(e, a) }
         expected.isWithin() -> setVarIfNeeded(actual, expected) { a, e ->
             WithinValueComparer(expected.toString().withinPeriod()).isExpected(
@@ -256,6 +259,13 @@ open class RegexAndWithinAwareValueComparer : IsActualEqualToExpectedValueCompar
             )
         }
         else -> super.isExpected(expectedTable, actualTable, rowNum, columnName, dataType, expected, actual)
+    }
+
+    private fun isUuid(a: Any?) = a is String && try {
+        UUID.fromString(a)
+        true
+    } catch (ignore: Exception) {
+        false
     }
 
     private fun setVarIfNeeded(
@@ -313,6 +323,7 @@ class IgnoreMillisComparer : AbstractFallbackComparer() {
 private fun Any?.isNotNull() = this != null && this.toString().startsWith("!{notNull}")
 private fun Any?.isNumber() = this != null && this.toString().startsWith("!{number}")
 private fun Any?.isString() = this != null && this.toString().startsWith("!{string}")
+private fun Any?.isUuid() = this != null && this.toString().startsWith("!{uuid}")
 private fun Any?.isRegex() = this != null && this.toString().startsWith("!{regex}")
 private fun Any?.isWithin() = this != null && this.toString().startsWith("!{within ")
 
