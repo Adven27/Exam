@@ -262,6 +262,12 @@ enum class HelperSource(
             }
             return evaluator.resolve(context.toString().readFile())
         }
+    },
+    prop("{{prop 'system.property' 'optional default'}}", emptyMap(), "optional default") {
+        override fun invoke(context: Any?, options: Options) = System.getProperty(context.toString(), options.param(0))
+    },
+    env("{{env 'env.property' 'optional default'}}", emptyMap(), "optional default") {
+        override fun invoke(context: Any?, options: Options) = System.getenv(context.toString()) ?: options.param(0)
     };
 
     protected fun placeholderType(context: Context) = (context.model() as Evaluator).getVariable("#$PLACEHOLDER_TYPE")
