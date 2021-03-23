@@ -40,6 +40,7 @@ import java.time.format.DateTimeParseException
 import java.time.format.ResolverStyle.SMART
 import java.util.Date
 import java.util.Random
+import java.util.function.Consumer
 
 class ExamExtension constructor(private vararg var plugins: ExamPlugin) : ConcordionExtension {
     private var focusOnError: Boolean = true
@@ -67,8 +68,8 @@ class ExamExtension constructor(private vararg var plugins: ExamPlugin) : Concor
     }
 
     @Suppress("unused")
-    fun withHandlebar(fn: (handlebars: Handlebars) -> Unit): ExamExtension {
-        fn(HANDLEBARS)
+    fun withHandlebar(fn: Consumer<Handlebars>): ExamExtension {
+        fn.accept(HANDLEBARS)
         return this
     }
 
