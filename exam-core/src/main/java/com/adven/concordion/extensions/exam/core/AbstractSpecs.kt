@@ -36,12 +36,12 @@ abstract class AbstractSpecs {
     }
 
     protected abstract fun init(): ExamExtension
-    protected fun beforeSetUp() = Unit
-    protected fun beforeSutStart() = Unit
+    protected open fun beforeSetUp() = Unit
+    protected open fun beforeSutStart() = Unit
     protected abstract fun startSut()
     protected abstract fun stopSut()
-    protected fun afterSutStop() = Unit
-    protected fun afterTearDown() = Unit
+    protected open fun afterSutStop() = Unit
+    protected open fun afterTearDown() = Unit
 
     companion object {
         const val PROP_SPECS_SUT_START = "SPECS_SUT_START"
