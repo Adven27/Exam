@@ -17,6 +17,7 @@ abstract class AbstractSpecs {
 
     @BeforeSuite
     fun specsSetUp() {
+        beforeSetUp()
         EXAM!!.setUp()
         beforeSutStart()
         if (SPECS_SUT_START) {
@@ -31,13 +32,16 @@ abstract class AbstractSpecs {
         }
         afterSutStop()
         EXAM!!.tearDown()
+        afterTearDown()
     }
 
     protected abstract fun init(): ExamExtension
+    protected fun beforeSetUp() = Unit
     protected fun beforeSutStart() = Unit
     protected abstract fun startSut()
     protected abstract fun stopSut()
     protected fun afterSutStop() = Unit
+    protected fun afterTearDown() = Unit
 
     companion object {
         const val PROP_SPECS_SUT_START = "SPECS_SUT_START"
