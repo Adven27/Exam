@@ -71,6 +71,7 @@ class MqCheckCommand(
 
     private lateinit var usedCfg: Configuration
 
+    @Suppress("LongMethod", "TooGenericExceptionCaught")
     override fun verify(cmd: CommandCall, eval: Evaluator, resultRecorder: ResultRecorder, fixture: Fixture) {
         val root = cmd.html()
         usedCfg = originalCfg
@@ -93,6 +94,8 @@ class MqCheckCommand(
             resultRecorder.record(FAILURE)
             root.below(sizeCheckError(mqName, expectedMessages, actualMessages, e.message))
             root.parent().remove(root)
+            return
+        } catch (e: Exception) {
             return
         }
         val tableContainer = table()(captionEnvelopOpen(mqName))
@@ -162,6 +165,7 @@ class MqCheckCommand(
                     sizeCheckError(mqName, expected, result, e.cause?.message)
                 )
                 root.below(pre(awaitConfig.timeoutMessage(e)).css("alert alert-danger small"))
+                throw e
             }
         } else {
             Assert.assertEquals(expected.size, result.size)
