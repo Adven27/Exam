@@ -46,6 +46,7 @@ interface MqTester {
     fun send(message: String, headers: Map<String, String>)
     fun receive(): List<Message>
     fun purge()
+    fun accumulateOnRetries(): Boolean = true
 
     open class NOOP : MqTester {
         override fun start() = Unit
@@ -146,6 +147,9 @@ class MqCheckCommand(
         if (awaitConfig.enabled()) {
             try {
                 awaitConfig.await("Await MQ $mqName").untilAsserted {
+                    if (!mqTesters.getOrFail(mqName).accumulateOnRetries()) {
+                        actual.clear()
+                    }
                     actual.addAll(mqTesters.getOrFail(mqName).receive())
                     Assert.assertEquals(expected.size, actual.size)
                 }
