@@ -35,7 +35,7 @@ Maven
 <dependency>
     <groupId>org.adven.concordion.ext</groupId>
     <artifactId>exam-ms</artifactId>
-    <version>4.3.3</version>
+    <version>4.4.0</version>
 </dependency>
 ```
 
@@ -45,7 +45,7 @@ repositories {
     jcenter()
 }
 
-testCompile "org.adven.concordion.ext:exam-ms:4.3.3"
+testCompile "org.adven.concordion.ext:exam-ms:4.4.0"
 ```
 ### 2) Use
 
@@ -58,7 +58,7 @@ public class Specs extends AbstractSpecs {
 
     @Override
     protected ExamExtension init() {
-        return new ExamExtension().withPlugins(
+        return new ExamExtension(
             new WsPlugin(8080),
             new DbPlugin("org.postgresql.Driver", "jdbc:postgresql://localhost:5432/postgres", "postgres", "postgres"),
             new MqPlugin(Map.of("kafka", new KafkaTester("PLAINTEXT://localhost:9092", "topic")))

@@ -4,6 +4,7 @@ import com.adven.concordion.extensions.exam.core.ExamPlugin
 import com.adven.concordion.extensions.exam.core.commands.ExamCommand
 import com.adven.concordion.extensions.exam.core.html.span
 import com.adven.concordion.extensions.exam.core.toDatePattern
+import com.adven.concordion.extensions.exam.db.builder.SeedStrategy
 import com.adven.concordion.extensions.exam.db.commands.DBCheckCommand
 import com.adven.concordion.extensions.exam.db.commands.DBCleanCommand
 import com.adven.concordion.extensions.exam.db.commands.DBSetCommand
@@ -26,7 +27,8 @@ import kotlin.collections.set
 
 class DbPlugin @JvmOverloads constructor(
     private val dbTester: DbTester,
-    private val valuePrinter: ValuePrinter = ValuePrinter.Simple()
+    private val valuePrinter: ValuePrinter = ValuePrinter.Simple(),
+    private val allowedSeedStrategies: List<SeedStrategy> = SeedStrategy.values().toList(),
 ) : ExamPlugin.NoSetUp() {
 
     /***
@@ -41,8 +43,16 @@ class DbPlugin @JvmOverloads constructor(
         password: String,
         schema: String? = null,
         valuePrinter: ValuePrinter = ValuePrinter.Simple(),
-        dbUnitConfig: DbUnitConfig = DbUnitConfig()
-    ) : this(DbTester(driver, url, user, password, schema, dbUnitConfig), valuePrinter)
+        dbUnitConfig: DbUnitConfig = DbUnitConfig(),
+        allowedSeedStrategies: List<SeedStrategy> = SeedStrategy.values().toList(),
+    ) : this(DbTester(driver, url, user, password, schema, dbUnitConfig), valuePrinter, allowedSeedStrategies)
+
+    @Suppress("unused")
+    constructor(dbTester: DbTester, allowedSeedStrategies: List<SeedStrategy>) : this(
+        dbTester,
+        ValuePrinter.Simple(),
+        allowedSeedStrategies
+    )
 
     init {
         dbTester.executors[DbTester.DEFAULT_DATASOURCE] = dbTester
@@ -65,19 +75,27 @@ class DbPlugin @JvmOverloads constructor(
     constructor(
         defaultTester: DbTester,
         others: Map<String, DbTester>,
-        valuePrinter: ValuePrinter = ValuePrinter.Simple()
-    ) : this(defaultTester, valuePrinter) {
+        valuePrinter: ValuePrinter = ValuePrinter.Simple(),
+        allowedSeedStrategies: List<SeedStrategy> = SeedStrategy.values().toList(),
+    ) : this(defaultTester, valuePrinter, allowedSeedStrategies) {
         for ((key, value) in others) {
             dbTester.executors[key] = value
         }
     }
 
+    @Suppress("unused")
+    constructor(
+        defaultTester: DbTester,
+        others: Map<String, DbTester>,
+        allowedSeedStrategies: List<SeedStrategy>
+    ) : this(defaultTester, others, ValuePrinter.Simple(), allowedSeedStrategies)
+
     override fun commands(): List<ExamCommand> = listOf(
-        DataSetExecuteCommand("db-execute", "span", dbTester, valuePrinter),
+        DataSetExecuteCommand("db-execute", "span", dbTester, valuePrinter, allowedSeedStrategies),
         DataSetVerifyCommand("db-verify", "span", dbTester, valuePrinter),
         DBShowCommand("db-show", "div", dbTester, valuePrinter),
         DBCheckCommand("db-check", "div", dbTester, valuePrinter),
-        DBSetCommand("db-set", "div", dbTester, valuePrinter),
+        DBSetCommand("db-set", "div", dbTester, valuePrinter, allowedSeedStrategies),
         DBCleanCommand("db-clean", "span", dbTester)
     )
 

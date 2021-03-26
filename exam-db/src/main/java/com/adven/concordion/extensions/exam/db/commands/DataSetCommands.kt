@@ -29,19 +29,27 @@ import org.concordion.internal.util.Announcer
 import org.dbunit.assertion.DbComparisonFailure
 import org.dbunit.assertion.Difference
 import org.dbunit.dataset.ITable
+import org.dbunit.operation.DatabaseOperation
 
 class DataSetExecuteCommand(
     name: String,
     tag: String,
     val dbTester: DbTester,
-    var valuePrinter: DbPlugin.ValuePrinter
+    var valuePrinter: DbPlugin.ValuePrinter,
+    private val allowedSeedStrategies: List<SeedStrategy>
 ) : ExamCommand(name, tag) {
-    override fun setUp(commandCall: CommandCall, evaluator: Evaluator, resultRecorder: ResultRecorder, fixture: Fixture) {
-        DataSetExecutor(commandCall.ds(dbTester)).insertDataSet(
-            DataSetConfig(commandCall.dataSets(), commandCall.operation(), debug = commandCall.debug()), evaluator
+    override fun setUp(
+        cmd: CommandCall,
+        evaluator: Evaluator,
+        resultRecorder: ResultRecorder,
+        fixture: Fixture
+    ) {
+        DataSetExecutor(cmd.ds(dbTester)).insertDataSet(
+            DataSetConfig(cmd.dataSets(), cmd.allowedSeedStrategy(allowedSeedStrategies), debug = cmd.debug()),
+            evaluator
         ).iterator().apply {
             while (next()) {
-                commandCall.html()(
+                cmd.html()(
                     table.let {
                         renderTable(
                             null,
@@ -64,7 +72,12 @@ class DataSetVerifyCommand(name: String, tag: String, val dbTester: DbTester, va
         listeners.addListener(DbResultRenderer())
     }
 
-    override fun verify(commandCall: CommandCall, evaluator: Evaluator, resultRecorder: ResultRecorder, fixture: Fixture) {
+    override fun verify(
+        commandCall: CommandCall,
+        evaluator: Evaluator,
+        resultRecorder: ResultRecorder,
+        fixture: Fixture
+    ) {
         val root = commandCall.html()
         dbTester.dbUnitConfig.valueComparer.setEvaluator(evaluator)
         dbTester.dbUnitConfig.columnValueComparers.forEach { it.value.setEvaluator(evaluator) }
@@ -186,11 +199,17 @@ class DataSetVerifyCommand(name: String, tag: String, val dbTester: DbTester, va
     }
 }
 
-private fun CommandCall?.dataSets() =
-    attr("datasets", "").split(",").map { attr("dir", "").trim() + it.trim() }
+private fun CommandCall?.dataSets() = attr("datasets", "").split(",").map { attr("dir", "").trim() + it.trim() }
 
-private fun CommandCall?.operation() =
-    SeedStrategy.valueOf(this.takeAttr("operation", CLEAN_INSERT.name).toUpperCase())
+fun CommandCall?.operation() = SeedStrategy.valueOf(this.takeAttr("operation", CLEAN_INSERT.name).toUpperCase())
+
+fun CommandCall?.allowedOperation(allowedSeedStrategies: List<SeedStrategy>): DatabaseOperation =
+    allowedSeedStrategy(allowedSeedStrategies).operation
+
+fun CommandCall?.allowedSeedStrategy(allowed: List<SeedStrategy>): SeedStrategy = operation().let { strategy ->
+    allowed.find { it == strategy }
+        ?: throw java.lang.IllegalArgumentException("Forbidden seed strategy $strategy. Allowed strategies: $allowed")
+}
 
 private fun CommandCall?.debug() = this.takeAttr("debug", "false").toBoolean()
 private fun CommandCall?.ds(dbTester: DbTester): DbTester = this.takeAttr("ds", DbTester.DEFAULT_DATASOURCE).let {

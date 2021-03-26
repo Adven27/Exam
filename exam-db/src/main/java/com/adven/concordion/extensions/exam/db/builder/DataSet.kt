@@ -335,8 +335,11 @@ enum class SeedStrategy(val operation: DatabaseOperation) {
     CLEAN_INSERT(DatabaseOperation.CLEAN_INSERT),
     TRUNCATE_INSERT(CompositeOperation(DatabaseOperation.TRUNCATE_TABLE, DatabaseOperation.INSERT)),
     INSERT(DatabaseOperation.INSERT),
+    UPDATE(DatabaseOperation.UPDATE),
     REFRESH(DatabaseOperation.REFRESH),
-    UPDATE(DatabaseOperation.UPDATE);
+    DELETE(DatabaseOperation.DELETE),
+    DELETE_ALL(DatabaseOperation.DELETE_ALL),
+    TRUNCATE_TABLE(DatabaseOperation.TRUNCATE_TABLE);
 }
 
 enum class CompareOperation { EQUALS, CONTAINS }
