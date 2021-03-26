@@ -144,24 +144,27 @@ class MqCheckCommand(
         resultRecorder: ResultRecorder,
         root: Html
     ) {
+        var result = actual
         if (awaitConfig.enabled()) {
             try {
                 awaitConfig.await("Await MQ $mqName").untilAsserted {
-                    if (!mqTesters.getOrFail(mqName).accumulateOnRetries()) {
-                        actual.clear()
+                    val list = mqTesters.getOrFail(mqName).receive().toMutableList()
+                    if (mqTesters.getOrFail(mqName).accumulateOnRetries()) {
+                        result.addAll(list)
+                    } else {
+                        result = list
                     }
-                    actual.addAll(mqTesters.getOrFail(mqName).receive())
-                    Assert.assertEquals(expected.size, actual.size)
+                    Assert.assertEquals(expected.size, result.size)
                 }
             } catch (e: Exception) {
                 resultRecorder.record(FAILURE)
                 root.removeChildren().below(
-                    sizeCheckError(mqName, expected, actual, e.cause?.message)
+                    sizeCheckError(mqName, expected, result, e.cause?.message)
                 )
                 root.below(pre(awaitConfig.timeoutMessage(e)).css("alert alert-danger small"))
             }
         } else {
-            Assert.assertEquals(expected.size, actual.size)
+            Assert.assertEquals(expected.size, result.size)
         }
     }
 
