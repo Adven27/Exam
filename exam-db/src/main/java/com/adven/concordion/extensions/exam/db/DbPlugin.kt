@@ -114,6 +114,7 @@ class DbPlugin @JvmOverloads constructor(
             override fun print(value: Any?): String = when (value) {
                 null -> "(null)"
                 is Array<*> -> value.contentToString()
+                is java.sql.Date -> printDate(Date(value.time))
                 is Date -> printDate(value)
                 else -> orElse(value)
             }
