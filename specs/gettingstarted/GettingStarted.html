@@ -1,0 +1,1156 @@
+<?xml version="1.0" encoding="UTF-8"?><html xmlns:e="http://exam.extension.io" xmlns:cc="http://www.concordion.org/2007/concordion"><head><style>* {
+  font-family: Arial;
+}
+body {
+  padding: 32px;  
+}
+pre {
+  padding: 6px 28px 6px 28px;
+  background-color: #E8EEF7;
+}
+pre, pre *, code, code *, kbd {
+  font-family: Courier New, Courier;
+  font-size: 10pt;
+}
+h1, h1 * {
+  font-size: 24pt;	
+}
+p, td, th, li, .breadcrumbs {
+  font-size: 10pt;
+}
+p, li {
+  line-height: 140%;
+  max-width: 720px;
+}
+table {
+  border-collapse: collapse;
+  empty-cells: show;
+  margin: 8px 0px 8px 0px;
+}
+th, td {
+  border: 1px solid black;
+  padding: 3px;
+}
+td {
+  background-color: white;
+  vertical-align: top;
+}
+th {
+  background-color: #C3D9FF;
+}
+li {
+  margin-top: 6px;
+  margin-bottom: 6px; 
+}
+
+.example, :not(th)[cc\:example] {
+  padding: 6px 16px 6px 16px;
+  border: 1px solid #C3D9FF;
+  margin: 6px 0px 28px 0px;
+  background-color: #F5F9FD;
+}
+.example h3, [cc\:example] h3 {
+  margin-top: 8px;
+  margin-bottom: 8px;
+  font-size: 12pt;
+}
+
+p.success {
+  padding: 2px;
+}
+.success, .success * {
+  background-color: #afa !important;
+}
+.success pre {
+  background-color: #bbffbb;
+}
+.failure, .failure * {
+  background-color: #ffb0b0;
+  padding: 1px;
+}
+.failure .expected {
+  text-decoration: line-through;
+  color: #bb5050;
+}
+.ignored, .ignored * {
+  background-color: #f0f0f0 !important;	
+}
+
+ins {
+  text-decoration: none;	
+}
+
+.exceptionMessage {
+  background-color: #fdd;
+  font-family: Courier New, Courier, Monospace;
+  font-size: 10pt;
+  display: block;
+  font-weight: normal;
+  padding: 4px;
+  text-decoration: none !important;
+}
+.stackTrace, .stackTrace * {
+  font-weight: normal;
+}
+.stackTrace {
+  display: none;
+  padding: 1px 4px 4px 4px;
+  background-color: #fdd;
+  border-top: 1px dotted black;
+}
+.stackTraceExceptionMessage {
+  display: block;
+  font-family: Courier New, Courier, Monospace;
+  font-size: 8pt;
+  white-space: wrap;
+  padding: 1px 0px 1px 0px;
+}
+.stackTraceEntry {
+  white-space: nowrap;
+  font-family: Courier New, Courier, Monospace;
+  display: block;
+  font-size: 8pt;
+  padding: 1px 0px 1px 32px;
+}
+.stackTraceButton {
+  font-size: 8pt;
+  margin: 2px 8px 2px 0px;
+  font-weight: normal;
+  font-family: Arial;
+}
+
+.special {
+  font-style: italic;
+}
+.missing, .missing * {
+  background-color: #ff9999;
+  color:#bb5050;
+  text-decoration: line-through;
+}
+.surplus, .surplus * {
+  background-color: #ff9999;
+}
+.footer {
+  text-align: right;
+  margin-top: 40px;
+  font-size: 8pt;
+  width: 100%;
+  color: #999;
+}
+.footer .testTime {
+  padding: 2px 10px 0px 0px;
+}
+
+.idea {
+  font-size: 9pt;
+  color: #888;
+  font-style: italic;	
+}
+.tight li {
+  margin-top: 1px;
+  margin-bottom: 1px; 
+}
+.commentary {
+  float: right;
+  width: 200px;
+  background-color: #ffffd0;
+  padding:8px;
+  border: 3px solid #eeeeb0;	 
+  margin: 10px 0px 10px 10px;	 
+}
+.commentary, .commentary * {
+  font-size: 8pt;
+}
+</style><meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<link type="text/css" rel="stylesheet" href="../../codemirror/codemirror.css" /><link type="text/css" rel="stylesheet" href="../../codemirror/merge.css" /><link type="text/css" rel="stylesheet" href="../../codemirror/enable-codemirror.css" /><link type="text/css" rel="stylesheet" href="../../codemirror/foldgutter.css" /><link type="text/css" rel="stylesheet" href="../../codemirror/simplescrollbar.css" /><script type="text/javascript" src="../../codemirror/codemirror.js"></script><script type="text/javascript" src="../../codemirror/enable-codemirror.js"></script><script type="text/javascript" src="../../codemirror/javascript.js"></script><script type="text/javascript" src="../../codemirror/xml.js"></script><script type="text/javascript" src="../../codemirror/htmlmixed.js"></script><script type="text/javascript" src="../../codemirror/handelbar.js"></script><script type="text/javascript" src="../../codemirror/addon/mode/simple.js"></script><script type="text/javascript" src="../../codemirror/http.js"></script><script type="text/javascript" src="../../codemirror/formatting.js"></script><script type="text/javascript" src="../../codemirror/markdown.js"></script><script type="text/javascript" src="../../codemirror/diff_match_patch.js"></script><script type="text/javascript" src="../../codemirror/merge.js"></script><script type="text/javascript" src="../../codemirror/xml-fold.js"></script><script type="text/javascript" src="../../codemirror/simplescrollbar.js"></script><link type="text/css" rel="stylesheet" href="../../codemirror/theme/darcula.css" /><script type="text/javascript" src="../../bootstrap/jquery-3.2.1.slim.min.js"></script><script type="text/javascript" src="../../bootstrap/popper.min.js"></script><script type="text/javascript" src="../../bootstrap/bootstrap.min.js"></script><script type="text/javascript" src="../../bootstrap/sidebar.js"></script><link type="text/css" rel="stylesheet" href="../../bootstrap/enable-bootstrap.css" /><link type="text/css" rel="stylesheet" href="../../bootstrap/bootstrap.min.css" /><link type="text/css" rel="stylesheet" href="../../bootstrap/callout.css" /><link type="text/css" rel="stylesheet" href="../../bootstrap/font-awesome.min.css" /><link type="text/css" rel="stylesheet" href="../../bootstrap/scrollToTop.css" /><script type="text/javascript" src="../../bootstrap/scrollToTop.js"></script><link type="text/css" rel="stylesheet" href="../../timingExtensionStyle.css" /><script type="text/javascript" src="../../timingExtensionToggle.js"></script></head><body><div id="toggle-button"><img id="toggle-on" src="../../timing-on.svg" height="24" width="24" style="display:none" /><img id="toggle-off" src="../../timing-off.svg" height="24" width="24" /></div><span class="breadcrumbs"><a href="../Specs.html">Exam - Concordion extension</a> &gt;</span>
+<h1>Getting started</h1>
+<div cmdId="60ee37f2-4ff4-4f83-839c-0c831c82e553" e:summary="" class="pin"> <h4>Summary<button type="button" class="btn btn-light btn-sm text-muted ml-1" data-toggle="collapse" data-target="#summary" aria-expanded="true" aria-controls="summary">collapse</button></h4><div id="summary" class="collapse show"><div class="list-group"><a class="list-group-item list-group-item-action" style="border-left: none; border-right: none;" href="#Successful widget creation">Successful widget creation<small class="card-img-overlay m-1" style="padding:0; left:inherit;"><span class="badge badge-pill badge-light">1s 719ms</span><span class="badge badge-pill badge-success">14</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small><button type="button" class="btn btn-light btn-sm text-muted ml-1" data-toggle="collapse" data-target="#0cca3959-8ee6-4658-98f0-f558d85cd0a1" aria-expanded="true" aria-controls="0cca3959-8ee6-4658-98f0-f558d85cd0a1">cases</button></a><div id="0cca3959-8ee6-4658-98f0-f558d85cd0a1" class="collapse"><a href="#1) Successful creation" style="font-size: small;" class="list-group-item list-group-item-action text-muted">1) Successful creation<i></i></a></div><a class="list-group-item list-group-item-action" style="border-left: none; border-right: none;" href="#Validate creation">Validate creation<small class="card-img-overlay m-1" style="padding:0; left:inherit;"><span class="badge badge-pill badge-light">172ms</span><span class="badge badge-pill badge-success">9</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small><button type="button" class="btn btn-light btn-sm text-muted ml-1" data-toggle="collapse" data-target="#3a87b0eb-d1f0-4d33-b0f8-0f60c28807b6" aria-expanded="true" aria-controls="3a87b0eb-d1f0-4d33-b0f8-0f60c28807b6">cases</button></a><div id="3a87b0eb-d1f0-4d33-b0f8-0f60c28807b6" class="collapse"><a href="#2) quantity is required" style="font-size: small;" class="list-group-item list-group-item-action text-muted">2) quantity is required<i></i></a><a href="#3) name is required" style="font-size: small;" class="list-group-item list-group-item-action text-muted">3) name is required<i></i></a><a href="#4) name should't be blank or more than 10 symbols" style="font-size: small;" class="list-group-item list-group-item-action text-muted">4) name should't be blank or more than 10 symbols<i></i></a></div><a class="list-group-item list-group-item-action" style="border-left: none; border-right: none;" href="#Validate creation - parametrized">Validate creation - parametrized<small class="card-img-overlay m-1" style="padding:0; left:inherit;"><span class="badge badge-pill badge-light">144ms</span><span class="badge badge-pill badge-success">9</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small><button type="button" class="btn btn-light btn-sm text-muted ml-1" data-toggle="collapse" data-target="#1e201f9b-8589-4e2c-894d-d77f60dc39a6" aria-expanded="true" aria-controls="1e201f9b-8589-4e2c-894d-d77f60dc39a6">cases</button></a><div id="1e201f9b-8589-4e2c-894d-d77f60dc39a6" class="collapse"><a href="#5) Name and quantity validation" style="font-size: small;" class="list-group-item list-group-item-action text-muted">5) Name and quantity validation<i></i></a></div><a class="list-group-item list-group-item-action" style="border-left: none; border-right: none;" href="#Successful widget deletion">Successful widget deletion<small class="card-img-overlay m-1" style="padding:0; left:inherit;"><span class="badge badge-pill badge-light">98ms</span><span class="badge badge-pill badge-success">5</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small><button type="button" class="btn btn-light btn-sm text-muted ml-1" data-toggle="collapse" data-target="#28bab727-6a88-40f3-ab9a-5be75497a839" aria-expanded="true" aria-controls="28bab727-6a88-40f3-ab9a-5be75497a839">cases</button></a><div id="28bab727-6a88-40f3-ab9a-5be75497a839" class="collapse"><a href="#6) Successful deletion" style="font-size: small;" class="list-group-item list-group-item-action text-muted">6) Successful deletion<i></i></a><a href="#7) Absent widget deletion" style="font-size: small;" class="list-group-item list-group-item-action text-muted">7) Absent widget deletion<i></i></a></div><a class="list-group-item list-group-item-action" style="border-left: none; border-right: none;" href="#Successful widget retrieving">Successful widget retrieving<small class="card-img-overlay m-1" style="padding:0; left:inherit;"><span class="badge badge-pill badge-light">108ms</span><span class="badge badge-pill badge-success">2</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small><button type="button" class="btn btn-light btn-sm text-muted ml-1" data-toggle="collapse" data-target="#3e1179e0-65f3-49a7-a447-4f147a439dee" aria-expanded="true" aria-controls="3e1179e0-65f3-49a7-a447-4f147a439dee">cases</button></a><div id="3e1179e0-65f3-49a7-a447-4f147a439dee" class="collapse"><a href="#8) Can retrieve stored widgets" style="font-size: small;" class="list-group-item list-group-item-action text-muted">8) Can retrieve stored widgets<i></i></a></div><a class="list-group-item list-group-item-action" style="border-left: none; border-right: none;" href="#CRUD">CRUD<small class="card-img-overlay m-1" style="padding:0; left:inherit;"><span class="badge badge-pill badge-light">769ms</span><span class="badge badge-pill badge-success">8</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small><button type="button" class="btn btn-light btn-sm text-muted ml-1" data-toggle="collapse" data-target="#3a2fd9e1-9c9d-445a-84a1-50ece5f0a7ba" aria-expanded="true" aria-controls="3a2fd9e1-9c9d-445a-84a1-50ece5f0a7ba">cases</button></a><div id="3a2fd9e1-9c9d-445a-84a1-50ece5f0a7ba" class="collapse"><a href="#9) Create" style="font-size: small;" class="list-group-item list-group-item-action text-muted">9) Create<i></i></a><a href="#10) Read" style="font-size: small;" class="list-group-item list-group-item-action text-muted">10) Read<i></i></a><a href="#11) Update" style="font-size: small;" class="list-group-item list-group-item-action text-muted">11) Update<i></i></a><a href="#12) Delete" style="font-size: small;" class="list-group-item list-group-item-action text-muted">12) Delete<i></i></a></div><a class="list-group-item list-group-item-action" style="border-left: none; border-right: none;" href="#Trigger job and poll result with custom method">Trigger job and poll result with custom method<small class="card-img-overlay m-1" style="padding:0; left:inherit;"><span class="badge badge-pill badge-light">2s 733ms</span><span class="badge badge-pill badge-success">3</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small><button type="button" class="btn btn-light btn-sm text-muted ml-1" data-toggle="collapse" data-target="#2a20550f-0646-4af4-a138-af8642175ebd" aria-expanded="true" aria-controls="2a20550f-0646-4af4-a138-af8642175ebd">cases</button></a><div id="2a20550f-0646-4af4-a138-af8642175ebd" class="collapse"><a href="#13) Trigger job with some optional body" style="font-size: small;" class="list-group-item list-group-item-action text-muted">13) Trigger job with some optional body<i></i></a></div><a class="list-group-item list-group-item-action" style="border-left: none; border-right: none;" href="#Trigger job and poll result with http request">Trigger job and poll result with http request<small class="card-img-overlay m-1" style="padding:0; left:inherit;"><span class="badge badge-pill badge-light">2s 165ms</span><span class="badge badge-pill badge-success">1</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small></a><a class="list-group-item list-group-item-action" style="border-left: none; border-right: none;" href="#Trigger job and poll result with db-check">Trigger job and poll result with db-check<small class="card-img-overlay m-1" style="padding:0; left:inherit;"><span class="badge badge-pill badge-light">2s 142ms</span><span class="badge badge-pill badge-success">2</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small></a></div></div></div>
+<div cmdId="23de8a1b-e440-4e9e-b768-bfdaf91d41a2" e:given="" class="bd-callout bd-callout-info">
+    We have a simple CRUD App for widgets manipulation.
+    Widgets are stored in DB like this:
+    <div cmdId="759ecf4d-6ef4-43ab-99ea-7ddea3977bfc" e:db-show=""> <div class="table-responsive mb-1 p-1"><table class="table table-sm"><caption style="width:max-content"><i class="fa fa-database ml-1"> WIDGETS</i></caption><thead class="thead-default"><tr><th class="">ID</th><th class="">NAME</th><th class="">QUANTITY</th><th class="">UPDATED</th></tr></thead><tbody><tr><td class=""><span>1</span></td><td class=""><span>widget one</span></td><td class=""><span>27</span></td><td class=""><span>2021-03-30 11:47:25.015</span></td></tr><tr><td class=""><span>2</span></td><td class=""><span>widget two</span></td><td class=""><span>14</span></td><td class=""><span>2021-03-30 11:47:25.028</span></td></tr></tbody></table></div><pre>&lt;?xml version='1.0' encoding='UTF-8'?&gt;
+&lt;dataset&gt;
+  &lt;WIDGETS ID="1" NAME="widget one" QUANTITY="27" UPDATED="2021-03-30 11:47:25.015"/&gt;
+  &lt;WIDGETS ID="2" NAME="widget two" QUANTITY="14" UPDATED="2021-03-30 11:47:25.028"/&gt;
+&lt;/dataset&gt;
+</pre></div>
+</div>
+<h3>Let's test widget creation API:</h3>
+<div xmlns:c="http://www.concordion.org/2007/concordion" name="Successful widget creation" print="true" cmdId="06193400-0c9a-4ea0-a27a-1ecfd8e66a2c" c:example="Successful widget creation" class="card mb-3" e:example="" id="Successful widget creation"><div class="card-header" data-toggle="collapse" data-target="#102879189" aria-expanded="true" aria-controls="102879189"><a name="Successful widget creation" data-type="example">Successful widget creation</a></div><div class="card-body collapse show" id="102879189"><pre lineNumbers="true" class="htmlmixed darcula mt-2">&lt;e:given&gt;
+        &lt;e:db-set caption="There are no widgets" table="widgets" /&gt;
+    &lt;/e:given&gt;
+&lt;e:post url="/widgets"&gt;
+        &lt;e:case desc="Successful creation"&gt;
+&lt;e:body&gt;{"name" : "widget1", "quantity": "10"}&lt;/e:body&gt;
+&lt;e:expected statusCode="201" reasonPhrase="Created"&gt;
+    {
+    "id": "{{number}}",
+    "name": "widget1",
+    "quantity": 10,
+    "updatedAt": "{{formattedAndWithinNow "yyyy-MM-dd'T'HH:mm:ss.SSS" "5s"}}"
+    }
+&lt;/e:expected&gt;
+&lt;e:check&gt;
+    &lt;e:db-check caption="Widget was created:" table="widgets" cols="id, name, quantity, updated" orderBy="name"&gt;
+        &lt;e:row&gt;!{number}, widget1, 10, !{within 5s}&lt;/e:row&gt;
+    &lt;/e:db-check&gt;
+    or
+    &lt;e:db-check caption="Widget was created:" table="widgets" cols="id, name, quantity, updated" orderBy="name"&gt;
+        &lt;e:row&gt;!{regex}\d, widget1, 10, !{notNull}&lt;/e:row&gt;
+    &lt;/e:db-check&gt;
+    or with variable setting:
+    &lt;e:db-check caption="Widget was created:" table="widgets" cols="id, name, quantity, updated" orderBy="name"&gt;
+        &lt;e:row&gt;!{number}&amp;gt;&amp;gt;id, !{notNull}&amp;gt;&amp;gt;name, !{regex}\d+&amp;gt;&amp;gt;quantity, !{within 5s}&amp;gt;&amp;gt;updated&lt;/e:row&gt;
+    &lt;/e:db-check&gt;
+    #id = &lt;code cc:echo="#id" /&gt; #name = &lt;code cc:echo="#name" /&gt; #quantity = &lt;code cc:echo="#quantity" /&gt; #updated = &lt;code cc:echo="#updated" /&gt;
+&lt;/e:check&gt;
+        &lt;/e:case&gt;
+    &lt;/e:post&gt;</pre>
+    <div cmdId="d7d73ea0-6f25-4550-86a3-9d24efc241a5" e:given="" class="bd-callout bd-callout-info">
+        <div cmdId="5fe97979-159c-4ae4-8224-90bae6665912" e:db-set="" class="table table-sm table-hover"> <div></div><span></span><div class="table-responsive mb-1 p-1"><table class="table table-sm"><caption style="width:max-content"><i class="fa fa-database ml-1"> There are no widgets</i></caption><tbody><tr><td colspan="0">&lt;EMPTY&gt;</td></tr></tbody></table></div></div>
+    </div>
+    <div cmdId="57a3a876-f026-445b-9e89-ecd1018b477a" e:post=""><table class="table table-sm"><div><div class="input-group mb-1 mt-1">
+      <div class="input-group-prepend">
+        <span class="input-group-text bg-success text-white">POST</span>
+      </div>
+      <div class="form-control bg-light text-primary font-weight-light">
+        <span id="endpoint-2084216955">/widgets</span>
+      </div>
+    </div><div class="input-group input-group-sm">
+      <div class="input-group-prepend">
+        <span class="input-group-text" style="border:none;">Content-Type</span>
+      </div>
+      <div class="form-control bg-light text-dark font-weight-light" style="border:none;">
+        <span id="header-1446720037">application/json</span>
+      </div>
+    </div></div><thead class="thead-default"><th style="text-align:center;" class="bg-light">Request</th><th colspan="1" style="text-align:center;" class="bg-light">Expected response</th></thead>
+        <tr desc="Successful creation" cmdId="784ed2eb-154f-4dcb-9687-820e6162f0c1" e:case="" data-type="case" id="1) Successful creation"><tr><td colspan="2" class="text-muted bg-light">1) Successful creation</td></tr>
+            
+            
+            <div cmdId="f70ecf49-da6d-46a3-a601-be4a9e57ea13" e:check="" />
+        <tr data-case-title="single"><td style="max-width: 1px; width: 50%;"><div class="httpstyle"><textarea class="http">POST /widgets HTTP/1.1
+</textarea></div></td><td style="padding-left: 0;"><small><span class="exp-status rest-success">HTTP/1.1 201 Created</span><span class="badge badge-pill badge-light">770ms</span></small></td></tr><tr><td class="json exp-body" style="min-width: 20%; width: 50%;">{
+  "name": "widget1",
+  "quantity": "10"
+}</td><td colspan="1" class="exp-body"><div>
+        <nav>
+          <div class="nav nav-tabs" role="tablist">
+            <a class="nav-item nav-link active small text-success" id="nav-et-1617094047029-tab" data-toggle="tab" href="#nav-et-1617094047029" role="tab" aria-controls="nav-et-1617094047029" aria-selected="true"> Expected </a>
+            <a class="nav-item nav-link small" id="nav-at-1617094047029-tab" data-toggle="tab" href="#nav-at-1617094047029" role="tab" aria-controls="nav-at-1617094047029" aria-selected="false" onclick="setTimeout(() =&gt; { window.dispatchEvent(new Event('resize')); }, 200)"> Actual </a>
+          </div>
+        </nav>
+        <div class="tab-content">
+          <div class="tab-pane fade show active" id="nav-et-1617094047029" role="tabpanel" aria-labelledby="nav-et-1617094047029-tab">
+            <pre id="e-1617094047029" class="rest-success json">{
+  "id": "${json-unit.any-number}",
+  "name": "widget1",
+  "quantity": 10,
+  "updatedAt": "${json-unit.matches:formattedAndWithinNow}[yyyy-MM-dd'T'HH:mm:ss.SSS][5s]"
+}</pre>
+          </div>
+          <div class="tab-pane fade" id="nav-at-1617094047029" role="tabpanel" aria-labelledby="nav-at-1617094047029-tab">
+            <pre id="a-1617094047029" class="rest-success json">{
+  "id": 3,
+  "name": "widget1",
+  "quantity": 10,
+  "updatedAt": "2021-03-30T11:47:26.630"
+}</pre>
+          </div>
+        </div>
+    </div></td></tr></tr><tr><td colspan="2">
+                <div cmdId="fdf6b86a-c5fc-4448-a85b-8ac7fcbfb4f9" e:db-check="" class="table table-sm table-hover">
+                    
+                <div></div><span></span><div class="table-responsive mb-1 p-1"><table class="table table-sm"><caption style="width:max-content"><i class="fa fa-database ml-1"> Widget was created:</i></caption><thead class="thead-default"><tr><th class="">ID</th><th class="">NAME</th><th class="">QUANTITY</th><th class="">UPDATED</th></tr></thead><tbody><tr><td class=" table-success"> <span>!{number} (3)</span></td><td class=" table-success"> <span>widget1</span></td><td class=" table-success"> <span>10</span></td><td class=" table-success"> <span>!{within 5s} (2021-03-30 11:47:26.63)</span></td></tr></tbody></table></div></div>
+                or
+                <div cmdId="b4f3d4d2-a635-4e18-b8bc-51680ba75097" e:db-check="" class="table table-sm table-hover">
+                    
+                <div></div><span></span><div class="table-responsive mb-1 p-1"><table class="table table-sm"><caption style="width:max-content"><i class="fa fa-database ml-1"> Widget was created:</i></caption><thead class="thead-default"><tr><th class="">ID</th><th class="">NAME</th><th class="">QUANTITY</th><th class="">UPDATED</th></tr></thead><tbody><tr><td class=" table-success"> <span>!{regex}\d (3)</span></td><td class=" table-success"> <span>widget1</span></td><td class=" table-success"> <span>10</span></td><td class=" table-success"> <span>!{notNull} (2021-03-30 11:47:26.63)</span></td></tr></tbody></table></div></div>
+                or with variable setting:
+                <div cmdId="23068ce7-51eb-40c7-84f0-2feb91e07963" e:db-check="" class="table table-sm table-hover">
+                    
+                <div></div><span></span><div class="table-responsive mb-1 p-1"><table class="table table-sm"><caption style="width:max-content"><i class="fa fa-database ml-1"> Widget was created:</i></caption><thead class="thead-default"><tr><th class="">ID</th><th class="">NAME</th><th class="">QUANTITY</th><th class="">UPDATED</th></tr></thead><tbody><tr><td class=" table-success"> <span>!{number}&gt;&gt;id (3)</span></td><td class=" table-success"> <span>!{notNull}&gt;&gt;name (widget1)</span></td><td class=" table-success"> <span>!{regex}\d+&gt;&gt;quantity (10)</span></td><td class=" table-success"> <span>!{within 5s}&gt;&gt;updated (2021-03-30 11:47:26.63)</span></td></tr></tbody></table></div></div>
+                #id = <code cc:echo="#id">3</code> #name = <code cc:echo="#name">widget1</code> #quantity = <code cc:echo="#quantity">10</code> #updated = <code cc:echo="#updated">2021-03-30 11:47:26.63</code>
+            </td></tr>
+    </table></div>
+</div><div class="card-footer text-muted" data-toggle="collapse" data-target="#102879189" aria-expanded="true" aria-controls="102879189"><small><span class="badge badge-pill badge-success">14</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small></div></div>
+<br />
+<blockquote class="blockquote">
+    <p class="mb-0">For testing validation, parametrized (aka <code>where</code>) cases may be used:</p>
+</blockquote>
+<div xmlns:c="http://www.concordion.org/2007/concordion" name="Validate creation" print="true" cmdId="4b63d403-84e4-4c92-9a37-95fe1ee0a625" c:example="Validate creation" class="card mb-3" e:example="" id="Validate creation"><div class="card-header" data-toggle="collapse" data-target="#17190537" aria-expanded="true" aria-controls="17190537"><a name="Validate creation" data-type="example">Validate creation</a></div><div class="card-body collapse show" id="17190537"><pre lineNumbers="true" class="htmlmixed darcula mt-2">&lt;e:given&gt;
+        &lt;e:db-set caption="There are no widgets" table="widgets" /&gt;
+    &lt;/e:given&gt;
+&lt;e:post url="/widgets"&gt;
+        &lt;e:case desc="quantity is required"&gt;
+&lt;e:body&gt;
+    {"name": "widget1"}
+&lt;/e:body&gt;
+&lt;e:expected statusCode="400" reasonPhrase="Bad Request"&gt;
+    { "error": "quantity is required" }
+&lt;/e:expected&gt;
+        &lt;/e:case&gt;
+        &lt;e:case desc="name is required"&gt;
+&lt;e:body&gt;
+    {"quantity": "10"}
+&lt;/e:body&gt;
+&lt;e:expected statusCode="400" reasonPhrase="Bad Request"&gt;
+    { "error": "name is required" }
+&lt;/e:expected&gt;
+        &lt;/e:case&gt;
+        &lt;e:case desc="name should't be blank or more than 10 symbols"&gt;
+&lt;e:body&gt;
+    {"name": "{{invalid}}", "quantity": "10"}
+&lt;/e:body&gt;
+&lt;e:expected statusCode="400" reasonPhrase="Bad Request"&gt;
+    { "error": "{{error}}" }
+&lt;/e:expected&gt;
+&lt;e:where vars="invalid, error"&gt;
+    &lt;e:vals&gt;''          , blank value not allowed&lt;/e:vals&gt;
+    &lt;e:vals&gt;more_than_10, Value 'more_than_10' can't be stored to database column because exceeds length 10&lt;/e:vals&gt;
+&lt;/e:where&gt;
+        &lt;/e:case&gt;
+        &lt;e:check&gt;
+&lt;e:db-check caption="No widgets were created:" table="widgets" /&gt;
+        &lt;/e:check&gt;
+    &lt;/e:post&gt;</pre>
+    <div cmdId="1660bf09-fae7-4486-a3dc-6c9f3daea92f" e:given="" class="bd-callout bd-callout-info">
+        <div cmdId="6a3e51d8-346b-42f0-a3d7-e7547e7a1e0b" e:db-set="" class="table table-sm table-hover"> <div></div><span></span><div class="table-responsive mb-1 p-1"><table class="table table-sm"><caption style="width:max-content"><i class="fa fa-database ml-1"> There are no widgets</i></caption><tbody><tr><td colspan="0">&lt;EMPTY&gt;</td></tr></tbody></table></div></div>
+    </div>
+    <div cmdId="3cc1b62d-3f03-4a1b-bbf2-3c95ca0c5edb" e:post=""><table class="table table-sm"><div><div class="input-group mb-1 mt-1">
+      <div class="input-group-prepend">
+        <span class="input-group-text bg-success text-white">POST</span>
+      </div>
+      <div class="form-control bg-light text-primary font-weight-light">
+        <span id="endpoint--269303607">/widgets</span>
+      </div>
+    </div><div class="input-group input-group-sm">
+      <div class="input-group-prepend">
+        <span class="input-group-text" style="border:none;">Content-Type</span>
+      </div>
+      <div class="form-control bg-light text-dark font-weight-light" style="border:none;">
+        <span id="header-1908202634">application/json</span>
+      </div>
+    </div></div><thead class="thead-default"><th style="text-align:center;" class="bg-light">Request</th><th colspan="1" style="text-align:center;" class="bg-light">Expected response</th></thead>
+        <tr desc="quantity is required" cmdId="52588d90-7246-4c6a-a961-a002fd44063e" e:case="" data-type="case" id="2) quantity is required"><tr><td colspan="2" class="text-muted bg-light">2) quantity is required</td></tr>
+            
+            
+        <tr data-case-title="single"><td style="max-width: 1px; width: 50%;"><div class="httpstyle"><textarea class="http">POST /widgets HTTP/1.1
+</textarea></div></td><td style="padding-left: 0;"><small><span class="exp-status rest-success">HTTP/1.1 400 Bad Request</span><span class="badge badge-pill badge-light">24ms</span></small></td></tr><tr><td class="json exp-body" style="min-width: 20%; width: 50%;">{
+  "name": "widget1"
+}</td><td colspan="1" class="exp-body"><div>
+        <nav>
+          <div class="nav nav-tabs" role="tablist">
+            <a class="nav-item nav-link active small text-success" id="nav-et-1617094047068-tab" data-toggle="tab" href="#nav-et-1617094047068" role="tab" aria-controls="nav-et-1617094047068" aria-selected="true"> Expected </a>
+            <a class="nav-item nav-link small" id="nav-at-1617094047068-tab" data-toggle="tab" href="#nav-at-1617094047068" role="tab" aria-controls="nav-at-1617094047068" aria-selected="false" onclick="setTimeout(() =&gt; { window.dispatchEvent(new Event('resize')); }, 200)"> Actual </a>
+          </div>
+        </nav>
+        <div class="tab-content">
+          <div class="tab-pane fade show active" id="nav-et-1617094047068" role="tabpanel" aria-labelledby="nav-et-1617094047068-tab">
+            <pre id="e-1617094047068" class="rest-success json">{
+  "error": "quantity is required"
+}</pre>
+          </div>
+          <div class="tab-pane fade" id="nav-at-1617094047068" role="tabpanel" aria-labelledby="nav-at-1617094047068-tab">
+            <pre id="a-1617094047068" class="rest-success json">{
+  "error": "quantity is required"
+}</pre>
+          </div>
+        </div>
+    </div></td></tr></tr>
+        <tr desc="name is required" cmdId="3aaa2d74-961a-4c6e-a097-619dd5588e01" e:case="" data-type="case" id="3) name is required"><tr><td colspan="2" class="text-muted bg-light">3) name is required</td></tr>
+            
+            
+        <tr data-case-title="single"><td style="max-width: 1px; width: 50%;"><div class="httpstyle"><textarea class="http">POST /widgets HTTP/1.1
+</textarea></div></td><td style="padding-left: 0;"><small><span class="exp-status rest-success">HTTP/1.1 400 Bad Request</span><span class="badge badge-pill badge-light">11ms</span></small></td></tr><tr><td class="json exp-body" style="min-width: 20%; width: 50%;">{
+  "quantity": "10"
+}</td><td colspan="1" class="exp-body"><div>
+        <nav>
+          <div class="nav nav-tabs" role="tablist">
+            <a class="nav-item nav-link active small text-success" id="nav-et-1617094047087-tab" data-toggle="tab" href="#nav-et-1617094047087" role="tab" aria-controls="nav-et-1617094047087" aria-selected="true"> Expected </a>
+            <a class="nav-item nav-link small" id="nav-at-1617094047087-tab" data-toggle="tab" href="#nav-at-1617094047087" role="tab" aria-controls="nav-at-1617094047087" aria-selected="false" onclick="setTimeout(() =&gt; { window.dispatchEvent(new Event('resize')); }, 200)"> Actual </a>
+          </div>
+        </nav>
+        <div class="tab-content">
+          <div class="tab-pane fade show active" id="nav-et-1617094047087" role="tabpanel" aria-labelledby="nav-et-1617094047087-tab">
+            <pre id="e-1617094047087" class="rest-success json">{
+  "error": "name is required"
+}</pre>
+          </div>
+          <div class="tab-pane fade" id="nav-at-1617094047087" role="tabpanel" aria-labelledby="nav-at-1617094047087-tab">
+            <pre id="a-1617094047087" class="rest-success json">{
+  "error": "name is required"
+}</pre>
+          </div>
+        </div>
+    </div></td></tr></tr>
+        <tr desc="name should't be blank or more than 10 symbols" cmdId="d85b1a66-dc61-4281-be61-ec50871f3323" e:case="" data-type="case" id="4) name should't be blank or more than 10 symbols"><tr><td colspan="2" class="text-muted bg-light">4) name should't be blank or more than 10 symbols</td></tr>
+            
+            
+            
+        </tr><tr><td colspan="2"><div><nav><div class="nav nav-tabs" role="tablist"><a href="#nav-1535161470-1617094047168" id="nav-1535161470-1617094047168-tab" data-toggle="tab" role="tab" aria-controls="nav-1535161470-1617094047168" aria-selected="false" onclick="setTimeout(() =&gt; { window.dispatchEvent(new Event('resize')); }, 200)" class="nav-item nav-link small text-success  active show">1</a><a href="#nav--1374045445-1617094047169" id="nav--1374045445-1617094047169-tab" class="nav-item nav-link small text-success " data-toggle="tab" role="tab" aria-controls="nav--1374045445-1617094047169" aria-selected="false" onclick="setTimeout(() =&gt; { window.dispatchEvent(new Event('resize')); }, 200)">2</a></div></nav><div><div class="tab-content"><div id="nav-1535161470-1617094047168" role="tabpanel" aria-labelledby="nav-1535161470-1617094047168-tab" class="tab-pane fade active show"><table class="table table-sm"><tr data-case-title="1"><td style="max-width: 1px; width: 50%;"><div class="httpstyle"><textarea class="http">POST /widgets HTTP/1.1
+</textarea></div></td><td style="padding-left: 0;"><small><span class="exp-status rest-success">HTTP/1.1 400 Bad Request</span><span class="badge badge-pill badge-light">31ms</span></small></td></tr><tr><td class="json exp-body" style="min-width: 20%; width: 50%;">{
+  "name": "",
+  "quantity": "10"
+}</td><td colspan="1" class="exp-body"><div>
+        <nav>
+          <div class="nav nav-tabs" role="tablist">
+            <a class="nav-item nav-link active small text-success" id="nav-et-1617094047137-tab" data-toggle="tab" href="#nav-et-1617094047137" role="tab" aria-controls="nav-et-1617094047137" aria-selected="true"> Expected </a>
+            <a class="nav-item nav-link small" id="nav-at-1617094047137-tab" data-toggle="tab" href="#nav-at-1617094047137" role="tab" aria-controls="nav-at-1617094047137" aria-selected="false" onclick="setTimeout(() =&gt; { window.dispatchEvent(new Event('resize')); }, 200)"> Actual </a>
+          </div>
+        </nav>
+        <div class="tab-content">
+          <div class="tab-pane fade show active" id="nav-et-1617094047137" role="tabpanel" aria-labelledby="nav-et-1617094047137-tab">
+            <pre id="e-1617094047137" class="rest-success json">{
+  "error": "blank value not allowed"
+}</pre>
+          </div>
+          <div class="tab-pane fade" id="nav-at-1617094047137" role="tabpanel" aria-labelledby="nav-at-1617094047137-tab">
+            <pre id="a-1617094047137" class="rest-success json">{
+  "error": "blank value not allowed"
+}</pre>
+          </div>
+        </div>
+    </div></td></tr></table></div><div class="tab-pane fade" id="nav--1374045445-1617094047169" role="tabpanel" aria-labelledby="nav--1374045445-1617094047169-tab"><table class="table table-sm"><tr data-case-title="2"><td style="max-width: 1px; width: 50%;"><div class="httpstyle"><textarea class="http">POST /widgets HTTP/1.1
+</textarea></div></td><td style="padding-left: 0;"><small><span class="exp-status rest-success">HTTP/1.1 400 Bad Request</span><span class="badge badge-pill badge-light">10ms</span></small></td></tr><tr><td class="json exp-body" style="min-width: 20%; width: 50%;">{
+  "name": "more_than_10",
+  "quantity": "10"
+}</td><td colspan="1" class="exp-body"><div>
+        <nav>
+          <div class="nav nav-tabs" role="tablist">
+            <a class="nav-item nav-link active small text-success" id="nav-et-1617094047165-tab" data-toggle="tab" href="#nav-et-1617094047165" role="tab" aria-controls="nav-et-1617094047165" aria-selected="true"> Expected </a>
+            <a class="nav-item nav-link small" id="nav-at-1617094047165-tab" data-toggle="tab" href="#nav-at-1617094047165" role="tab" aria-controls="nav-at-1617094047165" aria-selected="false" onclick="setTimeout(() =&gt; { window.dispatchEvent(new Event('resize')); }, 200)"> Actual </a>
+          </div>
+        </nav>
+        <div class="tab-content">
+          <div class="tab-pane fade show active" id="nav-et-1617094047165" role="tabpanel" aria-labelledby="nav-et-1617094047165-tab">
+            <pre id="e-1617094047165" class="rest-success json">{
+  "error": "Value 'more_than_10' can't be stored to database column because exceeds length 10"
+}</pre>
+          </div>
+          <div class="tab-pane fade" id="nav-at-1617094047165" role="tabpanel" aria-labelledby="nav-at-1617094047165-tab">
+            <pre id="a-1617094047165" class="rest-success json">{
+  "error": "Value 'more_than_10' can't be stored to database column because exceeds length 10"
+}</pre>
+          </div>
+        </div>
+    </div></td></tr></table></div></div></div></div></td></tr>
+        <div cmdId="dd0136bf-855c-42f2-abe0-b9b944cb04ed" e:check="" />
+    </table><tr><td colspan="2">
+            <div cmdId="08e4b969-5325-4661-9903-8b890f4c37ef" e:db-check="" class="table table-sm table-hover"> <div></div><span></span><div class="table-responsive mb-1 p-1"><table class="table table-sm"><caption style="width:max-content"><i class="fa fa-database ml-1"> No widgets were created:</i></caption><tbody><tr><td colspan="4" class="table-success">&lt;EMPTY&gt;</td></tr></tbody></table></div></div>
+        </td></tr></div>
+</div><div class="card-footer text-muted" data-toggle="collapse" data-target="#17190537" aria-expanded="true" aria-controls="17190537"><small><span class="badge badge-pill badge-success">9</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small></div></div>
+<br />
+<blockquote class="blockquote">
+    <p class="mb-0">Or more tricky and compact equivalent of previous example (request/response body templates are hidden in files):</p>
+</blockquote>
+<div xmlns:c="http://www.concordion.org/2007/concordion" name="Validate creation - parametrized" print="true" cmdId="20a6744e-3b6a-49e9-97f2-4b80a8648644" c:example="Validate creation - parametrized" class="card mb-3" e:example="" id="Validate creation - parametrized"><div class="card-header" data-toggle="collapse" data-target="#-1613731824" aria-expanded="true" aria-controls="-1613731824"><a name="Validate creation - parametrized" data-type="example">Validate creation - parametrized</a></div><div class="card-body collapse show" id="-1613731824"><pre lineNumbers="true" class="htmlmixed darcula mt-2">&lt;e:given&gt;
+        &lt;e:db-set caption="There are no widgets" table="widgets" /&gt;
+    &lt;/e:given&gt;
+&lt;e:post url="/widgets"&gt;
+        &lt;e:case desc="Name and quantity validation"&gt;
+&lt;e:body from="/data/getting-started/{{req}}" /&gt;
+&lt;e:expected from="/data/getting-started/error.json" statusCode="400" reasonPhrase="Bad Request" /&gt;
+&lt;e:where vars="name, req, error"&gt;
+    &lt;e:vals&gt;ignored     , invalid-no-name.json    , name is required&lt;/e:vals&gt;
+    &lt;e:vals&gt;ignored     , invalid-no-quantity.json, quantity is required&lt;/e:vals&gt;
+    &lt;e:vals&gt;''          , create-req.json         , blank value not allowed&lt;/e:vals&gt;
+    &lt;e:vals&gt;more_than_10, create-req.json         , Value 'more_than_10' can't be stored to database column because exceeds length 10&lt;/e:vals&gt;
+&lt;/e:where&gt;
+        &lt;/e:case&gt;
+        &lt;e:check&gt;
+&lt;e:db-check caption="No widgets were created:" table="widgets" /&gt;
+        &lt;/e:check&gt;
+    &lt;/e:post&gt;</pre>
+    <div cmdId="ad82b683-d448-45f0-88b5-944dc1256c27" e:given="" class="bd-callout bd-callout-info">
+        <div cmdId="1be8c18b-7117-47ee-9567-5045974cbe19" e:db-set="" class="table table-sm table-hover"> <div></div><span></span><div class="table-responsive mb-1 p-1"><table class="table table-sm"><caption style="width:max-content"><i class="fa fa-database ml-1"> There are no widgets</i></caption><tbody><tr><td colspan="0">&lt;EMPTY&gt;</td></tr></tbody></table></div></div>
+    </div>
+    <div cmdId="5a59b32b-ec9d-413e-86dd-4d7e780d012e" e:post=""><table class="table table-sm"><div><div class="input-group mb-1 mt-1">
+      <div class="input-group-prepend">
+        <span class="input-group-text bg-success text-white">POST</span>
+      </div>
+      <div class="form-control bg-light text-primary font-weight-light">
+        <span id="endpoint--1341994484">/widgets</span>
+      </div>
+    </div><div class="input-group input-group-sm">
+      <div class="input-group-prepend">
+        <span class="input-group-text" style="border:none;">Content-Type</span>
+      </div>
+      <div class="form-control bg-light text-dark font-weight-light" style="border:none;">
+        <span id="header--13103690">application/json</span>
+      </div>
+    </div></div><thead class="thead-default"><th style="text-align:center;" class="bg-light">Request</th><th colspan="1" style="text-align:center;" class="bg-light">Expected response</th></thead>
+        <tr desc="Name and quantity validation" cmdId="a9272114-a1e9-4b43-b5ac-a9c8c6081e6a" e:case="" data-type="case" id="5) Name and quantity validation"><tr><td colspan="2" class="text-muted bg-light">5) Name and quantity validation</td></tr>
+            
+            
+            
+        </tr><tr><td colspan="2"><div><nav><div class="nav nav-tabs" role="tablist"><a href="#nav-1926183299-1617094047326" id="nav-1926183299-1617094047326-tab" data-toggle="tab" role="tab" aria-controls="nav-1926183299-1617094047326" aria-selected="false" onclick="setTimeout(() =&gt; { window.dispatchEvent(new Event('resize')); }, 200)" class="nav-item nav-link small text-success  active show">1</a><a href="#nav--56833532-1617094047327" id="nav--56833532-1617094047327-tab" class="nav-item nav-link small text-success " data-toggle="tab" role="tab" aria-controls="nav--56833532-1617094047327" aria-selected="false" onclick="setTimeout(() =&gt; { window.dispatchEvent(new Event('resize')); }, 200)">2</a><a href="#nav--1784805420-1617094047327" id="nav--1784805420-1617094047327-tab" class="nav-item nav-link small text-success " data-toggle="tab" role="tab" aria-controls="nav--1784805420-1617094047327" aria-selected="false" onclick="setTimeout(() =&gt; { window.dispatchEvent(new Event('resize')); }, 200)">3</a><a href="#nav-1361582976-1617094047327" id="nav-1361582976-1617094047327-tab" class="nav-item nav-link small text-success " data-toggle="tab" role="tab" aria-controls="nav-1361582976-1617094047327" aria-selected="false" onclick="setTimeout(() =&gt; { window.dispatchEvent(new Event('resize')); }, 200)">4</a></div></nav><div><div class="tab-content"><div id="nav-1926183299-1617094047326" role="tabpanel" aria-labelledby="nav-1926183299-1617094047326-tab" class="tab-pane fade active show"><table class="table table-sm"><tr data-case-title="1"><td style="max-width: 1px; width: 50%;"><div class="httpstyle"><textarea class="http">POST /widgets HTTP/1.1
+</textarea></div></td><td style="padding-left: 0;"><small><span class="exp-status rest-success">HTTP/1.1 400 Bad Request</span><span class="badge badge-pill badge-light">18ms</span></small></td></tr><tr><td from="/data/getting-started/{{req}}" class="json exp-body" style="min-width: 20%; width: 50%;">{
+  "quantity": "10"
+}</td><td colspan="1" class="exp-body" from="/data/getting-started/error.json"><div>
+        <nav>
+          <div class="nav nav-tabs" role="tablist">
+            <a class="nav-item nav-link active small text-success" id="nav-et-1617094047253-tab" data-toggle="tab" href="#nav-et-1617094047253" role="tab" aria-controls="nav-et-1617094047253" aria-selected="true"> Expected </a>
+            <a class="nav-item nav-link small" id="nav-at-1617094047253-tab" data-toggle="tab" href="#nav-at-1617094047253" role="tab" aria-controls="nav-at-1617094047253" aria-selected="false" onclick="setTimeout(() =&gt; { window.dispatchEvent(new Event('resize')); }, 200)"> Actual </a>
+          </div>
+        </nav>
+        <div class="tab-content">
+          <div class="tab-pane fade show active" id="nav-et-1617094047253" role="tabpanel" aria-labelledby="nav-et-1617094047253-tab">
+            <pre id="e-1617094047253" class="rest-success json">{
+  "error": "name is required"
+}</pre>
+          </div>
+          <div class="tab-pane fade" id="nav-at-1617094047253" role="tabpanel" aria-labelledby="nav-at-1617094047253-tab">
+            <pre id="a-1617094047253" class="rest-success json">{
+  "error": "name is required"
+}</pre>
+          </div>
+        </div>
+    </div></td></tr></table></div><div class="tab-pane fade" id="nav--56833532-1617094047327" role="tabpanel" aria-labelledby="nav--56833532-1617094047327-tab"><table class="table table-sm"><tr data-case-title="2"><td style="max-width: 1px; width: 50%;"><div class="httpstyle"><textarea class="http">POST /widgets HTTP/1.1
+</textarea></div></td><td style="padding-left: 0;"><small><span class="exp-status rest-success">HTTP/1.1 400 Bad Request</span><span class="badge badge-pill badge-light">11ms</span></small></td></tr><tr><td from="/data/getting-started/{{req}}" class="json exp-body" style="min-width: 20%; width: 50%;">{
+  "name": "widget1"
+}</td><td colspan="1" class="exp-body" from="/data/getting-started/error.json"><div>
+        <nav>
+          <div class="nav nav-tabs" role="tablist">
+            <a class="nav-item nav-link active small text-success" id="nav-et-1617094047275-tab" data-toggle="tab" href="#nav-et-1617094047275" role="tab" aria-controls="nav-et-1617094047275" aria-selected="true"> Expected </a>
+            <a class="nav-item nav-link small" id="nav-at-1617094047275-tab" data-toggle="tab" href="#nav-at-1617094047275" role="tab" aria-controls="nav-at-1617094047275" aria-selected="false" onclick="setTimeout(() =&gt; { window.dispatchEvent(new Event('resize')); }, 200)"> Actual </a>
+          </div>
+        </nav>
+        <div class="tab-content">
+          <div class="tab-pane fade show active" id="nav-et-1617094047275" role="tabpanel" aria-labelledby="nav-et-1617094047275-tab">
+            <pre id="e-1617094047275" class="rest-success json">{
+  "error": "quantity is required"
+}</pre>
+          </div>
+          <div class="tab-pane fade" id="nav-at-1617094047275" role="tabpanel" aria-labelledby="nav-at-1617094047275-tab">
+            <pre id="a-1617094047275" class="rest-success json">{
+  "error": "quantity is required"
+}</pre>
+          </div>
+        </div>
+    </div></td></tr></table></div><div class="tab-pane fade" id="nav--1784805420-1617094047327" role="tabpanel" aria-labelledby="nav--1784805420-1617094047327-tab"><table class="table table-sm"><tr data-case-title="3"><td style="max-width: 1px; width: 50%;"><div class="httpstyle"><textarea class="http">POST /widgets HTTP/1.1
+</textarea></div></td><td style="padding-left: 0;"><small><span class="exp-status rest-success">HTTP/1.1 400 Bad Request</span><span class="badge badge-pill badge-light">16ms</span></small></td></tr><tr><td from="/data/getting-started/{{req}}" class="json exp-body" style="min-width: 20%; width: 50%;">{
+  "name": "",
+  "quantity": "10"
+}</td><td colspan="1" class="exp-body" from="/data/getting-started/error.json"><div>
+        <nav>
+          <div class="nav nav-tabs" role="tablist">
+            <a class="nav-item nav-link active small text-success" id="nav-et-1617094047304-tab" data-toggle="tab" href="#nav-et-1617094047304" role="tab" aria-controls="nav-et-1617094047304" aria-selected="true"> Expected </a>
+            <a class="nav-item nav-link small" id="nav-at-1617094047304-tab" data-toggle="tab" href="#nav-at-1617094047304" role="tab" aria-controls="nav-at-1617094047304" aria-selected="false" onclick="setTimeout(() =&gt; { window.dispatchEvent(new Event('resize')); }, 200)"> Actual </a>
+          </div>
+        </nav>
+        <div class="tab-content">
+          <div class="tab-pane fade show active" id="nav-et-1617094047304" role="tabpanel" aria-labelledby="nav-et-1617094047304-tab">
+            <pre id="e-1617094047304" class="rest-success json">{
+  "error": "blank value not allowed"
+}</pre>
+          </div>
+          <div class="tab-pane fade" id="nav-at-1617094047304" role="tabpanel" aria-labelledby="nav-at-1617094047304-tab">
+            <pre id="a-1617094047304" class="rest-success json">{
+  "error": "blank value not allowed"
+}</pre>
+          </div>
+        </div>
+    </div></td></tr></table></div><div class="tab-pane fade" id="nav-1361582976-1617094047327" role="tabpanel" aria-labelledby="nav-1361582976-1617094047327-tab"><table class="table table-sm"><tr data-case-title="4"><td style="max-width: 1px; width: 50%;"><div class="httpstyle"><textarea class="http">POST /widgets HTTP/1.1
+</textarea></div></td><td style="padding-left: 0;"><small><span class="exp-status rest-success">HTTP/1.1 400 Bad Request</span><span class="badge badge-pill badge-light">14ms</span></small></td></tr><tr><td from="/data/getting-started/{{req}}" class="json exp-body" style="min-width: 20%; width: 50%;">{
+  "name": "more_than_10",
+  "quantity": "10"
+}</td><td colspan="1" class="exp-body" from="/data/getting-started/error.json"><div>
+        <nav>
+          <div class="nav nav-tabs" role="tablist">
+            <a class="nav-item nav-link active small text-success" id="nav-et-1617094047324-tab" data-toggle="tab" href="#nav-et-1617094047324" role="tab" aria-controls="nav-et-1617094047324" aria-selected="true"> Expected </a>
+            <a class="nav-item nav-link small" id="nav-at-1617094047324-tab" data-toggle="tab" href="#nav-at-1617094047324" role="tab" aria-controls="nav-at-1617094047324" aria-selected="false" onclick="setTimeout(() =&gt; { window.dispatchEvent(new Event('resize')); }, 200)"> Actual </a>
+          </div>
+        </nav>
+        <div class="tab-content">
+          <div class="tab-pane fade show active" id="nav-et-1617094047324" role="tabpanel" aria-labelledby="nav-et-1617094047324-tab">
+            <pre id="e-1617094047324" class="rest-success json">{
+  "error": "Value 'more_than_10' can't be stored to database column because exceeds length 10"
+}</pre>
+          </div>
+          <div class="tab-pane fade" id="nav-at-1617094047324" role="tabpanel" aria-labelledby="nav-at-1617094047324-tab">
+            <pre id="a-1617094047324" class="rest-success json">{
+  "error": "Value 'more_than_10' can't be stored to database column because exceeds length 10"
+}</pre>
+          </div>
+        </div>
+    </div></td></tr></table></div></div></div></div></td></tr>
+        <div cmdId="48b22819-bc05-46cd-b756-2550f11155d3" e:check="" />
+    </table><tr><td colspan="2">
+            <div cmdId="9d9415c3-8d4b-4507-8cda-bc4f556f7ed6" e:db-check="" class="table table-sm table-hover"> <div></div><span></span><div class="table-responsive mb-1 p-1"><table class="table table-sm"><caption style="width:max-content"><i class="fa fa-database ml-1"> No widgets were created:</i></caption><tbody><tr><td colspan="4" class="table-success">&lt;EMPTY&gt;</td></tr></tbody></table></div></div>
+        </td></tr></div>
+</div><div class="card-footer text-muted" data-toggle="collapse" data-target="#-1613731824" aria-expanded="true" aria-controls="-1613731824"><small><span class="badge badge-pill badge-success">9</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small></div></div>
+<br />
+<h3>Let's test widget deletion API:</h3>
+<div xmlns:c="http://www.concordion.org/2007/concordion" name="Successful widget deletion" print="true" cmdId="ff91fea7-893b-4d6d-8fa8-600a14612595" c:example="Successful widget deletion" class="card mb-3" e:example="" id="Successful widget deletion"><div class="card-header" data-toggle="collapse" data-target="#-897825596" aria-expanded="true" aria-controls="-897825596"><a name="Successful widget deletion" data-type="example">Successful widget deletion</a></div><div class="card-body collapse show" id="-897825596"><pre lineNumbers="true" class="htmlmixed darcula mt-2">&lt;e:given&gt;
+        &lt;e:db-set caption="Given widget:" table="widgets" cols="name, quantity, id=1, updated={{now}}"&gt;
+&lt;e:row&gt;widget1, 10&lt;/e:row&gt;
+        &lt;/e:db-set&gt;
+    &lt;/e:given&gt;
+&lt;e:delete url="/widgets/1"&gt;
+        &lt;e:case desc="Successful deletion"&gt;
+&lt;e:expected /&gt;
+&lt;e:check&gt;
+    &lt;e:db-check caption="Widget was deleted:" table="widgets" /&gt;
+&lt;/e:check&gt;
+        &lt;/e:case&gt;
+        &lt;e:case desc="Absent widget deletion"&gt;
+&lt;e:expected statusCode="404" reasonPhrase="Not Found" /&gt;
+        &lt;/e:case&gt;
+    &lt;/e:delete&gt;</pre>
+    <div cmdId="731d04ba-cdf1-436a-baa6-6c75d678e790" e:given="" class="bd-callout bd-callout-info">
+        <div cmdId="ec269dff-ec10-47c3-8452-28d1a246b98d" e:db-set="" class="table table-sm table-hover">
+            
+        <div></div><span></span><div class="table-responsive mb-1 p-1"><table class="table table-sm"><caption style="width:max-content"><i class="fa fa-database ml-1"> Given widget:</i></caption><thead class="thead-default"><tr><th class="">name</th><th class="">quantity</th><th class="">id</th><th class="">updated</th></tr></thead><tbody><tr><td class=""><span>widget1</span></td><td class=""><span>10</span></td><td class=""><span>1</span></td><td class=""><span>2021-03-30 11:47:27.354</span></td></tr></tbody></table></div></div>
+    </div>
+    <div cmdId="514bc690-95a5-4f3d-aff1-73c68fbab0a9" e:delete=""><table class="table table-sm"><div><div class="input-group mb-1 mt-1">
+      <div class="input-group-prepend">
+        <span class="input-group-text bg-danger text-white">DELETE</span>
+      </div>
+      <div class="form-control bg-light text-primary font-weight-light">
+        <span id="endpoint--266497286">/widgets/1</span>
+      </div>
+    </div><div class="input-group input-group-sm">
+      <div class="input-group-prepend">
+        <span class="input-group-text" style="border:none;">Content-Type</span>
+      </div>
+      <div class="form-control bg-light text-dark font-weight-light" style="border:none;">
+        <span id="header-903411183">application/json</span>
+      </div>
+    </div></div><thead class="thead-default"><th colspan="2" style="text-align:center;" class="bg-light">Expected response</th></thead>
+        <tr desc="Successful deletion" cmdId="da3000b7-305e-40a8-a3c0-28deb11d00d0" e:case="" data-type="case" id="6) Successful deletion"><tr><td colspan="2" class="text-muted bg-light">6) Successful deletion</td></tr>
+            
+            <div cmdId="481e9ed2-417f-43e2-ac3a-7b758b0bba82" e:check="" />
+        <tr data-case-title="single"><td style="max-width: 1px; width: 100%;"><div class="httpstyle"><textarea class="http">DELETE /widgets/1 HTTP/1.1
+</textarea></div></td><td style="padding-left: 0;"><small><span class="exp-status rest-success">200</span><span class="badge badge-pill badge-light">45ms</span></small></td></tr><tr><td colspan="2" class="exp-body"><div>
+        <nav>
+          <div class="nav nav-tabs" role="tablist">
+            <a class="nav-item nav-link active small text-success" id="nav-et-1617094047434-tab" data-toggle="tab" href="#nav-et-1617094047434" role="tab" aria-controls="nav-et-1617094047434" aria-selected="true"> Expected </a>
+            <a class="nav-item nav-link small" id="nav-at-1617094047434-tab" data-toggle="tab" href="#nav-at-1617094047434" role="tab" aria-controls="nav-at-1617094047434" aria-selected="false" onclick="setTimeout(() =&gt; { window.dispatchEvent(new Event('resize')); }, 200)"> Actual </a>
+          </div>
+        </nav>
+        <div class="tab-content">
+          <div class="tab-pane fade show active" id="nav-et-1617094047434" role="tabpanel" aria-labelledby="nav-et-1617094047434-tab">
+            <pre id="e-1617094047434" class="rest-success json"> </pre>
+          </div>
+          <div class="tab-pane fade" id="nav-at-1617094047434" role="tabpanel" aria-labelledby="nav-at-1617094047434-tab">
+            <pre id="a-1617094047434" class="rest-success json"> </pre>
+          </div>
+        </div>
+    </div></td></tr></tr><tr><td colspan="2">
+                <div cmdId="9ac7ff79-8b10-402a-9f58-f7dfed2f2b03" e:db-check="" class="table table-sm table-hover"> <div></div><span></span><div class="table-responsive mb-1 p-1"><table class="table table-sm"><caption style="width:max-content"><i class="fa fa-database ml-1"> Widget was deleted:</i></caption><tbody><tr><td colspan="4" class="table-success">&lt;EMPTY&gt;</td></tr></tbody></table></div></div>
+            </td></tr>
+        <tr desc="Absent widget deletion" cmdId="72c62b23-c9a8-4326-b04d-858b4939e6ba" e:case="" data-type="case" id="7) Absent widget deletion"><tr><td colspan="2" class="text-muted bg-light">7) Absent widget deletion</td></tr>
+            
+         <tr data-case-title="single"><td style="max-width: 1px; width: 100%;"><div class="httpstyle"><textarea class="http">DELETE /widgets/1 HTTP/1.1
+</textarea></div></td><td style="padding-left: 0;"><small><span class="exp-status rest-success">HTTP/1.1 404 Not Found</span><span class="badge badge-pill badge-light">9ms</span></small></td></tr><tr><td colspan="2" class="exp-body"><div>
+        <nav>
+          <div class="nav nav-tabs" role="tablist">
+            <a class="nav-item nav-link active small text-success" id="nav-et-1617094047448-tab" data-toggle="tab" href="#nav-et-1617094047448" role="tab" aria-controls="nav-et-1617094047448" aria-selected="true"> Expected </a>
+            <a class="nav-item nav-link small" id="nav-at-1617094047448-tab" data-toggle="tab" href="#nav-at-1617094047448" role="tab" aria-controls="nav-at-1617094047448" aria-selected="false" onclick="setTimeout(() =&gt; { window.dispatchEvent(new Event('resize')); }, 200)"> Actual </a>
+          </div>
+        </nav>
+        <div class="tab-content">
+          <div class="tab-pane fade show active" id="nav-et-1617094047448" role="tabpanel" aria-labelledby="nav-et-1617094047448-tab">
+            <pre id="e-1617094047448" class="rest-success json"> </pre>
+          </div>
+          <div class="tab-pane fade" id="nav-at-1617094047448" role="tabpanel" aria-labelledby="nav-at-1617094047448-tab">
+            <pre id="a-1617094047448" class="rest-success json"> </pre>
+          </div>
+        </div>
+    </div></td></tr></tr>
+    </table></div>
+</div><div class="card-footer text-muted" data-toggle="collapse" data-target="#-897825596" aria-expanded="true" aria-controls="-897825596"><small><span class="badge badge-pill badge-success">5</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small></div></div>
+<h3>Let's test widget retrieving API:</h3>
+<div xmlns:c="http://www.concordion.org/2007/concordion" name="Successful widget retrieving" print="true" cmdId="b3f3bc3e-bdd5-4641-811d-70e3adccfa10" c:example="Successful widget retrieving" class="card mb-3" e:example="" id="Successful widget retrieving"><div class="card-header" data-toggle="collapse" data-target="#1413626223" aria-expanded="true" aria-controls="1413626223"><a name="Successful widget retrieving" data-type="example">Successful widget retrieving</a></div><div class="card-body collapse show" id="1413626223"><pre lineNumbers="true" class="htmlmixed darcula mt-2">&lt;e:given&gt;
+        &lt;e:set var="upd1" value="{{now tz='GMT+1'}}" /&gt;
+        &lt;e:set var="upd2" value="{{now plus='1 day'}}" /&gt;
+        &lt;e:set var="format" value="yyyy-MM-dd'T'HH:mm:ss.SSS" /&gt;
+        &lt;e:db-set caption="Given widgets:" table="widgets" cols="name, quantity, updated, id=1..10"&gt;
+&lt;e:row&gt;widget1, 10, {{upd1}}&lt;/e:row&gt;
+&lt;e:row&gt;widget2, 20, {{upd2}}&lt;/e:row&gt;
+&lt;e:row&gt;widget3, 30, {{date '01.02.2000 10:20+03:00' format="dd.MM.yyyy HH:mmz"}}&lt;/e:row&gt;
+&lt;e:row&gt;widget4, 40, {{date upd2 plus='12 h'}}&lt;/e:row&gt;
+        &lt;/e:db-set&gt;
+    &lt;/e:given&gt;
+&lt;e:get url="/widgets"&gt;
+        &lt;e:case desc="Can retrieve stored widgets"&gt;
+&lt;e:expected&gt;
+    [{
+    "id": 1,
+    "name": "widget1",
+    "quantity": 10,
+    "updatedAt": "{{dateFormat upd1 format}}"
+    }, {
+    "id": 2,
+    "name": "widget2",
+    "quantity": 20,
+    "updatedAt": "{{dateFormat upd2 format}}"
+    }, {
+    "id": 3,
+    "name": "widget3",
+    "quantity": 30,
+    "updatedAt": "{{dateFormat (date '01.02.2000 10:20+03:00' format="dd.MM.yyyy HH:mmz") format}}"
+    }, {
+    "id": 4,
+    "name": "widget4",
+    "quantity": 40,
+    "updatedAt": "{{dateFormat (date upd2 plus='12 h') format}}"
+    }]
+&lt;/e:expected&gt;
+        &lt;/e:case&gt;
+    &lt;/e:get&gt;</pre>
+    <div cmdId="32c027cb-9467-42fa-95b5-f730a1da06be" e:given="" class="bd-callout bd-callout-info">
+        <span var="upd1" value="{{now tz='GMT+1'}}" cmdId="8bb4d393-7211-496b-ba03-184ecbdaa8ff" e:set=""> </span>
+        <span var="upd2" value="{{now plus='1 day'}}" cmdId="068c37aa-700a-44fe-8a16-45644fb81009" e:set=""> </span>
+        <span var="format" value="yyyy-MM-dd'T'HH:mm:ss.SSS" cmdId="9a1b5e2c-c722-4570-ad4a-e39ce99a52dd" e:set=""> </span>
+        <div cmdId="7fa3ec9a-f803-4699-88e2-80d1999a0ef5" e:db-set="" class="table table-sm table-hover">
+            
+            
+            
+            
+        <div></div><span></span><div class="table-responsive mb-1 p-1"><table class="table table-sm"><caption style="width:max-content"><i class="fa fa-database ml-1"> Given widgets:</i></caption><thead class="thead-default"><tr><th class="">name</th><th class="">quantity</th><th class="">updated</th><th class="">id</th></tr></thead><tbody><tr><td class=""><span>widget1</span></td><td class=""><span>10</span></td><td class=""><span>2021-03-30 13:47:27.457</span></td><td class=""><span>1</span></td></tr><tr><td class=""><span>widget2</span></td><td class=""><span>20</span></td><td class=""><span>2021-03-31 11:47:27.458</span></td><td class=""><span>2</span></td></tr><tr><td class=""><span>widget3</span></td><td class=""><span>30</span></td><td class=""><span>2000-02-01 10:20:00.000</span></td><td class=""><span>3</span></td></tr><tr><td class=""><span>widget4</span></td><td class=""><span>40</span></td><td class=""><span>2021-03-31 23:47:27.458</span></td><td class=""><span>4</span></td></tr></tbody></table></div></div>
+    </div>
+    <div cmdId="1d3981ee-2ec6-4902-ace8-6f3a005733db" e:get=""><table class="table table-sm"><div><div class="input-group mb-1 mt-1">
+      <div class="input-group-prepend">
+        <span class="input-group-text bg-primary text-white">GET</span>
+      </div>
+      <div class="form-control bg-light text-primary font-weight-light">
+        <span id="endpoint-650587432">/widgets</span>
+      </div>
+    </div><div class="input-group input-group-sm">
+      <div class="input-group-prepend">
+        <span class="input-group-text" style="border:none;">Content-Type</span>
+      </div>
+      <div class="form-control bg-light text-dark font-weight-light" style="border:none;">
+        <span id="header--817986621">application/json</span>
+      </div>
+    </div></div><thead class="thead-default"><th colspan="2" style="text-align:center;" class="bg-light">Expected response</th></thead>
+        <tr desc="Can retrieve stored widgets" cmdId="67ef495d-d8e7-48c2-b0fb-0d789b0ff0bd" e:case="" data-type="case" id="8) Can retrieve stored widgets"><tr><td colspan="2" class="text-muted bg-light">8) Can retrieve stored widgets</td></tr>
+            
+        <tr data-case-title="single"><td style="max-width: 1px; width: 100%;"><div class="httpstyle"><textarea class="http">GET /widgets HTTP/1.1
+</textarea></div></td><td style="padding-left: 0;"><small><span class="exp-status rest-success">200</span><span class="badge badge-pill badge-light">19ms</span></small></td></tr><tr><td colspan="2" class="exp-body"><div>
+        <nav>
+          <div class="nav nav-tabs" role="tablist">
+            <a class="nav-item nav-link active small text-success" id="nav-et-1617094047554-tab" data-toggle="tab" href="#nav-et-1617094047554" role="tab" aria-controls="nav-et-1617094047554" aria-selected="true"> Expected </a>
+            <a class="nav-item nav-link small" id="nav-at-1617094047554-tab" data-toggle="tab" href="#nav-at-1617094047554" role="tab" aria-controls="nav-at-1617094047554" aria-selected="false" onclick="setTimeout(() =&gt; { window.dispatchEvent(new Event('resize')); }, 200)"> Actual </a>
+          </div>
+        </nav>
+        <div class="tab-content">
+          <div class="tab-pane fade show active" id="nav-et-1617094047554" role="tabpanel" aria-labelledby="nav-et-1617094047554-tab">
+            <pre id="e-1617094047554" class="rest-success json">[{
+  "id": 1,
+  "name": "widget1",
+  "quantity": 10,
+  "updatedAt": "2021-03-30T13:47:27.457"
+}, {
+  "id": 2,
+  "name": "widget2",
+  "quantity": 20,
+  "updatedAt": "2021-03-31T11:47:27.458"
+}, {
+  "id": 3,
+  "name": "widget3",
+  "quantity": 30,
+  "updatedAt": "2000-02-01T10:20:00.000"
+}, {
+  "id": 4,
+  "name": "widget4",
+  "quantity": 40,
+  "updatedAt": "2021-03-31T23:47:27.458"
+}]</pre>
+          </div>
+          <div class="tab-pane fade" id="nav-at-1617094047554" role="tabpanel" aria-labelledby="nav-at-1617094047554-tab">
+            <pre id="a-1617094047554" class="rest-success json">[{
+  "id": 1,
+  "name": "widget1",
+  "quantity": 10,
+  "updatedAt": "2021-03-30T13:47:27.457"
+}, {
+  "id": 2,
+  "name": "widget2",
+  "quantity": 20,
+  "updatedAt": "2021-03-31T11:47:27.458"
+}, {
+  "id": 3,
+  "name": "widget3",
+  "quantity": 30,
+  "updatedAt": "2000-02-01T10:20:00.000"
+}, {
+  "id": 4,
+  "name": "widget4",
+  "quantity": 40,
+  "updatedAt": "2021-03-31T23:47:27.458"
+}]</pre>
+          </div>
+        </div>
+    </div></td></tr></tr>
+    </table></div>
+</div><div class="card-footer text-muted" data-toggle="collapse" data-target="#1413626223" aria-expanded="true" aria-controls="1413626223"><small><span class="badge badge-pill badge-success">2</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small></div></div>
+<br />
+<h3>CRUD</h3>
+<blockquote class="blockquote">
+    <p class="mb-0">If graybox-style testing (with direct DB interactions) feels wrong to you, here is the example of blackbox one:</p>
+</blockquote>
+<div xmlns:c="http://www.concordion.org/2007/concordion" name="CRUD" print="true" cmdId="e05bc701-5791-44bb-8afc-0815310ef8d6" c:example="CRUD" class="card mb-3" e:example="" id="CRUD"><div class="card-header" data-toggle="collapse" data-target="#2077502" aria-expanded="true" aria-controls="2077502"><a name="CRUD" data-type="example">CRUD</a></div><div class="card-body collapse show" id="2077502"><pre lineNumbers="true" class="htmlmixed darcula mt-2">&lt;e:given&gt;&lt;e:db-set caption="Given no widgets:" table="widgets" /&gt;&lt;/e:given&gt;
+&lt;e:post url="/widgets"&gt;
+        &lt;e:case desc="Create"&gt;
+&lt;e:body&gt;{"name" : "widget1", "quantity": "10"}&lt;/e:body&gt;
+&lt;e:expected statusCode="201" reasonPhrase="Created"&gt;
+    {
+    "id": "{{number}}",
+    "name": "widget1",
+    "quantity": 10,
+    "updatedAt": "{{string}}"
+    }
+&lt;/e:expected&gt;
+        &lt;/e:case&gt;
+    &lt;/e:post&gt;
+&lt;e:then&gt;
+        &lt;e:set var="id" value="{{responseBody 'id'}}" /&gt;
+        &lt;e:set var="updatedAt" value="{{responseBody 'updatedAt'}}" /&gt;
+        Widget has id = &lt;code cc:echo="#id" /&gt; and updatedAt = &lt;code cc:echo="#updatedAt" /&gt;
+    &lt;/e:then&gt;
+&lt;e:get url="/widgets"&gt;
+        &lt;e:case desc="Read"&gt;
+&lt;e:expected&gt;
+    [{ "id": {{id}}, "name": "widget1", "quantity": 10, "updatedAt": "{{updatedAt}}" }]
+&lt;/e:expected&gt;
+        &lt;/e:case&gt;
+    &lt;/e:get&gt;
+&lt;e:put url="/widgets"&gt;
+        &lt;e:case desc="Update"&gt;
+&lt;e:body&gt;{"id": {{id}}, "name": "new name", "quantity": "0"}&lt;/e:body&gt;
+&lt;e:expected&gt;
+    { "id": {{id}}, "name": "new name", "quantity": 0, "updatedAt": "{{formattedAndWithinNow "yyyy-MM-dd'T'HH:mm:ss.SSS" "5s"}}" }
+&lt;/e:expected&gt;
+        &lt;/e:case&gt;
+    &lt;/e:put&gt;
+&lt;e:delete url="/widgets/{{id}}"&gt;
+        &lt;e:case desc="Delete"&gt;
+&lt;e:expected /&gt;
+        &lt;/e:case&gt;
+    &lt;/e:delete&gt;</pre>
+    <div cmdId="f31030c9-baa3-43d8-8bde-624fbdecb435" e:given="" class="bd-callout bd-callout-info"><div cmdId="c5bbbfb7-7489-4061-8a5e-6a7495981c60" e:db-set="" class="table table-sm table-hover"> <div></div><span></span><div class="table-responsive mb-1 p-1"><table class="table table-sm"><caption style="width:max-content"><i class="fa fa-database ml-1"> Given no widgets:</i></caption><tbody><tr><td colspan="0">&lt;EMPTY&gt;</td></tr></tbody></table></div></div></div>
+    <div cmdId="52b8ef8c-b349-4328-a9c5-705a4bd27db5" e:post=""><table class="table table-sm"><div><div class="input-group mb-1 mt-1">
+      <div class="input-group-prepend">
+        <span class="input-group-text bg-success text-white">POST</span>
+      </div>
+      <div class="form-control bg-light text-primary font-weight-light">
+        <span id="endpoint--1102801042">/widgets</span>
+      </div>
+    </div><div class="input-group input-group-sm">
+      <div class="input-group-prepend">
+        <span class="input-group-text" style="border:none;">Content-Type</span>
+      </div>
+      <div class="form-control bg-light text-dark font-weight-light" style="border:none;">
+        <span id="header--327855417">application/json</span>
+      </div>
+    </div></div><thead class="thead-default"><th style="text-align:center;" class="bg-light">Request</th><th colspan="1" style="text-align:center;" class="bg-light">Expected response</th></thead>
+        <tr desc="Create" cmdId="af7715f1-3064-4d69-b724-9de342b0a178" e:case="" data-type="case" id="9) Create"><tr><td colspan="2" class="text-muted bg-light">9) Create</td></tr>
+            
+            
+        <tr data-case-title="single"><td style="max-width: 1px; width: 50%;"><div class="httpstyle"><textarea class="http">POST /widgets HTTP/1.1
+</textarea></div></td><td style="padding-left: 0;"><small><span class="exp-status rest-success">HTTP/1.1 201 Created</span><span class="badge badge-pill badge-light">25ms</span></small></td></tr><tr><td class="json exp-body" style="min-width: 20%; width: 50%;">{
+  "name": "widget1",
+  "quantity": "10"
+}</td><td colspan="1" class="exp-body"><div>
+        <nav>
+          <div class="nav nav-tabs" role="tablist">
+            <a class="nav-item nav-link active small text-success" id="nav-et-1617094047599-tab" data-toggle="tab" href="#nav-et-1617094047599" role="tab" aria-controls="nav-et-1617094047599" aria-selected="true"> Expected </a>
+            <a class="nav-item nav-link small" id="nav-at-1617094047599-tab" data-toggle="tab" href="#nav-at-1617094047599" role="tab" aria-controls="nav-at-1617094047599" aria-selected="false" onclick="setTimeout(() =&gt; { window.dispatchEvent(new Event('resize')); }, 200)"> Actual </a>
+          </div>
+        </nav>
+        <div class="tab-content">
+          <div class="tab-pane fade show active" id="nav-et-1617094047599" role="tabpanel" aria-labelledby="nav-et-1617094047599-tab">
+            <pre id="e-1617094047599" class="rest-success json">{
+  "id": "${json-unit.any-number}",
+  "name": "widget1",
+  "quantity": 10,
+  "updatedAt": "${json-unit.any-string}"
+}</pre>
+          </div>
+          <div class="tab-pane fade" id="nav-at-1617094047599" role="tabpanel" aria-labelledby="nav-at-1617094047599-tab">
+            <pre id="a-1617094047599" class="rest-success json">{
+  "id": 5,
+  "name": "widget1",
+  "quantity": 10,
+  "updatedAt": "2021-03-30T11:47:27.590"
+}</pre>
+          </div>
+        </div>
+    </div></td></tr></tr>
+    </table></div>
+    <div cmdId="73fbffce-b34c-458b-a73b-67f77e7bc4e7" e:then="" class="bd-callout bd-callout-success">
+        <span var="id" value="{{responseBody 'id'}}" cmdId="e2383aca-a624-45b6-a7eb-cfd4eb5f6da4" e:set=""> </span>
+        <span var="updatedAt" value="{{responseBody 'updatedAt'}}" cmdId="6ac7a0ed-e127-4b1d-beb4-eb1b6f98be52" e:set=""> </span>
+        Widget has id = <code cc:echo="#id">5</code> and updatedAt = <code cc:echo="#updatedAt">2021-03-30T11:47:27.590</code>
+    </div>
+    <div cmdId="d2565fe4-4f95-4e87-871a-17bc0114301c" e:get=""><table class="table table-sm"><div><div class="input-group mb-1 mt-1">
+      <div class="input-group-prepend">
+        <span class="input-group-text bg-primary text-white">GET</span>
+      </div>
+      <div class="form-control bg-light text-primary font-weight-light">
+        <span id="endpoint-653950867">/widgets</span>
+      </div>
+    </div><div class="input-group input-group-sm">
+      <div class="input-group-prepend">
+        <span class="input-group-text" style="border:none;">Content-Type</span>
+      </div>
+      <div class="form-control bg-light text-dark font-weight-light" style="border:none;">
+        <span id="header-1087939410">application/json</span>
+      </div>
+    </div></div><thead class="thead-default"><th colspan="2" style="text-align:center;" class="bg-light">Expected response</th></thead>
+        <tr desc="Read" cmdId="b3c3e67c-c1cb-41d0-a8c4-69adcc31994c" e:case="" data-type="case" id="10) Read"><tr><td colspan="2" class="text-muted bg-light">10) Read</td></tr>
+            
+        <tr data-case-title="single"><td style="max-width: 1px; width: 100%;"><div class="httpstyle"><textarea class="http">GET /widgets HTTP/1.1
+</textarea></div></td><td style="padding-left: 0;"><small><span class="exp-status rest-success">200</span><span class="badge badge-pill badge-light">15ms</span></small></td></tr><tr><td colspan="2" class="exp-body"><div>
+        <nav>
+          <div class="nav nav-tabs" role="tablist">
+            <a class="nav-item nav-link active small text-success" id="nav-et-1617094048259-tab" data-toggle="tab" href="#nav-et-1617094048259" role="tab" aria-controls="nav-et-1617094048259" aria-selected="true"> Expected </a>
+            <a class="nav-item nav-link small" id="nav-at-1617094048259-tab" data-toggle="tab" href="#nav-at-1617094048259" role="tab" aria-controls="nav-at-1617094048259" aria-selected="false" onclick="setTimeout(() =&gt; { window.dispatchEvent(new Event('resize')); }, 200)"> Actual </a>
+          </div>
+        </nav>
+        <div class="tab-content">
+          <div class="tab-pane fade show active" id="nav-et-1617094048259" role="tabpanel" aria-labelledby="nav-et-1617094048259-tab">
+            <pre id="e-1617094048259" class="rest-success json">[{
+  "id": 5,
+  "name": "widget1",
+  "quantity": 10,
+  "updatedAt": "2021-03-30T11:47:27.590"
+}]</pre>
+          </div>
+          <div class="tab-pane fade" id="nav-at-1617094048259" role="tabpanel" aria-labelledby="nav-at-1617094048259-tab">
+            <pre id="a-1617094048259" class="rest-success json">[{
+  "id": 5,
+  "name": "widget1",
+  "quantity": 10,
+  "updatedAt": "2021-03-30T11:47:27.590"
+}]</pre>
+          </div>
+        </div>
+    </div></td></tr></tr>
+    </table></div>
+    <div cmdId="ea0820bb-63f1-4192-a2ae-393d0061f3d8" e:put=""><table class="table table-sm"><div><div class="input-group mb-1 mt-1">
+      <div class="input-group-prepend">
+        <span class="input-group-text bg-warning text-white">PUT</span>
+      </div>
+      <div class="form-control bg-light text-primary font-weight-light">
+        <span id="endpoint--1547046641">/widgets</span>
+      </div>
+    </div><div class="input-group input-group-sm">
+      <div class="input-group-prepend">
+        <span class="input-group-text" style="border:none;">Content-Type</span>
+      </div>
+      <div class="form-control bg-light text-dark font-weight-light" style="border:none;">
+        <span id="header--267786900">application/json</span>
+      </div>
+    </div></div><thead class="thead-default"><th style="text-align:center;" class="bg-light">Request</th><th colspan="1" style="text-align:center;" class="bg-light">Expected response</th></thead>
+        <tr desc="Update" cmdId="ae0e382a-2f27-402d-9c91-dba0b7bac6fb" e:case="" data-type="case" id="11) Update"><tr><td colspan="2" class="text-muted bg-light">11) Update</td></tr>
+            
+            
+        <tr data-case-title="single"><td style="max-width: 1px; width: 50%;"><div class="httpstyle"><textarea class="http">PUT /widgets HTTP/1.1
+</textarea></div></td><td style="padding-left: 0;"><small><span class="exp-status rest-success">200</span><span class="badge badge-pill badge-light">17ms</span></small></td></tr><tr><td class="json exp-body" style="min-width: 20%; width: 50%;">{
+  "id": 5,
+  "name": "new name",
+  "quantity": "0"
+}</td><td colspan="1" class="exp-body"><div>
+        <nav>
+          <div class="nav nav-tabs" role="tablist">
+            <a class="nav-item nav-link active small text-success" id="nav-et-1617094048283-tab" data-toggle="tab" href="#nav-et-1617094048283" role="tab" aria-controls="nav-et-1617094048283" aria-selected="true"> Expected </a>
+            <a class="nav-item nav-link small" id="nav-at-1617094048283-tab" data-toggle="tab" href="#nav-at-1617094048283" role="tab" aria-controls="nav-at-1617094048283" aria-selected="false" onclick="setTimeout(() =&gt; { window.dispatchEvent(new Event('resize')); }, 200)"> Actual </a>
+          </div>
+        </nav>
+        <div class="tab-content">
+          <div class="tab-pane fade show active" id="nav-et-1617094048283" role="tabpanel" aria-labelledby="nav-et-1617094048283-tab">
+            <pre id="e-1617094048283" class="rest-success json">{
+  "id": 5,
+  "name": "new name",
+  "quantity": 0,
+  "updatedAt": "${json-unit.matches:formattedAndWithinNow}[yyyy-MM-dd'T'HH:mm:ss.SSS][5s]"
+}</pre>
+          </div>
+          <div class="tab-pane fade" id="nav-at-1617094048283" role="tabpanel" aria-labelledby="nav-at-1617094048283-tab">
+            <pre id="a-1617094048283" class="rest-success json">{
+  "id": 5,
+  "name": "new name",
+  "quantity": 0,
+  "updatedAt": "2021-03-30T11:47:28.274"
+}</pre>
+          </div>
+        </div>
+    </div></td></tr></tr>
+    </table></div>
+    <div cmdId="447b04db-6c74-4f4b-b23c-582439a44866" e:delete=""><table class="table table-sm"><div><div class="input-group mb-1 mt-1">
+      <div class="input-group-prepend">
+        <span class="input-group-text bg-danger text-white">DELETE</span>
+      </div>
+      <div class="form-control bg-light text-primary font-weight-light">
+        <span id="endpoint--2123664509">/widgets/5</span>
+      </div>
+    </div><div class="input-group input-group-sm">
+      <div class="input-group-prepend">
+        <span class="input-group-text" style="border:none;">Content-Type</span>
+      </div>
+      <div class="form-control bg-light text-dark font-weight-light" style="border:none;">
+        <span id="header-2068496641">application/json</span>
+      </div>
+    </div></div><thead class="thead-default"><th colspan="2" style="text-align:center;" class="bg-light">Expected response</th></thead>
+        <tr desc="Delete" cmdId="a642752c-78bf-423d-b414-46e52b57fc19" e:case="" data-type="case" id="12) Delete"><tr><td colspan="2" class="text-muted bg-light">12) Delete</td></tr>
+            
+         <tr data-case-title="single"><td style="max-width: 1px; width: 100%;"><div class="httpstyle"><textarea class="http">DELETE /widgets/5 HTTP/1.1
+</textarea></div></td><td style="padding-left: 0;"><small><span class="exp-status rest-success">200</span><span class="badge badge-pill badge-light">29ms</span></small></td></tr><tr><td colspan="2" class="exp-body"><div>
+        <nav>
+          <div class="nav nav-tabs" role="tablist">
+            <a class="nav-item nav-link active small text-success" id="nav-et-1617094048326-tab" data-toggle="tab" href="#nav-et-1617094048326" role="tab" aria-controls="nav-et-1617094048326" aria-selected="true"> Expected </a>
+            <a class="nav-item nav-link small" id="nav-at-1617094048326-tab" data-toggle="tab" href="#nav-at-1617094048326" role="tab" aria-controls="nav-at-1617094048326" aria-selected="false" onclick="setTimeout(() =&gt; { window.dispatchEvent(new Event('resize')); }, 200)"> Actual </a>
+          </div>
+        </nav>
+        <div class="tab-content">
+          <div class="tab-pane fade show active" id="nav-et-1617094048326" role="tabpanel" aria-labelledby="nav-et-1617094048326-tab">
+            <pre id="e-1617094048326" class="rest-success json"> </pre>
+          </div>
+          <div class="tab-pane fade" id="nav-at-1617094048326" role="tabpanel" aria-labelledby="nav-at-1617094048326-tab">
+            <pre id="a-1617094048326" class="rest-success json"> </pre>
+          </div>
+        </div>
+    </div></td></tr></tr>
+    </table></div>
+</div><div class="card-footer text-muted" data-toggle="collapse" data-target="#2077502" aria-expanded="true" aria-controls="2077502"><small><span class="badge badge-pill badge-success">8</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small></div></div>
+<br />
+<h3>Testing asynchronous behavior</h3>
+<blockquote class="blockquote">
+    <p class="mb-0">Assume we need to trigger a job and do checks only after it's finished:</p>
+</blockquote>
+<div xmlns:c="http://www.concordion.org/2007/concordion" name="Trigger job and poll result with custom method" print="true" cmdId="26841c6b-77fb-4f50-a97e-a8a546e334e3" c:example="Trigger job and poll result with custom method" class="card mb-3" e:example="" id="Trigger job and poll result with custom method"><div class="card-header" data-toggle="collapse" data-target="#1782657164" aria-expanded="true" aria-controls="1782657164"><a name="Trigger job and poll result with custom method" data-type="example">Trigger job and poll result with custom method</a></div><div class="card-body collapse show" id="1782657164"><pre lineNumbers="true" class="htmlmixed darcula mt-2">&lt;e:post url="/jobs"&gt;
+        &lt;e:case desc="Trigger job with some optional body"&gt;
+&lt;e:body&gt;{"name" : "value"}&lt;/e:body&gt;
+&lt;e:expected&gt;{"id" : "{{number}}" }&lt;/e:expected&gt;
+        &lt;/e:case&gt;
+    &lt;/e:post&gt;
+&lt;e:when&gt;
+        &lt;e:set var="id" value="{{responseBody 'id'}}" /&gt;
+        &lt;e:await untilTrue="isDone(#id)" atMostSec="3" pollDelayMillis="500" pollIntervalMillis="1000" /&gt;
+        Job &lt;code cc:echo="#id" /&gt; is finished.
+    &lt;/e:when&gt;
+&lt;e:then&gt;
+        Now we can check result:
+        &lt;e:db-check table="jobResult" cols="result" where="id={{id}}"&gt;
+&lt;e:row&gt;done&lt;/e:row&gt;
+        &lt;/e:db-check&gt;
+    &lt;/e:then&gt;</pre>
+    <div cmdId="b6412f2e-1294-4129-9b53-05ade15d955a" e:post=""><table class="table table-sm"><div><div class="input-group mb-1 mt-1">
+      <div class="input-group-prepend">
+        <span class="input-group-text bg-success text-white">POST</span>
+      </div>
+      <div class="form-control bg-light text-primary font-weight-light">
+        <span id="endpoint-1356345382">/jobs</span>
+      </div>
+    </div><div class="input-group input-group-sm">
+      <div class="input-group-prepend">
+        <span class="input-group-text" style="border:none;">Content-Type</span>
+      </div>
+      <div class="form-control bg-light text-dark font-weight-light" style="border:none;">
+        <span id="header-2114327486">application/json</span>
+      </div>
+    </div></div><thead class="thead-default"><th style="text-align:center;" class="bg-light">Request</th><th colspan="1" style="text-align:center;" class="bg-light">Expected response</th></thead>
+        <tr desc="Trigger job with some optional body" cmdId="25394a93-9218-45b8-8911-6928d0db00a8" e:case="" data-type="case" id="13) Trigger job with some optional body"><tr><td colspan="2" class="text-muted bg-light">13) Trigger job with some optional body</td></tr>
+            
+            
+        <tr data-case-title="single"><td style="max-width: 1px; width: 50%;"><div class="httpstyle"><textarea class="http">POST /jobs HTTP/1.1
+</textarea></div></td><td style="padding-left: 0;"><small><span class="exp-status rest-success">200</span><span class="badge badge-pill badge-light">18ms</span></small></td></tr><tr><td class="json exp-body" style="min-width: 20%; width: 50%;">{
+  "name": "value"
+}</td><td colspan="1" class="exp-body"><div>
+        <nav>
+          <div class="nav nav-tabs" role="tablist">
+            <a class="nav-item nav-link active small text-success" id="nav-et-1617094048378-tab" data-toggle="tab" href="#nav-et-1617094048378" role="tab" aria-controls="nav-et-1617094048378" aria-selected="true"> Expected </a>
+            <a class="nav-item nav-link small" id="nav-at-1617094048378-tab" data-toggle="tab" href="#nav-at-1617094048378" role="tab" aria-controls="nav-at-1617094048378" aria-selected="false" onclick="setTimeout(() =&gt; { window.dispatchEvent(new Event('resize')); }, 200)"> Actual </a>
+          </div>
+        </nav>
+        <div class="tab-content">
+          <div class="tab-pane fade show active" id="nav-et-1617094048378" role="tabpanel" aria-labelledby="nav-et-1617094048378-tab">
+            <pre id="e-1617094048378" class="rest-success json">{
+  "id": "${json-unit.any-number}"
+}</pre>
+          </div>
+          <div class="tab-pane fade" id="nav-at-1617094048378" role="tabpanel" aria-labelledby="nav-at-1617094048378-tab">
+            <pre id="a-1617094048378" class="rest-success json">{
+  "id": 1
+}</pre>
+          </div>
+        </div>
+    </div></td></tr></tr>
+    </table></div>
+    <div cmdId="a0d363c6-079c-4911-9cb5-f6e6b16e99a1" e:when="" class="bd-callout bd-callout-warning">
+        <span var="id" value="{{responseBody 'id'}}" cmdId="112f0316-31e5-42bd-8059-f6fd3f45ec40" e:set=""> </span>
+        <span cmdId="dff3207c-462d-4978-8a15-69cd0a580723" e:await="" />
+        Job <code cc:echo="#id">1</code> is finished.
+    </div>
+    <div cmdId="bb7b46b6-42d5-4d74-8b03-6699f43965a8" e:then="" class="bd-callout bd-callout-success">
+        Now we can check result:
+        <div cmdId="f519d9af-c6c4-41c3-8a33-31c377cdfac3" e:db-check="" class="table table-sm table-hover">
+            
+        <div></div><span></span><div class="table-responsive mb-1 p-1"><table class="table table-sm"><caption style="width:max-content"><i class="fa fa-database ml-1"> jobResult</i></caption><thead class="thead-default"><tr><th class="">RESULT</th></tr></thead><tbody><tr><td class=" table-success"> <span>done</span></td></tr></tbody></table></div></div>
+    </div>
+</div><div class="card-footer text-muted" data-toggle="collapse" data-target="#1782657164" aria-expanded="true" aria-controls="1782657164"><small><span class="badge badge-pill badge-success">3</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small></div></div>
+<blockquote class="blockquote">
+    <p class="mb-0">Equivalent of previous example with explicit http polling:</p>
+</blockquote>
+<div xmlns:c="http://www.concordion.org/2007/concordion" name="Trigger job and poll result with http request" print="true" cmdId="cbd53793-1ac1-471f-8646-a71561b7f291" c:example="Trigger job and poll result with http request" class="card mb-3" e:example="" id="Trigger job and poll result with http request"><div class="card-header" data-toggle="collapse" data-target="#51349339" aria-expanded="true" aria-controls="51349339"><a name="Trigger job and poll result with http request" data-type="example">Trigger job and poll result with http request</a></div><div class="card-body collapse show" id="51349339"><pre lineNumbers="true" class="htmlmixed darcula mt-2">&lt;e:when&gt;
+        Trigger job on &lt;code cc:set="#url"&gt;/jobs&lt;/code&gt; with some optional body &lt;code cc:set="#json"&gt;{"name" : "value"}&lt;/code&gt;
+        &lt;e:await untilHttpPost="{{url}}" hasStatusCode="200"&gt;{{json}}&lt;/e:await&gt;
+        &lt;e:set var="id" value="{{responseBody 'id'}}" /&gt;
+        and wait until it's finished.
+        &lt;e:await untilHttpGet="/jobs/{{id}}" hasBodyFrom="/data/getting-started/job-finished.json" /&gt;
+        Job id = &lt;code cc:echo="#id" /&gt;
+    &lt;/e:when&gt;
+&lt;e:then&gt;
+        Now we can check result:
+        &lt;e:db-check table="jobResult" cols="result" where="id={{id}}"&gt;
+&lt;e:row&gt;done&lt;/e:row&gt;
+        &lt;/e:db-check&gt;
+    &lt;/e:then&gt;</pre>
+    <div cmdId="d7c849f3-e68e-4f9b-a41c-137d273b4a2b" e:when="" class="bd-callout bd-callout-warning">
+        Trigger job on <code cc:set="#url">/jobs</code> with some optional body <code cc:set="#json">{"name" : "value"}</code>
+        <span cmdId="853dcf46-d015-467e-ba6e-f69ac4053641" e:await="" />
+        <span var="id" value="{{responseBody 'id'}}" cmdId="3e5999e5-69c4-4c7f-9a05-aa0c9ffd4c78" e:set=""> </span>
+        and wait until it's finished.
+        <span cmdId="27361f42-9685-458a-8144-4a527f2e993e" e:await="" />
+        Job id = <code cc:echo="#id">2</code>
+    </div>
+    <div cmdId="3907a5f6-c0eb-4d64-b368-91e317490531" e:then="" class="bd-callout bd-callout-success">
+        Now we can check result:
+        <div cmdId="700716fb-8b41-4b6b-bbea-853af86d2027" e:db-check="" class="table table-sm table-hover">
+            
+        <div></div><span></span><div class="table-responsive mb-1 p-1"><table class="table table-sm"><caption style="width:max-content"><i class="fa fa-database ml-1"> jobResult</i></caption><thead class="thead-default"><tr><th class="">RESULT</th></tr></thead><tbody><tr><td class=" table-success"> <span>done</span></td></tr></tbody></table></div></div>
+    </div>
+</div><div class="card-footer text-muted" data-toggle="collapse" data-target="#51349339" aria-expanded="true" aria-controls="51349339"><small><span class="badge badge-pill badge-success">1</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small></div></div>
+<blockquote class="blockquote">
+    <p class="mb-0">Equivalent of previous example with awaiting by db-check:</p>
+</blockquote>
+<div xmlns:c="http://www.concordion.org/2007/concordion" name="Trigger job and poll result with db-check" print="true" cmdId="128c02cb-9689-4d00-a007-fba3d63f41fb" c:example="Trigger job and poll result with db-check" class="card mb-3" e:example="" id="Trigger job and poll result with db-check"><div class="card-header" data-toggle="collapse" data-target="#1980823901" aria-expanded="true" aria-controls="1980823901"><a name="Trigger job and poll result with db-check" data-type="example">Trigger job and poll result with db-check</a></div><div class="card-body collapse show" id="1980823901"><pre lineNumbers="true" class="htmlmixed darcula mt-2">&lt;e:when&gt;
+        Trigger job on &lt;code cc:set="#url"&gt;/jobs&lt;/code&gt; with some optional body &lt;code cc:set="#json"&gt;{"name" : "value"}&lt;/code&gt;
+        &lt;e:await untilHttpPost="{{url}}" hasStatusCode="200"&gt;{{json}}&lt;/e:await&gt;
+        &lt;e:set var="id" value="{{responseBody 'id'}}" /&gt;
+        Job id = &lt;code cc:echo="#id" /&gt;
+    &lt;/e:when&gt;
+&lt;e:then&gt;
+        Await for result:
+        &lt;e:db-check table="jobResult" cols="id, result" where="id={{id}}" awaitAtMostSec="4"&gt;
+&lt;e:row&gt;{{id}}, done&lt;/e:row&gt;
+        &lt;/e:db-check&gt;
+    &lt;/e:then&gt;</pre>
+    <div cmdId="2a5d8002-9d3d-4fca-9bb9-d5ca83b88446" e:when="" class="bd-callout bd-callout-warning">
+        Trigger job on <code cc:set="#url">/jobs</code> with some optional body <code cc:set="#json">{"name" : "value"}</code>
+        <span cmdId="640894d6-85d4-4d3e-ba94-8ecdd0d6b705" e:await="" />
+        <span var="id" value="{{responseBody 'id'}}" cmdId="f35233c4-58a1-49c0-b82f-305f748d16ef" e:set=""> </span>
+        Job id = <code cc:echo="#id">3</code>
+    </div>
+    <div cmdId="5d2cde67-597e-455c-8a96-d5d88e66b709" e:then="" class="bd-callout bd-callout-success">
+        Await for result:
+        <div cmdId="3fd610dc-a8eb-4726-8a47-f98dc9f6c831" e:db-check="" class="table table-sm table-hover">
+            
+        <div></div><span></span><div class="table-responsive mb-1 p-1"><table class="table table-sm"><caption style="width:max-content"><i class="fa fa-database ml-1"> jobResult</i></caption><thead class="thead-default"><tr><th class="">ID</th><th class="">RESULT</th></tr></thead><tbody><tr><td class=" table-success"> <span>3</span></td><td class=" table-success"> <span>done</span></td></tr></tbody></table></div></div>
+    </div>
+</div><div class="card-footer text-muted" data-toggle="collapse" data-target="#1980823901" aria-expanded="true" aria-controls="1980823901"><small><span class="badge badge-pill badge-success">2</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small></div></div>
+<div class="footer">Results generated by <a href="http://www.concordion.org" style="font-weight: bold; text-decoration: none; color: #89C;">Concordion</a><div class="testTime">in 11802 ms on 30-Mar-2021 at 11:47:35 MSK</div></div></body>
+<button id="btnToTop" onclick="topFunction()" type="button" class="btn btn-light btn-sm text-muted ml-1"><i class="fa fa-arrow-up"></i></button></html>

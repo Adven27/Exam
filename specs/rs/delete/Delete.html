@@ -1,0 +1,471 @@
+<?xml version="1.0" encoding="UTF-8"?><html xmlns:concordion="http://www.concordion.org/2007/concordion" xmlns:e="http://exam.extension.io" xmlns:c="http://www.concordion.org/2007/concordion"><head><style>* {
+  font-family: Arial;
+}
+body {
+  padding: 32px;  
+}
+pre {
+  padding: 6px 28px 6px 28px;
+  background-color: #E8EEF7;
+}
+pre, pre *, code, code *, kbd {
+  font-family: Courier New, Courier;
+  font-size: 10pt;
+}
+h1, h1 * {
+  font-size: 24pt;	
+}
+p, td, th, li, .breadcrumbs {
+  font-size: 10pt;
+}
+p, li {
+  line-height: 140%;
+  max-width: 720px;
+}
+table {
+  border-collapse: collapse;
+  empty-cells: show;
+  margin: 8px 0px 8px 0px;
+}
+th, td {
+  border: 1px solid black;
+  padding: 3px;
+}
+td {
+  background-color: white;
+  vertical-align: top;
+}
+th {
+  background-color: #C3D9FF;
+}
+li {
+  margin-top: 6px;
+  margin-bottom: 6px; 
+}
+
+.example, :not(th)[concordion\:example] {
+  padding: 6px 16px 6px 16px;
+  border: 1px solid #C3D9FF;
+  margin: 6px 0px 28px 0px;
+  background-color: #F5F9FD;
+}
+.example h3, [concordion\:example] h3 {
+  margin-top: 8px;
+  margin-bottom: 8px;
+  font-size: 12pt;
+}
+
+p.success {
+  padding: 2px;
+}
+.success, .success * {
+  background-color: #afa !important;
+}
+.success pre {
+  background-color: #bbffbb;
+}
+.failure, .failure * {
+  background-color: #ffb0b0;
+  padding: 1px;
+}
+.failure .expected {
+  text-decoration: line-through;
+  color: #bb5050;
+}
+.ignored, .ignored * {
+  background-color: #f0f0f0 !important;	
+}
+
+ins {
+  text-decoration: none;	
+}
+
+.exceptionMessage {
+  background-color: #fdd;
+  font-family: Courier New, Courier, Monospace;
+  font-size: 10pt;
+  display: block;
+  font-weight: normal;
+  padding: 4px;
+  text-decoration: none !important;
+}
+.stackTrace, .stackTrace * {
+  font-weight: normal;
+}
+.stackTrace {
+  display: none;
+  padding: 1px 4px 4px 4px;
+  background-color: #fdd;
+  border-top: 1px dotted black;
+}
+.stackTraceExceptionMessage {
+  display: block;
+  font-family: Courier New, Courier, Monospace;
+  font-size: 8pt;
+  white-space: wrap;
+  padding: 1px 0px 1px 0px;
+}
+.stackTraceEntry {
+  white-space: nowrap;
+  font-family: Courier New, Courier, Monospace;
+  display: block;
+  font-size: 8pt;
+  padding: 1px 0px 1px 32px;
+}
+.stackTraceButton {
+  font-size: 8pt;
+  margin: 2px 8px 2px 0px;
+  font-weight: normal;
+  font-family: Arial;
+}
+
+.special {
+  font-style: italic;
+}
+.missing, .missing * {
+  background-color: #ff9999;
+  color:#bb5050;
+  text-decoration: line-through;
+}
+.surplus, .surplus * {
+  background-color: #ff9999;
+}
+.footer {
+  text-align: right;
+  margin-top: 40px;
+  font-size: 8pt;
+  width: 100%;
+  color: #999;
+}
+.footer .testTime {
+  padding: 2px 10px 0px 0px;
+}
+
+.idea {
+  font-size: 9pt;
+  color: #888;
+  font-style: italic;	
+}
+.tight li {
+  margin-top: 1px;
+  margin-bottom: 1px; 
+}
+.commentary {
+  float: right;
+  width: 200px;
+  background-color: #ffffd0;
+  padding:8px;
+  border: 3px solid #eeeeb0;	 
+  margin: 10px 0px 10px 10px;	 
+}
+.commentary, .commentary * {
+  font-size: 8pt;
+}
+</style><meta http-equiv="content-type" content="text/html; charset=UTF-8" /><link type="text/css" rel="stylesheet" href="../../../codemirror/codemirror.css" /><link type="text/css" rel="stylesheet" href="../../../codemirror/merge.css" /><link type="text/css" rel="stylesheet" href="../../../codemirror/enable-codemirror.css" /><link type="text/css" rel="stylesheet" href="../../../codemirror/foldgutter.css" /><link type="text/css" rel="stylesheet" href="../../../codemirror/simplescrollbar.css" /><script type="text/javascript" src="../../../codemirror/codemirror.js"></script><script type="text/javascript" src="../../../codemirror/enable-codemirror.js"></script><script type="text/javascript" src="../../../codemirror/javascript.js"></script><script type="text/javascript" src="../../../codemirror/xml.js"></script><script type="text/javascript" src="../../../codemirror/htmlmixed.js"></script><script type="text/javascript" src="../../../codemirror/handelbar.js"></script><script type="text/javascript" src="../../../codemirror/addon/mode/simple.js"></script><script type="text/javascript" src="../../../codemirror/http.js"></script><script type="text/javascript" src="../../../codemirror/formatting.js"></script><script type="text/javascript" src="../../../codemirror/markdown.js"></script><script type="text/javascript" src="../../../codemirror/diff_match_patch.js"></script><script type="text/javascript" src="../../../codemirror/merge.js"></script><script type="text/javascript" src="../../../codemirror/xml-fold.js"></script><script type="text/javascript" src="../../../codemirror/simplescrollbar.js"></script><link type="text/css" rel="stylesheet" href="../../../codemirror/theme/darcula.css" /><script type="text/javascript" src="../../../bootstrap/jquery-3.2.1.slim.min.js"></script><script type="text/javascript" src="../../../bootstrap/popper.min.js"></script><script type="text/javascript" src="../../../bootstrap/bootstrap.min.js"></script><script type="text/javascript" src="../../../bootstrap/sidebar.js"></script><link type="text/css" rel="stylesheet" href="../../../bootstrap/enable-bootstrap.css" /><link type="text/css" rel="stylesheet" href="../../../bootstrap/bootstrap.min.css" /><link type="text/css" rel="stylesheet" href="../../../bootstrap/callout.css" /><link type="text/css" rel="stylesheet" href="../../../bootstrap/font-awesome.min.css" /><link type="text/css" rel="stylesheet" href="../../../bootstrap/scrollToTop.css" /><script type="text/javascript" src="../../../bootstrap/scrollToTop.js"></script><link type="text/css" rel="stylesheet" href="../../../timingExtensionStyle.css" /><script type="text/javascript" src="../../../timingExtensionToggle.js"></script></head><body><div id="toggle-button"><img id="toggle-on" src="../../../timing-on.svg" height="24" width="24" style="display:none" /><img id="toggle-off" src="../../../timing-off.svg" height="24" width="24" /></div><span class="breadcrumbs"><a href="../../Specs.html">Exam - Concordion extension</a> &gt; <a href="../Rs.html">Rest specification</a> &gt; <a href="Delete.html">DELETE-request</a> &gt;</span><h1>DELETE-request</h1>
+<h2><code>&lt;e:delete url="..." type="&lt;optional&gt;"&gt;</code></h2>
+<div>
+    <div cmdId="48f944a3-d4c3-45eb-8b19-72dab10e089a" e:summary="" class="pin"> <h4>Summary<button type="button" class="btn btn-light btn-sm text-muted ml-1" data-toggle="collapse" data-target="#summary" aria-expanded="true" aria-controls="summary">collapse</button></h4><div id="summary" class="collapse show"><div class="list-group"><a class="list-group-item list-group-item-action" style="border-left: none; border-right: none;" href="#Body check">Body check<small class="card-img-overlay m-1" style="padding:0; left:inherit;"><span class="badge badge-pill badge-light">21ms</span><span class="badge badge-pill badge-success">4</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning">1</span><span class="badge badge-pill badge-danger"></span><span class="badge badge-pill badge-warning">ExpectedToFail</span></small><button type="button" class="btn btn-light btn-sm text-muted ml-1" data-toggle="collapse" data-target="#563b1bce-02bf-484e-a7c6-dca3e666f075" aria-expanded="true" aria-controls="563b1bce-02bf-484e-a7c6-dca3e666f075">cases</button></a><div id="563b1bce-02bf-484e-a7c6-dca3e666f075" class="collapse"><a href="#1) Request with params (happy-path)" style="font-size: small;" class="list-group-item list-group-item-action text-muted">1) Request with params (happy-path)<i></i></a><a href="#2) Request without params (wrong response body)" style="font-size: small;" class="list-group-item list-group-item-action text-muted">2) Request without params (wrong response body)<i></i></a></div><a class="list-group-item list-group-item-action" style="border-left: none; border-right: none;" href="#Status code check">Status code check<small class="card-img-overlay m-1" style="padding:0; left:inherit;"><span class="badge badge-pill badge-light">9ms</span><span class="badge badge-pill badge-success">1</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning">1</span><span class="badge badge-pill badge-danger"></span><span class="badge badge-pill badge-warning">ExpectedToFail</span></small><button type="button" class="btn btn-light btn-sm text-muted ml-1" data-toggle="collapse" data-target="#dfdbf8d2-9715-4bd3-b3b9-1fd2ff9a817d" aria-expanded="true" aria-controls="dfdbf8d2-9715-4bd3-b3b9-1fd2ff9a817d">cases</button></a><div id="dfdbf8d2-9715-4bd3-b3b9-1fd2ff9a817d" class="collapse"><a href="#3) Wrong status code" style="font-size: small;" class="list-group-item list-group-item-action text-muted">3) Wrong status code<i></i></a></div><a class="list-group-item list-group-item-action" style="border-left: none; border-right: none;" href="#Cookies">Cookies<small class="card-img-overlay m-1" style="padding:0; left:inherit;"><span class="badge badge-pill badge-light">58ms</span><span class="badge badge-pill badge-success">8</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small><button type="button" class="btn btn-light btn-sm text-muted ml-1" data-toggle="collapse" data-target="#3531441b-594b-456c-a457-96dac3960add" aria-expanded="true" aria-controls="3531441b-594b-456c-a457-96dac3960add">cases</button></a><div id="3531441b-594b-456c-a457-96dac3960add" class="collapse"><a href="#4) Can be set in command" style="font-size: small;" class="list-group-item list-group-item-action text-muted">4) Can be set in command<i></i></a><a href="#5) Can be override by case" style="font-size: small;" class="list-group-item list-group-item-action text-muted">5) Can be override by case<i></i></a><a href="#6) Placeholders can be used" style="font-size: small;" class="list-group-item list-group-item-action text-muted">6) Placeholders can be used<i></i></a><a href="#7) If @FullOGNL is enabled, response fields can be accessed" style="font-size: small;" class="list-group-item list-group-item-action text-muted">7) If @FullOGNL is enabled, response fields can be accessed<i></i></a></div></div></div></div>
+    <div cmdId="fb632f08-2082-4254-bb12-3b30993cb11a" e:given="" class="bd-callout bd-callout-info">
+        Given server, that mirrors DELETE-request
+    </div>
+    <div name="Body check" status="ExpectedToFail" print="true" cmdId="cc50ab74-0d9a-4a15-a5c9-dad576c9f891" c:example="Body check" c:status="ExpectedToFail" class="card mb-3" e:example="" id="Body check"><div class="card-header" data-toggle="collapse" data-target="#362925354" aria-expanded="true" aria-controls="362925354"><a name="Body check" data-type="example">Body check</a></div><div class="card-body collapse show" id="362925354"><pre lineNumbers="true" class="htmlmixed darcula mt-2">&lt;e:delete url="relative/url"&gt;
+&lt;e:case desc="Request with params (happy-path)" urlParams="param1=1&amp;amp;param2=2"&gt;
+    &lt;expected&gt;
+        { "DELETE": "/relative/url?param1=1&amp;amp;param2=2" }
+    &lt;/expected&gt;
+&lt;/e:case&gt;
+&lt;e:case desc="Request without params (wrong response body)"&gt;
+    &lt;expected&gt;
+        { "DELETE": "/relative/url?noparams" }
+    &lt;/expected&gt;
+    &lt;e:check&gt;
+        &lt;span c:assertTrue="true"&gt;Block for additional checks&lt;/span&gt;
+    &lt;/e:check&gt;
+&lt;/e:case&gt;
+        &lt;/e:delete&gt;</pre>
+        <div cmdId="57971ead-3642-4b44-a588-ec21adb0ba01" e:delete=""><table class="table table-sm"><div><div class="input-group mb-1 mt-1">
+      <div class="input-group-prepend">
+        <span class="input-group-text bg-danger text-white">DELETE</span>
+      </div>
+      <div class="form-control bg-light text-primary font-weight-light">
+        <span id="endpoint-1369295335">relative/url</span>
+      </div>
+    </div><div class="input-group input-group-sm">
+      <div class="input-group-prepend">
+        <span class="input-group-text" style="border:none;">Content-Type</span>
+      </div>
+      <div class="form-control bg-light text-dark font-weight-light" style="border:none;">
+        <span id="header--417996601">application/json</span>
+      </div>
+    </div></div><thead class="thead-default"><th colspan="2" style="text-align:center;" class="bg-light">Expected response</th></thead>
+            <tr desc="Request with params (happy-path)" cmdId="16343940-a229-46de-adef-1f0ac076df18" e:case="" data-type="case" id="1) Request with params (happy-path)"><tr><td colspan="2" class="text-muted bg-light">1) Request with params (happy-path)</td></tr>
+                
+            <tr data-case-title="single"><td style="max-width: 1px; width: 100%;"><div class="httpstyle"><textarea class="http">DELETE relative/url?param1=1&amp;param2=2 HTTP/1.1
+</textarea></div></td><td style="padding-left: 0;"><small><span class="exp-status rest-success">200</span><span class="badge badge-pill badge-light">6ms</span></small></td></tr><tr><td colspan="2" class="exp-body"><div>
+        <nav>
+          <div class="nav nav-tabs" role="tablist">
+            <a class="nav-item nav-link active small text-success" id="nav-et-1617094060817-tab" data-toggle="tab" href="#nav-et-1617094060817" role="tab" aria-controls="nav-et-1617094060817" aria-selected="true"> Expected </a>
+            <a class="nav-item nav-link small" id="nav-at-1617094060817-tab" data-toggle="tab" href="#nav-at-1617094060817" role="tab" aria-controls="nav-at-1617094060817" aria-selected="false" onclick="setTimeout(() =&gt; { window.dispatchEvent(new Event('resize')); }, 200)"> Actual </a>
+          </div>
+        </nav>
+        <div class="tab-content">
+          <div class="tab-pane fade show active" id="nav-et-1617094060817" role="tabpanel" aria-labelledby="nav-et-1617094060817-tab">
+            <pre id="e-1617094060817" class="rest-success json">{
+  "DELETE": "/relative/url?param1=1&amp;param2=2"
+}</pre>
+          </div>
+          <div class="tab-pane fade" id="nav-at-1617094060817" role="tabpanel" aria-labelledby="nav-at-1617094060817-tab">
+            <pre id="a-1617094060817" class="rest-success json">{
+  "DELETE": "/relative/url?param1=1&amp;param2=2"
+}</pre>
+          </div>
+        </div>
+    </div></td></tr></tr>
+            <tr desc="Request without params (wrong response body)" cmdId="35fe1e75-a87a-44a0-922f-daf77a197c39" e:case="" data-type="case" id="2) Request without params (wrong response body)"><tr><td colspan="2" class="text-muted bg-light">2) Request without params (wrong response body)</td></tr>
+                
+                <div cmdId="e0fc196b-5d69-448a-94f8-8bbb34ceab79" e:check="" />
+            <tr data-case-title="single"><td style="max-width: 1px; width: 100%;"><div class="httpstyle"><textarea class="http">DELETE relative/url HTTP/1.1
+</textarea></div></td><td style="padding-left: 0;"><small><span class="exp-status rest-success">200</span><span class="badge badge-pill badge-light">5ms</span></small></td></tr><tr><td colspan="2" class="exp-body"><div class="card border-danger alert-warning">
+      
+      <div class="card-body mb-1 mt-1">
+        <pre id="error--275461439" class="card-text" style="white-space: pre-wrap;">JSON documents are different:
+Different value found in node "DELETE", expected: &lt;"/relative/url?noparams"&gt; but was: &lt;"/relative/url"&gt;.
+</pre><div class="json rest-failure"><del class="expected">{
+  "DELETE": "/relative/url?noparams"
+}<fail style="display: none;" /></del>
+<ins class="actual">{
+  "DELETE": "/relative/url"
+}</ins></div>
+      </div>
+    </div></td></tr></tr><tr><td colspan="2">
+                    <span c:assertTrue="true" class="success">Block for additional checks</span>
+                </td></tr>
+        </table></div>
+    </div><div class="card-footer text-muted" data-toggle="collapse" data-target="#362925354" aria-expanded="true" aria-controls="362925354"><small><span class="badge badge-pill badge-success">4</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning">1</span><span class="badge badge-pill badge-danger"></span><span class="badge badge-pill badge-warning">ExpectedToFail</span></small></div></div>
+    <div name="Status code check" status="ExpectedToFail" print="true" cmdId="2917a3b8-2bee-411f-82ff-0654c1b35e6b" c:example="Status code check" c:status="ExpectedToFail" class="card mb-3" e:example="" id="Status code check"><div class="card-header" data-toggle="collapse" data-target="#1177583075" aria-expanded="true" aria-controls="1177583075"><a name="Status code check" data-type="example">Status code check</a></div><div class="card-body collapse show" id="1177583075"><pre lineNumbers="true" class="htmlmixed darcula mt-2">&lt;e:delete url="status/400"&gt;
+&lt;e:case desc="Wrong status code"&gt;
+    &lt;expected&gt;
+        {"DELETE": "/status/400"}
+    &lt;/expected&gt;
+&lt;/e:case&gt;
+        &lt;/e:delete&gt;</pre>
+        <div cmdId="e23d7511-a2c4-4a02-a997-2fb29a8f4cc7" e:delete=""><table class="table table-sm"><div><div class="input-group mb-1 mt-1">
+      <div class="input-group-prepend">
+        <span class="input-group-text bg-danger text-white">DELETE</span>
+      </div>
+      <div class="form-control bg-light text-primary font-weight-light">
+        <span id="endpoint-838726542">status/400</span>
+      </div>
+    </div><div class="input-group input-group-sm">
+      <div class="input-group-prepend">
+        <span class="input-group-text" style="border:none;">Content-Type</span>
+      </div>
+      <div class="form-control bg-light text-dark font-weight-light" style="border:none;">
+        <span id="header-679392105">application/json</span>
+      </div>
+    </div></div><thead class="thead-default"><th colspan="2" style="text-align:center;" class="bg-light">Expected response</th></thead>
+            <tr desc="Wrong status code" cmdId="cbc9ff8a-6da2-415e-af29-5aa62a84e13d" e:case="" data-type="case" id="3) Wrong status code"><tr><td colspan="2" class="text-muted bg-light">3) Wrong status code</td></tr>
+                
+            <tr data-case-title="single"><td style="max-width: 1px; width: 100%;"><div class="httpstyle"><textarea class="http">DELETE status/400 HTTP/1.1
+</textarea></div></td><td style="padding-left: 0;"><small><span class="exp-status rest-failure"><del class="expected">200<fail style="display: none;" /></del>
+<ins class="actual">400</ins></span><span class="badge badge-pill badge-light">5ms</span></small></td></tr><tr><td colspan="2" class="exp-body"><div>
+        <nav>
+          <div class="nav nav-tabs" role="tablist">
+            <a class="nav-item nav-link active small text-success" id="nav-et-1617094060834-tab" data-toggle="tab" href="#nav-et-1617094060834" role="tab" aria-controls="nav-et-1617094060834" aria-selected="true"> Expected </a>
+            <a class="nav-item nav-link small" id="nav-at-1617094060834-tab" data-toggle="tab" href="#nav-at-1617094060834" role="tab" aria-controls="nav-at-1617094060834" aria-selected="false" onclick="setTimeout(() =&gt; { window.dispatchEvent(new Event('resize')); }, 200)"> Actual </a>
+          </div>
+        </nav>
+        <div class="tab-content">
+          <div class="tab-pane fade show active" id="nav-et-1617094060834" role="tabpanel" aria-labelledby="nav-et-1617094060834-tab">
+            <pre id="e-1617094060834" class="rest-success json">{
+  "DELETE": "/status/400"
+}</pre>
+          </div>
+          <div class="tab-pane fade" id="nav-at-1617094060834" role="tabpanel" aria-labelledby="nav-at-1617094060834-tab">
+            <pre id="a-1617094060834" class="rest-success json">{
+  "DELETE": "/status/400"
+}</pre>
+          </div>
+        </div>
+    </div></td></tr></tr>
+        </table></div>
+    </div><div class="card-footer text-muted" data-toggle="collapse" data-target="#1177583075" aria-expanded="true" aria-controls="1177583075"><small><span class="badge badge-pill badge-success">1</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning">1</span><span class="badge badge-pill badge-danger"></span><span class="badge badge-pill badge-warning">ExpectedToFail</span></small></div></div>
+    <div name="Cookies" print="true" cmdId="c3a3491c-0539-45cb-83f6-7d82c833df80" c:example="Cookies" class="card mb-3" e:example="" id="Cookies"><div class="card-header" data-toggle="collapse" data-target="#-1678124433" aria-expanded="true" aria-controls="-1678124433"><a name="Cookies" data-type="example">Cookies</a></div><div class="card-body collapse show" id="-1678124433"><pre lineNumbers="true" class="htmlmixed darcula mt-2">&lt;e:delete url="relative/url" cookies="cook=from_command"&gt;
+&lt;e:case desc="Can be set in command"&gt;
+    &lt;expected&gt;
+        {
+          "DELETE": "/relative/url",
+          "cookies": "{cook=from_command}"
+        }
+    &lt;/expected&gt;
+&lt;/e:case&gt;
+&lt;e:case cookies="cook=from_case" desc="Can be override by case"&gt;
+    &lt;expected&gt;
+        {
+          "DELETE": "/relative/url",
+          "cookies": "{cook=from_case}"
+        }
+    &lt;/expected&gt;
+&lt;/e:case&gt;
+&lt;e:case cookies="cook={{url}},anotherCook=asd" desc="Placeholders can be used"&gt;
+    &lt;expected&gt;
+        {
+          "DELETE": "/relative/url",
+          "cookies": "{cook=relative/url, anotherCook=asd}"
+        }
+    &lt;/expected&gt;
+    &lt;e:check&gt;
+        Last response saved in variable &lt;var&gt;#exam_response&lt;/var&gt;&lt;br /&gt;
+        &lt;ol&gt;
+            &lt;li&gt;&lt;code c:execute="#my_header = #exam_response.header('my_header')"&gt;c:execute="#my_header = #exam_response.header('my_header')&lt;/code&gt;&lt;/li&gt;
+            &lt;li&gt;echo #exam_response.header('my_header') =&amp;gt; &lt;code c:echo="#exam_response.header('my_header')" /&gt;&lt;/li&gt;
+            &lt;li&gt;echo #my_header =&amp;gt; &lt;code c:echo="#my_header" /&gt;&lt;/li&gt;
+        &lt;/ol&gt;
+    &lt;/e:check&gt;
+&lt;/e:case&gt;
+&lt;e:case cookies="cook={{eval &amp;quot;#exam_response.header('my_header')&amp;quot;}}" desc="If @FullOGNL is enabled, response fields can be accessed"&gt;
+    &lt;expected&gt;
+        {
+          "DELETE": "/relative/url",
+          "cookies": "{cook=some value}"
+        }
+    &lt;/expected&gt;
+&lt;/e:case&gt;
+        &lt;/e:delete&gt;</pre>
+        <div cmdId="01ef8837-1182-435a-ac2a-184f7c2cd121" e:delete=""><table class="table table-sm"><div><div class="input-group mb-1 mt-1">
+      <div class="input-group-prepend">
+        <span class="input-group-text bg-danger text-white">DELETE</span>
+      </div>
+      <div class="form-control bg-light text-primary font-weight-light">
+        <span id="endpoint--831734702">relative/url</span>
+      </div>
+    </div><div class="input-group input-group-sm">
+      <div class="input-group-prepend">
+        <span class="input-group-text" style="border:none;">Content-Type</span>
+      </div>
+      <div class="form-control bg-light text-dark font-weight-light" style="border:none;">
+        <span id="header--59058584">application/json</span>
+      </div>
+    </div><div class="input-group input-group-sm">
+      <div class="input-group-prepend">
+        <span class="input-group-text" style="border:none;">Cookies</span>
+      </div>
+      <div class="form-control bg-light text-dark font-weight-light" style="border:none;">
+        <span id="header--1369582303">cook=from_command</span>
+      </div>
+    </div></div><thead class="thead-default"><th colspan="2" style="text-align:center;" class="bg-light">Expected response</th></thead>
+            <tr desc="Can be set in command" cmdId="5c12598f-cc51-47ef-8758-818e488d3063" e:case="" data-type="case" id="4) Can be set in command"><tr><td colspan="2" class="text-muted bg-light">4) Can be set in command</td></tr>
+                
+            <tr data-case-title="single"><td style="max-width: 1px; width: 100%;"><div class="httpstyle"><textarea class="http">DELETE relative/url HTTP/1.1
+Cookies: cook=from_command
+</textarea></div></td><td style="padding-left: 0;"><small><span class="exp-status rest-success">200</span><span class="badge badge-pill badge-light">6ms</span></small></td></tr><tr><td colspan="2" class="exp-body"><div>
+        <nav>
+          <div class="nav nav-tabs" role="tablist">
+            <a class="nav-item nav-link active small text-success" id="nav-et-1617094060847-tab" data-toggle="tab" href="#nav-et-1617094060847" role="tab" aria-controls="nav-et-1617094060847" aria-selected="true"> Expected </a>
+            <a class="nav-item nav-link small" id="nav-at-1617094060847-tab" data-toggle="tab" href="#nav-at-1617094060847" role="tab" aria-controls="nav-at-1617094060847" aria-selected="false" onclick="setTimeout(() =&gt; { window.dispatchEvent(new Event('resize')); }, 200)"> Actual </a>
+          </div>
+        </nav>
+        <div class="tab-content">
+          <div class="tab-pane fade show active" id="nav-et-1617094060847" role="tabpanel" aria-labelledby="nav-et-1617094060847-tab">
+            <pre id="e-1617094060847" class="rest-success json">{
+  "DELETE": "/relative/url",
+  "cookies": "{cook=from_command}"
+}</pre>
+          </div>
+          <div class="tab-pane fade" id="nav-at-1617094060847" role="tabpanel" aria-labelledby="nav-at-1617094060847-tab">
+            <pre id="a-1617094060847" class="rest-success json">{
+  "DELETE": "/relative/url",
+  "cookies": "{cook=from_command}"
+}</pre>
+          </div>
+        </div>
+    </div></td></tr></tr>
+            <tr desc="Can be override by case" cmdId="4c8888a9-49a3-4199-8fd8-ed413909045a" e:case="" data-type="case" id="5) Can be override by case"><tr><td colspan="2" class="text-muted bg-light">5) Can be override by case</td></tr>
+                
+            <tr data-case-title="single"><td style="max-width: 1px; width: 100%;"><div class="httpstyle"><textarea class="http">DELETE relative/url HTTP/1.1
+Cookies: cook=from_case
+</textarea></div></td><td style="padding-left: 0;"><small><span class="exp-status rest-success">200</span><span class="badge badge-pill badge-light">7ms</span></small></td></tr><tr><td colspan="2" class="exp-body"><div>
+        <nav>
+          <div class="nav nav-tabs" role="tablist">
+            <a class="nav-item nav-link active small text-success" id="nav-et-1617094060860-tab" data-toggle="tab" href="#nav-et-1617094060860" role="tab" aria-controls="nav-et-1617094060860" aria-selected="true"> Expected </a>
+            <a class="nav-item nav-link small" id="nav-at-1617094060860-tab" data-toggle="tab" href="#nav-at-1617094060860" role="tab" aria-controls="nav-at-1617094060860" aria-selected="false" onclick="setTimeout(() =&gt; { window.dispatchEvent(new Event('resize')); }, 200)"> Actual </a>
+          </div>
+        </nav>
+        <div class="tab-content">
+          <div class="tab-pane fade show active" id="nav-et-1617094060860" role="tabpanel" aria-labelledby="nav-et-1617094060860-tab">
+            <pre id="e-1617094060860" class="rest-success json">{
+  "DELETE": "/relative/url",
+  "cookies": "{cook=from_case}"
+}</pre>
+          </div>
+          <div class="tab-pane fade" id="nav-at-1617094060860" role="tabpanel" aria-labelledby="nav-at-1617094060860-tab">
+            <pre id="a-1617094060860" class="rest-success json">{
+  "DELETE": "/relative/url",
+  "cookies": "{cook=from_case}"
+}</pre>
+          </div>
+        </div>
+    </div></td></tr></tr>
+            <tr desc="Placeholders can be used" cmdId="c762c85e-d5bb-45ec-a3a9-da857c3a94bc" e:case="" data-type="case" id="6) Placeholders can be used"><tr><td colspan="2" class="text-muted bg-light">6) Placeholders can be used</td></tr>
+                
+                <div cmdId="a07c5dc9-04f2-4924-973c-06749398b1ff" e:check="" />
+            <tr data-case-title="single"><td style="max-width: 1px; width: 100%;"><div class="httpstyle"><textarea class="http">DELETE relative/url HTTP/1.1
+Cookies: cook=relative/url,anotherCook=asd
+</textarea></div></td><td style="padding-left: 0;"><small><span class="exp-status rest-success">200</span><span class="badge badge-pill badge-light">8ms</span></small></td></tr><tr><td colspan="2" class="exp-body"><div>
+        <nav>
+          <div class="nav nav-tabs" role="tablist">
+            <a class="nav-item nav-link active small text-success" id="nav-et-1617094060872-tab" data-toggle="tab" href="#nav-et-1617094060872" role="tab" aria-controls="nav-et-1617094060872" aria-selected="true"> Expected </a>
+            <a class="nav-item nav-link small" id="nav-at-1617094060872-tab" data-toggle="tab" href="#nav-at-1617094060872" role="tab" aria-controls="nav-at-1617094060872" aria-selected="false" onclick="setTimeout(() =&gt; { window.dispatchEvent(new Event('resize')); }, 200)"> Actual </a>
+          </div>
+        </nav>
+        <div class="tab-content">
+          <div class="tab-pane fade show active" id="nav-et-1617094060872" role="tabpanel" aria-labelledby="nav-et-1617094060872-tab">
+            <pre id="e-1617094060872" class="rest-success json">{
+  "DELETE": "/relative/url",
+  "cookies": "{cook=relative/url, anotherCook=asd}"
+}</pre>
+          </div>
+          <div class="tab-pane fade" id="nav-at-1617094060872" role="tabpanel" aria-labelledby="nav-at-1617094060872-tab">
+            <pre id="a-1617094060872" class="rest-success json">{
+  "DELETE": "/relative/url",
+  "cookies": "{cook=relative/url, anotherCook=asd}"
+}</pre>
+          </div>
+        </div>
+    </div></td></tr></tr><tr><td colspan="2">
+                    Last response saved in variable <var>#exam_response</var><br />
+                    <ol>
+                        <li><code c:execute="#my_header = #exam_response.header('my_header')">c:execute="#my_header = #exam_response.header('my_header')</code></li>
+                        <li>echo #exam_response.header('my_header') =&gt; <code c:echo="#exam_response.header('my_header')">some value</code></li>
+                        <li>echo #my_header =&gt; <code c:echo="#my_header">some value</code></li>
+                    </ol>
+                </td></tr>
+            <tr desc="If @FullOGNL is enabled, response fields can be accessed" cmdId="84730cdf-013f-4371-81c2-986ebbdf40c9" e:case="" data-type="case" id="7) If @FullOGNL is enabled, response fields can be accessed"><tr><td colspan="2" class="text-muted bg-light">7) If @FullOGNL is enabled, response fields can be accessed</td></tr>
+                
+            <tr data-case-title="single"><td style="max-width: 1px; width: 100%;"><div class="httpstyle"><textarea class="http">DELETE relative/url HTTP/1.1
+Cookies: cook=some value
+</textarea></div></td><td style="padding-left: 0;"><small><span class="exp-status rest-success">200</span><span class="badge badge-pill badge-light">12ms</span></small></td></tr><tr><td colspan="2" class="exp-body"><div>
+        <nav>
+          <div class="nav nav-tabs" role="tablist">
+            <a class="nav-item nav-link active small text-success" id="nav-et-1617094060893-tab" data-toggle="tab" href="#nav-et-1617094060893" role="tab" aria-controls="nav-et-1617094060893" aria-selected="true"> Expected </a>
+            <a class="nav-item nav-link small" id="nav-at-1617094060893-tab" data-toggle="tab" href="#nav-at-1617094060893" role="tab" aria-controls="nav-at-1617094060893" aria-selected="false" onclick="setTimeout(() =&gt; { window.dispatchEvent(new Event('resize')); }, 200)"> Actual </a>
+          </div>
+        </nav>
+        <div class="tab-content">
+          <div class="tab-pane fade show active" id="nav-et-1617094060893" role="tabpanel" aria-labelledby="nav-et-1617094060893-tab">
+            <pre id="e-1617094060893" class="rest-success json">{
+  "DELETE": "/relative/url",
+  "cookies": "{cook=some value}"
+}</pre>
+          </div>
+          <div class="tab-pane fade" id="nav-at-1617094060893" role="tabpanel" aria-labelledby="nav-at-1617094060893-tab">
+            <pre id="a-1617094060893" class="rest-success json">{
+  "DELETE": "/relative/url",
+  "cookies": "{cook=some value}"
+}</pre>
+          </div>
+        </div>
+    </div></td></tr></tr>
+        </table></div>
+    </div><div class="card-footer text-muted" data-toggle="collapse" data-target="#-1678124433" aria-expanded="true" aria-controls="-1678124433"><small><span class="badge badge-pill badge-success">8</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small></div></div>
+</div><div class="footer">Results generated by <a href="http://www.concordion.org" style="font-weight: bold; text-decoration: none; color: #89C;">Concordion</a><div class="testTime">in 104 ms on 30-Mar-2021 at 11:47:40 MSK</div></div></body><button id="btnToTop" onclick="topFunction()" type="button" class="btn btn-light btn-sm text-muted ml-1"><i class="fa fa-arrow-up"></i></button></html>
