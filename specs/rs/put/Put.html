@@ -1,0 +1,510 @@
+<?xml version="1.0" encoding="UTF-8"?><html xmlns:concordion="http://www.concordion.org/2007/concordion" xmlns:e="http://exam.extension.io" xmlns:c="http://www.concordion.org/2007/concordion"><head><style>* {
+  font-family: Arial;
+}
+body {
+  padding: 32px;  
+}
+pre {
+  padding: 6px 28px 6px 28px;
+  background-color: #E8EEF7;
+}
+pre, pre *, code, code *, kbd {
+  font-family: Courier New, Courier;
+  font-size: 10pt;
+}
+h1, h1 * {
+  font-size: 24pt;	
+}
+p, td, th, li, .breadcrumbs {
+  font-size: 10pt;
+}
+p, li {
+  line-height: 140%;
+  max-width: 720px;
+}
+table {
+  border-collapse: collapse;
+  empty-cells: show;
+  margin: 8px 0px 8px 0px;
+}
+th, td {
+  border: 1px solid black;
+  padding: 3px;
+}
+td {
+  background-color: white;
+  vertical-align: top;
+}
+th {
+  background-color: #C3D9FF;
+}
+li {
+  margin-top: 6px;
+  margin-bottom: 6px; 
+}
+
+.example, :not(th)[concordion\:example] {
+  padding: 6px 16px 6px 16px;
+  border: 1px solid #C3D9FF;
+  margin: 6px 0px 28px 0px;
+  background-color: #F5F9FD;
+}
+.example h3, [concordion\:example] h3 {
+  margin-top: 8px;
+  margin-bottom: 8px;
+  font-size: 12pt;
+}
+
+p.success {
+  padding: 2px;
+}
+.success, .success * {
+  background-color: #afa !important;
+}
+.success pre {
+  background-color: #bbffbb;
+}
+.failure, .failure * {
+  background-color: #ffb0b0;
+  padding: 1px;
+}
+.failure .expected {
+  text-decoration: line-through;
+  color: #bb5050;
+}
+.ignored, .ignored * {
+  background-color: #f0f0f0 !important;	
+}
+
+ins {
+  text-decoration: none;	
+}
+
+.exceptionMessage {
+  background-color: #fdd;
+  font-family: Courier New, Courier, Monospace;
+  font-size: 10pt;
+  display: block;
+  font-weight: normal;
+  padding: 4px;
+  text-decoration: none !important;
+}
+.stackTrace, .stackTrace * {
+  font-weight: normal;
+}
+.stackTrace {
+  display: none;
+  padding: 1px 4px 4px 4px;
+  background-color: #fdd;
+  border-top: 1px dotted black;
+}
+.stackTraceExceptionMessage {
+  display: block;
+  font-family: Courier New, Courier, Monospace;
+  font-size: 8pt;
+  white-space: wrap;
+  padding: 1px 0px 1px 0px;
+}
+.stackTraceEntry {
+  white-space: nowrap;
+  font-family: Courier New, Courier, Monospace;
+  display: block;
+  font-size: 8pt;
+  padding: 1px 0px 1px 32px;
+}
+.stackTraceButton {
+  font-size: 8pt;
+  margin: 2px 8px 2px 0px;
+  font-weight: normal;
+  font-family: Arial;
+}
+
+.special {
+  font-style: italic;
+}
+.missing, .missing * {
+  background-color: #ff9999;
+  color:#bb5050;
+  text-decoration: line-through;
+}
+.surplus, .surplus * {
+  background-color: #ff9999;
+}
+.footer {
+  text-align: right;
+  margin-top: 40px;
+  font-size: 8pt;
+  width: 100%;
+  color: #999;
+}
+.footer .testTime {
+  padding: 2px 10px 0px 0px;
+}
+
+.idea {
+  font-size: 9pt;
+  color: #888;
+  font-style: italic;	
+}
+.tight li {
+  margin-top: 1px;
+  margin-bottom: 1px; 
+}
+.commentary {
+  float: right;
+  width: 200px;
+  background-color: #ffffd0;
+  padding:8px;
+  border: 3px solid #eeeeb0;	 
+  margin: 10px 0px 10px 10px;	 
+}
+.commentary, .commentary * {
+  font-size: 8pt;
+}
+</style><meta http-equiv="content-type" content="text/html; charset=UTF-8" /><link type="text/css" rel="stylesheet" href="../../../codemirror/codemirror.css" /><link type="text/css" rel="stylesheet" href="../../../codemirror/merge.css" /><link type="text/css" rel="stylesheet" href="../../../codemirror/enable-codemirror.css" /><link type="text/css" rel="stylesheet" href="../../../codemirror/foldgutter.css" /><link type="text/css" rel="stylesheet" href="../../../codemirror/simplescrollbar.css" /><script type="text/javascript" src="../../../codemirror/codemirror.js"></script><script type="text/javascript" src="../../../codemirror/enable-codemirror.js"></script><script type="text/javascript" src="../../../codemirror/javascript.js"></script><script type="text/javascript" src="../../../codemirror/xml.js"></script><script type="text/javascript" src="../../../codemirror/htmlmixed.js"></script><script type="text/javascript" src="../../../codemirror/handelbar.js"></script><script type="text/javascript" src="../../../codemirror/addon/mode/simple.js"></script><script type="text/javascript" src="../../../codemirror/http.js"></script><script type="text/javascript" src="../../../codemirror/formatting.js"></script><script type="text/javascript" src="../../../codemirror/markdown.js"></script><script type="text/javascript" src="../../../codemirror/diff_match_patch.js"></script><script type="text/javascript" src="../../../codemirror/merge.js"></script><script type="text/javascript" src="../../../codemirror/xml-fold.js"></script><script type="text/javascript" src="../../../codemirror/simplescrollbar.js"></script><link type="text/css" rel="stylesheet" href="../../../codemirror/theme/darcula.css" /><script type="text/javascript" src="../../../bootstrap/jquery-3.2.1.slim.min.js"></script><script type="text/javascript" src="../../../bootstrap/popper.min.js"></script><script type="text/javascript" src="../../../bootstrap/bootstrap.min.js"></script><script type="text/javascript" src="../../../bootstrap/sidebar.js"></script><link type="text/css" rel="stylesheet" href="../../../bootstrap/enable-bootstrap.css" /><link type="text/css" rel="stylesheet" href="../../../bootstrap/bootstrap.min.css" /><link type="text/css" rel="stylesheet" href="../../../bootstrap/callout.css" /><link type="text/css" rel="stylesheet" href="../../../bootstrap/font-awesome.min.css" /><link type="text/css" rel="stylesheet" href="../../../bootstrap/scrollToTop.css" /><script type="text/javascript" src="../../../bootstrap/scrollToTop.js"></script><link type="text/css" rel="stylesheet" href="../../../timingExtensionStyle.css" /><script type="text/javascript" src="../../../timingExtensionToggle.js"></script></head><body><div id="toggle-button"><img id="toggle-on" src="../../../timing-on.svg" height="24" width="24" style="display:none" /><img id="toggle-off" src="../../../timing-off.svg" height="24" width="24" /></div><span class="breadcrumbs"><a href="../../Specs.html">Exam - Concordion extension</a> &gt; <a href="../Rs.html">Rest specification</a> &gt; <a href="Put.html">PUT-request</a> &gt;</span><h1>PUT-request</h1>
+<h2><code>&lt;e:put url="..." type="&lt;optional&gt;"&gt;</code></h2>
+<div>
+    <div cmdId="edbe1329-9c08-4d30-b924-8e084e6bde39" e:summary="" class="pin"> <h4>Summary<button type="button" class="btn btn-light btn-sm text-muted ml-1" data-toggle="collapse" data-target="#summary" aria-expanded="true" aria-controls="summary">collapse</button></h4><div id="summary" class="collapse show"><div class="list-group"><a class="list-group-item list-group-item-action" style="border-left: none; border-right: none;" href="#Body check">Body check<small class="card-img-overlay m-1" style="padding:0; left:inherit;"><span class="badge badge-pill badge-light">21ms</span><span class="badge badge-pill badge-success">4</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning">1</span><span class="badge badge-pill badge-danger"></span><span class="badge badge-pill badge-warning">ExpectedToFail</span></small><button type="button" class="btn btn-light btn-sm text-muted ml-1" data-toggle="collapse" data-target="#ff07bdc2-55c5-4987-96ba-1b59750ab405" aria-expanded="true" aria-controls="ff07bdc2-55c5-4987-96ba-1b59750ab405">cases</button></a><div id="ff07bdc2-55c5-4987-96ba-1b59750ab405" class="collapse"><a href="#1) Happy-path" style="font-size: small;" class="list-group-item list-group-item-action text-muted">1) Happy-path<i></i></a><a href="#2) Неверный ответ" style="font-size: small;" class="list-group-item list-group-item-action text-muted">2) Неверный ответ<i></i></a></div><a class="list-group-item list-group-item-action" style="border-left: none; border-right: none;" href="#Status code check">Status code check<small class="card-img-overlay m-1" style="padding:0; left:inherit;"><span class="badge badge-pill badge-light">12ms</span><span class="badge badge-pill badge-success"></span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning">2</span><span class="badge badge-pill badge-danger"></span><span class="badge badge-pill badge-warning">ExpectedToFail</span></small><button type="button" class="btn btn-light btn-sm text-muted ml-1" data-toggle="collapse" data-target="#0b069355-06ec-42a9-92fb-3b690d39bc97" aria-expanded="true" aria-controls="0b069355-06ec-42a9-92fb-3b690d39bc97">cases</button></a><div id="0b069355-06ec-42a9-92fb-3b690d39bc97" class="collapse"><a href="#3) Placeholders can be used inside body block" style="font-size: small;" class="list-group-item list-group-item-action text-muted">3) Placeholders can be used inside body block<i></i></a></div><a class="list-group-item list-group-item-action" style="border-left: none; border-right: none;" href="#Cookies">Cookies<small class="card-img-overlay m-1" style="padding:0; left:inherit;"><span class="badge badge-pill badge-light">34ms</span><span class="badge badge-pill badge-success">6</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small><button type="button" class="btn btn-light btn-sm text-muted ml-1" data-toggle="collapse" data-target="#9a0b79a4-b32f-4525-ae5f-10bd234e1893" aria-expanded="true" aria-controls="9a0b79a4-b32f-4525-ae5f-10bd234e1893">cases</button></a><div id="9a0b79a4-b32f-4525-ae5f-10bd234e1893" class="collapse"><a href="#4) Can be set in command" style="font-size: small;" class="list-group-item list-group-item-action text-muted">4) Can be set in command<i></i></a><a href="#5) Can be override by case" style="font-size: small;" class="list-group-item list-group-item-action text-muted">5) Can be override by case<i></i></a><a href="#6) Placeholders can be used" style="font-size: small;" class="list-group-item list-group-item-action text-muted">6) Placeholders can be used<i></i></a></div><a class="list-group-item list-group-item-action" style="border-left: none; border-right: none;" href="#PUT with url params">PUT with url params<small class="card-img-overlay m-1" style="padding:0; left:inherit;"><span class="badge badge-pill badge-light">24ms</span><span class="badge badge-pill badge-success">2</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small><button type="button" class="btn btn-light btn-sm text-muted ml-1" data-toggle="collapse" data-target="#ee9a16c1-76e2-47e3-ba02-0d83bc0fdddc" aria-expanded="true" aria-controls="ee9a16c1-76e2-47e3-ba02-0d83bc0fdddc">cases</button></a><div id="ee9a16c1-76e2-47e3-ba02-0d83bc0fdddc" class="collapse"><a href="#7) PUT can send parameters in url" style="font-size: small;" class="list-group-item list-group-item-action text-muted">7) PUT can send parameters in url<i></i></a></div></div></div></div>
+    <div cmdId="fb4d7c05-48ef-4b4f-bdd2-db46d64a8973" e:given="" class="bd-callout bd-callout-info">
+        Given server, that mirrors request
+    </div>
+    <div name="Body check" status="ExpectedToFail" print="true" cmdId="7399009a-cd51-4c6a-87ca-6c5f35c94add" c:example="Body check" c:status="ExpectedToFail" class="card mb-3" e:example="" id="Body check"><div class="card-header" data-toggle="collapse" data-target="#362925354" aria-expanded="true" aria-controls="362925354"><a name="Body check" data-type="example">Body check</a></div><div class="card-body collapse show" id="362925354"><pre lineNumbers="true" class="htmlmixed darcula mt-2">&lt;e:put url="relative/url"&gt;
+&lt;e:case desc="Happy-path"&gt;
+    &lt;body&gt;
+        {"exact": "ok", "template": 1}
+    &lt;/body&gt;
+    &lt;expected&gt;
+        {"exact": "ok", "template": "{{number}}"}
+    &lt;/expected&gt;
+    &lt;e:check&gt;
+      &lt;span c:assertTrue="true"&gt;Block for additional checks&lt;/span&gt;
+    &lt;/e:check&gt;
+&lt;/e:case&gt;
+&lt;e:case desc="Неверный ответ"&gt;
+    &lt;body&gt;
+        {"exact": "not ok", "template": "not number"}
+    &lt;/body&gt;
+    &lt;expected&gt;
+        {"exact": "ok", "template": "{{number}}"}
+    &lt;/expected&gt;
+&lt;/e:case&gt;
+        &lt;/e:put&gt;</pre>
+         <div cmdId="07c49497-ac83-4422-9a8b-df68444956c2" e:put=""><table class="table table-sm"><div><div class="input-group mb-1 mt-1">
+      <div class="input-group-prepend">
+        <span class="input-group-text bg-warning text-white">PUT</span>
+      </div>
+      <div class="form-control bg-light text-primary font-weight-light">
+        <span id="endpoint--1599156000">relative/url</span>
+      </div>
+    </div><div class="input-group input-group-sm">
+      <div class="input-group-prepend">
+        <span class="input-group-text" style="border:none;">Content-Type</span>
+      </div>
+      <div class="form-control bg-light text-dark font-weight-light" style="border:none;">
+        <span id="header--1641511104">application/json</span>
+      </div>
+    </div></div><thead class="thead-default"><th style="text-align:center;" class="bg-light">Request</th><th colspan="1" style="text-align:center;" class="bg-light">Expected response</th></thead>
+            <tr desc="Happy-path" cmdId="797a9b71-e3b4-4916-afe9-9737fb9cf29c" e:case="" data-type="case" id="1) Happy-path"><tr><td colspan="2" class="text-muted bg-light">1) Happy-path</td></tr>
+                
+                
+                <div cmdId="38098752-e6b7-4482-855f-cdf6d4f19785" e:check="" />
+            <tr data-case-title="single"><td style="max-width: 1px; width: 50%;"><div class="httpstyle"><textarea class="http">PUT relative/url HTTP/1.1
+</textarea></div></td><td style="padding-left: 0;"><small><span class="exp-status rest-success">200</span><span class="badge badge-pill badge-light">8ms</span></small></td></tr><tr><td class="json exp-body" style="min-width: 20%; width: 50%;">{
+  "exact": "ok",
+  "template": 1
+}</td><td colspan="1" class="exp-body"><div>
+        <nav>
+          <div class="nav nav-tabs" role="tablist">
+            <a class="nav-item nav-link active small text-success" id="nav-et-1617360999110-tab" data-toggle="tab" href="#nav-et-1617360999110" role="tab" aria-controls="nav-et-1617360999110" aria-selected="true"> Expected </a>
+            <a class="nav-item nav-link small" id="nav-at-1617360999110-tab" data-toggle="tab" href="#nav-at-1617360999110" role="tab" aria-controls="nav-at-1617360999110" aria-selected="false" onclick="setTimeout(() =&gt; { window.dispatchEvent(new Event('resize')); }, 200)"> Actual </a>
+          </div>
+        </nav>
+        <div class="tab-content">
+          <div class="tab-pane fade show active" id="nav-et-1617360999110" role="tabpanel" aria-labelledby="nav-et-1617360999110-tab">
+            <pre id="e-1617360999110" class="rest-success json">{
+  "exact": "ok",
+  "template": "${json-unit.any-number}"
+}</pre>
+          </div>
+          <div class="tab-pane fade" id="nav-at-1617360999110" role="tabpanel" aria-labelledby="nav-at-1617360999110-tab">
+            <pre id="a-1617360999110" class="rest-success json">{
+  "exact": "ok",
+  "template": 1
+}</pre>
+          </div>
+        </div>
+    </div></td></tr></tr><tr><td colspan="2">
+                  <span c:assertTrue="true" class="success">Block for additional checks</span>
+                </td></tr>
+            <tr desc="Неверный ответ" cmdId="96893fb1-a88b-4bd7-ae47-4b68c6cea8ed" e:case="" data-type="case" id="2) Неверный ответ"><tr><td colspan="2" class="text-muted bg-light">2) Неверный ответ</td></tr>
+                
+                
+            <tr data-case-title="single"><td style="max-width: 1px; width: 50%;"><div class="httpstyle"><textarea class="http">PUT relative/url HTTP/1.1
+</textarea></div></td><td style="padding-left: 0;"><small><span class="exp-status rest-success">200</span><span class="badge badge-pill badge-light">6ms</span></small></td></tr><tr><td class="json exp-body" style="min-width: 20%; width: 50%;">{
+  "exact": "not ok",
+  "template": "not number"
+}</td><td colspan="1" class="exp-body"><div class="card border-danger alert-warning">
+      
+      <div class="card-body mb-1 mt-1">
+        <pre id="error-22526192" class="card-text" style="white-space: pre-wrap;">JSON documents are different:
+Different value found in node "exact", expected: &lt;"ok"&gt; but was: &lt;"not ok"&gt;.
+Different value found in node "template", expected: &lt;a number&gt; but was: &lt;"not number"&gt;.
+</pre><div class="json rest-failure"><del class="expected">{
+  "exact": "ok",
+  "template": "${json-unit.any-number}"
+}<fail style="display: none;" /></del>
+<ins class="actual">{
+  "exact": "not ok",
+  "template": "not number"
+}</ins></div>
+      </div>
+    </div></td></tr></tr>
+        </table></div>
+    </div><div class="card-footer text-muted" data-toggle="collapse" data-target="#362925354" aria-expanded="true" aria-controls="362925354"><small><span class="badge badge-pill badge-success">4</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning">1</span><span class="badge badge-pill badge-danger"></span><span class="badge badge-pill badge-warning">ExpectedToFail</span></small></div></div>
+    <div name="Status code check" status="ExpectedToFail" print="true" cmdId="75f95ea7-f4c5-4009-9e7c-0e597606905d" c:example="Status code check" c:status="ExpectedToFail" class="card mb-3" e:example="" id="Status code check"><div class="card-header" data-toggle="collapse" data-target="#1177583075" aria-expanded="true" aria-controls="1177583075"><a name="Status code check" data-type="example">Status code check</a></div><div class="card-body collapse show" id="1177583075"><pre lineNumbers="true" class="htmlmixed darcula mt-2">&lt;e:put url="status/400" type="text/plain"&gt;
+&lt;e:case desc="Placeholders can be used inside body block"&gt;
+    &lt;body&gt;
+        {"url": "{{url}}", "template": 1}
+    &lt;/body&gt;
+    &lt;expected&gt;
+        {"url": "status/400", "template": "{{number}}"}
+    &lt;/expected&gt;
+&lt;/e:case&gt;
+        &lt;/e:put&gt;</pre>
+        <div type="text/plain" cmdId="b364f66f-10e4-403a-bcce-2afd1f8dd18d" e:put=""><table class="table table-sm"><div><div class="input-group mb-1 mt-1">
+      <div class="input-group-prepend">
+        <span class="input-group-text bg-warning text-white">PUT</span>
+      </div>
+      <div class="form-control bg-light text-primary font-weight-light">
+        <span id="endpoint-180696071">status/400</span>
+      </div>
+    </div><div class="input-group input-group-sm">
+      <div class="input-group-prepend">
+        <span class="input-group-text" style="border:none;">Content-Type</span>
+      </div>
+      <div class="form-control bg-light text-dark font-weight-light" style="border:none;">
+        <span id="header--1015525795">application/json</span>
+      </div>
+    </div></div><thead class="thead-default"><th style="text-align:center;" class="bg-light">Request</th><th colspan="1" style="text-align:center;" class="bg-light">Expected response</th></thead>
+            <tr desc="Placeholders can be used inside body block" cmdId="f7fff046-759c-48a9-89fb-2e8a592c971f" e:case="" data-type="case" id="3) Placeholders can be used inside body block"><tr><td colspan="2" class="text-muted bg-light">3) Placeholders can be used inside body block</td></tr>
+                
+                
+            <tr data-case-title="single"><td style="max-width: 1px; width: 50%;"><div class="httpstyle"><textarea class="http">PUT status/400 HTTP/1.1
+</textarea></div></td><td style="padding-left: 0;"><small><span class="exp-status rest-failure"><del class="expected">200<fail style="display: none;" /></del>
+<ins class="actual">400</ins></span><span class="badge badge-pill badge-light">5ms</span></small></td></tr><tr><td class="json exp-body" style="min-width: 20%; width: 50%;">{
+  "url": "status/400",
+  "template": 1
+}</td><td colspan="1" class="exp-body"><div class="card border-danger alert-warning">
+      
+      <div class="card-body mb-1 mt-1">
+        <pre id="error-1817774966" class="card-text" style="white-space: pre-wrap;">JSON documents are different:
+Different keys found in node "", missing: "template","url", extra: "PUT", expected: &lt;{"template":"${json-unit.any-number}","url":"status/400"}&gt; but was: &lt;{"PUT":"/status/400"}&gt;
+</pre><div class="json rest-failure"><del class="expected">{
+  "url": "status/400",
+  "template": "${json-unit.any-number}"
+}<fail style="display: none;" /></del>
+<ins class="actual">{
+  "PUT": "/status/400"
+}</ins></div>
+      </div>
+    </div></td></tr></tr>
+        </table></div>
+    </div><div class="card-footer text-muted" data-toggle="collapse" data-target="#1177583075" aria-expanded="true" aria-controls="1177583075"><small><span class="badge badge-pill badge-success"></span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning">2</span><span class="badge badge-pill badge-danger"></span><span class="badge badge-pill badge-warning">ExpectedToFail</span></small></div></div>
+    <div name="Cookies" print="true" cmdId="3f963400-3516-47c8-b89d-e691232d4b1a" c:example="Cookies" class="card mb-3" e:example="" id="Cookies"><div class="card-header" data-toggle="collapse" data-target="#-1678124433" aria-expanded="true" aria-controls="-1678124433"><a name="Cookies" data-type="example">Cookies</a></div><div class="card-body collapse show" id="-1678124433"><pre lineNumbers="true" class="htmlmixed darcula mt-2">&lt;e:put url="cookies" cookies="cook=from_command"&gt;
+&lt;e:case desc="Can be set in command"&gt;
+    &lt;body /&gt;
+    &lt;expected&gt;
+        {
+          "cookies": "{cook=from_command}"
+        }
+    &lt;/expected&gt;
+&lt;/e:case&gt;
+&lt;e:case cookies="cook=from_case" desc="Can be override by case"&gt;
+    &lt;body /&gt;
+    &lt;expected&gt;
+        {
+          "cookies": "{cook=from_case}"
+        }
+    &lt;/expected&gt;
+&lt;/e:case&gt;
+&lt;e:case cookies="cook={{url}}" desc="Placeholders can be used"&gt;
+    &lt;body /&gt;
+    &lt;expected&gt;
+        {
+          "cookies": "{cook=cookies}"
+        }
+    &lt;/expected&gt;
+&lt;/e:case&gt;
+        &lt;/e:put&gt;</pre>
+        <div cmdId="697e1cdc-f71d-4be1-8603-8112c8311c63" e:put=""><table class="table table-sm"><div><div class="input-group mb-1 mt-1">
+      <div class="input-group-prepend">
+        <span class="input-group-text bg-warning text-white">PUT</span>
+      </div>
+      <div class="form-control bg-light text-primary font-weight-light">
+        <span id="endpoint-266829429">cookies</span>
+      </div>
+    </div><div class="input-group input-group-sm">
+      <div class="input-group-prepend">
+        <span class="input-group-text" style="border:none;">Content-Type</span>
+      </div>
+      <div class="form-control bg-light text-dark font-weight-light" style="border:none;">
+        <span id="header-1139116881">application/json</span>
+      </div>
+    </div><div class="input-group input-group-sm">
+      <div class="input-group-prepend">
+        <span class="input-group-text" style="border:none;">Cookies</span>
+      </div>
+      <div class="form-control bg-light text-dark font-weight-light" style="border:none;">
+        <span id="header--1473371832">cook=from_command</span>
+      </div>
+    </div></div><thead class="thead-default"><th style="text-align:center;" class="bg-light">Request</th><th colspan="1" style="text-align:center;" class="bg-light">Expected response</th></thead>
+            <tr desc="Can be set in command" cmdId="81e04dba-4877-4e52-afcb-17a816bdc2b9" e:case="" data-type="case" id="4) Can be set in command"><tr><td colspan="2" class="text-muted bg-light">4) Can be set in command</td></tr>
+                
+                
+            <tr data-case-title="single"><td style="max-width: 1px; width: 50%;"><div class="httpstyle"><textarea class="http">PUT cookies HTTP/1.1
+Cookies: cook=from_command
+</textarea></div></td><td style="padding-left: 0;"><small><span class="exp-status rest-success">200</span><span class="badge badge-pill badge-light">4ms</span></small></td></tr><tr><td class="json exp-body" style="min-width: 20%; width: 50%;"></td><td colspan="1" class="exp-body"><div>
+        <nav>
+          <div class="nav nav-tabs" role="tablist">
+            <a class="nav-item nav-link active small text-success" id="nav-et-1617360999140-tab" data-toggle="tab" href="#nav-et-1617360999140" role="tab" aria-controls="nav-et-1617360999140" aria-selected="true"> Expected </a>
+            <a class="nav-item nav-link small" id="nav-at-1617360999140-tab" data-toggle="tab" href="#nav-at-1617360999140" role="tab" aria-controls="nav-at-1617360999140" aria-selected="false" onclick="setTimeout(() =&gt; { window.dispatchEvent(new Event('resize')); }, 200)"> Actual </a>
+          </div>
+        </nav>
+        <div class="tab-content">
+          <div class="tab-pane fade show active" id="nav-et-1617360999140" role="tabpanel" aria-labelledby="nav-et-1617360999140-tab">
+            <pre id="e-1617360999140" class="rest-success json">{
+  "cookies": "{cook=from_command}"
+}</pre>
+          </div>
+          <div class="tab-pane fade" id="nav-at-1617360999140" role="tabpanel" aria-labelledby="nav-at-1617360999140-tab">
+            <pre id="a-1617360999140" class="rest-success json">{
+  "cookies": "{cook=from_command}"
+}</pre>
+          </div>
+        </div>
+    </div></td></tr></tr>
+            <tr desc="Can be override by case" cmdId="f7a3bd97-a847-43f8-a287-be7494f0d94e" e:case="" data-type="case" id="5) Can be override by case"><tr><td colspan="2" class="text-muted bg-light">5) Can be override by case</td></tr>
+                
+                
+            <tr data-case-title="single"><td style="max-width: 1px; width: 50%;"><div class="httpstyle"><textarea class="http">PUT cookies HTTP/1.1
+Cookies: cook=from_case
+</textarea></div></td><td style="padding-left: 0;"><small><span class="exp-status rest-success">200</span><span class="badge badge-pill badge-light">5ms</span></small></td></tr><tr><td class="json exp-body" style="min-width: 20%; width: 50%;"></td><td colspan="1" class="exp-body"><div>
+        <nav>
+          <div class="nav nav-tabs" role="tablist">
+            <a class="nav-item nav-link active small text-success" id="nav-et-1617360999152-tab" data-toggle="tab" href="#nav-et-1617360999152" role="tab" aria-controls="nav-et-1617360999152" aria-selected="true"> Expected </a>
+            <a class="nav-item nav-link small" id="nav-at-1617360999152-tab" data-toggle="tab" href="#nav-at-1617360999152" role="tab" aria-controls="nav-at-1617360999152" aria-selected="false" onclick="setTimeout(() =&gt; { window.dispatchEvent(new Event('resize')); }, 200)"> Actual </a>
+          </div>
+        </nav>
+        <div class="tab-content">
+          <div class="tab-pane fade show active" id="nav-et-1617360999152" role="tabpanel" aria-labelledby="nav-et-1617360999152-tab">
+            <pre id="e-1617360999152" class="rest-success json">{
+  "cookies": "{cook=from_case}"
+}</pre>
+          </div>
+          <div class="tab-pane fade" id="nav-at-1617360999152" role="tabpanel" aria-labelledby="nav-at-1617360999152-tab">
+            <pre id="a-1617360999152" class="rest-success json">{
+  "cookies": "{cook=from_case}"
+}</pre>
+          </div>
+        </div>
+    </div></td></tr></tr>
+            <tr desc="Placeholders can be used" cmdId="e5db1d7a-35a6-42d7-8d4a-32f12392ffd4" e:case="" data-type="case" id="6) Placeholders can be used"><tr><td colspan="2" class="text-muted bg-light">6) Placeholders can be used</td></tr>
+                
+                
+            <tr data-case-title="single"><td style="max-width: 1px; width: 50%;"><div class="httpstyle"><textarea class="http">PUT cookies HTTP/1.1
+Cookies: cook=cookies
+</textarea></div></td><td style="padding-left: 0;"><small><span class="exp-status rest-success">200</span><span class="badge badge-pill badge-light">9ms</span></small></td></tr><tr><td class="json exp-body" style="min-width: 20%; width: 50%;"></td><td colspan="1" class="exp-body"><div>
+        <nav>
+          <div class="nav nav-tabs" role="tablist">
+            <a class="nav-item nav-link active small text-success" id="nav-et-1617360999165-tab" data-toggle="tab" href="#nav-et-1617360999165" role="tab" aria-controls="nav-et-1617360999165" aria-selected="true"> Expected </a>
+            <a class="nav-item nav-link small" id="nav-at-1617360999165-tab" data-toggle="tab" href="#nav-at-1617360999165" role="tab" aria-controls="nav-at-1617360999165" aria-selected="false" onclick="setTimeout(() =&gt; { window.dispatchEvent(new Event('resize')); }, 200)"> Actual </a>
+          </div>
+        </nav>
+        <div class="tab-content">
+          <div class="tab-pane fade show active" id="nav-et-1617360999165" role="tabpanel" aria-labelledby="nav-et-1617360999165-tab">
+            <pre id="e-1617360999165" class="rest-success json">{
+  "cookies": "{cook=cookies}"
+}</pre>
+          </div>
+          <div class="tab-pane fade" id="nav-at-1617360999165" role="tabpanel" aria-labelledby="nav-at-1617360999165-tab">
+            <pre id="a-1617360999165" class="rest-success json">{
+  "cookies": "{cook=cookies}"
+}</pre>
+          </div>
+        </div>
+    </div></td></tr></tr>
+        </table></div>
+    </div><div class="card-footer text-muted" data-toggle="collapse" data-target="#-1678124433" aria-expanded="true" aria-controls="-1678124433"><small><span class="badge badge-pill badge-success">6</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small></div></div>
+    <div name="PUT with url params" print="true" cmdId="88782d4c-c8cf-47f2-a577-ba433e92d09f" c:example="PUT with url params" class="card mb-3" e:example="" id="PUT with url params"><div class="card-header" data-toggle="collapse" data-target="#1295594944" aria-expanded="true" aria-controls="1295594944"><a name="PUT with url params" data-type="example">PUT with url params</a></div><div class="card-body collapse show" id="1295594944"><pre lineNumbers="true" class="htmlmixed darcula mt-2">&lt;e:put url="/method/withParams"&gt;
+&lt;e:case desc="PUT can send parameters in url" urlParams="param1=1&amp;amp;param2=2"&gt;
+    &lt;body&gt;
+        {
+          "bodyValue": 111
+        }
+    &lt;/body&gt;
+    &lt;expected&gt;
+        {
+          "request": {
+            "PUT": "/method/withParams?param1=1&amp;amp;param2=2"
+          },
+          "body": {
+            "bodyValue": 111
+          }
+        }
+    &lt;/expected&gt;
+&lt;/e:case&gt;
+        &lt;/e:put&gt;</pre>
+        <div cmdId="7c06845c-ef51-4bea-9547-9ac80095df73" e:put=""><table class="table table-sm"><div><div class="input-group mb-1 mt-1">
+      <div class="input-group-prepend">
+        <span class="input-group-text bg-warning text-white">PUT</span>
+      </div>
+      <div class="form-control bg-light text-primary font-weight-light">
+        <span id="endpoint-1764214841">/method/withParams</span>
+      </div>
+    </div><div class="input-group input-group-sm">
+      <div class="input-group-prepend">
+        <span class="input-group-text" style="border:none;">Content-Type</span>
+      </div>
+      <div class="form-control bg-light text-dark font-weight-light" style="border:none;">
+        <span id="header--1913643637">application/json</span>
+      </div>
+    </div></div><thead class="thead-default"><th style="text-align:center;" class="bg-light">Request</th><th colspan="1" style="text-align:center;" class="bg-light">Expected response</th></thead>
+            <tr desc="PUT can send parameters in url" cmdId="ef15354c-253d-4c4b-87b3-3b982edb9503" e:case="" data-type="case" id="7) PUT can send parameters in url"><tr><td colspan="2" class="text-muted bg-light">7) PUT can send parameters in url</td></tr>
+                
+                
+            <tr data-case-title="single"><td style="max-width: 1px; width: 50%;"><div class="httpstyle"><textarea class="http">PUT /method/withParams?param1=1&amp;param2=2 HTTP/1.1
+</textarea></div></td><td style="padding-left: 0;"><small><span class="exp-status rest-success">200</span><span class="badge badge-pill badge-light">12ms</span></small></td></tr><tr><td class="json exp-body" style="min-width: 20%; width: 50%;">{
+  "bodyValue": 111
+}</td><td colspan="1" class="exp-body"><div>
+        <nav>
+          <div class="nav nav-tabs" role="tablist">
+            <a class="nav-item nav-link active small text-success" id="nav-et-1617360999184-tab" data-toggle="tab" href="#nav-et-1617360999184" role="tab" aria-controls="nav-et-1617360999184" aria-selected="true"> Expected </a>
+            <a class="nav-item nav-link small" id="nav-at-1617360999184-tab" data-toggle="tab" href="#nav-at-1617360999184" role="tab" aria-controls="nav-at-1617360999184" aria-selected="false" onclick="setTimeout(() =&gt; { window.dispatchEvent(new Event('resize')); }, 200)"> Actual </a>
+          </div>
+        </nav>
+        <div class="tab-content">
+          <div class="tab-pane fade show active" id="nav-et-1617360999184" role="tabpanel" aria-labelledby="nav-et-1617360999184-tab">
+            <pre id="e-1617360999184" class="rest-success json">{
+  "request": {
+    "PUT": "/method/withParams?param1=1&amp;param2=2"
+  },
+  "body": {
+    "bodyValue": 111
+  }
+}</pre>
+          </div>
+          <div class="tab-pane fade" id="nav-at-1617360999184" role="tabpanel" aria-labelledby="nav-at-1617360999184-tab">
+            <pre id="a-1617360999184" class="rest-success json">{
+  "request": {
+    "PUT": "/method/withParams?param1=1&amp;param2=2"
+  },
+  "body": {
+    "bodyValue": 111
+  }
+}</pre>
+          </div>
+        </div>
+    </div></td></tr></tr>
+        </table></div>
+    </div><div class="card-footer text-muted" data-toggle="collapse" data-target="#1295594944" aria-expanded="true" aria-controls="1295594944"><small><span class="badge badge-pill badge-success">2</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small></div></div>
+</div><div class="footer">Results generated by <a href="http://www.concordion.org" style="font-weight: bold; text-decoration: none; color: #89C;">Concordion</a><div class="testTime">in 110 ms on 02-Apr-2021 at 13:56:39 MSK</div></div></body><button id="btnToTop" onclick="topFunction()" type="button" class="btn btn-light btn-sm text-muted ml-1"><i class="fa fa-arrow-up"></i></button></html>
