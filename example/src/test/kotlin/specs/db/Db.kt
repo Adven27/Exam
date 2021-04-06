@@ -1,7 +1,7 @@
 package specs.db
 
-import com.adven.concordion.extensions.exam.core.toDate
-import com.adven.concordion.extensions.exam.db.builder.DataSetBuilder
+import io.github.adven27.concordion.extensions.exam.core.toDate
+import io.github.adven27.concordion.extensions.exam.db.builder.DataSetBuilder
 import specs.Specs
 import java.time.LocalDate
 

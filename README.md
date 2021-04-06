@@ -24,28 +24,16 @@
 
 Maven
 ```xml
-<repositories>
-    <repository>
-      <id>jcenter</id>
-      <url>https://jcenter.bintray.com/</url>
-    </repository>
-</repositories>  
-```
-```xml
 <dependency>
-    <groupId>org.adven.concordion.ext</groupId>
+    <groupId>io.github.adven27</groupId>
     <artifactId>exam-ms</artifactId>
-    <version>4.4.6</version>
+    <version>5.0.0</version>
 </dependency>
 ```
 
 Gradle
 ```groovy
-repositories {
-    jcenter()
-}
-
-testCompile "org.adven.concordion.ext:exam-ms:4.4.6"
+testCompile "io.github.adven27:exam-ms:5.0.0"
 ```
 ### 2) Use
 

@@ -1,23 +1,21 @@
 buildscript {
     ext.kotlin_version = '1.4.32'
     ext.ktor_version = '1.4.1'
-    ext.exposed_version = '0.25.1'
+    ext.exposed_version = '0.30.1'
     ext.restAssured_version = '4.3.3'
     ext.wiremock_version = '2.27.2'
     ext.klogging_version = '2.0.6'
-    ext.libVersion = '4.4.6'
+    ext.libVersion = '5.0.0'
     repositories {
         mavenCentral()
-        jcenter()
     }
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "io.gitlab.arturbosch.detekt:detekt-gradle-plugin:1.14.2"
-        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.5'
     }
 }
 
-group 'org.adven.concordion.ext'
+group 'io.github.adven27'
 version = libVersion
 
 subprojects {
@@ -28,7 +26,6 @@ subprojects {
 
     repositories {
         mavenCentral()
-        jcenter()
     }
 
     sourceCompatibility = 1.8
@@ -66,15 +63,15 @@ subprojects {
 }
 
 task publish {
-    dependsOn ":exam-core:bintrayUpload"
-    dependsOn ":exam-db:bintrayUpload"
-    dependsOn ":exam-ws:bintrayUpload"
-    dependsOn ":exam-mq:bintrayUpload"
-    dependsOn ":exam-mq-rabbit:bintrayUpload"
-    dependsOn ":exam-mq-kafka:bintrayUpload"
-    dependsOn ":exam-mq-ibmmq:bintrayUpload"
-    dependsOn ":exam-mq-redis:bintrayUpload"
-    dependsOn ":exam-files:bintrayUpload"
-    dependsOn ":exam-ui:bintrayUpload"
-    dependsOn ":exam-ms:bintrayUpload"
+    dependsOn ":exam-core:uploadArchives"
+    dependsOn ":exam-db:uploadArchives"
+    dependsOn ":exam-ws:uploadArchives"
+    dependsOn ":exam-mq:uploadArchives"
+    dependsOn ":exam-mq-rabbit:uploadArchives"
+    dependsOn ":exam-mq-kafka:uploadArchives"
+    dependsOn ":exam-mq-ibmmq:uploadArchives"
+    dependsOn ":exam-mq-redis:uploadArchives"
+    dependsOn ":exam-files:uploadArchives"
+    dependsOn ":exam-ui:uploadArchives"
+    dependsOn ":exam-ms:uploadArchives"
 }

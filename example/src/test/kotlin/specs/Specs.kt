@@ -1,16 +1,5 @@
 package specs
 
-import com.adven.concordion.extensions.exam.core.AbstractSpecs
-import com.adven.concordion.extensions.exam.core.ExamExtension
-import com.adven.concordion.extensions.exam.db.DbPlugin
-import com.adven.concordion.extensions.exam.db.DbTester
-import com.adven.concordion.extensions.exam.db.DbUnitConfig
-import com.adven.concordion.extensions.exam.db.commands.IgnoreMillisComparer
-import com.adven.concordion.extensions.exam.files.FlPlugin
-import com.adven.concordion.extensions.exam.mq.MqPlugin
-import com.adven.concordion.extensions.exam.mq.MqTester
-import com.adven.concordion.extensions.exam.ui.UiPlugin
-import com.adven.concordion.extensions.exam.ws.WsPlugin
 import com.github.jknack.handlebars.Helper
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock.aResponse
@@ -24,6 +13,17 @@ import com.github.tomakehurst.wiremock.client.WireMock.put
 import com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig
 import com.github.tomakehurst.wiremock.extension.responsetemplating.ResponseTemplateTransformer
+import io.github.adven27.concordion.extensions.exam.core.AbstractSpecs
+import io.github.adven27.concordion.extensions.exam.core.ExamExtension
+import io.github.adven27.concordion.extensions.exam.db.DbPlugin
+import io.github.adven27.concordion.extensions.exam.db.DbTester
+import io.github.adven27.concordion.extensions.exam.db.DbUnitConfig
+import io.github.adven27.concordion.extensions.exam.db.commands.IgnoreMillisComparer
+import io.github.adven27.concordion.extensions.exam.files.FlPlugin
+import io.github.adven27.concordion.extensions.exam.mq.MqPlugin
+import io.github.adven27.concordion.extensions.exam.mq.MqTester
+import io.github.adven27.concordion.extensions.exam.ui.UiPlugin
+import io.github.adven27.concordion.extensions.exam.ws.WsPlugin
 import org.concordion.api.extension.Extensions
 import org.concordion.ext.runtotals.RunTotalsExtension
 import org.concordion.ext.timing.TimerExtension

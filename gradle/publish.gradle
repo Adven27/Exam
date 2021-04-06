@@ -6,91 +6,63 @@ task sourcesJar(type: Jar, dependsOn: classes) {
 javadoc.failOnError = false
 task javadocJar(type: Jar, dependsOn: javadoc) {
     classifier = 'javadoc'
-    from javadoc.destinationDir
+    from javadoc
 }
 
 artifacts {
-    archives sourcesJar
-    archives javadocJar
+    archives sourcesJar, javadocJar
 }
 
-def pomConfig = {
-    licenses {
-        license {
-            name "The Apache Software License, Version 2.0"
-            url "http://www.apache.org/licenses/LICENSE-2.0.txt"
-            distribution "repo"
-        }
-    }
-    developers {
-        developer {
-            id "Adven27"
-            name "Nikolai Toropanov"
-            email "n.toropanov@gmail.com"
-        }
-    }
-
-    scm {
-        url "https://github.com/Adven27/Exam"
-    }
-}
-
-apply plugin: 'maven-publish'
-publishing {
-    publications {
-        mavenPublication(MavenPublication) {
-            from components.java
-            artifact sourcesJar {
-                classifier "sources"
-            }
-            artifact javadocJar {
-                classifier "javadoc"
-            }
-            groupId 'org.adven.concordion.ext'
-            artifactId project.name
-            version libVersion
-            pom.withXml {
-                def root = asNode()
-                root.appendNode('description', 'Extension for Concordion BDD Framework')
-                root.appendNode('name', 'Exam')
-                root.appendNode('url', 'https://github.com/Adven27/Exam')
-                root.children().last() + pomConfig
-            }
-        }
-    }
-}
-
-apply plugin: 'com.jfrog.bintray'
-bintray {
-    user = "adven27"
-    key = System.getenv("bintrayKey")
-    publications = ['mavenPublication']
-
-    pkg {
-        repo = 'exam'
-        name = project.name
-        userOrg = 'adven27'
-        licenses = ['Apache-2.0']
-        vcsUrl = 'https://github.com/Adven27/Exam.git'
-        version {
-            name = libVersion
-            desc = libVersion
-            released = new Date()
-        }
-    }
+apply plugin: 'signing'
+signing {
+    def signingKey = findProperty("signingKey")
+    def signingPassword = findProperty("signingPassword")
+    useInMemoryPgpKeys(signingKey, signingPassword)
+    sign configurations.archives
 }
 
 apply plugin: 'maven'
 uploadArchives {
     repositories {
         mavenDeployer {
-            configuration = configurations.compile
-            repository(id: nexusRepoId, url: nexusUrl) {
-                authentication(userName: nexusUser, password: nexusPassword)
+            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+            repository(url: "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/") {
+                authentication(userName: System.getenv("ossrhUsername"), password: System.getenv("ossrhPassword"))
             }
-            pom.groupId = nexusGroupId
-            pom.artifactId = nexusArtifactId
-            pom.version = nexusArtifactVersion
+
+            snapshotRepository(url: "https://s01.oss.sonatype.org/content/repositories/snapshots/") {
+                authentication(userName: System.getenv("ossrhUsername"), password: System.getenv("ossrhPassword"))
+            }
+
+            pom.project {
+                name project.name
+                packaging 'jar'
+                artifactId project.name
+                description 'Extension for Concordion BDD Framework'
+                url 'https://github.com/Adven27/Exam'
+
+                licenses {
+                    license {
+                        name "The Apache Software License, Version 2.0"
+                        url "http://www.apache.org/licenses/LICENSE-2.0.txt"
+                    }
+                }
+
+                developers {
+                    developer {
+                        id "Adven27"
+                        name "Nikolai Toropanov"
+                        email "n.toropanov@gmail.com"
+                    }
+                }
+
+                scm {
+                    url "https://github.com/Adven27/Exam"
+                    connection 'scm:git:git://github.com/Adven27/Exam.git'
+                    developerConnection 'scm:git:git://github.com/Adven27/Exam.git'
+                }
+            }
         }
     }
 }
