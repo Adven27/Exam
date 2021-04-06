@@ -329,6 +329,25 @@
             <xs:element name="browser" type="browser-info"/>
         </xs:all>
     </xs:complexType>
+    <xs:complexType name="then-info" mixed="true">
+        <xs:all>
+            <xs:element name="await" type="await-info"/>
+            <xs:element name="xml-check" type="xj-info"/>
+            <xs:element name="json-check" type="xj-info"/>
+            <xs:element name="db-verify" type="db-verify-info"/>
+            <xs:element name="db-check" type="db-check-info"/>
+            <xs:element name="db-show" type="db-set-info"/>
+            <xs:element name="mq-check" type="mq-check-info"/>
+            <xs:element name="set" type="set-info"/>
+            <xs:element name="include" type="include-info"/>
+            <xs:element name="browser" type="browser-info"/>
+            <xs:element name="soap" type="post-info" minOccurs="0"/>
+            <xs:element name="post" type="post-info" minOccurs="0"/>
+            <xs:element name="get" type="get-info" minOccurs="0"/>
+            <xs:element name="delete" type="post-info" minOccurs="0"/>
+            <xs:element name="put" type="post-info" minOccurs="0"/>
+        </xs:all>
+    </xs:complexType>
 
     <xs:complexType name="where-info">
         <xs:sequence>
@@ -436,7 +455,8 @@
                     </xs:sequence>
                     <xs:attribute type="xs:string" name="desc"/>
                     <xs:attribute type="xs:string" name="cookies" default="one=1, two=2"/>
-                    <xs:attribute type="xs:string" name="headers" default="Authorization = Bearer 111, Accept-Language = en"/>
+                    <xs:attribute type="xs:string" name="headers"
+                                  default="Authorization = Bearer 111, Accept-Language = en"/>
                     <xs:attribute type="xs:string" name="urlParams" default="param1=1&amp;param2=2"/>
                 </xs:complexType>
             </xs:element>
@@ -452,7 +472,7 @@
             <xs:sequence>
                 <xs:element name="given" type="given-info" minOccurs="0"/>
                 <xs:element name="when" type="given-info" minOccurs="0"/>
-                <xs:element name="then" type="check-info" minOccurs="0"/>
+                <xs:element name="then" type="then-info" minOccurs="0"/>
                 <xs:element name="soap" type="post-info" minOccurs="0"/>
                 <xs:element name="post" type="post-info" minOccurs="0"/>
                 <xs:element name="get" type="get-info" minOccurs="0"/>

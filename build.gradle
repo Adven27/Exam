@@ -1,11 +1,11 @@
 buildscript {
-    ext.kotlin_version = '1.4.30'
+    ext.kotlin_version = '1.4.32'
     ext.ktor_version = '1.4.1'
     ext.exposed_version = '0.25.1'
     ext.restAssured_version = '4.3.3'
     ext.wiremock_version = '2.27.2'
-    ext.klogging_version = '2.0.3'
-    ext.libVersion = '4.4.5.1'
+    ext.klogging_version = '2.0.6'
+    ext.libVersion = '4.4.6'
     repositories {
         mavenCentral()
         jcenter()
@@ -70,6 +70,10 @@ task publish {
     dependsOn ":exam-db:bintrayUpload"
     dependsOn ":exam-ws:bintrayUpload"
     dependsOn ":exam-mq:bintrayUpload"
+    dependsOn ":exam-mq-rabbit:bintrayUpload"
+    dependsOn ":exam-mq-kafka:bintrayUpload"
+    dependsOn ":exam-mq-ibmmq:bintrayUpload"
+    dependsOn ":exam-mq-redis:bintrayUpload"
     dependsOn ":exam-files:bintrayUpload"
     dependsOn ":exam-ui:bintrayUpload"
     dependsOn ":exam-ms:bintrayUpload"

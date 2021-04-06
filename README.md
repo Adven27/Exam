@@ -35,7 +35,7 @@ Maven
 <dependency>
     <groupId>org.adven.concordion.ext</groupId>
     <artifactId>exam-ms</artifactId>
-    <version>4.4.5</version>
+    <version>4.4.6</version>
 </dependency>
 ```
 
@@ -45,7 +45,7 @@ repositories {
     jcenter()
 }
 
-testCompile "org.adven.concordion.ext:exam-ms:4.4.5"
+testCompile "org.adven.concordion.ext:exam-ms:4.4.6"
 ```
 ### 2) Use
 
@@ -131,7 +131,7 @@ public class UserCreation extends Specs {
     </e:example>
 </body>
 </html>
-  ```
+```
 For more info, [see live spec](https://adven27.github.io/Exam/specs/Specs.html)
 
 Telegram https://t.me/joinchat/DClprRZ1xDCBtjGexhZOGw
