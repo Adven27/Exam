@@ -24,6 +24,10 @@ jobs:
         run: gradle publish
         env:
           bintrayKey: ${{ secrets.BINTRAY_KEY }}
+          ossrhUsername: ${{ secrets.OSSRHUSERNAME }}
+          ossrhPassword: ${{ secrets.OSSRHPASSWORD }}
+          signingKey: ${{ secrets.ORG_GRADLE_PROJECT_SIGNINGKEY }}
+          signingPassword: ${{ secrets.ORG_GRADLE_PROJECT_SIGNINGPASSWORD }}
 
       - name: Update live specs
         run: sh .utility/update-gh-pages.sh

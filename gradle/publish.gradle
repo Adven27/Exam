@@ -15,10 +15,10 @@ artifacts {
 
 apply plugin: 'signing'
 signing {
-    def signingKey = findProperty("signingKey")
-    def signingPassword = findProperty("signingPassword")
-    useInMemoryPgpKeys(signingKey, signingPassword)
-    sign configurations.archives
+    if (project.hasProperty('SIGNINGKEY') && project.hasProperty('SIGNINGPASSWORD')) {
+        useInMemoryPgpKeys(project.getProperty('SIGNING_PRIVATE_KEY'), project.getProperty('SIGNING_PASSWORD'))
+        sign configurations.archives
+    }
 }
 
 apply plugin: 'maven'
