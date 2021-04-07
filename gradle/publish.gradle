@@ -15,8 +15,8 @@ artifacts {
 
 apply plugin: 'signing'
 signing {
-    if (project.hasProperty('SIGNINGKEY') && project.hasProperty('SIGNINGPASSWORD')) {
-        useInMemoryPgpKeys(project.getProperty('SIGNINGKEY'), project.getProperty('SIGNINGPASSWORD'))
+    if (project.hasProperty('signingKey') && project.hasProperty('signingPassword')) {
+        useInMemoryPgpKeys(project.getProperty('signingKey'), project.getProperty('signingPassword'))
         sign configurations.archives
     }
 }
