@@ -82,7 +82,7 @@ public class UserCreation extends Specs {
 
 `specs\usercreation\UserCreation.html`
 ```html
-<html xmlns:e="http://exam.extension.io">
+<html xmlns:e="http://exam.extension.io" xmlns:cc="http://www.concordion.org/2007/concordion">
 <body>
     <h1>User creation</h1>
     <e:summary/>
@@ -120,6 +120,9 @@ public class UserCreation extends Specs {
 </body>
 </html>
 ```
-For more info, [see live spec](https://adven27.github.io/Exam/specs/Specs.html)
+## Examples
 
+For more info, [see live spec](https://adven27.github.io/Exam/specs/Specs.html) and [demo project](https://github.com/Adven27/service-tests/blob/master/demo/src/test/resources/specs/Specs.md)
+
+## Help
 Telegram https://t.me/joinchat/DClprRZ1xDCBtjGexhZOGw
