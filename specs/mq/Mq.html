@@ -1,0 +1,981 @@
+<?xml version="1.0" encoding="UTF-8"?><html xmlns:e="http://exam.extension.io"><head><style>* {
+  font-family: Arial;
+}
+body {
+  padding: 32px;  
+}
+pre {
+  padding: 6px 28px 6px 28px;
+  background-color: #E8EEF7;
+}
+pre, pre *, code, code *, kbd {
+  font-family: Courier New, Courier;
+  font-size: 10pt;
+}
+h1, h1 * {
+  font-size: 24pt;	
+}
+p, td, th, li, .breadcrumbs {
+  font-size: 10pt;
+}
+p, li {
+  line-height: 140%;
+  max-width: 720px;
+}
+table {
+  border-collapse: collapse;
+  empty-cells: show;
+  margin: 8px 0px 8px 0px;
+}
+th, td {
+  border: 1px solid black;
+  padding: 3px;
+}
+td {
+  background-color: white;
+  vertical-align: top;
+}
+th {
+  background-color: #C3D9FF;
+}
+li {
+  margin-top: 6px;
+  margin-bottom: 6px; 
+}
+
+.example, :not(th)[concordion\:example] {
+  padding: 6px 16px 6px 16px;
+  border: 1px solid #C3D9FF;
+  margin: 6px 0px 28px 0px;
+  background-color: #F5F9FD;
+}
+.example h3, [concordion\:example] h3 {
+  margin-top: 8px;
+  margin-bottom: 8px;
+  font-size: 12pt;
+}
+
+p.success {
+  padding: 2px;
+}
+.success, .success * {
+  background-color: #afa !important;
+}
+.success pre {
+  background-color: #bbffbb;
+}
+.failure, .failure * {
+  background-color: #ffb0b0;
+  padding: 1px;
+}
+.failure .expected {
+  text-decoration: line-through;
+  color: #bb5050;
+}
+.ignored, .ignored * {
+  background-color: #f0f0f0 !important;	
+}
+
+ins {
+  text-decoration: none;	
+}
+
+.exceptionMessage {
+  background-color: #fdd;
+  font-family: Courier New, Courier, Monospace;
+  font-size: 10pt;
+  display: block;
+  font-weight: normal;
+  padding: 4px;
+  text-decoration: none !important;
+}
+.stackTrace, .stackTrace * {
+  font-weight: normal;
+}
+.stackTrace {
+  display: none;
+  padding: 1px 4px 4px 4px;
+  background-color: #fdd;
+  border-top: 1px dotted black;
+}
+.stackTraceExceptionMessage {
+  display: block;
+  font-family: Courier New, Courier, Monospace;
+  font-size: 8pt;
+  white-space: wrap;
+  padding: 1px 0px 1px 0px;
+}
+.stackTraceEntry {
+  white-space: nowrap;
+  font-family: Courier New, Courier, Monospace;
+  display: block;
+  font-size: 8pt;
+  padding: 1px 0px 1px 32px;
+}
+.stackTraceButton {
+  font-size: 8pt;
+  margin: 2px 8px 2px 0px;
+  font-weight: normal;
+  font-family: Arial;
+}
+
+.special {
+  font-style: italic;
+}
+.missing, .missing * {
+  background-color: #ff9999;
+  color:#bb5050;
+  text-decoration: line-through;
+}
+.surplus, .surplus * {
+  background-color: #ff9999;
+}
+.footer {
+  text-align: right;
+  margin-top: 40px;
+  font-size: 8pt;
+  width: 100%;
+  color: #999;
+}
+.footer .testTime {
+  padding: 2px 10px 0px 0px;
+}
+
+.idea {
+  font-size: 9pt;
+  color: #888;
+  font-style: italic;	
+}
+.tight li {
+  margin-top: 1px;
+  margin-bottom: 1px; 
+}
+.commentary {
+  float: right;
+  width: 200px;
+  background-color: #ffffd0;
+  padding:8px;
+  border: 3px solid #eeeeb0;	 
+  margin: 10px 0px 10px 10px;	 
+}
+.commentary, .commentary * {
+  font-size: 8pt;
+}
+</style><meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<link type="text/css" rel="stylesheet" href="../../codemirror/codemirror.css" /><link type="text/css" rel="stylesheet" href="../../codemirror/merge.css" /><link type="text/css" rel="stylesheet" href="../../codemirror/enable-codemirror.css" /><link type="text/css" rel="stylesheet" href="../../codemirror/foldgutter.css" /><link type="text/css" rel="stylesheet" href="../../codemirror/simplescrollbar.css" /><script type="text/javascript" src="../../codemirror/codemirror.js"></script><script type="text/javascript" src="../../codemirror/enable-codemirror.js"></script><script type="text/javascript" src="../../codemirror/javascript.js"></script><script type="text/javascript" src="../../codemirror/xml.js"></script><script type="text/javascript" src="../../codemirror/htmlmixed.js"></script><script type="text/javascript" src="../../codemirror/handelbar.js"></script><script type="text/javascript" src="../../codemirror/addon/mode/simple.js"></script><script type="text/javascript" src="../../codemirror/http.js"></script><script type="text/javascript" src="../../codemirror/formatting.js"></script><script type="text/javascript" src="../../codemirror/markdown.js"></script><script type="text/javascript" src="../../codemirror/diff_match_patch.js"></script><script type="text/javascript" src="../../codemirror/merge.js"></script><script type="text/javascript" src="../../codemirror/xml-fold.js"></script><script type="text/javascript" src="../../codemirror/simplescrollbar.js"></script><link type="text/css" rel="stylesheet" href="../../codemirror/theme/darcula.css" /><script type="text/javascript" src="../../bootstrap/jquery-3.2.1.slim.min.js"></script><script type="text/javascript" src="../../bootstrap/popper.min.js"></script><script type="text/javascript" src="../../bootstrap/bootstrap.min.js"></script><script type="text/javascript" src="../../bootstrap/sidebar.js"></script><link type="text/css" rel="stylesheet" href="../../bootstrap/enable-bootstrap.css" /><link type="text/css" rel="stylesheet" href="../../bootstrap/bootstrap.min.css" /><link type="text/css" rel="stylesheet" href="../../bootstrap/callout.css" /><link type="text/css" rel="stylesheet" href="../../bootstrap/font-awesome.min.css" /><link type="text/css" rel="stylesheet" href="../../bootstrap/scrollToTop.css" /><script type="text/javascript" src="../../bootstrap/scrollToTop.js"></script><link type="text/css" rel="stylesheet" href="../../timingExtensionStyle.css" /><script type="text/javascript" src="../../timingExtensionToggle.js"></script></head><body><div id="toggle-button"><img id="toggle-on" src="../../timing-on.svg" height="24" width="24" style="display:none" /><img id="toggle-off" src="../../timing-off.svg" height="24" width="24" /></div><span class="breadcrumbs"><a href="../Specs.html">Exam - Concordion extension</a> &gt;</span>
+<div cmdId="00486be5-b323-45a7-b02f-d68df7e53d78" e:summary="" class="pin"> <h4>Summary<button type="button" class="btn btn-light btn-sm text-muted ml-1" data-toggle="collapse" data-target="#summary" aria-expanded="true" aria-controls="summary">collapse</button></h4><div id="summary" class="collapse show"><div class="list-group"><a class="list-group-item list-group-item-action" style="border-left: none; border-right: none;" href="#Send -&gt; Get: success">Send -&gt; Get: success<small class="card-img-overlay m-1" style="padding:0; left:inherit;"><span class="badge badge-pill badge-light">5ms</span><span class="badge badge-pill badge-success">4</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small></a><a class="list-group-item list-group-item-action" style="border-left: none; border-right: none;" href="#Send -&gt; Get: failed">Send -&gt; Get: failed<small class="card-img-overlay m-1" style="padding:0; left:inherit;"><span class="badge badge-pill badge-light">3ms</span><span class="badge badge-pill badge-success">1</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning">1</span><span class="badge badge-pill badge-danger"></span><span class="badge badge-pill badge-warning">ExpectedToFail</span></small></a><a class="list-group-item list-group-item-action" style="border-left: none; border-right: none;" href="#Content from files">Content from files<small class="card-img-overlay m-1" style="padding:0; left:inherit;"><span class="badge badge-pill badge-light">3ms</span><span class="badge badge-pill badge-success">2</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small></a><a class="list-group-item list-group-item-action" style="border-left: none; border-right: none;" href="#Message with headers">Message with headers<small class="card-img-overlay m-1" style="padding:0; left:inherit;"><span class="badge badge-pill badge-light">1ms</span><span class="badge badge-pill badge-success">2</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small></a><a class="list-group-item list-group-item-action" style="border-left: none; border-right: none;" href="#Multicheck: success">Multicheck: success<small class="card-img-overlay m-1" style="padding:0; left:inherit;"><span class="badge badge-pill badge-light">3ms</span><span class="badge badge-pill badge-success">6</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small></a><a class="list-group-item list-group-item-action" style="border-left: none; border-right: none;" href="#Multicheck: ignore order">Multicheck: ignore order<small class="card-img-overlay m-1" style="padding:0; left:inherit;"><span class="badge badge-pill badge-light">1ms</span><span class="badge badge-pill badge-success">6</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small></a><a class="list-group-item list-group-item-action" style="border-left: none; border-right: none;" href="#Multicheck: wrong message">Multicheck: wrong message<small class="card-img-overlay m-1" style="padding:0; left:inherit;"><span class="badge badge-pill badge-light">2ms</span><span class="badge badge-pill badge-success">4</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning">2</span><span class="badge badge-pill badge-danger"></span><span class="badge badge-pill badge-warning">ExpectedToFail</span></small></a><a class="list-group-item list-group-item-action" style="border-left: none; border-right: none;" href="#Multicheck: wrong message order">Multicheck: wrong message order<small class="card-img-overlay m-1" style="padding:0; left:inherit;"><span class="badge badge-pill badge-light">2ms</span><span class="badge badge-pill badge-success">4</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning">2</span><span class="badge badge-pill badge-danger"></span><span class="badge badge-pill badge-warning">ExpectedToFail</span></small></a><a class="list-group-item list-group-item-action" style="border-left: none; border-right: none;" href="#Multicheck: got extra messages">Multicheck: got extra messages<small class="card-img-overlay m-1" style="padding:0; left:inherit;"><span class="badge badge-pill badge-light">1ms</span><span class="badge badge-pill badge-success"></span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning">1</span><span class="badge badge-pill badge-danger"></span><span class="badge badge-pill badge-warning">ExpectedToFail</span></small></a><a class="list-group-item list-group-item-action" style="border-left: none; border-right: none;" href="#Multicheck: missing messages">Multicheck: missing messages<small class="card-img-overlay m-1" style="padding:0; left:inherit;"><span class="badge badge-pill badge-light">1ms</span><span class="badge badge-pill badge-success"></span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning">1</span><span class="badge badge-pill badge-danger"></span><span class="badge badge-pill badge-warning">ExpectedToFail</span></small></a><a class="list-group-item list-group-item-action" style="border-left: none; border-right: none;" href="#collapsable view">collapsable view<small class="card-img-overlay m-1" style="padding:0; left:inherit;"><span class="badge badge-pill badge-light">30ms</span><span class="badge badge-pill badge-success">6</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small></a><a class="list-group-item list-group-item-action" style="border-left: none; border-right: none;" href="#verify different formats">verify different formats<small class="card-img-overlay m-1" style="padding:0; left:inherit;"><span class="badge badge-pill badge-light">21ms</span><span class="badge badge-pill badge-success">4</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small></a></div></div></div>
+
+<div xmlns:c="http://www.concordion.org/2007/concordion" name="Send -&gt; Get: success" print="true" cmdId="0b2a8bb0-4f42-405c-aea9-1b04871006df" c:example="Send -&gt; Get: success" class="card mb-3" e:example="" id="Send -&gt; Get: success"><div class="card-header" data-toggle="collapse" data-target="#1858251070" aria-expanded="true" aria-controls="1858251070"><a name="Send -&gt; Get: success" data-type="example">Send -&gt; Get: success</a></div><div class="card-body collapse show" id="1858251070"><pre lineNumbers="true" class="htmlmixed darcula mt-2">&lt;div cmdId="cbab75ec-6fa5-45f5-845b-92b4ce545dbd" e:before-each=""&gt;
+    &lt;div cmdId="7e9b5018-3ef9-4697-ae99-74e9450aa11c" e:given=""&gt;
+        &lt;div name="myQueue" cmdId="48301704-987d-46f5-b16c-067e9759f77a" e:mq-purge=""&gt; &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+&lt;e:when&gt;
+        &lt;e:mq-send name="myQueue"&gt;{"date" : "{{now 'yyyy-MM-dd'}}"}&lt;/e:mq-send&gt;
+    &lt;/e:when&gt;
+&lt;e:then&gt;
+        &lt;e:mq-check name="myQueue"&gt;{"date" : "{{now 'yyyy-MM-dd'}}"}&lt;/e:mq-check&gt;
+    &lt;/e:then&gt;
+&lt;e:when&gt;
+        &lt;e:mq-purge name="myQueue" /&gt;
+    &lt;/e:when&gt;
+&lt;e:then&gt;
+        &lt;e:mq-check name="myQueue" /&gt;
+    &lt;/e:then&gt;
+&lt;p&gt;Specific configuration for json-unit may be passed through "jsonUnitOptions" attribute separated by ";". &lt;/p&gt;
+&lt;e:when&gt;
+        &lt;e:mq-send name="myQueue"&gt;
+{ "param1":"1", "extra":"ignore", "arr": [{"param3":"3", "extra":"ignore"}, {"extra":"ignore", "param4":"4"}]}
+        &lt;/e:mq-send&gt;
+    &lt;/e:when&gt;
+&lt;e:then&gt;
+        &lt;e:mq-check name="myQueue" jsonUnitOptions="IGNORING_EXTRA_FIELDS"&gt;
+{ "param1": "1", "arr": [{ "param3": "3" }, { "param4": "4"}] }
+        &lt;/e:mq-check&gt;
+    &lt;/e:then&gt;</pre><div cmdId="cbab75ec-6fa5-45f5-845b-92b4ce545dbd" e:before-each="">
+    <div cmdId="7e9b5018-3ef9-4697-ae99-74e9450aa11c" e:given="" class="bd-callout bd-callout-info">
+        <div cmdId="48301704-987d-46f5-b16c-067e9759f77a" e:mq-purge=""><table class="table table-sm"><caption><i class="fa fa-envelope ml-1"> myQueue purged</i></caption></table></div>
+    </div>
+</div>
+    <div cmdId="d54960be-750d-4068-a660-ef76bb9d1f71" e:when="" class="bd-callout bd-callout-warning">
+        <div cmdId="5f5042d8-b3df-40a7-b550-4e6d7bbad84d" e:mq-send="" class="mq-send"><table class="table table-sm"><caption><i class="fa fa-envelope ml-1"> myQueue</i></caption><tr><td class="json">{"date" : "2021-05-05"}</td></tr></table></div>
+    </div>
+    <div cmdId="e15793ba-928b-414e-b4c4-05bc79f15060" e:then="" class="bd-callout bd-callout-success">
+        <div cmdId="3c552c79-164c-4458-a91d-2a96f0b219fd" e:mq-check="" class="mq-check"><table class="table table-sm"><caption><i class="fa fa-envelope-open ml-1"> myQueue</i></caption><tr><td style="margin: 0" autoFormat="true" class="json exp-body rest-success">{
+  "date": "2021-05-05"
+}</td></tr></table></div>
+    </div>
+    <div cmdId="8f07d08e-4ef2-4c1f-a114-0604b67e21db" e:when="" class="bd-callout bd-callout-warning">
+        <div cmdId="bc43d7fe-4678-4f5c-8dc3-dea18a2ba292" e:mq-purge=""><table class="table table-sm"><caption><i class="fa fa-envelope ml-1"> myQueue purged</i></caption></table></div>
+    </div>
+    <div cmdId="82a681b5-ac73-4c87-b36c-ef5eef736abc" e:then="" class="bd-callout bd-callout-success">
+        <div cmdId="9015e01d-da92-4433-87c8-9712850e5a2e" e:mq-check="" class="mq-check"><table class="table table-sm"><caption><i class="fa fa-envelope-open ml-1"> myQueue</i></caption><tr><td>&lt;EMPTY&gt;</td></tr></table></div>
+    </div>
+    <p>Specific configuration for json-unit may be passed through "jsonUnitOptions" attribute separated by ";". </p>
+    <div cmdId="26965e0c-d031-4b6b-ba6f-1bad72bbfa78" e:when="" class="bd-callout bd-callout-warning">
+        <div cmdId="4730fd6f-6230-4be2-bbd5-4aaf47afde65" e:mq-send="" class="mq-send"><table class="table table-sm"><caption><i class="fa fa-envelope ml-1"> myQueue</i></caption><tr><td class="json">{ "param1":"1", "extra":"ignore", "arr": [{"param3":"3", "extra":"ignore"}, {"extra":"ignore", "param4":"4"}]}</td></tr></table></div>
+    </div>
+    <div cmdId="560d2559-c281-4513-8b36-99c6851fbc1c" e:then="" class="bd-callout bd-callout-success">
+        <div jsonUnitOptions="IGNORING_EXTRA_FIELDS" cmdId="9166b106-07f3-4578-855d-c28876fc4534" e:mq-check="" class="mq-check"><table class="table table-sm"><caption><i class="fa fa-envelope-open ml-1"> myQueue</i></caption><tr><td style="margin: 0" autoFormat="true" class="json exp-body rest-success">{
+  "param1": "1",
+  "arr": [{
+    "param3": "3"
+  }, {
+    "param4": "4"
+  }]
+}</td></tr></table></div>
+    </div>
+</div><div class="card-footer text-muted" data-toggle="collapse" data-target="#1858251070" aria-expanded="true" aria-controls="1858251070"><small><span class="badge badge-pill badge-success">4</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small></div></div>
+<div xmlns:c="http://www.concordion.org/2007/concordion" name="Send -&gt; Get: failed" status="ExpectedToFail" print="true" cmdId="dd1fbca2-9c51-4173-a578-2444699fa270" c:example="Send -&gt; Get: failed" c:status="ExpectedToFail" class="card mb-3" e:example="" id="Send -&gt; Get: failed"><div class="card-header" data-toggle="collapse" data-target="#1609144226" aria-expanded="true" aria-controls="1609144226"><a name="Send -&gt; Get: failed" data-type="example">Send -&gt; Get: failed</a></div><div class="card-body collapse show" id="1609144226"><pre lineNumbers="true" class="htmlmixed darcula mt-2">&lt;div cmdId="cbab75ec-6fa5-45f5-845b-92b4ce545dbd" e:before-each=""&gt;
+    &lt;div cmdId="7e9b5018-3ef9-4697-ae99-74e9450aa11c" e:given=""&gt;
+        &lt;div name="myQueue" cmdId="48301704-987d-46f5-b16c-067e9759f77a" e:mq-purge=""&gt; &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+&lt;e:when&gt;
+        &lt;e:mq-purge name="myQueue" /&gt;
+        &lt;e:mq-send name="myQueue"&gt;{"date" : "{{now 'yyyy-MM-dd' minus='2 days'}}"}&lt;/e:mq-send&gt;
+    &lt;/e:when&gt;
+&lt;e:then&gt;
+        &lt;e:mq-check name="myQueue"&gt;{"date" : "{{formattedAndWithinNow 'yyyy-MM-dd' '1d'}}"}&lt;/e:mq-check&gt;
+    &lt;/e:then&gt;</pre><div cmdId="cbab75ec-6fa5-45f5-845b-92b4ce545dbd" e:before-each="">
+    <div cmdId="7e9b5018-3ef9-4697-ae99-74e9450aa11c" e:given="" class="bd-callout bd-callout-info">
+        <div cmdId="48301704-987d-46f5-b16c-067e9759f77a" e:mq-purge=""><table class="table table-sm"><caption><i class="fa fa-envelope ml-1"> myQueue purged</i></caption></table></div>
+    </div>
+</div>
+    <div cmdId="62aee462-e70d-4dc9-b107-45398f68e4f7" e:when="" class="bd-callout bd-callout-warning">
+        <div cmdId="ee325c6a-a547-4449-8d52-87969f058f73" e:mq-purge=""><table class="table table-sm"><caption><i class="fa fa-envelope ml-1"> myQueue purged</i></caption></table></div>
+        <div cmdId="067077f1-f137-4636-a520-e3cfbc7396dc" e:mq-send="" class="mq-send"><table class="table table-sm"><caption><i class="fa fa-envelope ml-1"> myQueue</i></caption><tr><td class="json">{"date" : "2021-05-03"}</td></tr></table></div>
+    </div>
+    <div cmdId="9d942484-3db5-4cfa-9e0c-d99fe665d7bb" e:then="" class="bd-callout bd-callout-success">
+        <div cmdId="91830f6e-7369-4138-9484-c0dcb3aace7a" e:mq-check="" class="mq-check"><table class="table table-sm"><caption><i class="fa fa-envelope-open ml-1"> myQueue</i></caption><tr><td style="margin: 0" autoFormat="true" class=""><div class="card border-danger alert-warning">
+      
+      <div class="card-body mb-1 mt-1">
+        <pre id="error-1262764709" class="card-text" style="white-space: pre-wrap;">JSON documents are different:
+Matcher "formattedAndWithinNow" does not match value "2021-05-03" in node "date". The date is not within &lt;2021-05-04T18:37:34.221+03:00[Europe/Moscow]..2021-05-06T18:37:34.221+03:00[Europe/Moscow]&gt;
+</pre><div class="json rest-failure"><del class="expected">{
+  "date": "${json-unit.matches:formattedAndWithinNow}[yyyy-MM-dd][1d]"
+}<fail style="display: none;" /></del>
+<ins class="actual">{
+  "date": "2021-05-03"
+}</ins></div>
+      </div>
+    </div></td></tr></table></div>
+    </div>
+</div><div class="card-footer text-muted" data-toggle="collapse" data-target="#1609144226" aria-expanded="true" aria-controls="1609144226"><small><span class="badge badge-pill badge-success">1</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning">1</span><span class="badge badge-pill badge-danger"></span><span class="badge badge-pill badge-warning">ExpectedToFail</span></small></div></div>
+<div xmlns:c="http://www.concordion.org/2007/concordion" name="Content from files" print="true" cmdId="842f0db1-fb57-4ff9-a0b0-a728ad71668e" c:example="Content from files" class="card mb-3" e:example="" id="Content from files"><div class="card-header" data-toggle="collapse" data-target="#-358512472" aria-expanded="true" aria-controls="-358512472"><a name="Content from files" data-type="example">Content from files</a></div><div class="card-body collapse show" id="-358512472"><pre lineNumbers="true" class="htmlmixed darcula mt-2">&lt;div cmdId="cbab75ec-6fa5-45f5-845b-92b4ce545dbd" e:before-each=""&gt;
+    &lt;div cmdId="7e9b5018-3ef9-4697-ae99-74e9450aa11c" e:given=""&gt;
+        &lt;div name="myQueue" cmdId="48301704-987d-46f5-b16c-067e9759f77a" e:mq-purge=""&gt; &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+&lt;e:when&gt;
+        &lt;e:mq-send name="myQueue" from="/data/mq/msg.json" vars="myVar1={{now 'yyyy-MM-dd'}} | myVar2={{date myVar1 minus='1 d'}} | myVar3=str with commas , signs" varsSeparator="|" /&gt;
+    &lt;/e:when&gt;
+&lt;e:then&gt;
+        &lt;e:mq-check name="myQueue" from="/data/mq/msg.json" vars="myVar1={{now 'yyyy-MM-dd'}} | myVar2={{date myVar1 minus='1 d'}} | myVar3=str with commas , signs" varsSeparator="|" /&gt;
+    &lt;/e:then&gt;</pre><div cmdId="cbab75ec-6fa5-45f5-845b-92b4ce545dbd" e:before-each="">
+    <div cmdId="7e9b5018-3ef9-4697-ae99-74e9450aa11c" e:given="" class="bd-callout bd-callout-info">
+        <div cmdId="48301704-987d-46f5-b16c-067e9759f77a" e:mq-purge=""><table class="table table-sm"><caption><i class="fa fa-envelope ml-1"> myQueue purged</i></caption></table></div>
+    </div>
+</div>
+    <div cmdId="54d19a5f-047d-4812-9104-5d513ce4c1cf" e:when="" class="bd-callout bd-callout-warning">
+        <div from="/data/mq/msg.json" cmdId="afb47ee3-dfe5-41ce-af10-07a8360f2101" e:mq-send="" class="mq-send"><table class="table table-sm"><caption><i class="fa fa-envelope ml-1"> myQueue</i></caption><tr><td class="json">{
+  "date": "2021-05-05",
+  "var1": "2021-05-05",
+  "var2": "Tue May 04 00:00:00 MSK 2021",
+  "var3": "str with commas , signs"
+}</td></tr></table></div>
+    </div>
+    <div cmdId="9d4a9eb8-7173-4b92-859a-964ec01090d0" e:then="" class="bd-callout bd-callout-success">
+        <div from="/data/mq/msg.json" cmdId="2ef50055-f3db-414d-b20f-b934d7785e37" e:mq-check="" class="mq-check"><table class="table table-sm"><caption><i class="fa fa-envelope-open ml-1"> myQueue</i></caption><tr><td style="margin: 0" autoFormat="true" class="json exp-body rest-success">{
+  "date": "2021-05-05",
+  "var1": "2021-05-05",
+  "var2": "Tue May 04 00:00:00 MSK 2021",
+  "var3": "str with commas , signs"
+}</td></tr></table></div>
+    </div>
+</div><div class="card-footer text-muted" data-toggle="collapse" data-target="#-358512472" aria-expanded="true" aria-controls="-358512472"><small><span class="badge badge-pill badge-success">2</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small></div></div>
+<div xmlns:c="http://www.concordion.org/2007/concordion" name="Message with headers" print="true" cmdId="35c6c940-0e64-4422-844b-6ccec4f4d22f" c:example="Message with headers" class="card mb-3" e:example="" id="Message with headers"><div class="card-header" data-toggle="collapse" data-target="#-1540481595" aria-expanded="true" aria-controls="-1540481595"><a name="Message with headers" data-type="example">Message with headers</a></div><div class="card-body collapse show" id="-1540481595"><pre lineNumbers="true" class="htmlmixed darcula mt-2">&lt;div cmdId="cbab75ec-6fa5-45f5-845b-92b4ce545dbd" e:before-each=""&gt;
+    &lt;div cmdId="7e9b5018-3ef9-4697-ae99-74e9450aa11c" e:given=""&gt;
+        &lt;div name="myQueue" cmdId="48301704-987d-46f5-b16c-067e9759f77a" e:mq-purge=""&gt; &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+&lt;e:given&gt;
+        &lt;e:set var="id" value="some-id" /&gt;
+    &lt;/e:given&gt;
+&lt;e:when&gt;
+        &lt;e:mq-send name="myQueue" headers="id={{id}},contentEncoding=UTF-8"&gt;{}&lt;/e:mq-send&gt;
+    &lt;/e:when&gt;
+&lt;e:then&gt;
+        &lt;e:mq-check name="myQueue" headers="contentEncoding=UTF-8,id={{id}}"&gt;{}&lt;/e:mq-check&gt;
+    &lt;/e:then&gt;</pre><div cmdId="cbab75ec-6fa5-45f5-845b-92b4ce545dbd" e:before-each="">
+    <div cmdId="7e9b5018-3ef9-4697-ae99-74e9450aa11c" e:given="" class="bd-callout bd-callout-info">
+        <div cmdId="48301704-987d-46f5-b16c-067e9759f77a" e:mq-purge=""><table class="table table-sm"><caption><i class="fa fa-envelope ml-1"> myQueue purged</i></caption></table></div>
+    </div>
+</div>
+    <div cmdId="d0430e74-f73d-41fb-b97d-8ab68b8c2e81" e:given="" class="bd-callout bd-callout-info">
+        <span var="id" value="some-id" cmdId="092133ed-6971-4564-b779-a3a500c868ea" e:set=""> </span>
+    </div>
+    <div cmdId="fe7a6e4e-e7d2-4ffa-ab03-561519df8b5f" e:when="" class="bd-callout bd-callout-warning">
+        <div cmdId="1a40ae91-ff36-457b-99df-9bebd5751c29" e:mq-send="" class="mq-send"><table class="table table-sm"><caption><i class="fa fa-envelope ml-1"> myQueue</i></caption><caption>Headers: id=some-id, contentEncoding=UTF-8<i class="fa fa-border"></i></caption><tr><td class="json">{}</td></tr></table></div>
+    </div>
+    <div cmdId="544e924e-7339-4d83-b9ef-0f9ac0e65353" e:then="" class="bd-callout bd-callout-success">
+        <div cmdId="2313d2a5-f64c-4447-922b-05866f4619e2" e:mq-check="" class="mq-check"><table class="table table-sm"><caption><i class="fa fa-envelope-open ml-1"> myQueue</i></caption><tr><td><span class="rest-success">Headers: contentEncoding=UTF-8, id=some-id<i class="fa fa-border"></i></span></td></tr><tr><td style="margin: 0" autoFormat="true" class="json exp-body rest-success">{}</td></tr></table></div>
+    </div>
+</div><div class="card-footer text-muted" data-toggle="collapse" data-target="#-1540481595" aria-expanded="true" aria-controls="-1540481595"><small><span class="badge badge-pill badge-success">2</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small></div></div>
+<h2>Multi messages check</h2>
+<div xmlns:c="http://www.concordion.org/2007/concordion" name="Multicheck: success" print="true" cmdId="24d45f48-e2a4-46ad-a397-fd2f47ff69a6" c:example="Multicheck: success" class="card mb-3" e:example="" id="Multicheck: success"><div class="card-header" data-toggle="collapse" data-target="#-431895698" aria-expanded="true" aria-controls="-431895698"><a name="Multicheck: success" data-type="example">Multicheck: success</a></div><div class="card-body collapse show" id="-431895698"><pre lineNumbers="true" class="htmlmixed darcula mt-2">&lt;div cmdId="cbab75ec-6fa5-45f5-845b-92b4ce545dbd" e:before-each=""&gt;
+    &lt;div cmdId="7e9b5018-3ef9-4697-ae99-74e9450aa11c" e:given=""&gt;
+        &lt;div name="myQueue" cmdId="48301704-987d-46f5-b16c-067e9759f77a" e:mq-purge=""&gt; &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+&lt;e:when&gt;
+        &lt;div class="row no-gutters"&gt;
+&lt;e:mq-send name="myQueue" style="width: min-content"&gt;{"msg" : "1"}&lt;/e:mq-send&gt;
+&lt;e:mq-send name="myQueue" from="/data/mq/msg.json" vars="myVar1={{now 'yyyy-MM-dd'}} | myVar2={{date myVar1 minus='1 d'}} | myVar3=str with commas , signs" varsSeparator="|" style="width: min-content" /&gt;
+&lt;e:mq-send name="myQueue" style="width: min-content"&gt;{"msg" : "3"}&lt;/e:mq-send&gt;
+        &lt;/div&gt;
+    &lt;/e:when&gt;
+&lt;e:then&gt;
+        &lt;e:mq-check name="myQueue" layout="horizontally"&gt;
+&lt;e:message&gt;{"msg" : "1"}&lt;/e:message&gt;
+&lt;e:message from="/data/mq/msg.json" vars="myVar1={{now 'yyyy-MM-dd'}} | myVar2={{date myVar1 minus='1 d'}} | myVar3=str with commas , signs" varsSeparator="|" /&gt;
+&lt;e:message&gt;{"msg" : "3"}&lt;/e:message&gt;
+        &lt;/e:mq-check&gt;
+    &lt;/e:then&gt;</pre><div cmdId="cbab75ec-6fa5-45f5-845b-92b4ce545dbd" e:before-each="">
+    <div cmdId="7e9b5018-3ef9-4697-ae99-74e9450aa11c" e:given="" class="bd-callout bd-callout-info">
+        <div cmdId="48301704-987d-46f5-b16c-067e9759f77a" e:mq-purge=""><table class="table table-sm"><caption><i class="fa fa-envelope ml-1"> myQueue purged</i></caption></table></div>
+    </div>
+</div>
+    <div cmdId="1db291e9-2412-4ebc-8aa9-71800efd5239" e:when="" class="bd-callout bd-callout-warning">
+        <div class="row no-gutters">
+            <div style="width: min-content" cmdId="9ca36460-ea07-4e2e-95bb-4910035452c9" e:mq-send="" class="mq-send"><table class="table table-sm"><caption><i class="fa fa-envelope ml-1"> myQueue</i></caption><tr><td class="json">{"msg" : "1"}</td></tr></table></div>
+            <div from="/data/mq/msg.json" style="width: min-content" cmdId="6aa40250-0870-40bc-833a-057db40d8675" e:mq-send="" class="mq-send"><table class="table table-sm"><caption><i class="fa fa-envelope ml-1"> myQueue</i></caption><tr><td class="json">{
+  "date": "2021-05-05",
+  "var1": "2021-05-05",
+  "var2": "Tue May 04 00:00:00 MSK 2021",
+  "var3": "str with commas , signs"
+}</td></tr></table></div>
+            <div style="width: min-content" cmdId="97819744-6bcc-4d58-b74f-2d20f42d2e60" e:mq-send="" class="mq-send"><table class="table table-sm"><caption><i class="fa fa-envelope ml-1"> myQueue</i></caption><tr><td class="json">{"msg" : "3"}</td></tr></table></div>
+        </div>
+    </div>
+    <div cmdId="ff9e6291-6d73-46da-b188-c9668cb2d80d" e:then="" class="bd-callout bd-callout-success">
+        <div cmdId="9fb48bd1-295c-4d3d-8b8f-7694fcd943a9" e:mq-check="" class="mq-check"><table class="table table-sm"><caption><i class="fa fa-envelope-open ml-1"> myQueue</i></caption><tr><td><table class="table table-sm"><tr><td style="margin: 0" autoFormat="true" class="json exp-body rest-success">{
+  "msg": "1"
+}</td></tr></table></td><td><table class="table table-sm"><tr><td style="margin: 0" autoFormat="true" class="json exp-body rest-success">{
+  "date": "2021-05-05",
+  "var1": "2021-05-05",
+  "var2": "Tue May 04 00:00:00 MSK 2021",
+  "var3": "str with commas , signs"
+}</td></tr></table></td><td><table class="table table-sm"><tr><td style="margin: 0" autoFormat="true" class="json exp-body rest-success">{
+  "msg": "3"
+}</td></tr></table></td></tr></table></div>
+    </div>
+</div><div class="card-footer text-muted" data-toggle="collapse" data-target="#-431895698" aria-expanded="true" aria-controls="-431895698"><small><span class="badge badge-pill badge-success">6</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small></div></div>
+<div xmlns:c="http://www.concordion.org/2007/concordion" name="Multicheck: ignore order" print="true" cmdId="0e3b7d2d-2605-4a22-bc99-4d77f5179660" c:example="Multicheck: ignore order" class="card mb-3" e:example="" id="Multicheck: ignore order"><div class="card-header" data-toggle="collapse" data-target="#-649309451" aria-expanded="true" aria-controls="-649309451"><a name="Multicheck: ignore order" data-type="example">Multicheck: ignore order</a></div><div class="card-body collapse show" id="-649309451"><pre lineNumbers="true" class="htmlmixed darcula mt-2">&lt;div cmdId="cbab75ec-6fa5-45f5-845b-92b4ce545dbd" e:before-each=""&gt;
+    &lt;div cmdId="7e9b5018-3ef9-4697-ae99-74e9450aa11c" e:given=""&gt;
+        &lt;div name="myQueue" cmdId="48301704-987d-46f5-b16c-067e9759f77a" e:mq-purge=""&gt; &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+&lt;e:when&gt;
+        &lt;div class="row no-gutters"&gt;
+&lt;e:mq-send name="myQueue" style="width: min-content"&gt;{"msg" : "1"}&lt;/e:mq-send&gt;
+&lt;e:mq-send name="myQueue" style="width: min-content"&gt;{"msg" : "2"}&lt;/e:mq-send&gt;
+&lt;e:mq-send name="myQueue" style="width: min-content"&gt;{"msg" : "3"}&lt;/e:mq-send&gt;
+        &lt;/div&gt;
+    &lt;/e:when&gt;
+&lt;e:then&gt;
+        &lt;e:mq-check name="myQueue" contains="EXACT_IN_ANY_ORDER" layout="horizontally"&gt;
+&lt;e:message&gt;{"msg" : "3"}&lt;/e:message&gt;
+&lt;e:message&gt;{"msg" : "2"}&lt;/e:message&gt;
+&lt;e:message&gt;{"msg" : "1"}&lt;/e:message&gt;
+        &lt;/e:mq-check&gt;
+    &lt;/e:then&gt;</pre><div cmdId="cbab75ec-6fa5-45f5-845b-92b4ce545dbd" e:before-each="">
+    <div cmdId="7e9b5018-3ef9-4697-ae99-74e9450aa11c" e:given="" class="bd-callout bd-callout-info">
+        <div cmdId="48301704-987d-46f5-b16c-067e9759f77a" e:mq-purge=""><table class="table table-sm"><caption><i class="fa fa-envelope ml-1"> myQueue purged</i></caption></table></div>
+    </div>
+</div>
+    <div cmdId="00db1abd-d179-4bc6-9e11-6e6c222e6023" e:when="" class="bd-callout bd-callout-warning">
+        <div class="row no-gutters">
+            <div style="width: min-content" cmdId="b19138a8-e96a-44c1-a08d-f83e1905dd05" e:mq-send="" class="mq-send"><table class="table table-sm"><caption><i class="fa fa-envelope ml-1"> myQueue</i></caption><tr><td class="json">{"msg" : "1"}</td></tr></table></div>
+            <div style="width: min-content" cmdId="1e158a68-9113-44ea-811c-4e45a4d0a65a" e:mq-send="" class="mq-send"><table class="table table-sm"><caption><i class="fa fa-envelope ml-1"> myQueue</i></caption><tr><td class="json">{"msg" : "2"}</td></tr></table></div>
+            <div style="width: min-content" cmdId="9fe81abf-b26f-406c-aa28-7f52efee1294" e:mq-send="" class="mq-send"><table class="table table-sm"><caption><i class="fa fa-envelope ml-1"> myQueue</i></caption><tr><td class="json">{"msg" : "3"}</td></tr></table></div>
+        </div>
+    </div>
+    <div cmdId="44d0dfc3-0f54-4331-8ad1-5a17c7258a15" e:then="" class="bd-callout bd-callout-success">
+        <div cmdId="c8dd321c-bbc1-4277-8fb8-eeb371648305" e:mq-check="" class="mq-check"><table class="table table-sm"><caption><i class="fa fa-envelope-open ml-1"> myQueue</i></caption><tr><td><table class="table table-sm"><tr><td style="margin: 0" autoFormat="true" class="json exp-body rest-success">{
+  "msg": "1"
+}</td></tr></table></td><td><table class="table table-sm"><tr><td style="margin: 0" autoFormat="true" class="json exp-body rest-success">{
+  "msg": "2"
+}</td></tr></table></td><td><table class="table table-sm"><tr><td style="margin: 0" autoFormat="true" class="json exp-body rest-success">{
+  "msg": "3"
+}</td></tr></table></td></tr></table></div>
+    </div>
+</div><div class="card-footer text-muted" data-toggle="collapse" data-target="#-649309451" aria-expanded="true" aria-controls="-649309451"><small><span class="badge badge-pill badge-success">6</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small></div></div>
+<div xmlns:c="http://www.concordion.org/2007/concordion" name="Multicheck: wrong message" status="ExpectedToFail" print="true" cmdId="d514b901-07ac-4cd6-8a49-839d836eb64a" c:example="Multicheck: wrong message" c:status="ExpectedToFail" class="card mb-3" e:example="" id="Multicheck: wrong message"><div class="card-header" data-toggle="collapse" data-target="#-901243969" aria-expanded="true" aria-controls="-901243969"><a name="Multicheck: wrong message" data-type="example">Multicheck: wrong message</a></div><div class="card-body collapse show" id="-901243969"><pre lineNumbers="true" class="htmlmixed darcula mt-2">&lt;div cmdId="cbab75ec-6fa5-45f5-845b-92b4ce545dbd" e:before-each=""&gt;
+    &lt;div cmdId="7e9b5018-3ef9-4697-ae99-74e9450aa11c" e:given=""&gt;
+        &lt;div name="myQueue" cmdId="48301704-987d-46f5-b16c-067e9759f77a" e:mq-purge=""&gt; &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+&lt;e:when&gt;
+        &lt;div class="row no-gutters"&gt;
+&lt;e:mq-send name="myQueue" style="width: min-content"&gt;{"msg" : "1"}&lt;/e:mq-send&gt;
+&lt;e:mq-send name="myQueue" style="width: min-content"&gt;{"msg" : "2"}&lt;/e:mq-send&gt;
+&lt;e:mq-send name="myQueue" style="width: min-content"&gt;{"msg" : "3"}&lt;/e:mq-send&gt;
+        &lt;/div&gt;
+    &lt;/e:when&gt;
+&lt;e:then&gt;
+        &lt;e:mq-check name="myQueue"&gt;
+&lt;e:message&gt;{"msg" : "a"}&lt;/e:message&gt;
+&lt;e:message&gt;{"msg" : "2"}&lt;/e:message&gt;
+&lt;e:message&gt;{"msg" : "c"}&lt;/e:message&gt;
+        &lt;/e:mq-check&gt;
+    &lt;/e:then&gt;</pre><div cmdId="cbab75ec-6fa5-45f5-845b-92b4ce545dbd" e:before-each="">
+    <div cmdId="7e9b5018-3ef9-4697-ae99-74e9450aa11c" e:given="" class="bd-callout bd-callout-info">
+        <div cmdId="48301704-987d-46f5-b16c-067e9759f77a" e:mq-purge=""><table class="table table-sm"><caption><i class="fa fa-envelope ml-1"> myQueue purged</i></caption></table></div>
+    </div>
+</div>
+    <div cmdId="f44dd38b-39df-471e-9634-abf12698ee4a" e:when="" class="bd-callout bd-callout-warning">
+        <div class="row no-gutters">
+            <div style="width: min-content" cmdId="7db33c86-c525-4db4-815e-19ede5dc99b1" e:mq-send="" class="mq-send"><table class="table table-sm"><caption><i class="fa fa-envelope ml-1"> myQueue</i></caption><tr><td class="json">{"msg" : "1"}</td></tr></table></div>
+            <div style="width: min-content" cmdId="f194593a-7976-4ca1-beec-40e482f5175d" e:mq-send="" class="mq-send"><table class="table table-sm"><caption><i class="fa fa-envelope ml-1"> myQueue</i></caption><tr><td class="json">{"msg" : "2"}</td></tr></table></div>
+            <div style="width: min-content" cmdId="7e202370-bf1f-4d8d-acda-0a35507c2970" e:mq-send="" class="mq-send"><table class="table table-sm"><caption><i class="fa fa-envelope ml-1"> myQueue</i></caption><tr><td class="json">{"msg" : "3"}</td></tr></table></div>
+        </div>
+    </div>
+    <div cmdId="82b87ea0-4995-4817-a527-855b7c4cd434" e:then="" class="bd-callout bd-callout-success">
+        <div cmdId="4186fe0f-8a10-4728-aa8b-94180d4fd099" e:mq-check="" class="mq-check"><table class="table table-sm"><caption><i class="fa fa-envelope-open ml-1"> myQueue</i></caption><tr><td style="margin: 0" autoFormat="true" class=""><div class="card border-danger alert-warning">
+      
+      <div class="card-body mb-1 mt-1">
+        <pre id="error--495385543" class="card-text" style="white-space: pre-wrap;">JSON documents are different:
+Different value found in node "msg", expected: &lt;"a"&gt; but was: &lt;"1"&gt;.
+</pre><div class="json rest-failure"><del class="expected">{
+  "msg": "a"
+}<fail style="display: none;" /></del>
+<ins class="actual">{
+  "msg": "1"
+}</ins></div>
+      </div>
+    </div></td></tr><tr><td style="margin: 0" autoFormat="true" class="json exp-body rest-success">{
+  "msg": "2"
+}</td></tr><tr><td style="margin: 0" autoFormat="true" class=""><div class="card border-danger alert-warning">
+      
+      <div class="card-body mb-1 mt-1">
+        <pre id="error-1239685407" class="card-text" style="white-space: pre-wrap;">JSON documents are different:
+Different value found in node "msg", expected: &lt;"c"&gt; but was: &lt;"3"&gt;.
+</pre><div class="json rest-failure"><del class="expected">{
+  "msg": "c"
+}<fail style="display: none;" /></del>
+<ins class="actual">{
+  "msg": "3"
+}</ins></div>
+      </div>
+    </div></td></tr></table></div>
+    </div>
+</div><div class="card-footer text-muted" data-toggle="collapse" data-target="#-901243969" aria-expanded="true" aria-controls="-901243969"><small><span class="badge badge-pill badge-success">4</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning">2</span><span class="badge badge-pill badge-danger"></span><span class="badge badge-pill badge-warning">ExpectedToFail</span></small></div></div>
+<div xmlns:c="http://www.concordion.org/2007/concordion" name="Multicheck: wrong message order" status="ExpectedToFail" print="true" cmdId="4bbe6b20-dd98-4528-a19f-7a58435a440d" c:example="Multicheck: wrong message order" c:status="ExpectedToFail" class="card mb-3" e:example="" id="Multicheck: wrong message order"><div class="card-header" data-toggle="collapse" data-target="#-247813203" aria-expanded="true" aria-controls="-247813203"><a name="Multicheck: wrong message order" data-type="example">Multicheck: wrong message order</a></div><div class="card-body collapse show" id="-247813203"><pre lineNumbers="true" class="htmlmixed darcula mt-2">&lt;div cmdId="cbab75ec-6fa5-45f5-845b-92b4ce545dbd" e:before-each=""&gt;
+    &lt;div cmdId="7e9b5018-3ef9-4697-ae99-74e9450aa11c" e:given=""&gt;
+        &lt;div name="myQueue" cmdId="48301704-987d-46f5-b16c-067e9759f77a" e:mq-purge=""&gt; &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+&lt;e:when&gt;
+        &lt;e:mq-purge name="myQueue" /&gt;
+        &lt;div class="row no-gutters"&gt;
+&lt;e:mq-send name="myQueue" style="width: min-content"&gt;{"msg" : "1"}&lt;/e:mq-send&gt;
+&lt;e:mq-send name="myQueue" style="width: min-content"&gt;{"msg" : "2"}&lt;/e:mq-send&gt;
+&lt;e:mq-send name="myQueue" style="width: min-content"&gt;{"msg" : "3"}&lt;/e:mq-send&gt;
+        &lt;/div&gt;
+    &lt;/e:when&gt;
+&lt;e:then&gt;
+        &lt;e:mq-check name="myQueue"&gt;
+&lt;e:message&gt;{"msg" : "3"}&lt;/e:message&gt;
+&lt;e:message&gt;{"msg" : "2"}&lt;/e:message&gt;
+&lt;e:message&gt;{"msg" : "1"}&lt;/e:message&gt;
+        &lt;/e:mq-check&gt;
+    &lt;/e:then&gt;</pre><div cmdId="cbab75ec-6fa5-45f5-845b-92b4ce545dbd" e:before-each="">
+    <div cmdId="7e9b5018-3ef9-4697-ae99-74e9450aa11c" e:given="" class="bd-callout bd-callout-info">
+        <div cmdId="48301704-987d-46f5-b16c-067e9759f77a" e:mq-purge=""><table class="table table-sm"><caption><i class="fa fa-envelope ml-1"> myQueue purged</i></caption></table></div>
+    </div>
+</div>
+    <div cmdId="3d0c7106-f841-4cb3-a78d-af8550437bca" e:when="" class="bd-callout bd-callout-warning">
+        <div cmdId="f5cb8de3-e61d-4e4d-bbab-d435077cf05b" e:mq-purge=""><table class="table table-sm"><caption><i class="fa fa-envelope ml-1"> myQueue purged</i></caption></table></div>
+        <div class="row no-gutters">
+            <div style="width: min-content" cmdId="d9056dc9-96a0-4efe-a5f6-5f37f5286e15" e:mq-send="" class="mq-send"><table class="table table-sm"><caption><i class="fa fa-envelope ml-1"> myQueue</i></caption><tr><td class="json">{"msg" : "1"}</td></tr></table></div>
+            <div style="width: min-content" cmdId="4a88adef-ac47-4d02-b502-685ab1650794" e:mq-send="" class="mq-send"><table class="table table-sm"><caption><i class="fa fa-envelope ml-1"> myQueue</i></caption><tr><td class="json">{"msg" : "2"}</td></tr></table></div>
+            <div style="width: min-content" cmdId="1456ece9-7ba5-4b1b-bb2f-d57c994c6b09" e:mq-send="" class="mq-send"><table class="table table-sm"><caption><i class="fa fa-envelope ml-1"> myQueue</i></caption><tr><td class="json">{"msg" : "3"}</td></tr></table></div>
+        </div>
+    </div>
+    <div cmdId="3547f483-7108-4d48-a63b-661301586995" e:then="" class="bd-callout bd-callout-success">
+        <div cmdId="a0c37471-13ca-450a-9c09-daf548534904" e:mq-check="" class="mq-check"><table class="table table-sm"><caption><i class="fa fa-envelope-open ml-1"> myQueue</i></caption><tr><td style="margin: 0" autoFormat="true" class=""><div class="card border-danger alert-warning">
+      
+      <div class="card-body mb-1 mt-1">
+        <pre id="error--471021645" class="card-text" style="white-space: pre-wrap;">JSON documents are different:
+Different value found in node "msg", expected: &lt;"3"&gt; but was: &lt;"1"&gt;.
+</pre><div class="json rest-failure"><del class="expected">{
+  "msg": "3"
+}<fail style="display: none;" /></del>
+<ins class="actual">{
+  "msg": "1"
+}</ins></div>
+      </div>
+    </div></td></tr><tr><td style="margin: 0" autoFormat="true" class="json exp-body rest-success">{
+  "msg": "2"
+}</td></tr><tr><td style="margin: 0" autoFormat="true" class=""><div class="card border-danger alert-warning">
+      
+      <div class="card-body mb-1 mt-1">
+        <pre id="error-1843224966" class="card-text" style="white-space: pre-wrap;">JSON documents are different:
+Different value found in node "msg", expected: &lt;"1"&gt; but was: &lt;"3"&gt;.
+</pre><div class="json rest-failure"><del class="expected">{
+  "msg": "1"
+}<fail style="display: none;" /></del>
+<ins class="actual">{
+  "msg": "3"
+}</ins></div>
+      </div>
+    </div></td></tr></table></div>
+    </div>
+</div><div class="card-footer text-muted" data-toggle="collapse" data-target="#-247813203" aria-expanded="true" aria-controls="-247813203"><small><span class="badge badge-pill badge-success">4</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning">2</span><span class="badge badge-pill badge-danger"></span><span class="badge badge-pill badge-warning">ExpectedToFail</span></small></div></div>
+<div xmlns:c="http://www.concordion.org/2007/concordion" name="Multicheck: got extra messages" status="ExpectedToFail" print="true" cmdId="31fb793d-255d-4af5-9b3f-5ca0677fdc1a" c:example="Multicheck: got extra messages" c:status="ExpectedToFail" class="card mb-3" e:example="" id="Multicheck: got extra messages"><div class="card-header" data-toggle="collapse" data-target="#-638148315" aria-expanded="true" aria-controls="-638148315"><a name="Multicheck: got extra messages" data-type="example">Multicheck: got extra messages</a></div><div class="card-body collapse show" id="-638148315"><pre lineNumbers="true" class="htmlmixed darcula mt-2">&lt;div cmdId="cbab75ec-6fa5-45f5-845b-92b4ce545dbd" e:before-each=""&gt;
+    &lt;div cmdId="7e9b5018-3ef9-4697-ae99-74e9450aa11c" e:given=""&gt;
+        &lt;div name="myQueue" cmdId="48301704-987d-46f5-b16c-067e9759f77a" e:mq-purge=""&gt; &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+&lt;e:when&gt;
+        &lt;e:mq-purge name="myQueue" /&gt;
+        &lt;div class="row no-gutters"&gt;
+&lt;e:mq-send name="myQueue" style="width: min-content"&gt;{"msg" : "1"}&lt;/e:mq-send&gt;
+&lt;e:mq-send name="myQueue" style="width: min-content"&gt;{"msg" : "2"}&lt;/e:mq-send&gt;
+&lt;e:mq-send name="myQueue" style="width: min-content"&gt;{"msg" : "3"}&lt;/e:mq-send&gt;
+        &lt;/div&gt;
+    &lt;/e:when&gt;
+&lt;e:then&gt;
+        &lt;e:mq-check name="myQueue"&gt;
+&lt;e:message&gt;{"msg" : "1"}&lt;/e:message&gt;
+&lt;e:message&gt;{"msg" : "2"}&lt;/e:message&gt;
+        &lt;/e:mq-check&gt;
+    &lt;/e:then&gt;</pre><div cmdId="cbab75ec-6fa5-45f5-845b-92b4ce545dbd" e:before-each="">
+    <div cmdId="7e9b5018-3ef9-4697-ae99-74e9450aa11c" e:given="" class="bd-callout bd-callout-info">
+        <div cmdId="48301704-987d-46f5-b16c-067e9759f77a" e:mq-purge=""><table class="table table-sm"><caption><i class="fa fa-envelope ml-1"> myQueue purged</i></caption></table></div>
+    </div>
+</div>
+    <div cmdId="8e555ec1-7686-40e4-b269-3070a2a2a9fa" e:when="" class="bd-callout bd-callout-warning">
+        <div cmdId="add8a934-a685-4009-91ef-67e01b258be4" e:mq-purge=""><table class="table table-sm"><caption><i class="fa fa-envelope ml-1"> myQueue purged</i></caption></table></div>
+        <div class="row no-gutters">
+            <div style="width: min-content" cmdId="b80a0063-2b36-4c49-ae97-1eff47e8b186" e:mq-send="" class="mq-send"><table class="table table-sm"><caption><i class="fa fa-envelope ml-1"> myQueue</i></caption><tr><td class="json">{"msg" : "1"}</td></tr></table></div>
+            <div style="width: min-content" cmdId="ab0766b3-8516-490a-95a9-71779932f916" e:mq-send="" class="mq-send"><table class="table table-sm"><caption><i class="fa fa-envelope ml-1"> myQueue</i></caption><tr><td class="json">{"msg" : "2"}</td></tr></table></div>
+            <div style="width: min-content" cmdId="d0d3af01-35f4-4fbd-82c0-65e7ef875896" e:mq-send="" class="mq-send"><table class="table table-sm"><caption><i class="fa fa-envelope ml-1"> myQueue</i></caption><tr><td class="json">{"msg" : "3"}</td></tr></table></div>
+        </div>
+    </div>
+    <div cmdId="4c2cb4d3-9de7-4818-a018-1927b24faf55" e:then="" class="bd-callout bd-callout-success">
+        <div class="rest-failure bd-callout bd-callout-danger"><div>expected:&lt;2&gt; but was:&lt;3&gt;</div><span>Expected: </span><table class="table table-sm"><caption><i class="fa fa-envelope-open ml-1"> myQueue</i></caption><tbody><tr><td class="json exp-body" style="margin: 0" autoFormat="true">{"msg" : "1"}</td></tr><tr><td class="json exp-body" style="margin: 0" autoFormat="true">{"msg" : "2"}</td></tr></tbody></table><span>but was: </span><table class="table table-sm"><caption><i class="fa fa-envelope-open ml-1"> myQueue</i></caption><tbody><tr><td class="xml exp-body" style="margin: 0" autoFormat="true">{"msg" : "1"}</td></tr><tr><td class="xml exp-body" style="margin: 0" autoFormat="true">{"msg" : "2"}</td></tr><tr><td class="xml exp-body" style="margin: 0" autoFormat="true">{"msg" : "3"}</td></tr></tbody></table></div>
+    </div>
+</div><div class="card-footer text-muted" data-toggle="collapse" data-target="#-638148315" aria-expanded="true" aria-controls="-638148315"><small><span class="badge badge-pill badge-success"></span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning">1</span><span class="badge badge-pill badge-danger"></span><span class="badge badge-pill badge-warning">ExpectedToFail</span></small></div></div>
+<div xmlns:c="http://www.concordion.org/2007/concordion" name="Multicheck: missing messages" status="ExpectedToFail" print="true" cmdId="4026b32d-5bc5-40f3-b75e-3e2ef45ca020" c:example="Multicheck: missing messages" c:status="ExpectedToFail" class="card mb-3" e:example="" id="Multicheck: missing messages"><div class="card-header" data-toggle="collapse" data-target="#2103095227" aria-expanded="true" aria-controls="2103095227"><a name="Multicheck: missing messages" data-type="example">Multicheck: missing messages</a></div><div class="card-body collapse show" id="2103095227"><pre lineNumbers="true" class="htmlmixed darcula mt-2">&lt;div cmdId="cbab75ec-6fa5-45f5-845b-92b4ce545dbd" e:before-each=""&gt;
+    &lt;div cmdId="7e9b5018-3ef9-4697-ae99-74e9450aa11c" e:given=""&gt;
+        &lt;div name="myQueue" cmdId="48301704-987d-46f5-b16c-067e9759f77a" e:mq-purge=""&gt; &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+&lt;e:when&gt;
+        &lt;e:mq-purge name="myQueue" /&gt;
+        &lt;e:mq-send name="myQueue"&gt;{"msg" : "1"}&lt;/e:mq-send&gt;
+    &lt;/e:when&gt;
+&lt;e:then&gt;
+        &lt;e:mq-check name="myQueue"&gt;
+&lt;e:message&gt;{"msg" : "1"}&lt;/e:message&gt;
+&lt;e:message&gt;{"msg" : "2"}&lt;/e:message&gt;
+        &lt;/e:mq-check&gt;
+    &lt;/e:then&gt;</pre><div cmdId="cbab75ec-6fa5-45f5-845b-92b4ce545dbd" e:before-each="">
+    <div cmdId="7e9b5018-3ef9-4697-ae99-74e9450aa11c" e:given="" class="bd-callout bd-callout-info">
+        <div cmdId="48301704-987d-46f5-b16c-067e9759f77a" e:mq-purge=""><table class="table table-sm"><caption><i class="fa fa-envelope ml-1"> myQueue purged</i></caption></table></div>
+    </div>
+</div>
+    <div cmdId="f7cb5b2b-b6b0-4fa6-9bb7-8e09e3c4854a" e:when="" class="bd-callout bd-callout-warning">
+        <div cmdId="176a5b78-f31e-4126-a0a7-1fe4990cbd68" e:mq-purge=""><table class="table table-sm"><caption><i class="fa fa-envelope ml-1"> myQueue purged</i></caption></table></div>
+        <div cmdId="4bdd1d5b-b6d0-49af-9b36-dfdf8ec6653d" e:mq-send="" class="mq-send"><table class="table table-sm"><caption><i class="fa fa-envelope ml-1"> myQueue</i></caption><tr><td class="json">{"msg" : "1"}</td></tr></table></div>
+    </div>
+    <div cmdId="b09a17ca-b479-4250-8c54-85de24c503b1" e:then="" class="bd-callout bd-callout-success">
+        <div class="rest-failure bd-callout bd-callout-danger"><div>expected:&lt;2&gt; but was:&lt;1&gt;</div><span>Expected: </span><table class="table table-sm"><caption><i class="fa fa-envelope-open ml-1"> myQueue</i></caption><tbody><tr><td class="json exp-body" style="margin: 0" autoFormat="true">{"msg" : "1"}</td></tr><tr><td class="json exp-body" style="margin: 0" autoFormat="true">{"msg" : "2"}</td></tr></tbody></table><span>but was: </span><table class="table table-sm"><caption><i class="fa fa-envelope-open ml-1"> myQueue</i></caption><tbody><tr><td class="xml exp-body" style="margin: 0" autoFormat="true">{"msg" : "1"}</td></tr></tbody></table></div>
+    </div>
+</div><div class="card-footer text-muted" data-toggle="collapse" data-target="#2103095227" aria-expanded="true" aria-controls="2103095227"><small><span class="badge badge-pill badge-success"></span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning">1</span><span class="badge badge-pill badge-danger"></span><span class="badge badge-pill badge-warning">ExpectedToFail</span></small></div></div>
+<div xmlns:c="http://www.concordion.org/2007/concordion" name="collapsable view" print="true" cmdId="5650d1dd-3eef-450f-9770-faf440036639" c:example="collapsable view" class="card mb-3" e:example="" id="collapsable view"><div class="card-header" data-toggle="collapse" data-target="#-682280717" aria-expanded="true" aria-controls="-682280717"><a name="collapsable view" data-type="example">collapsable view</a></div><div class="card-body collapse show" id="-682280717"><pre lineNumbers="true" class="htmlmixed darcula mt-2">&lt;div cmdId="cbab75ec-6fa5-45f5-845b-92b4ce545dbd" e:before-each=""&gt;
+    &lt;div cmdId="7e9b5018-3ef9-4697-ae99-74e9450aa11c" e:given=""&gt;
+        &lt;div name="myQueue" cmdId="48301704-987d-46f5-b16c-067e9759f77a" e:mq-purge=""&gt; &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+&lt;e:when&gt;
+        &lt;e:mq-send name="myQueue" from="/data/mq/big.json" collapsable="true" /&gt;
+    &lt;/e:when&gt;
+&lt;e:then&gt;
+        &lt;e:mq-check name="myQueue" from="/data/mq/big.json" collapsable="true" /&gt;
+    &lt;/e:then&gt;
+&lt;e:when&gt;
+        &lt;e:mq-send name="myQueue" from="/data/mq/big.json" collapsable="true" /&gt;
+        &lt;e:mq-send name="myQueue" from="/data/mq/big.json" collapsable="true" /&gt;
+    &lt;/e:when&gt;
+&lt;e:then&gt;
+        &lt;e:mq-check name="myQueue" collapsable="true" layout="horizontally"&gt;
+&lt;e:message from="/data/mq/big.json" /&gt;
+&lt;e:message from="/data/mq/big.json" /&gt;
+        &lt;/e:mq-check&gt;
+    &lt;/e:then&gt;</pre><div cmdId="cbab75ec-6fa5-45f5-845b-92b4ce545dbd" e:before-each="">
+    <div cmdId="7e9b5018-3ef9-4697-ae99-74e9450aa11c" e:given="" class="bd-callout bd-callout-info">
+        <div cmdId="48301704-987d-46f5-b16c-067e9759f77a" e:mq-purge=""><table class="table table-sm"><caption><i class="fa fa-envelope ml-1"> myQueue purged</i></caption></table></div>
+    </div>
+</div>
+    <div cmdId="66af0fc4-29d1-4598-abcc-37b04037fd8d" e:when="" class="bd-callout bd-callout-warning">
+        <div from="/data/mq/big.json" cmdId="2c15a93a-46af-4a68-90d2-72395e0ea26a" e:mq-send="" class="mq-send"><table class="table table-sm"><caption><i class="fa fa-envelope ml-1"> myQueue</i></caption><tr><td class="exp-body"><div style="position: relative"><div data-toggle="collapse" data-target="#cd0eb1ea-0f13-4128-b09e-d9751d666464" aria-expanded="true" aria-controls="cd0eb1ea-0f13-4128-b09e-d9751d666464" class="fa fa-expand collapsed"></div><div id="cd0eb1ea-0f13-4128-b09e-d9751d666464" class="json file collapse">[{
+  "index": 0,
+  "isActive": false,
+  "age": 28,
+  "name": "Toni Schroeder"
+}, {
+  "index": 1,
+  "isActive": true,
+  "age": 29,
+  "name": "Kasey Burris"
+}, {
+  "index": 2,
+  "isActive": false,
+  "age": 40,
+  "name": "Antoinette Morse"
+}, {
+  "index": 3,
+  "isActive": true,
+  "age": 32,
+  "name": "Lilia Ramirez"
+}, {
+  "index": 4,
+  "isActive": true,
+  "age": 35,
+  "name": "Lily Joyner"
+}, {
+  "index": 5,
+  "isActive": false,
+  "age": 22,
+  "name": "Ronda Norton"
+}, {
+  "index": 6,
+  "isActive": false,
+  "age": 31,
+  "name": "Tiffany Davidson"
+}, {
+  "index": 7,
+  "isActive": false,
+  "age": 40,
+  "name": "Allie Wise"
+}, {
+  "index": 8,
+  "isActive": true,
+  "age": 40,
+  "name": "Giles Lopez"
+}, {
+  "index": 9,
+  "isActive": false,
+  "age": 25,
+  "name": "Ramsey Cain"
+}]</div></div></td></tr></table></div>
+    </div>
+    <div cmdId="b94123ba-87f1-413f-b217-b7a42e3f367e" e:then="" class="bd-callout bd-callout-success">
+        <div from="/data/mq/big.json" cmdId="fdefd8e1-7b8e-4898-90da-e23870856f35" e:mq-check="" class="mq-check"><table class="table table-sm"><caption><i class="fa fa-envelope-open ml-1"> myQueue</i></caption><tr><td class="exp-body"><div style="position: relative"><div data-toggle="collapse" data-target="#8c851755-bbae-48db-8327-68c610ec2827" aria-expanded="true" aria-controls="8c851755-bbae-48db-8327-68c610ec2827" class="fa fa-expand collapsed"></div><div id="8c851755-bbae-48db-8327-68c610ec2827" style="margin: 0" autoFormat="true" class="json file collapse rest-success">[{
+  "index": 0,
+  "isActive": false,
+  "age": 28,
+  "name": "Toni Schroeder"
+}, {
+  "index": 1,
+  "isActive": true,
+  "age": 29,
+  "name": "Kasey Burris"
+}, {
+  "index": 2,
+  "isActive": false,
+  "age": 40,
+  "name": "Antoinette Morse"
+}, {
+  "index": 3,
+  "isActive": true,
+  "age": 32,
+  "name": "Lilia Ramirez"
+}, {
+  "index": 4,
+  "isActive": true,
+  "age": 35,
+  "name": "Lily Joyner"
+}, {
+  "index": 5,
+  "isActive": false,
+  "age": 22,
+  "name": "Ronda Norton"
+}, {
+  "index": 6,
+  "isActive": false,
+  "age": 31,
+  "name": "Tiffany Davidson"
+}, {
+  "index": 7,
+  "isActive": false,
+  "age": 40,
+  "name": "Allie Wise"
+}, {
+  "index": 8,
+  "isActive": true,
+  "age": 40,
+  "name": "Giles Lopez"
+}, {
+  "index": 9,
+  "isActive": false,
+  "age": 25,
+  "name": "Ramsey Cain"
+}]</div></div></td></tr></table></div>
+    </div>
+    <div cmdId="c6cb7250-ac70-4bb4-9e4b-e1c296d130b1" e:when="" class="bd-callout bd-callout-warning">
+        <div from="/data/mq/big.json" cmdId="3f4a6cb6-726d-43c5-8006-170af0fd4b0b" e:mq-send="" class="mq-send"><table class="table table-sm"><caption><i class="fa fa-envelope ml-1"> myQueue</i></caption><tr><td class="exp-body"><div style="position: relative"><div data-toggle="collapse" data-target="#24822056-d7e1-4faa-a7d0-1280d132d9b6" aria-expanded="true" aria-controls="24822056-d7e1-4faa-a7d0-1280d132d9b6" class="fa fa-expand collapsed"></div><div id="24822056-d7e1-4faa-a7d0-1280d132d9b6" class="json file collapse">[{
+  "index": 0,
+  "isActive": false,
+  "age": 28,
+  "name": "Toni Schroeder"
+}, {
+  "index": 1,
+  "isActive": true,
+  "age": 29,
+  "name": "Kasey Burris"
+}, {
+  "index": 2,
+  "isActive": false,
+  "age": 40,
+  "name": "Antoinette Morse"
+}, {
+  "index": 3,
+  "isActive": true,
+  "age": 32,
+  "name": "Lilia Ramirez"
+}, {
+  "index": 4,
+  "isActive": true,
+  "age": 35,
+  "name": "Lily Joyner"
+}, {
+  "index": 5,
+  "isActive": false,
+  "age": 22,
+  "name": "Ronda Norton"
+}, {
+  "index": 6,
+  "isActive": false,
+  "age": 31,
+  "name": "Tiffany Davidson"
+}, {
+  "index": 7,
+  "isActive": false,
+  "age": 40,
+  "name": "Allie Wise"
+}, {
+  "index": 8,
+  "isActive": true,
+  "age": 40,
+  "name": "Giles Lopez"
+}, {
+  "index": 9,
+  "isActive": false,
+  "age": 25,
+  "name": "Ramsey Cain"
+}]</div></div></td></tr></table></div>
+        <div from="/data/mq/big.json" cmdId="3273bb00-070f-4eb4-ba9f-6a3c4b95541a" e:mq-send="" class="mq-send"><table class="table table-sm"><caption><i class="fa fa-envelope ml-1"> myQueue</i></caption><tr><td class="exp-body"><div style="position: relative"><div data-toggle="collapse" data-target="#3fdae61b-9508-41b5-bc75-418b0c541206" aria-expanded="true" aria-controls="3fdae61b-9508-41b5-bc75-418b0c541206" class="fa fa-expand collapsed"></div><div id="3fdae61b-9508-41b5-bc75-418b0c541206" class="json file collapse">[{
+  "index": 0,
+  "isActive": false,
+  "age": 28,
+  "name": "Toni Schroeder"
+}, {
+  "index": 1,
+  "isActive": true,
+  "age": 29,
+  "name": "Kasey Burris"
+}, {
+  "index": 2,
+  "isActive": false,
+  "age": 40,
+  "name": "Antoinette Morse"
+}, {
+  "index": 3,
+  "isActive": true,
+  "age": 32,
+  "name": "Lilia Ramirez"
+}, {
+  "index": 4,
+  "isActive": true,
+  "age": 35,
+  "name": "Lily Joyner"
+}, {
+  "index": 5,
+  "isActive": false,
+  "age": 22,
+  "name": "Ronda Norton"
+}, {
+  "index": 6,
+  "isActive": false,
+  "age": 31,
+  "name": "Tiffany Davidson"
+}, {
+  "index": 7,
+  "isActive": false,
+  "age": 40,
+  "name": "Allie Wise"
+}, {
+  "index": 8,
+  "isActive": true,
+  "age": 40,
+  "name": "Giles Lopez"
+}, {
+  "index": 9,
+  "isActive": false,
+  "age": 25,
+  "name": "Ramsey Cain"
+}]</div></div></td></tr></table></div>
+    </div>
+    <div cmdId="0d6f7908-1d49-4f34-87ea-6f0b082a4972" e:then="" class="bd-callout bd-callout-success">
+        <div cmdId="ec87756c-ab1a-442e-b05e-3781c97c4867" e:mq-check="" class="mq-check"><table class="table table-sm"><caption><i class="fa fa-envelope-open ml-1"> myQueue</i></caption><tr><td><table class="table table-sm"><tr><td class="exp-body"><div style="position: relative"><div data-toggle="collapse" data-target="#2473beb9-e68c-4897-90ef-1b9f2d09a4c6" aria-expanded="true" aria-controls="2473beb9-e68c-4897-90ef-1b9f2d09a4c6" class="fa fa-expand collapsed"></div><div id="2473beb9-e68c-4897-90ef-1b9f2d09a4c6" style="margin: 0" autoFormat="true" class="json file collapse rest-success">[{
+  "index": 0,
+  "isActive": false,
+  "age": 28,
+  "name": "Toni Schroeder"
+}, {
+  "index": 1,
+  "isActive": true,
+  "age": 29,
+  "name": "Kasey Burris"
+}, {
+  "index": 2,
+  "isActive": false,
+  "age": 40,
+  "name": "Antoinette Morse"
+}, {
+  "index": 3,
+  "isActive": true,
+  "age": 32,
+  "name": "Lilia Ramirez"
+}, {
+  "index": 4,
+  "isActive": true,
+  "age": 35,
+  "name": "Lily Joyner"
+}, {
+  "index": 5,
+  "isActive": false,
+  "age": 22,
+  "name": "Ronda Norton"
+}, {
+  "index": 6,
+  "isActive": false,
+  "age": 31,
+  "name": "Tiffany Davidson"
+}, {
+  "index": 7,
+  "isActive": false,
+  "age": 40,
+  "name": "Allie Wise"
+}, {
+  "index": 8,
+  "isActive": true,
+  "age": 40,
+  "name": "Giles Lopez"
+}, {
+  "index": 9,
+  "isActive": false,
+  "age": 25,
+  "name": "Ramsey Cain"
+}]</div></div></td></tr></table></td><td><table class="table table-sm"><tr><td class="exp-body"><div style="position: relative"><div data-toggle="collapse" data-target="#21466a44-7d13-40ae-9483-a19ca0856151" aria-expanded="true" aria-controls="21466a44-7d13-40ae-9483-a19ca0856151" class="fa fa-expand collapsed"></div><div id="21466a44-7d13-40ae-9483-a19ca0856151" style="margin: 0" autoFormat="true" class="json file collapse rest-success">[{
+  "index": 0,
+  "isActive": false,
+  "age": 28,
+  "name": "Toni Schroeder"
+}, {
+  "index": 1,
+  "isActive": true,
+  "age": 29,
+  "name": "Kasey Burris"
+}, {
+  "index": 2,
+  "isActive": false,
+  "age": 40,
+  "name": "Antoinette Morse"
+}, {
+  "index": 3,
+  "isActive": true,
+  "age": 32,
+  "name": "Lilia Ramirez"
+}, {
+  "index": 4,
+  "isActive": true,
+  "age": 35,
+  "name": "Lily Joyner"
+}, {
+  "index": 5,
+  "isActive": false,
+  "age": 22,
+  "name": "Ronda Norton"
+}, {
+  "index": 6,
+  "isActive": false,
+  "age": 31,
+  "name": "Tiffany Davidson"
+}, {
+  "index": 7,
+  "isActive": false,
+  "age": 40,
+  "name": "Allie Wise"
+}, {
+  "index": 8,
+  "isActive": true,
+  "age": 40,
+  "name": "Giles Lopez"
+}, {
+  "index": 9,
+  "isActive": false,
+  "age": 25,
+  "name": "Ramsey Cain"
+}]</div></div></td></tr></table></td></tr></table></div>
+    </div>
+</div><div class="card-footer text-muted" data-toggle="collapse" data-target="#-682280717" aria-expanded="true" aria-controls="-682280717"><small><span class="badge badge-pill badge-success">6</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small></div></div>
+<div xmlns:c="http://www.concordion.org/2007/concordion" name="verify different formats" print="true" cmdId="7ece5323-fddc-44bd-920e-8c4099e8424e" c:example="verify different formats" class="card mb-3" e:example="" id="verify different formats"><div class="card-header" data-toggle="collapse" data-target="#-1523996018" aria-expanded="true" aria-controls="-1523996018"><a name="verify different formats" data-type="example">verify different formats</a></div><div class="card-body collapse show" id="-1523996018"><pre lineNumbers="true" class="htmlmixed darcula mt-2">&lt;div cmdId="cbab75ec-6fa5-45f5-845b-92b4ce545dbd" e:before-each=""&gt;
+    &lt;div cmdId="7e9b5018-3ef9-4697-ae99-74e9450aa11c" e:given=""&gt;
+        &lt;div name="myQueue" cmdId="48301704-987d-46f5-b16c-067e9759f77a" e:mq-purge=""&gt; &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+&lt;e:when&gt;
+        &lt;e:mq-send name="myQueue" from="/data/mq/some.xml" formatAs="xml" /&gt;
+    &lt;/e:when&gt;
+&lt;e:then&gt;
+        &lt;e:mq-check name="myQueue" from="/data/mq/some.xml" verifyAs="xml" /&gt;
+    &lt;/e:then&gt;
+&lt;e:when&gt;
+        &lt;e:mq-send name="myQueue" from="/data/mq/some.txt" /&gt;
+    &lt;/e:when&gt;
+&lt;e:then&gt;
+        &lt;e:mq-check name="myQueue"&gt;
+&lt;e:message from="/data/mq/some.txt" verifyAs="customFormat" /&gt;
+        &lt;/e:mq-check&gt;
+    &lt;/e:then&gt;</pre><div cmdId="cbab75ec-6fa5-45f5-845b-92b4ce545dbd" e:before-each="">
+    <div cmdId="7e9b5018-3ef9-4697-ae99-74e9450aa11c" e:given="" class="bd-callout bd-callout-info">
+        <div cmdId="48301704-987d-46f5-b16c-067e9759f77a" e:mq-purge=""><table class="table table-sm"><caption><i class="fa fa-envelope ml-1"> myQueue purged</i></caption></table></div>
+    </div>
+</div>
+    <div cmdId="d7eeaa28-5d95-49bf-990a-6730634d75e3" e:when="" class="bd-callout bd-callout-warning">
+        <div from="/data/mq/some.xml" cmdId="4638e49c-6978-405c-80e4-a446d9fe146a" e:mq-send="" class="mq-send"><table class="table table-sm"><caption><i class="fa fa-envelope ml-1"> myQueue</i></caption><tr><td class="xml">&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;
+&lt;data&gt;
+    &lt;date&gt;2021-05-05&lt;/date&gt;
+&lt;/data&gt;</td></tr></table></div>
+    </div>
+    <div cmdId="d4150743-aa33-45f8-ad90-97f7ddf64187" e:then="" class="bd-callout bd-callout-success">
+        <div from="/data/mq/some.xml" cmdId="802e4672-2aaa-46b8-af56-a876ceca9cdd" e:mq-check="" class="mq-check"><table class="table table-sm"><caption><i class="fa fa-envelope-open ml-1"> myQueue</i></caption><tr><td style="margin: 0" autoFormat="true" class="xml exp-body rest-success">&lt;?xml version="1.0" encoding="UTF-8"?&gt;&#x0D;
+&lt;data&gt;&#x0D;
+    &lt;date&gt;2021-05-05&lt;/date&gt;&#x0D;
+&lt;/data&gt;&#x0D;
+</td></tr></table></div>
+    </div>
+    <div cmdId="68f7ae3e-1a52-4f34-a3ee-8017ba0a39cc" e:when="" class="bd-callout bd-callout-warning">
+        <div from="/data/mq/some.txt" cmdId="52106822-b1ba-4166-a4f5-fc4ead00aee6" e:mq-send="" class="mq-send"><table class="table table-sm"><caption><i class="fa fa-envelope ml-1"> myQueue</i></caption><tr><td class="txt">date 2021-05-05</td></tr></table></div>
+    </div>
+    <div cmdId="04eed294-c9a7-4869-a07f-fc5fce8206c6" e:then="" class="bd-callout bd-callout-success">
+        <div cmdId="c5f92077-e24e-4568-ab25-c7f6c3529639" e:mq-check="" class="mq-check"><table class="table table-sm"><caption><i class="fa fa-envelope-open ml-1"> myQueue</i></caption><tr><td style="margin: 0" autoFormat="true" class="customFormat exp-body rest-success">date 2021-05-05</td></tr></table></div>
+    </div>
+</div><div class="card-footer text-muted" data-toggle="collapse" data-target="#-1523996018" aria-expanded="true" aria-controls="-1523996018"><small><span class="badge badge-pill badge-success">4</span><span class="badge badge-pill badge-secondary"></span><span class="badge badge-pill badge-warning"></span><span class="badge badge-pill badge-danger"></span></small></div></div>
+<div class="footer">Results generated by <a href="http://www.concordion.org" style="font-weight: bold; text-decoration: none; color: #89C;">Concordion</a><div class="testTime">in 92 ms on 05-May-2021 at 18:37:34 MSK</div></div></body>
+<button id="btnToTop" onclick="topFunction()" type="button" class="btn btn-light btn-sm text-muted ml-1"><i class="fa fa-arrow-up"></i></button></html>
