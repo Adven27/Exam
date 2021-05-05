@@ -3,8 +3,6 @@
 >Illustration from *"Growing Object-Oriented Software, Guided by Tests"*
 >[![Exam](docs/atdd.png)](#attributions)
 
-[![Get automatic notifications about new "exam" versions](https://www.bintray.com/docs/images/bintray_badge_bw.png)](https://bintray.com/adven27/exam/exam?source=watch)
-[ ![Download](https://api.bintray.com/packages/adven27/exam/exam-ms/images/download.svg) ](https://bintray.com/adven27/exam/exam-ms/_latestVersion)
 [![Stability: Active](https://masterminds.github.io/stability/active.svg)](https://masterminds.github.io/stability/active.html)
 ![CI](https://github.com/Adven27/Exam/workflows/CI/badge.svg)
 [![](https://jitpack.io/v/Adven27/Exam.svg)](https://jitpack.io/#Adven27/Exam)
