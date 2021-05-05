@@ -6,7 +6,6 @@
 [![Stability: Active](https://masterminds.github.io/stability/active.svg)](https://masterminds.github.io/stability/active.html)
 ![CI](https://github.com/Adven27/Exam/workflows/CI/badge.svg)
 [![](https://jitpack.io/v/Adven27/Exam.svg)](https://jitpack.io/#Adven27/Exam)
-[![Jit CI](https://jitci.com/gh/Adven27/Exam/svg)](https://jitci.com/gh/Adven27/Exam)
 
 
 **Exam** is oriented on **declarative end-to-end black\graybox** application testing in a way a manual tester would do it: send request, verify response\database\message queue etc.
