@@ -1,7 +1,7 @@
 package io.github.adven27.concordion.extensions.exam.ui;
 
-import io.github.adven27.concordion.extensions.exam.core.html.Html;
 import com.codeborne.selenide.ex.UIAssertionError;
+import io.github.adven27.concordion.extensions.exam.core.html.Html;
 import org.concordion.api.listener.AssertEqualsListener;
 import org.concordion.api.listener.AssertFailureEvent;
 import org.concordion.api.listener.AssertFalseListener;
@@ -11,9 +11,9 @@ import org.concordion.api.listener.AssertTrueListener;
 import java.io.File;
 import java.util.concurrent.atomic.AtomicLong;
 
+import static com.codeborne.selenide.Selenide.screenshot;
 import static io.github.adven27.concordion.extensions.exam.core.html.HtmlBuilder.imageOverlay;
 import static io.github.adven27.concordion.extensions.exam.core.html.HtmlBuilder.noImageOverlay;
-import static com.codeborne.selenide.Selenide.screenshot;
 
 public class UiResultRenderer implements AssertEqualsListener, AssertTrueListener, AssertFalseListener {
     private static final AtomicLong screenshotsCounter = new AtomicLong();
@@ -27,12 +27,12 @@ public class UiResultRenderer implements AssertEqualsListener, AssertTrueListene
     public void failureReported(AssertFailureEvent event) {
         Html s = new Html(event.getElement());
         Html el = s.parent();
-        UIAssertionError err = (UIAssertionError) event.getActual();
+        Fail fail =  new Fail(event.getActual());
         el.remove(s);
         el.childs(
-            err.getScreenshot().getImage().isEmpty()
-                ? noImageOverlay(event.getExpected(), err.getMessage(), "rest-failure")
-                : imageOverlay(getPath(err.getScreenshot().getImage()), 360, event.getExpected(), err.getMessage(), "rest-failure")
+            fail.screenshot.isEmpty()
+                ? noImageOverlay(event.getExpected(), fail.message, "rest-failure")
+                : imageOverlay(getPath(fail.screenshot), 360, event.getExpected(), fail.message, "rest-failure")
         );
     }
 
@@ -60,5 +60,27 @@ public class UiResultRenderer implements AssertEqualsListener, AssertTrueListene
 
     private String getPath(String screenshot) {
         return new File(screenshot).getName();
+    }
+
+    static class Fail {
+        final String screenshot;
+        final String message;
+
+        public Fail(Object actual) {
+            if (actual instanceof Throwable) {
+                Throwable t = (Throwable) actual;
+                if (t.getCause() instanceof UIAssertionError) {
+                    UIAssertionError uiAssertionError = (UIAssertionError) t.getCause();
+                    message = uiAssertionError.getMessage();
+                    screenshot = uiAssertionError.getScreenshot().getImage();
+                } else {
+                    message = t.getMessage();
+                    screenshot = "";
+                }
+            } else {
+                message = "Actual is not Throwable";
+                screenshot = "";
+            }
+        }
     }
 }

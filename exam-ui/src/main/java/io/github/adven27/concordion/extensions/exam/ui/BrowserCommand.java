@@ -2,7 +2,6 @@ package io.github.adven27.concordion.extensions.exam.ui;
 
 import com.codeborne.selenide.Configuration;
 import com.codeborne.selenide.WebDriverRunner;
-import com.codeborne.selenide.ex.UIAssertionError;
 import com.codeborne.selenide.impl.WebDriverContainer;
 import com.codeborne.selenide.impl.WebDriverThreadLocalContainer;
 import io.github.adven27.concordion.extensions.exam.core.commands.ExamVerifyCommand;
@@ -69,7 +68,7 @@ public class BrowserCommand extends ExamVerifyCommand {
     private String currentFolder(CommandCall commandCall) {
         String outputPath = System.getProperty("concordion.output.dir");
         if (outputPath == null) {
-            outputPath =  new File(System.getProperty("java.io.tmpdir"), "concordion").getPath();
+            outputPath = new File(System.getProperty("java.io.tmpdir"), "concordion").getPath();
         }
         return outputPath + commandCall.getResource().getParent().getPath();
     }
@@ -103,13 +102,9 @@ public class BrowserCommand extends ExamVerifyCommand {
             }
             success(resultRecorder, el);
         } catch (Throwable e) {
-            Throwable cause = e.getCause();
-            if (cause instanceof UIAssertionError) {
-                UIAssertionError err = (UIAssertionError) cause;
-                failure(resultRecorder, el, err, name);
-                if (failFast) {
-                    return false;
-                }
+            failure(resultRecorder, el, e, name);
+            if (failFast) {
+                return false;
             }
         }
         return true;
