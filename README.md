@@ -22,18 +22,17 @@
 ## Getting started
 ### 1) Install
 
-Maven
-```xml
-<dependency>
-    <groupId>io.github.adven27</groupId>
-    <artifactId>exam-ms</artifactId>
-    <version>5.0.0</version>
-</dependency>
-```
-
-Gradle
 ```groovy
-testCompile "io.github.adven27:exam-ms:5.0.0"
+// Typical microservices setup (Web API + DB + MQ) testing:
+testImplementation "io.github.adven27:exam-ms:5.0.1"
+
+//same as:
+//testImplementation "io.github.adven27:exam-ws:5.0.1"
+//testImplementation "io.github.adven27:exam-db:5.0.1"
+//testImplementation "io.github.adven27:exam-mq:5.0.1"
+
+// UI testing
+testImplementation "io.github.adven27:exam-ui:5.0.1"
 ```
 ### 2) Use
 
