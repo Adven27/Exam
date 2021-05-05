@@ -13,56 +13,56 @@ artifacts {
     archives sourcesJar, javadocJar
 }
 
-apply plugin: 'signing'
-signing {
-    if (project.hasProperty('signingKey') && project.hasProperty('signingPassword')) {
-        useInMemoryPgpKeys(project.getProperty('signingKey'), project.getProperty('signingPassword'))
-        sign configurations.archives
-    }
-}
-
-apply plugin: 'maven'
-uploadArchives {
-    repositories {
-        mavenDeployer {
-            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
-
-            repository(url: "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/") {
-                authentication(userName: System.getenv("ossrhUsername"), password: System.getenv("ossrhPassword"))
-            }
-
-            snapshotRepository(url: "https://s01.oss.sonatype.org/content/repositories/snapshots/") {
-                authentication(userName: System.getenv("ossrhUsername"), password: System.getenv("ossrhPassword"))
-            }
-
-            pom.project {
-                name project.name
-                packaging 'jar'
-                artifactId project.name
-                description 'Extension for Concordion BDD Framework'
-                url 'https://github.com/Adven27/Exam'
+apply plugin: 'maven-publish'
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifactId = project.name
+            from components.java
+            pom {
+                name = project.name
+                description = 'Extension for Concordion BDD Framework'
+                url = 'https://github.com/Adven27/Exam'
 
                 licenses {
                     license {
-                        name "The Apache Software License, Version 2.0"
-                        url "http://www.apache.org/licenses/LICENSE-2.0.txt"
+                        name = "The Apache Software License, Version 2.0"
+                        url = "http://www.apache.org/licenses/LICENSE-2.0.txt"
                     }
                 }
-
                 developers {
                     developer {
-                        id "Adven27"
-                        name "Nikolai Toropanov"
-                        email "n.toropanov@gmail.com"
+                        id = "Adven27"
+                        name = "Nikolai Toropanov"
+                        email = "n.toropanov@gmail.com"
                     }
                 }
-
                 scm {
-                    url "https://github.com/Adven27/Exam"
-                    connection 'scm:git:git://github.com/Adven27/Exam.git'
-                    developerConnection 'scm:git:git://github.com/Adven27/Exam.git'
+                    url = "https://github.com/Adven27/Exam"
+                    connection = 'scm:git:git://github.com/Adven27/Exam.git'
+                    developerConnection = 'scm:git:git://github.com/Adven27/Exam.git'
+                }
+            }
+            repositories {
+                maven {
+                    name = 'ossrh'
+                    credentials(PasswordCredentials)
+                    url = uri("https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/")
                 }
             }
         }
     }
+}
+
+apply plugin: 'signing'
+signing {
+    if (project.hasProperty('signingKey') && project.hasProperty('signingPassword')) {
+        useInMemoryPgpKeys(project.getProperty('signingKey'), project.getProperty('signingPassword'))
+        sign publishing.publications.mavenJava
+    }
+}
+
+java {
+    withSourcesJar()
+    withJavadocJar()
 }

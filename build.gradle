@@ -72,16 +72,16 @@ subprojects {
     apply from: "$rootDir/gradle/linters.gradle"
 }
 
-task publish {
-    dependsOn ":exam-core:uploadArchives"
-    dependsOn ":exam-db:uploadArchives"
-    dependsOn ":exam-ws:uploadArchives"
-    dependsOn ":exam-mq:uploadArchives"
-    dependsOn ":exam-mq-rabbit:uploadArchives"
-    dependsOn ":exam-mq-kafka:uploadArchives"
-    dependsOn ":exam-mq-ibmmq:uploadArchives"
-    dependsOn ":exam-mq-redis:uploadArchives"
-    dependsOn ":exam-files:uploadArchives"
-    dependsOn ":exam-ui:uploadArchives"
-    dependsOn ":exam-ms:uploadArchives"
+task publishMaven {
+    dependsOn ":exam-core:publish"
+    dependsOn ":exam-db:publish"
+    dependsOn ":exam-ws:publish"
+    dependsOn ":exam-mq:publish"
+    dependsOn ":exam-mq-rabbit:publish"
+    dependsOn ":exam-mq-kafka:publish"
+    dependsOn ":exam-mq-ibmmq:publish"
+    dependsOn ":exam-mq-redis:publish"
+    dependsOn ":exam-files:publish"
+    dependsOn ":exam-ui:publish"
+    dependsOn ":exam-ms:publish"
 }
