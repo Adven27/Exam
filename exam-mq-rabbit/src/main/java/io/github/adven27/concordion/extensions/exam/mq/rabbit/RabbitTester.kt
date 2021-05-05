@@ -11,129 +11,133 @@ import mu.KLogging
 import java.io.IOException
 import java.nio.charset.StandardCharsets.UTF_8
 import java.util.Optional
-import java.util.concurrent.TimeoutException
 import java.util.function.Function
 
 @Suppress("unused")
 open class RabbitTester @JvmOverloads constructor(
-    protected val exchange: String?,
-    protected val routingKey: String?,
-    protected val queue: List<String?>,
-    protected val port: Int,
-    protected val sendConverter: SendConverter = DEFAULT_SEND_CONVERTER,
-    protected val receiveConverter: ReceiveConverter = DEFAULT_RECEIVE_CONVERTER
+    protected val connectionFactory: ConnectionFactory = ConnectionFactory().apply {
+        host = DEFAULT_HOST
+        port = DEFAULT_PORT
+    },
+    protected val sendConfig: SendConfig,
+    protected val receiveConfig: ReceiveConfig,
 ) : MqTester {
     private lateinit var connection: Connection
     private lateinit var ch: Channel
 
     @JvmOverloads
     constructor(
-        queue: String,
-        port: Int,
-        sendConverter: SendConverter = DEFAULT_SEND_CONVERTER,
-        receiveConverter: ReceiveConverter = DEFAULT_RECEIVE_CONVERTER
-    ) : this(null, null, listOf<String?>(queue), port, sendConverter, receiveConverter)
-
-    constructor(exchange: String?, routingKey: String?, queue: String?, port: Int) : this(
-        exchange,
-        routingKey,
-        listOf(queue),
-        port,
-        DEFAULT_SEND_CONVERTER,
-        DEFAULT_RECEIVE_CONVERTER
-    )
-
-    constructor(exchange: String?, routingKey: String?, queue: String?, port: Int, sendConverter: SendConverter) : this(
-        exchange,
-        routingKey,
-        listOf(queue),
-        port,
-        sendConverter,
-        DEFAULT_RECEIVE_CONVERTER
+        host: String,
+        port: Int = 5672,
+        sendConfig: SendConfig,
+        receiveConfig: ReceiveConfig,
+    ) : this(
+        connectionFactory = ConnectionFactory().apply {
+            this.host = host
+            this.port = port
+        },
+        sendConfig = sendConfig,
+        receiveConfig = receiveConfig,
     )
 
     constructor(
-        exchange: String,
-        routingKey: String,
-        queue: List<String>,
         port: Int,
-        receiveConverter: ReceiveConverter
-    ) : this(exchange, routingKey, queue, port, DEFAULT_SEND_CONVERTER, receiveConverter)
-
-    constructor(
-        exchange: String,
-        routingKey: String,
-        queue: String,
-        port: Int,
-        receiveConverter: ReceiveConverter
-    ) : this(exchange, routingKey, listOf(queue), port, DEFAULT_SEND_CONVERTER, receiveConverter)
+        sendConfig: SendConfig,
+        receiveConfig: ReceiveConfig,
+    ) : this(
+        connectionFactory = ConnectionFactory().apply {
+            this.host = DEFAULT_HOST
+            this.port = port
+        },
+        sendConfig = sendConfig,
+        receiveConfig = receiveConfig,
+    )
 
     override fun purge() {
-        queue.forEach {
+        receiveConfig.queues.forEach {
             val ok = ch.queuePurge(it)
             logger.info("Purged {} messages", ok.messageCount)
         }
     }
 
     override fun receive(): List<MqTester.Message> {
-        logger.info("Receiving message from {}...", queue[0])
+        logger.info("Receiving message from {}...", receiveConfig.queues[0])
         val result: MutableList<MqTester.Message> = mutableListOf()
         var response: Optional<GetResponse>
         do {
-            response = Optional.ofNullable(ch.basicGet(queue[0], true))
-            response.ifPresent { result.add(receiveConverter.apply(it)!!) }
+            response = Optional.ofNullable(ch.basicGet(receiveConfig.queues[0], true))
+            response.ifPresent { result.add(receiveConfig.receiveConverter.apply(it)!!) }
         } while (response.isPresent)
         logger.info("Got messages: {}", result)
         return result
     }
 
     override fun send(message: String, headers: Map<String, String>) {
-        logger.info("Publishing message to {} routing key {} : {}", exchange, routingKey, message)
+        logger.info("Publishing message to {} routing key {} : {}", sendConfig.exchange, sendConfig.routingKey, message)
         ch.basicPublish(
-            exchange,
-            routingKey,
+            sendConfig.exchange,
+            sendConfig.routingKey,
             MINIMAL_BASIC,
-            sendConverter.apply(MqTester.Message(message, headers))
+            sendConfig.sendConverter.apply(MqTester.Message(message, headers))
         )
     }
 
     override fun start() {
-        val factory = ConnectionFactory()
-        factory.port = port
-        connection = factory.newConnection()
-        queue.forEach { declareQueueIfMissing(connection, it) }
+        connection = connectionFactory.newConnection()
+        receiveConfig.queues.forEach { declareQueueIfMissing(connection, it) }
         ch = this.connection.createChannel()
         purge()
     }
 
-    @Suppress("MagicNumber")
     override fun stop() {
         try {
-            connection.close(4000)
+            connection.close(CONNECTION_CLOSE_TIMEOUT)
         } catch (ignored: AlreadyClosedException) {
         }
     }
 
-    @Throws(TimeoutException::class, IOException::class)
     private fun declareQueueIfMissing(connection: Connection?, queue: String?) {
         try {
             val ch = connection!!.createChannel()
             ch.queueDeclarePassive(queue)
             ch.close()
-        } catch (maybeQueueDoesNotExist: IOException) {
-            if (maybeQueueDoesNotExist.cause != null && maybeQueueDoesNotExist.cause!!.message!!.contains("NOT_FOUND")) {
+        } catch (ex: IOException) {
+            fun queueDoesNotExist(e: IOException) = e.cause != null && e.cause!!.message!!.contains("NOT_FOUND")
+            if (queueDoesNotExist(ex)) {
                 ch = connection!!.createChannel()
                 ch.queueDeclare(queue, true, false, false, null)
                 ch.close()
             } else {
-                throw maybeQueueDoesNotExist
+                throw ex
             }
         }
     }
 
     interface SendConverter : Function<MqTester.Message?, ByteArray?>
     interface ReceiveConverter : Function<GetResponse?, MqTester.Message?>
+
+    data class SendConfig @JvmOverloads constructor(
+        val exchange: String = "",
+        val routingKey: String,
+        val sendConverter: SendConverter = DEFAULT_SEND_CONVERTER,
+    ) {
+        constructor(routingKey: String, sendConverter: SendConverter = DEFAULT_SEND_CONVERTER) :
+            this("", routingKey, sendConverter)
+    }
+
+    data class ReceiveConfig @JvmOverloads constructor(
+        val queues: List<String>,
+        val receiveConverter: ReceiveConverter = DEFAULT_RECEIVE_CONVERTER
+    ) {
+        @JvmOverloads
+        constructor(queue: String, receiveConverter: ReceiveConverter = DEFAULT_RECEIVE_CONVERTER) :
+            this(listOf(queue), receiveConverter)
+    }
+
     companion object : KLogging() {
+        const val DEFAULT_HOST = "localhost"
+        const val DEFAULT_PORT = 5672
+        const val CONNECTION_CLOSE_TIMEOUT = 4000
         val DEFAULT_SEND_CONVERTER: SendConverter = object : SendConverter {
             override fun apply(body: MqTester.Message?): ByteArray? = body?.body?.toByteArray(UTF_8)
         }

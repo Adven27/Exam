@@ -1,10 +1,12 @@
 package io.github.adven27.concordion.extensions.exam.ui;
 
-import io.github.adven27.concordion.extensions.exam.core.commands.ExamVerifyCommand;
-import io.github.adven27.concordion.extensions.exam.core.html.Html;
 import com.codeborne.selenide.Configuration;
 import com.codeborne.selenide.WebDriverRunner;
 import com.codeborne.selenide.ex.UIAssertionError;
+import com.codeborne.selenide.impl.WebDriverContainer;
+import com.codeborne.selenide.impl.WebDriverThreadLocalContainer;
+import io.github.adven27.concordion.extensions.exam.core.commands.ExamVerifyCommand;
+import io.github.adven27.concordion.extensions.exam.core.html.Html;
 import org.concordion.api.CommandCall;
 import org.concordion.api.Evaluator;
 import org.concordion.api.Fixture;
@@ -20,7 +22,7 @@ public class BrowserCommand extends ExamVerifyCommand {
     private static final String FAIL_FAST = "failFast";
     private static final String URL = "url";
     private static boolean alreadyRunning = false;
-    private static ExamWebDriverContainer driverContainer = new ExamWebDriverContainer();
+    private static WebDriverContainer driverContainer = new WebDriverThreadLocalContainer();
     private final DesiredCapabilities capabilities;
     private String url;
     private boolean failFast;
@@ -59,7 +61,7 @@ public class BrowserCommand extends ExamVerifyCommand {
         if (!(capabilities == null || alreadyRunning)) {
             ChromeDriver webDriver = new ChromeDriver(capabilities);
             WebDriverRunner.setWebDriver(webDriver);
-            driverContainer.registerDriverForAutoClose(webDriver);
+            driverContainer.setWebDriver(webDriver);
             alreadyRunning = true;
         }
     }

@@ -2,18 +2,19 @@ package io.github.adven27.concordion.extensions.exam.ui
 
 import com.codeborne.selenide.Configuration
 import com.codeborne.selenide.WebDriverRunner
+import com.codeborne.selenide.WebDriverRunner.FIREFOX
+import com.codeborne.selenide.WebDriverRunner.INTERNET_EXPLORER
 import io.github.adven27.concordion.extensions.exam.core.ExamPlugin
 import io.github.adven27.concordion.extensions.exam.core.commands.ExamCommand
-import io.github.bonigarcia.wdm.DriverManagerType
 import io.github.bonigarcia.wdm.WebDriverManager
+import io.github.bonigarcia.wdm.config.DriverManagerType
 import org.openqa.selenium.chrome.ChromeOptions
 import org.openqa.selenium.chrome.ChromeOptions.CAPABILITY
 import org.openqa.selenium.remote.DesiredCapabilities
-import java.util.Collections.singletonMap
 
 @Suppress("LongParameterList")
 open class UiPlugin @JvmOverloads constructor(
-    var timeout: Long = Configuration.timeout,
+    timeout: Long = Configuration.timeout,
     browser: String = WebDriverRunner.CHROME,
     version: String? = null,
     baseUrl: String = Configuration.baseUrl,
@@ -33,15 +34,14 @@ open class UiPlugin @JvmOverloads constructor(
             Configuration.timeout = timeout
             Configuration.baseUrl = baseUrl
             Configuration.browser = browser
+            Configuration.holdBrowserOpen = false
+            Configuration.browserSize = "1680x1050"
             when (browser) {
-                WebDriverRunner.FIREFOX ->
-                    WebDriverManager.getInstance(DriverManagerType.FIREFOX).version(version).setup()
-                WebDriverRunner.INTERNET_EXPLORER ->
-                    WebDriverManager.getInstance(DriverManagerType.IEXPLORER).version(version).setup()
-                else -> {
-                    WebDriverManager.getInstance(DriverManagerType.CHROME).version(version).setup()
+                FIREFOX -> DriverManagerType.FIREFOX.setup(version)
+                INTERNET_EXPLORER -> DriverManagerType.IEXPLORER.setup(version)
+                else -> DriverManagerType.CHROME.setup(version).apply {
                     if (headless) {
-                        setHeadlessChromeOptions()
+                        capabilities = headlessCapabilities()
                     }
                 }
             }
@@ -49,15 +49,16 @@ open class UiPlugin @JvmOverloads constructor(
         }
     }
 
-    private fun setHeadlessChromeOptions() {
-        val opt = ChromeOptions()
-        opt.addArguments(
-            "no-sandbox", "headless", "disable-gpu", "disable-extensions", "window-size=1366,768"
-        )
-        capabilities = DesiredCapabilities(singletonMap<String, ChromeOptions>(CAPABILITY, opt))
-    }
+    private fun DriverManagerType.setup(version: String?) =
+        WebDriverManager.getInstance(this).driverVersion(version).setup()
 
-    override fun commands(): List<ExamCommand> = listOf(
-        BrowserCommand("div", screenshotsOnSuccess, capabilities)
+    private fun headlessCapabilities() = DesiredCapabilities(
+        mapOf(
+            CAPABILITY to ChromeOptions().apply {
+                addArguments("no-sandbox", "headless", "disable-gpu", "disable-extensions", "window-size=1366,768")
+            }
+        )
     )
+
+    override fun commands(): List<ExamCommand> = listOf(BrowserCommand("div", screenshotsOnSuccess, capabilities))
 }

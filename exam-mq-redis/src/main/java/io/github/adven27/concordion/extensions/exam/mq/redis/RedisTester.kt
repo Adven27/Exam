@@ -4,9 +4,9 @@ import io.github.adven27.concordion.extensions.exam.mq.MqTester
 import redis.clients.jedis.Jedis
 
 @Suppress("unused")
-open class RedisTester(private val port: Int) : MqTester.NOOP() {
+open class RedisTester(private val host: String, private val port: Int) : MqTester.NOOP() {
     override fun start() {
-        jedis = Jedis("localhost", port)
+        jedis = Jedis(host, port)
     }
 
     override fun send(message: String, headers: Map<String, String>) {

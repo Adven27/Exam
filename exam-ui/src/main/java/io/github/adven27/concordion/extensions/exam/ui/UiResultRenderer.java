@@ -30,9 +30,9 @@ public class UiResultRenderer implements AssertEqualsListener, AssertTrueListene
         UIAssertionError err = (UIAssertionError) event.getActual();
         el.remove(s);
         el.childs(
-            err.getScreenshot().isEmpty()
+            err.getScreenshot().getImage().isEmpty()
                 ? noImageOverlay(event.getExpected(), err.getMessage(), "rest-failure")
-                : imageOverlay(getPath(err.getScreenshot()), 360, event.getExpected(), err.getMessage(), "rest-failure")
+                : imageOverlay(getPath(err.getScreenshot().getImage()), 360, event.getExpected(), err.getMessage(), "rest-failure")
         );
     }
 
