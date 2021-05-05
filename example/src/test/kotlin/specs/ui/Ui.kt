@@ -7,7 +7,7 @@ import org.openqa.selenium.By
 import specs.Specs
 
 class Ui : Specs() {
-    fun hasText(text: String?) {
+    fun hasText(text: String) {
         `$`(By.tagName("span")).shouldHave(text(text))
     }
 
