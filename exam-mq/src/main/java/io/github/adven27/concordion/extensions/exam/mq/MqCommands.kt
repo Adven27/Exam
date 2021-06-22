@@ -43,7 +43,7 @@ import java.util.UUID
 interface MqTester {
     fun start()
     fun stop()
-    fun send(message: String, headers: Map<String, String>)
+    fun send(message: Message, params: Map<String, String>)
     fun receive(): List<Message>
     fun purge()
     fun accumulateOnRetries(): Boolean = true
@@ -51,7 +51,7 @@ interface MqTester {
     open class NOOP : MqTester {
         override fun start() = Unit
         override fun stop() = Unit
-        override fun send(message: String, headers: Map<String, String>) = Unit
+        override fun send(message: Message, params: Map<String, String>) = Unit
         override fun receive(): List<Message> = listOf()
         override fun purge() = Unit
     }
@@ -84,7 +84,12 @@ class MqCheckCommand(
 
         val expectedMessages: List<TypedMessage> = messageTags(root).mapNotNull { html ->
             setVarsIfPresent(html, eval)
-            nullOrMessage(html.content(eval), html.takeAwayAttr("verifyAs", "json"), eval, headers(html, eval))
+            nullOrMessage(
+                html.content(eval),
+                html.takeAwayAttr("verifyAs", "json"),
+                eval,
+                attrToMap(html, eval, "headers")
+            )
         }
         val actualMessages: MutableList<MqTester.Message> = mqTesters.getOrFail(mqName).receive().toMutableList()
 
@@ -282,26 +287,81 @@ class MqSendCommand(name: String, tag: String, private val mqTesters: Map<String
         fixture: Fixture
     ) {
         super.execute(commandCall, evaluator, resultRecorder, fixture)
-        val root = commandCall.html()
-        val mqName = root.takeAwayAttr("name")
-        val formatAs = root.takeAwayAttr("formatAs", root.attr("from")?.substringAfterLast(".", "json") ?: "json")
-        val collapsable = root.takeAwayAttr("collapsable", "false").toBoolean()
-        val headers = headers(root, evaluator)
-        root.takeAwayAttr("vars").vars(evaluator, true, root.takeAwayAttr("varsSeparator", ","))
-        val message = evaluator.resolveJson(root.content(evaluator).trim())
+        commandCall.html().also { root ->
+            Attrs.from(root, evaluator).apply { setVarsToContext(evaluator) }.also { attrs ->
+                renderAndSend(root, attrs, evaluator.resolveJson(root.content(attrs.from, evaluator).trim()))
+            }
+        }
+    }
+
+    private fun Attrs.setVarsToContext(evaluator: Evaluator) {
+        vars.vars(evaluator, true, varsSeparator)
+    }
+
+    private fun renderAndSend(root: Html, attrs: Attrs, message: String) {
+        renderCommand(root, attrs, message)
+        sendMessage(message, attrs.mqName, attrs.headers, attrs.params)
+    }
+
+    private fun sendMessage(message: String, mq: String, headers: Map<String, String>, params: Map<String, String>) =
+        mqTesters.getOrFail(mq).send(MqTester.Message(message, headers), params)
+
+    private fun renderCommand(root: Html, attrs: Attrs, message: String) {
         root.removeChildren().attrs("class" to "mq-send")(
             table()(
-                captionEnvelopClosed(mqName),
-                if (headers.isNotEmpty()) caption("Headers: ${headers.entries.joinToString()}")(
-                    italic("", CLASS to "fa fa-border")
-                ) else null,
-                tr()(
-                    if (collapsable) collapsed(collapsableContainer(message, formatAs))
-                    else td(message).css(formatAs) // exp-body
-                )
+                captionEnvelopClosed(attrs.mqName),
+                renderHeaders(attrs.headers),
+                renderMessage(message, attrs.collapsable, attrs.formatAs)
             )
         )
-        mqTesters.getOrFail(mqName).send(message, headers)
+    }
+
+    private fun renderMessage(message: String, collapsable: Boolean, formatAs: String) = tr()(
+        if (collapsable) collapsed(collapsableContainer(message, formatAs))
+        else td(message).css(formatAs) // exp-body
+    )
+
+    private fun renderHeaders(headers: Map<String, String>) = if (headers.isNotEmpty())
+        caption("Headers: ${headers.entries.joinToString()}")(
+            italic("", CLASS to "fa fa-border")
+        )
+    else null
+
+    data class Attrs(
+        val mqName: String,
+        val from: String?,
+        val formatAs: String = "json",
+        val headers: Map<String, String>,
+        val params: Map<String, String>,
+        val vars: String?,
+        val varsSeparator: String = ",",
+        val collapsable: Boolean = false,
+    ) {
+        companion object {
+            private const val NAME = "name"
+            private const val FROM = "from"
+            private const val FORMAT_AS = "formatAs"
+            private const val HEADERS = "headers"
+            private const val PARAMS = "params"
+            private const val VARS = "vars"
+            private const val VARS_SEPARATOR = "varsSeparator"
+            private const val COLLAPSABLE = "collapsable"
+
+            fun from(root: Html, evaluator: Evaluator): Attrs {
+                return Attrs(
+                    root.attrOrFail(NAME),
+                    root.takeAwayAttr(FROM),
+                    root.takeAwayAttr(
+                        FORMAT_AS, root.attr(FROM)?.substringAfterLast(".", "json") ?: "json"
+                    ),
+                    root.takeAwayAttr(HEADERS).attrToMap(evaluator),
+                    root.takeAwayAttr(PARAMS).attrToMap(evaluator),
+                    root.takeAwayAttr(VARS),
+                    root.takeAwayAttr(VARS_SEPARATOR, ","),
+                    root.takeAwayAttr(COLLAPSABLE, "false").toBoolean(),
+                )
+            }
+        }
     }
 }
 
@@ -313,19 +373,37 @@ class MqPurgeCommand(name: String, tag: String, private val mqTesters: Map<Strin
         fixture: Fixture
     ) {
         super.execute(commandCall, evaluator, resultRecorder, fixture)
-        val root = commandCall.html()
-        val mqName = root.takeAwayAttr("name")
-        mqTesters.getOrFail(mqName).purge()
+        commandCall.html().also { root ->
+            Attrs.from(root).also {
+                mqTesters.getOrFail(it.mqName).purge()
+                renderCommand(root, it.mqName)
+            }
+        }
+    }
+
+    private fun renderCommand(root: Html, mqName: String) {
         root.removeChildren()(
             table()(
-                caption()(italic(" $mqName purged", CLASS to "fa fa-envelope ml-1"))
+                caption()(
+                    italic(" $mqName purged", CLASS to "fa fa-envelope ml-1")
+                )
             )
         )
     }
+
+    data class Attrs(val mqName: String) {
+        companion object {
+            private const val NAME = "name"
+            fun from(root: Html) = Attrs(root.attrOrFail(NAME))
+        }
+    }
 }
 
-private fun headers(root: Html, eval: Evaluator): Map<String, String> =
-    root.takeAwayAttr("headers")?.vars(eval)?.mapValues { it.value.toString() } ?: emptyMap()
+private fun attrToMap(root: Html, eval: Evaluator, attr: String): Map<String, String> =
+    root.takeAwayAttr(attr).attrToMap(eval)
+
+private fun String?.attrToMap(eval: Evaluator): Map<String, String> =
+    this?.vars(eval)?.mapValues { it.value.toString() } ?: emptyMap()
 
 private fun Map<String, MqTester>.getOrFail(mqName: String?): MqTester = this[mqName]
     ?: throw IllegalArgumentException("MQ with name $mqName not registered in MqPlugin")

@@ -33,11 +33,11 @@ open class IbmMQBrowseAndSendTester @JvmOverloads constructor(
 
     protected lateinit var producer: MessageProducer
 
-    override fun send(message: String, headers: Map<String, String>) {
+    override fun send(message: MqTester.Message, params: Map<String, String>) {
         logger.info("Sending to {}...", config.queue)
         producer.send(
-            sendConverter.apply(MqTester.Message(message, headers) to session).apply {
-                jmsCorrelationID = headers["jmsCorrelationID"]
+            sendConverter.apply(message to session).apply {
+                jmsCorrelationID = message.headers["jmsCorrelationID"]
             }
         )
         logger.info("Sent to {}\n{}", config.queue, message)
@@ -63,11 +63,11 @@ open class IbmMQConsumeAndSendTester @JvmOverloads constructor(
 
     protected lateinit var producer: MessageProducer
 
-    override fun send(message: String, headers: Map<String, String>) {
+    override fun send(message: MqTester.Message, params: Map<String, String>) {
         logger.info("Sending to {}...", config.queue)
         producer.send(
-            sendConverter.apply(MqTester.Message(message, headers) to session).apply {
-                jmsCorrelationID = headers["jmsCorrelationID"]
+            sendConverter.apply(message to session).apply {
+                jmsCorrelationID = message.headers["jmsCorrelationID"]
             }
         )
         logger.info("Sent to {}\n{}", config.queue, message)

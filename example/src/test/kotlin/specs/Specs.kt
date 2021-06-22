@@ -41,12 +41,11 @@ open class Specs : AbstractSpecs() {
                 "myQueue" to object : MqTester.NOOP() {
                     private val queue = ArrayDeque<MqTester.Message>()
 
-                    override fun send(message: String, headers: Map<String, String>) {
-                        queue += MqTester.Message(message, headers)
+                    override fun send(message: MqTester.Message, params: Map<String, String>) {
+                        queue += message
                     }
 
                     override fun receive() = queue.map { queue.poll() }
-
                     override fun purge() = queue.clear()
                 }
             )

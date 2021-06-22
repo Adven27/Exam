@@ -72,13 +72,13 @@ open class RabbitTester @JvmOverloads constructor(
         return result
     }
 
-    override fun send(message: String, headers: Map<String, String>) {
+    override fun send(message: MqTester.Message, params: Map<String, String>) {
         logger.info("Publishing message to {} routing key {} : {}", sendConfig.exchange, sendConfig.routingKey, message)
         ch.basicPublish(
             sendConfig.exchange,
             sendConfig.routingKey,
             MINIMAL_BASIC,
-            sendConfig.sendConverter.apply(MqTester.Message(message, headers))
+            sendConfig.sendConverter.apply(message)
         )
     }
 

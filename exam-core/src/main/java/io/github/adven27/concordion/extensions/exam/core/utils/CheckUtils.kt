@@ -58,7 +58,8 @@ fun Document.prettyXml(): String {
 
 class InvalidXml(t: Throwable) : RuntimeException(t)
 
-fun Html.content(eval: Evaluator) = this.attr("from")?.findResource(eval)?.readText() ?: this.text().trim()
+fun Html.content(from: String?, eval: Evaluator) = from?.findResource(eval)?.readText() ?: this.text().trim()
+fun Html.content(eval: Evaluator) = content(this.attr("from"), eval)
 fun String.findResource(eval: Evaluator) = ExamExtension::class.java.getResource(eval.resolveJson(this))
     ?: throw FileNotFoundException("File not found: $this")
 

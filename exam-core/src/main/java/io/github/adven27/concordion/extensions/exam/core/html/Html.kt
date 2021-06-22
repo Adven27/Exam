@@ -95,11 +95,6 @@ class Html(val el: Element) {
         return this
     }
 
-    infix fun aboveF(html: Html): Html {
-        el.parentElement.prependChild(html.el)
-        return this
-    }
-
     infix fun below(html: Html): Html {
         el.appendSister(html.el)
         return this
@@ -116,7 +111,6 @@ class Html(val el: Element) {
     }
 
     fun takeAwayAttr(name: String, def: String): String = takeAwayAttr(name) ?: def
-
     fun takeAwayAttr(attrName: String, def: String, eval: Evaluator? = null) = takeAwayAttr(attrName, eval) ?: def
 
     fun el() = el

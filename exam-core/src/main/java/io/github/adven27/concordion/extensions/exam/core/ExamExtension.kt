@@ -11,6 +11,8 @@ import io.github.adven27.concordion.extensions.exam.core.utils.DateWithin
 import io.github.adven27.concordion.extensions.exam.core.utils.HANDLEBARS
 import io.github.adven27.concordion.extensions.exam.core.utils.XMLDateWithin
 import io.github.adven27.concordion.extensions.exam.core.utils.equalToXml
+import io.github.adven27.concordion.extensions.exam.core.utils.prettyJson
+import io.github.adven27.concordion.extensions.exam.core.utils.prettyXml
 import mu.KotlinLogging
 import net.javacrumbs.jsonunit.JsonAssert
 import net.javacrumbs.jsonunit.JsonAssert.`when`
@@ -169,6 +171,11 @@ class ExamExtension constructor(private vararg var plugins: ExamPlugin) : Concor
             .withMatcher("formattedAndWithin", DateWithin.param())
             .withMatcher("formattedAndWithinNow", DateWithin.now())
             .withMatcher("xmlDateWithinNow", XMLDateWithin())
+
+        @JvmStatic
+        fun prettyXml(text: String) = text.prettyXml()
+        @JvmStatic
+        fun prettyJson(text: String) = text.prettyJson()
     }
 }
 
