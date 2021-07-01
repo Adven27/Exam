@@ -4,13 +4,15 @@ import io.github.adven27.concordion.extensions.exam.mq.MqTester
 import mu.KLogging
 import org.apache.kafka.clients.admin.AdminClient
 import org.apache.kafka.clients.admin.OffsetSpec
-import org.apache.kafka.clients.admin.RecordsToDelete.beforeOffset
+import org.apache.kafka.clients.admin.RecordsToDelete
+import org.apache.kafka.clients.admin.TopicDescription
 import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.apache.kafka.clients.consumer.KafkaConsumer
 import org.apache.kafka.clients.consumer.OffsetAndMetadata
 import org.apache.kafka.clients.producer.KafkaProducer
 import org.apache.kafka.clients.producer.ProducerConfig
 import org.apache.kafka.clients.producer.ProducerRecord
+import org.apache.kafka.common.KafkaFuture
 import org.apache.kafka.common.TopicPartition
 import org.apache.kafka.common.header.internals.RecordHeader
 import org.apache.kafka.common.serialization.StringDeserializer
@@ -99,9 +101,23 @@ open class KafkaConsumeOnlyTester @JvmOverloads constructor(
     }
 
     override fun purge() = logger.info("Purging topic {}...", topic).also {
-        adminClient.deleteRecords(sutOffsets().map { it.key to beforeOffset(it.value.offset()) }.toMap())
+        adminClient.deleteRecords(
+            listOffsets()
+                .map { it.key to RecordsToDelete.beforeOffset(it.value.offset()) }
+                .associate { it.apply { logger.info("Purging partition {}", this) } }
+        )
         logger.info("Topic {} is purged", topic)
     }
+
+    private fun listOffsets() = adminClient.listOffsets(
+        adminClient.describeTopics(listOf(topic))
+            .values().values
+            .flatMap { topicDesc -> topicDesc.toPartitions() }
+            .associate { TopicPartition(topic, it) to OffsetSpec.latest() }
+    ).all()[KAFKA_FETCHING_TIMEOUT, TimeUnit.SECONDS]
+
+    private fun KafkaFuture<TopicDescription>.toPartitions() =
+        this[KAFKA_FETCHING_TIMEOUT, TimeUnit.SECONDS].partitions().map { it.partition() }
 
     override fun receive(): List<MqTester.Message> = consumer.apply { seekTo(sutOffsets()) }.consume()
 
@@ -111,11 +127,13 @@ open class KafkaConsumeOnlyTester @JvmOverloads constructor(
 
     private fun sutOffsets(): Map<TopicPartition, OffsetAndMetadata> =
         adminClient.listConsumerGroupOffsets(sutConsumerGroup)
-            .partitionsToOffsetAndMetadata()[FETCH_CONSUMER_GROUP_OFFSETS_TIMEOUT, TimeUnit.SECONDS]
-            .apply { logger.info("SUT offsets: {}", this) }
+            .partitionsToOffsetAndMetadata()[KAFKA_FETCHING_TIMEOUT, TimeUnit.SECONDS]
+            .filterKeys { it.topic() == topic }
+            .apply { logger.info("SUT [consumerGroup: {}] offsets: {}", sutConsumerGroup, this) }
 
     private fun KafkaConsumer<String, String>.seekTo(offsets: Map<TopicPartition, OffsetAndMetadata>) {
         if (offsets.isEmpty()) {
+            logger.info("Offsets are empty - seek from beginning...")
             seekToBeginning()
         } else {
             offsets.entries.map { it.key to it.value.offset() }.forEach { (partition, committed) ->
@@ -143,12 +161,16 @@ open class KafkaConsumeOnlyTester @JvmOverloads constructor(
 
     private fun KafkaConsumer<String, String>.consume(): List<MqTester.Message> =
         logger.info("Consuming events...").let {
-            poll(pollTimeout).apply { commitAsync() }.map { MqTester.Message(it.value()) }
+            poll(pollTimeout).apply { commitAsync() }.map {
+                MqTester.Message(it.value()).apply {
+                    logger.info("Event consumed:\n{}", this)
+                }
+            }
         }
 
     companion object : KLogging() {
         private const val POLL_MILLIS: Long = 1500
-        private const val FETCH_CONSUMER_GROUP_OFFSETS_TIMEOUT: Long = 10
+        private const val KAFKA_FETCHING_TIMEOUT: Long = 10
 
         @JvmField
         val DEFAULT_CONSUMER_CONFIG: Map<String, String?> = mapOf(
