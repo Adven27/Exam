@@ -27,11 +27,12 @@ import kotlin.collections.set
 
 class DbPlugin @JvmOverloads constructor(
     private val dbTester: DbTester,
+    private val connectOnDemand: Boolean = true,
     private val valuePrinter: ValuePrinter = ValuePrinter.Simple(),
     private val allowedSeedStrategies: List<SeedStrategy> = SeedStrategy.values().toList(),
-) : ExamPlugin.NoSetUp() {
+) : ExamPlugin {
 
-    /***
+    /**
      * @param dbUnitConfig properties for org.dbunit.database.DatabaseConfig
      */
     @JvmOverloads
@@ -42,14 +43,17 @@ class DbPlugin @JvmOverloads constructor(
         user: String,
         password: String,
         schema: String? = null,
+        connectOnDemand: Boolean = true,
         valuePrinter: ValuePrinter = ValuePrinter.Simple(),
         dbUnitConfig: DbUnitConfig = DbUnitConfig(),
         allowedSeedStrategies: List<SeedStrategy> = SeedStrategy.values().toList(),
-    ) : this(DbTester(driver, url, user, password, schema, dbUnitConfig), valuePrinter, allowedSeedStrategies)
+    ) : this(DbTester(driver, url, user, password, schema, dbUnitConfig), connectOnDemand, valuePrinter, allowedSeedStrategies)
 
+    @JvmOverloads
     @Suppress("unused")
-    constructor(dbTester: DbTester, allowedSeedStrategies: List<SeedStrategy>) : this(
+    constructor(dbTester: DbTester, allowedSeedStrategies: List<SeedStrategy>, connectOnDemand: Boolean = true) : this(
         dbTester,
+        connectOnDemand,
         ValuePrinter.Simple(),
         allowedSeedStrategies
     )
@@ -59,8 +63,8 @@ class DbPlugin @JvmOverloads constructor(
     }
 
     /**
-     * @param defaultTester Default datasource: used when `ds` attribute is omitted, for example `<e:db-set>`
-     * @param others map of additional datasources: used when `ds` attribute present, for example `<e:db-set ds="other"`
+     * @param defaultTester Default datasource, used when `ds` attribute is omitted: `<e:db-set ...>`
+     * @param others Map of additional datasources, used when `ds` attribute present: `<e:db-set ds="other" ...>`
      *
      *```
      * DbPlugin(
@@ -75,20 +79,23 @@ class DbPlugin @JvmOverloads constructor(
     constructor(
         defaultTester: DbTester,
         others: Map<String, DbTester>,
+        connectOnDemand: Boolean = true,
         valuePrinter: ValuePrinter = ValuePrinter.Simple(),
         allowedSeedStrategies: List<SeedStrategy> = SeedStrategy.values().toList(),
-    ) : this(defaultTester, valuePrinter, allowedSeedStrategies) {
+    ) : this(defaultTester, connectOnDemand, valuePrinter, allowedSeedStrategies) {
         for ((key, value) in others) {
             dbTester.executors[key] = value
         }
     }
 
+    @JvmOverloads
     @Suppress("unused")
     constructor(
         defaultTester: DbTester,
         others: Map<String, DbTester>,
-        allowedSeedStrategies: List<SeedStrategy>
-    ) : this(defaultTester, others, ValuePrinter.Simple(), allowedSeedStrategies)
+        allowedSeedStrategies: List<SeedStrategy>,
+        connectOnDemand: Boolean = true
+    ) : this(defaultTester, others, connectOnDemand, ValuePrinter.Simple(), allowedSeedStrategies)
 
     override fun commands(): List<ExamCommand> = listOf(
         DataSetExecuteCommand("db-execute", "span", dbTester, valuePrinter, allowedSeedStrategies),
@@ -99,7 +106,15 @@ class DbPlugin @JvmOverloads constructor(
         DBCleanCommand("db-clean", "span", dbTester)
     )
 
-    /***
+    override fun setUp() {
+        if (!connectOnDemand) dbTester.connection
+    }
+
+    override fun tearDown() {
+        dbTester.connection.close()
+    }
+
+    /**
      * Defines how to print and render values in '<e:db-*' commands
      * @see JsonValuePrinter
      */
