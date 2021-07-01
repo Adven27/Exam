@@ -111,7 +111,7 @@ class DbPlugin @JvmOverloads constructor(
     }
 
     override fun tearDown() {
-        dbTester.connection.close()
+        dbTester.close()
     }
 
     /**

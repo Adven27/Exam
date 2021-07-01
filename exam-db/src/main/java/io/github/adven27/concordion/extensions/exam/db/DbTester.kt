@@ -29,7 +29,7 @@ open class DbTester @JvmOverloads constructor(
     password: String,
     schema: String? = null,
     val dbUnitConfig: DbUnitConfig = DbUnitConfig()
-) : JdbcDatabaseTester(driver, url, user, password, schema) {
+) : JdbcDatabaseTester(driver, url, user, password, schema), AutoCloseable {
 
     companion object : KLogging() {
         const val DEFAULT_DATASOURCE = "default"
@@ -73,6 +73,10 @@ open class DbTester @JvmOverloads constructor(
             }
             else -> logger.error("No matching database product found $dbName")
         }
+    }
+
+    override fun close() {
+        conn?.close()
     }
 }
 
