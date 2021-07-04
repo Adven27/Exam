@@ -31,6 +31,7 @@ import io.github.adven27.concordion.extensions.exam.core.vars
 import net.javacrumbs.jsonunit.core.Configuration
 import net.javacrumbs.jsonunit.core.Option
 import net.javacrumbs.jsonunit.core.internal.Options
+import org.awaitility.core.ConditionTimeoutException
 import org.concordion.api.CommandCall
 import org.concordion.api.Evaluator
 import org.concordion.api.Fixture
@@ -152,28 +153,43 @@ class MqCheckCommand(
         resultRecorder: ResultRecorder,
         root: Html
     ) {
-        var result = actual
         if (awaitConfig.enabled()) {
-            try {
-                awaitConfig.await("Await MQ $mqName").untilAsserted {
-                    val list = mqTesters.getOrFail(mqName).receive().toMutableList()
-                    if (mqTesters.getOrFail(mqName).accumulateOnRetries()) {
-                        result.addAll(list)
-                    } else {
-                        result = list
-                    }
-                    Assert.assertEquals(expected.size, result.size)
-                }
-            } catch (e: Exception) {
-                resultRecorder.record(FAILURE)
-                root.removeChildren().below(
-                    sizeCheckError(mqName, expected, result, e.cause?.message)
-                )
-                root.below(pre(awaitConfig.timeoutMessage(e)).css("alert alert-danger small"))
-                throw e
-            }
+            awaitExpectedSize(expected, actual, mqName, awaitConfig, resultRecorder, root)
         } else {
-            Assert.assertEquals(expected.size, result.size)
+            Assert.assertEquals(expected.size, actual.size)
+        }
+    }
+
+    private fun awaitExpectedSize(
+        expected: List<TypedMessage>,
+        actual: MutableList<MqTester.Message>,
+        mqName: String,
+        awaitConfig: AwaitConfig,
+        resultRecorder: ResultRecorder,
+        root: Html
+    ) {
+        var prevActual: MutableList<MqTester.Message> = actual
+        try {
+            val tester = mqTesters.getOrFail(mqName)
+            awaitConfig.await("Await MQ $mqName").untilAsserted {
+                actual
+                    .apply { prevActual = this }
+                    .apply { if (!tester.accumulateOnRetries()) clear() }
+                    .addAll(tester.receive())
+                Assert.assertEquals(expected.size, actual.size)
+            }
+        } catch (e: Exception) {
+            resultRecorder.record(FAILURE)
+            root.removeChildren().below(
+                sizeCheckError(
+                    mqName,
+                    expected,
+                    if (e is ConditionTimeoutException) prevActual else actual,
+                    e.cause?.message ?: ""
+                )
+            )
+            root.below(pre(awaitConfig.timeoutMessage(e)).css("alert alert-danger small"))
+            throw e
         }
     }
 

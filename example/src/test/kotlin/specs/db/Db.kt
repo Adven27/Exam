@@ -10,7 +10,14 @@ open class Db : Specs() {
     fun addRecord(id: String, name: String, age: String, birthday: String): Boolean {
         dbTester.apply {
             dataSet = DataSetBuilder().newRowTo("PERSON")
-                .withFields(mapOf("ID" to id, "NAME" to name, "AGE" to age, "BIRTHDAY" to LocalDate.parse(birthday).toDate()))
+                .withFields(
+                    mapOf(
+                        "ID" to id,
+                        "NAME" to name,
+                        "AGE" to age,
+                        "BIRTHDAY" to LocalDate.parse(birthday).toDate()
+                    )
+                )
                 .add().build()
             onSetup()
         }
@@ -30,6 +37,25 @@ open class Db : Specs() {
             dataSet = DataSetBuilder().newRowTo("PERSON_FIELDS")
                 .withFields(mapOf("ID" to id, "NAME" to field, "VALUE" to value, "PERSON_ID" to id))
                 .add().build()
+            onSetup()
+        }
+        return true
+    }
+}
+
+open class DbSet : Specs() {
+    fun insert(table: String, id: String, name: String, height: String, weight: String, manufactured: String): Boolean {
+        dbTester.apply {
+            dataSet = DataSetBuilder().newRowTo(table)
+                .withFields(
+                    mapOf(
+                        "ID" to id,
+                        "NAME" to name,
+                        "HEIGHT" to height,
+                        "WEIGHT" to weight,
+                        "BIRTHDAY" to LocalDate.parse(manufactured).toDate()
+                    )
+                ).add().build()
             onSetup()
         }
         return true

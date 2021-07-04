@@ -4,7 +4,7 @@ package io.github.adven27.concordion.extensions.exam.core
 
 import com.github.jknack.handlebars.Handlebars
 import io.github.adven27.concordion.extensions.exam.core.html.Html
-import io.github.adven27.concordion.extensions.exam.core.html.codeXmlBlack
+import io.github.adven27.concordion.extensions.exam.core.html.codeHighlight
 import io.github.adven27.concordion.extensions.exam.core.html.span
 import io.github.adven27.concordion.extensions.exam.core.utils.DateFormatMatcher
 import io.github.adven27.concordion.extensions.exam.core.utils.DateWithin
@@ -140,7 +140,10 @@ class ExamExtension constructor(private vararg var plugins: ExamPlugin) : Concor
                 errorMessage(
                     "Error while executing command",
                     "${it.throwable.cause?.message ?: it.throwable.message}",
-                    codeXmlBlack(PARSED_COMMANDS[it.element.getAttributeValue("cmdId")]?.fixIndent())
+                    codeHighlight(
+                        "xml",
+                        PARSED_COMMANDS[it.element.getAttributeValue("cmdId")]?.fixIndent()
+                    )
                 )
             )
         }
@@ -174,6 +177,7 @@ class ExamExtension constructor(private vararg var plugins: ExamPlugin) : Concor
 
         @JvmStatic
         fun prettyXml(text: String) = text.prettyXml()
+
         @JvmStatic
         fun prettyJson(text: String) = text.prettyJson()
     }

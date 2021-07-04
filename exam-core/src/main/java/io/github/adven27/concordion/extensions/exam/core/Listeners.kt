@@ -8,14 +8,14 @@ import io.github.adven27.concordion.extensions.exam.core.html.ONCLICK
 import io.github.adven27.concordion.extensions.exam.core.html.bodyOf
 import io.github.adven27.concordion.extensions.exam.core.html.button
 import io.github.adven27.concordion.extensions.exam.core.html.buttonCollapse
-import io.github.adven27.concordion.extensions.exam.core.html.codeXmlBlack
+import io.github.adven27.concordion.extensions.exam.core.html.codeHighlight
 import io.github.adven27.concordion.extensions.exam.core.html.div
 import io.github.adven27.concordion.extensions.exam.core.html.footerOf
 import io.github.adven27.concordion.extensions.exam.core.html.italic
 import io.github.adven27.concordion.extensions.exam.core.html.menuItemA
 import io.github.adven27.concordion.extensions.exam.core.html.pill
-import io.github.adven27.concordion.extensions.exam.core.html.stat
 import io.github.adven27.concordion.extensions.exam.core.utils.content
+import io.github.adven27.concordion.extensions.exam.core.utils.prettyXml
 import nu.xom.Attribute
 import nu.xom.Document
 import nu.xom.Element
@@ -72,7 +72,7 @@ internal class ExamExampleListener(private val skipDecider: SkipDecider) : Examp
         val status = summary.implementationStatus
         val card = Html(event.element)
         removeConcordionExpectedToFailWarning(card)
-        footerOf(card)(
+       /* footerOf(card)(
             stat()(
                 pill(summary.successCount, "success"),
                 pill(summary.ignoredCount, "secondary"),
@@ -80,7 +80,7 @@ internal class ExamExampleListener(private val skipDecider: SkipDecider) : Examp
                 pill(summary.exceptionCount, "danger"),
                 if (status != null && status != EXPECTED_TO_PASS) badgeFor(status) else null
             )
-        )
+        )*/
 
         if (summary.failureCount > 0 || summary.exceptionCount > 0) {
             examplesToFocus.add(card.attr("id"))
@@ -155,7 +155,7 @@ internal class ExamDocumentParsingListener(private val registry: CommandRegistry
     }
 
     private fun visit(elem: Element) {
-        log(ConcordionElement(elem))
+        log(elem)
         val children = elem.childElements
 
         for (i in 0 until children.size()) {
@@ -170,11 +170,18 @@ internal class ExamDocumentParsingListener(private val registry: CommandRegistry
         }
     }
 
-    private fun log(elem: ConcordionElement) {
+    private fun log(elem: Element) {
         if ((elem.getAttributeValue("print") ?: "false").toBoolean()) {
-            elem.prependChild(
-                codeXmlBlack(
-                    elem.childElements.joinToString("\n") { it.toXML() }.fixIndent()
+            ConcordionElement(elem).prependChild(
+                codeHighlight(
+                    "xml",
+                    Document(elem.copy() as Element).prettyXml()
+                        .replace(" xmlns:e=\"http://exam.extension.io\"", "")
+                        .replace(" print=\"true\"", "")
+                        .lines()
+                        .filterNot { it.startsWith("<?xml version") }
+                        .filterNot { it.isBlank() }
+                        .joinToString(separator = "\n")
                 ).css("mt-2").el()
             )
         }

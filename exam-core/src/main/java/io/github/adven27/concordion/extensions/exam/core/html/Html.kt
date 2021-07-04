@@ -121,18 +121,23 @@ class Html(val el: Element) {
     }
 
     fun panel(header: String): Html {
-        css("card mb-3")
+        css("exam-example")
         val id = header.hashCode().toString()
-        val body = div().css("card-body collapse show").attrs("id" to id)
+        val title = tag("p")(
+            italic("", "class" to "far fa-caret-square-down"),
+            tag("span").text(" ")
+        ).css("bd-example-title text-muted fw-lighter")
+            .text(header)
+            .attrs("data-bs-toggle" to "collapse", "data-bs-target" to "#e$id", "aria-expanded" to "true")
+
+        val body = div().css("bd-example collapse show").attrs("id" to "e$id")
         moveChildrenTo(body)
         this(
-            div().css("card-header")(
-                link(header).attrs("name" to header, "data-type" to "example")
-            ).collapse(id)
+            title, body
         )
-        val footer = div().css("card-footer text-muted").collapse(id)
-        el.appendChild(body.el)
-        el.appendChild(footer.el())
+//        val footer = div().css("card-footer text-muted").collapse(id)
+//        el.appendChild(body.el)
+//        el.appendChild(footer.el())
         return this
     }
 
@@ -216,7 +221,7 @@ fun div(vararg attrs: Pair<String, String>) = Html("div", *attrs)
 
 fun table(vararg attrs: Pair<String, String>) = table(Html("table", *attrs))
 
-fun table(el: Html): Html = el.css("table table-sm")
+fun table(el: Html): Html = el.css("table table-sm caption-top")
 
 fun table(el: Element): Html = table(Html(el))
 
@@ -302,7 +307,7 @@ fun paragraph(txt: String) = Html("p", txt)
 
 fun codeXml(text: String?) = pre(text ?: "") css "xml card"
 
-fun codeXmlBlack(text: String?) = pre(text ?: "").attr("lineNumbers", "true") css "htmlmixed darcula"
+fun codeHighlight(lang: String, text: String?) = pre().attrs("class" to "rounded doc-code language-$lang")(code(text ?: ""))
 
 fun tag(tag: String) = Html(tag)
 

@@ -102,19 +102,21 @@ open class KafkaConsumeOnlyTester @JvmOverloads constructor(
 
     override fun purge() = logger.info("Purging topic {}...", topic).also {
         adminClient.deleteRecords(
-            listOffsets()
+            listLatestOffsets()
                 .map { it.key to RecordsToDelete.beforeOffset(it.value.offset()) }
                 .associate { it.apply { logger.info("Purging partition {}", this) } }
         )
         logger.info("Topic {} is purged", topic)
     }
 
-    private fun listOffsets() = adminClient.listOffsets(
-        adminClient.describeTopics(listOf(topic))
-            .values().values
-            .flatMap { topicDesc -> topicDesc.toPartitions() }
-            .associate { TopicPartition(topic, it) to OffsetSpec.latest() }
-    ).all()[KAFKA_FETCHING_TIMEOUT, TimeUnit.SECONDS]
+    private fun listLatestOffsets() = adminClient.listOffsets(latestOffsetsSpec())
+        .all()[KAFKA_FETCHING_TIMEOUT, TimeUnit.SECONDS]
+
+    private fun latestOffsetsSpec(): Map<TopicPartition, OffsetSpec> = getPartitionsFor(topic)
+        .associate { TopicPartition(topic, it) to OffsetSpec.latest() }
+
+    private fun getPartitionsFor(topic: String) = adminClient.describeTopics(listOf(topic))
+        .values().values.flatMap { it.toPartitions() }
 
     private fun KafkaFuture<TopicDescription>.toPartitions() =
         this[KAFKA_FETCHING_TIMEOUT, TimeUnit.SECONDS].partitions().map { it.partition() }

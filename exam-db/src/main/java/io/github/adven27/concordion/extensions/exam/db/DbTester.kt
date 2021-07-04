@@ -19,6 +19,7 @@ import org.dbunit.ext.postgresql.PostgresqlDataTypeFactory
 import org.postgresql.util.PGobject
 import java.sql.PreparedStatement
 import java.sql.ResultSet
+import java.sql.SQLException
 import java.sql.Types
 import java.util.concurrent.ConcurrentHashMap
 
@@ -76,7 +77,11 @@ open class DbTester @JvmOverloads constructor(
     }
 
     override fun close() {
-        conn?.close()
+        try {
+            if (conn?.connection?.isClosed != true) conn?.close()
+        } catch (e: SQLException) {
+            logger.warn("Error on connection closing", e)
+        }
     }
 }
 

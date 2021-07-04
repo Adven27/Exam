@@ -7,6 +7,7 @@ import io.github.adven27.concordion.extensions.exam.core.commands.ExamExampleCom
 import io.github.adven27.concordion.extensions.exam.core.commands.ExamplesSummaryCommand
 import io.github.adven27.concordion.extensions.exam.core.commands.GivenCommand
 import io.github.adven27.concordion.extensions.exam.core.commands.JsonCheckCommand
+import io.github.adven27.concordion.extensions.exam.core.commands.MainCommand
 import io.github.adven27.concordion.extensions.exam.core.commands.SetVarCommand
 import io.github.adven27.concordion.extensions.exam.core.commands.ThenCommand
 import io.github.adven27.concordion.extensions.exam.core.commands.WaitCommand
@@ -14,11 +15,11 @@ import io.github.adven27.concordion.extensions.exam.core.commands.WhenCommand
 import io.github.adven27.concordion.extensions.exam.core.commands.XmlCheckCommand
 import net.javacrumbs.jsonunit.core.Configuration
 import org.xmlunit.diff.NodeMatcher
-import java.util.ArrayList
 
 class CommandRegistry(jsonUnitCfg: Configuration, nodeMatcher: NodeMatcher) {
     private val commands = mutableListOf(
-        GivenCommand("div"),
+        MainCommand(),
+        GivenCommand(),
         WhenCommand("div"),
         ThenCommand("div"),
 

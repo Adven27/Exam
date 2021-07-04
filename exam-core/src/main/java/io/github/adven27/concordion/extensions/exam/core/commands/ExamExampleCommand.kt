@@ -7,6 +7,7 @@ import org.concordion.api.ImplementationStatus.EXPECTED_TO_FAIL
 import org.concordion.api.ImplementationStatus.EXPECTED_TO_PASS
 import org.concordion.api.ImplementationStatus.UNIMPLEMENTED
 import org.concordion.internal.ConcordionBuilder.NAMESPACE_CONCORDION_2007
+import org.concordion.api.Element as ConcordionElement
 
 class ExamExampleCommand(tag: String) : ExamCommand("example", tag) {
 
@@ -29,7 +30,7 @@ class ExamExampleCommand(tag: String) : ExamCommand("example", tag) {
         }
         addStatus(elem, status)
 
-        Html(org.concordion.api.Element(elem)).panel(name)
+        Html(ConcordionElement(elem)).panel(name)
     }
 
     private fun statusAttr(elem: Element): String {

@@ -16,6 +16,7 @@ function ready() {
         el.style.visibility = "visible";
     });
     window.dispatchEvent(new Event('resize'));
+    hljs.highlightAll();
 }
 
 function unescape(input) {

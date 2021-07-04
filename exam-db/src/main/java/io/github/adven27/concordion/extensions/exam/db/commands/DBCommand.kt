@@ -129,10 +129,10 @@ fun renderTable(
     return div("class" to "table-responsive mb-1 p-1")(
         table()(
             tableCaption(caption, t.tableName()),
-            if (t.empty()) null else thead()(tr()(cols.map { th(it, CLASS to styleCol(it)) })),
+            if (t.empty()) thead()(tr()(th())) else thead()(tr()(cols.map { th(it, CLASS to styleCol(it)) })),
             tbody()(
                 if (t.empty()) {
-                    listOf(tr()(td("<EMPTY>").attrs("colspan" to "${cols.size}").apply(ifEmpty)))
+                    listOf(tr()(td("EMPTY").attrs("colspan" to "${cols.size}").apply(ifEmpty)))
                 } else {
                     t.mapRows { row -> cols.map { cell(td(CLASS to styleCol(it)), row, it) } }
                         .map { tr()(*it.toTypedArray()) }
@@ -144,9 +144,6 @@ fun renderTable(
 
 private fun ITable.empty() = this.rowCount == 0
 
-fun tableCaption(title: String?, def: String?): Html = caption().style("width:max-content")(
-    italic(
-        " ${if (!title.isNullOrBlank()) title else def}",
-        CLASS to "fa fa-database ml-1"
-    )
-)
+fun tableCaption(title: String?, def: String?): Html = caption()
+    .style("width:max-content")(italic("", CLASS to "fa fa-database ml-1"))
+    .text("  ${if (!title.isNullOrBlank()) title else def}")

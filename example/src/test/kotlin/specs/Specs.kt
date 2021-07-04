@@ -24,12 +24,8 @@ import io.github.adven27.concordion.extensions.exam.mq.MqPlugin
 import io.github.adven27.concordion.extensions.exam.mq.MqTester
 import io.github.adven27.concordion.extensions.exam.ui.UiPlugin
 import io.github.adven27.concordion.extensions.exam.ws.WsPlugin
-import org.concordion.api.extension.Extensions
-import org.concordion.ext.runtotals.RunTotalsExtension
-import org.concordion.ext.timing.TimerExtension
 import java.util.ArrayDeque
 
-@Extensions(value = [TimerExtension::class, RunTotalsExtension::class])
 open class Specs : AbstractSpecs() {
 
     override fun init() = ExamExtension(
