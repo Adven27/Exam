@@ -32,7 +32,6 @@ import io.github.adven27.concordion.extensions.exam.core.vars
 import net.javacrumbs.jsonunit.core.Configuration
 import net.javacrumbs.jsonunit.core.Option
 import net.javacrumbs.jsonunit.core.internal.Options
-import org.awaitility.core.ConditionTimeoutException
 import org.concordion.api.CommandCall
 import org.concordion.api.Evaluator
 import org.concordion.api.Fixture
@@ -83,27 +82,34 @@ class MqCheckCommand(
         val collapsable = root.takeAwayAttr("collapsable", "false").toBoolean()
         val awaitConfig = cmd.awaitConfig()
 
-        val expectedMessages: List<TypedMessage> = messageTags(root).mapNotNull { html ->
-            setVarsIfPresent(html, eval)
-            nullOrMessage(
-                html.content(eval),
-                html.takeAwayAttr("verifyAs", "json"),
-                eval,
-                attrToMap(html, eval, "headers")
-            )
-        }
-        val actualMessages: MutableList<MqTester.Message> = mqTesters.getOrFail(mqName).receive().toMutableList()
+        val expectedMessages: List<TypedMessage> = expectedMessages(root, eval)
+        var actualMessages: List<MqTester.Message> = mqTesters.getOrFail(mqName).receive().toMutableList()
 
         try {
-            checkSize(awaitConfig, mqName, actualMessages, expectedMessages, resultRecorder, root)
+            try {
+                Assert.assertEquals(expectedMessages.size, actualMessages.size)
+            } catch (e: java.lang.AssertionError) {
+                if (awaitConfig.enabled()) {
+                    actualMessages =
+                        awaitExpectedSize(expectedMessages, actualMessages, mqName, awaitConfig)
+                } else {
+                    throw e
+                }
+            }
+        } catch (s: SizeMismatchError) {
+            resultRecorder.record(FAILURE)
+            root.removeChildren().below(
+                sizeCheckError(s.mqName, s.expected, s.actual, s.message)
+            )
+            root.below(pre(awaitConfig.timeoutMessage(s.cause!!)).css("alert alert-danger small"))
+            return
         } catch (e: java.lang.AssertionError) {
             resultRecorder.record(FAILURE)
             root.below(sizeCheckError(mqName, expectedMessages, actualMessages, e.message))
             root.parent().remove(root)
             return
-        } catch (e: Exception) {
-            return
         }
+
         val tableContainer = table()(captionEnvelopOpen(mqName))
         root.removeChildren().attrs("class" to "mq-check")(tableContainer)
 
@@ -144,60 +150,58 @@ class MqCheckCommand(
             }
     }
 
-    @Suppress("LongParameterList", "TooGenericExceptionCaught")
-    private fun checkSize(
-        awaitConfig: AwaitConfig,
-        mqName: String,
-        actual: MutableList<MqTester.Message>,
-        expected: List<TypedMessage>,
-        resultRecorder: ResultRecorder,
-        root: Html
-    ) {
-        if (awaitConfig.enabled()) {
-            awaitExpectedSize(expected, actual, mqName, awaitConfig, resultRecorder, root)
-        } else {
-            Assert.assertEquals(expected.size, actual.size)
-        }
+    private fun expectedMessages(root: Html, eval: Evaluator) = messageTags(root).mapNotNull { html ->
+        setVarsIfPresent(html, eval)
+        nullOrMessage(
+            html.content(eval),
+            html.takeAwayAttr("verifyAs", "json"),
+            eval,
+            attrToMap(html, eval, "headers")
+        )
     }
 
     private fun awaitExpectedSize(
         expected: List<TypedMessage>,
-        actual: MutableList<MqTester.Message>,
+        originalActual: List<MqTester.Message>,
         mqName: String,
-        awaitConfig: AwaitConfig,
-        resultRecorder: ResultRecorder,
-        root: Html
-    ) {
-        var prevActual: MutableList<MqTester.Message> = actual
+        awaitConfig: AwaitConfig
+    ): List<MqTester.Message> {
+        val actual = originalActual.toMutableList()
+        val prevActual: MutableList<MqTester.Message> = mutableListOf()
         try {
             val tester = mqTesters.getOrFail(mqName)
             awaitConfig.await("Await MQ $mqName").untilAsserted {
                 actual
-                    .apply { prevActual = this }
+                    .apply { prevActual.apply { clear(); addAll(this) } }
                     .apply { if (!tester.accumulateOnRetries()) clear() }
                     .addAll(tester.receive())
                 Assert.assertEquals(expected.size, actual.size)
             }
+            return actual
         } catch (e: Exception) {
-            resultRecorder.record(FAILURE)
-            root.removeChildren().below(
-                sizeCheckError(
-                    mqName,
-                    expected,
-                    if (e is ConditionTimeoutException) prevActual else actual,
-                    e.cause?.message ?: ""
-                )
+            throw SizeMismatchError(
+                mqName,
+                expected,
+                prevActual,
+                e.cause?.message ?: e.message ?: "$e",
+                e
             )
-            root.below(pre(awaitConfig.timeoutMessage(e)).css("alert alert-danger small"))
-            throw e
         }
     }
+
+    class SizeMismatchError(
+        val mqName: String,
+        val expected: List<TypedMessage>,
+        val actual: List<MqTester.Message>,
+        message: String,
+        exception: Throwable
+    ) : java.lang.AssertionError(message, exception)
 
     @Suppress("SpreadOperator")
     private fun sizeCheckError(
         mqName: String,
         expected: List<TypedMessage>,
-        actual: MutableList<MqTester.Message>,
+        actual: List<MqTester.Message>,
         msg: String?
     ): Html = div().css("rest-failure bd-callout bd-callout-danger")(
         div(msg),

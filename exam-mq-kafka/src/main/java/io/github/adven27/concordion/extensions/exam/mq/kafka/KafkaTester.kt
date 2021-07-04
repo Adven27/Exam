@@ -91,6 +91,7 @@ open class KafkaConsumeOnlyTester @JvmOverloads constructor(
 
     override fun start() {
         properties[ConsumerConfig.GROUP_ID_CONFIG] = "kafka-tester-$topic"
+        properties[ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG] = bootstrapServers
         consumer = KafkaConsumer<String, String>(properties).apply { subscribe(listOf(topic)) }
         adminClient = AdminClient.create(properties)
         logger.info("KafkaTester started with properties:\n{}", properties)

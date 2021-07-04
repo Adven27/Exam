@@ -22,10 +22,14 @@ import org.concordion.internal.ConcordionBuilder
 import org.junit.Assert.assertEquals
 import java.lang.Boolean
 import java.util.concurrent.TimeUnit
+import kotlin.IllegalStateException
+import kotlin.String
+import kotlin.Suppress
+import kotlin.apply
 
-class SetVarCommand(tag: String) : ExamCommand("set", tag) {
+class SetVarCommand : ExamCommand("set", "span") {
     override fun setUp(cmd: CommandCall, eval: Evaluator, resultRecorder: ResultRecorder, fixture: Fixture) {
-        val el = cmd.html()
+        val el = cmd.html().style("display: none;").apply { el.appendNonBreakingSpaceIfBlank() }
         val valueAttr = el.attr("value")
         val valueFrom = el.attr("from")
         val vars = el.takeAwayAttr("vars").vars(eval, separator = el.takeAwayAttr("varsSeparator", ","))
@@ -43,10 +47,7 @@ class SetVarCommand(tag: String) : ExamCommand("set", tag) {
                 valueFrom != null -> eval.resolveXml(valueFrom.readFile())
                 else -> {
                     val body = el.text()
-                    val silent = el.attr("silent")
-                    if (silent != null && silent == "true") {
-                        el.removeChildren()
-                    }
+                    el.removeChildren().el.appendNonBreakingSpaceIfBlank()
                     eval.resolveXml(body)
                 }
             }

@@ -28,7 +28,7 @@ class CommandRegistry(jsonUnitCfg: Configuration, nodeMatcher: NodeMatcher) {
         BeforeEachExampleCommand("div"),
         ExamplesSummaryCommand("summary", "div"),
 
-        SetVarCommand("span"),
+        SetVarCommand(),
         WaitCommand("span"),
 
         JsonCheckCommand("json-check", "div", jsonUnitCfg),

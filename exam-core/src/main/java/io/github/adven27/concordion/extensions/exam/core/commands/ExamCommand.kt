@@ -40,7 +40,6 @@ open class ExamCommand(private val name: String, private val tag: String) : Abst
         elem.namespacePrefix = ""
         elem.namespaceURI = null
         elem.localName = tag
-        //Element(elem).appendNonBreakingSpaceIfBlank()
     }
 }
 
@@ -65,5 +64,5 @@ fun AwaitConfig.await(desc: String): ConditionFactory = Awaitility.await(desc)
     .pollDelay(pollDelay, TimeUnit.MILLISECONDS)
     .pollInterval(pollInterval, TimeUnit.MILLISECONDS)
 
-fun AwaitConfig.timeoutMessage(e: Exception) =
+fun AwaitConfig.timeoutMessage(e: Throwable) =
     "Check with poll delay $pollDelay ms and poll interval $pollInterval ms didn't complete within $atMostSec seconds because ${e.cause?.message}"
