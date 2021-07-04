@@ -13,44 +13,41 @@ import org.concordion.api.Evaluator
 import org.concordion.api.Fixture
 import org.concordion.api.ResultRecorder
 
-class MainCommand() : ExamCommand("main", "div") {
+class MainCommand : ExamCommand("main", "div") {
     override fun setUp(cmd: CommandCall?, evaluator: Evaluator?, resultRecorder: ResultRecorder?, fixture: Fixture) {
         val div1 = div("class" to "bd-content ps-lg-4")
         val nav = div("class" to "bd-toc mt-4 mb-5 my-md-0 ps-xl-3 mb-lg-5 text-muted")(
-            tag("strong").css("d-block h6 my-2 pb-2 border-bottom").text("On this page")
+            tag("strong").css("d-block h6 my-2 pb-2 border-bottom").text("On this page"),
+            tag("nav").attrs("id" to "table-of-contents")
         )
         val div = div("class" to "container-xxl my-md-4 bd-layout")(
             Html("main").css("bd-main order-1")(
                 nav, div1
             )
         )
-
         cmd.html().css("container-fluid").moveChildrenTo(div1)(div)
     }
 }
 
 class GivenCommand : ExamCommand("given", "div") {
-    override fun setUp(cmd: CommandCall?, evaluator: Evaluator?, resultRecorder: ResultRecorder?, fixture: Fixture) {
-        cmd.html().above(
-            tag("hr")
-        ).above(tag("p").css("lead text-primary").text("Given"))
-    }
+    override fun setUp(cmd: CommandCall?, evaluator: Evaluator?, resultRecorder: ResultRecorder?, fixture: Fixture) =
+        pLeadAndHr(cmd, "text-primary", "Given")
 }
 
-class WhenCommand(tag: String) : ExamCommand("when", tag) {
-    override fun setUp(cmd: CommandCall?, evaluator: Evaluator?, resultRecorder: ResultRecorder?, fixture: Fixture) {
-        cmd.html().above(
-            tag("hr")
-        ).above(tag("p").css("lead text-dark").text("When"))
-    }
+class WhenCommand : ExamCommand("when", "div") {
+    override fun setUp(cmd: CommandCall?, evaluator: Evaluator?, resultRecorder: ResultRecorder?, fixture: Fixture) =
+        pLeadAndHr(cmd, "text-warning", "When")
 }
 
-class ThenCommand(tag: String) : ExamCommand("then", tag) {
-    override fun setUp(cmd: CommandCall?, evaluator: Evaluator?, resultRecorder: ResultRecorder?, fixture: Fixture) {
-        cmd.html().above(
-            tag("hr")
-        ).above(tag("p").css("lead text-success").text("Then"))
-    }
+class ThenCommand : ExamCommand("then", "div") {
+    override fun setUp(cmd: CommandCall?, evaluator: Evaluator?, resultRecorder: ResultRecorder?, fixture: Fixture) =
+        pLeadAndHr(cmd, "text-success", "Then")
+}
+
+private fun pLeadAndHr(cmd: CommandCall?, style: String, title: String) {
+    cmd.html()
+        .above(tag("hr"))
+        .above(tag("p").css("lead $style").text(title))
 }
 
 class ExamplesSummaryCommand(name: String, tag: String) : ExamCommand(name, tag) {

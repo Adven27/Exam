@@ -35,7 +35,7 @@ Configure and attach plugin to ExamExtension:
 
 #### Commands:
 
-<table class="table table-sm table-hover table-bordered">
+<table class="table table-sm">
 
 <tr><td colspan="3"> <h6>Apply datasets: </h6> </td></tr>
 
@@ -51,7 +51,7 @@ Configure and attach plugin to ExamExtension:
 </tr>
 
 <tr>
-<td class="align-middle"> <a href="db/DbExec.html">db-execute</a> </td>
+<td class="align-middle"> <a c:run="concordion" href="db/DbExecute.html">db-execute</a> </td>
 <td class="align-middle"> Applies specified DbUnit datasets </td>
 <td class="align-middle"> <pre class="xml doc-code">
 <![CDATA[ <e:db-execute datasets="/data/db/adam.xml, /data/db/bob.json, /data/db/carl/person.csv"/> ]]>
@@ -59,7 +59,7 @@ Configure and attach plugin to ExamExtension:
 </tr>
 
 <tr>
-<td class="align-middle"> <a href="db/DbClean.html">db-clean</a> </td>
+<td class="align-middle"> <a c:run="concordion" href="db/DbClean.html">db-clean</a> </td>
 <td class="align-middle"> Cleans specified tables with DELETE_ALL DbUnit operation </td>
 <td class="align-middle"> <pre class="xml doc-code">
 <![CDATA[ <e:db-clean tables="person, person_fields"/> ]]>
@@ -69,7 +69,7 @@ Configure and attach plugin to ExamExtension:
 <tr><td colspan="3"> <h6>Verify database state: </h6> </td></tr>
 
 <tr>
-<td class="align-middle"> <a href="db/DbCheck.html">db-check</a> </td>
+<td class="align-middle"> <a c:run="concordion" href="db/DbCheck.html">db-check</a> </td>
 <td class="align-middle"> Creates DbUnit dataset and verifies that it matches specified database table </td>
 <td class="align-middle"> <pre class="xml doc-code">
 <![CDATA[<e:db-check table="person" cols="id=1..10, name, birthday, created={{now}}">
@@ -80,7 +80,7 @@ Configure and attach plugin to ExamExtension:
 </tr>
 
 <tr>
-<td class="align-middle"> <a href="db/DbVerify.html">db-verify</a> </td>
+<td class="align-middle"> <a c:run="concordion" href="db/DbVerify.html">db-verify</a> </td>
 <td class="align-middle"> Verifies that database matches state described in DbUnit datasets </td>
 <td class="align-middle"> <pre class="xml doc-code">
 <![CDATA[ <e:db-verify datasets="/data/db/adam.xml, /data/db/bob.json, /data/db/carl/person.csv"/> ]]>
@@ -90,7 +90,7 @@ Configure and attach plugin to ExamExtension:
 <tr><td colspan="3"> <h6>Debug database state: </h6> </td></tr>
 
 <tr>
-<td class="align-middle"> <a href="db/DbShow.html">db-show</a> </td>
+<td class="align-middle"> <a c:run="concordion" href="db/DbShow.html">db-show</a> </td>
 <td class="align-middle"> Creates DbUnit dataset files and prints content of specified database table </td>
 <td class="align-middle"> <pre class="xml doc-code">
 <![CDATA[<e:db-show table="person" saveToResources="/data/db/person.xml"/>]]>

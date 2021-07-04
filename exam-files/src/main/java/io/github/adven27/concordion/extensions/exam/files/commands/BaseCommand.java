@@ -5,6 +5,7 @@ import io.github.adven27.concordion.extensions.exam.core.html.Html;
 
 import static io.github.adven27.concordion.extensions.exam.core.html.HtmlBuilder.caption;
 import static io.github.adven27.concordion.extensions.exam.core.html.HtmlBuilder.italic;
+import static io.github.adven27.concordion.extensions.exam.core.html.HtmlBuilder.span;
 import static io.github.adven27.concordion.extensions.exam.core.html.HtmlBuilder.td;
 import static io.github.adven27.concordion.extensions.exam.core.html.HtmlBuilder.th;
 import static io.github.adven27.concordion.extensions.exam.core.html.HtmlBuilder.thead;
@@ -37,8 +38,9 @@ public class BaseCommand extends ExamCommand {
     }
 
     Html flCaption(String dirPath) {
-        return caption(dirPath).childs(
-            italic("").css("fa fa-folder-open ml-1")
-        );
+        return caption().childs(
+            italic(" ").css("far fa-folder-open ml-1"),
+            span(" ")
+        ).text(dirPath);
     }
 }

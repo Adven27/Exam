@@ -10,7 +10,6 @@ import io.github.adven27.concordion.extensions.exam.core.html.caption
 import io.github.adven27.concordion.extensions.exam.core.html.div
 import io.github.adven27.concordion.extensions.exam.core.html.html
 import io.github.adven27.concordion.extensions.exam.core.html.italic
-import io.github.adven27.concordion.extensions.exam.core.html.span
 import io.github.adven27.concordion.extensions.exam.core.html.table
 import io.github.adven27.concordion.extensions.exam.core.html.tbody
 import io.github.adven27.concordion.extensions.exam.core.html.td
@@ -44,10 +43,7 @@ open class DBCommand(
     protected var ds: String? = null
 
     override fun setUp(cmd: CommandCall?, eval: Evaluator?, resultRecorder: ResultRecorder?, fixture: Fixture) {
-        val root = cmd.html()(
-            div(""),
-            span("")
-        ).apply {
+        val root = cmd.html().apply {
             attr("style")?.let { style(it) }
             attr("class") ?: css("table table-sm table-hover")
         }

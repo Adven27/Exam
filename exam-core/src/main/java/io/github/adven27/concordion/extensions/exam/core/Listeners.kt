@@ -21,11 +21,6 @@ import nu.xom.Document
 import nu.xom.Element
 import nu.xom.XPathContext
 import nu.xom.converters.DOMConverter
-import org.concordion.api.ImplementationStatus
-import org.concordion.api.ImplementationStatus.EXPECTED_TO_FAIL
-import org.concordion.api.ImplementationStatus.EXPECTED_TO_PASS
-import org.concordion.api.ImplementationStatus.IGNORED
-import org.concordion.api.ImplementationStatus.UNIMPLEMENTED
 import org.concordion.api.listener.DocumentParsingListener
 import org.concordion.api.listener.ExampleEvent
 import org.concordion.api.listener.ExampleListener
@@ -47,7 +42,6 @@ interface SkipDecider : Predicate<ExampleEvent> {
 
     class NoSkip : SkipDecider {
         override fun reason(): String = ""
-
         override fun test(t: ExampleEvent): Boolean = false
     }
 }
@@ -69,19 +63,15 @@ internal class ExamExampleListener(private val skipDecider: SkipDecider) : Examp
 
     override fun afterExample(event: ExampleEvent) {
         val summary = event.resultSummary
-        val status = summary.implementationStatus
         val card = Html(event.element)
+        card.attrs(
+            "data-summary-success" to summary.successCount.toString(),
+            "data-summary-ignore" to summary.ignoredCount.toString(),
+            "data-summary-failure" to summary.failureCount.toString(),
+            "data-summary-exception" to summary.exceptionCount.toString(),
+            "data-summary-status" to summary.implementationStatus.tag,
+        )
         removeConcordionExpectedToFailWarning(card)
-       /* footerOf(card)(
-            stat()(
-                pill(summary.successCount, "success"),
-                pill(summary.ignoredCount, "secondary"),
-                pill(summary.failureCount, "warning"),
-                pill(summary.exceptionCount, "danger"),
-                if (status != null && status != EXPECTED_TO_PASS) badgeFor(status) else null
-            )
-        )*/
-
         if (summary.failureCount > 0 || summary.exceptionCount > 0) {
             examplesToFocus.add(card.attr("id"))
         }
@@ -89,16 +79,6 @@ internal class ExamExampleListener(private val skipDecider: SkipDecider) : Examp
 
     private fun removeConcordionExpectedToFailWarning(card: Html) {
         card.first("p")?.let { card.remove(it) }
-    }
-
-    private fun badgeFor(status: ImplementationStatus): Html {
-        return when (status) {
-            EXPECTED_TO_PASS -> pill(EXPECTED_TO_PASS.tag, "success")
-            EXPECTED_TO_FAIL -> pill(EXPECTED_TO_FAIL.tag, "warning")
-            UNIMPLEMENTED -> pill(UNIMPLEMENTED.tag, "primary")
-            IGNORED -> pill(IGNORED.tag, "primary")
-            else -> throw UnsupportedOperationException("Unsupported spec implementation status $status")
-        }
     }
 }
 

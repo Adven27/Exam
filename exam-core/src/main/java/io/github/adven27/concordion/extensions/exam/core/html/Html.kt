@@ -7,6 +7,7 @@ import org.concordion.api.CommandCall
 import org.concordion.api.Element
 import org.concordion.api.Evaluator
 import java.util.Optional
+import java.util.UUID
 
 const val ID = "id"
 const val ONCLICK = "onclick"
@@ -62,12 +63,8 @@ class Html(val el: Element) {
         return this
     }
 
-    infix fun collapse(target: String) = attrs(
-        "data-toggle" to "collapse",
-        "data-target" to "#$target",
-        "aria-expanded" to "true",
-        "aria-controls" to target
-    )
+    infix fun collapse(target: String) =
+        attrs("data-bs-toggle" to "collapse", "data-bs-target" to "#$target", "aria-expanded" to "true")
 
     infix fun css(classes: String): Html {
         el.addStyleClass(classes)
@@ -120,26 +117,24 @@ class Html(val el: Element) {
         return this
     }
 
-    fun panel(header: String): Html {
-        css("exam-example")
-        val id = header.hashCode().toString()
-        val title = tag("p")(
-            italic("", "class" to "far fa-caret-square-down"),
-            tag("span").text(" ")
-        ).css("bd-example-title text-muted fw-lighter")
-            .text(header)
-            .attrs("data-bs-toggle" to "collapse", "data-bs-target" to "#e$id", "aria-expanded" to "true")
-
-        val body = div().css("bd-example collapse show").attrs("id" to "e$id")
-        moveChildrenTo(body)
+    fun panel(header: String): Html = generateId().let {
         this(
-            title, body
-        )
-//        val footer = div().css("card-footer text-muted").collapse(id)
-//        el.appendChild(body.el)
-//        el.appendChild(footer.el())
-        return this
+            title(header, it),
+            body(this, it)
+        ).css("exam-example mb-3")
     }
+
+    private fun body(root: Html, id: String) = div()
+        .css("bd-example collapse show rounded bg-light bg-gradient")
+        .attrs("id" to id).apply {
+            root.moveChildrenTo(this)
+        }
+
+    private fun title(header: String, id: String) = tag("p")(
+        italic("", "class" to "far fa-caret-square-down"),
+        tag("span").text(" ")
+    ).css("bd-example-title text-muted fw-lighter")
+        .text(header) collapse id
 
     fun localName() = el.localName!!
 
@@ -307,7 +302,8 @@ fun paragraph(txt: String) = Html("p", txt)
 
 fun codeXml(text: String?) = pre(text ?: "") css "xml card"
 
-fun codeHighlight(lang: String, text: String?) = pre().attrs("class" to "rounded doc-code language-$lang")(code(text ?: ""))
+fun codeHighlight(lang: String, text: String?) =
+    pre().attrs("class" to "doc-code language-$lang")(code(text ?: ""))
 
 fun tag(tag: String) = Html(tag)
 
@@ -335,7 +331,7 @@ fun button(txt: String = "", vararg attrs: Pair<String, String>) =
 
 fun buttonCollapse(txt: String, target: String) = button(txt) collapse target
 
-fun divCollapse(txt: String, target: String) = div(txt) collapse target
+fun divCollapse(txt: String, target: String) = div(txt).css("far fa-caret-square-down") collapse target
 
 fun footerOf(card: Html) = Html(card.el.getChildElements("div")[2])
 
@@ -343,10 +339,8 @@ fun bodyOf(card: Html) = Html(card.el.getChildElements("div")[1])
 
 fun stat() = Html("small")
 
-fun CommandCall?.htmlCss(styleClass: String) {
-    this.html().css(styleClass)
-}
-
 fun CommandCall?.html() = Html(this!!.element)
 fun CommandCall?.takeAttr(name: String, def: String) = html().takeAwayAttr(name, def)
 fun CommandCall?.attr(name: String, def: String) = html().attr(name) ?: def
+
+fun generateId(): String = "e${UUID.randomUUID()}"

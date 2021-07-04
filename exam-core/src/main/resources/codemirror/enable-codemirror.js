@@ -1,4 +1,51 @@
 window.addEventListener('load', ready, false);
+document.addEventListener('DOMContentLoaded', function (event) {
+    anchors.options = {
+        placement: 'right',
+        visible: 'hover',
+        icon: '#'
+    };
+    anchors.add();
+    generateTableOfContents(anchors.elements)
+});
+
+function generateTableOfContents(els) {
+    let anchoredElText,
+        anchoredElHref,
+        ul = document.createElement('UL');
+
+    document.getElementById('table-of-contents').appendChild(ul);
+
+    for (let i = 0; i < els.length; i++) {
+        let el = els[i];
+        anchoredElText = el.textContent;
+        anchoredElHref = el.querySelector('.anchorjs-link').getAttribute('href');
+        if (el.tagName === 'H3' || el.tagName === 'H4') {
+            let nestedUl3 = document.createElement('UL');
+            if (el.tagName === 'H4') {
+                let nestedUl4 = document.createElement('UL');
+                addNavItem(nestedUl4, anchoredElHref, anchoredElText);
+                nestedUl3.appendChild(nestedUl4)
+                ul.appendChild(nestedUl3);
+            } else {
+                addNavItem(nestedUl3, anchoredElHref, anchoredElText);
+                ul.appendChild(nestedUl3);
+            }
+        } else {
+            addNavItem(ul, anchoredElHref, anchoredElText);
+        }
+    }
+}
+
+function addNavItem(ul, href, text) {
+    const listItem = document.createElement('LI'),
+        anchorItem = document.createElement('A');
+
+    anchorItem.appendChild(document.createTextNode(text));
+    anchorItem.href = href;
+    ul.appendChild(listItem);
+    listItem.appendChild(anchorItem);
+}
 
 function ready() {
     enableCodeMirror('.json:not(.rest-failure)', {name: 'javascript', json: true});
@@ -12,7 +59,7 @@ function ready() {
     enableCodeMirror('.htmlmixed:not(.rest-failure) .htmlmixed:not(.darcula)', 'text/html');
     enableCodeMirrorMerge('.htmlmixed.rest-failure', 'text/html');
     enableCodeMirrorHttp('.http:not(.rest-failure)');
-    document.querySelectorAll('.http, .text, .json, .xml, .htmlmixed').forEach(function(el) {
+    document.querySelectorAll('.http, .text, .json, .xml, .htmlmixed').forEach(function (el) {
         el.style.visibility = "visible";
     });
     window.dispatchEvent(new Event('resize'));

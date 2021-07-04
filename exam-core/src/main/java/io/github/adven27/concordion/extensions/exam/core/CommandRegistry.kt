@@ -20,8 +20,8 @@ class CommandRegistry(jsonUnitCfg: Configuration, nodeMatcher: NodeMatcher) {
     private val commands = mutableListOf(
         MainCommand(),
         GivenCommand(),
-        WhenCommand("div"),
-        ThenCommand("div"),
+        WhenCommand(),
+        ThenCommand(),
 
         ExamExampleCommand("div"),
         ExamBeforeExampleCommand("div"),

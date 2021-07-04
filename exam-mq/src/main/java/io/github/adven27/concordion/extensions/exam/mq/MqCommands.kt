@@ -14,6 +14,7 @@ import io.github.adven27.concordion.extensions.exam.core.html.Html
 import io.github.adven27.concordion.extensions.exam.core.html.caption
 import io.github.adven27.concordion.extensions.exam.core.html.div
 import io.github.adven27.concordion.extensions.exam.core.html.divCollapse
+import io.github.adven27.concordion.extensions.exam.core.html.generateId
 import io.github.adven27.concordion.extensions.exam.core.html.html
 import io.github.adven27.concordion.extensions.exam.core.html.italic
 import io.github.adven27.concordion.extensions.exam.core.html.pre
@@ -39,7 +40,6 @@ import org.concordion.api.Result.FAILURE
 import org.concordion.api.ResultRecorder
 import org.junit.Assert
 import org.xmlunit.diff.NodeMatcher
-import java.util.UUID
 
 interface MqTester {
     fun start()
@@ -435,7 +435,7 @@ private fun container(text: String, type: String, collapsable: Boolean) =
 
 private fun collapsed(container: Html) = td("class" to "exp-body")(
     div().style("position: relative")(
-        divCollapse("", container.attr("id").toString()).css("fa fa-expand collapsed"),
+        divCollapse("", container.attr("id").toString()),
         container
     )
 )
@@ -443,4 +443,4 @@ private fun collapsed(container: Html) = td("class" to "exp-body")(
 private fun fixedContainer(text: String, type: String) = td(text).css("$type exp-body")
 
 private fun collapsableContainer(text: String, type: String) =
-    div(text, "id" to UUID.randomUUID().toString()).css("$type file collapse")
+    div(text, "id" to generateId()).css("$type file collapse")

@@ -1,6 +1,7 @@
 package io.github.adven27.concordion.extensions.exam.db.commands
 
 import io.github.adven27.concordion.extensions.exam.core.fileExt
+import io.github.adven27.concordion.extensions.exam.core.html.code
 import io.github.adven27.concordion.extensions.exam.core.html.html
 import io.github.adven27.concordion.extensions.exam.core.html.pre
 import io.github.adven27.concordion.extensions.exam.db.DbPlugin
@@ -52,7 +53,7 @@ class DBShowCommand(name: String, tag: String, dbTester: DbTester, valuePrinter:
         val dataSet = conn.createDataSet(getAllDependentTables(conn, tableName))
         ByteArrayOutputStream().use {
             save(saveToResources, dataSet, it)
-            el(pre(it.toString("UTF-8")))
+            el(pre().attrs("class" to "doc-code language-xml")(code(it.toString("UTF-8"))))
         }
     }
 

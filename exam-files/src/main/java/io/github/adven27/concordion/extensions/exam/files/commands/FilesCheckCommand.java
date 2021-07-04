@@ -21,12 +21,13 @@ import org.xmlunit.diff.NodeMatcher;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import static io.github.adven27.concordion.extensions.exam.core.PlaceholdersResolver.resolveToObj;
 import static io.github.adven27.concordion.extensions.exam.core.html.HtmlBuilder.codeXml;
 import static io.github.adven27.concordion.extensions.exam.core.html.HtmlBuilder.div;
 import static io.github.adven27.concordion.extensions.exam.core.html.HtmlBuilder.divCollapse;
+import static io.github.adven27.concordion.extensions.exam.core.html.HtmlBuilder.generateId;
+import static io.github.adven27.concordion.extensions.exam.core.html.HtmlBuilder.html;
 import static io.github.adven27.concordion.extensions.exam.core.html.HtmlBuilder.table;
 import static io.github.adven27.concordion.extensions.exam.core.html.HtmlBuilder.td;
 import static io.github.adven27.concordion.extensions.exam.core.html.HtmlBuilder.tr;
@@ -53,7 +54,10 @@ public class FilesCheckCommand extends BaseCommand {
 
     @Override
     public void verify(CommandCall commandCall, Evaluator evaluator, ResultRecorder resultRecorder, Fixture fixture) {
-        Html root = table(commandCall.getElement());
+        Html root = html(commandCall).css("table-responsive");
+        Html table = table();
+        root.moveChildrenTo(table);
+        root.childs(table);
 
         final String path = root.takeAwayAttr("dir", evaluator);
         if (path != null) {
@@ -66,10 +70,10 @@ public class FilesCheckCommand extends BaseCommand {
                 ? new ArrayList<>()
                 : new ArrayList<>(asList(names));
 
-            root.childs(flCaption(evalPath));
-            addHeader(root, HEADER, FILE_CONTENT);
+            table.childs(flCaption(evalPath));
+            addHeader(table, HEADER, FILE_CONTENT);
             boolean empty = true;
-            for (Html f : root.childs()) {
+            for (Html f : table.childs()) {
                 if ("file".equals(f.localName())) {
                     final FilesLoader.FileTag fileTag = filesLoader.readFileTag(f, evaluator);
                     final Object resolvedName = resolveToObj(fileTag.getName(), evaluator);
@@ -87,12 +91,12 @@ public class FilesCheckCommand extends BaseCommand {
                         surplusFiles.remove(expectedName);
 
                         if (fileTag.getContent() == null) {
-                            String id = UUID.randomUUID().toString();
+                            String id = generateId();
                             final String content = filesLoader.readFile(evalPath, expectedName);
                             if (!content.isEmpty()) {
                                 pre = div().style("position: relative").childs(
-                                    divCollapse("", id).css("fa fa-expand collapsed"),
-                                    div(to("id", id)).css("file collapse").childs(
+                                    divCollapse("", id),
+                                    div(to("id", id)).css("collapse show").childs(
                                         pre.text(content)
                                     )
                                 );
@@ -106,7 +110,7 @@ public class FilesCheckCommand extends BaseCommand {
                             );
                         }
                     }
-                    root.childs(
+                    table.childs(
                         tr().childs(
                             fileNameTD,
                             td().childs(
@@ -126,21 +130,13 @@ public class FilesCheckCommand extends BaseCommand {
                         codeXml(filesLoader.readFile(evalPath, file))
                     )
                 );
-                root.childs(tr);
+                table.childs(tr);
                 announceFailure(td.el(), null, file);
             }
             if (empty) {
-                addRow(root, EMPTY, "");
+                addRow(table, EMPTY, "");
             }
         }
-    }
-
-    private Html toPre(FilesLoader.FileTag fileTag, Html pre) {
-        String content = fileTag.getContent();
-        if (content != null) {
-            pre.text(content);
-        }
-        return pre;
     }
 
     private void checkContent(String path, String expected, ResultRecorder resultRecorder, Element element) {

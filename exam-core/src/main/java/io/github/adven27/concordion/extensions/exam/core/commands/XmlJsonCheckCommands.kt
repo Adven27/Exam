@@ -6,6 +6,7 @@ import io.github.adven27.concordion.extensions.exam.core.html.CLASS
 import io.github.adven27.concordion.extensions.exam.core.html.Html
 import io.github.adven27.concordion.extensions.exam.core.html.div
 import io.github.adven27.concordion.extensions.exam.core.html.divCollapse
+import io.github.adven27.concordion.extensions.exam.core.html.generateId
 import io.github.adven27.concordion.extensions.exam.core.html.html
 import io.github.adven27.concordion.extensions.exam.core.html.pre
 import io.github.adven27.concordion.extensions.exam.core.html.table
@@ -25,7 +26,6 @@ import org.concordion.api.Evaluator
 import org.concordion.api.Fixture
 import org.concordion.api.ResultRecorder
 import org.xmlunit.diff.NodeMatcher
-import java.util.UUID
 
 class XmlCheckCommand(name: String, tag: String, private val cfg: Configuration, private val nodeMatcher: NodeMatcher) :
     ExamVerifyCommand(name, tag, ExamResultRenderer()) {
@@ -115,14 +115,14 @@ private fun fixedContainer(root: Html, type: String): Html {
 }
 
 private fun collapsableContainer(root: Html, type: String): Html {
-    val id = UUID.randomUUID().toString()
+    val id = generateId()
     val container = div("id" to id).css("$type file collapse")
     root.removeChildren()(
         table()(
             tr()(
                 td("class" to "exp-body")(
                     div().style("position: relative")(
-                        divCollapse("", id).css("fa fa-expand collapsed"),
+                        divCollapse("", id),
                         container
                     )
                 )

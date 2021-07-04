@@ -15,8 +15,6 @@ import org.dbunit.dataset.datatype.DataType
 import org.dbunit.operation.CompositeOperation
 import org.dbunit.operation.DatabaseOperation
 import org.slf4j.LoggerFactory
-import java.util.ArrayList
-import java.util.HashMap
 import java.util.logging.Level
 import java.util.logging.Logger
 import java.util.regex.Pattern

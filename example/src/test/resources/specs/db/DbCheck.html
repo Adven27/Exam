@@ -1,0 +1,348 @@
+<html xmlns:e="http://exam.extension.io" xmlns:cc="http://www.concordion.org/2007/concordion">
+<body>
+<e:main>
+    <h1>db-check</h1>
+    <p class="lead">Creates <a href="http://dbunit.sourceforge.net/">DbUnit</a> dataset for specified table and verifies it against a database</p>
+
+    <h2>Overview</h2>
+
+    <e:set var="cmd" value="e:db-check"/>
+    <e:set var="cmdExample" silent="true"><![CDATA[<e:db-check caption="optional caption" table="ANDROIDS_TABLE" cols="id, name" separator=",">
+    <e:row>1, Adam</e:row>
+    <e:row>2, Bob</e:row>
+</e:db-check> ]]> </e:set>
+    <e:include from="/specs/db/includes/usage.xml"/>
+
+    <h3>Attributes</h3>
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr><th>attribute</th><th>desc</th><th>example</th></tr>
+            </thead>
+            <e:include from="/specs/db/includes/attr-table.xml"/>
+            <e:include from="/specs/db/includes/attr-cols.xml"/>
+            <e:include from="/specs/db/includes/attr-separator.xml"/>
+            <e:include from="/specs/db/includes/attr-where.xml"/>
+            <e:include from="/specs/db/includes/attr-where.xml"/>
+            <e:include from="/specs/db/includes/attr-caption.xml"/>
+            <tr>
+                <td><code>orderBy</code></td>
+                <td>List of columns to sort records before verifying</td>
+                <td><var>Optional</var>. <var>Default: columns from <code>cols</code> attribute in order of declaration</var><pre class="doc-code language-json"><code>orderBy="name, height"</code></pre></td>
+            </tr>
+            <tr>
+                <td><code>ignoreRowsBefore</code></td>
+                <td>Row number from expected dataset before which rows will be excluded from the verification</td>
+                <td><var>Optional</var>. <var>Default: 1</var><pre class="doc-code language-json"><code>ignoreRowsBefore="2"</code></pre></td>
+            </tr>
+            <tr>
+                <td><code>ignoreRowsAfter</code></td>
+                <td>Row number from expected dataset after which rows will be excluded from the verification</td>
+                <td><var>Optional</var>. <var>Default: 0 (disabled)</var><pre class="doc-code language-json"><code>ignoreRowsAfter="2"</code></pre></td>
+            </tr>
+            <e:include from="/specs/db/includes/attr-awaitAtMostSec.xml"/>
+            <e:include from="/specs/db/includes/attr-awaitPollDelayMillis.xml"/>
+            <e:include from="/specs/db/includes/attr-awaitPollIntervalMillis.xml"/>
+        </table>
+    </div>
+    <e:include from="/specs/db/includes/await-footnote.xml"/>
+
+    <p>
+        Each dataset record will be zipped from cols and rows declarations (hence order of cols and order of values inside rows should match).
+    </p>
+    <e:example name="Dummy example">
+        <e:given>
+            Table has the following records:
+            <e:db-set table="ANDROIDS_TABLE" cols="id, name, height, manufactured">
+                <e:row>1, Adam, 170, {{today}}</e:row>
+                <e:row>2, Bob, 200, {{today}}</e:row>
+            </e:db-set>
+        </e:given>
+        <e:then>
+            <e:db-check table="ANDROIDS_TABLE" cols="id, name, height, manufactured" print="true">
+                <e:row>1, Adam, 170, {{today}}</e:row>
+                <e:row>2, Bob, 200, {{today}}</e:row>
+            </e:db-check>
+        </e:then>
+    </e:example>
+
+    <p>
+        If all rows should have the same value declaration for specific column, then value assignment may be inlined
+        with column declaration. Values declaration for such columns should be omitted in <code>e:row</code> tag.
+    </p>
+    <p>
+        The next example produces the same result as the previous one:
+    </p>
+    <e:example name="Declaration inlining">
+        <e:given>
+            Table has the following records:
+            <e:db-set table="ANDROIDS_TABLE" cols="id=1..10, name, height, manufactured={{today}}">
+                <e:row>Adam, 170</e:row>
+                <e:row> Bob, 200</e:row>
+            </e:db-set>
+        </e:given>
+        <e:then>
+            <e:db-check table="ANDROIDS_TABLE" cols="id=1..2, name, height, manufactured={{today}}" print="true">
+                <e:row>Adam, 170</e:row>
+                <e:row> Bob, 200</e:row>
+            </e:db-check>
+        </e:then>
+    </e:example>
+
+    <h2>Examples</h2>
+
+    <h3>Value declaration</h3>
+    <p>
+        Value can be declared as <strong>simple text</strong>, <strong>Handlebar helpers invocation</strong> or <strong>ranges</strong>.
+    </p>
+    <e:example name="Value declaration">
+        <e:given>
+            Table has the following records:
+            <e:db-set table="ANDROIDS_TABLE" cols="id=1..2, name, weight, manufactured={{today minus='1 d'}}">
+                <e:row>Adam, 70</e:row>
+                <e:row> Bob, 90</e:row>
+            </e:db-set>
+        </e:given>
+        <e:then>
+            <ul>
+                <li><code>id</code> value is declared as <strong>range</strong> and will be assigned from 1 to 10 in circle</li>
+                <li><code>name</code> and <code>weight</code> values are declared as <strong>simple text</strong> values (value will be casted to column type be DbUnit)</li>
+                <li><code>manufactured</code> value is declared as <strong>Handlebar helpers invocation</strong> and will be assigned to result of invocation (which will be casted to column type by DbUnit)</li>
+            </ul>
+            <e:db-check table="ANDROIDS_TABLE" cols="id=1..10, name, weight, manufactured={{today minus='1 d'}}" print="true">
+                <e:row>Adam, 70</e:row>
+                <e:row>Bob , 90</e:row>
+            </e:db-check>
+        </e:then>
+    </e:example>
+
+    <h3>Trimmed spaces</h3>
+    <p>
+        Values declarations a trimmed by default, if there is a need to preserve spaces, then declaration should be surrounded by <code>'</code>
+    </p>
+    <e:example name="Trimmed spaces">
+        <e:given>
+            Table has the following records:
+            <ul>
+                <li>First <code>name</code> equals to [<var> A </var>] (surrounded by spaces)</li>
+                <li>Second <code>name</code> equals to just [<var>A</var>]</li>
+            </ul>
+            <e:db-set table="ANDROIDS_TABLE" cols="id=1..10, name, weight">
+                <e:row> ' A ' , 70</e:row>
+                <e:row> A , 90</e:row>
+            </e:db-set>
+        </e:given>
+        <e:then>
+            <e:db-check table="ANDROIDS_TABLE" cols="name, weight" print="true">
+                <e:row> ' A ' , 70</e:row>
+                <e:row> A , 90</e:row>
+            </e:db-check>
+        </e:then>
+    </e:example>
+
+    <h3>Values with commas</h3>
+    <p>
+        Comma is used as default values separator, so using it as part as the value declaration will break parsing.
+        To workaround this custom value separator may be set by <code>separator</code> attribute.
+    </p>
+    <e:example name="Values with commas">
+        <e:given>
+            Table has record where <var>name</var> = <var>a, b</var>
+            <e:db-set table="ANDROIDS_TABLE" cols="id=1..10, name, weight" separator="|">
+                <e:row> a , b | 70</e:row>
+            </e:db-set>
+        </e:given>
+        <e:then>
+            <e:db-check table="ANDROIDS_TABLE" cols="id=1..10, name, weight" separator="|" print="true">
+                <e:row> a , b | 70</e:row>
+            </e:db-check>
+        </e:then>
+    </e:example>
+
+    <h3>Verifying a subset of data</h3>
+    <p>
+       To verify only a subset of actual data satisfying specific condition the <code>where</code> attribute can be used
+        to provide filter in database-specific SQL format. The provided attribute value will be used
+        as-is in SQL <strong>SELECT</strong> expression in <strong>WHERE</strong> clause.
+    </p>
+    <e:example name="Verifying subset">
+        <e:given>
+            Table has the following records:
+            <e:db-set table="ANDROIDS_TABLE" cols="id=1..10, name, height">
+                <e:row>Adam, 170</e:row>
+                <e:row>Adam, 130</e:row>
+                <e:row> Bob, 200</e:row>
+            </e:db-set>
+        </e:given>
+        <e:then>
+            <e:db-check table="ANDROIDS_TABLE" cols="name, height" where="name='Adam' and height=170" print="true">
+                <e:row>Adam, 170</e:row>
+            </e:db-check>
+        </e:then>
+    </e:example>
+
+    <h3>Verifying table is empty</h3>
+    <p>
+        To verify that table is empty an empty <code>e:db-check</code> tag can be used with single <code>table</code> attribute.
+    </p>
+    <e:example name="Verifying empty">
+        <e:given>
+            Empty table:
+            <e:db-set table="ANDROIDS_TABLE"/>
+        </e:given>
+        <e:then>
+            <e:db-check table="ANDROIDS_TABLE" print="true"/>
+        </e:then>
+    </e:example>
+
+    <h2>Negative cases examples</h2>
+
+    <h3>Missing record</h3>
+    <e:example name="Missing record" status="ExpectedToFail">
+        <e:given>
+            Empty table:
+            <e:db-set table="ANDROIDS_TABLE"/>
+        </e:given>
+        <e:then>
+            Expected 1 record:
+            <e:db-check table="ANDROIDS_TABLE" cols="name" print="true">
+                <e:row>Adam</e:row>
+            </e:db-check>
+        </e:then>
+    </e:example>
+
+    <h3>Surplus record</h3>
+    <e:example name="Surplus record" status="ExpectedToFail">
+        <e:given>
+            Table has the following records:
+            <e:db-set table="ANDROIDS_TABLE" cols="id=1, name">
+                <e:row>Adam</e:row>
+            </e:db-set>
+        </e:given>
+        <e:then>
+            Expected empty table:
+            <e:db-check table="ANDROIDS_TABLE" print="true"/>
+        </e:then>
+    </e:example>
+
+    <h3>Wrong fields</h3>
+    <e:example name="Wrong fields" status="ExpectedToFail">
+        <e:given>
+            Table has the following records:
+            <e:db-set table="ANDROIDS_TABLE" cols="id=1..10, name, height, manufactured">
+                <e:row>Adam, 10, 2021-01-01</e:row>
+                <e:row> Bob, 20, 2021-02-02</e:row>
+                <e:row>Carl, 30, 2021-03-03</e:row>
+            </e:db-set>
+        </e:given>
+        <e:then>
+            Expected table:
+            <e:db-check table="ANDROIDS_TABLE" cols="name, height, manufactured" print="true">
+                <!--all correct-->
+                <e:row>Adam, 10, 2021-01-01</e:row>
+                <!--wrong manufactured-->
+                <e:row> Bob, 20, 2021-01-01</e:row>
+                <!--wrong height and manufactured-->
+                <e:row>Carl, 10, 2021-01-01</e:row>
+            </e:db-check>
+        </e:then>
+    </e:example>
+
+<!--    <div>
+        <e:summary/>
+        <e:example name="Using of vars and EL">
+            <e:given print="true">
+                <span>Concordion variable age = <span c:set="#age">99</span></span>
+                <e:db-set table="PERSON" cols="NAME, AGE, BIRTHDAY, ID=1..10">
+                    <row>Andrew                                     , 30      , {{now "yyyy-MM-dd"}}</row>
+                    <row>Carl                                       , {{age}} , {{now "yyyy-MM-dd" plus="day 1"}}</row>
+                    <row>' untrimmed string with commas, inside it ', {{NULL}}, {{date "1951-05-14"}}</row>
+                </e:db-set>
+            </e:given>
+            <e:then print="true">
+                <e:db-check table="PERSON" cols="NAME, AGE, BIRTHDAY">
+                    <row>Andrew                                     , 30      , {{now "yyyy-MM-dd"}}</row>
+                    <row>  Carl                                     , {{age}} , {{now "yyyy-MM-dd" plus="day 1"}}</row>
+                    <row>' untrimmed string with commas, inside it ', {{NULL}}, {{dateFormat (date "1951-05-14") "yyyy-MM-dd"}}</row>
+                </e:db-check>
+            </e:then>
+        </e:example>
+        <e:example name="Check within tolerance of expected timestamp" status="ExpectedToFail">
+            <e:given print="true">
+                <e:db-set table="PERSON" cols="NAME, BIRTHDAY, ID=1..10">
+                    <row>withinNow pass, {{now plus="5 min"}}</row>
+                    <row>withinNow fail, {{now plus="5 min"}}</row>
+                    <row>within pass   , {{now}}</row>
+                </e:db-set>
+            </e:given>
+            <e:then print="true">
+                <e:db-check table="PERSON" cols="NAME, BIRTHDAY">
+                    <row>withinNow pass, !{within 10min}</row>
+                    <row>withinNow fail, !{within 1min}</row>
+                    <row>within pass   , !{within 25hours}{{now plus="1 day"}}</row>
+                </e:db-check>
+            </e:then>
+        </e:example>
+        <e:example name="Check with regex" status="ExpectedToFail">
+            <e:given print="true">
+                <e:db-set table="PERSON" cols="NAME, AGE, ID=1..10">
+                    <row>'', 30</row>
+                </e:db-set>
+            </e:given>
+            <e:then print="true">
+                <p>Check that NAME and BIRTHDAY are "NOT NULL" and AGE is a digit:</p>
+                <e:db-check table="PERSON" cols="NAME, AGE, BIRTHDAY">
+                    <row>!{regex}.*, !{number}, !{notNull}</row>
+                </e:db-check>
+            </e:then>
+        </e:example>
+        <e:example name="Check with order by" status="ExpectedToFail">
+            <e:given print="true">
+                <e:db-set table="PERSON" cols="NAME, AGE, ID=1..10">
+                    <row>A, 2</row>
+                    <row>B, 1</row>
+                </e:db-set>
+            </e:given>
+            <e:then print="true">
+                <p>
+                    By default, db-check compares datasets sorted by all columns from "cols" attribute.
+                    This works fine in most cases. However in case of using "!{regex}" pattern as field value,
+                    sorting of actual and expected datasets may give different results and false-negative fails like this:
+                </p>
+                <e:db-check table="PERSON" cols="NAME, AGE">
+                    <row>!{regex}.*, 1</row>
+                    <row>!{regex}.*, 2</row>
+                </e:db-check>
+                <p>
+                    In order to fix this, order and columns for sorting may be set explicitly:
+                </p>
+                <e:db-check table="PERSON" cols="NAME, AGE" orderBy="AGE, NAME">
+                    <row>!{regex}.*, 1</row>
+                    <row>!{regex}.*, 2</row>
+                </e:db-check>
+            </e:then>
+        </e:example>
+        <e:example name="Date and Timestamp">
+            <e:given print="true">
+                <e:set var="beforePrev" value="{{now minus='2 d'}}"/>
+                <e:set var="prev" value="{{now minus='1 d'}}"/>
+                <e:set var="currentTime" value="{{now}}"/>
+                <e:db-set table="TYPES" cols="DATE_TYPE, TIMESTAMP_TYPE, DATETIME_TYPE, ID=1..10">
+                    <row>{{beforePrev}}, {{currentTime}}, {{currentTime}}</row>
+                    <row>{{prev}}, {{currentTime}}, {{currentTime}}</row>
+                    <row>{{currentTime}}, {{currentTime}}, {{currentTime}}</row>
+                </e:db-set>
+            </e:given>
+            <e:then print="true">
+                <e:db-check table="TYPES" cols="ID=1..10, DATE_TYPE, TIMESTAMP_TYPE, DATETIME_TYPE" orderBy="DATE_TYPE">
+                    <row>  !{within 3d}{{now}}, !{within 5s}{{now}}, !{within 1s}{{currentTime}}</row>
+                    <row>{{today minus="1 d"}},     {{currentTime}}, {{currentTime}}</row>
+                    <row>            {{today}}, !{within 5s}{{now}}, !{within 1s}{{currentTime}}</row>
+                </e:db-check>
+            </e:then>
+        </e:example>
+    </div>-->
+
+</e:main>
+</body>
+</html>

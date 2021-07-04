@@ -1,0 +1,29 @@
+<html xmlns:e="http://exam.extension.io">
+<body>
+<e:main>
+    <h1>DbPlugin</h1>
+    <p class="lead">Configures a database connections and other options of <code>e:db-...</code> commands</p>
+    <h2>Overview</h2>
+    <h3>Usage</h3>
+
+    <p>
+        Basic configuration:
+        <pre>src/test/java/specs/Specs.java</pre>
+        <pre class="doc-code"><code>public class Specs extends AbstractSpecs {
+    @Override
+    protected ExamExtension init() {
+        return new ExamExtension(
+            new DbPlugin(
+                    "org.postgresql.Driver",                     // driver class
+                    "jdbc:postgresql://localhost:5432/postgres", // jdbc url
+                    "postgres",                                  // user
+                    "postgres"                                   // password
+            )
+        );
+    }
+}</code></pre>
+    </p>
+
+</e:main>
+</body>
+</html>

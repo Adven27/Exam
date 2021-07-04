@@ -1,0 +1,60 @@
+<html xmlns:e="http://exam.extension.io" xmlns:cc="http://www.concordion.org/2007/concordion">
+<body>
+<e:main>
+    <h1>db-verify</h1>
+    <p class="lead">Applies specified <a href="http://dbunit.sourceforge.net/">DbUnit</a> datasets to database</p>
+
+    <h2>Overview</h2>
+
+    <e:set var="cmd" value="e:db-verify"/>
+    <e:set var="cmdExample" silent="true"> <![CDATA[ <e:db-verify datasets='/db/adam.xml, /db/bob.json'/> ]]> </e:set>
+    <e:include from="/specs/db/includes/usage.xml"/>
+
+    <h3>Attributes</h3>
+
+    <div class="table-responsive">
+        <table class="table">
+            <thead><tr><th>attribute</th><th>desc</th><th>example</th></tr></thead>
+            <e:include from="/specs/db/includes/attr-datasets.xml"/>
+            <e:include from="/specs/db/includes/attr-dir.xml"/>
+            <e:include from="/specs/db/includes/attr-ds.xml"/>
+            <tr>
+                <td><code>orderBy</code></td>
+                <td>List of columns to sort records before verifying</td>
+                <td><var>Optional</var>. <var>Default: -</var><pre class="doc-code language-json"><code>orderBy="person_fields.value, person.birthday"</code></pre></td>
+            </tr>
+            <e:include from="/specs/db/includes/attr-awaitAtMostSec.xml"/>
+            <e:include from="/specs/db/includes/attr-awaitPollDelayMillis.xml"/>
+            <e:include from="/specs/db/includes/attr-awaitPollIntervalMillis.xml"/>
+        </table>
+    </div>
+    <e:include from="/specs/db/includes/await-footnote.xml"/>
+
+    <h2>Examples</h2>
+
+    <h3>Basic example</h3>
+    <e:example name="Basic example">
+        <e:given>
+            Empty table:
+            <e:db-set table="PERSON"/>
+            And following dataset files:
+            <e:fl-check dir="dir">
+                <e:file name="adam.xml"/>
+                <e:file name="bob.json"/>
+                <e:file name="carl/table-ordering.txt"/>
+                <e:file name="carl/person.csv"/>
+                <e:file name="carl/person_fields.csv"/>
+            </e:fl-check>
+        </e:given>
+        <e:when>
+            <e:db-execute dir="/specs/db/data/" datasets="adam.xml, bob.json, carl/person.csv" print="true"/>
+        </e:when>
+        <e:then>
+            Datasets were applied to database:
+            <e:db-show table="PERSON"/>
+        </e:then>
+    </e:example>
+
+</e:main>
+</body>
+</html>
