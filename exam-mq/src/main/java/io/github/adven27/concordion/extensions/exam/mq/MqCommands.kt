@@ -443,7 +443,7 @@ private fun container(text: String, type: String, collapsable: Boolean) =
 
 private fun collapsed(container: Html) = td("class" to "exp-body")(
     div().style("position: relative")(
-        divCollapse("", container.attr("id").toString()),
+        divCollapse("", container.attr("id").toString()).css("default-collapsed"),
         container
     )
 )
@@ -451,4 +451,4 @@ private fun collapsed(container: Html) = td("class" to "exp-body")(
 private fun fixedContainer(text: String, type: String) = td(text).css("$type exp-body")
 
 private fun collapsableContainer(text: String, type: String) =
-    div(text, "id" to generateId()).css("$type file collapse")
+    div(text, "id" to generateId()).css("$type file collapse show")

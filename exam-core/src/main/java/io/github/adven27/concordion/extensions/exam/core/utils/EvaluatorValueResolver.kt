@@ -1,9 +1,7 @@
 package io.github.adven27.concordion.extensions.exam.core.utils
 
 import com.github.jknack.handlebars.ValueResolver
-import ognl.NoSuchPropertyException
 import org.concordion.api.Evaluator
-import org.concordion.internal.InvalidExpressionException
 
 enum class EvaluatorValueResolver : ValueResolver {
     INSTANCE;
@@ -16,12 +14,7 @@ enum class EvaluatorValueResolver : ValueResolver {
         return value ?: ValueResolver.UNRESOLVED
     }
 
-    private fun Evaluator.tryEval(name: String): Any? = try {
-        this.evaluate(name)
-    } catch (e: InvalidExpressionException) {
-        if (e.cause is NoSuchPropertyException) null
-        else throw e
-    }
+    private fun Evaluator.tryEval(name: String): Any? = this.evaluate(name)
 
     override fun resolve(context: Any): Any = context as? Evaluator ?: ValueResolver.UNRESOLVED
 

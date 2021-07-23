@@ -62,6 +62,9 @@ function ready() {
     document.querySelectorAll('.http, .text, .json, .xml, .htmlmixed').forEach(function (el) {
         el.style.visibility = "visible";
     });
+    document.querySelectorAll('.default-collapsed').forEach(function (el) {
+        el.click();
+    });
     window.dispatchEvent(new Event('resize'));
     hljs.highlightAll();
 }

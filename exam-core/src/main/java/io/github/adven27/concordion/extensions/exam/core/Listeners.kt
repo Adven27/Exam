@@ -157,9 +157,17 @@ internal class ExamDocumentParsingListener(private val registry: CommandRegistry
 
     private fun log(elem: Element) {
         if ((elem.getAttributeValue("print") ?: "false").toBoolean()) {
-            ConcordionElement(elem).prependChild(
-                codeHighlight(
-                    "xml",
+            (elem.parent as Element).also {
+                it.insertChild(codeOf(elem), it.indexOf(elem))
+            }
+        }
+    }
+
+    private fun codeOf(elem: Element) = Element("pre").apply {
+        addAttribute(Attribute("class", "doc-code language-xml mt-2"))
+        appendChild(
+            Element("code").apply {
+                appendChild(
                     Document(elem.copy() as Element).prettyXml()
                         .replace(" xmlns:e=\"http://exam.extension.io\"", "")
                         .replace(" print=\"true\"", "")
@@ -167,9 +175,9 @@ internal class ExamDocumentParsingListener(private val registry: CommandRegistry
                         .filterNot { it.startsWith("<?xml version") }
                         .filterNot { it.isBlank() }
                         .joinToString(separator = "\n")
-                ).css("mt-2").el()
-            )
-        }
+                )
+            }
+        )
     }
 }
 
