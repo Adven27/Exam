@@ -14,7 +14,6 @@ import io.github.adven27.concordion.extensions.exam.db.commands.DataSetVerifyCom
 import io.github.adven27.concordion.extensions.exam.db.commands.RegexAndWithinAwareValueComparer
 import org.concordion.api.Element
 import org.dbunit.assertion.DiffCollectingFailureHandler
-import org.dbunit.database.DatabaseConfig
 import org.dbunit.dataset.Column
 import org.dbunit.dataset.Columns.findColumnsByName
 import org.dbunit.dataset.ITable
@@ -26,7 +25,7 @@ import kotlin.collections.component2
 import kotlin.collections.set
 
 class DbPlugin @JvmOverloads constructor(
-    private val dbTester: DbTester,
+    val dbTester: DbTester,
     private val connectOnDemand: Boolean = true,
     private val valuePrinter: ValuePrinter = ValuePrinter.Simple(),
     private val allowedSeedStrategies: List<SeedStrategy> = SeedStrategy.values().toList(),
@@ -155,7 +154,7 @@ class DbPlugin @JvmOverloads constructor(
 }
 
 data class DbUnitConfig @JvmOverloads constructor(
-    val databaseConfigProperties: Map<String, Any?> = mapOf(DatabaseConfig.FEATURE_ALLOW_EMPTY_FIELDS to true),
+    val databaseConfigProperties: Map<String, Any?> = mapOf(),
     val valueComparer: RegexAndWithinAwareValueComparer = RegexAndWithinAwareValueComparer(),
     val columnValueComparers: Map<String, RegexAndWithinAwareValueComparer> = emptyMap(),
     val overrideRowSortingComparer: RowComparator = RowComparator(),
@@ -164,7 +163,7 @@ data class DbUnitConfig @JvmOverloads constructor(
 ) {
     @Suppress("unused")
     class Builder {
-        var databaseConfigProperties: Map<String, Any?> = mapOf(DatabaseConfig.FEATURE_ALLOW_EMPTY_FIELDS to true)
+        var databaseConfigProperties: Map<String, Any?> = mapOf()
         var valueComparer: RegexAndWithinAwareValueComparer = RegexAndWithinAwareValueComparer()
         var columnValueComparers: Map<String, RegexAndWithinAwareValueComparer> = emptyMap()
         var overrideRowSortingComparer: RowComparator = RowComparator()

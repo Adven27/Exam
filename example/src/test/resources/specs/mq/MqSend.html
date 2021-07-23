@@ -1,4 +1,4 @@
-<html xmlns:e="http://exam.extension.io">
+<html xmlns:e="http://exam.extension.io" xmlns:cc="http://www.concordion.org/2007/concordion">
 <body>
 <e:main>
 <h1>mq-send</h1>
@@ -97,7 +97,7 @@
 <h3>Specifying message headers</h3>
 <p>
     The <code>headers</code> attribute could be used to pass desired message headers to the <code>MqTester</code> implementation.
-    <strong>Propagating</strong> this headers to the yactual message is the <strong>MqTester implementation responsibility</strong>.
+    <strong>Propagating</strong> this headers to the actual message is the <strong>MqTester implementation responsibility</strong>.
 </p>
 <e:example name="Message headers">
     <e:when>
@@ -111,8 +111,11 @@
 </e:example>
 
 <h3>Pretty-printing</h3>
+
+<h2>Collapsable view</h2>
+
 <p>
-    Big messages may be collapsed in report with help of the <code>collapsable</code> attribute.
+    Big messages may be collapsed in report via the <code>collapsable</code> attribute.
 </p>
 <e:example name="collapsable messages">
     <e:then>
@@ -120,6 +123,8 @@
         <e:mq-check name="myQueue" from="/data/mq/big.json" collapsable="true"/>
     </e:then>
 </e:example>
+
+<h2>Highlighting</h2>
 
 <p>
     To hint report about the message format the <code>formatAs</code> attribute can be used.

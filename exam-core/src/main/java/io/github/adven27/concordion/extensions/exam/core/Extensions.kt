@@ -84,7 +84,7 @@ class BootstrapExtension : ConcordionExtension {
         private const val BOOTSTRAP_SIDEBAR = "/bootstrap/sidebar.js"
         private const val DOC_CSS = "/bootstrap/doc.min.css"
         private const val DOC_JS = "/bootstrap/doc.min.js"
-        private const val HIGHLIGHT_CSS = "/highlight/rainbow.min.css"
+        private const val HIGHLIGHT_CSS = "/highlight/stackoverflow-light.min.css"
         private const val HIGHLIGHT_JS = "/highlight/highlight.min.js"
         private const val BOOTSTRAP_CSS = "/bootstrap/bootstrap.min.css"
         private const val BOOTSTRAP_BUNDLE_MAP = "/bootstrap/bootstrap.bundle.min.js.map"

@@ -14,11 +14,16 @@ import org.concordion.api.Fixture
 import org.concordion.api.ResultRecorder
 
 class MainCommand : ExamCommand("main", "div") {
+    companion object {
+        const val CONTENT_ID = "content"
+        const val MENU_ID = "table-of-contents"
+    }
+
     override fun setUp(cmd: CommandCall?, evaluator: Evaluator?, resultRecorder: ResultRecorder?, fixture: Fixture) {
-        val div1 = div("class" to "bd-content ps-lg-4")
+        val div1 = div("class" to "bd-content ps-lg-4", "id" to CONTENT_ID)
         val nav = div("class" to "bd-toc mt-4 mb-5 my-md-0 ps-xl-3 mb-lg-5 text-muted")(
             tag("strong").css("d-block h6 my-2 pb-2 border-bottom").text("On this page"),
-            tag("nav").attrs("id" to "table-of-contents")
+            tag("nav").attrs("id" to MENU_ID)
         )
         val div = div("class" to "container-xxl my-md-4 bd-layout")(
             Html("main").css("bd-main order-1")(

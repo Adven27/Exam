@@ -121,7 +121,7 @@ class Html(val el: Element) {
         this(
             title(header, it),
             body(this, it)
-        ).css("exam-example mb-3")
+        ).css("exam-example mb-3").attrs("data-type" to "example")
     }
 
     private fun body(root: Html, id: String) = div()
@@ -132,9 +132,9 @@ class Html(val el: Element) {
 
     private fun title(header: String, id: String) = tag("p")(
         italic("", "class" to "far fa-caret-square-down"),
-        tag("span").text(" ")
-    ).css("bd-example-title text-muted fw-lighter")
-        .text(header) collapse id
+        tag("span").text(" "),
+        tag("a").text(header).css("position-relative example-title"),
+    ).css("bd-example-title text-muted fw-lighter") collapse id
 
     fun localName() = el.localName!!
 
@@ -172,6 +172,11 @@ class Html(val el: Element) {
         return if (first == null) null else Html(first)
     }
 
+    fun last(tag: String): Html? {
+        val last = el.childElements.lastOrNull { it.localName == tag }
+        return if (last == null) null else Html(last)
+    }
+
     fun firstOptional(tag: String): Optional<Html> = Optional.ofNullable(first(tag))
 
     fun all(tag: String): Collection<Html> {
@@ -203,6 +208,16 @@ class Html(val el: Element) {
 
     fun span(txt: String? = null, vararg attrs: Pair<String, String>) {
         (Html("span", txt, *attrs))
+    }
+
+    fun removeClass(name: String): Html {
+        el.addAttribute(
+            "class",
+            el.getAttributeValue("class").let {
+                it.split(" ").filterNot { it == name }.joinToString(" ")
+            }
+        )
+        return this
     }
 
     override fun toString(): String {

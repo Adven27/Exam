@@ -26,37 +26,30 @@
 
     <h4>Set up queue</h4>
 
-    <table class="table table-sm table-borderless" style="table-layout: fixed;">
-        <tr>
-            <td style="width: 100px;"> <code><a cc:run="concordion" href="mq/MqSend.html">mq-send</a></code> </td>
-            <td> <p>Sends message to specified queue</p> </td>
-        </tr>
-        <tr>
-            <td colspan="2"> <pre class="doc-code language-xml"><code> <![CDATA[<e:mq-send name="someQueue" from="/data/message.json"/>]]> </code></pre> </td>
-        </tr>
-
-        <tr>
-            <td> <code><a cc:run="concordion" href="db/DbClean.html">mq-purge</a></code> </td>
-            <td> <p>Purges specified queue</p> </td>
-        </tr>
-        <tr>
-            <td colspan="2"> <pre class="doc-code language-xml"><code><![CDATA[<e:mq-purge name="someQueue"/>]]></code></pre> </td>
-        </tr>
-    </table>
+    <dl>
+        <dt><code><a cc:run="concordion" href="mq/MqSend.html">mq-send</a></code></dt>
+        <dd>
+            <p>Sends message to specified queue</p>
+            <pre class="doc-code language-xml"><code> <![CDATA[<e:mq-send name="someQueue" from="/data/message.json"/>]]> </code></pre>
+        </dd>
+        <dt><code><a cc:run="concordion" href="mq/MqPurge.html">mq-purge</a></code></dt>
+        <dd>
+            <p>Purges specified queue</p>
+            <pre class="doc-code language-xml"><code><![CDATA[<e:mq-purge name="someQueue"/>]]></code></pre>
+        </dd>
+    </dl>
 
     <h4>Verify queue</h4>
 
-    <table class="table table-sm table-borderless" style="table-layout: fixed;">
-        <tr>
-            <td style="width: 100px;"> <code><a cc:run="concordion" href="db/DbCheck.html">mq-check</a></code> </td>
-            <td> <p>Verifies that specified messages exist in queue</p> </td>
-        </tr>
-        <tr>
-            <td colspan="2"> <pre class="doc-code language-xml"><code><![CDATA[<e:mq-check name="someQueue">
+    <dl>
+        <dt><code><a cc:run="concordion" href="mq/MqCheck.html">mq-check</a></code></dt>
+        <dd>
+            <p>Verifies that specified messages exist in queue</p>
+            <pre class="doc-code language-xml"><code><![CDATA[<e:mq-check name="someQueue">
     <e:message>{"msg" : "1"}</e:message>
     <e:message from="/data/mq/msg2.json"/>
-</e:mq-check>]]></code></pre> </td>
-        </tr>
-    </table>
+</e:mq-check>]]></code></pre>
+        </dd>
+    </dl>
 
 </ignored>

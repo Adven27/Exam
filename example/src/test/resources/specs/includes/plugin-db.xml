@@ -18,68 +18,54 @@
 
     <h4>Set up database</h4>
 
-    <table class="table table-sm table-borderless" style="table-layout: fixed;">
-        <tr>
-            <td style="width: 100px;"> <code><a cc:run="concordion" href="db/DbSet.html">db-set</a></code> </td>
-            <td> <p>Creates and applies DbUnit dataset for specified table</p> </td>
-        </tr>
-        <tr>
-            <td colspan="2"> <pre class="doc-code language-xml"><code><![CDATA[<e:db-set table="person" cols="id=1..10, name, birthday, created={{now}}">
+
+    <dl>
+        <dt><code><a cc:run="concordion" href="db/DbSet.html">db-set</a></code></dt>
+        <dd>
+            <p>Creates and applies DbUnit dataset for specified table</p>
+            <pre class="doc-code language-xml"><code><![CDATA[<e:db-set table="person" cols="id=1..10, name, birthday, created={{now}}">
     <e:row>Bob, {{date '01.01.2001' format='dd.MM.yyyy'}}</e:row>
     <e:row> Ed, {{date '02.02.2002' format='dd.MM.yyyy'}}</e:row>
-</e:db-set>]]></code></pre> </td>
-        </tr>
-
-        <tr>
-            <td> <code><a cc:run="concordion" href="db/DbExecute.html">db-execute</a></code> </td>
-            <td> <p>Applies specified DbUnit datasets</p> </td>
-        </tr>
-        <tr>
-            <td colspan="2"> <pre class="doc-code language-xml"><code><![CDATA[ <e:db-execute datasets="/data/db/adam.xml, /data/db/bob.json, /data/db/carl/person.csv"/> ]]></code></pre> </td>
-        </tr>
-
-        <tr>
-            <td> <code><a cc:run="concordion" href="db/DbClean.html">db-clean</a></code> </td>
-            <td> <p>Cleans specified tables with <code>DELETE_ALL</code> DbUnit operation</p> </td>
-        </tr>
-        <tr>
-            <td colspan="2"> <pre class="doc-code language-xml"><code><![CDATA[ <e:db-clean tables="person, person_fields"/> ]]></code></pre> </td>
-        </tr>
-    </table>
+</e:db-set>]]></code></pre>
+        </dd>
+        <dt><code><a cc:run="concordion" href="db/DbExecute.html">db-execute</a></code></dt>
+        <dd>
+            <p>Applies specified DbUnit datasets</p>
+            <pre class="doc-code language-xml"><code><![CDATA[ <e:db-execute datasets="/data/db/adam.xml, /data/db/bob.json, /data/db/carl/person.csv"/> ]]></code></pre>
+        </dd>
+        <dt><code><a cc:run="concordion" href="db/DbClean.html">db-clean</a></code></dt>
+        <dd>
+            <p>Cleans specified tables with <code>DELETE_ALL</code> DbUnit operation</p>
+            <pre class="doc-code language-xml"><code><![CDATA[ <e:db-verify datasets="/data/db/adam.xml, /data/db/bob.json, /data/db/carl/person.csv"/> ]]></code></pre>
+        </dd>
+    </dl>
 
     <h4>Verify database</h4>
 
-    <table class="table table-sm table-borderless" style="table-layout: fixed;">
-        <tr>
-            <td style="width: 100px;"> <code><a cc:run="concordion" href="db/DbCheck.html">db-check</a></code> </td>
-            <td> <p>Creates DbUnit dataset and verifies that it matches specified database table</p> </td>
-        </tr>
-        <tr>
-            <td colspan="2"> <pre class="doc-code language-xml"><code><![CDATA[<e:db-check table="person" cols="id=1..10, name, birthday, created={{now}}">
+    <dl>
+        <dt><code><a cc:run="concordion" href="db/DbCheck.html">db-check</a></code></dt>
+        <dd>
+            <p>Creates DbUnit dataset and verifies that it matches specified database table</p>
+            <pre class="doc-code language-xml"><code><![CDATA[<e:db-check table="person" cols="id=1..10, name, birthday, created={{now}}">
     <e:row>Bob, {{date '01.01.2001' format='dd.MM.yyyy'}}</e:row>
     <e:row> Ed, {{date '02.02.2002' format='dd.MM.yyyy'}}</e:row>
-</e:db-check>]]></code></pre> </td>
-        </tr>
-
-        <tr>
-            <td> <code><a cc:run="concordion" href="db/DbVerify.html">db-verify</a></code> </td>
-            <td> <p>Verifies that database matches state described in DbUnit datasets</p> </td>
-        </tr>
-        <tr>
-            <td colspan="2"> <pre class="doc-code language-xml"><code><![CDATA[ <e:db-verify datasets="/data/db/adam.xml, /data/db/bob.json, /data/db/carl/person.csv"/> ]]></code></pre> </td>
-        </tr>
-    </table>
+</e:db-check>]]></code></pre>
+        </dd>
+        <dt><code><a cc:run="concordion" href="db/DbVerify.html">db-verify</a></code></dt>
+        <dd>
+            <p>Verifies that database matches state described in DbUnit datasets</p>
+            <pre class="doc-code language-xml"><code><![CDATA[ <e:db-verify datasets="/data/db/adam.xml, /data/db/bob.json, /data/db/carl/person.csv"/> ]]></code></pre>
+        </dd>
+    </dl>
 
     <h4>Debug database</h4>
 
-    <table class="table table-sm table-borderless" style="table-layout: fixed;">
-        <tr>
-            <td style="width: 100px;"> <code><a cc:run="concordion" href="db/DbShow.html">db-show</a></code> </td>
-            <td> <p>Creates DbUnit dataset files and prints content of specified database table</p> </td>
-        </tr>
-        <tr>
-            <td colspan="2"> <pre class="doc-code language-xml"><code><![CDATA[<e:db-show table="person" saveToResources="/data/db/person.xml"/>]]></code></pre> </td>
-        </tr>
-    </table>
+    <dl>
+        <dt><code><a cc:run="concordion" href="db/DbShow.html">db-show</a></code></dt>
+        <dd>
+            <p>Creates DbUnit dataset files and prints content of specified database table</p>
+            <pre class="doc-code language-xml"><code><![CDATA[<e:db-show table="person" saveToResources="/data/db/person.xml"/>]]></code></pre>
+        </dd>
+    </dl>
 
 </ignored>

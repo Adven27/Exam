@@ -83,6 +83,10 @@ open class DbTester @JvmOverloads constructor(
             logger.warn("Error on connection closing", e)
         }
     }
+
+    fun executeQuery(sql: String): ResultSet = super.getConnection().connection.use {
+        it.createStatement().executeQuery(sql)
+    }
 }
 
 class JsonbPostgresqlDataTypeFactory : PostgresqlDataTypeFactory() {

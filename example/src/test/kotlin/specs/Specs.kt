@@ -22,7 +22,6 @@ import io.github.adven27.concordion.extensions.exam.db.commands.IgnoreMillisComp
 import io.github.adven27.concordion.extensions.exam.files.FlPlugin
 import io.github.adven27.concordion.extensions.exam.mq.MqPlugin
 import io.github.adven27.concordion.extensions.exam.mq.MqTester
-import io.github.adven27.concordion.extensions.exam.ui.UiPlugin
 import io.github.adven27.concordion.extensions.exam.ws.WsPlugin
 import java.util.ArrayDeque
 
@@ -56,7 +55,7 @@ open class Specs : AbstractSpecs() {
                 "Hello context = $context; params = ${options.params.map { it.toString() }}; options = ${options.hash}!"
             }
         )
-    }.withFocusOnFailed(false)
+    }.withFocusOnFailed(true)
 
     override fun startSut() {
         server.apply {

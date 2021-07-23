@@ -2,11 +2,11 @@ package io.github.adven27.concordion.extensions.exam.core
 
 import com.github.jknack.handlebars.Helper
 import io.github.adven27.concordion.extensions.exam.core.ExamExtension.Companion.PARSED_COMMANDS
+import io.github.adven27.concordion.extensions.exam.core.commands.MainCommand
 import io.github.adven27.concordion.extensions.exam.core.html.CLASS
 import io.github.adven27.concordion.extensions.exam.core.html.Html
 import io.github.adven27.concordion.extensions.exam.core.html.ID
 import io.github.adven27.concordion.extensions.exam.core.html.ONCLICK
-import io.github.adven27.concordion.extensions.exam.core.html.bodyOf
 import io.github.adven27.concordion.extensions.exam.core.html.button
 import io.github.adven27.concordion.extensions.exam.core.html.buttonCollapse
 import io.github.adven27.concordion.extensions.exam.core.html.codeHighlight
@@ -15,6 +15,7 @@ import io.github.adven27.concordion.extensions.exam.core.html.footerOf
 import io.github.adven27.concordion.extensions.exam.core.html.italic
 import io.github.adven27.concordion.extensions.exam.core.html.menuItemA
 import io.github.adven27.concordion.extensions.exam.core.html.pill
+import io.github.adven27.concordion.extensions.exam.core.html.tag
 import io.github.adven27.concordion.extensions.exam.core.utils.HelperMissing.Companion.helpersDesc
 import io.github.adven27.concordion.extensions.exam.core.utils.MissingHelperException
 import io.github.adven27.concordion.extensions.exam.core.utils.content
@@ -24,6 +25,7 @@ import nu.xom.Document
 import nu.xom.Element
 import nu.xom.XPathContext
 import nu.xom.converters.DOMConverter
+import org.concordion.api.ResultSummary
 import org.concordion.api.listener.DocumentParsingListener
 import org.concordion.api.listener.ExampleEvent
 import org.concordion.api.listener.ExampleListener
@@ -40,7 +42,7 @@ import javax.xml.parsers.DocumentBuilderFactory
 import kotlin.collections.set
 import org.concordion.api.Element as ConcordionElement
 
-val examplesToFocus: MutableList<String?> = ArrayList()
+val exampleResults: MutableMap<String, ResultSummary> = mutableMapOf()
 
 interface SkipDecider : Predicate<ExampleEvent> {
     fun reason(): String
@@ -77,9 +79,7 @@ internal class ExamExampleListener(private val skipDecider: SkipDecider) : Examp
             "data-summary-status" to summary.implementationStatus.tag,
         )
         removeConcordionExpectedToFailWarning(card)
-        if (summary.failureCount > 0 || summary.exceptionCount > 0) {
-            examplesToFocus.add(card.attr("id"))
-        }
+        exampleResults[card.attr("id")!!] = summary
     }
 
     private fun removeConcordionExpectedToFailWarning(card: Html) {
@@ -88,20 +88,58 @@ internal class ExamExampleListener(private val skipDecider: SkipDecider) : Examp
 }
 
 class FocusOnErrorsListener : SpecificationProcessingListener {
-    override fun beforeProcessingSpecification(event: SpecificationProcessingEvent) {
-        examplesToFocus.clear()
-    }
-
+    override fun beforeProcessingSpecification(event: SpecificationProcessingEvent) = exampleResults.clear()
     override fun afterProcessingSpecification(event: SpecificationProcessingEvent) {
-        if (examplesToFocus.isNotEmpty()) {
-            val body = Html(event.rootElement).first("body")
-            body!!.descendants("a")
-                .filter { "example" == it.attr("data-type") }
-                .map { it.parent().parent() }
-                .filter { !examplesToFocus.contains(it.attr("id")) }
-                .forEach { bodyOf(it).attr("class", "card-body collapse") }
+        exampleResults.filter { it.failed() }.let { failed ->
+            if (failed.isNotEmpty()) {
+                (exampleResults - failed.keys).forEach {
+                    findExample(event.rootElement, it.key)?.collapse()
+                }
+
+                failed.forEach { (id, summary) ->
+                    val example = findExample(event.rootElement, id)
+                    example?.first("p")?.first("a")?.invoke(
+                        summary.successCount.toPill("success"),
+                        summary.ignoredCount.toPill("secondary"),
+                        summary.failureCount.toPill("danger"),
+                        summary.exceptionCount.toPill("warning"),
+                    )
+                    ownerOf(example, event.rootElement)?.let { markWithFailedExampleAnchor(it, id) }
+                }
+            }
         }
     }
+
+    private fun ownerOf(example: Html?, content: ConcordionElement): ConcordionElement? {
+        var result: ConcordionElement? = null
+        for (it in content.getElementById(MainCommand.CONTENT_ID).childElements) {
+            when {
+                it.localName.matches("h\\d".toRegex()) -> result = it
+                it == example?.el -> break
+            }
+        }
+        return result
+    }
+
+    private fun markWithFailedExampleAnchor(it: org.concordion.api.Element, id: String) {
+        Html(it)(
+            tag("a").attrs("class" to "examples", "href" to "#$id").text("")
+        )
+    }
+
+    private fun Long.toPill(style: String): Html? = if (this > 0) pill(toString(), style) else null
+    private fun pill(text: String, style: String) = tag("span")
+        .css("top-0 start-100 translate-middle-y badge rounded-pill bg-$style")
+        .style("font-size: xx-small;")
+        .text(text)
+}
+
+private fun Map.Entry<String, ResultSummary>.failed() = value.exceptionCount > 0 || value.failureCount > 0
+
+private fun findExample(el: ConcordionElement, id: String) = Html(el).findBy(id)
+private fun Html.collapse() {
+    first("p")!!.css("collapsed")
+    first("div")!!.removeClass("show")
 }
 
 internal class ExamDocumentParsingListener(private val registry: CommandRegistry) : DocumentParsingListener {

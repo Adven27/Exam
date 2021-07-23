@@ -1,12 +1,12 @@
 package io.github.adven27.concordion.extensions.exam.db.commands
 
 import io.github.adven27.concordion.extensions.exam.core.commands.ExamCommand
+import io.github.adven27.concordion.extensions.exam.core.commands.VarsAttrs
 import io.github.adven27.concordion.extensions.exam.core.commands.awaitConfig
 import io.github.adven27.concordion.extensions.exam.core.html.Html
 import io.github.adven27.concordion.extensions.exam.core.html.div
 import io.github.adven27.concordion.extensions.exam.core.html.html
 import io.github.adven27.concordion.extensions.exam.core.html.span
-import io.github.adven27.concordion.extensions.exam.core.vars
 import io.github.adven27.concordion.extensions.exam.db.DbPlugin
 import io.github.adven27.concordion.extensions.exam.db.DbResultRenderer
 import io.github.adven27.concordion.extensions.exam.db.DbTester
@@ -260,29 +260,10 @@ data class DatasetCommandAttrs(
 
         fun from(root: Html, evaluator: Evaluator) = DatasetCommandAttrs(
             DatasetsAttrs.from(root),
-            VarsAttrs.from(root, evaluator),
+            VarsAttrs(root, evaluator),
             root.takeAwayAttr(DS, DbTester.DEFAULT_DATASOURCE),
             root.takeAwayAttr(DEBUG, "false").toBoolean(),
         )
-    }
-}
-
-data class VarsAttrs(
-    val vars: String?,
-    val varsSeparator: String,
-) {
-    fun setVarsToContext(evaluator: Evaluator) {
-        vars.vars(evaluator, true, varsSeparator)
-    }
-
-    companion object {
-        private const val VARS = "vars"
-        private const val VARS_SEPARATOR = "varsSeparator"
-
-        fun from(root: Html, evaluator: Evaluator) = VarsAttrs(
-            root.takeAwayAttr(VARS),
-            root.takeAwayAttr(VARS_SEPARATOR, ","),
-        ).apply { setVarsToContext(evaluator) }
     }
 }
 

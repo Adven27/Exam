@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 function generateTableOfContents(els) {
     let anchoredElText,
         anchoredElHref,
+        examplesA,
         ul = document.createElement('UL');
 
     document.getElementById('table-of-contents').appendChild(ul);
@@ -20,30 +21,47 @@ function generateTableOfContents(els) {
         let el = els[i];
         anchoredElText = el.textContent;
         anchoredElHref = el.querySelector('.anchorjs-link').getAttribute('href');
+        examplesA = el.querySelectorAll('.examples');
         if (el.tagName === 'H3' || el.tagName === 'H4') {
             let nestedUl3 = document.createElement('UL');
             if (el.tagName === 'H4') {
                 let nestedUl4 = document.createElement('UL');
-                addNavItem(nestedUl4, anchoredElHref, anchoredElText);
+                addNavItem(nestedUl4, anchoredElHref, anchoredElText, examplesA);
                 nestedUl3.appendChild(nestedUl4)
                 ul.appendChild(nestedUl3);
             } else {
-                addNavItem(nestedUl3, anchoredElHref, anchoredElText);
+                addNavItem(nestedUl3, anchoredElHref, anchoredElText, examplesA);
                 ul.appendChild(nestedUl3);
             }
         } else {
-            addNavItem(ul, anchoredElHref, anchoredElText);
+            addNavItem(ul, anchoredElHref, anchoredElText, examplesA);
         }
     }
 }
 
-function addNavItem(ul, href, text) {
+function addNavItem(ul, href, text, examples) {
     const listItem = document.createElement('LI'),
         anchorItem = document.createElement('A');
 
     anchorItem.appendChild(document.createTextNode(text));
     anchorItem.href = href;
     ul.appendChild(listItem);
+    listItem.appendChild(anchorItem);
+    if(examples != null) {
+        for (let i = 0; i < examples.length; i++) {
+            addNavItemExamples(listItem, examples[i].getAttribute("href"))
+        }
+    }
+}
+
+function addNavItemExamples(li, id) {
+    const listItem = document.createElement('LI'),
+        anchorItem = document.createElement('A');
+
+    anchorItem.appendChild(document.createTextNode(id.substr(1)));
+    anchorItem.href = id;
+    anchorItem.className = "nav-example-failed";
+    li.appendChild(listItem);
     listItem.appendChild(anchorItem);
 }
 
