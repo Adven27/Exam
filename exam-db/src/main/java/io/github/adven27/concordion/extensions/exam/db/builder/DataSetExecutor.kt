@@ -226,8 +226,8 @@ class DataSetExecutor(private val dbTester: DbTester) {
     }
 
     private fun Array<String>.filterBy(tableName: String) =
-        this.map { it.toUpperCase() }.filter { it.startsWith("${tableName.toUpperCase()}.") }
-            .map { it.removePrefix("${tableName.toUpperCase()}.") }.toTypedArray()
+        this.map { it.uppercase() }.filter { it.startsWith("${tableName.uppercase()}.") }
+            .map { it.removePrefix("${tableName.uppercase()}.") }.toTypedArray()
 
     data class DataSetsCompareResult(
         val expected: IDataSet,

@@ -1,0 +1,209 @@
+<html xmlns:e="http://exam.extension.io">
+<body>
+<e:main>
+    <e:before-each>
+        <e:given>Queue is empty:<e:mq-purge name="myQueue"/></e:given>
+    </e:before-each>
+
+    <h1>Failures</h1>
+
+    <h2>Extra messages</h2>
+
+    <e:example name="extra-1" status="ExpectedToFail">
+        <e:when>
+            Queue has the message:
+            <e:mq-send name="myQueue">{ "message": "1" }</e:mq-send>
+        </e:when>
+        <e:then>
+            Verify:
+            <e:mq-check name="myQueue"/>
+        </e:then>
+    </e:example>
+
+    <e:example name="extra-2" status="ExpectedToFail">
+        <e:when>
+            Queue has the messages:
+            <e:mq-send name="myQueue">{ "message": "1" }</e:mq-send>
+            <e:mq-send name="myQueue">{ "message": "2" }</e:mq-send>
+        </e:when>
+        <e:then>
+            Verify:
+            <e:mq-check name="myQueue">{ "message": "1" }</e:mq-check>
+        </e:then>
+    </e:example>
+
+    <e:example name="extra-3" status="ExpectedToFail">
+        <e:when>
+            Queue has the messages:
+            <e:mq-send name="myQueue">{ "message": "1" }</e:mq-send>
+            <e:mq-send name="myQueue">{ "message": "2" }</e:mq-send>
+            <e:mq-send name="myQueue">{ "message": "3" }</e:mq-send>
+        </e:when>
+        <e:then>
+            Verify:
+            <e:mq-check name="myQueue">
+                <e:message>{ "message": "1" }</e:message>
+                <e:message>{ "message": "2" }</e:message>
+            </e:mq-check>
+        </e:then>
+    </e:example>
+
+    <h2>Absent messages</h2>
+
+    <e:example name="absent-1" status="ExpectedToFail">
+        <e:then>
+            Verify:
+            <e:mq-check name="myQueue">{ "message": "1" }</e:mq-check>
+        </e:then>
+    </e:example>
+
+    <e:example name="absent-2" status="ExpectedToFail">
+        <e:when>
+            Queue has the messages:
+            <e:mq-send name="myQueue">{ "message": "1" }</e:mq-send>
+        </e:when>
+        <e:then>
+            Verify:
+            <e:mq-check name="myQueue">
+                <e:message>{ "message": "1" }</e:message>
+                <e:message>{ "message": "2" }</e:message>
+            </e:mq-check>
+        </e:then>
+    </e:example>
+
+    <h2>Wrong messages</h2>
+
+    <e:example name="wrong" status="ExpectedToFail">
+        <e:when>
+            Queue has the messages:
+            <e:mq-send name="myQueue">{ "message": "1" }</e:mq-send>
+        </e:when>
+        <e:then>
+            Verify queue with wrong message:
+            <e:mq-check name="myQueue">{}</e:mq-check>
+        </e:then>
+        <e:when>
+            Queue has the messages:
+            <e:mq-send name="myQueue" formatAs="xml"><![CDATA[<message>right</message>]]></e:mq-send>
+        </e:when>
+        <e:then>
+            Verify queue with wrong message:
+            <e:mq-check name="myQueue" verifyAs="xml"><![CDATA[<message>wrong</message>]]></e:mq-check>
+        </e:then>
+        <e:when>
+            Queue has the messages:
+            <e:mq-send name="myQueue">{ "message": "1" }</e:mq-send>
+            <e:mq-send name="myQueue" formatAs="xml"><![CDATA[<message>right</message>]]></e:mq-send>
+        </e:when>
+        <e:then>
+            Verify queue with wrong messages:
+            <e:mq-check name="myQueue">
+                <e:message>{}</e:message>
+                <e:message verifyAs="xml"><![CDATA[<message>wrong</message>]]></e:message>
+            </e:mq-check>
+        </e:then>
+    </e:example>
+
+    <e:example name="wrong-big" status="ExpectedToFail">
+        <e:when>
+            Queue has the message:
+            <e:mq-send name="myQueue" from="/data/mq/big.json" collapsable="true"/>
+        </e:when>
+        <e:then>
+            Verify queue with wrong message:
+            <e:mq-check name="myQueue">{"wrong": "message"}</e:mq-check>
+        </e:then>
+        <e:when>
+            Queue has the message:
+            <e:mq-send name="myQueue" from="/data/mq/big.json" collapsable="true"/>
+            <e:mq-send name="myQueue" from="/data/mq/big.json" collapsable="true"/>
+            <e:mq-send name="myQueue" from="/data/mq/big.json" collapsable="true"/>
+        </e:when>
+        <e:then>
+            Verify queue with vertical layout:
+            <e:mq-check name="myQueue">
+                <e:message>{"wrong": "1"}</e:message>
+                <e:message from="/data/mq/big.json"/>
+                <e:message>{"wrong": "2"}</e:message>
+            </e:mq-check>
+        </e:then>
+        <e:when>
+            Queue has the message:
+            <e:mq-send name="myQueue" from="/data/mq/big.json" collapsable="true"/>
+            <e:mq-send name="myQueue" from="/data/mq/big.json" collapsable="true"/>
+            <e:mq-send name="myQueue" from="/data/mq/big.json" collapsable="true"/>
+        </e:when>
+        <e:then>
+            Verify queue with collapsed vertical layout:
+            <e:mq-check name="myQueue" collapsable="true">
+                <e:message>{"wrong": "1"}</e:message>
+                <e:message from="/data/mq/big.json"/>
+                <e:message>{"wrong": "2"}</e:message>
+            </e:mq-check>
+        </e:then>
+        <e:when>
+            Queue has the message:
+            <e:mq-send name="myQueue" from="/data/mq/big.json" collapsable="true"/>
+            <e:mq-send name="myQueue" from="/data/mq/big.json" collapsable="true"/>
+            <e:mq-send name="myQueue" from="/data/mq/big.json" collapsable="true"/>
+        </e:when>
+        <e:then>
+            Verify queue with horizontal layout:
+            <e:mq-check name="myQueue" layout="horizontally">
+                <e:message>{"wrong": "1"}</e:message>
+                <e:message from="/data/mq/big.json"/>
+                <e:message>{"wrong": "2"}</e:message>
+            </e:mq-check>
+        </e:then>
+        <e:when>
+            Queue has the message:
+            <e:mq-send name="myQueue" from="/data/mq/big.json" collapsable="true"/>
+            <e:mq-send name="myQueue" from="/data/mq/big.json" collapsable="true"/>
+            <e:mq-send name="myQueue" from="/data/mq/big.json" collapsable="true"/>
+        </e:when>
+        <e:then>
+            Verify queue with collapsed horizontal layout:
+            <e:mq-check name="myQueue" layout="horizontally" collapsable="true">
+                <e:message>{"wrong": "1"}</e:message>
+                <e:message from="/data/mq/big.json"/>
+                <e:message>{"wrong": "2"}</e:message>
+            </e:mq-check>
+        </e:then>
+    </e:example>
+
+    <h2>Wrong headers</h2>
+
+    <e:example name="wrong-headers" status="ExpectedToFail">
+        <e:when>
+            Queue has the messages:
+            <e:mq-send name="myQueue" headers="h1=11, h2=12">{ "message": "1" }</e:mq-send>
+            <e:mq-send name="myQueue" headers="h1=21, h2=22">{ "message": "2" }</e:mq-send>
+            <e:mq-send name="myQueue" headers="h1=31, h2=32" formatAs="xml"><![CDATA[<message>right</message>]]></e:mq-send>
+            <e:mq-send name="myQueue" headers="h1=41, h2=42" formatAs="xml"><![CDATA[<message>right</message>]]></e:mq-send>
+            <e:mq-send name="myQueue" headers="h1=41, h2=42" formatAs="xml"><![CDATA[<message>right</message>]]></e:mq-send>
+            <e:mq-send name="myQueue" headers="h1=41, h2=42" formatAs="xml"><![CDATA[<message>right</message>]]></e:mq-send>
+        </e:when>
+        <e:then>
+            Verify queue with messages that:
+            <ul>
+                <li>wrong headers / right body</li>
+                <li>right headers / wrong body</li>
+                <li>wrong headers / wrong body</li>
+                <li>right headers / right body</li>
+                <li>wrong headers size (extra) / right body</li>
+                <li>wrong headers size (absent) / right body</li>
+            </ul>
+            <e:mq-check name="myQueue">
+                <e:message headers="h2=1, h3=1">{ "message": "1" }</e:message>
+                <e:message headers="h1=21, h2=22">{ "message": "3" }</e:message>
+                <e:message headers="h1=3, h2=32" verifyAs="xml"><![CDATA[<message>wrong</message>]]></e:message>
+                <e:message headers="h1=41, h2=42" verifyAs="xml"><![CDATA[<message>right</message>]]></e:message>
+                <e:message headers="h1=41, h2=42, h3=3" verifyAs="xml"><![CDATA[<message>right</message>]]></e:message>
+                <e:message headers="h1=41" verifyAs="xml"><![CDATA[<message>right</message>]]></e:message>
+            </e:mq-check>
+        </e:then>
+    </e:example>
+
+</e:main>
+</body>
+</html>

@@ -150,7 +150,7 @@ data class SetAttrs(val seedStrategy: SeedStrategy) {
         private const val OPERATION = "operation"
 
         fun from(root: Html, allowedSeedStrategies: List<SeedStrategy>) = SetAttrs(
-            SeedStrategy.valueOf(root.takeAwayAttr(OPERATION, SeedStrategy.CLEAN_INSERT.name).toUpperCase())
+            SeedStrategy.valueOf(root.takeAwayAttr(OPERATION, SeedStrategy.CLEAN_INSERT.name).uppercase())
                 .isAllowed(allowedSeedStrategies),
         )
 

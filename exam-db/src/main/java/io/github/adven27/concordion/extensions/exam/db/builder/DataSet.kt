@@ -211,7 +211,7 @@ class ContainsFilterTable(actualTable: ITable?, expectedTable: ITable?, ignoredC
     private fun toUpper(ignoredCols: List<String>): List<String> {
         val upperCaseColumns: MutableList<String> = ArrayList()
         for (ignoredCol in ignoredCols) {
-            upperCaseColumns.add(ignoredCol.toUpperCase())
+            upperCaseColumns.add(ignoredCol.uppercase())
         }
         return upperCaseColumns
     }
@@ -277,7 +277,7 @@ class ContainsFilterTable(actualTable: ITable?, expectedTable: ITable?, ignoredC
     }
 
     private fun match(ignoredCols: List<String>?, cell: Map.Entry<String, Any?>, row: Int) =
-        if (ignoredCols == null || !ignoredCols.contains(cell.key.toUpperCase())) {
+        if (ignoredCols == null || !ignoredCols.contains(cell.key.uppercase())) {
             if (cell.value != null && cell.value.toString().startsWith("regex:")) {
                 regexMatches(cell.value.toString(), originalTable.getValue(row, cell.key).toString())
             } else dataType(cell.key).matches(cell.value, originalTable.getValue(row, cell.key))

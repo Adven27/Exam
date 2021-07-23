@@ -87,7 +87,7 @@ class Html(val el: Element) {
         return this
     }
 
-    infix fun above(html: Html): Html {
+    infix fun prependChild(html: Html): Html {
         el.prependChild(html.el)
         return this
     }
@@ -317,8 +317,8 @@ fun paragraph(txt: String) = Html("p", txt)
 
 fun codeXml(text: String?) = pre(text ?: "") css "xml card"
 
-fun codeHighlight(lang: String, text: String?) =
-    pre().attrs("class" to "doc-code language-$lang")(code(text ?: ""))
+fun codeHighlight(text: String?, lang: String? = null) =
+    pre().attrs("class" to "doc-code ${if (lang != null) "language-$lang" else ""}")(code(text ?: ""))
 
 fun tag(tag: String) = Html(tag)
 

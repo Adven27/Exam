@@ -14,29 +14,30 @@ open class ExamResultRenderer : AssertEqualsListener, AssertTrueListener, Assert
         addFailMarker(event)
         element.addStyleClass("rest-failure")
 
-        val expected = Element("del")
-        expected.addStyleClass("expected")
-        expected.appendText(event.expected)
+        val expected = expectedElement(event)
         element.moveChildrenTo(expected)
         element.appendChild(expected)
-        expected.appendNonBreakingSpaceIfBlank()
-
-        val actual = Element("ins")
-        actual.addStyleClass("actual")
-        actual.appendText(actualText(event))
-        actual.appendNonBreakingSpaceIfBlank()
 
         element.appendText("\n")
-        element.appendChild(actual)
+        element.appendChild(actualElement(event))
     }
 
-    private fun addFailMarker(event: AssertFailureEvent) {
+    private fun expectedElement(event: AssertFailureEvent) = Element("del").apply {
+        addStyleClass("expected")
+        appendText(event.expected)
+        appendNonBreakingSpaceIfBlank()
+    }
+
+    private fun actualElement(event: AssertFailureEvent) = Element("ins").apply {
+        addStyleClass("actual")
+        appendText(actualText(event))
+        appendNonBreakingSpaceIfBlank()
+    }
+
+    private fun addFailMarker(event: AssertFailureEvent) =
         event.element.appendChild(Element("fail").apply { addAttribute("style", "display: none;") })
-    }
 
-    protected open fun actualText(event: AssertFailureEvent): String {
-        return event.actual.toStringOr("(null)")
-    }
+    protected open fun actualText(event: AssertFailureEvent): String = event.actual.toStringOr("(null)")
 
     override fun successReported(event: AssertSuccessEvent) {
         event.element.addStyleClass("rest-success").appendNonBreakingSpaceIfBlank()

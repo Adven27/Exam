@@ -119,7 +119,7 @@ sealed class RequestCommand(
         val cookies = cookies(evaluator, root)
         val headers = headers(evaluator, root)
 
-        startTable(root, executor.hasRequestBody()).above(
+        startTable(root, executor.hasRequestBody()).prependChild(
             addRequestDescTo(url, type, cookies, headers)
         )
         executor.type(type).url(url).headers(headers).cookies(cookies)
@@ -404,7 +404,7 @@ class CaseCommand(
             )
         }
         val caseDesc = caseDesc(rt.attr(DESC), evaluator)
-        rt.attrs("data-type" to CASE, "id" to caseDesc).above(
+        rt.attrs("data-type" to CASE, "id" to caseDesc).prependChild(
             tr()(
                 td(caseDesc, "colspan" to "2").muted().css("bg-light")
             )
@@ -442,7 +442,7 @@ class CaseCommand(
     private fun check(actual: String, expected: String, resultRecorder: ResultRecorder, root: Html) {
         contentVerifier.verify(expected, actual).fail.map {
             val diff = div().css(contentPrinter.style())
-            val (_, errorMsg) = errorMessage(message = it.details, html = diff)
+            val (_, errorMsg) = errorMessage(message = it.details, html = diff, type = contentPrinter.style())
             root.removeChildren()(errorMsg)
             resultRecorder.failure(diff, contentPrinter.print(it.actual), contentPrinter.print(it.expected))
         }.orElseGet {

@@ -123,30 +123,11 @@ class MqCheckCommand(
                 .forEach {
                     logger.info("Verifying {}", it)
                     val bodyContainer = container("", attrs.collapsable, it.expected.type)
-                    val headersContainer = it.expected.message.headers.renderHeaders()
-                    if (cnt != null) {
-                        cnt(
-                            td()(
-                                table()(
-                                    tr()(td()(headersContainer)),
-                                    tr()(if (attrs.collapsable) collapsed(bodyContainer) else bodyContainer)
-                                )
-                            )
-                        )
-                    } else {
-                        tableContainer(
-                            tr()(td()(headersContainer)),
-                            tr()(if (attrs.collapsable) collapsed(bodyContainer) else bodyContainer)
-                        )
-                    }
-                    headersContainer?.let { container ->
-                        checkHeaders(
-                            it.actual.headers,
-                            it.expected.message.headers,
-                            resultRecorder,
-                            container
-                        )
-                    }
+                    val headersContainer = checkHeaders(
+                        it.actual.headers,
+                        it.expected.message.headers,
+                        resultRecorder,
+                    )
                     checkContent(
                         it.expected.type,
                         it.actual.body,
@@ -154,9 +135,25 @@ class MqCheckCommand(
                         resultRecorder,
                         bodyContainer
                     )
+
+                    if (cnt != null) {
+                        cnt(
+                            td()(
+                                table().tableContainerAppend(headersContainer, bodyContainer, attrs.collapsable)
+                            )
+                        )
+                    } else {
+                        tableContainer.tableContainerAppend(headersContainer, bodyContainer, attrs.collapsable)
+                    }
                 }
         }
     }
+
+    private fun Html.tableContainerAppend(headersContainer: Html?, bodyContainer: Html, collapsable: Boolean): Html =
+        this(
+            tr()(td()(headersContainer)),
+            tr()(if (collapsable) collapsed(bodyContainer) else bodyContainer)
+        )
 
     private fun expectedMessages(root: Html, eval: Evaluator) = messageTags(root).mapNotNull { html ->
         MessageAttrs(html, eval).let { nullOrMessage(it.from, it.headers) }
@@ -211,6 +208,19 @@ class MqCheckCommand(
         *renderMessages("but was: ", actual.map { TypedMessage("xml", it) }, mqName).toTypedArray()
     )
 
+    @Suppress("SpreadOperator")
+    private fun sizeCheckErrorHeaders(
+        expected: Map<String, String>,
+        actual: Map<String, String>,
+        msg: String?
+    ): Html = div().css("rest-failure bd-callout bd-callout-danger")(
+        div(msg),
+        span("Expected:"),
+        expected.renderHeaders(),
+        span("but was:"),
+        actual.renderHeaders(),
+    )
+
     private fun messageTags(root: Html) =
         root.childs().filter { it.localName() == "message" }.ifEmpty { listOf(root) }
 
@@ -238,25 +248,50 @@ class MqCheckCommand(
         )
 
     private fun container(txt: String, collapsable: Boolean = false, type: String) =
-        container(txt, type, collapsable).style("margin: 0").attr("autoFormat", "true")
+        container(txt, type, collapsable).style("margin: 0")
 
-    @Suppress("TooGenericExceptionCaught")
     private fun checkHeaders(
         actual: Map<String, String>,
         expected: Map<String, String>,
-        resultRecorder: ResultRecorder,
-        root: Html
-    ) {
-        try {
-            assertEquals(expected, actual)
-            resultRecorder.pass(root)
-        } catch (e: Throwable) {
-            if (e is AssertionError || e is Exception) {
-                resultRecorder.failure(root, actual.toString(), expected.toString())
-                root.below(pre(e.message).css("alert alert-danger small"))
-            } else throw e
-        }
+        resultRecorder: ResultRecorder
+    ): Html? = if (expected.isEmpty()) null
+    else try {
+        assertEquals("Different headers size", expected.size, actual.size)
+        table()(
+            caption("Headers").css("small"),
+            *expected.entries.partition { actual[it.key] != null }.let { (m, u) ->
+                matchedRows(m, resultRecorder, actual) + unmatchedRows(u, actual, m, resultRecorder)
+            }.toTypedArray()
+        )
+    } catch (e: AssertionError) {
+        resultRecorder.record(FAILURE)
+        sizeCheckErrorHeaders(expected, actual, e.message)
     }
+
+    private fun matchedRows(
+        matched: List<Map.Entry<String, String>>,
+        resultRecorder: ResultRecorder,
+        actual: Map<String, String>
+    ) = matched.map { headerRow(resultRecorder, it.key to actual[it.key]!!, it.toPair()) }
+
+    private fun unmatchedRows(
+        unmatchedExpected: List<Map.Entry<String, String>>,
+        actual: Map<String, String>,
+        matched: List<Map.Entry<String, String>>,
+        resultRecorder: ResultRecorder
+    ) = unmatchedExpected.zip(unmatchedActual(actual, matched)).map { (e, a) ->
+        headerRow(resultRecorder, a.toPair(), e.toPair())
+    }
+
+    private fun unmatchedActual(actual: Map<String, String>, matched: List<Map.Entry<String, String>>) =
+        actual.entries.filterNot { matched.hasKey(it) }
+
+    private fun List<Map.Entry<String, String>>.hasKey(it: Map.Entry<String, String>) = map { it.key }.contains(it.key)
+
+    private fun headerRow(resultRecorder: ResultRecorder, a: Pair<String, String>, e: Pair<String, String>) = tr()(
+        resultRecorder.check(td(), a.first, e.first),
+        resultRecorder.check(td(), a.second, e.second),
+    )
 
     @Suppress("TooGenericExceptionCaught")
     private fun checkContent(
@@ -272,8 +307,12 @@ class MqCheckCommand(
     } catch (e: Throwable) {
         if (e is AssertionError || e is Exception) {
             root.attr("class", "")
+            //FIXME for 'Verify queue with horizontal layout'
+            if (root.el.localName == "td") {
+                root.css("exp-body")
+            }
             val diff = div().css(type)
-            val (_, errorMsg) = errorMessage(message = e.message ?: "", html = diff)
+            val (_, errorMsg) = errorMessage(message = e.message ?: "", html = diff, type = type)
             resultRecorder.failure(diff, actual.pretty(type), expected.pretty(type))
             root(errorMsg)
         } else throw e
@@ -379,7 +418,7 @@ class MqSendCommand(name: String, tag: String, private val mqTesters: Map<String
 private fun Map<String, String>.renderHeaders() = if (isNotEmpty())
     table()(
         caption("Headers").css("small"),
-        *this.map { tr()(td(it.key), td(it.value)) }.toTypedArray()
+        *this.toSortedMap().map { tr()(td(it.key), td(it.value)) }.toTypedArray()
     )
 else null
 

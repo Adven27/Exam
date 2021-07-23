@@ -6,21 +6,11 @@ interface IStringPolicy {
 }
 
 class CaseInsensitiveStringPolicy : IStringPolicy {
-    override fun areEqual(first: String, second: String): Boolean {
-        return first.equals(second, ignoreCase = true)
-    }
-
-    override fun toKey(value: String): String {
-        return value.toUpperCase()
-    }
+    override fun areEqual(first: String, second: String): Boolean = first.equals(second, ignoreCase = true)
+    override fun toKey(value: String): String = value.uppercase()
 }
 
 class CaseSensitiveStringPolicy : IStringPolicy {
-    override fun areEqual(first: String, second: String): Boolean {
-        return first == second
-    }
-
-    override fun toKey(value: String): String {
-        return value
-    }
+    override fun areEqual(first: String, second: String): Boolean = first == second
+    override fun toKey(value: String): String = value
 }

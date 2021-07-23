@@ -51,8 +51,8 @@ class ThenCommand : ExamCommand("then", "div") {
 
 private fun pLeadAndHr(cmd: CommandCall?, style: String, title: String) {
     cmd.html()
-        .above(tag("hr"))
-        .above(tag("p").css("lead $style").text(title))
+        .prependChild(tag("hr"))
+        .prependChild(tag("p").css("lead $style").text(title))
 }
 
 class ExamplesSummaryCommand(name: String, tag: String) : ExamCommand(name, tag) {

@@ -26,14 +26,21 @@ import nu.xom.Element
 import nu.xom.XPathContext
 import nu.xom.converters.DOMConverter
 import org.concordion.api.ResultSummary
+import org.concordion.api.listener.AbstractRunEvent
 import org.concordion.api.listener.DocumentParsingListener
 import org.concordion.api.listener.ExampleEvent
 import org.concordion.api.listener.ExampleListener
+import org.concordion.api.listener.RunFailureEvent
+import org.concordion.api.listener.RunIgnoreEvent
+import org.concordion.api.listener.RunListener
+import org.concordion.api.listener.RunStartedEvent
+import org.concordion.api.listener.RunSuccessEvent
 import org.concordion.api.listener.SpecificationProcessingEvent
 import org.concordion.api.listener.SpecificationProcessingListener
 import org.concordion.api.listener.ThrowableCaughtEvent
 import org.concordion.api.listener.ThrowableCaughtListener
 import org.concordion.internal.FailFastException
+import org.concordion.internal.FixtureType
 import java.io.ByteArrayInputStream
 import java.io.File
 import java.util.UUID
@@ -108,6 +115,7 @@ class FocusOnErrorsListener : SpecificationProcessingListener {
                 }
             }
         }
+        exampleResults.clear()
     }
 
     private fun ownerOf(example: Html?, content: ConcordionElement): ConcordionElement? {
@@ -252,7 +260,7 @@ class SpecSummaryListener : SpecificationProcessingListener {
                 .deepClone()
                 .css("card-img-overlay m-1")
                 .style("padding:0; left:inherit;")
-                .above(pill(extractElapsedTime(rootExampleEl), "light"))
+                .prependChild(pill(extractElapsedTime(rootExampleEl), "light"))
         )
         val cases = cases(rootExampleEl, id)
 
@@ -286,9 +294,10 @@ class ErrorListener : ThrowableCaughtListener {
             message = "${event.throwable.rootCause().message}",
             help = help(event),
             html = codeHighlight(
-                "xml",
-                PARSED_COMMANDS[event.element.getAttributeValue("cmdId")]?.fixIndent()
-            )
+                PARSED_COMMANDS[event.element.getAttributeValue("cmdId")]?.fixIndent(),
+                "xml"
+            ),
+            type = "text"
         )
         val html = Html(event.element)
         html.below(errorMessage)

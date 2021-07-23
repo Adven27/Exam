@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns="http://exam.extension.io"
-            xmlns:xs="http://www.w3.org/2001/XMLSchema"
-            targetNamespace="http://exam.extension.io"
-            elementFormDefault="qualified">
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           targetNamespace="http://exam.extension.io"
+           elementFormDefault="qualified">
     <xs:attribute name="status" default="ExpectedToPass">
         <xs:simpleType>
             <xs:restriction base="xs:string">
@@ -39,6 +39,14 @@
         </xs:simpleType>
     </xs:attribute>
 
+    <xs:element name="main">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:any processContents="lax" minOccurs="0"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
     <xs:element name="summary">
         <xs:complexType>
             <xs:simpleContent>
@@ -66,6 +74,9 @@
 
 
     <xs:complexType name="given-info" mixed="true">
+        <xs:sequence>
+            <xs:any processContents="lax" minOccurs="0"/>
+        </xs:sequence>
         <xs:all>
             <xs:element name="set" type="set-info"/>
             <xs:element name="await" type="await-info"/>
@@ -247,6 +258,7 @@
                     <xs:simpleContent>
                         <xs:extension base="xs:string">
                             <xs:attribute type="xs:anyURI" name="from" default="/data/mq/msg.json"/>
+                            <xs:attribute type="xs:string" name="headers" default="type=String, contentEncoding=UTF-8"/>
                         </xs:extension>
                     </xs:simpleContent>
                 </xs:complexType>
@@ -274,6 +286,7 @@
                             <xs:attribute type="xs:string" name="vars" default="v1=1, v2={{now}}"/>
                             <xs:attribute type="xs:string" name="varsSeparator" default=","/>
                             <xs:attribute type="xs:string" name="verifyAs" default="json"/>
+                            <xs:attribute type="xs:string" name="headers" default="type=String,contentEncoding=UTF-8"/>
                         </xs:extension>
                     </xs:simpleContent>
                 </xs:complexType>
@@ -331,6 +344,9 @@
         </xs:all>
     </xs:complexType>
     <xs:complexType name="then-info" mixed="true">
+        <xs:sequence>
+            <xs:any processContents="skip" minOccurs="0"/>
+        </xs:sequence>
         <xs:all>
             <xs:element name="await" type="await-info"/>
             <xs:element name="xml-check" type="xj-info"/>
@@ -470,7 +486,8 @@
 
     <xs:element name="example">
         <xs:complexType>
-            <xs:sequence>
+            <xs:all>
+                <xs:any processContents="skip" minOccurs="0"/>
                 <xs:element name="given" type="given-info" minOccurs="0"/>
                 <xs:element name="when" type="given-info" minOccurs="0"/>
                 <xs:element name="then" type="then-info" minOccurs="0"/>
@@ -480,7 +497,7 @@
                 <xs:element name="delete" type="post-info" minOccurs="0"/>
                 <xs:element name="put" type="post-info" minOccurs="0"/>
                 <xs:element name="browser" type="browser-info"/>
-            </xs:sequence>
+            </xs:all>
             <xs:attribute type="xs:string" name="name" use="required"/>
             <xs:attribute type="xs:string" name="print"/>
             <xs:attribute ref="status"/>

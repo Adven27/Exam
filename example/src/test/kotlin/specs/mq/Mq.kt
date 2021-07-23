@@ -3,6 +3,7 @@ package specs.mq
 import io.github.adven27.concordion.extensions.exam.core.utils.findResource
 import specs.Specs
 
+class MqFailures : Mq()
 class MqPlugin : Mq()
 class MqSend : Mq()
 class MqPurge : Mq()

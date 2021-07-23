@@ -4,6 +4,7 @@ package io.github.adven27.concordion.extensions.exam.core
 
 import com.github.jknack.handlebars.Handlebars
 import io.github.adven27.concordion.extensions.exam.core.html.Html
+import io.github.adven27.concordion.extensions.exam.core.html.codeHighlight
 import io.github.adven27.concordion.extensions.exam.core.html.span
 import io.github.adven27.concordion.extensions.exam.core.utils.DateFormatMatcher
 import io.github.adven27.concordion.extensions.exam.core.utils.DateWithin
@@ -131,9 +132,10 @@ class ExamExtension constructor(private vararg var plugins: ExamPlugin) : Concor
             .forEach { ex.withCommand(NS, it.name(), it) }
 
         CodeMirrorExtension().addTo(ex)
+        HighlightExtension().addTo(ex)
+        FontAwesomeExtension().addTo(ex)
         BootstrapExtension().addTo(ex)
         ex.withDocumentParsingListener(ExamDocumentParsingListener(registry))
-        ex.withSpecificationProcessingListener(SpecSummaryListener())
         ex.withThrowableListener(ErrorListener())
         if (focusOnError) {
             ex.withSpecificationProcessingListener(FocusOnErrorsListener())
@@ -230,7 +232,7 @@ fun String.parseLocalDate(format: String? = null): LocalDate = LocalDate.parse(
 
 fun String.toDatePattern(): DateTimeFormatter = DateTimeFormatter.ofPattern(this)
 
-fun String.fileExt() = substring(lastIndexOf('.') + 1).toLowerCase()
+fun String.fileExt() = substring(lastIndexOf('.') + 1).lowercase()
 
 fun String.toMap(): Map<String, String> = unboxIfNeeded(this)
     .split(",")
@@ -269,18 +271,22 @@ private val logger = KotlinLogging.logger {}
 
 private fun failTemplate(header: String = "", help: String = "", cntId: String) = //language=xml
     """
-    <div class="card border-danger alert-warning">
+    <div class="card border-danger alert-warning shadow-lg">
       ${if (header.isNotEmpty()) "<div class='card-header bg-danger text-white'>$header</div>" else ""}
-      <div class="card-body mb-1 mt-1">
-        <pre id='$cntId' class="card-text"/>
+      <div id='$cntId' class="card-body mb-1 mt-1">
         $help
       </div>
     </div>
     """
 
-fun errorMessage(header: String = "", message: String, help: String = "", html: Html = span()): Pair<String, Html> =
+fun errorMessage(header: String = "", message: String, help: String = "", html: Html = span(), type: String): Pair<String, Html> =
     "error-${Random().nextInt()}".let { id ->
-        id to failTemplate(header, help, id).toHtml().apply { findBy(id)!!.text(message).above(html) }
+        id to failTemplate(header, help, id).toHtml().apply {
+            findBy(id)!!(
+                codeHighlight(message, type),
+                html
+            )
+        }
     }
 
 fun String.fixIndent() = this.replace("\n            ", "\n")
