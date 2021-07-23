@@ -43,7 +43,6 @@ import org.concordion.api.Evaluator
 import org.concordion.api.Fixture
 import org.concordion.api.ResultRecorder
 import java.nio.charset.Charset
-import java.util.HashMap
 import java.util.Random
 
 private const val HEADERS = "headers"
@@ -443,7 +442,7 @@ class CaseCommand(
     private fun check(actual: String, expected: String, resultRecorder: ResultRecorder, root: Html) {
         contentVerifier.verify(expected, actual).fail.map {
             val diff = div().css(contentPrinter.style())
-            val errorMsg = errorMessage(message = it.details, html = diff)
+            val (_, errorMsg) = errorMessage(message = it.details, html = diff)
             root.removeChildren()(errorMsg)
             resultRecorder.failure(diff, contentPrinter.print(it.actual), contentPrinter.print(it.expected))
         }.orElseGet {

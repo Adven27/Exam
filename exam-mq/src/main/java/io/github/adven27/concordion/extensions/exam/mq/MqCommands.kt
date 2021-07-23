@@ -275,7 +275,7 @@ class MqCheckCommand(
         if (e is AssertionError || e is Exception) {
             root.attr("class", "")
             val diff = div().css(type)
-            val errorMsg = errorMessage(message = e.message ?: "", html = diff)
+            val (_, errorMsg) = errorMessage(message = e.message ?: "", html = diff)
             resultRecorder.failure(diff, actual.pretty(type), expected.pretty(type))
             root(errorMsg)
         } else throw e

@@ -1,5 +1,6 @@
 package io.github.adven27.concordion.extensions.exam.core
 
+import com.github.jknack.handlebars.Helper
 import io.github.adven27.concordion.extensions.exam.core.ExamExtension.Companion.PARSED_COMMANDS
 import io.github.adven27.concordion.extensions.exam.core.html.CLASS
 import io.github.adven27.concordion.extensions.exam.core.html.Html
@@ -14,6 +15,8 @@ import io.github.adven27.concordion.extensions.exam.core.html.footerOf
 import io.github.adven27.concordion.extensions.exam.core.html.italic
 import io.github.adven27.concordion.extensions.exam.core.html.menuItemA
 import io.github.adven27.concordion.extensions.exam.core.html.pill
+import io.github.adven27.concordion.extensions.exam.core.utils.HelperMissing.Companion.helpersDesc
+import io.github.adven27.concordion.extensions.exam.core.utils.MissingHelperException
 import io.github.adven27.concordion.extensions.exam.core.utils.content
 import io.github.adven27.concordion.extensions.exam.core.utils.prettyXml
 import nu.xom.Attribute
@@ -26,6 +29,8 @@ import org.concordion.api.listener.ExampleEvent
 import org.concordion.api.listener.ExampleListener
 import org.concordion.api.listener.SpecificationProcessingEvent
 import org.concordion.api.listener.SpecificationProcessingListener
+import org.concordion.api.listener.ThrowableCaughtEvent
+import org.concordion.api.listener.ThrowableCaughtListener
 import org.concordion.internal.FailFastException
 import java.io.ByteArrayInputStream
 import java.io.File
@@ -226,4 +231,41 @@ class SpecSummaryListener : SpecificationProcessingListener {
             }
         )
     }
+}
+
+class ErrorListener : ThrowableCaughtListener {
+    override fun throwableCaught(event: ThrowableCaughtEvent) {
+        val (id, errorMessage) = errorMessage(
+            header = "Error while executing command",
+            message = "${event.throwable.rootCause().message}",
+            help = help(event),
+            html = codeHighlight(
+                "xml",
+                PARSED_COMMANDS[event.element.getAttributeValue("cmdId")]?.fixIndent()
+            )
+        )
+        val html = Html(event.element)
+        html.below(errorMessage)
+        html.moveChildrenTo(errorMessage.findBy(id)!!.parent())
+    }
+
+    private fun help(event: ThrowableCaughtEvent) =
+        if (event.throwable.rootCause() is MissingHelperException) // language=xml
+            """<p>Available helpers:</p>
+            <div class='table-responsive'>${helpersDesc().map { packageWithHelpers(it) }.joinToString("")}</div>
+            """.trimIndent()
+        else
+            ""
+
+    private fun packageWithHelpers(it: Map.Entry<Package, Map<String, Helper<*>>>) = // language=xml
+        """
+        <table class='table table-sm caption-top'>
+            <caption>${it.key}</caption>
+            <thead><tr><th>Name</th><th>Desc</th></tr></thead>
+            <tbody> ${it.value.map { (n, v) -> tr(n, v) }.joinToString("")} </tbody>
+        </table>
+        """.trimIndent()
+
+    private fun tr(n: String, v: Helper<*>) = // language=xml
+        """<tr><td><code>$n</code></td><td><pre class='doc-code language-kotlin'><code>$v</code></pre></td></tr>"""
 }

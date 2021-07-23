@@ -8,6 +8,7 @@ import io.github.adven27.concordion.extensions.exam.core.resolveJson
 import io.github.adven27.concordion.extensions.exam.core.resolveXml
 import io.github.adven27.concordion.extensions.exam.core.utils.ExamHelper
 import io.github.adven27.concordion.extensions.exam.core.utils.HANDLEBARS
+import io.github.adven27.concordion.extensions.exam.core.utils.HelperSource.Companion.describe
 import io.github.adven27.concordion.extensions.exam.core.utils.PlaceholderSupportDiffEvaluator
 import io.github.adven27.concordion.extensions.exam.core.utils.evaluator
 import io.github.adven27.concordion.extensions.exam.core.utils.prettyJson
@@ -261,14 +262,7 @@ enum class WsHelperSource(
             (options.evaluator().getVariable("#exam_response") as Response).jsonPath().getString("$context")
     };
 
-    override fun toString() =
-        "'$example' ${if (context.isEmpty()) "" else "+ variables:$context "}=> ${expectedStr()}"
-
-    private fun expectedStr() = when (expected) {
-        is String -> "'$expected'"
-        null -> null
-        else -> "$expected (${expected?.javaClass})"
-    }
+    override fun toString() = describe()
 }
 
 private fun String.response() = TestResponse(

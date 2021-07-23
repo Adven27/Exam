@@ -4,7 +4,6 @@ package io.github.adven27.concordion.extensions.exam.core
 
 import com.github.jknack.handlebars.Handlebars
 import io.github.adven27.concordion.extensions.exam.core.html.Html
-import io.github.adven27.concordion.extensions.exam.core.html.codeHighlight
 import io.github.adven27.concordion.extensions.exam.core.html.span
 import io.github.adven27.concordion.extensions.exam.core.utils.DateFormatMatcher
 import io.github.adven27.concordion.extensions.exam.core.utils.DateWithin
@@ -135,18 +134,7 @@ class ExamExtension constructor(private vararg var plugins: ExamPlugin) : Concor
         BootstrapExtension().addTo(ex)
         ex.withDocumentParsingListener(ExamDocumentParsingListener(registry))
         ex.withSpecificationProcessingListener(SpecSummaryListener())
-        ex.withThrowableListener {
-            Html(it.element).above(
-                errorMessage(
-                    "Error while executing command",
-                    "${it.throwable.cause?.message ?: it.throwable.message}",
-                    codeHighlight(
-                        "xml",
-                        PARSED_COMMANDS[it.element.getAttributeValue("cmdId")]?.fixIndent()
-                    )
-                )
-            )
-        }
+        ex.withThrowableListener(ErrorListener())
         if (focusOnError) {
             ex.withSpecificationProcessingListener(FocusOnErrorsListener())
         }
@@ -279,19 +267,28 @@ interface ContentVerifier {
 
 private val logger = KotlinLogging.logger {}
 
-private fun failTemplate(header: String = "", cntId: String) = //language=xml
+private fun failTemplate(header: String = "", help: String = "", cntId: String) = //language=xml
     """
     <div class="card border-danger alert-warning">
       ${if (header.isNotEmpty()) "<div class='card-header bg-danger text-white'>$header</div>" else ""}
       <div class="card-body mb-1 mt-1">
-        <pre id='$cntId' class="card-text" style='white-space: pre-wrap;'/>
+        <pre id='$cntId' class="card-text"/>
+        $help
       </div>
     </div>
     """
 
-fun errorMessage(header: String = "", message: String, html: Html = span()): Html =
+fun errorMessage(header: String = "", message: String, help: String = "", html: Html = span()): Pair<String, Html> =
     "error-${Random().nextInt()}".let { id ->
-        failTemplate(header, id).toHtml().apply { findBy(id)!!.text(message).below(html) }
+        id to failTemplate(header, help, id).toHtml().apply { findBy(id)!!.text(message).above(html) }
     }
 
 fun String.fixIndent() = this.replace("\n            ", "\n")
+
+fun Throwable.rootCause(): Throwable {
+    var rootCause = this
+    while (rootCause.cause != null && rootCause.cause !== rootCause) {
+        rootCause = rootCause.cause!!
+    }
+    return rootCause
+}

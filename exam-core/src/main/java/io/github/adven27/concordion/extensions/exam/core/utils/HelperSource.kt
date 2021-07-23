@@ -1,10 +1,5 @@
 package io.github.adven27.concordion.extensions.exam.core.utils
 
-import com.github.freva.asciitable.AsciiTable
-import com.github.freva.asciitable.AsciiTable.FANCY_ASCII
-import com.github.freva.asciitable.Column
-import com.github.freva.asciitable.HorizontalAlign.CENTER
-import com.github.freva.asciitable.HorizontalAlign.LEFT
 import com.github.jknack.handlebars.Context
 import com.github.jknack.handlebars.EscapingStrategy.NOOP
 import com.github.jknack.handlebars.Handlebars
@@ -45,39 +40,32 @@ val HANDLEBARS: Handlebars = Handlebars()
     }
     .prettyPrint(false)
     .registerHelpers(HelperSource::class.java)
-    .registerHelperMissing(HelpHelper())
+    .registerHelperMissing(HelperMissing())
 
-class HelpHelper : Helper<Any?> {
-    override fun apply(context: Any?, options: Options): Any {
-        throw IllegalArgumentException(
-            """
-Variable or helper '${options.fn.text()}' not found, available helpers:
+class MissingHelperException(context: Any?, options: Options) : IllegalArgumentException(
+    "Variable or helper '${options.fn.text()}' not found"
+)
 
-${helpersDesc()}
-
-Or register custom one:
-
-ExamExtension().withHandlebar { hb ->
+const val REGISTER_HELPER_EXAMPLE = """ExamExtension().withHandlebar { hb ->
     hb.registerHelper("hi", Helper { context: Any?, options ->
         //{{hi '1' 'p1 'p2' o1='a' o2='b'}} => Hello context = 1; params = [p1, p2]; options = {o1=a, o2=b}!
         //{{hi variable1 variable2 o1=variable3}} => Hello context = 1; params = [2]; options = {o1=3}!
         "Hello context = ${"$"}context; params = ${"$"}{options.params.map { it.toString() }}; options = ${"$"}{options.hash}!"
     })
 }"""
-        )
-    }
 
-    private fun helpersDesc() =
-        HANDLEBARS.helpers().groupBy { it.value.javaClass.`package` }.map { e ->
-            e.key to AsciiTable.getTable(
-                FANCY_ASCII,
-                e.value.filterNot { it.key == "helperMissing" }.sortedBy { it.key },
-                listOf(
-                    Column().header("Name").headerAlign(CENTER).with { it.key },
-                    Column().header("Desc").headerAlign(CENTER).dataAlign(LEFT).with { it.value.toString() },
-                )
-            )
-        }.joinToString("\n\n") { "${it.first}:\n${it.second}" }
+class HelperMissing : Helper<Any?> {
+    override fun apply(context: Any?, options: Options) = throw MissingHelperException(context, options)
+
+    companion object {
+        fun helpersDesc(): Map<Package, Map<String, Helper<*>>> =
+            HANDLEBARS.helpers().groupBy { it.value.javaClass.`package` }.map { e ->
+                e.key to e.value
+                    .filterNot { it.key == "helperMissing" }
+                    .sortedBy { it.key }
+                    .associate { it.key to it.value }
+            }.toMap()
+    }
 }
 
 fun Handlebars.resolve(eval: Any?, placeholder: String): String =
@@ -176,7 +164,7 @@ enum class HelperSource(
         LocalDateTime.of(2000, 2, 1, 10, 20).toDate(),
         mapOf(FORMAT to "\"dd.MM.yyyy\"", PLUS to "\"1 day\"", MINUS to "\"5 hours\"")
     ) {
-        override fun invoke(context: Any?, options: Options): Any? = parseDate(context, options)
+        override fun invoke(context: Any?, options: Options): Any = parseDate(context, options)
             .plus(parsePeriodFrom(options.hash(PLUS, "")))
             .minus(parsePeriodFrom(options.hash(MINUS, "")))
             .toDate()
@@ -188,30 +176,30 @@ enum class HelperSource(
         }
     },
     string("{{string}}", mapOf(PLACEHOLDER_TYPE to "json"), "\${json-unit.any-string}") {
-        override fun invoke(context: Any?, options: Options): Any? =
+        override fun invoke(context: Any?, options: Options): Any =
             "\${${placeholderType(options.context)}-unit.any-string}"
     },
     number("{{number}}", mapOf(PLACEHOLDER_TYPE to "json"), "\${json-unit.any-number}") {
-        override fun invoke(context: Any?, options: Options): Any? =
+        override fun invoke(context: Any?, options: Options): Any =
             "\${${placeholderType(options.context)}-unit.any-number}"
     },
     bool("{{bool}}", mapOf(PLACEHOLDER_TYPE to "json"), "\${json-unit.any-boolean}") {
-        override fun invoke(context: Any?, options: Options): Any? =
+        override fun invoke(context: Any?, options: Options): Any =
             "\${${placeholderType(options.context)}-unit.any-boolean}"
     },
     ignore("{{ignore}}", mapOf(PLACEHOLDER_TYPE to "json"), "\${json-unit.ignore}") {
-        override fun invoke(context: Any?, options: Options): Any? =
+        override fun invoke(context: Any?, options: Options): Any =
             "\${${placeholderType(options.context)}-unit.ignore}"
     },
     regex("{{regex '\\d+'}}", mapOf(PLACEHOLDER_TYPE to "json"), "\${json-unit.regex}\\d+") {
-        override fun invoke(context: Any?, options: Options): Any? = if (placeholderType(options.context) == "db") {
+        override fun invoke(context: Any?, options: Options): Any = if (placeholderType(options.context) == "db") {
             regexMatches(context.toString(), dbActual(options.context))
         } else "\${${placeholderType(options.context)}-unit.regex}$context"
     },
     matches(
         "{{matches 'name' 'params'}}", mapOf(PLACEHOLDER_TYPE to "json"), "\${json-unit.matches:name}params"
     ) {
-        override fun invoke(context: Any?, options: Options): Any? =
+        override fun invoke(context: Any?, options: Options): Any =
             "\${${placeholderType(options.context)}-unit.matches:$context}${options.param(0, "")}"
     },
     formattedAs(
@@ -219,7 +207,7 @@ enum class HelperSource(
         mapOf(PLACEHOLDER_TYPE to "json"),
         "\${json-unit.matches:formattedAs}yyyy-MM-dd'T'hh:mm:ss"
     ) {
-        override fun invoke(context: Any?, options: Options): Any? =
+        override fun invoke(context: Any?, options: Options): Any =
             "\${${placeholderType(options.context)}-unit.matches:$name}$context"
     },
     formattedAndWithinNow(
@@ -227,7 +215,7 @@ enum class HelperSource(
         mapOf(PLACEHOLDER_TYPE to "json"),
         "\${json-unit.matches:formattedAndWithinNow}[yyyy-MM-dd'T'hh:mm:ss][5s]"
     ) {
-        override fun invoke(context: Any?, options: Options): Any? =
+        override fun invoke(context: Any?, options: Options): Any =
             "\${${placeholderType(options.context)}-unit.matches:$name}[$context][${options.param(0, "5s")}]"
     },
     formattedAndWithin(
@@ -235,7 +223,7 @@ enum class HelperSource(
         mapOf(PLACEHOLDER_TYPE to "json"),
         "\${json-unit.matches:formattedAndWithin}[yyyy-MM-dd][5s][1951-05-13]"
     ) {
-        override fun invoke(context: Any?, options: Options): Any? =
+        override fun invoke(context: Any?, options: Options): Any =
             "\${${placeholderType(options.context)}-unit.matches:$name}" +
                 "[$context][${options.param(0, "5s")}][${options.param(1, "")}]"
     },
@@ -299,18 +287,19 @@ enum class HelperSource(
         )
     }
 
-    override fun toString() = "'$example' ${if (context.isEmpty()) "" else "+ variables:$context "}=> ${expectedStr()}"
-
-    private fun expectedStr() = when (expected) {
-        is String -> "'$expected'"
-        null -> null
-        else -> "$expected (${expected?.javaClass})"
-    }
-
+    override fun toString() = this.describe()
     abstract operator fun invoke(context: Any?, options: Options): Any?
 
     companion object {
         const val DEFAULT_FORMAT = "yyyy-MM-dd'T'HH:mm:ss"
+        fun ExamHelper<Any?>.describe() =
+            "$example will produce: ${expectedStr()} ${if (context.isEmpty()) "" else "(given context has variables: $context)"}"
+
+        private fun ExamHelper<Any?>.expectedStr() = when (expected) {
+            is String -> "\"$expected\""
+            null -> null
+            else -> "object of ${expected?.javaClass} = \"$expected\""
+        }
     }
 }
 
@@ -327,7 +316,7 @@ interface ExamHelper<T> : Helper<T> {
         )
 }
 
-fun String.timeZoneId() = ZoneId.of(this)
+fun String.timeZoneId(): ZoneId = ZoneId.of(this)
 
 private fun regexMatches(p: String, actualValue: Any?): Boolean {
     if (actualValue == null) return false
