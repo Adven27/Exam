@@ -8,17 +8,19 @@
 
     <e:set var="cmd" value="e:db-execute"/>
     <e:set var="cmdExample" silent="true"><![CDATA[<e:db-execute datasets='/db/adam.xml, /db/bob.json'/>]]></e:set>
-    <e:include from="/specs/db/includes/usage.xml"/>
+    <e:include from="/specs/includes/db/usage.xml"/>
 
     <h3>Attributes</h3>
 
     <div class="table-responsive">
         <table class="table">
             <thead><tr><th>attribute</th><th>desc</th><th>example</th></tr></thead>
-            <e:include from="/specs/db/includes/attr-datasets.xml"/>
-            <e:include from="/specs/db/includes/attr-dir.xml"/>
-            <e:include from="/specs/db/includes/attr-operation.xml"/>
-            <e:include from="/specs/db/includes/attr-ds.xml"/>
+            <e:include from="/specs/includes/db/attr-datasets.xml"/>
+            <e:include from="/specs/includes/db/attr-dir.xml"/>
+            <e:include from="/specs/includes/db/attr-operation.xml"/>
+            <e:include from="/specs/includes/db/attr-ds.xml"/>
+            <e:include from="/specs/includes/attr-vars.xml"/>
+            <e:include from="/specs/includes/attr-varsSeparator.xml"/>
         </table>
     </div>
 
@@ -39,7 +41,8 @@
             </e:fl-check>
         </e:given>
         <e:when>
-            <e:db-execute dir="/specs/db/data/" datasets="adam.xml, bob.json, carl/person.csv" print="true"/>
+            <e:db-execute dir="/specs/db/data/" datasets="adam.xml, bob.json, carl/person.csv"
+                          vars="a1=1, a2=2" varsSeparator="," print="true"/>
         </e:when>
         <e:then>
             Datasets were applied to database:

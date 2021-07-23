@@ -1,0 +1,62 @@
+<ignored xmlns:e="http://exam.extension.io" xmlns:cc="http://www.concordion.org/2007/concordion">
+    <h2>Message queue plugin</h2>
+    <hr/>
+    <p>
+        <strong>MqPlugin</strong> enables to set up and verify the state of a some message queue. Message queue is represented as
+        an implementation of the <code>io.github.adven27.concordion.extensions.exam.mq.MqTester</code> interface
+        and basically off loads all the responsibilities for working with the specific queue to that implementation.
+    </p>
+    <p>
+       There are several out-of-teb-box implementations
+        (<a href="https://github.com/Adven27/Exam/tree/master/exam-mq-kafka">exam-mq-kafka</a> /
+        <a href="https://github.com/Adven27/Exam/tree/master/exam-mq-rabbit">exam-mq-rabbit</a> /
+        <a href="https://github.com/Adven27/Exam/tree/master/exam-mq-ibmmq">exam-mq-ibmmq</a> /
+        <a href="https://github.com/Adven27/Exam/tree/master/exam-mq-redis">exam-mq-redis</a>)
+        that can be used directly or as an example for custom ones.
+    </p>
+
+    <h3>Usage</h3>
+    <p>1. Add dependency <pre class="doc-code"><code>testImplementation "io.github.adven27:exam-mq:5.0.1"</code></pre></p>
+    <p>2. Configure and attach to ExamExtension the <a cc:run="concordion" href="mq/MqPlugin.html">MqPlugin</a></p>
+
+    <h3>Commands</h3>
+    <p>
+        There are commands for setting up and verifying queue state.
+    </p>
+
+    <h4>Set up queue</h4>
+
+    <table class="table table-sm table-borderless" style="table-layout: fixed;">
+        <tr>
+            <td style="width: 100px;"> <code><a cc:run="concordion" href="db/DbSet.html">mq-send</a></code> </td>
+            <td> <p>Sends message to specified queue</p> </td>
+        </tr>
+        <tr>
+            <td colspan="2"> <pre class="doc-code language-xml"><code> <![CDATA[<e:mq-send name="someQueue" from="/data/message.json"/>]]> </code></pre> </td>
+        </tr>
+
+        <tr>
+            <td> <code><a cc:run="concordion" href="db/DbClean.html">mq-purge</a></code> </td>
+            <td> <p>Purges specified queue</p> </td>
+        </tr>
+        <tr>
+            <td colspan="2"> <pre class="doc-code language-xml"><code><![CDATA[<e:mq-purge name="someQueue"/>]]></code></pre> </td>
+        </tr>
+    </table>
+
+    <h4>Verify queue</h4>
+
+    <table class="table table-sm table-borderless" style="table-layout: fixed;">
+        <tr>
+            <td style="width: 100px;"> <code><a cc:run="concordion" href="db/DbCheck.html">mq-check</a></code> </td>
+            <td> <p>Verifies that specified messages exist in queue</p> </td>
+        </tr>
+        <tr>
+            <td colspan="2"> <pre class="doc-code language-xml"><code><![CDATA[<e:mq-check name="someQueue">
+    <e:message>{"msg" : "1"}</e:message>
+    <e:message from="/data/mq/msg2.json"/>
+</e:mq-check>]]></code></pre> </td>
+        </tr>
+    </table>
+
+</ignored>

@@ -15,4 +15,7 @@ class DbExecute : Specs() {
         get() = "/specs/db/data".findResource().path
 }
 
-class DbVerify : Specs()
+class DbVerify : Specs() {
+    val dir: String
+        get() = "/specs/db/data".findResource().path
+}

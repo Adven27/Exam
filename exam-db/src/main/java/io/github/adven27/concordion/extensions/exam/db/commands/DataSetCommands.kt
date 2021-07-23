@@ -3,18 +3,16 @@ package io.github.adven27.concordion.extensions.exam.db.commands
 import io.github.adven27.concordion.extensions.exam.core.commands.ExamCommand
 import io.github.adven27.concordion.extensions.exam.core.commands.awaitConfig
 import io.github.adven27.concordion.extensions.exam.core.html.Html
-import io.github.adven27.concordion.extensions.exam.core.html.attr
 import io.github.adven27.concordion.extensions.exam.core.html.div
 import io.github.adven27.concordion.extensions.exam.core.html.html
 import io.github.adven27.concordion.extensions.exam.core.html.span
-import io.github.adven27.concordion.extensions.exam.core.html.takeAttr
+import io.github.adven27.concordion.extensions.exam.core.vars
 import io.github.adven27.concordion.extensions.exam.db.DbPlugin
 import io.github.adven27.concordion.extensions.exam.db.DbResultRenderer
 import io.github.adven27.concordion.extensions.exam.db.DbTester
 import io.github.adven27.concordion.extensions.exam.db.builder.DataSetConfig
 import io.github.adven27.concordion.extensions.exam.db.builder.DataSetExecutor
 import io.github.adven27.concordion.extensions.exam.db.builder.SeedStrategy
-import io.github.adven27.concordion.extensions.exam.db.builder.SeedStrategy.CLEAN_INSERT
 import io.github.adven27.concordion.extensions.exam.db.commands.DBCheckCommand.Companion.isDbMatcher
 import org.concordion.api.CommandCall
 import org.concordion.api.Evaluator
@@ -29,7 +27,7 @@ import org.concordion.internal.util.Announcer
 import org.dbunit.assertion.DbComparisonFailure
 import org.dbunit.assertion.Difference
 import org.dbunit.dataset.ITable
-import org.dbunit.operation.DatabaseOperation
+import org.dbunit.dataset.ITableIterator
 
 class DataSetExecuteCommand(
     name: String,
@@ -44,21 +42,48 @@ class DataSetExecuteCommand(
         resultRecorder: ResultRecorder,
         fixture: Fixture
     ) {
-        DataSetExecutor(cmd.ds(dbTester)).insertDataSet(
-            DataSetConfig(cmd.dataSets(), cmd.allowedSeedStrategy(allowedSeedStrategies), debug = cmd.debug()),
-            evaluator
-        ).iterator().apply {
-            while (next()) {
-                cmd.html()(
-                    table.let {
-                        renderTable(
-                            null,
-                            it,
-                            { td, row, col -> td()(Html(valuePrinter.wrap(it[row, col]))) }
-                        )
+        cmd.html().also { root ->
+            Attrs.from(root, evaluator, allowedSeedStrategies).also { attrs ->
+                insertDataSet(attrs, evaluator).iterator().apply {
+                    while (next()) {
+                        render(cmd.html())
                     }
+                }
+            }
+        }
+    }
+
+    private fun insertDataSet(attrs: Attrs, evaluator: Evaluator) =
+        DataSetExecutor(attrs.datasetCommandAttrs.ds(dbTester)).insertDataSet(
+            DataSetConfig(
+                attrs.datasetCommandAttrs.datasets.dataSets(),
+                attrs.setAttrs.seedStrategy,
+                debug = attrs.datasetCommandAttrs.debug
+            ),
+            evaluator
+        )
+
+    private fun ITableIterator.render(root: Html) {
+        root(
+            table.let {
+                renderTable(
+                    null,
+                    it,
+                    { td, row, col -> td()(Html(valuePrinter.wrap(it[row, col]))) }
                 )
             }
+        )
+    }
+
+    data class Attrs(
+        val datasetCommandAttrs: DatasetCommandAttrs,
+        val setAttrs: SetAttrs,
+    ) {
+        companion object {
+            fun from(root: Html, evaluator: Evaluator, allowedSeedStrategies: List<SeedStrategy>) = Attrs(
+                DatasetCommandAttrs.from(root, evaluator),
+                SetAttrs.from(root, allowedSeedStrategies),
+            )
         }
     }
 }
@@ -78,13 +103,19 @@ class DataSetVerifyCommand(name: String, tag: String, val dbTester: DbTester, va
         resultRecorder: ResultRecorder,
         fixture: Fixture
     ) {
-        val root = commandCall.html()
-        dbTester.dbUnitConfig.valueComparer.setEvaluator(evaluator)
-        dbTester.dbUnitConfig.columnValueComparers.forEach { it.value.setEvaluator(evaluator) }
-        DataSetExecutor(commandCall.ds(dbTester)).awaitCompareCurrentDataSetWith(
-            commandCall.awaitConfig(), DataSetConfig(commandCall.dataSets()), evaluator, orderBy = commandCall.orderBy()
-        ).apply {
-            toHtml(root, resultRecorder)
+        commandCall.html().also { root ->
+            Attrs.from(root, evaluator).also { attrs ->
+                dbTester.dbUnitConfig.valueComparer.setEvaluator(evaluator)
+                dbTester.dbUnitConfig.columnValueComparers.forEach { it.value.setEvaluator(evaluator) }
+                DataSetExecutor(attrs.datasetCommandAttrs.ds(dbTester)).awaitCompareCurrentDataSetWith(
+                    commandCall.awaitConfig(),
+                    DataSetConfig(attrs.datasetCommandAttrs.datasets.dataSets()),
+                    evaluator,
+                    orderBy = attrs.orderBy
+                ).apply {
+                    toHtml(root, resultRecorder)
+                }
+            }
         }
     }
 
@@ -197,25 +228,77 @@ class DataSetVerifyCommand(name: String, tag: String, val dbTester: DbTester, va
         listeners.announce().successReported(AssertSuccessEvent(html.el))
         return html
     }
+
+    data class Attrs(
+        val datasetCommandAttrs: DatasetCommandAttrs,
+        val orderBy: Array<String>,
+    ) {
+        companion object {
+            private const val ORDER_BY = "orderBy"
+
+            fun from(root: Html, evaluator: Evaluator) = Attrs(
+                DatasetCommandAttrs.from(root, evaluator),
+                root.takeAwayAttr(ORDER_BY, "").split(",").map { it.trim() }.filter { it.isNotEmpty() }
+                    .toTypedArray(),
+            )
+        }
+    }
 }
 
-private fun CommandCall?.dataSets() = attr("datasets", "").split(",").map { attr("dir", "").trim() + it.trim() }
+data class DatasetCommandAttrs(
+    val datasets: DatasetsAttrs,
+    val vars: VarsAttrs,
+    val ds: String,
+    val debug: Boolean
+) {
+    fun ds(dbTester: DbTester): DbTester = dbTester.executors[ds]
+        ?: throw IllegalArgumentException("DbTester for datasource [$ds] not registered in DbPlugin.")
 
-fun CommandCall?.operation() = SeedStrategy.valueOf(this.takeAttr("operation", CLEAN_INSERT.name).toUpperCase())
+    companion object {
+        private const val DS = "ds"
+        private const val DEBUG = "debug"
 
-fun CommandCall?.allowedOperation(allowedSeedStrategies: List<SeedStrategy>): DatabaseOperation =
-    allowedSeedStrategy(allowedSeedStrategies).operation
-
-fun CommandCall?.allowedSeedStrategy(allowed: List<SeedStrategy>): SeedStrategy = operation().let { strategy ->
-    allowed.find { it == strategy }
-        ?: throw java.lang.IllegalArgumentException("Forbidden seed strategy $strategy. Allowed strategies: $allowed")
+        fun from(root: Html, evaluator: Evaluator) = DatasetCommandAttrs(
+            DatasetsAttrs.from(root),
+            VarsAttrs.from(root, evaluator),
+            root.takeAwayAttr(DS, DbTester.DEFAULT_DATASOURCE),
+            root.takeAwayAttr(DEBUG, "false").toBoolean(),
+        )
+    }
 }
 
-private fun CommandCall?.debug() = this.takeAttr("debug", "false").toBoolean()
-private fun CommandCall?.ds(dbTester: DbTester): DbTester = this.takeAttr("ds", DbTester.DEFAULT_DATASOURCE).let {
-    dbTester.executors[it]
-        ?: throw IllegalArgumentException("DbTester for datasource [$it] not registered in DbPlugin.")
+data class VarsAttrs(
+    val vars: String?,
+    val varsSeparator: String,
+) {
+    fun setVarsToContext(evaluator: Evaluator) {
+        vars.vars(evaluator, true, varsSeparator)
+    }
+
+    companion object {
+        private const val VARS = "vars"
+        private const val VARS_SEPARATOR = "varsSeparator"
+
+        fun from(root: Html, evaluator: Evaluator) = VarsAttrs(
+            root.takeAwayAttr(VARS),
+            root.takeAwayAttr(VARS_SEPARATOR, ","),
+        ).apply { setVarsToContext(evaluator) }
+    }
 }
 
-private fun CommandCall?.orderBy() =
-    this.takeAttr("orderBy", "").split(",").map { it.trim() }.filter { it.isNotEmpty() }.toTypedArray()
+data class DatasetsAttrs(
+    val datasets: String,
+    val dir: String,
+) {
+    fun dataSets() = datasets.split(",").map { dir.trim() + it.trim() }
+
+    companion object {
+        private const val DIR = "dir"
+        private const val DATASETS = "datasets"
+
+        fun from(root: Html) = DatasetsAttrs(
+            root.attrOrFail(DATASETS),
+            root.takeAwayAttr(DIR, ""),
+        )
+    }
+}

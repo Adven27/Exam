@@ -1,5 +1,6 @@
 package io.github.adven27.concordion.extensions.exam.db.commands
 
+import io.github.adven27.concordion.extensions.exam.core.html.Html
 import io.github.adven27.concordion.extensions.exam.core.html.html
 import io.github.adven27.concordion.extensions.exam.db.DbPlugin
 import io.github.adven27.concordion.extensions.exam.db.DbTester
@@ -20,9 +21,24 @@ class DBSetCommand(
 
     override fun setUp(cmd: CommandCall?, eval: Evaluator?, resultRecorder: ResultRecorder?, fixture: Fixture) {
         super.setUp(cmd, eval, resultRecorder, fixture)
-        val el = cmd.html()
-        el(renderTable(el.takeAwayAttr("caption"), expectedTable, remarks, valuePrinter))
-        cmd.allowedOperation(allowedSeedStrategies)
-            .execute(dbTester.connectionFor(ds), ExamDataSet(expectedTable, eval!!))
+        cmd.html().also { root ->
+            Attrs.from(root, allowedSeedStrategies).also { attrs ->
+                root(renderTable(attrs.caption, expectedTable, remarks, valuePrinter))
+                attrs.setAttrs.seedStrategy.operation
+                    .execute(dbTester.connectionFor(ds), ExamDataSet(expectedTable, eval!!))
+            }
+        }
+    }
+
+    data class Attrs(
+        val setAttrs: SetAttrs,
+        val caption: String?,
+    ) {
+        companion object {
+            fun from(root: Html, allowedSeedStrategies: List<SeedStrategy>) = Attrs(
+                SetAttrs.from(root, allowedSeedStrategies),
+                root.takeAwayAttr("caption"),
+            )
+        }
     }
 }

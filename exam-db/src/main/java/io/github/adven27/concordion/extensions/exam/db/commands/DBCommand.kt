@@ -20,6 +20,7 @@ import io.github.adven27.concordion.extensions.exam.db.DbPlugin
 import io.github.adven27.concordion.extensions.exam.db.DbTester
 import io.github.adven27.concordion.extensions.exam.db.MarkedHasNoDefaultValue
 import io.github.adven27.concordion.extensions.exam.db.TableData
+import io.github.adven27.concordion.extensions.exam.db.builder.SeedStrategy
 import org.concordion.api.CommandCall
 import org.concordion.api.Evaluator
 import org.concordion.api.Fixture
@@ -143,3 +144,18 @@ private fun ITable.empty() = this.rowCount == 0
 fun tableCaption(title: String?, def: String?): Html = caption()
     .style("width:max-content")(italic("", CLASS to "fa fa-database ml-1"))
     .text("  ${if (!title.isNullOrBlank()) title else def}")
+
+data class SetAttrs(val seedStrategy: SeedStrategy) {
+    companion object {
+        private const val OPERATION = "operation"
+
+        fun from(root: Html, allowedSeedStrategies: List<SeedStrategy>) = SetAttrs(
+            SeedStrategy.valueOf(root.takeAwayAttr(OPERATION, SeedStrategy.CLEAN_INSERT.name).toUpperCase())
+                .isAllowed(allowedSeedStrategies),
+        )
+
+        private fun SeedStrategy.isAllowed(allowed: List<SeedStrategy>): SeedStrategy =
+            allowed.find { it == this }
+                ?: throw IllegalArgumentException("Forbidden seed strategy $this. Allowed strategies: $allowed")
+    }
+}

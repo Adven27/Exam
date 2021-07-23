@@ -2,4 +2,5 @@ package specs.mq
 
 import specs.Specs
 
-class Mq : Specs()
+class MqPlugin : Mq()
+open class Mq : Specs()

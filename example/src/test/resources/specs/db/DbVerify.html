@@ -8,35 +8,38 @@
 
     <e:set var="cmd" value="e:db-verify"/>
     <e:set var="cmdExample" silent="true"> <![CDATA[ <e:db-verify datasets='/db/adam.xml, /db/bob.json'/> ]]> </e:set>
-    <e:include from="/specs/db/includes/usage.xml"/>
+    <e:include from="/specs/includes/db/usage.xml"/>
 
     <h3>Attributes</h3>
 
     <div class="table-responsive">
         <table class="table">
             <thead><tr><th>attribute</th><th>desc</th><th>example</th></tr></thead>
-            <e:include from="/specs/db/includes/attr-datasets.xml"/>
-            <e:include from="/specs/db/includes/attr-dir.xml"/>
-            <e:include from="/specs/db/includes/attr-ds.xml"/>
+            <e:include from="/specs/includes/db/attr-datasets.xml"/>
+            <e:include from="/specs/includes/db/attr-dir.xml"/>
+            <e:include from="/specs/includes/db/attr-ds.xml"/>
             <tr>
                 <td><code>orderBy</code></td>
-                <td>List of columns to sort records before verifying</td>
+                <td>List of columns to sort records before verifying. Useful when default sorting results
+                    in different order for actual and expected datasets due to using of placeholders.</td>
                 <td><var>Optional</var>. <var>Default: -</var><pre class="doc-code language-json"><code>orderBy="person_fields.value, person.birthday"</code></pre></td>
             </tr>
-            <e:include from="/specs/db/includes/attr-awaitAtMostSec.xml"/>
-            <e:include from="/specs/db/includes/attr-awaitPollDelayMillis.xml"/>
-            <e:include from="/specs/db/includes/attr-awaitPollIntervalMillis.xml"/>
+            <e:include from="/specs/includes/attr-vars.xml"/>
+            <e:include from="/specs/includes/attr-varsSeparator.xml"/>
+            <e:include from="/specs/includes/attr-awaitAtMostSec.xml"/>
+            <e:include from="/specs/includes/attr-awaitPollDelayMillis.xml"/>
+            <e:include from="/specs/includes/attr-awaitPollIntervalMillis.xml"/>
         </table>
     </div>
-    <e:include from="/specs/db/includes/await-footnote.xml"/>
+    <e:include from="/specs/includes/await-footnote.xml"/>
 
     <h2>Examples</h2>
 
     <h3>Basic example</h3>
     <e:example name="Basic example">
         <e:given>
-            Empty table:
-            <e:db-set table="PERSON"/>
+            <e:db-execute dir="/specs/db/data/" datasets="adam.xml, bob.json, carl/person.csv"
+                          vars="a1=1, a2=2" varsSeparator=","/>
             And following dataset files:
             <e:fl-check dir="dir">
                 <e:file name="adam.xml"/>
@@ -46,12 +49,11 @@
                 <e:file name="carl/person_fields.csv"/>
             </e:fl-check>
         </e:given>
-        <e:when>
-            <e:db-execute dir="/specs/db/data/" datasets="adam.xml, bob.json, carl/person.csv" print="true"/>
-        </e:when>
         <e:then>
-            Datasets were applied to database:
-            <e:db-show table="PERSON"/>
+            <e:db-verify dir="/specs/db/data/" datasets="adam.xml, bob.json, carl/person.csv"
+                         orderBy="person_fields.value, person.birthday"
+                         vars="a1=1, a2=2" varsSeparator=","
+                         print="true"/>
         </e:then>
     </e:example>
 

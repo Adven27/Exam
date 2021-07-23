@@ -29,6 +29,7 @@ import io.github.adven27.concordion.extensions.exam.core.resolveJson
 import io.github.adven27.concordion.extensions.exam.core.utils.content
 import io.github.adven27.concordion.extensions.exam.core.utils.pretty
 import io.github.adven27.concordion.extensions.exam.core.vars
+import mu.KLogging
 import net.javacrumbs.jsonunit.core.Configuration
 import net.javacrumbs.jsonunit.core.Option
 import net.javacrumbs.jsonunit.core.internal.Options
@@ -68,6 +69,8 @@ class MqCheckCommand(
     private val mqTesters: Map<String, MqTester>,
     private val contentVerifiers: Map<String, ContentVerifier>
 ) : ExamVerifyCommand(name, tag, ExamResultRenderer()) {
+
+    companion object : KLogging()
 
     private lateinit var usedCfg: Configuration
 
@@ -125,6 +128,7 @@ class MqCheckCommand(
 
         expectedMessages.sortedTyped(contains).zip(actualMessages.sorted(contains)) { e, a -> VerifyPair(a, e) }
             .forEach {
+                logger.info("Verifying {}", it)
                 val bodyContainer = container("", collapsable, it.expected.type)
                 val headersContainer =
                     span("Headers: ${it.expected.message.headers.entries.joinToString()}")(
@@ -308,14 +312,10 @@ class MqSendCommand(name: String, tag: String, private val mqTesters: Map<String
     ) {
         super.execute(commandCall, evaluator, resultRecorder, fixture)
         commandCall.html().also { root ->
-            Attrs.from(root, evaluator).apply { setVarsToContext(evaluator) }.also { attrs ->
+            Attrs.from(root, evaluator).also { attrs ->
                 renderAndSend(root, attrs, evaluator.resolveJson(root.content(attrs.from, evaluator).trim()))
             }
         }
-    }
-
-    private fun Attrs.setVarsToContext(evaluator: Evaluator) {
-        vars.vars(evaluator, true, varsSeparator)
     }
 
     private fun renderAndSend(root: Html, attrs: Attrs, message: String) {
@@ -357,6 +357,10 @@ class MqSendCommand(name: String, tag: String, private val mqTesters: Map<String
         val varsSeparator: String = ",",
         val collapsable: Boolean = false,
     ) {
+        fun setVarsToContext(evaluator: Evaluator) {
+            vars.vars(evaluator, true, varsSeparator)
+        }
+
         companion object {
             private const val NAME = "name"
             private const val FROM = "from"
@@ -379,7 +383,7 @@ class MqSendCommand(name: String, tag: String, private val mqTesters: Map<String
                     root.takeAwayAttr(VARS),
                     root.takeAwayAttr(VARS_SEPARATOR, ","),
                     root.takeAwayAttr(COLLAPSABLE, "false").toBoolean(),
-                )
+                ).apply { setVarsToContext(evaluator) }
             }
         }
     }
