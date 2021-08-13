@@ -15,7 +15,7 @@
 
     <h3>Attributes</h3>
     <table class="table" style="table-layout: fixed;">
-        <thead><tr><th style="width: 160px;">attribute</th><th style="width: 300px;">desc</th><th>example</th></tr></thead>
+        <thead><tr><th style="width: 155px;">attribute</th><th style="width: 300px;">desc</th><th>example</th></tr></thead>
         <e:include from="/specs/includes/db/attr-table.xml"/>
         <e:include from="/specs/includes/db/attr-cols.xml"/>
         <e:include from="/specs/includes/db/attr-separator.xml"/>
@@ -191,59 +191,7 @@
         </e:then>
     </e:example>
 
-    <h2>Negative cases examples</h2>
-
-    <h3>Missing record</h3>
-    <e:example name="Missing record" status="ExpectedToFail">
-        <e:given>
-            Empty table:
-            <e:db-set table="ANDROIDS_TABLE"/>
-        </e:given>
-        <e:then>
-            Expected 1 record:
-            <e:db-check table="ANDROIDS_TABLE" cols="name" print="true">
-                <e:row>Adam</e:row>
-            </e:db-check>
-        </e:then>
-    </e:example>
-
-    <h3>Surplus record</h3>
-    <e:example name="Surplus record" status="ExpectedToFail">
-        <e:given>
-            Table has the following records:
-            <e:db-set table="ANDROIDS_TABLE" cols="id=1, name">
-                <e:row>Adam</e:row>
-            </e:db-set>
-        </e:given>
-        <e:then>
-            Expected empty table:
-            <e:db-check table="ANDROIDS_TABLE" print="true"/>
-        </e:then>
-    </e:example>
-
-    <h3>Wrong fields</h3>
-    <e:example name="Wrong fields" status="ExpectedToFail">
-        <e:given>
-            Table has the following records:
-            <e:db-set table="ANDROIDS_TABLE" cols="id=1..10, name, height, manufactured">
-                <e:row>Adam, 10, 2021-01-01</e:row>
-                <e:row> Bob, 20, 2021-02-02</e:row>
-                <e:row>Carl, 30, 2021-03-03</e:row>
-            </e:db-set>
-        </e:given>
-        <e:then>
-            Expected table:
-            <e:db-check table="ANDROIDS_TABLE" cols="name, height, manufactured" print="true">
-                <!--all correct-->
-                <e:row>Adam, 10, 2021-01-01</e:row>
-                <!--wrong manufactured-->
-                <e:row> Bob, 20, 2021-01-01</e:row>
-                <!--wrong height and manufactured-->
-                <e:row>Carl, 10, 2021-01-01</e:row>
-            </e:db-check>
-        </e:then>
-    </e:example>
-
+    <!-- TODO -->
 <!--    <div>
         <e:summary/>
         <e:example name="Using of vars and EL">
@@ -338,6 +286,11 @@
             </e:then>
         </e:example>
     </div>-->
+
+    <h2>More</h2>
+    <ul>
+        <li><a cc:run="concordion" href="DbFailures.xhtml">How do check failures look like?</a></li>
+    </ul>
 
 </e:main>
 </body>

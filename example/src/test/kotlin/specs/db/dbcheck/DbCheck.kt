@@ -2,4 +2,5 @@ package specs.db.dbcheck
 
 import specs.Specs
 
-class DbCheck:Specs()
+class DbFailures : Specs()
+class DbCheck : Specs()
