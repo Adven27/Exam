@@ -11,6 +11,7 @@ import io.github.adven27.concordion.extensions.exam.core.minus
 import io.github.adven27.concordion.extensions.exam.core.parseDate
 import io.github.adven27.concordion.extensions.exam.core.parsePeriodFrom
 import io.github.adven27.concordion.extensions.exam.core.plus
+import io.github.adven27.concordion.extensions.exam.core.readFile
 import io.github.adven27.concordion.extensions.exam.core.resolve
 import io.github.adven27.concordion.extensions.exam.core.resolveToObj
 import io.github.adven27.concordion.extensions.exam.core.toDate

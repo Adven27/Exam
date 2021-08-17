@@ -15,6 +15,9 @@ import com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig
 import com.github.tomakehurst.wiremock.extension.responsetemplating.ResponseTemplateTransformer
 import io.github.adven27.concordion.extensions.exam.core.AbstractSpecs
 import io.github.adven27.concordion.extensions.exam.core.ExamExtension
+import io.github.adven27.concordion.extensions.exam.core.JsonContentTypeConfig
+import io.github.adven27.concordion.extensions.exam.core.JsonVerifier
+import io.github.adven27.concordion.extensions.exam.core.TextContentTypeConfig
 import io.github.adven27.concordion.extensions.exam.db.DbPlugin
 import io.github.adven27.concordion.extensions.exam.db.DbTester
 import io.github.adven27.concordion.extensions.exam.db.DbUnitConfig
@@ -23,6 +26,7 @@ import io.github.adven27.concordion.extensions.exam.files.FlPlugin
 import io.github.adven27.concordion.extensions.exam.mq.MqPlugin
 import io.github.adven27.concordion.extensions.exam.mq.MqTester
 import io.github.adven27.concordion.extensions.exam.ws.WsPlugin
+import net.javacrumbs.jsonunit.core.Option.IGNORING_EXTRA_FIELDS
 import java.util.ArrayDeque
 
 open class Specs : AbstractSpecs() {
@@ -55,7 +59,17 @@ open class Specs : AbstractSpecs() {
                 "Hello context = $context; params = ${options.params.map { it.toString() }}; options = ${options.hash}!"
             }
         )
-    }.withFocusOnFailed(true)
+    }.withContentTypeConfigs(
+        mapOf(
+            "customFormat" to TextContentTypeConfig(),
+            "jsonIgnoreExtraFields" to JsonContentTypeConfig(
+                verifier = JsonVerifier { it.withOptions(IGNORING_EXTRA_FIELDS) }
+            ),
+            "jsonIgnorePaths" to JsonContentTypeConfig(
+                verifier = JsonVerifier { it.whenIgnoringPaths("param2", "arr[*].param4") }
+            ),
+        )
+    )
 
     override fun startSut() {
         server.apply {
@@ -89,7 +103,9 @@ open class Specs : AbstractSpecs() {
             val mirror = """
                     |{
                     |   "{{request.requestLine.method}}":"{{request.url}}", 
-                    |   "request.custom.headers":["{{request.headers.h1}}", "{{request.headers.h2}}"]
+                    |   "Authorization":  "{{request.headers.Authorization}}", 
+                    |   "Accept-Language": "{{request.headers.Accept-Language}}",
+                    |    "cookies":"{{{request.cookies}}}"
                     |}"""
                 .trimMargin()
 

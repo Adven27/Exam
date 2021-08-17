@@ -2,6 +2,7 @@ package io.github.adven27.concordion.extensions.exam.core.commands
 
 import io.github.adven27.concordion.extensions.exam.core.ContentVerifier
 import io.github.adven27.concordion.extensions.exam.core.ExamResultRenderer
+import io.github.adven27.concordion.extensions.exam.core.content
 import io.github.adven27.concordion.extensions.exam.core.html.CLASS
 import io.github.adven27.concordion.extensions.exam.core.html.Html
 import io.github.adven27.concordion.extensions.exam.core.html.div
@@ -12,22 +13,16 @@ import io.github.adven27.concordion.extensions.exam.core.html.pre
 import io.github.adven27.concordion.extensions.exam.core.html.table
 import io.github.adven27.concordion.extensions.exam.core.html.td
 import io.github.adven27.concordion.extensions.exam.core.html.tr
+import io.github.adven27.concordion.extensions.exam.core.prettyJson
+import io.github.adven27.concordion.extensions.exam.core.prettyXml
 import io.github.adven27.concordion.extensions.exam.core.resolveJson
 import io.github.adven27.concordion.extensions.exam.core.resolveXml
-import io.github.adven27.concordion.extensions.exam.core.utils.content
-import io.github.adven27.concordion.extensions.exam.core.utils.prettyJson
-import io.github.adven27.concordion.extensions.exam.core.utils.prettyXml
-import net.javacrumbs.jsonunit.JsonAssert
-import net.javacrumbs.jsonunit.core.Configuration
-import net.javacrumbs.jsonunit.core.Option
-import net.javacrumbs.jsonunit.core.internal.Options
 import org.concordion.api.CommandCall
 import org.concordion.api.Evaluator
 import org.concordion.api.Fixture
 import org.concordion.api.ResultRecorder
-import org.xmlunit.diff.NodeMatcher
 
-class XmlCheckCommand(name: String, tag: String, private val cfg: Configuration, private val nodeMatcher: NodeMatcher) :
+class XmlCheckCommand(name: String, tag: String, private val verifier: ContentVerifier) :
     ExamVerifyCommand(name, tag, ExamResultRenderer()) {
 
     override fun verify(cmd: CommandCall, eval: Evaluator, resultRecorder: ResultRecorder, fixture: Fixture) {
@@ -44,7 +39,7 @@ class XmlCheckCommand(name: String, tag: String, private val cfg: Configuration,
 
     private fun checkXmlContent(act: String, exp: String, resultRecorder: ResultRecorder, root: Html) {
         try {
-            ContentVerifier.Xml().verify(exp, act, arrayOf(cfg, nodeMatcher))
+            verifier.verify(exp, act)
             root.text(exp)
             resultRecorder.pass(root)
         } catch (expected: Throwable) {
@@ -56,15 +51,11 @@ class XmlCheckCommand(name: String, tag: String, private val cfg: Configuration,
     }
 }
 
-class JsonCheckCommand(name: String, tag: String, private val originalCfg: Configuration) :
+class JsonCheckCommand(name: String, tag: String, private val verifier: ContentVerifier) :
     ExamVerifyCommand(name, tag, ExamResultRenderer()) {
-
-    private lateinit var usedCfg: Configuration
 
     override fun verify(cmd: CommandCall, eval: Evaluator, resultRecorder: ResultRecorder, fixture: Fixture) {
         val root = cmd.html()
-        usedCfg = originalCfg
-        root.attr("jsonUnitOptions")?.let { attr -> overrideJsonUnitOption(attr) }
         val actual = eval.evaluate(root.attr("actual")).toString().prettyJson()
         val expected = eval.resolveJson(root.content(eval).trim()).prettyJson()
         checkJsonContent(
@@ -75,18 +66,9 @@ class JsonCheckCommand(name: String, tag: String, private val originalCfg: Confi
         )
     }
 
-    @Suppress("SpreadOperator")
-    private fun overrideJsonUnitOption(attr: String) {
-        val first = usedCfg.options.values().first()
-        val other = usedCfg.options.values()
-        other.remove(first)
-        other.addAll(attr.split(";").filter { it.isNotEmpty() }.map { Option.valueOf(it) }.toSet())
-        usedCfg = usedCfg.withOptions(Options(first, *other.toTypedArray()))
-    }
-
     private fun checkJsonContent(act: String, exp: String, resultRecorder: ResultRecorder, root: Html) {
         try {
-            JsonAssert.assertJsonEquals(exp, act, usedCfg)
+            verifier.verify(exp, act)
             resultRecorder.pass(root)
             root.text(exp)
         } catch (expected: Throwable) {

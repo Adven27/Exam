@@ -21,6 +21,6 @@ class FlPlugin @JvmOverloads constructor(
     override fun commands(): List<ExamCommand> = listOf(
         FilesShowCommand("fl-show", TABLE, filesLoader),
         FilesSetCommand("fl-set", TABLE, filesLoader),
-        FilesCheckCommand("fl-check", "div", jsonUnitCfg, nodeMatcher, filesLoader)
+        FilesCheckCommand("fl-check", "div", filesLoader)
     )
 }

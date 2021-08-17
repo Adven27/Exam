@@ -331,6 +331,7 @@
 
     <xs:complexType name="check-info" mixed="true">
         <xs:all>
+            <xs:any processContents="lax" minOccurs="0"/>
             <xs:element name="await" type="await-info"/>
             <xs:element name="xml-check" type="xj-info"/>
             <xs:element name="json-check" type="xj-info"/>
@@ -395,23 +396,7 @@
                 <xs:attribute type="xs:anyURI" name="from" default="/data/ws/expected.json"/>
                 <xs:attribute type="xs:string" name="reasonPhrase" default="Server Error"/>
                 <xs:attribute type="xs:integer" name="statusCode" default="500"/>
-                <xs:attribute type="xs:string" name="ignoredPaths" default="jsonPathToField;arrayField[*].nodeInArray">
-                    <xs:annotation>
-                        <xs:documentation>
-                            Option makes JsonUnit ignore the specified paths in the actual value
-                            <a href="https://github.com/lukas-krecan/JsonUnit#ignoring-paths">Read more...</a>
-                        </xs:documentation>
-                    </xs:annotation>
-                </xs:attribute>
-                <xs:attribute type="xs:string" name="jsonUnitOptions"
-                              default="IGNORING_EXTRA_FIELDS;TREATING_NULL_AS_ABSENT">
-                    <xs:annotation>
-                        <xs:documentation>
-                            With Options you can configure different compare modes
-                            <a href="https://github.com/lukas-krecan/JsonUnit#options">Read more...</a>
-                        </xs:documentation>
-                    </xs:annotation>
-                </xs:attribute>
+                <xs:attribute type="xs:string" name="verifyAs"/>
             </xs:extension>
         </xs:simpleContent>
     </xs:complexType>

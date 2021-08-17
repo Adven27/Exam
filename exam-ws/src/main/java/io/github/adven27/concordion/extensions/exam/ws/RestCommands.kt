@@ -1,14 +1,17 @@
 package io.github.adven27.concordion.extensions.exam.ws
 
-import io.github.adven27.concordion.extensions.exam.core.ExamExtension
+import io.github.adven27.concordion.extensions.exam.core.ContentTypeConfig
+import io.github.adven27.concordion.extensions.exam.core.ExamExtension.Companion.contentTypeConfig
 import io.github.adven27.concordion.extensions.exam.core.commands.ExamCommand
 import io.github.adven27.concordion.extensions.exam.core.commands.ExamVerifyCommand
+import io.github.adven27.concordion.extensions.exam.core.content
 import io.github.adven27.concordion.extensions.exam.core.errorMessage
 import io.github.adven27.concordion.extensions.exam.core.html.Html
 import io.github.adven27.concordion.extensions.exam.core.html.NAME
 import io.github.adven27.concordion.extensions.exam.core.html.RowParserEval
 import io.github.adven27.concordion.extensions.exam.core.html.badge
 import io.github.adven27.concordion.extensions.exam.core.html.code
+import io.github.adven27.concordion.extensions.exam.core.html.codeHighlight
 import io.github.adven27.concordion.extensions.exam.core.html.div
 import io.github.adven27.concordion.extensions.exam.core.html.html
 import io.github.adven27.concordion.extensions.exam.core.html.link
@@ -20,6 +23,8 @@ import io.github.adven27.concordion.extensions.exam.core.html.td
 import io.github.adven27.concordion.extensions.exam.core.html.th
 import io.github.adven27.concordion.extensions.exam.core.html.thead
 import io.github.adven27.concordion.extensions.exam.core.html.tr
+import io.github.adven27.concordion.extensions.exam.core.prettyJson
+import io.github.adven27.concordion.extensions.exam.core.prettyXml
 import io.github.adven27.concordion.extensions.exam.core.resolveForContentType
 import io.github.adven27.concordion.extensions.exam.core.resolveJson
 import io.github.adven27.concordion.extensions.exam.core.resolveNoType
@@ -28,15 +33,9 @@ import io.github.adven27.concordion.extensions.exam.core.resolveXml
 import io.github.adven27.concordion.extensions.exam.core.toHtml
 import io.github.adven27.concordion.extensions.exam.core.toMap
 import io.github.adven27.concordion.extensions.exam.core.utils.PLACEHOLDER_TYPE
-import io.github.adven27.concordion.extensions.exam.core.utils.content
-import io.github.adven27.concordion.extensions.exam.core.utils.prettyJson
-import io.github.adven27.concordion.extensions.exam.core.utils.prettyXml
 import io.github.adven27.concordion.extensions.exam.ws.RequestExecutor.Companion.fromEvaluator
 import io.restassured.http.ContentType
 import io.restassured.http.Method
-import net.javacrumbs.jsonunit.core.Configuration
-import net.javacrumbs.jsonunit.core.Option
-import net.javacrumbs.jsonunit.core.internal.Options
 import org.concordion.api.CommandCall
 import org.concordion.api.Element
 import org.concordion.api.Evaluator
@@ -62,8 +61,7 @@ private const val FILE_NAME = "fileName"
 private const val EXPECTED = "expected"
 private const val WHERE = "where"
 private const val CASE = "case"
-private const val IGNORED_PATHS = "ignoredPaths"
-private const val JSON_UNIT_OPTIONS = "jsonUnitOptions"
+private const val VERIFY_AS = "verifyAs"
 private const val PROTOCOL = "protocol"
 private const val STATUS_CODE = "statusCode"
 private const val REASON_PHRASE = "reasonPhrase"
@@ -71,23 +69,15 @@ private const val FROM = "from"
 private const val ENDPOINT_HEADER_TMPL = //language=xml
     """
     <div class="input-group input-group-sm">
-      <div class="input-group-prepend">
-        <span class="input-group-text" style='border:none;'>%s</span>
-      </div>
-      <div class="form-control bg-light text-dark font-weight-light" style='border:none;'>
-        <span id='%s'></span>
-      </div>
+        <span class="input-group-text">%s</span>
+        <span id='%s' class="form-control bg-light text-dark font-weight-light"/>
     </div>
     """
 private const val ENDPOINT_TMPL = //language=xml
     """
     <div class="input-group mb-1 mt-1">
-      <div class="input-group-prepend">
         <span class="input-group-text %s text-white">%s</span>
-      </div>
-      <div class="form-control bg-light text-primary font-weight-light">
-        <span id='%s'></span>
-      </div>
+        <span class="form-control bg-light text-primary font-weight-light" id='%s'/>
     </div>
     """
 
@@ -127,9 +117,9 @@ sealed class RequestCommand(
 
     private fun startTable(html: Html, hasRequestBody: Boolean): Html = table()(
         thead()(
-            if (hasRequestBody) th("Request", "style" to "text-align:center;", "class" to "bg-light") else null,
+            if (hasRequestBody) th("Request", "style" to "text-align:center;") else null,
             th(
-                "Expected response",
+                "Use cases:",
                 "colspan" to (if (hasRequestBody) "1" else "2"),
                 "style" to "text-align:center;",
                 "class" to "bg-light"
@@ -170,14 +160,10 @@ class CaseCheckCommand(name: String, tag: String) : ExamCommand(name, tag) {
 @Suppress("TooManyFunctions")
 class CaseCommand(
     tag: String,
-    private val contentResolvers: Map<ContentType, WsPlugin.ContentResolver>,
-    private val contentVerifiers: Map<ContentType, WsPlugin.ContentVerifier>,
-    private val contentPrinters: Map<ContentType, WsPlugin.ContentPrinter>,
+    private val contentTypeConfigs: Map<ContentType, ContentTypeConfig>,
     private val contentTypeResolver: WsPlugin.ContentTypeResolver
 ) : RestVerifyCommand(CASE, tag) {
-    private lateinit var contentResolver: WsPlugin.ContentResolver
-    private lateinit var contentVerifier: WsPlugin.ContentVerifier
-    private lateinit var contentPrinter: WsPlugin.ContentPrinter
+    private lateinit var contentTypeConfig: ContentTypeConfig
 
     private val cases: MutableMap<String, Map<String, Any?>> = LinkedHashMap()
     private var number = 0
@@ -203,14 +189,10 @@ class CaseCommand(
         val expected = caseRoot.firstOrThrow(EXPECTED)
         val contentType = fromEvaluator(eval).contentType()
         val resolvedType = contentTypeResolver.resolve(contentType)
-        contentVerifier = contentVerifiers[resolvedType]
-            ?: throw IllegalStateException("Content verifier for type $resolvedType not found. Provide one through WsPlugin constructor.")
-        contentResolver = contentResolvers[resolvedType]
-            ?: throw IllegalStateException("Content resolver for type $resolvedType not found. Provide one through WsPlugin constructor.")
-        contentPrinter = contentPrinters[resolvedType]
-            ?: throw IllegalStateException("Content printer for type $resolvedType not found. Provide one through WsPlugin constructor.")
 
-        setUpJsonUnitConfiguration(expected.attr(IGNORED_PATHS), expected.attr(JSON_UNIT_OPTIONS))
+        contentTypeConfig = expected.attr(VERIFY_AS)?.let { contentTypeConfig(it) }
+            ?: byContentType(resolvedType)
+
         caseRoot.remove(body, expected, multiPart)(
             cases.map {
                 val expectedToAdd = tag(EXPECTED).text(expected.text())
@@ -243,24 +225,8 @@ class CaseCommand(
         )
     }
 
-    @Suppress("SpreadOperator")
-    private fun setUpJsonUnitConfiguration(ignorePath: String?, jsonUnitOptions: String?) {
-        var usedCfg = ExamExtension.DEFAULT_JSON_UNIT_CFG
-        ignorePath?.let {
-            usedCfg = usedCfg.whenIgnoringPaths(*it.split(";").filter { it.isNotEmpty() }.toTypedArray())
-        }
-        jsonUnitOptions?.let { usedCfg = overrideJsonUnitOption(it, usedCfg) }
-        contentVerifier.setConfiguration(usedCfg)
-    }
-
-    @Suppress("SpreadOperator")
-    private fun overrideJsonUnitOption(attr: String, usedCfg: Configuration): Configuration {
-        val first = usedCfg.options.values().first()
-        val other = usedCfg.options.values()
-        other.remove(first)
-        other.addAll(attr.split(";").filter { it.isNotEmpty() }.map { Option.valueOf(it) }.toSet())
-        return usedCfg.withOptions(Options(first, *other.toTypedArray()))
-    }
+    private fun byContentType(resolvedType: ContentType): ContentTypeConfig = contentTypeConfigs[resolvedType]
+        ?: throw IllegalStateException("Content type config for type $resolvedType not found. Provide one through WsPlugin constructor.")
 
     override fun execute(
         commandCall: CommandCall,
@@ -288,10 +254,11 @@ class CaseCommand(
             val body = caseTR.first(BODY)
             if (body != null) {
                 val content = body.content(evaluator)
-                val bodyStr = contentResolver.resolve(content, evaluator)
-                td().insteadOf(body).css(contentPrinter.style() + " exp-body").style("min-width: 20%; width: 50%;")
+                val bodyStr = contentTypeConfig.resolver.resolve(content, evaluator)
+                td().insteadOf(body).css(contentTypeConfig.printer.style() + " exp-body")
+                    .style("min-width: 20%; width: 50%;")
                     .removeChildren()
-                    .text(contentPrinter.print(bodyStr))
+                    .text(contentTypeConfig.printer.print(bodyStr))
                 executor.body(bodyStr)
             }
             processMultipart(caseTR, evaluator, executor)
@@ -412,7 +379,7 @@ class CaseCommand(
     }
 
     private fun caseDesc(desc: String?, eval: Evaluator): String =
-        "${++number}) " + if (desc == null) "" else contentResolver.resolve(desc, eval)
+        "${++number}) " + if (desc == null) "" else contentTypeConfig.resolver.resolve(desc, eval)
 
     @Suppress("LongParameterList")
     private fun check(
@@ -440,17 +407,19 @@ class CaseCommand(
     }
 
     private fun check(actual: String, expected: String, resultRecorder: ResultRecorder, root: Html) {
-        contentVerifier.verify(expected, actual).fail.map {
-            val diff = div().css(contentPrinter.style())
-            val (_, errorMsg) = errorMessage(message = it.details, html = diff, type = contentPrinter.style())
-            root.removeChildren()(errorMsg)
-            resultRecorder.failure(diff, contentPrinter.print(it.actual), contentPrinter.print(it.expected))
-        }.orElseGet {
-            root.removeChildren()(
-                tag("exp").text(contentPrinter.print(expected)) css contentPrinter.style(),
-                tag("act").text(contentPrinter.print(actual)) css contentPrinter.style()
-            )
-            resultRecorder.pass(root)
+        (contentTypeConfig.verifier to contentTypeConfig.printer).let { (verifier, printer) ->
+            verifier.verify(expected, actual).fail.map {
+                val diff = div().css(printer.style())
+                val (_, errorMsg) = errorMessage(message = it.details, html = diff, type = printer.style())
+                root.removeChildren()(errorMsg)
+                resultRecorder.failure(diff, printer.print(it.actual), printer.print(it.expected))
+            }.orElseGet {
+                root.removeChildren()(
+                    tag("exp").text(printer.print(expected)) css printer.style(),
+                    tag("act").text(printer.print(actual)) css printer.style()
+                )
+                resultRecorder.pass(root)
+            }
         }
     }
 
@@ -459,7 +428,7 @@ class CaseCommand(
         tr("data-case-title" to caseTitle)(
             td().style("max-width: 1px; width: ${if (hasReqBody) 50 else 100}%;")(
                 div().css("httpstyle")(
-                    tag("textarea").css("http").text(desc)
+                    codeHighlight(desc, "http")
                 )
             ),
             td("style" to "padding-left: 0;")(

@@ -1,0 +1,125 @@
+<ignored xmlns:e="http://exam.extension.io" xmlns:cc="http://www.concordion.org/2007/concordion">
+    <h2>Web service plugin</h2>
+    <hr/>
+    <p>
+        <strong>WsPlugin</strong> enables to document and verify <i>REST/SOAP API</i>.
+    </p>
+
+    <h3>Usage</h3>
+    <p>1. Add dependency <pre class="doc-code"><code>testImplementation "io.github.adven27:exam-ws:5.0.1"</code></pre></p>
+    <p>2. Configure and attach to ExamExtension the <a cc:run="concordion" href="ws/WsPlugin.html">WsPlugin</a></p>
+
+    <h3>Commands</h3>
+    <p>
+        There are commands for specifying use cases of <code>REST</code> and <code>SOAP</code> endpoints.
+    </p>
+
+    <h4>Verify REST API</h4>
+
+    <dl>
+        <dt><code><a cc:run="concordion" href="ws/WsGet.html">get</a></code></dt>
+        <dd>
+            <p>Specifies use cases of a <code>GET</code>-endpoint</p>
+            <pre class="doc-code language-xml"><code> <![CDATA[<e:get url="/some/url" contentType="application/json">
+    <e:case desc="use-case 1" urlParams="param1=1">
+        <e:expected statusCode="200">
+            { "response": "body" }
+        </e:expected>
+    </e:case>
+    <e:case desc="use-case 2" urlParams="param1=1&amp;param2=2">
+        <e:expected from="/ws/response.json" statusCode="200"/>
+    </e:case>
+</e:get>]]> </code></pre>
+        </dd>
+        <dt><code><a cc:run="concordion" href="ws/WsPost.html">post</a></code></dt>
+        <dd>
+            <p>Specifies use cases of a <code>POST</code>-endpoint</p>
+            <pre class="doc-code language-xml"><code> <![CDATA[<e:post url="/some/url" contentType="application/json">
+    <e:case desc="use-case 1">
+        <e:body>
+            {"request": "body"}
+        </e:body>
+        <e:expected statusCode="201" reasonPhrase="Created">
+            { "response": "body" }
+        </e:expected>
+    </e:case>
+    <e:case desc="use-case 2">
+        <e:body from="/ws/request.json"/>
+        <e:expected from="/ws/response.json" statusCode="201" reasonPhrase="Created"/>
+    </e:case>
+</e:post>]]> </code></pre>
+        </dd>
+        <dt><code><a cc:run="concordion" href="ws/WsPut.html">put</a></code></dt>
+        <dd>
+            <p>Specifies use cases of a <code>PUT</code>-endpoint</p>
+            <pre class="doc-code language-xml"><code> <![CDATA[<e:put url="/some/url" contentType="application/json">
+    <e:case desc="use-case 1">
+        <e:body>
+            {"request": "body"}
+        </e:body>
+        <e:expected>
+            { "response": "body" }
+        </e:expected>
+    </e:case>
+     <e:case desc="use-case 2">
+        <e:body from="/ws/request.json"/>
+        <e:expected from="/ws/response.json"/>
+    </e:case>
+</e:put>]]> </code></pre>
+        </dd>
+        <dt><code><a cc:run="concordion" href="ws/WsDelete.html">delete</a></code></dt>
+        <dd>
+            <p>Specifies use cases of a <code>DELETE</code>-endpoint</p>
+            <pre class="doc-code language-xml"><code> <![CDATA[<e:delete url="/some/{{id}}" contentType="application/json">
+    <e:case desc="use-case 1" cookies="cook={{var}}, anotherCook=asd">
+        <e:expected statusCode="200">
+            { "response": "body" }
+        </e:expected>
+    </e:case>
+    <e:case desc="use-case 2">
+        <e:expected from="/ws/response.json" statusCode="200"/>
+    </e:case>
+</e:delete>]]> </code></pre>
+        </dd>
+    </dl>
+
+    <h4>Verify SOAP API</h4>
+
+    <dl>
+        <dt><code><a cc:run="concordion" href="ws/WsSoap.html">soap</a></code></dt>
+        <dd>
+            <p>Specifies use cases of a <code>SOAP</code>-endpoint</p>
+            <pre class="doc-code language-xml"><code> <![CDATA[<e:soap url="/some/url">
+    <e:case desc="use-case 1">
+        <e:body>
+             <! [CDATA[
+                <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+                    <soap:Body>
+                        <ns2:getItemRequest xmlns:ns2="http://ws.io">
+                            <date>{{now 'yyyy-MM-dd'}}</date>
+                        </ns2:getItemRequest>
+                    </soap:Body>
+                </soap:Envelope>
+                ] ]>
+        </e:body>
+        <e:expected>
+            <! [CDATA[
+                <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+                    <soap:Body>
+                        <ns2:getItemResponse xmlns:ns2="http://ws.io">
+                            <val>{{placeholder}}</val>
+                        </ns2:getItemResponse>
+                    </soap:Body>
+                </soap:Envelope>
+                ] ]>
+        </e:expected>
+    </e:case>
+    <e:case desc="use-case 2">
+        <e:body from="/ws/request.xml"/>
+        <e:expected from="/ws/response.xml"/>
+    </e:case>
+</e:soap>]]> </code></pre>
+        </dd>
+    </dl>
+
+</ignored>

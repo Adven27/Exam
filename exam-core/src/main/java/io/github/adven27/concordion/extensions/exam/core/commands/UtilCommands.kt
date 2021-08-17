@@ -2,10 +2,10 @@ package io.github.adven27.concordion.extensions.exam.core.commands
 
 import io.github.adven27.concordion.extensions.exam.core.ExamExtension
 import io.github.adven27.concordion.extensions.exam.core.html.html
+import io.github.adven27.concordion.extensions.exam.core.readFile
 import io.github.adven27.concordion.extensions.exam.core.resolve
 import io.github.adven27.concordion.extensions.exam.core.resolveToObj
 import io.github.adven27.concordion.extensions.exam.core.resolveXml
-import io.github.adven27.concordion.extensions.exam.core.utils.readFile
 import io.github.adven27.concordion.extensions.exam.core.vars
 import io.restassured.RestAssured
 import io.restassured.RestAssured.given

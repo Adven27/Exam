@@ -1,0 +1,239 @@
+<html xmlns:e="http://exam.extension.io" xmlns:cc="http://www.concordion.org/2007/concordion">
+<body>
+<e:main>
+    <h1>GET</h1>
+
+    <p class="lead">Specifies use cases of a <code>GET</code>-endpoint</p>
+
+    <h2>Overview</h2>
+
+    <e:set var="cmd" value="e:get"/>
+    <e:set var="cmdExample" silent="true"><![CDATA[<e:get url="/some/url" contentType="application/json">
+    <!-- One or many cases -->
+    <e:case desc="use-case 1" urlParams="param1=1">
+        <!--  Expected response -->
+        <e:expected statusCode="200">
+            { "response": "body" }
+        </e:expected>
+        <!-- Optional block for case specific checks -->
+        <e:check>
+            <span c:assertTrue="true">Block for additional checks</span>
+        </e:check>
+    </e:case>
+    <e:case desc="use-case 2" urlParams="param1=1&amp;param2=2">
+        <e:expected from="/ws/response.json" statusCode="200"/>
+    </e:case>
+</e:get>]]>
+    </e:set>
+    <e:include from="/specs/includes/ws/usage.xml"/>
+
+    <h3>Attributes</h3>
+    <table class="table" style="table-layout: fixed;">
+        <thead>
+            <tr><th style="width: 180px;">attribute</th><th style="width: 300px;">desc</th><th>example</th></tr>
+        </thead>
+        <e:include from="/specs/includes/ws/attr-url.xml"/>
+        <e:include from="/specs/includes/ws/attr-contentType.xml"/>
+        <e:include from="/specs/includes/ws/attr-headers.xml"/>
+        <e:include from="/specs/includes/ws/attr-cookies.xml"/>
+        <e:include from="/specs/includes/ws/attr-caseDesc.xml"/>
+        <e:include from="/specs/includes/ws/attr-caseExpected.xml"/>
+    </table>
+
+    <h2>Examples</h2>
+
+    <h3>Content-Type</h3>
+
+    <p>
+        To specify Content-Type the <code>contentType</code> attribute may be used. Default is <code>application/json</code>
+    </p>
+    <e:example name="default content-type">
+        <e:get url="relative/url" print="true">
+            <e:case>
+                <e:expected>{ "GET": "/relative/url" }</e:expected>
+            </e:case>
+        </e:get>
+    </e:example>
+
+    <e:example name="custom content-type">
+        <p>
+            Specifying <code>Content-Type</code> = <code>text/plain</code>
+        </p>
+        <e:get url="relative/url" contentType="text/plain" print="true">
+            <e:case>
+                <e:expected>{"GET":"/relative/url"}</e:expected>
+            </e:case>
+        </e:get>
+    </e:example>
+
+    <h3>Query string</h3>
+    <p>
+        To specify case specific query string <code>case.urlParams</code> attribute may be used.
+    </p>
+    <e:example name="urlParams">
+        <e:get url="relative/url" print="true">
+            <e:case desc="Request with single param" urlParams="param1=1">
+                <e:expected>
+                    { "GET": "/relative/url?param1=1" }
+                </e:expected>
+            </e:case>
+            <e:case desc="Request with several params" urlParams="param1=1&amp;param2=2">
+                <e:expected>
+                    { "GET": "/relative/url?param1=1&amp;param2=2" }
+                </e:expected>
+            </e:case>
+        </e:get>
+    </e:example>
+
+    <h3>Headers</h3>
+    <p>
+        To specify headers the <code>headers</code> attribute may be used to specify headers for all cases and
+        the <code>case.headers</code> attribute to completely replace them for specific case.
+    </p>
+    <e:example name="headers">
+        <e:given>
+            Client has token <code cc:set="#token">111</code>.
+        </e:given>
+        <e:get url="/mirror" headers="Authorization = Bearer {{token}}, Accept-Language = en" print="true">
+            <e:case desc="Case with default headers">
+                <e:expected>
+                    {
+                    "GET": "/mirror",
+                    "Authorization": "Bearer 111",
+                    "Accept-Language": "en",
+                    "cookies": "{}"
+                    }
+                </e:expected>
+            </e:case>
+            <e:case desc="Case with custom headers" headers="Authorization = Bearer 222">
+                <e:expected>
+                    {
+                    "GET": "/mirror",
+                    "Authorization": "Bearer 222",
+                    "Accept-Language": "",
+                    "cookies": "{}"
+                    }
+                </e:expected>
+            </e:case>
+        </e:get>
+    </e:example>
+
+    <h3>Cookies</h3>
+    <p>
+        To specify cookies the <code>cookies</code> attribute may be used to specify cookies for all cases and
+        the <code>case.cookies</code> attribute to completely replace them for specific case.
+    </p>
+    <e:example name="cookies">
+        <e:given>
+            Client has cookie <code>c1</code> = <code cc:set="#cookie">111</code>.
+        </e:given>
+        <e:get url="/mirror" cookies="c1={{cookie}}, c2=2" print="true">
+            <e:case desc="Case with default cookies">
+                <e:expected>
+                    {
+                    "GET": "/mirror",
+                    "Authorization": "",
+                    "Accept-Language": "",
+                    "cookies": "{c1=111, c2=2}"
+                    }
+                </e:expected>
+            </e:case>
+            <e:case desc="Case with custom cookies" cookies="c2 = 22">
+                <e:expected>
+                    {
+                    "GET": "/mirror",
+                    "Authorization": "",
+                    "Accept-Language": "",
+                    "cookies": "{c2=22}"
+                    }
+                </e:expected>
+            </e:case>
+        </e:get>
+    </e:example>
+
+    <h3>Case-specific checks</h3>
+    <p>
+        To specify any additional case-specific checks <code>e:check</code> tag may be used.
+    </p>
+    <e:example name="checks">
+        <e:get url="/mirror" print="true">
+            <e:case desc="Case 1">
+                <e:expected>
+                    {
+                    "GET": "/mirror",
+                    "Authorization": "",
+                    "Accept-Language": "",
+                    "cookies": "{}"
+                    }
+                </e:expected>
+                <e:check>
+                    <p>
+                        Some additional check for <span cc:assertTrue="true">case 1</span>
+                    </p>
+                </e:check>
+            </e:case>
+            <e:case desc="Case 2">
+                <e:expected>
+                    {
+                    "GET": "/mirror",
+                    "Authorization": "",
+                    "Accept-Language": "",
+                    "cookies": "{}"
+                    }
+                </e:expected>
+                <e:check>
+                    <p>
+                        Some additional check for <span cc:assertTrue="true">case 2</span>
+                    </p>
+                </e:check>
+            </e:case>
+        </e:get>
+    </e:example>
+
+    <h3>Content verifiers</h3>
+
+    <e:include from="/specs/includes/ws/content-verifiers.xml"/>
+    <e:include from="/specs/includes/content-verifiers.xml"/>
+
+    <e:example name="verifyAs">
+        <e:given>
+            Configured additional content verifiers:
+            <pre class="doc-code language-kotlin"><code>withContentVerifiers(
+    mapOf(
+        "jsonIgnoreExtraFields" to JsonVerifier { it.withOptions(IGNORING_EXTRA_FIELDS) },
+        "jsonIgnorePaths" to JsonVerifier { it.whenIgnoringPaths("param2", "arr[*].param4") }
+    )
+)</code></pre>
+        </e:given>
+        <e:then>
+            Use command:
+            <e:get url="ignoreJson" print="true">
+                <e:case desc="verify using jsonIgnoreExtraFields">
+                    <e:expected verifyAs="jsonIgnoreExtraFields">
+                        {
+                        "param1":"value1",
+                        "arr":[
+                        {"param3":"value3"},
+                        {"param3":"value3"}
+                        ]
+                        }
+                    </e:expected>
+                </e:case>
+                <e:case desc="verify using jsonIgnorePaths">
+                    <e:expected verifyAs="jsonIgnorePaths">
+                        {
+                        "param1":"value1",
+                        "arr":[
+                        {"param3":"value3"},
+                        {"param3":"value3"}
+                        ]
+                        }
+                    </e:expected>
+                </e:case>
+            </e:get>
+        </e:then>
+    </e:example>
+
+</e:main>
+</body>
+</html>

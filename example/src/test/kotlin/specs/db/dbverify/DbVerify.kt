@@ -1,6 +1,6 @@
 package specs.db.dbverify
 
-import io.github.adven27.concordion.extensions.exam.core.utils.findResource
+import io.github.adven27.concordion.extensions.exam.core.findResource
 import specs.Specs
 
 class DbVerify : Specs() {

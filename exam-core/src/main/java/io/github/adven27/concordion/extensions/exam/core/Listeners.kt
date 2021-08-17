@@ -18,29 +18,22 @@ import io.github.adven27.concordion.extensions.exam.core.html.pill
 import io.github.adven27.concordion.extensions.exam.core.html.tag
 import io.github.adven27.concordion.extensions.exam.core.utils.HelperMissing.Companion.helpersDesc
 import io.github.adven27.concordion.extensions.exam.core.utils.MissingHelperException
-import io.github.adven27.concordion.extensions.exam.core.utils.content
-import io.github.adven27.concordion.extensions.exam.core.utils.prettyXml
 import nu.xom.Attribute
 import nu.xom.Document
 import nu.xom.Element
 import nu.xom.XPathContext
 import nu.xom.converters.DOMConverter
+import org.concordion.api.ImplementationStatus.EXPECTED_TO_FAIL
+import org.concordion.api.ImplementationStatus.EXPECTED_TO_PASS
 import org.concordion.api.ResultSummary
-import org.concordion.api.listener.AbstractRunEvent
 import org.concordion.api.listener.DocumentParsingListener
 import org.concordion.api.listener.ExampleEvent
 import org.concordion.api.listener.ExampleListener
-import org.concordion.api.listener.RunFailureEvent
-import org.concordion.api.listener.RunIgnoreEvent
-import org.concordion.api.listener.RunListener
-import org.concordion.api.listener.RunStartedEvent
-import org.concordion.api.listener.RunSuccessEvent
 import org.concordion.api.listener.SpecificationProcessingEvent
 import org.concordion.api.listener.SpecificationProcessingListener
 import org.concordion.api.listener.ThrowableCaughtEvent
 import org.concordion.api.listener.ThrowableCaughtListener
 import org.concordion.internal.FailFastException
-import org.concordion.internal.FixtureType
 import java.io.ByteArrayInputStream
 import java.io.File
 import java.util.UUID
@@ -108,8 +101,9 @@ class FocusOnErrorsListener : SpecificationProcessingListener {
                     example?.first("p")?.first("a")?.invoke(
                         summary.successCount.toPill("success"),
                         summary.ignoredCount.toPill("secondary"),
-                        summary.failureCount.toPill("danger"),
-                        summary.exceptionCount.toPill("warning"),
+                        summary.failureCount.toPill("warning"),
+                        summary.exceptionCount.toPill("danger"),
+                        pill(summary.implementationStatus.tag, "warning"),
                     )
                     ownerOf(example, event.rootElement)?.let { markWithFailedExampleAnchor(it, id) }
                 }
@@ -137,12 +131,13 @@ class FocusOnErrorsListener : SpecificationProcessingListener {
 
     private fun Long.toPill(style: String): Html? = if (this > 0) pill(toString(), style) else null
     private fun pill(text: String, style: String) = tag("span")
-        .css("top-0 start-100 translate-middle-y badge rounded-pill bg-$style")
-        .style("font-size: xx-small;")
+        .css("translate-middle-y badge bg-$style")
         .text(text)
 }
 
-private fun Map.Entry<String, ResultSummary>.failed() = value.exceptionCount > 0 || value.failureCount > 0
+private fun Map.Entry<String, ResultSummary>.failed() =
+    ((value.exceptionCount > 0 || value.failureCount > 0) && value.implementationStatus == EXPECTED_TO_PASS) ||
+        ((value.exceptionCount == 0L || value.failureCount == 0L) && value.implementationStatus == EXPECTED_TO_FAIL)
 
 private fun findExample(el: ConcordionElement, id: String) = Html(el).findBy(id)
 private fun Html.collapse() {

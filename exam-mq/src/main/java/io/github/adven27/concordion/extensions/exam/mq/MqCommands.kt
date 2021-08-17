@@ -1,6 +1,6 @@
 package io.github.adven27.concordion.extensions.exam.mq
 
-import io.github.adven27.concordion.extensions.exam.core.ContentVerifier
+import io.github.adven27.concordion.extensions.exam.core.ExamExtension.Companion.contentTypeConfig
 import io.github.adven27.concordion.extensions.exam.core.ExamResultRenderer
 import io.github.adven27.concordion.extensions.exam.core.commands.AwaitConfig
 import io.github.adven27.concordion.extensions.exam.core.commands.ExamCommand
@@ -25,18 +25,14 @@ import io.github.adven27.concordion.extensions.exam.core.html.table
 import io.github.adven27.concordion.extensions.exam.core.html.tbody
 import io.github.adven27.concordion.extensions.exam.core.html.td
 import io.github.adven27.concordion.extensions.exam.core.html.tr
-import io.github.adven27.concordion.extensions.exam.core.utils.pretty
 import io.github.adven27.concordion.extensions.exam.core.vars
 import mu.KLogging
-import net.javacrumbs.jsonunit.core.Configuration
-import net.javacrumbs.jsonunit.core.Option
 import org.concordion.api.CommandCall
 import org.concordion.api.Evaluator
 import org.concordion.api.Fixture
 import org.concordion.api.Result.FAILURE
 import org.concordion.api.ResultRecorder
 import org.junit.Assert.assertEquals
-import org.xmlunit.diff.NodeMatcher
 
 interface MqTester {
     fun start()
@@ -58,25 +54,15 @@ interface MqTester {
 }
 
 @Suppress("TooManyFunctions")
-class MqCheckCommand(
-    name: String,
-    tag: String,
-    private val originalCfg: Configuration,
-    private val nodeMatcher: NodeMatcher,
-    private val mqTesters: Map<String, MqTester>,
-    private val contentVerifiers: Map<String, ContentVerifier>
-) : ExamVerifyCommand(name, tag, ExamResultRenderer()) {
+class MqCheckCommand(name: String, tag: String, private val mqTesters: Map<String, MqTester>) :
+    ExamVerifyCommand(name, tag, ExamResultRenderer()) {
 
     companion object : KLogging()
-
-    private lateinit var usedCfg: Configuration
 
     @Suppress("LongMethod", "TooGenericExceptionCaught")
     override fun verify(cmd: CommandCall, eval: Evaluator, resultRecorder: ResultRecorder, fixture: Fixture) {
         val root = cmd.html()
         Attrs(root).let { attrs ->
-            usedCfg = attrs.jsonUnitOptions?.let { originalCfg.overrideJsonUnitOption(it) } ?: originalCfg
-
             val expectedMessages: List<TypedMessage> = expectedMessages(root, eval)
             var actualMessages: List<MqTester.Message> = mqTesters.getOrFail(attrs.mqName).receive().toMutableList()
 
@@ -300,33 +286,22 @@ class MqCheckCommand(
         expected: String,
         resultRecorder: ResultRecorder,
         root: Html
-    ) = try {
-        checkAs(type, expected, actual)
-        root.text(expected.pretty(type))
-        resultRecorder.pass(root)
-    } catch (e: Throwable) {
-        if (e is AssertionError || e is Exception) {
+    ) = contentTypeConfig(type).let { (_, verifier, printer) ->
+        verifier.verify(expected, actual).fail.map { f ->
             root.attr("class", "")
             //FIXME for 'Verify queue with horizontal layout'
             if (root.el.localName == "td") {
                 root.css("exp-body")
             }
             val diff = div().css(type)
-            val (_, errorMsg) = errorMessage(message = e.message ?: "", html = diff, type = type)
-            resultRecorder.failure(diff, actual.pretty(type), expected.pretty(type))
+            val (_, errorMsg) = errorMessage(message = f.details ?: "", html = diff, type = type)
+            resultRecorder.failure(diff, printer.print(f.actual), printer.print(f.expected))
             root(errorMsg)
-        } else throw e
-    }
-
-    private fun checkAs(type: String, expected: String, actual: String) =
-        contentVerifiers[type]?.verify(expected, actual, arrayOf(usedCfg, nodeMatcher))
-            ?: ContentVerifier.Default().verify(expected, actual, emptyArray())
-
-    @Suppress("SpreadOperator")
-    private fun Configuration.overrideJsonUnitOption(attr: String): Configuration =
-        (options.values() + attr.split(";").filter { it.isNotEmpty() }.map { Option.valueOf(it) }).let {
-            withOptions(it.first(), *it.toTypedArray())
+        }.orElseGet {
+            root.text(printer.print(expected))
+            resultRecorder.pass(root)
         }
+    }
 
     data class TypedMessage(val type: String, val message: MqTester.Message)
     data class VerifyPair(val actual: MqTester.Message, val expected: TypedMessage)
@@ -355,7 +330,6 @@ class MqCheckCommand(
             private const val NAME = "name"
         }
     }
-
 }
 
 class MqSendCommand(name: String, tag: String, private val mqTesters: Map<String, MqTester>) : ExamCommand(name, tag) {

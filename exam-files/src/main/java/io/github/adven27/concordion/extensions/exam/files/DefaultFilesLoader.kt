@@ -1,9 +1,9 @@
 package io.github.adven27.concordion.extensions.exam.files
 
+import io.github.adven27.concordion.extensions.exam.core.InvalidXml
+import io.github.adven27.concordion.extensions.exam.core.content
 import io.github.adven27.concordion.extensions.exam.core.html.Html
 import io.github.adven27.concordion.extensions.exam.core.resolveXml
-import io.github.adven27.concordion.extensions.exam.core.utils.InvalidXml
-import io.github.adven27.concordion.extensions.exam.core.utils.content
 import nu.xom.Builder
 import nu.xom.Document
 import nu.xom.ParsingException

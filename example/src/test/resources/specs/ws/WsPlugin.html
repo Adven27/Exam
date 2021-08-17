@@ -1,0 +1,64 @@
+<html xmlns:e="http://exam.extension.io" xmlns="http://www.w3.org/1999/html">
+<body>
+<e:main>
+    <h1>MqPlugin</h1>
+    <p class="lead">Configures a message queue connections and other options of <code>e:mq-...</code> commands</p>
+    <h2>Overview</h2>
+
+    <h3>Usage</h3>
+
+    <p>
+        In basic configuration <strong>MqPlugin</strong> accepts a map of a <strong>queue alias name</strong> to a <code>MqTester</code> implementation.
+        <strong>Queue alias</strong> should be used as queue logical name in <code>name</code> attribute of <code>e:mq-...</code> commands:
+        <pre class="doc-code language-xml"><code> <![CDATA[<e:mq-send name="someRabbitQueue" from="/data/message.json"/>]]> </code></pre>
+    </p>
+    <div class="card">
+        <div class="card-header font-monospace">src/test/java/specs/Specs.java</div>
+        <div class="card-body">
+            <pre class="doc-code language-java"><code>public class Specs extends AbstractSpecs {
+    @Override
+    protected ExamExtension init() {
+        return new ExamExtension(
+            new MqPlugin(
+                Map.of(
+                    "someRabbitQueue", new RabbitTester(
+                            5432,
+                            new RabbitTester.SendConfig("someRoutingKey"),
+                            new RabbitTester.ReceiveConfig("someQueueName")
+                    ),
+                    "dummyQueue", new MqTester() {
+                        private final ArrayDeque&lt;MqTester.Message&gt; queue = new ArrayDeque&lt;&gt;();
+
+                        @Override
+                        public void start() {/* open connection*/}
+
+                        @Override
+                        public void stop() {/* close connection*/}
+
+                        @Override
+                        public void send(MqTester.Message message, Map&lt;String, String&gt;  params) {
+                            queue.add(message);
+                        }
+
+                        @Override
+                        public List&lt;Message&gt;  receive() {
+                            return queue.stream().map(m -&gt; queue.poll()).collect(Collectors.toList());
+                        }
+
+                        @Override
+                        public void purge() { queue.clear(); }
+
+                        @Override
+                        public boolean accumulateOnRetries() { return true; }
+                    }
+               )
+            )
+        );
+    }
+}</code></pre>
+        </div>
+    </div>
+
+</e:main>
+</body>
+</html>

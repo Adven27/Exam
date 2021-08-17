@@ -1,10 +1,10 @@
 package io.github.adven27.concordion.extensions.exam.core.commands
 
 import io.github.adven27.concordion.extensions.exam.core.ExamExtension
+import io.github.adven27.concordion.extensions.exam.core.content
 import io.github.adven27.concordion.extensions.exam.core.html.Html
 import io.github.adven27.concordion.extensions.exam.core.html.takeAttr
 import io.github.adven27.concordion.extensions.exam.core.resolveForContentType
-import io.github.adven27.concordion.extensions.exam.core.utils.content
 import io.github.adven27.concordion.extensions.exam.core.vars
 import nu.xom.Attribute
 import org.awaitility.Awaitility

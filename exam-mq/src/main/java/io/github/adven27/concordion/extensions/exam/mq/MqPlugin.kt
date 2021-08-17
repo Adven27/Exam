@@ -1,27 +1,11 @@
 package io.github.adven27.concordion.extensions.exam.mq
 
-import io.github.adven27.concordion.extensions.exam.core.ContentVerifier
-import io.github.adven27.concordion.extensions.exam.core.ExamExtension
 import io.github.adven27.concordion.extensions.exam.core.ExamPlugin
 import io.github.adven27.concordion.extensions.exam.core.commands.ExamCommand
-import net.javacrumbs.jsonunit.core.Configuration
-import org.xmlunit.diff.NodeMatcher
 
-class MqPlugin @JvmOverloads constructor(
-    private val testers: Map<String, MqTester>,
-    private var jsonUnitCfg: Configuration = ExamExtension.DEFAULT_JSON_UNIT_CFG,
-    private val nodeMatcher: NodeMatcher = ExamExtension.DEFAULT_NODE_MATCHER,
-    private val addContentVerifiers: Map<String, ContentVerifier> = mapOf()
-) : ExamPlugin {
+class MqPlugin constructor(private val testers: Map<String, MqTester>) : ExamPlugin {
     override fun commands(): List<ExamCommand> = listOf(
-        MqCheckCommand(
-            "mq-check",
-            "div",
-            jsonUnitCfg,
-            nodeMatcher,
-            testers,
-            mapOf("json" to ContentVerifier.Json(), "xml" to ContentVerifier.Xml()) + addContentVerifiers
-        ),
+        MqCheckCommand("mq-check", "div", testers),
         MqSendCommand("mq-send", "div", testers),
         MqPurgeCommand("mq-purge", "div", testers)
     )

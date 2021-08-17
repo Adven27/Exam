@@ -43,6 +43,8 @@ class HighlightExtension : ConcordionExtension {
     override fun addTo(e: ConcordionExtender) {
         e.linkedCss(BASE, "stackoverflow-light.min.css")
         e.linkedJs(BASE, "highlight.min.js")
+        e.linkedJs(BASE, "http.min.js")
+        e.linkedJs(BASE, "java.min.js")
     }
 
     companion object {

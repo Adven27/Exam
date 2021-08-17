@@ -3,7 +3,7 @@ package io.github.adven27.concordion.extensions.exam.db.builder
 import io.github.adven27.concordion.extensions.exam.core.commands.AwaitConfig
 import io.github.adven27.concordion.extensions.exam.core.commands.await
 import io.github.adven27.concordion.extensions.exam.core.fileExt
-import io.github.adven27.concordion.extensions.exam.core.utils.findResource
+import io.github.adven27.concordion.extensions.exam.core.findResource
 import io.github.adven27.concordion.extensions.exam.db.DbTester
 import io.github.adven27.concordion.extensions.exam.db.builder.CompareOperation.EQUALS
 import io.github.adven27.concordion.extensions.exam.db.commands.columnNamesArray

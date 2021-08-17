@@ -13,10 +13,8 @@ import io.github.adven27.concordion.extensions.exam.core.commands.ThenCommand
 import io.github.adven27.concordion.extensions.exam.core.commands.WaitCommand
 import io.github.adven27.concordion.extensions.exam.core.commands.WhenCommand
 import io.github.adven27.concordion.extensions.exam.core.commands.XmlCheckCommand
-import net.javacrumbs.jsonunit.core.Configuration
-import org.xmlunit.diff.NodeMatcher
 
-class CommandRegistry(jsonUnitCfg: Configuration, nodeMatcher: NodeMatcher) {
+class CommandRegistry(jsonVerifier: ContentVerifier, xmlVerifier: ContentVerifier) {
     private val commands = mutableListOf(
         MainCommand(),
         GivenCommand(),
@@ -31,8 +29,8 @@ class CommandRegistry(jsonUnitCfg: Configuration, nodeMatcher: NodeMatcher) {
         SetVarCommand(),
         WaitCommand("span"),
 
-        JsonCheckCommand("json-check", "div", jsonUnitCfg),
-        XmlCheckCommand("xml-check", "div", jsonUnitCfg, nodeMatcher)
+        JsonCheckCommand("json-check", "div", jsonVerifier),
+        XmlCheckCommand("xml-check", "div", xmlVerifier)
     )
 
     fun getBy(name: String): ExamCommand? = commands.firstOrNull { it.name() == name }

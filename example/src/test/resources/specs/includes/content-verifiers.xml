@@ -1,0 +1,41 @@
+<ignored>
+    <p>
+        Built-in implementations :
+    </p>
+    <table class="table table-sm">
+        <thead>
+            <tr><th>verifyAs</th><th>ContentVerifier</th><th>desc</th></tr>
+        </thead>
+        <tr>
+            <td><code>json</code></td>
+            <td><code>JsonVerifier</code></td>
+            <td>Uses <code><a href="https://github.com/lukas-krecan/JsonUnit">JsonAssert.assertJsonEquals</a></code> for verification.</td>
+        </tr>
+        <tr>
+            <td><code>xml</code></td>
+            <td><code>XmlVerifier</code></td>
+            <td>Uses <code><a href="https://github.com/xmlunit/xmlunit">DiffBuilder.compare</a></code> for verification.</td>
+        </tr>
+        <tr>
+            <td><code>text</code></td>
+            <td><code>ContentVerifier.Default</code></td>
+            <td>Uses jUnit <code>Assert.assertEquals</code> for verification.</td>
+        </tr>
+    </table>
+    <p>
+        This list may be augmented by <code>ExamExtension.withContentVerifiers</code> method:
+        <pre class="doc-code language-java">
+            <code>public class Specs extends AbstractSpecs {
+    @Override
+    protected ExamExtension init() {
+        return new ExamExtension(
+            ...
+        ).withContentVerifiers(
+            Map.of(
+            "customFormat", new ContentVerifier.Default()
+            )
+        );
+    }
+}</code></pre>
+    </p>
+</ignored>
