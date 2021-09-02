@@ -1,0 +1,21 @@
+#.table: fill=#fff visual=table dashed
+#.sut: fill=#0e0 bold
+#.db: fill=#0e0 visual=database
+#.api: fill=#0e0 visual=lollipop
+
+#gravity: 2
+#padding: 10
+#spacing: 30
+#direction: right
+
+[<sut> Widgets Service]<->[<db> DB]
+[<db> DB]--[<table> Widgets| id | integer || name | varchar || quantity | integer || updated | datetime]
+
+[<actor> client]-->[<api> POST /widgets]
+[<actor> client]-->[<api> GET /widgets]
+[<actor> client]-->[<api> PUT /widgets]
+[<actor> client]-->[<api> DELETE /widgets/{id}]
+[POST /widgets]-[Widgets Service]
+[GET /widgets]-[Widgets Service]
+[PUT /widgets]-[Widgets Service]
+[DELETE /widgets/{id}]-[Widgets Service]

@@ -88,6 +88,11 @@ enum class HelperSource(
     override val expected: Any? = "",
     override val opts: Map<String, String> = emptyMap()
 ) : ExamHelper<Any?> {
+    set("""{{set 1 "someVar"}}""", mapOf(), 1, mapOf()) {
+        override fun invoke(context: Any?, options: Options): Any? = options.params.map {
+            options.evaluator().setVariable("#$it", context)
+        }.let { context }
+    },
     dateFormat(
         """{{dateFormat date "yyyy-MM-dd'T'HH:mm O" tz="GMT+3" minus="1 y, 2 months, d 3" plus="4 h, 5 min, 6 s"}}""",
         mapOf("date" to "2000-01-02T10:20+03:00".parseDate()),

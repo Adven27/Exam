@@ -16,6 +16,7 @@ import io.github.adven27.concordion.extensions.exam.core.html.footerOf
 import io.github.adven27.concordion.extensions.exam.core.html.italic
 import io.github.adven27.concordion.extensions.exam.core.html.menuItemA
 import io.github.adven27.concordion.extensions.exam.core.html.pill
+import io.github.adven27.concordion.extensions.exam.core.html.span
 import io.github.adven27.concordion.extensions.exam.core.html.tag
 import io.github.adven27.concordion.extensions.exam.core.html.trWithTDs
 import nu.xom.Attribute
@@ -140,9 +141,11 @@ private fun Map.Entry<String, ResultSummary>.failed() =
 
 private fun findExample(el: ConcordionElement, id: String) = Html(el).findBy(id)
 private fun Html.collapse() {
-    first("p")!!.css("collapsed")
-    first("div")!!.removeClass("show")
+    descendants("a").firstByClass("bd-example-title")?.css("collapsed")
+    childs("div").firstByClass("bd-example")?.removeClass("show")
 }
+
+fun List<Html>.firstByClass(cssClass: String) = firstOrNull { it.attr("class")?.contains(cssClass) ?: false }
 
 internal class ExamDocumentParsingListener(private val registry: CommandRegistry) : DocumentParsingListener {
     companion object {
@@ -250,9 +253,11 @@ class ErrorListener : ThrowableCaughtListener {
             header = "Error while executing command",
             message = "${event.throwable.rootCause().message}",
             help = help(event),
-            html = div("while executing:")(
-                codeHighlight(PARSED_COMMANDS[event.element.getAttributeValue("cmdId")], "xml")
-            ),
+            html = PARSED_COMMANDS[event.element.getAttributeValue("cmdId")]?.let {
+                div("while executing:")(
+                    codeHighlight(it, "xml")
+                )
+            } ?: span(" "),
             type = "text"
         )
         val html = Html(event.element)

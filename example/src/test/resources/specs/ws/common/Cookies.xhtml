@@ -13,24 +13,24 @@
         <e:given>
             Client has cookie <code>c1</code> = <code cc:set="#cookie">111</code>.
         </e:given>
-        <e:get url="/mirror" cookies="c1={{cookie}}, c2=2" print="true">
+        <e:get url="/mirror/headers" cookies="c1={{cookie}}, c2=2" print="true">
             <e:case desc="Case with default cookies">
                 <e:expected>
                     {
-                    "GET": "/mirror",
-                    "Authorization": "",
-                    "Accept-Language": "",
-                    "cookies": "{c1=111, c2=2}"
+                    "GET": "/mirror/headers",
+                    "Authorization": null,
+                    "Accept-Language": null,
+                    "cookies": {"c1": "111", "c2": "2"}
                     }
                 </e:expected>
             </e:case>
             <e:case desc="Case with custom cookies" cookies="c2 = 22">
                 <e:expected>
                     {
-                    "GET": "/mirror",
-                    "Authorization": "",
-                    "Accept-Language": "",
-                    "cookies": "{c2=22}"
+                    "GET": "/mirror/headers",
+                    "Authorization": null,
+                    "Accept-Language": null,
+                    "cookies": {"c2": "22"}
                     }
                 </e:expected>
             </e:case>

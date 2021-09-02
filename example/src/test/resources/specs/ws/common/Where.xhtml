@@ -46,14 +46,14 @@
     <h3>GET</h3>
 
     <e:example name="get">
-        <e:get url="mirror" print="true">
+        <e:get url="mirror/headers" print="true">
             <e:case desc="Parametrized headers and response body" headers="Authorization = Bearer {{token}}, Accept-Language = {{lang}}">
                 <e:expected>
                     {
-                    "GET": "/mirror",
+                    "GET": "/mirror/headers",
                     "Authorization": "Bearer {{token}}",
                     "Accept-Language": "{{lang}}",
-                    "cookies": "{}"
+                    "cookies": {}
                     }
                 </e:expected>
                 <e:where vars="lang, token" separator=",">
@@ -67,7 +67,7 @@
     <h3>POST</h3>
 
     <e:example name="post">
-        <e:post url="relative/url" print="true">
+        <e:post url="mirror/body" print="true">
             <e:case desc="Parametrized request body and response body">
                 <e:body>{"exact": "{{p1}}", "template": 1}</e:body>
                 <e:expected>{"exact": "{{p2}}", "template": "{{number}}"}</e:expected>
@@ -82,14 +82,14 @@
     <h3>DELETE</h3>
 
     <e:example name="delete">
-        <e:delete url="mirror" print="true">
+        <e:delete url="mirror/headers" print="true">
             <e:case desc="Parametrized headers and response body" headers="Authorization = Bearer {{token}}, Accept-Language = {{lang}}">
                 <e:expected>
                     {
-                    "DELETE": "/mirror",
+                    "DELETE": "/mirror/headers",
                     "Authorization": "Bearer {{token}}",
                     "Accept-Language": "{{lang}}",
-                    "cookies": "{}"
+                    "cookies": {}
                     }
                 </e:expected>
                 <e:where vars="lang, token" separator=",">
@@ -103,7 +103,7 @@
     <h3>PUT</h3>
 
     <e:example name="put">
-        <e:put url="relative/url" print="true">
+        <e:put url="mirror/body" print="true">
             <e:case desc="Parametrized request body and response body">
                 <e:body>{"exact": "{{p1}}", "template": 1}</e:body>
                 <e:expected>{"exact": "{{p2}}", "template": "{{number}}"}</e:expected>
@@ -118,7 +118,7 @@
     <h3>SOAP</h3>
 
     <e:example name="soap">
-        <e:soap url="relative/url" print="true">
+        <e:soap url="mirror/body" print="true">
             <e:case desc="Parameterized name of file">
                 <e:body from="/data/soap/{{body}}"/>
                 <e:expected from="/data/soap/expected.xml"/>

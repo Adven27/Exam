@@ -374,7 +374,7 @@ class CaseCommand(
         val caseDesc = caseDesc(rt.attr(DESC))
         rt.attrs("data-type" to CASE, "id" to caseDesc).prependChild(
             tr()(
-                td(caseDesc, "colspan" to "2").muted().css("bg-light")
+                td(caseDesc, "colspan" to "2").muted().css("bg-light").style("border-bottom: 1px solid lightgray;")
             )
         )
     }
@@ -426,7 +426,7 @@ class CaseCommand(
     @Suppress("SpreadOperator", "MagicNumber")
     private fun trCaseDesc(caseTitle: String, statusEl: Html, hasReqBody: Boolean, responseTime: Long, desc: String) =
         tr("data-case-title" to caseTitle)(
-            td().style("max-width: 1px; width: ${if (hasReqBody) 50 else 100}%;")(
+            td().style("width: ${if (hasReqBody) 50 else 100}%;")(
                 div().css("httpstyle")(
                     codeHighlight(desc, "http")
                 )

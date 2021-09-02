@@ -125,9 +125,9 @@ class Html(val el: Element) {
         return this
     }
 
-    fun panel(header: String): Html = generateId().let {
+    fun panel(header: String, lvl: Int): Html = generateId().let {
         this(
-            title(header, it),
+            title(header, it, lvl),
             body(this, it)
         ).css("exam-example mb-3").attrs("data-type" to "example")
     }
@@ -138,11 +138,12 @@ class Html(val el: Element) {
             root.moveChildrenTo(this)
         }
 
-    private fun title(header: String, id: String) = tag("p")(
+    private fun title(header: String, id: String, lvl: Int) = div()(
+        tag("h$lvl").text(header).style("visibility: hidden; height:0;"),
         italic("", "class" to "far fa-caret-square-down"),
         tag("span").text(" "),
-        tag("a").text(header).css("position-relative example-title"),
-    ).css("bd-example-title text-muted fw-lighter") collapse id
+        tag("a").text(header).css("bd-example-title text-muted fw-lighter")
+    ) collapse id
 
     fun localName() = el.localName!!
 
@@ -363,7 +364,7 @@ fun bodyOf(card: Html) = Html(card.el.getChildElements("div")[1])
 fun stat() = Html("small")
 
 fun CommandCall?.html() = Html(this!!.element)
-fun CommandCall?.takeAttr(name: String, def: String) = html().takeAwayAttr(name, def)
+fun CommandCall?.takeAttr(name: String) = html().takeAwayAttr(name)
 fun CommandCall?.attr(name: String, def: String) = html().attr(name) ?: def
 
 fun generateId(): String = "e${UUID.randomUUID()}"

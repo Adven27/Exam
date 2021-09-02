@@ -96,25 +96,25 @@ open class ExamAssertEqualsCommand(
 }
 
 fun CommandCall?.awaitConfig() = AwaitConfig(
-    takeAttr("awaitAtMostSec", "0").toLong(),
-    takeAttr("awaitPollDelayMillis", "0").toLong(),
-    takeAttr("awaitPollIntervalMillis", "1000").toLong()
+    takeAttr("awaitAtMostSec")?.toLong(),
+    takeAttr("awaitPollDelayMillis")?.toLong(),
+    takeAttr("awaitPollIntervalMillis")?.toLong()
 )
 
 fun Html.awaitConfig(prefix: String = "await") = AwaitConfig(
-    takeAwayAttr("${prefix}AtMostSec", "0").toLong(),
-    takeAwayAttr("${prefix}PollDelayMillis", "0").toLong(),
-    takeAwayAttr("${prefix}PollIntervalMillis", "1000").toLong()
+    takeAwayAttr("${prefix}AtMostSec")?.toLong(),
+    takeAwayAttr("${prefix}PollDelayMillis")?.toLong(),
+    takeAwayAttr("${prefix}PollIntervalMillis")?.toLong()
 )
 
-data class AwaitConfig(val atMostSec: Long, val pollDelay: Long, val pollInterval: Long) {
-    fun enabled(): Boolean = atMostSec > 0
+data class AwaitConfig(val atMostSec: Long?, val pollDelay: Long?, val pollInterval: Long?) {
+    fun enabled(): Boolean = !(atMostSec == null && pollDelay == null && pollInterval == null)
 }
 
 fun AwaitConfig.await(desc: String? = null): ConditionFactory = Awaitility.await(desc)
-    .atMost(atMostSec, TimeUnit.SECONDS)
-    .pollDelay(pollDelay, TimeUnit.MILLISECONDS)
-    .pollInterval(pollInterval, TimeUnit.MILLISECONDS)
+    .atMost(atMostSec ?: 4, TimeUnit.SECONDS)
+    .pollDelay(pollDelay ?: 0, TimeUnit.MILLISECONDS)
+    .pollInterval(pollInterval ?: 1000, TimeUnit.MILLISECONDS)
 
 fun AwaitConfig.timeoutMessage(e: Throwable) =
     "Check with poll delay $pollDelay ms and poll interval $pollInterval ms didn't complete within $atMostSec seconds because ${e.cause?.message}"

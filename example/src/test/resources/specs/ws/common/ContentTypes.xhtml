@@ -10,9 +10,9 @@
     <h2>Examples</h2>
 
     <e:example name="default content-type">
-        <e:get url="relative/url" print="true">
+        <e:get url="mirror/request" print="true">
             <e:case>
-                <e:expected>{ "GET": "/relative/url" }</e:expected>
+                <e:expected>{ "GET": "/mirror/request" }</e:expected>
             </e:case>
         </e:get>
     </e:example>
@@ -21,9 +21,13 @@
         <p>
             Specifying <code>Content-Type</code> = <code>text/plain</code>
         </p>
-        <e:get url="relative/url" contentType="text/plain" print="true">
+        <e:get url="mirror/request" contentType="text/plain" print="true">
             <e:case>
-                <e:expected>{"GET":"/relative/url"}</e:expected>
+                <e:expected>
+                {
+                  "GET" : "/mirror/request"
+                }
+                </e:expected>
             </e:case>
         </e:get>
     </e:example>

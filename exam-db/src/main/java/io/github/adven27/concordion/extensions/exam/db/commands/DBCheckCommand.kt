@@ -80,7 +80,7 @@ class DBCheckCommand(
     override fun verify(cmd: CommandCall?, evaluator: Evaluator?, resultRecorder: ResultRecorder?, fixture: Fixture) {
         dbTester.dbUnitConfig.valueComparer.setEvaluator(evaluator!!)
         dbTester.dbUnitConfig.columnValueComparers.forEach { it.value.setEvaluator(evaluator) }
-        assertEq(cmd.html(), resultRecorder)
+        assertEq(cmd.html().apply { attr("class", "db-check") }, resultRecorder)
     }
 
     private fun assertEq(rootEl: Html, resultRecorder: ResultRecorder?) {

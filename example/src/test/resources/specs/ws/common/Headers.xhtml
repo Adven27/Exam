@@ -13,24 +13,24 @@
         <e:given>
             Set <code>Authorization</code> header with token <code cc:set="#token">111</code>.
         </e:given>
-        <e:get url="/mirror" headers="Authorization = Bearer {{token}}, Accept-Language = en" print="true">
+        <e:get url="/mirror/headers" headers="Authorization = Bearer {{token}}, Accept-Language = en" print="true">
             <e:case desc="Case with default headers">
                 <e:expected>
                     {
-                    "GET": "/mirror",
+                    "GET": "/mirror/headers",
                     "Authorization": "Bearer 111",
                     "Accept-Language": "en",
-                    "cookies": "{}"
+                    "cookies": {}
                     }
                 </e:expected>
             </e:case>
             <e:case desc="Override default headers" headers="Authorization = Bearer 222">
                 <e:expected>
                     {
-                    "GET": "/mirror",
+                    "GET": "/mirror/headers",
                     "Authorization": "Bearer 222",
-                    "Accept-Language": "",
-                    "cookies": "{}"
+                    "Accept-Language": null,
+                    "cookies": {}
                     }
                 </e:expected>
             </e:case>

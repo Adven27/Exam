@@ -171,21 +171,24 @@ class ExamExtension constructor(private vararg var plugins: ExamPlugin) : Concor
         val PARSED_COMMANDS: MutableMap<String, String> = HashMap()
         const val NS = "http://exam.extension.io"
 
-        @JvmField
-        var JACKSON_2_OBJECT_MAPPER_PROVIDER: Jackson2ObjectMapperProvider = DefaultObjectMapperProvider()
-
-        @JvmField
-        val DEFAULT_NODE_MATCHER = DefaultNodeMatcher(byNameAndText, byName)
-        val DEFAULT_JSON_UNIT_CFG: Configuration
-            get() = `when`(IGNORING_ARRAY_ORDER).apply {
-                MATCHERS.forEach { withMatcher(it.key, it.value) }
-            }
         val MATCHERS: MutableMap<String, Matcher<*>> = mutableMapOf(
             "formattedAs" to DateFormatMatcher(),
             "formattedAndWithin" to DateWithin.param(),
             "formattedAndWithinNow" to DateWithin.now(),
             "xmlDateWithinNow" to XMLDateWithin(),
         )
+
+        @JvmField
+        var JACKSON_2_OBJECT_MAPPER_PROVIDER: Jackson2ObjectMapperProvider = DefaultObjectMapperProvider()
+
+        @JvmField
+        val DEFAULT_NODE_MATCHER = DefaultNodeMatcher(byNameAndText, byName)
+
+        @JvmField
+        val DEFAULT_JSON_UNIT_CFG: Configuration = `when`(IGNORING_ARRAY_ORDER).let { cfg ->
+            MATCHERS.map { cfg to it }
+                .reduce { acc, cur -> acc.first.withMatcher(cur.second.key, cur.second.value) to cur.second }.first
+        }
 
         val CONTENT_TYPE_CONFIGS: MutableMap<String, ContentTypeConfig> = mutableMapOf(
             "json" to JsonContentTypeConfig(),
