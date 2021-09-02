@@ -49,11 +49,14 @@ open class SetVarCommand(
 
         eval.setVariable(varExp(varAttr(el) ?: cmd.expression), value)
         vars.forEach { eval.setVariable("#${it.key}", null) }
-        cmd.swapText(value as String)
+        cmd.swapText(value.toString())
     }
 
     protected fun CommandCall.swapText(value: String) {
         Html(element.localName).text(value).el.also {
+            element.moveAttributesTo(it)
+            // FIXME may skip some attributes after first turn, repeat to move the rest... probably bug
+            element.moveAttributesTo(it)
             element.appendSister(it)
             element.parentElement.removeChild(element)
             element = it

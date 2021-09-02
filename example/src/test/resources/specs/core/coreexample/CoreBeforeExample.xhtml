@@ -1,0 +1,72 @@
+<html xmlns:e="http://exam.extension.io" xmlns:cc="http://www.concordion.org/2007/concordion">
+<body>
+<h1>"Before" examples</h1>
+
+<blockquote class="blockquote blockquote-custom bg-white p-5 shadow rounded">
+    <i class="fas fa-quote-left fa-lg text-info me-2"> </i>
+    <p class="mb-0 mt-2">
+        <em>
+            A before example is intended to be used for functionality required by each example
+            <strong>where adding it to the specification improves the communication aspect for the reader</strong>.
+        </em>
+    </p>
+    <footer class="blockquote-footer pt-1 mt-1">
+        <a href="https://concordion.org/instrumenting/java/html/#before-examples">https://concordion.org/instrumenting/java/html/#before-examples</a>
+    </footer>
+</blockquote>
+
+<p>
+    There are two ways of specifying <i>before-all-examples</i> behavior.
+</p>
+
+<h2>Concordion "before"</h2>
+
+<p>
+    As <code>e:example</code> command effectively is the very same concordion example hence it supports the <a href="https://concordion.org/instrumenting/java/html/#before-examples">before examples</a>
+    concordion feature.
+</p>
+<e:example name="before" print="true">
+    The variable <code>fromConcordionBefore</code> will be reset
+    to <code e:set="#fromConcordionBefore = now()">{{now "HH:mm:ss.SSS"}}</code> before each example.
+</e:example>
+
+<p>
+    In the following <var>example 1</var> the <code>fromConcordionBefore</code> variable is available but <code>fromExamBefore</code> is not.
+</p>
+<e:example name="example 1">
+    Echo <code>fromConcordionBefore</code>: <code cc:echo="#fromConcordionBefore"/>
+    <br/>
+    Echo <code>fromExamBefore</code>: <code cc:echo="#fromExamBefore"/>
+</e:example>
+
+<h2>Exam "before"</h2>
+
+<p>
+    Main difference from concordion <var>before</var> is that that content of a <code>e:before-each</code> command
+    will be effectively inlined in the beginning of each <strong>subsequent</strong> example.
+</p>
+<p>
+    For example let's (re)set <code>fromExamBefore</code> variable before each example.
+</p>
+<e:before-each print="true">
+    The variable <code>fromExamBefore</code> will be reset to <code e:set="#fromExamBefore">{{now "HH:mm:ss.SSS"}}</code>
+    before each example.
+</e:before-each>
+
+<p>
+    Both variables are available, <code>e:before-each</code> block embedded at the beginning of the each subsequent example.
+</p>
+<e:example name="example 2">
+    Echo <code>fromConcordionBefore</code>: <code cc:echo="#fromConcordionBefore"/>
+    <br/>
+    Echo <code>fromExamBefore</code>: <code cc:echo="#fromExamBefore"/>
+</e:example>
+
+<e:example name="example 3">
+    Echo <code>fromConcordionBefore</code>: <code cc:echo="#fromConcordionBefore"/>
+    <br/>
+    Echo <code>fromExamBefore</code>: <code cc:echo="#fromExamBefore"/>
+</e:example>
+
+</body>
+</html>

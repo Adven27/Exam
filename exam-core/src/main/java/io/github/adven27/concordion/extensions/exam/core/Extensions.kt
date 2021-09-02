@@ -53,6 +53,9 @@ class HighlightExtension : ConcordionExtension {
         e.withEmbeddedJavaScript( // language=js
             """
             document.addEventListener('DOMContentLoaded', function (event) {
+                hljs.configure({
+                    cssSelector: 'pre code, pre.highlight'
+                });
                 hljs.highlightAll();
             });
             """.trimIndent()
@@ -80,18 +83,46 @@ class TocbotExtension : ConcordionExtension {
             """
             window.addEventListener('DOMContentLoaded', function (event) {
                 anchors.options = {
-                    placement: 'left'
+                    placement: 'left',
+                    icon: '#'
                 };
                 anchors.add();
                 tocbot.init({
                     tocSelector: '.js-toc',
                     contentSelector: '.bd-content',
                     headingSelector: 'h1, h2, h3, h4, h5, h6',
-                    hasInnerContainers: false,
+                    hasInnerContainers: true,
                     collapseDepth: 3,
                     scrollSmooth: false,
-                    fixedSidebarOffset: -1,
+                    fixedSidebarOffset: 'auto',
                     includeHtml: true
+                });
+                var collapseDepth = 3; 
+                jQuery( "#example-summary-badge" ).click(function() {
+                    if (collapseDepth === 3) {
+                        collapseDepth = 30;
+                    } else {
+                        collapseDepth = 3;
+                    }
+                    tocbot.refresh({
+                        tocSelector: '.js-toc',
+                        contentSelector: '.bd-content',
+                        headingSelector: 'h1, h2, h3, h4, h5, h6',
+                        hasInnerContainers: true,
+                        collapseDepth: collapseDepth,
+                        scrollSmooth: false,
+                        fixedSidebarOffset: 'auto',
+                        includeHtml: true
+                    });
+                    if (collapseDepth === 30) {
+                        jQuery( ".toc-link" ).filter(function( index ) {
+                            return jQuery( "i", this ).length !== 1
+                        }).css("display", "none");
+                    } else {
+                        jQuery( ".toc-link" ).filter(function( index ) {
+                            return jQuery( "i", this ).length !== 1
+                        }).css("display", "unset");
+                    }
                 });
             }); 
             """.trimIndent()
@@ -229,6 +260,7 @@ class CommandPrinterExtension : ConcordionExtension {
                 appendChild(
                     Document(elem.copy() as Element).prettyXml()
                         .replace(" xmlns:e=\"http://exam.extension.io\"", "")
+                        .replace(" xmlns:cc=\"http://www.concordion.org/2007/concordion\"", "")
                         .replace(" print=\"true\"", "")
                         .lines()
                         .filterNot { it.startsWith("<?xml version") }

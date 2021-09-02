@@ -79,12 +79,13 @@ internal class ExamExampleListener(private val skipDecider: SkipDecider) : Examp
         )
         card.first("div")!!.childs().first().let {
             if (summary.failureCount == 0L && summary.exceptionCount == 0L) {
-                it.prependChild(italic("").css("fa fa-check m-1 text-success "))
+                it.prependChild(italic("").css("example-badge fa fa-check m-1 text-success"))
             } else {
-                it.prependChild(italic("").css("fa fa-bug m-1 text-danger "))
+                card.el.rootElement.getElementById("example-summary-badge").addStyleClass("text-danger")
+                it.prependChild(italic("").css("example-badge fa fa-bug m-1 text-danger"))
             }
         }
-//        removeConcordionExpectedToFailWarning(card)
+        removeConcordionExpectedToFailWarning(card)
         exampleResults[card.attr("id")!!] = summary
     }
 
@@ -168,7 +169,14 @@ internal class ExamDocumentParsingListener(private val registry: CommandRegistry
     private fun layout(document: Document) {
         val content = div("class" to "bd-content ps-lg-4", "id" to CONTENT_ID)
         val toc = div("class" to "bd-toc mt-4 mb-5 my-md-0 ps-xl-3 mb-lg-5 text-muted")(
-            tag("strong").css("d-block h6 my-2 pb-2 border-bottom").text("On this page"),
+            div("class" to "row my-2 pb-2 border-bottom")(
+                div("class" to "col-9")(
+                    tag("strong").css("h6").text("On this page")
+                ),
+                div("class" to "col-2")(
+                    italic("", "id" to "example-summary-badge").css("fa fa-list-check")
+                )
+            ),
             tag("nav").attrs("id" to MENU_ID, "class" to "js-toc toc toc-right")
         )
         val container = div("class" to "container-fluid")(
@@ -208,7 +216,7 @@ class SpecSummaryListener : SpecificationProcessingListener {
     override fun afterProcessingSpecification(event: SpecificationProcessingEvent) {
         val body = Html(event.rootElement).first("body")
         if (body != null) {
-            val menu = body.findBy("summary")
+            val menu = body.findBy("example-summary-badge")
             val examples = body.descendants("a").filter { "example" == it.attr("data-type") }
             if (menu != null && examples.isNotEmpty()) {
                 menu.parent().css("pin")
@@ -273,7 +281,7 @@ class ErrorListener : ThrowableCaughtListener {
             else -> html.below(errorMessage)
         }
 
-        html.parent().remove(html)
+        html.style("display:none;")
         errorMessage.findBy(id)?.below(
             div()(
                 html.childs().filter { it.attr("class") in listOf("stackTrace", "stackTraceButton") }.map {

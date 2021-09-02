@@ -39,14 +39,6 @@
         </xs:simpleType>
     </xs:attribute>
 
-    <xs:element name="main">
-        <xs:complexType>
-            <xs:sequence>
-                <xs:any processContents="lax" minOccurs="0"/>
-            </xs:sequence>
-        </xs:complexType>
-    </xs:element>
-
     <xs:element name="summary">
         <xs:complexType>
             <xs:simpleContent>
@@ -57,8 +49,12 @@
         </xs:complexType>
     </xs:element>
     <xs:element name="given" type="given-info"/>
+
     <xs:element name="before-each">
         <xs:complexType mixed="true">
+            <xs:sequence>
+                <xs:any processContents="lax" minOccurs="0"/>
+            </xs:sequence>
             <xs:all>
                 <xs:element name="given" type="given-info"/>
                 <xs:element name="set" type="set-info"/>

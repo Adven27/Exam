@@ -139,7 +139,7 @@ class Html(val el: Element) {
         }
 
     private fun title(header: String, id: String, lvl: Int) = div()(
-        tag("h$lvl").text(header).style("visibility: hidden; height:0;"),
+        tag("h$lvl").text(header).style("visibility: hidden; height:0;").css("test-class"),
         italic("", "class" to "far fa-caret-square-down"),
         tag("span").text(" "),
         tag("a").text(header).css("bd-example-title text-muted fw-lighter")
@@ -168,6 +168,8 @@ class Html(val el: Element) {
 
     infix fun insteadOf(original: Element): Html {
         original.moveChildrenTo(this.el)
+        original.moveAttributesTo(this.el)
+        // FIXME may skip some attributes after first turn, repeat to move the rest... probably bug
         original.moveAttributesTo(this.el)
         original.appendSister(this.el)
         original.parentElement.removeChild(original)
@@ -342,8 +344,6 @@ fun list() = ul() css "list-group"
 @JvmOverloads
 fun li(text: String? = null) = Html("li", text)
 
-fun menuItemLi() = li() css "list-group-item list-group-item-action d-flex justify-content-between align-items-center"
-
 fun menuItemA(txt: String) =
     link(txt) css "list-group-item list-group-item-action" style "border-left: none; border-right: none;"
 
@@ -358,8 +358,6 @@ fun buttonCollapse(txt: String, target: String) = button(txt) collapse target
 fun divCollapse(txt: String, target: String) = div(txt).css("far fa-caret-square-down") collapse target
 
 fun footerOf(card: Html) = Html(card.el.getChildElements("div")[2])
-
-fun bodyOf(card: Html) = Html(card.el.getChildElements("div")[1])
 
 fun stat() = Html("small")
 

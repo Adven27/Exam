@@ -15,6 +15,7 @@ import io.github.adven27.concordion.extensions.exam.db.commands.IgnoreMillisComp
 import io.github.adven27.concordion.extensions.exam.files.FlPlugin
 import io.github.adven27.concordion.extensions.exam.mq.MqPlugin
 import io.github.adven27.concordion.extensions.exam.mq.MqTester
+import io.github.adven27.concordion.extensions.exam.ui.UiPlugin
 import io.github.adven27.concordion.extensions.exam.ws.WsPlugin
 import net.javacrumbs.jsonunit.core.Option.IGNORING_EXTRA_FIELDS
 import java.util.ArrayDeque

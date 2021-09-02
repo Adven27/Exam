@@ -24,7 +24,7 @@ open class ExamResultRenderer : AssertEqualsListener, AssertTrueListener, Assert
 
     private fun expectedElement(event: AssertFailureEvent) = Element("del").apply {
         addStyleClass("expected")
-        appendText(event.expected)
+//        appendText(event.expected)
         appendNonBreakingSpaceIfBlank()
     }
 

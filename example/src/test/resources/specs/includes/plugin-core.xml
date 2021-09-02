@@ -1,22 +1,17 @@
 <ignored xmlns:e="http://exam.extension.io" xmlns:cc="http://www.concordion.org/2007/concordion">
-    <h3>Core commands</h3>
-    <hr/>
     <p>
         Core commands may be used to extend default Concordion possibilities of setting up, verifying and decorating of examples.
     </p>
 
-    <h4>Usage</h4>
-    <p>1. Add any exam dependency <pre class="doc-code"><code>testImplementation "io.github.adven27:exam-*:{{version}}"</code></pre></p>
-
-    <h4>Commands</h4>
+    <h3>Commands</h3>
     <p>
         The following are core-commands available
     </p>
 
-    <h5>Specification by example</h5>
+    <h4>Specification by example</h4>
 
     <dl>
-        <dt><code><a cc:run="concordion" href="core/CoreExample.xhtml">example</a></code></dt>
+        <dt><code><a cc:run="concordion" href="core/coreexample/CoreExample.xhtml">example</a></code></dt>
         <dd>
             <p>Decorated version of <a href="https://concordion.org/instrumenting/java/html/#example-command">Concordion example command</a>:</p>
             <pre class="doc-code language-xml"><code> <![CDATA[
@@ -26,19 +21,9 @@
             ]]>
             </code></pre>
         </dd>
-        <dt><code><a cc:run="concordion" href="core/CoreBeforeExample.xhtml">before-each</a></code></dt>
-        <dd>
-            <p>Custom version of <a href="https://concordion.org/instrumenting/java/html/#before-examples">Concordion before example command</a>:</p>
-            <pre class="doc-code language-xml"><code> <![CDATA[
-                <e:before-each>
-                ...
-                </e:before-each>
-            ]]>
-            </code></pre>
-        </dd>
     </dl>
 
-    <h5>Context variables setting</h5>
+    <h4>Context variables setting</h4>
 
     <dl>
         <dt><code><a cc:run="concordion" href="core/CoreSet.xhtml">set</a></code></dt>
@@ -51,42 +36,37 @@
         </dd>
     </dl>
 
-    <h5>Verifying</h5>
+    <h4>Verifying</h4>
 
     <dl>
-        <dt><code><a cc:run="concordion" href="core/CoreVerify.xhtml">equals</a></code></dt>
+        <dt>
+            <code><a cc:run="concordion" href="core/CoreVerify.xhtml">equals</a></code>,
+            <code><a cc:run="concordion" href="core/CoreVerify.xhtml">equalsFile</a></code>
+        </dt>
         <dd>
             <p>Handlebars-aware version of <a href="https://concordion.org/instrumenting/java/html/#assert-equals-command">Concordion assert command</a>:</p>
             <pre class="doc-code language-xml"><code><![CDATA[
-                <span e:equals="actual">{{now}}</pre>
+                <span e:equals="actual">{{now}}</span>
+                <span e:equalsFile="actual">/data/expected.txt</span>
             ]]>
             </code></pre>
         </dd>
-        <dt><code><a cc:run="concordion" href="core/CoreVerify.xhtml">equalsFile</a></code></dt>
-        <dd>
-            <p>Handlebars-aware version of <a href="https://concordion.org/instrumenting/java/html/#assert-equals-command">Concordion assert command</a>:</p>
-            <pre class="doc-code language-xml"><code><![CDATA[
-                <span e:equalsFile="actual">/data/expected.txt</pre>
-            ]]>
-            </code></pre>
-        </dd>
-        <dt><code><a cc:run="concordion" href="core/CoreVerify.xhtml">jsonEquals</a></code></dt>
+        <dt>
+            <code><a cc:run="concordion" href="core/CoreVerify.xhtml">jsonEquals</a></code>,
+            <code><a cc:run="concordion" href="core/CoreVerify.xhtml">jsonEqualsFile</a></code>
+        </dt>
         <dd>
             <p>Json-aware version of <a href="https://concordion.org/instrumenting/java/html/#assert-equals-command">Concordion assert command</a>:</p>
             <pre class="doc-code language-xml"><code><![CDATA[
-                <span e:jsonEquals="actual">{"a" : 1}</pre>
+                <span e:jsonEquals="actual">{"a" : 1}</span>
+                <span e:jsonEqualsFile="actual">/data/expected.json</span>
             ]]>
             </code></pre>
         </dd>
-        <dt><code><a cc:run="concordion" href="core/CoreVerify.xhtml">jsonEqualsFile</a></code></dt>
-        <dd>
-            <p>Json-aware version of <a href="https://concordion.org/instrumenting/java/html/#assert-equals-command">Concordion assert command</a>:</p>
-            <pre class="doc-code language-xml"><code><![CDATA[
-                <span e:jsonEqualsFile="actual">/data/expected.json</pre>
-            ]]>
-            </code></pre>
-        </dd>
-        <dt><code><a cc:run="concordion" href="core/CoreVerify.xhtml">xmlEquals</a></code></dt>
+        <dt>
+            <code><a cc:run="concordion" href="core/CoreVerify.xhtml">xmlEquals</a></code>,
+            <code><a cc:run="concordion" href="core/CoreVerify.xhtml">xmlEqualsFile</a></code>
+        </dt>
         <dd>
             <p>Xml-aware version of <a href="https://concordion.org/instrumenting/java/html/#assert-equals-command">Concordion assert command</a>:</p>
             <pre class="doc-code language-xml"><code><![CDATA[
@@ -96,21 +76,15 @@
                         <val>{{placeholder}}</val>
                     </message>
                 ] ]>
-                </pre>
-            ]]>
-            </code></pre>
-        </dd>
-        <dt><code><a cc:run="concordion" href="core/CoreVerify.xhtml">xmlEqualsFile</a></code></dt>
-        <dd>
-            <p>Xml-aware version of <a href="https://concordion.org/instrumenting/java/html/#assert-equals-command">Concordion assert command</a>:</p>
-            <pre class="doc-code language-xml"><code><![CDATA[
-                <span e:xmlEqualsFile="actual">/data/expected.xml</pre>
+                </span>
+
+                <span e:xmlEqualsFile="actual">/data/expected.xml</span>
             ]]>
             </code></pre>
         </dd>
     </dl>
 
-    <h5>Decorating</h5>
+    <h4>Decorating</h4>
 
     <dl>
         <dt>

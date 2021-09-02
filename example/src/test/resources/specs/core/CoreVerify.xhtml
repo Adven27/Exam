@@ -1,44 +1,65 @@
 <html xmlns:e="http://exam.extension.io" xmlns:cc="http://www.concordion.org/2007/concordion">
 <body>
-    <h1>Core verifying commands</h1>
+<h1>Core verifying commands</h1>
 
-    <p class="lead">Handlebars and content type aware verifying commands.</p>
+<p class="lead">Handlebars and content type aware verifying commands.</p>
 
-    <h2>Overview</h2>
+<h2>Overview</h2>
 
-    <p>
-        Commands may be used as drop-in replacements for their <a href="https://concordion.org/instrumenting/java/html/#assert-equals-command">concordion counterpart</a>
-        when handlebars-template support or content type awareness is needed.
-    </p>
+<p>
+    Commands may be used as drop-in replacements for their
+    <a href="https://concordion.org/instrumenting/java/html/#assert-equals-command">concordion counterpart</a>
+    when handlebars-template support or content type awareness is needed.
+</p>
 
-    <h2>Examples</h2>
+<h2>Examples</h2>
 
-    <h3>Basic usage</h3>
+<h3>Basic usage</h3>
 
-    <e:set var="#v1" value="1"/><span cc:echo="#v1"/>
-    <pre e:set="v2">{{now}}</pre><span cc:echo="#v2"/>
-    <pre e:set="v3" from="/data/xj/expected.json"/><span cc:echo="#v3"/>
+<p>
+    Let's test the <code>lowercase</code> function,
+    which converts a given parameter to lower case and returns result in 3 formats (text/json/xml).
+</p>
+<e:example name="basic">
 
-    <table cc:execute="#username = generateUsername(#fullName)">
-        <tr>
-            <th e:set="#fullName">Full Name</th>
-            <th e:equals="#username">Username</th>
-        </tr>
-        <tr>
-            <td>{{set 'Fred Bloggs' 'sU'}}</td>
-            <td>{{set 'fred bloggs' 's'}}</td>
-        </tr>
-        <tr>
-            <td>John Doe</td>
-            <td>john doe</td>
-        </tr>
-        <tr>
-            <td>Winston Churchill</td>
-            <td>winston</td>
-        </tr>
-    </table>
-    <pre cc:echo="#sU"/>
-    <pre cc:echo="#s"/>
+    <e:given>
+        Variable <code>someVar</code> = <code cc:set="#someVar">123</code>
+    </e:given>
+
+    <e:then>
+        <div class="table-responsive">
+            <table cc:execute="#result = lowercase(#param)" print="true">
+                <tr>
+                    <th e:set="#param">Param</th>
+                    <th e:equals="#result.text">Text</th>
+                    <th e:equalsFile="#result.text">Text from file</th>
+                    <th e:jsonEquals="#result.json">JSON</th>
+                    <th e:jsonEqualsFile="#result.json">JSON from file</th>
+                    <th e:xmlEquals="#result.xml">XML</th>
+                    <th e:xmlEqualsFile="#result.xml">XML from file</th>
+                    <th cc:echo="#result.json">Echo JSON</th>
+                    <th cc:echo="#result.xml">Echo XML</th>
+                </tr>
+                <tr>
+                    <td>ABC {{someVar}}</td>
+
+                    <td>abc {{someVar}}</td>
+                    <td>/data/core/expected.txt</td>
+
+                    <td>{"result": "abc {{someVar}}"}</td>
+                    <td>/data/core/expected.json</td>
+
+                    <td><![CDATA[ <result>abc {{someVar}}</result>]]></td>
+                    <td>/data/core/expected.xml</td>
+
+                    <td> <pre class="language language-json"/> </td>
+                    <td> <pre class="language language-xml"/> </td>
+                </tr>
+            </table>
+        </div>
+    </e:then>
+
+</e:example>
 
 </body>
 </html>
