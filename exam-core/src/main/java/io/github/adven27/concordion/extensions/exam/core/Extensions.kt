@@ -90,7 +90,8 @@ class TocbotExtension : ConcordionExtension {
                     hasInnerContainers: false,
                     collapseDepth: 3,
                     scrollSmooth: false,
-                    fixedSidebarOffset: -1
+                    fixedSidebarOffset: -1,
+                    includeHtml: true
                 });
             }); 
             """.trimIndent()

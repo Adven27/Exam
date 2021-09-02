@@ -1,0 +1,26 @@
+<html xmlns:e="http://exam.extension.io" xmlns:cc="http://www.concordion.org/2007/concordion">
+<body>
+<h1>Core set command</h1>
+
+<p class="lead">Handlebars aware set command.</p>
+
+<h2>Overview</h2>
+
+<p>
+    Command may be used as drop-in replacements for
+    <a href="https://concordion.org/instrumenting/java/html/#set-command">Concordion set command</a>
+    when handlebars-template support is needed.
+</p>
+
+<h2>Examples</h2>
+
+<h3>Basic usage</h3>
+
+<e:set var="#v1" value="1"/><span cc:echo="#v1"/>
+<pre e:set="v2">{{today}}</pre><span cc:echo="#v2"/>
+<pre e:set="v3" from="/data/core/file.txt"/><span cc:echo="#v3"/>
+
+<pre cc:assertEquals="v1">1</pre>
+
+</body>
+</html>

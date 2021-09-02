@@ -1,0 +1,139 @@
+<html xmlns:e="http://exam.extension.io" xmlns:cc="http://www.concordion.org/2007/concordion">
+<body>
+<h1>Core set command</h1>
+
+<p class="lead">Handlebars aware set command.</p>
+
+<h2>Overview</h2>
+
+<p>
+    Command may be used as drop-in replacements for
+    <a href="https://concordion.org/instrumenting/java/html/#set-command">Concordion set command</a>
+    when handlebars-template support is needed.
+</p>
+
+<h2>Examples</h2>
+
+<p>
+    New variable could be created in the following ways:
+</p>
+
+<e:example name="before">
+    Given concordion variable <code>ccVar</code> = <code cc:set="#ccVar">1</code>
+</e:example>
+
+
+<h3>Embedded command</h3>
+
+<p>
+    Recommended idiomatic way.
+</p>
+
+<h4>From value attribute</h4>
+
+<e:example name="embedded - no body">
+    Let's create new variable  <code>veNoBody</code> with the value equal to <code>ccVar</code>.
+    <pre e:set="#veNoBody" value="{{ccVar}}" print="true"/>
+    New variable <code>veNoBody</code> has value: <code cc:assertEquals="#veNoBody">1</code>
+</e:example>
+
+<h4>From tag body</h4>
+
+<e:example name="embedded - body">
+    Let's create new variable  <code>veBody</code> with the value equal to <var>concordion var = </var> + <var>ccVar</var> value.
+    <pre e:set="#veBody" print="true">concordion var = {{ccVar}}</pre>
+    New variable <code>veBody</code> has value: <code cc:assertEquals="#veBody">concordion var = 1</code>
+</e:example>
+
+<h4>From file</h4>
+
+<e:example name="embedded - file">
+    Let's create new variable  <code>veFile</code> with the value equal to: <pre>File template:  ccVar = {{ccVar}}</pre>
+    <pre e:set="#veFile" from="/data/core/file.txt" print="true"/>
+    New variable <code>veFile</code> has value: <code cc:assertEquals="#veFile">File template:  ccVar = 1</code>
+</e:example>
+
+<h3>Custom tag command</h3>
+
+<p>
+    Not recommended legacy-style.
+</p>
+
+<h4>From value attribute</h4>
+
+<e:example name="custom tag - no body">
+    Let's create new variable  <code>vcNoBody</code> with the value equal to <code>ccVar</code>.
+    <e:set var="#vcNoBody" value="{{ccVar}}" print="true"/>
+    New variable <code>vcNoBody</code> has value: <code cc:assertEquals="#vcNoBody">1</code>
+</e:example>
+
+<h4>From body</h4>
+
+<e:example name="custom tag - body">
+    Let's create new variable  <code>vcBody</code> with the value equal to: <code>concordion var = </code> + <code>ccVar value</code>.
+    <e:set var="#vcBody" print="true">concordion var = {{ccVar}}</e:set>
+    New variable <code>vcBody</code> has value: <code cc:assertEquals="#vcBody">concordion var = 1</code>
+</e:example>
+
+<h4>From file</h4>
+
+<e:example name="custom tag - file">
+    Let's create new variable  <code>vcFile</code> with the value equal to: <pre>File template:  ccVar = {{ccVar}}</pre>
+    <e:set var="#vcFile" from="/data/core/file.txt" print="true"/>
+    New variable <code>vcFile</code> has value: <code cc:assertEquals="#vcFile">File template:  ccVar = 1</code>
+</e:example>
+
+<h3>Silent set</h3>
+
+<p>
+    To set variable silently without rendering in report just set <code>display: none</code> style attribute.
+</p>
+
+<e:example name="silent">
+    Let's create new variable  <code>v1Silent</code> with the value equal to <code>1</code>:
+    <e:set var="#v1Silent" style="display:none" print="true">1</e:set>
+
+    and <code>v2Silent</code> with the value equal to <code>2</code>:
+    <pre e:set="#v2Silent" style="display:none">2</pre>
+
+    <p>
+        New variable <code>v1Silent</code> has value: <code cc:assertEquals="#v1Silent">1</code>
+    </p>
+    <p>
+        New variable <code>v2Silent</code> has value: <code cc:assertEquals="#v2Silent">2</code>
+    </p>
+</e:example>
+
+<h3>Pretty-print</h3>
+
+<p>
+    Exam uses <a href="https://highlightjs.org/">highlightjs library</a> for code highlighting,
+    which can be used according to documentation:
+</p>
+
+<blockquote class="blockquote blockquote-custom bg-white p-5 shadow rounded">
+    <i class="fas fa-quote-left fa-lg text-info me-2"> </i>
+    <p class="mb-0 mt-2">
+        <em>
+        "This will find and highlight code inside of <strong>&lt;pre>&lt;code></strong> tags;
+        it tries to detect the language automatically.
+        If automatic detection doesn’t work for you, or you simply prefer to be explicit,
+        you can specify the language manually in the using the class attribute..."
+        </em>
+    </p>
+    <footer class="blockquote-footer pt-1 mt-1">
+        <a href="https://highlightjs.org/usage/" title="Source Title">https://highlightjs.org/usage/</a>
+    </footer>
+</blockquote>
+
+<e:example name="Pretty-print">
+    Let's create new variable  <code>vPretty</code> with the value equal to <code>{ "a" : 1 }</code>:
+    <pre class="language-json" print="true"><code e:set="#vPretty">{ "a" : 1 }</code></pre>
+
+    <p>
+        New variable <code>vPretty</code> has value: <code cc:assertEquals="#vPretty">{ "a" : 2 }</code>
+    </p>
+</e:example>
+
+</body>
+</html>

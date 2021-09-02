@@ -32,12 +32,22 @@ interface NamedExamCommand : Command {
 }
 
 interface BeforeParseExamCommand {
-    fun beforeParse(elem: nu.xom.Element)
+    val tag: String
+
+    fun beforeParse(elem: nu.xom.Element) {
+        val attr = Attribute(elem.localName, "")
+        attr.setNamespace("e", ExamExtension.NS)
+        elem.addAttribute(attr)
+
+        elem.namespacePrefix = ""
+        elem.namespaceURI = null
+        elem.localName = tag
+    }
 }
 
 open class BaseExamCommand(override val name: String) : NamedExamCommand, AbstractCommand()
 
-open class ExamCommand(override val name: String, protected val tag: String) : BeforeParseExamCommand,
+open class ExamCommand(override val name: String, override val tag: String) : BeforeParseExamCommand,
     BaseExamCommand(name) {
     private val listeners = Announcer.to(ExecuteListener::class.java)
 
@@ -53,16 +63,6 @@ open class ExamCommand(override val name: String, protected val tag: String) : B
 
     private fun announceExecuteCompleted(element: Element) =
         listeners.announce().executeCompleted(ExecuteEvent(element))
-
-    override fun beforeParse(elem: nu.xom.Element) {
-        val attr = Attribute(elem.localName, "")
-        attr.setNamespace("e", ExamExtension.NS)
-        elem.addAttribute(attr)
-
-        elem.namespacePrefix = ""
-        elem.namespaceURI = null
-        elem.localName = tag
-    }
 }
 
 open class ExamAssertEqualsCommand(

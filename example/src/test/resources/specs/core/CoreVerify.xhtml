@@ -1,0 +1,44 @@
+<html xmlns:e="http://exam.extension.io" xmlns:cc="http://www.concordion.org/2007/concordion">
+<body>
+    <h1>Core verifying commands</h1>
+
+    <p class="lead">Handlebars and content type aware verifying commands.</p>
+
+    <h2>Overview</h2>
+
+    <p>
+        Commands may be used as drop-in replacements for their <a href="https://concordion.org/instrumenting/java/html/#assert-equals-command">concordion counterpart</a>
+        when handlebars-template support or content type awareness is needed.
+    </p>
+
+    <h2>Examples</h2>
+
+    <h3>Basic usage</h3>
+
+    <e:set var="#v1" value="1"/><span cc:echo="#v1"/>
+    <pre e:set="v2">{{now}}</pre><span cc:echo="#v2"/>
+    <pre e:set="v3" from="/data/xj/expected.json"/><span cc:echo="#v3"/>
+
+    <table cc:execute="#username = generateUsername(#fullName)">
+        <tr>
+            <th e:set="#fullName">Full Name</th>
+            <th e:equals="#username">Username</th>
+        </tr>
+        <tr>
+            <td>{{set 'Fred Bloggs' 'sU'}}</td>
+            <td>{{set 'fred bloggs' 's'}}</td>
+        </tr>
+        <tr>
+            <td>John Doe</td>
+            <td>john doe</td>
+        </tr>
+        <tr>
+            <td>Winston Churchill</td>
+            <td>winston</td>
+        </tr>
+    </table>
+    <pre cc:echo="#sU"/>
+    <pre cc:echo="#s"/>
+
+</body>
+</html>

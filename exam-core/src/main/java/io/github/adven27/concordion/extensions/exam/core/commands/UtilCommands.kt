@@ -3,6 +3,7 @@ package io.github.adven27.concordion.extensions.exam.core.commands
 import io.github.adven27.concordion.extensions.exam.core.ExamExtension
 import io.github.adven27.concordion.extensions.exam.core.JsonContentTypeConfig
 import io.github.adven27.concordion.extensions.exam.core.XmlContentTypeConfig
+import io.github.adven27.concordion.extensions.exam.core.html.Html
 import io.github.adven27.concordion.extensions.exam.core.html.html
 import io.github.adven27.concordion.extensions.exam.core.readFile
 import io.github.adven27.concordion.extensions.exam.core.resolve
@@ -17,11 +18,16 @@ import org.concordion.api.CommandCall
 import org.concordion.api.Evaluator
 import org.concordion.api.Fixture
 import org.concordion.api.ResultRecorder
+import org.concordion.internal.command.SetCommand
 import org.junit.Assert.assertEquals
 
-class SetVarCommand : ExamCommand("set", "pre") {
+open class SetVarCommand(
+    override val name: String,
+    override val tag: String
+) : SetCommand(), NamedExamCommand, BeforeParseExamCommand {
+
     override fun setUp(cmd: CommandCall, eval: Evaluator, resultRecorder: ResultRecorder, fixture: Fixture) {
-        val el = cmd.html().style("display: none;").apply { el.appendNonBreakingSpaceIfBlank() }
+        val el = cmd.html()
         val valueAttr = el.attr("value")
         val valueFrom = el.attr("from")
         val vars = el.takeAwayAttr("vars").vars(eval, separator = el.takeAwayAttr("varsSeparator", ","))
@@ -41,8 +47,26 @@ class SetVarCommand : ExamCommand("set", "pre") {
             }
         }
 
-        eval.setVariable("#${el.attr("var")!!}", value)
+        eval.setVariable(varExp(varAttr(el) ?: cmd.expression), value)
         vars.forEach { eval.setVariable("#${it.key}", null) }
+        cmd.swapText(value as String)
+    }
+
+    protected fun CommandCall.swapText(value: String) {
+        Html(element.localName).text(value).el.also {
+            element.appendSister(it)
+            element.parentElement.removeChild(element)
+            element = it
+        }
+    }
+
+    private fun varAttr(el: Html) =
+        el.attr("var") ?: el.el.getAttributeValue("set", ExamExtension.NS)
+
+    private fun varExp(varName: String) = if (varName.startsWith("#")) varName else "#$varName"
+
+    override fun beforeParse(elem: Element) {
+        if (elem.localName == "set") super.beforeParse(elem)
     }
 }
 
@@ -120,3 +144,5 @@ class XmlEqualsCommand : ExamAssertEqualsCommand("xmlEquals", XmlContentTypeConf
 class XmlEqualsFileCommand : ExamAssertEqualsCommand("xmlEqualsFile", XmlContentTypeConfig(), { it.readFile() })
 class JsonEqualsCommand : ExamAssertEqualsCommand("jsonEquals", JsonContentTypeConfig())
 class JsonEqualsFileCommand : ExamAssertEqualsCommand("jsonEqualsFile", JsonContentTypeConfig(), { it.readFile() })
+class TextEqualsCommand : ExamAssertEqualsCommand("equals")
+class TextEqualsFileCommand : ExamAssertEqualsCommand("equalsFile", content = { it.readFile() })

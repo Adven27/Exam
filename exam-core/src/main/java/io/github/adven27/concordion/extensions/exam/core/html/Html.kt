@@ -271,7 +271,7 @@ fun code(txt: String) = Html("code", txt)
 @JvmOverloads
 fun span(txt: String? = null, vararg attrs: Pair<String, String>) = Html("span", txt, *attrs)
 
-fun badge(txt: String, style: String) = span(txt).css("badge badge-$style ml-1 mr-1")
+fun badge(txt: String, style: String) = span(txt).css("badge bg-$style ml-1 mr-1")
 
 fun pill(count: Long, style: String) = pill(if (count == 0L) "" else count.toString(), style)
 

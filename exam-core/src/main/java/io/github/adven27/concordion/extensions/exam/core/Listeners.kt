@@ -77,7 +77,14 @@ internal class ExamExampleListener(private val skipDecider: SkipDecider) : Examp
             "data-summary-exception" to summary.exceptionCount.toString(),
             "data-summary-status" to summary.implementationStatus.tag,
         )
-        removeConcordionExpectedToFailWarning(card)
+        card.first("div")!!.childs().first().let {
+            if (summary.failureCount == 0L && summary.exceptionCount == 0L) {
+                it.prependChild(italic("").css("fa fa-check m-1 text-success "))
+            } else {
+                it.prependChild(italic("").css("fa fa-bug m-1 text-danger "))
+            }
+        }
+//        removeConcordionExpectedToFailWarning(card)
         exampleResults[card.attr("id")!!] = summary
     }
 

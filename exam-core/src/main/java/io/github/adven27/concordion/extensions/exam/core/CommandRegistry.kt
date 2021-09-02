@@ -8,6 +8,8 @@ import io.github.adven27.concordion.extensions.exam.core.commands.JsonEqualsComm
 import io.github.adven27.concordion.extensions.exam.core.commands.JsonEqualsFileCommand
 import io.github.adven27.concordion.extensions.exam.core.commands.NamedExamCommand
 import io.github.adven27.concordion.extensions.exam.core.commands.SetVarCommand
+import io.github.adven27.concordion.extensions.exam.core.commands.TextEqualsCommand
+import io.github.adven27.concordion.extensions.exam.core.commands.TextEqualsFileCommand
 import io.github.adven27.concordion.extensions.exam.core.commands.ThenCommand
 import io.github.adven27.concordion.extensions.exam.core.commands.WaitCommand
 import io.github.adven27.concordion.extensions.exam.core.commands.WhenCommand
@@ -24,11 +26,14 @@ class CommandRegistry(jsonVerifier: ContentVerifier, xmlVerifier: ContentVerifie
         ExamExampleCommand("div"),
         BeforeEachExampleCommand("div"),
 
-        SetVarCommand(),
+        SetVarCommand("set", "pre"),
         WaitCommand("span"),
 
         JsonCheckCommand("div", jsonVerifier),
         XmlCheckCommand("div", xmlVerifier),
+
+        TextEqualsCommand(),
+        TextEqualsFileCommand(),
         XmlEqualsCommand(),
         XmlEqualsFileCommand(),
         JsonEqualsCommand(),
