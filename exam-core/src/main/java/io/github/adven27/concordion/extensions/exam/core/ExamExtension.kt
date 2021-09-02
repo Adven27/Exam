@@ -3,6 +3,7 @@
 package io.github.adven27.concordion.extensions.exam.core
 
 import com.github.jknack.handlebars.Handlebars
+import io.github.adven27.concordion.extensions.exam.core.json.DefaultObjectMapperProvider
 import io.github.adven27.concordion.extensions.exam.core.utils.DateFormatMatcher
 import io.github.adven27.concordion.extensions.exam.core.utils.DateWithin
 import io.github.adven27.concordion.extensions.exam.core.utils.HANDLEBARS
@@ -10,6 +11,7 @@ import io.github.adven27.concordion.extensions.exam.core.utils.XMLDateWithin
 import net.javacrumbs.jsonunit.JsonAssert.`when`
 import net.javacrumbs.jsonunit.core.Configuration
 import net.javacrumbs.jsonunit.core.Option.IGNORING_ARRAY_ORDER
+import net.javacrumbs.jsonunit.providers.Jackson2ObjectMapperProvider
 import org.concordion.api.extension.ConcordionExtender
 import org.concordion.api.extension.ConcordionExtension
 import org.concordion.api.listener.ExampleEvent
@@ -41,6 +43,12 @@ class ExamExtension constructor(private vararg var plugins: ExamPlugin) : Concor
     @Suppress("unused")
     fun withXmlUnitNodeMatcher(nodeMatcher: NodeMatcher): ExamExtension {
         this.nodeMatcher = nodeMatcher
+        return this
+    }
+
+    @Suppress("unused")
+    fun withJackson2ObjectMapperProvider(provider: Jackson2ObjectMapperProvider): ExamExtension {
+        JACKSON_2_OBJECT_MAPPER_PROVIDER = provider
         return this
     }
 
@@ -148,13 +156,14 @@ class ExamExtension constructor(private vararg var plugins: ExamPlugin) : Concor
         const val NS = "http://exam.extension.io"
 
         @JvmField
-        val DEFAULT_NODE_MATCHER = DefaultNodeMatcher(byNameAndText, byName)
+        var JACKSON_2_OBJECT_MAPPER_PROVIDER: Jackson2ObjectMapperProvider = DefaultObjectMapperProvider()
 
+        @JvmField
+        val DEFAULT_NODE_MATCHER = DefaultNodeMatcher(byNameAndText, byName)
         val DEFAULT_JSON_UNIT_CFG: Configuration
             get() = `when`(IGNORING_ARRAY_ORDER).apply {
                 MATCHERS.forEach { withMatcher(it.key, it.value) }
             }
-
         val MATCHERS: MutableMap<String, Matcher<*>> = mutableMapOf(
             "formattedAs" to DateFormatMatcher(),
             "formattedAndWithin" to DateWithin.param(),
