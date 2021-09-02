@@ -1,5 +1,6 @@
 package io.github.adven27.concordion.extensions.exam.mq
 
+import io.github.adven27.concordion.extensions.exam.core.ContentTypeConfig
 import io.github.adven27.concordion.extensions.exam.core.ExamExtension.Companion.contentTypeConfig
 import io.github.adven27.concordion.extensions.exam.core.ExamResultRenderer
 import io.github.adven27.concordion.extensions.exam.core.commands.AwaitConfig
@@ -92,14 +93,15 @@ class MqCheckCommand(
                 .zip(actualMessages.sorted(attrs.contains)) { e, a -> VerifyPair(a, e) }
                 .forEach {
                     logger.info("Verifying {}", it)
-                    val bodyContainer = container("", attrs.collapsable, it.expected.type)
+                    val typeConfig = contentTypeConfig(it.expected.type)
+                    val bodyContainer = container("", attrs.collapsable, typeConfig.printer.style())
                     val headersContainer = checkHeaders(
                         it.actual.headers,
                         it.expected.message.headers,
                         resultRecorder,
                     )
                     checkContent(
-                        it.expected.type,
+                        typeConfig,
                         it.actual.body,
                         it.expected.message.body,
                         resultRecorder,
@@ -255,20 +257,20 @@ class MqCheckCommand(
 
     @Suppress("TooGenericExceptionCaught")
     private fun checkContent(
-        type: String,
+        typeConfig: ContentTypeConfig,
         actual: String,
         expected: String,
         resultRecorder: ResultRecorder,
         root: Html
-    ) = contentTypeConfig(type).let { (_, verifier, printer) ->
+    ) = typeConfig.let { (_, verifier, printer) ->
         verifier.verify(expected, actual).fail.map { f ->
             root.attr("class", "")
             // FIXME for 'Verify queue with horizontal layout'
             if (root.el.localName == "td") {
                 root.css("exp-body")
             }
-            val diff = div().css(type)
-            val (_, errorMsg) = errorMessage(message = f.details, html = diff, type = type)
+            val diff = div().css(typeConfig.printer.style())
+            val (_, errorMsg) = errorMessage(message = f.details, html = diff, type = typeConfig.printer.style())
             resultRecorder.failure(diff, printer.print(f.actual), printer.print(f.expected))
             root(errorMsg)
         }.orElseGet {
@@ -405,7 +407,8 @@ class MqPurgeCommand(name: String, tag: String, private val mqTesters: Map<Strin
         root.removeChildren()(
             table()(
                 caption()(
-                    italic(" $mqName purged", CLASS to "fa fa-envelope ml-1")
+                    italic(" ", CLASS to "fa fa-envelope me-1"),
+                    span("$mqName purged")
                 )
             )
         )
@@ -426,10 +429,10 @@ private fun Map<String, MqTester>.getOrFail(mqName: String?): MqTester = this[mq
     ?: throw IllegalArgumentException("MQ with name $mqName not registered in MqPlugin")
 
 private fun captionEnvelopOpen(mqName: String) =
-    caption()(italic(" $mqName", CLASS to "fa fa-envelope-open ml-1"))
+    caption()(italic(" ", CLASS to "fa fa-envelope-open me-1"), span(mqName))
 
 private fun captionEnvelopClosed(mqName: String?) =
-    caption()(italic(" $mqName", CLASS to "fa fa-envelope ml-1"))
+    caption()(italic(" ", CLASS to "fa fa-envelope me-1"), span(mqName))
 
 private fun container(text: String, type: String, collapsable: Boolean) =
     if (collapsable) collapsableContainer(text, type) else fixedContainer(text, type)

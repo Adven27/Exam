@@ -142,7 +142,7 @@ fun renderTable(
 private fun ITable.empty() = this.rowCount == 0
 
 fun tableCaption(title: String?, def: String?): Html = caption()
-    .style("width:max-content")(italic("", CLASS to "fa fa-database ml-1"))
+    .style("width:max-content")(italic(" ", CLASS to "fa fa-database me-1"))
     .text("  ${if (!title.isNullOrBlank()) title else def}")
 
 data class SetAttrs(val seedStrategy: SeedStrategy) {

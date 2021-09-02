@@ -89,7 +89,7 @@ class LoggingFormatterExtension @JvmOverloads constructor(loggingAdaptor: Loggin
 
         private fun logContent(logFile: File): String {
             val logContent = StringBuilder()
-            var br: BufferedReader? = null
+            var br: BufferedReader?
             try {
                 var line: String?
                 var prevline: String? = null

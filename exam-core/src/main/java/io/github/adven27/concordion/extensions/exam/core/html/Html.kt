@@ -273,7 +273,7 @@ fun code(txt: String) = Html("code", txt)
 @JvmOverloads
 fun span(txt: String? = null, vararg attrs: Pair<String, String>) = Html("span", txt, *attrs)
 
-fun badge(txt: String, style: String) = span(txt).css("badge bg-$style ml-1 mr-1")
+fun badge(txt: String, style: String) = span(txt).css("badge bg-$style me-1 ms-1")
 
 fun pill(count: Long, style: String) = pill(if (count == 0L) "" else count.toString(), style)
 
@@ -351,7 +351,7 @@ fun menuItemA(txt: String, vararg children: Html) =
     link(txt, *children) css "list-group-item list-group-item-action" style "border-left: none; border-right: none;"
 
 fun button(txt: String = "", vararg attrs: Pair<String, String>) =
-    Html("button", txt, *attrs).attrs("type" to "button") css "btn btn-light btn-sm text-muted ml-1"
+    Html("button", txt, *attrs).attrs("type" to "button") css "btn btn-light btn-sm text-muted me-1"
 
 fun buttonCollapse(txt: String, target: String) = button(txt) collapse target
 

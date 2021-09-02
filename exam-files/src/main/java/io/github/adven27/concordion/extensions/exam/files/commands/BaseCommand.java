@@ -39,7 +39,7 @@ public class BaseCommand extends ExamCommand {
 
     Html flCaption(String dirPath) {
         return caption().childs(
-            italic(" ").css("far fa-folder-open ml-1"),
+            italic(" ").css("far fa-folder-open me-1"),
             span(" ")
         ).text(dirPath);
     }

@@ -46,7 +46,7 @@ class LogbackAdaptor : LoggingAdaptor {
     override val logFile: File
         get() {
             val currentTest = MDC.get("testname")
-            return if (currentTest != null && !currentTest.isEmpty()) {
+            return if (currentTest != null && currentTest.isNotEmpty()) {
                 var logFile = File(currentTest + "Log.html")
                 if (logFile.exists()) {
                     logFile
@@ -59,8 +59,8 @@ class LogbackAdaptor : LoggingAdaptor {
             }
         }
 
-    private fun getPath(resourcePath: String): String {
-        var resourcePath = resourcePath
+    private fun getPath(path: String): String {
+        var resourcePath = path
         if (resourcePath.lastIndexOf(".") > 0) {
             resourcePath = resourcePath.substring(0, resourcePath.lastIndexOf("."))
         }
@@ -85,7 +85,7 @@ class LogbackAdaptor : LoggingAdaptor {
             while (index > 0) {
                 val chr = fileName[index]
                 if (addNextChar) {
-                    sb.append(fileName[index].toString().toUpperCase())
+                    sb.append(fileName[index].toString().uppercase())
                     addNextChar = false
                 }
                 if (chr == ' ' || chr == '-') {
