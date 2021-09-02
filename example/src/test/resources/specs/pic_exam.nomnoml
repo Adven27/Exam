@@ -1,0 +1,31 @@
+#.exam: fill=#0ee bold
+#.pl: fill=#0ee visual=roundrect
+#.sut: fill=#0e0
+#.db: fill=#0e0 visual=database
+#.fs: fill=#0e0 visual=note
+#.api: fill=#0e0 visual=lollipop
+#.usecase: fill=#fff visual=ellipse dashed
+#gravity: 2
+#padding: 18
+#spacing: 40
+#direction: right
+
+[<actor> Team]-->[<usecase> Specification with examples |
+    [.xhtml]
+    [<reference>.java]
+]
+[Specification with examples]->[<exam> Exam]
+[Exam]<->[<pl> DbPlugin]
+[Exam]<->[<pl> MqPlugin]
+[Exam]<->[<pl> WsPlugin]
+[Exam]<->[<pl> FlPlugin]
+
+[WsPlugin]<-->[<api> REST API]
+[MqPlugin]<-->[<api> MQ API]
+[DbPlugin]<-->[<db> DB]
+[FlPlugin]<-->[<fs> File System]
+
+[DB]<->[<sut> System Under Test]
+[REST API] - [System Under Test]
+[MQ API] - [System Under Test]
+[File System]<->[System Under Test]

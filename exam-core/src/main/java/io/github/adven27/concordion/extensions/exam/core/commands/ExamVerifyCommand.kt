@@ -41,7 +41,7 @@ open class ExamVerifyCommand(name: String, tag: String, listener: AssertEqualsLi
         root: Html,
         actual: String,
         expected: String,
-        test: (String, String) -> Boolean = { a , e -> a == e }
+        test: (String, String) -> Boolean = { a, e -> a == e }
     ) =
         if (test(actual, expected)) {
             root.text(expected)

@@ -23,17 +23,14 @@ class DBSetCommand(
         super.setUp(cmd, eval, resultRecorder, fixture)
         cmd.html().also { root ->
             Attrs.from(root, allowedSeedStrategies).also { attrs ->
-                root(renderTable(attrs.caption, expectedTable, remarks, valuePrinter))
                 attrs.setAttrs.seedStrategy.operation
                     .execute(dbTester.connectionFor(ds), ExamDataSet(expectedTable, eval!!))
+                root(renderTable(attrs.caption, expectedTable, remarks, valuePrinter))
             }
         }
     }
 
-    data class Attrs(
-        val setAttrs: SetAttrs,
-        val caption: String?,
-    ) {
+    data class Attrs(val setAttrs: SetAttrs, val caption: String?) {
         companion object {
             fun from(root: Html, allowedSeedStrategies: List<SeedStrategy>) = Attrs(
                 SetAttrs.from(root, allowedSeedStrategies),

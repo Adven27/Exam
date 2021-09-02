@@ -20,6 +20,7 @@ import org.postgresql.util.PGobject
 import java.sql.PreparedStatement
 import java.sql.ResultSet
 import java.sql.SQLException
+import java.sql.Statement
 import java.sql.Types
 import java.util.concurrent.ConcurrentHashMap
 
@@ -84,9 +85,7 @@ open class DbTester @JvmOverloads constructor(
         }
     }
 
-    fun executeQuery(sql: String): ResultSet = super.getConnection().connection.use {
-        it.createStatement().executeQuery(sql)
-    }
+    fun <R> useStatement(fn: (Statement) -> R): R = connection.connection.createStatement().use { fn(it) }
 }
 
 class JsonbPostgresqlDataTypeFactory : PostgresqlDataTypeFactory() {

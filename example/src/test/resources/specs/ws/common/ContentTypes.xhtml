@@ -1,0 +1,32 @@
+<html xmlns:e="http://exam.extension.io" xmlns:cc="http://www.concordion.org/2007/concordion">
+<body>
+    <h1>Content-Type</h1>
+
+    <p class="lead">
+        To specify Content-Type the <code>contentType</code> attribute may be used.
+        Default is <code>application/json</code>
+    </p>
+
+    <h2>Examples</h2>
+
+    <e:example name="default content-type">
+        <e:get url="relative/url" print="true">
+            <e:case>
+                <e:expected>{ "GET": "/relative/url" }</e:expected>
+            </e:case>
+        </e:get>
+    </e:example>
+
+    <e:example name="custom content-type">
+        <p>
+            Specifying <code>Content-Type</code> = <code>text/plain</code>
+        </p>
+        <e:get url="relative/url" contentType="text/plain" print="true">
+            <e:case>
+                <e:expected>{"GET":"/relative/url"}</e:expected>
+            </e:case>
+        </e:get>
+    </e:example>
+
+</body>
+</html>

@@ -1,0 +1,52 @@
+<html xmlns:e="http://exam.extension.io" xmlns:cc="http://www.concordion.org/2007/concordion">
+<body>
+    <h1>Content verifiers</h1>
+
+    <e:include from="/specs/includes/ws/content-verifiers.xml"/>
+    <e:include from="/specs/includes/content-verifiers.xml"/>
+
+    <h2>Examples</h2>
+
+    <e:example name="verifyAs">
+        <e:given>
+            Configured additional content verifiers:
+            <pre class="doc-code language-kotlin"><code>
+                withContentVerifiers(
+                    mapOf(
+                        "jsonIgnoreExtraFields" to JsonVerifier { it.withOptions(IGNORING_EXTRA_FIELDS) },
+                        "jsonIgnorePaths" to JsonVerifier { it.whenIgnoringPaths("param2", "arr[*].param4") }
+                    )
+                )
+            </code></pre>
+        </e:given>
+        <e:then>
+            Use command:
+            <e:get url="ignoreJson" print="true">
+                <e:case desc="verify using jsonIgnoreExtraFields">
+                    <e:expected verifyAs="jsonIgnoreExtraFields">
+                        {
+                        "param1":"value1",
+                        "arr":[
+                        {"param3":"value3"},
+                        {"param3":"value3"}
+                        ]
+                        }
+                    </e:expected>
+                </e:case>
+                <e:case desc="verify using jsonIgnorePaths">
+                    <e:expected verifyAs="jsonIgnorePaths">
+                        {
+                        "param1":"value1",
+                        "arr":[
+                        {"param3":"value3"},
+                        {"param3":"value3"}
+                        ]
+                        }
+                    </e:expected>
+                </e:case>
+            </e:get>
+        </e:then>
+    </e:example>
+
+</body>
+</html>

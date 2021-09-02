@@ -1,0 +1,193 @@
+<html xmlns:e="http://exam.extension.io" xmlns:cc="http://www.concordion.org/2007/concordion">
+<body>
+    <h1>db-set</h1>
+    <p class="lead">Creates <a href="http://dbunit.sourceforge.net/">DbUnit</a> dataset for specified table and applies it to database</p>
+    <h2>Overview</h2>
+
+    <e:set var="cmd" value="e:db-set"/>
+    <e:set var="cmdExample" silent="true"><![CDATA[<e:db-set caption="optional caption" operation="clean_insert" table="ANDROIDS_TABLE" cols="id, name" separator=",">
+    <e:row>1, Adam</e:row>
+    <e:row>2, Bob</e:row>
+</e:db-set> ]]> </e:set>
+    <e:include from="/specs/includes/db/usage.xml"/>
+
+    <h3>Attributes</h3>
+
+    <table class="table" style="table-layout: fixed;">
+        <thead><tr><th style="width: 100px;">attribute</th><th style="width: 300px;">desc</th><th>example</th></tr></thead>
+        <e:include from="/specs/includes/db/attr-table.xml"/>
+        <e:include from="/specs/includes/db/attr-cols.xml"/>
+        <e:include from="/specs/includes/db/attr-operation.xml"/>
+        <e:include from="/specs/includes/db/attr-separator.xml"/>
+        <e:include from="/specs/includes/db/attr-ds.xml"/>
+        <e:include from="/specs/includes/db/attr-caption.xml"/>
+    </table>
+    <p>
+        Each dataset record will be zipped from cols and rows declarations (hence order of cols and order of values inside rows should match).
+    </p>
+    <e:example name="Dummy example">
+        <e:given>
+            Empty table:
+            <e:db-set table="ANDROIDS_TABLE"/>
+        </e:given>
+        <e:when>
+            <e:db-set table="ANDROIDS_TABLE" cols="id, name, height, manufactured" print="true">
+                <e:row>1, Adam, 170, {{now}}</e:row>
+                <e:row>2, Bob, 200, {{now}}</e:row>
+            </e:db-set>
+        </e:when>
+        <e:then>
+            Table will have the following records after applying the following dataset:
+            <e:db-show table="ANDROIDS_TABLE"/>
+        </e:then>
+    </e:example>
+
+    <p>
+        If all rows should have the same value declaration for specific column, then value assignment may be inlined
+        with column declaration. Values declaration for such columns should be omitted in <code>e:row</code> tag.
+    </p>
+    <p>
+        The next example produces the same result as the previous one:
+    </p>
+    <e:example name="Declaration inlining">
+        <e:given>
+            Empty table:
+            <e:db-set table="ANDROIDS_TABLE"/>
+        </e:given>
+        <e:when>
+            <e:db-set table="ANDROIDS_TABLE" cols="id=1..10, name, height, manufactured={{now}}" print="true">
+                <e:row>Adam, 170</e:row>
+                <e:row> Bob, 200</e:row>
+            </e:db-set>
+        </e:when>
+        <e:then>
+            Table will have the following records after applying the following dataset:
+            <e:db-show table="ANDROIDS_TABLE"/>
+        </e:then>
+    </e:example>
+
+    <h2>Examples</h2>
+
+    <h3>Value declaration</h3>
+    <p>
+        Value can be declared as <strong>simple text</strong>, <strong>Handlebar helpers invocation</strong> or <strong>ranges</strong>.
+    </p>
+    <e:example name="Value declaration">
+        <e:given>
+            Empty table:
+            <e:db-set table="ANDROIDS_TABLE"/>
+        </e:given>
+        <e:when>
+            <ul>
+                <li><code>id</code> value is declared as <strong>range</strong> and will be assigned from 1 to 10 in circle</li>
+                <li><code>name</code> and <code>weight</code> values are declared as <strong>simple text</strong> values (value will be casted to column type be DbUnit)</li>
+                <li><code>manufactured</code> value is declared as <strong>Handlebar helpers invocation</strong> and will be assigned to result of invocation (which will be casted to column type by DbUnit)</li>
+            </ul>
+            <e:db-set table="ANDROIDS_TABLE" cols="id=1..10, name, weight, height=180, manufactured={{now minus='1 d'}}"
+                      print="true">
+                <e:row>Adam, 70</e:row>
+                <e:row>Bob , 90</e:row>
+            </e:db-set>
+        </e:when>
+        <e:then>
+            Table will have the following records after applying the following dataset:
+            <e:db-show table="ANDROIDS_TABLE"/>
+        </e:then>
+    </e:example>
+
+    <h3>Trimmed spaces</h3>
+    <p>
+        Values declarations a trimmed by default, if there is a need to preserve spaces, then declaration should be
+        surrounded by <code>'</code>
+    </p>
+    <e:example name="Trimmed spaces">
+        <e:given>
+            Empty table:
+            <e:db-set table="ANDROIDS_TABLE"/>
+        </e:given>
+        <e:when>
+            First <code>name</code> equals to <code> A </code> (surrounded by spaces).<br/>
+            Second <code>name</code> equals to just <code>A</code>.
+            <e:db-set table="ANDROIDS_TABLE" cols="id=1..10, name, weight" print="true">
+                <e:row> ' A ' , 70</e:row>
+                <e:row> A , 90</e:row>
+            </e:db-set>
+        </e:when>
+        <e:then>
+            Table will have the following records after applying the following dataset:
+            <e:db-show table="ANDROIDS_TABLE"/>
+        </e:then>
+    </e:example>
+
+
+    <h3>Values with commas</h3>
+    <p>
+        Comma is used as default values separator, so using it as part as the value declaration will break parsing.
+        To workaround this custom value separator may be set by <code>separator</code> attribute.
+    </p>
+    <e:example name="Values with commas">
+        <e:given>
+            Empty table:
+            <e:db-set table="ANDROIDS_TABLE"/>
+        </e:given>
+        <e:when>
+            <code>name</code> equals to <code>a , b</code>:
+            <e:db-set table="ANDROIDS_TABLE" cols="id=1..10, name, weight" separator="|" print="true">
+                <e:row> a , b | 70</e:row>
+            </e:db-set>
+        </e:when>
+        <e:then>
+            Table will have the following records after applying the following dataset:
+            <e:db-show table="ANDROIDS_TABLE"/>
+        </e:then>
+    </e:example>
+
+    <!--<e:example name="DbUnit operations support">-->
+    <!--    <e:given>-->
+    <!--        Given record <b cc:set="#id">1</b>-->
+    <!--        <b cc:set="#name">Bob</b>-->
+    <!--        <b cc:set="#age">50</b>-->
+    <!--        <b cc:set="#bd">2000-10-10</b>-->
+    <!--        <span cc:assertTrue="addRecord(#id, #name, #age, #bd)">present</span> in PERSON-->
+    <!--        <e:db-show table="PERSON"/>-->
+    <!--    </e:given>-->
+    <!--    <e:when print="true">-->
+    <!--        <e:db-set operation="insert" caption="Append records" table="PERSON" cols="ID=10..20, NAME, AGE">-->
+    <!--            <e:row>Andrew,30</e:row>-->
+    <!--            <e:row>Carl,20</e:row>-->
+    <!--        </e:db-set>-->
+    <!--    </e:when>-->
+    <!--    <e:then>-->
+    <!--        <e:db-check caption="Records was appended" table="PERSON" cols="NAME, AGE">-->
+    <!--            <e:row>{{name}}, {{age}}</e:row>-->
+    <!--            <e:row>Andrew , 30</e:row>-->
+    <!--            <e:row>Carl , 20</e:row>-->
+    <!--        </e:db-check>-->
+    <!--    </e:then>-->
+    <!--    <e:when print="true">-->
+    <!--        <e:db-set operation="update" caption="Update by primary key" table="PERSON" cols="ID=1, NAME, AGE">-->
+    <!--            <e:row>not Bob, 500</e:row>-->
+    <!--        </e:db-set>-->
+    <!--    </e:when>-->
+    <!--    <e:then>-->
+    <!--        <e:db-check caption="Record was updated" table="PERSON" cols="NAME, AGE">-->
+    <!--            <e:row>not Bob , 500</e:row>-->
+    <!--            <e:row>Andrew , 30</e:row>-->
+    <!--            <e:row>Carl , 20</e:row>-->
+    <!--        </e:db-check>-->
+    <!--    </e:then>-->
+    <!--    <e:when print="true">-->
+    <!--        <e:db-set caption="Clean insert by default" table="PERSON" cols="ID=10..20, NAME, AGE, BIRTHDAY">-->
+    <!--            <e:row>' Andrew ', 30 , {{date '1990-10-10'}}</e:row>-->
+    <!--            <e:row>Carl , 20 , {{date '1980-02-01'}}</e:row>-->
+    <!--        </e:db-set>-->
+    <!--    </e:when>-->
+    <!--    <e:then>-->
+    <!--        <e:db-check caption="Table was cleaned and records was inserted" table="PERSON" cols="NAME, AGE, BIRTHDAY">-->
+    <!--            <e:row>' Andrew ', 30, {{date '1990-10-10'}}</e:row>-->
+    <!--            <e:row>Carl , 20, {{date '1980-02-01'}}</e:row>-->
+    <!--        </e:db-check>-->
+    <!--    </e:then>-->
+    <!--</e:example>-->
+</body>
+</html>

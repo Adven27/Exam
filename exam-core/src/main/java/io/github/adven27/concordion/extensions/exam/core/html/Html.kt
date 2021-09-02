@@ -46,6 +46,14 @@ class Html(val el: Element) {
         return result
     }
 
+    fun childs(name: String): List<Html> {
+        val result = ArrayList<Html>()
+        for (e in el.getChildElements(name)) {
+            result.add(Html(e))
+        }
+        return result
+    }
+
     fun attrs(vararg attrs: Pair<String, String>): Html {
         attrs.forEach {
             el.addAttribute(it.first, it.second)
@@ -326,7 +334,7 @@ fun body() = Html("body")
 
 fun body(txt: String) = Html("body", txt)
 
-fun ul() = Html("ul")
+fun ul(vararg attrs: Pair<String, String>) = Html("ul", *attrs)
 
 fun list() = ul() css "list-group"
 

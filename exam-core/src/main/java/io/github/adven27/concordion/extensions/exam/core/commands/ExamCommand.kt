@@ -1,15 +1,20 @@
 package io.github.adven27.concordion.extensions.exam.core.commands
 
+import io.github.adven27.concordion.extensions.exam.core.ContentTypeConfig
 import io.github.adven27.concordion.extensions.exam.core.ExamExtension
+import io.github.adven27.concordion.extensions.exam.core.ExamResultRenderer
+import io.github.adven27.concordion.extensions.exam.core.TextContentTypeConfig
 import io.github.adven27.concordion.extensions.exam.core.content
 import io.github.adven27.concordion.extensions.exam.core.html.Html
 import io.github.adven27.concordion.extensions.exam.core.html.takeAttr
 import io.github.adven27.concordion.extensions.exam.core.resolveForContentType
 import io.github.adven27.concordion.extensions.exam.core.vars
+import mu.KLogging
 import nu.xom.Attribute
 import org.awaitility.Awaitility
 import org.awaitility.core.ConditionFactory
 import org.concordion.api.AbstractCommand
+import org.concordion.api.Command
 import org.concordion.api.CommandCall
 import org.concordion.api.Element
 import org.concordion.api.Evaluator
@@ -17,10 +22,23 @@ import org.concordion.api.Fixture
 import org.concordion.api.ResultRecorder
 import org.concordion.api.listener.ExecuteEvent
 import org.concordion.api.listener.ExecuteListener
+import org.concordion.internal.CatchAllExpectationChecker.normalize
+import org.concordion.internal.command.AssertEqualsCommand
 import org.concordion.internal.util.Announcer
 import java.util.concurrent.TimeUnit
 
-open class ExamCommand(private val name: String, private val tag: String) : AbstractCommand() {
+interface NamedExamCommand : Command {
+    val name: String
+}
+
+interface BeforeParseExamCommand {
+    fun beforeParse(elem: nu.xom.Element)
+}
+
+open class BaseExamCommand(override val name: String) : NamedExamCommand, AbstractCommand()
+
+open class ExamCommand(override val name: String, protected val tag: String) : BeforeParseExamCommand,
+    BaseExamCommand(name) {
     private val listeners = Announcer.to(ExecuteListener::class.java)
 
     override fun execute(
@@ -36,11 +54,7 @@ open class ExamCommand(private val name: String, private val tag: String) : Abst
     private fun announceExecuteCompleted(element: Element) =
         listeners.announce().executeCompleted(ExecuteEvent(element))
 
-    fun tag(): String = tag
-
-    fun name(): String = name
-
-    open fun beforeParse(elem: nu.xom.Element) {
+    override fun beforeParse(elem: nu.xom.Element) {
         val attr = Attribute(elem.localName, "")
         attr.setNamespace("e", ExamExtension.NS)
         elem.addAttribute(attr)
@@ -51,23 +65,53 @@ open class ExamCommand(private val name: String, private val tag: String) : Abst
     }
 }
 
+open class ExamAssertEqualsCommand(
+    override val name: String,
+    val config: ContentTypeConfig = TextContentTypeConfig(),
+    val content: (text: String) -> String = { it }
+) : NamedExamCommand, AssertEqualsCommand(
+    Comparator { actual, expected ->
+        config.verifier.verify(normalize(expected), normalize(actual)).fail.map { -1 }.orElse(0)
+    }
+) {
+    init {
+        addAssertEqualsListener(ExamResultRenderer())
+    }
+
+    override fun verify(command: CommandCall, evaluator: Evaluator, resultRecorder: ResultRecorder, fixture: Fixture) {
+        super.verify(command.apply { resolve(evaluator) }, evaluator, resultRecorder, fixture)
+    }
+
+    protected fun CommandCall.resolve(eval: Evaluator) {
+        Html(element.localName).text(
+            config.resolver.resolve(content(normalize(element.text)), eval)
+        ).el.also {
+            element.appendSister(it)
+            element.parentElement.removeChild(element)
+            element = it
+        }
+    }
+
+    companion object : KLogging()
+}
+
 fun CommandCall?.awaitConfig() = AwaitConfig(
     takeAttr("awaitAtMostSec", "0").toLong(),
     takeAttr("awaitPollDelayMillis", "0").toLong(),
     takeAttr("awaitPollIntervalMillis", "1000").toLong()
 )
 
-fun Html.awaitConfig() = AwaitConfig(
-    takeAwayAttr("awaitAtMostSec", "0").toLong(),
-    takeAwayAttr("awaitPollDelayMillis", "0").toLong(),
-    takeAwayAttr("awaitPollIntervalMillis", "1000").toLong()
+fun Html.awaitConfig(prefix: String = "await") = AwaitConfig(
+    takeAwayAttr("${prefix}AtMostSec", "0").toLong(),
+    takeAwayAttr("${prefix}PollDelayMillis", "0").toLong(),
+    takeAwayAttr("${prefix}PollIntervalMillis", "1000").toLong()
 )
 
 data class AwaitConfig(val atMostSec: Long, val pollDelay: Long, val pollInterval: Long) {
     fun enabled(): Boolean = atMostSec > 0
 }
 
-fun AwaitConfig.await(desc: String): ConditionFactory = Awaitility.await(desc)
+fun AwaitConfig.await(desc: String? = null): ConditionFactory = Awaitility.await(desc)
     .atMost(atMostSec, TimeUnit.SECONDS)
     .pollDelay(pollDelay, TimeUnit.MILLISECONDS)
     .pollInterval(pollInterval, TimeUnit.MILLISECONDS)

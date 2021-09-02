@@ -12,10 +12,10 @@ import io.github.adven27.concordion.extensions.exam.core.XmlPrinter
 import io.github.adven27.concordion.extensions.exam.core.XmlResolver
 import io.github.adven27.concordion.extensions.exam.core.XmlVerifier
 import io.github.adven27.concordion.extensions.exam.core.commands.ExamCommand
-import io.github.adven27.concordion.extensions.exam.core.utils.ExamHelper
-import io.github.adven27.concordion.extensions.exam.core.utils.HANDLEBARS
-import io.github.adven27.concordion.extensions.exam.core.utils.HelperSource.Companion.describe
-import io.github.adven27.concordion.extensions.exam.core.utils.evaluator
+import io.github.adven27.concordion.extensions.exam.core.handlebars.ExamHelper
+import io.github.adven27.concordion.extensions.exam.core.handlebars.HANDLEBARS
+import io.github.adven27.concordion.extensions.exam.core.handlebars.HelperSource.Companion.describe
+import io.github.adven27.concordion.extensions.exam.core.handlebars.evaluator
 import io.restassured.RestAssured
 import io.restassured.http.ContentType
 import io.restassured.http.Header

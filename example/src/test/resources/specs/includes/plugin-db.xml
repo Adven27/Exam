@@ -1,69 +1,80 @@
 <ignored xmlns:e="http://exam.extension.io" xmlns:cc="http://www.concordion.org/2007/concordion">
-    <h2>Database plugin</h2>
+    <h3>Database plugin</h3>
     <hr/>
     <p>
         <strong>DbPlugin</strong> is a wrapper around <a href="http://dbunit.sourceforge.net">DbUnit</a> library and enables
         to set up and verify state of the database.
     </p>
+    <figure class="figure">
+        <canvas class="nomnoml container" from="/specs/db/db.nomnoml"/>
+        <figcaption class="figure-caption text-center">Exam integration with DB</figcaption>
+    </figure>
 
-    <h3>Usage</h3>
-    <p>1. Add dependency <pre class="doc-code"><code>testImplementation "io.github.adven27:exam-db:5.0.1"</code></pre></p>
-    <p>2. Configure and attach to ExamExtension the <a cc:run="concordion" href="db/DbPlugin.html">DbPlugin</a></p>
+    <h4>Usage</h4>
+    <p>1. Add dependency <pre class="doc-code"><code>testImplementation "io.github.adven27:exam-db:{{version}}"</code></pre></p>
+    <p>2. Configure and attach the <a cc:run="concordion" href="db/DbPlugin.xhtml">DbPlugin</a></p>
 
-    <h3>Commands</h3>
+    <h4>Commands</h4>
     <p>
         There are commands for setting up and verifying database state.
         Also there is a command to just show current database state and generate dataset files based on it.
     </p>
 
-    <h4>Set up database</h4>
-
+    <h5>Set up database</h5>
 
     <dl>
         <dt><code><a cc:run="concordion" href="db/dbset/DbSet.html">db-set</a></code></dt>
         <dd>
-            <p>Creates and applies DbUnit dataset for specified table</p>
-            <pre class="doc-code language-xml"><code><![CDATA[<e:db-set table="person" cols="id=1..10, name, birthday, created={{now}}">
-    <e:row>Bob, {{date '01.01.2001' format='dd.MM.yyyy'}}</e:row>
-    <e:row> Ed, {{date '02.02.2002' format='dd.MM.yyyy'}}</e:row>
-</e:db-set>]]></code></pre>
+            <p>Creates and applies a DbUnit dataset for specified table:</p>
+            <pre class="doc-code language-xml"><code>
+            <![CDATA[
+                <e:db-set table="person" cols="id=1..10, name, birthday, created={{now}}">
+                    <e:row>Bob, {{date '01.01.2001' format='dd.MM.yyyy'}}</e:row>
+                    <e:row> Ed, {{date '02.02.2002' format='dd.MM.yyyy'}}</e:row>
+                </e:db-set>
+            ]]>
+            </code></pre>
         </dd>
         <dt><code><a cc:run="concordion" href="db/dbexecute/DbExecute.html">db-execute</a></code></dt>
         <dd>
-            <p>Applies specified DbUnit datasets</p>
+            <p>Applies specified DbUnit datasets:</p>
             <pre class="doc-code language-xml"><code><![CDATA[ <e:db-execute datasets="/data/db/adam.xml, /data/db/bob.json, /data/db/carl/person.csv"/> ]]></code></pre>
         </dd>
         <dt><code><a cc:run="concordion" href="db/dbclean/DbClean.html">db-clean</a></code></dt>
         <dd>
-            <p>Cleans specified tables with <code>DELETE_ALL</code> DbUnit operation</p>
+            <p>Cleans specified tables with <code>DELETE_ALL</code> DbUnit operation:</p>
             <pre class="doc-code language-xml"><code><![CDATA[<e:db-clean tables="person, person_fields"/>]]></code></pre>
         </dd>
     </dl>
 
-    <h4>Verify database</h4>
+    <h5>Verify database</h5>
 
     <dl>
         <dt><code><a cc:run="concordion" href="db/dbcheck/DbCheck.html">db-check</a></code></dt>
         <dd>
-            <p>Creates DbUnit dataset and verifies that it matches specified database table</p>
-            <pre class="doc-code language-xml"><code><![CDATA[<e:db-check table="person" cols="id=1..10, name, birthday, created={{now}}">
-    <e:row>Bob, {{date '01.01.2001' format='dd.MM.yyyy'}}</e:row>
-    <e:row> Ed, {{date '02.02.2002' format='dd.MM.yyyy'}}</e:row>
-</e:db-check>]]></code></pre>
+            <p>Creates a DbUnit dataset and verifies that it matches specified database table:</p>
+            <pre class="doc-code language-xml"><code>
+            <![CDATA[
+                <e:db-check table="person" cols="id=1..10, name, birthday, created={{now}}">
+                    <e:row>Bob, {{date '01.01.2001' format='dd.MM.yyyy'}}</e:row>
+                    <e:row> Ed, {{date '02.02.2002' format='dd.MM.yyyy'}}</e:row>
+                </e:db-check>
+            ]]>
+            </code></pre>
         </dd>
         <dt><code><a cc:run="concordion" href="db/dbverify/DbVerify.html">db-verify</a></code></dt>
         <dd>
-            <p>Verifies that database matches state described in DbUnit datasets</p>
+            <p>Verifies that database matches a state described in a DbUnit datasets:</p>
             <pre class="doc-code language-xml"><code><![CDATA[ <e:db-verify datasets="/data/db/adam.xml, /data/db/bob.json, /data/db/carl/person.csv"/> ]]></code></pre>
         </dd>
     </dl>
 
-    <h4>Debug database</h4>
+    <h5>Debug database</h5>
 
     <dl>
         <dt><code><a cc:run="concordion" href="db/dbshow/DbShow.html">db-show</a></code></dt>
         <dd>
-            <p>Creates DbUnit dataset files and prints content of specified database table</p>
+            <p>Creates a DbUnit dataset files and prints content of specified database table:</p>
             <pre class="doc-code language-xml"><code><![CDATA[<e:db-show table="person" saveToResources="/data/db/person.xml"/>]]></code></pre>
         </dd>
     </dl>

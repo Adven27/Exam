@@ -33,39 +33,39 @@ class HtmlTest {
                     )
                 )
             ),
-            """|<div name="div" class="div-class">
-               |    <table name="table" class="table table-sm" custom-attr="some-value">
-               |        <thead class="thead-default">
-               |        <tr>
-               |            <th>1</th>
-               |            <th>2</th>
-               |        </tr>
-               |        </thead>
-               |        <tbody name="tbody">
-               |        <tr>
-               |            <td style="color:red"><span class="span-in-cell">1-1</span></td>
-               |            <td style="color:red"><span class="span-in-cell">1-2</span></td>
-               |        </tr>
-               |        <tr>
-               |            <td style="color:red"><span class="span-in-cell">2-1</span></td>
-               |            <td style="color:red"><span class="span-in-cell">2-2</span></td>
-               |        </tr>
-               |        <tr>
-               |            <td style="color:red"><span class="span-in-cell">3-1</span></td>
-               |            <td style="color:red"><span class="span-in-cell">3-2</span></td>
-               |        </tr>
-               |        </tbody>
-               |    </table>
-               |</div>
-            """.trimMargin()
+            """<div name="div" class="div-class">
+                   <table name="table" class="table table-sm caption-top" custom-attr="some-value">
+                       <thead class="thead-default">
+                       <tr>
+                           <th>1</th>
+                           <th>2</th>
+                       </tr>
+                       </thead>
+                       <tbody name="tbody">
+                       <tr>
+                           <td style="color:red"><span class="span-in-cell">1-1</span></td>
+                           <td style="color:red"><span class="span-in-cell">1-2</span></td>
+                       </tr>
+                       <tr>
+                           <td style="color:red"><span class="span-in-cell">2-1</span></td>
+                           <td style="color:red"><span class="span-in-cell">2-2</span></td>
+                       </tr>
+                       <tr>
+                           <td style="color:red"><span class="span-in-cell">3-1</span></td>
+                           <td style="color:red"><span class="span-in-cell">3-2</span></td>
+                       </tr>
+                       </tbody>
+                   </table>
+               </div>
+            """.trimIndent()
         )
         assertFalse(diff.hasDifferences(), diff.toString())
     }
 
     private fun diff(actual: Html, expected: String): Diff {
-        return DiffBuilder.compare(actual.el.toXML())
+        return DiffBuilder.compare(expected)
             .checkForIdentical()
-            .withTest(expected)
+            .withTest(actual.el.toXML())
             .ignoreComments()
             .ignoreWhitespace().build()
     }

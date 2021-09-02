@@ -2,12 +2,12 @@ package specs.ws
 
 import specs.Specs
 
-class WsGet : Specs()
-class WsPost : Specs()
-class WsPut : Specs()
-class WsDelete : Specs()
-class WsSoap : Specs()
-class WsPlugin : Specs()
-class JsonUnitOverriding : Specs()
+class WsGet : Ws()
+class WsPost : Ws()
+class WsPut : Ws()
+class WsDelete : Ws()
+class WsSoap : Ws()
+class WsPlugin : Ws()
+class JsonUnitOverriding : Ws()
 
 open class Ws : Specs()

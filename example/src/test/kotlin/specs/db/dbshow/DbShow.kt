@@ -2,4 +2,4 @@ package specs.db.dbshow
 
 import specs.Specs
 
-class DbShow:Specs()
+class DbShow : Specs()

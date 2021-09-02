@@ -34,32 +34,16 @@ import org.concordion.api.Result.FAILURE
 import org.concordion.api.ResultRecorder
 import org.junit.Assert.assertEquals
 
-interface MqTester {
-    fun start()
-    fun stop()
-    fun send(message: Message, params: Map<String, String>)
-    fun receive(): List<Message>
-    fun purge()
-    fun accumulateOnRetries(): Boolean = true
-
-    open class NOOP : MqTester {
-        override fun start() = Unit
-        override fun stop() = Unit
-        override fun send(message: Message, params: Map<String, String>) = Unit
-        override fun receive(): List<Message> = listOf()
-        override fun purge() = Unit
-    }
-
-    data class Message @JvmOverloads constructor(val body: String = "", val headers: Map<String, String> = emptyMap())
-}
-
 @Suppress("TooManyFunctions")
-class MqCheckCommand(name: String, tag: String, private val mqTesters: Map<String, MqTester>) :
-    ExamVerifyCommand(name, tag, ExamResultRenderer()) {
+class MqCheckCommand(
+    name: String,
+    tag: String,
+    private val mqTesters: Map<String, MqTester>
+) : ExamVerifyCommand(name, tag, ExamResultRenderer()) {
 
     companion object : KLogging()
 
-    @Suppress("LongMethod", "TooGenericExceptionCaught")
+    @Suppress("LongMethod", "TooGenericExceptionCaught", "NestedBlockDepth")
     override fun verify(cmd: CommandCall, eval: Evaluator, resultRecorder: ResultRecorder, fixture: Fixture) {
         val root = cmd.html()
         Attrs(root).let { attrs ->
@@ -145,6 +129,7 @@ class MqCheckCommand(name: String, tag: String, private val mqTesters: Map<Strin
         MessageAttrs(html, eval).let { nullOrMessage(it.from, it.headers) }
     }
 
+    @Suppress("TooGenericExceptionCaught")
     private fun awaitExpectedSize(
         expected: List<TypedMessage>,
         originalActual: List<MqTester.Message>,
@@ -181,18 +166,6 @@ class MqCheckCommand(name: String, tag: String, private val mqTesters: Map<Strin
         message: String,
         exception: Throwable
     ) : java.lang.AssertionError(message, exception)
-
-    @Suppress("SpreadOperator")
-    private fun sizeCheckError(
-        mqName: String,
-        expected: List<TypedMessage>,
-        actual: List<MqTester.Message>,
-        msg: String?
-    ): Html = div().css("rest-failure bd-callout bd-callout-danger")(
-        div(msg),
-        *renderMessages("Expected: ", expected, mqName).toTypedArray(),
-        *renderMessages("but was: ", actual.map { TypedMessage("xml", it) }, mqName).toTypedArray()
-    )
 
     @Suppress("SpreadOperator")
     private fun sizeCheckErrorHeaders(
@@ -236,6 +209,7 @@ class MqCheckCommand(name: String, tag: String, private val mqTesters: Map<Strin
     private fun container(txt: String, collapsable: Boolean = false, type: String) =
         container(txt, type, collapsable).style("margin: 0")
 
+    @Suppress("SpreadOperator")
     private fun checkHeaders(
         actual: Map<String, String>,
         expected: Map<String, String>,
@@ -289,12 +263,12 @@ class MqCheckCommand(name: String, tag: String, private val mqTesters: Map<Strin
     ) = contentTypeConfig(type).let { (_, verifier, printer) ->
         verifier.verify(expected, actual).fail.map { f ->
             root.attr("class", "")
-            //FIXME for 'Verify queue with horizontal layout'
+            // FIXME for 'Verify queue with horizontal layout'
             if (root.el.localName == "td") {
                 root.css("exp-body")
             }
             val diff = div().css(type)
-            val (_, errorMsg) = errorMessage(message = f.details ?: "", html = diff, type = type)
+            val (_, errorMsg) = errorMessage(message = f.details, html = diff, type = type)
             resultRecorder.failure(diff, printer.print(f.actual), printer.print(f.expected))
             root(errorMsg)
         }.orElseGet {
@@ -303,8 +277,22 @@ class MqCheckCommand(name: String, tag: String, private val mqTesters: Map<Strin
         }
     }
 
+    @Suppress("SpreadOperator")
+    private fun sizeCheckError(
+        mqName: String,
+        expected: List<TypedMessage>,
+        actual: List<MqTester.Message>,
+        msg: String?
+    ): Html = div().css("rest-failure bd-callout bd-callout-danger")(
+        div(msg),
+        *renderMessages("Expected: ", expected, mqName).toTypedArray(),
+        *renderMessages("but was: ", actual.map { TypedMessage("xml", it) }, mqName).toTypedArray()
+    )
+
     data class TypedMessage(val type: String, val message: MqTester.Message)
-    data class VerifyPair(val actual: MqTester.Message, val expected: TypedMessage)
+    data class VerifyPair(val actual: MqTester.Message, val expected: TypedMessage) {
+        override fun toString() = "actual=$actual, expected=$expected"
+    }
 
     class MessageAttrs(root: Html, evaluator: Evaluator) {
         private val verifyAs: String? = root.takeAwayAttr(VERIFY_AS)
@@ -389,6 +377,7 @@ class MqSendCommand(name: String, tag: String, private val mqTesters: Map<String
     }
 }
 
+@Suppress("SpreadOperator")
 private fun Map<String, String>.renderHeaders() = if (isNotEmpty())
     table()(
         caption("Headers").css("small"),

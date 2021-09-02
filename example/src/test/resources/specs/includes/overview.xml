@@ -1,42 +1,33 @@
-<ignored xmlns:e="http://exam.extension.io" xmlns:cc="http://www.concordion.org/2007/concordion">
+<ignored>
     <h2>Overview</h2>
     <p>
-        Exam is oriented on <strong>declarative end-to-end black\graybox application testing</strong> in a way
-        a manual tester would do it: send request, verify response\database\message queue etc.
+        Exam is oriented on <strong>declarative end-to-end <a href="https://en.wikipedia.org/wiki/Gray_box_testing">gray-box application testing</a></strong>
+        in a way a manual tester would do it: send request, verify response/database/message queue etc.
     </p>
+    <figure class="figure">
+        <canvas class="nomnoml container" from="/specs/pic_man.nomnoml"/>
+        <figcaption class="figure-caption text-center">Manual testing</figcaption>
+    </figure>
     <p>
         Hence the Exam functionality falls apart in <strong>different libraries (plugins)</strong> that are tailored
         for specific kinds of checks: <i>database interactions, message queue interactions,
         http interactions, file system interactions etc.</i> and may be used separately.
     </p>
+    <figure class="figure">
+        <canvas class="nomnoml container" from="/specs/pic_exam.nomnoml"/>
+        <figcaption class="figure-caption text-center">Exam testing</figcaption>
+    </figure>
+
     <p>
-        Each library consist of <strong>plugin class</strong> that should be configured and attached to <strong>ExamExtension</strong>
-        and <strong>set of commands</strong> that can be used in <i>.html</i> specification files.
+        Each library consist of a <strong>plugin class</strong> that should be configured and attached to <strong>ExamExtension</strong>
+        and <strong>set of commands</strong> that can be used in <i>.xhtml</i> specification files.
     </p>
     <p>
         Exam leverages the <a href="https://concordion.org/coding/java/markdown/#creating-an-extension">Concordion Extension API</a>
-        and may be enabled either in standard annotation based way:
-        <pre class="doc-code language-java"><code>@RunWith(ConcordionRunner.class)
-@ConcordionOptions(declareNamespaces = {"c", "http://www.concordion.org/2007/concordion", "e", ExamExtension.NS})
-public class Specs {
-    @Extension
-    private final ExamExtension exam = new ExamExtension(
-        new WsPlugin("/app", 8080),
-        new DbPlugin("org.postgresql.Driver", "jdbc:postgresql://localhost:5432/postgres", "postgres", "postgres")
-    );
-}</code></pre>
-        or by implementing <code>io.github.adven27.concordion.extensions.exam.core.AbstractSpecs</code> class that will
-        do the same annotation based enabling internally but makes extension configuration points more visible and structured from the one side
-        and abstracts away enabling-related boilerplate from the other:
-        <pre class="doc-code language-java"><code>public class Specs extends AbstractSpecs {
-    @Override
-    protected ExamExtension init() {
-        return new ExamExtension(
-            new WsPlugin("/app", 8080),
-            new DbPlugin("org.postgresql.Driver", "jdbc:postgresql://localhost:5432/postgres", "postgres", "postgres")
-        );
-    }
-...
-}</code></pre>
+        and may be enabled by standard Concordion annotation based way:
+        <pre class="doc-code language-java"><code from="/specs/example1.java"/></pre>
+        But the <strong>recommended</strong> way is to implement <code>io.github.adven27.concordion.extensions.exam.core.AbstractSpecs</code> class
+        that will do the same internally but make configuration points more visible and abstract the enabling-related boilerplate code away:
+        <pre class="doc-code language-java"><code from="/specs/example2.java"/></pre>
     </p>
 </ignored>

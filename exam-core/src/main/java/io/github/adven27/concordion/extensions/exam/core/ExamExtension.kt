@@ -2,11 +2,14 @@
 
 package io.github.adven27.concordion.extensions.exam.core
 
+import ch.qos.logback.classic.turbo.TurboFilter
 import com.github.jknack.handlebars.Handlebars
+import io.github.adven27.concordion.extensions.exam.core.handlebars.HANDLEBARS
 import io.github.adven27.concordion.extensions.exam.core.json.DefaultObjectMapperProvider
+import io.github.adven27.concordion.extensions.exam.core.logger.LoggerLevelFilter
+import io.github.adven27.concordion.extensions.exam.core.logger.LoggingFormatterExtension
 import io.github.adven27.concordion.extensions.exam.core.utils.DateFormatMatcher
 import io.github.adven27.concordion.extensions.exam.core.utils.DateWithin
-import io.github.adven27.concordion.extensions.exam.core.utils.HANDLEBARS
 import io.github.adven27.concordion.extensions.exam.core.utils.XMLDateWithin
 import net.javacrumbs.jsonunit.JsonAssert.`when`
 import net.javacrumbs.jsonunit.core.Configuration
@@ -123,18 +126,31 @@ class ExamExtension constructor(private vararg var plugins: ExamPlugin) : Concor
         return this
     }
 
+    @Suppress("unused")
+    fun withLoggingFilter(loggerLevel: Map<String, String>): ExamExtension {
+        LOGGING_FILTER = LoggerLevelFilter(loggerLevel)
+        return this
+    }
+
     override fun addTo(ex: ConcordionExtender) {
         val registry = CommandRegistry(JsonVerifier(), XmlVerifier())
         plugins.forEach { registry.register(it.commands()) }
 
         registry.commands()
-            .filter { "example" != it.name() }
-            .forEach { ex.withCommand(NS, it.name(), it) }
+            .filter { "example" != it.name }
+            .forEach { ex.withCommand(NS, it.name, it) }
 
+        CommandPrinterExtension().addTo(ex)
+        IncludesExtension().addTo(ex)
+        TopButtonExtension().addTo(ex)
         CodeMirrorExtension().addTo(ex)
         HighlightExtension().addTo(ex)
+        TocbotExtension().addTo(ex)
         FontAwesomeExtension().addTo(ex)
         BootstrapExtension().addTo(ex)
+        NomNomlExtension().addTo(ex)
+        LoggingFormatterExtension().addTo(ex)
+
         ex.withDocumentParsingListener(ExamDocumentParsingListener(registry))
         ex.withThrowableListener(ErrorListener())
         if (focusOnError) {
@@ -179,7 +195,10 @@ class ExamExtension constructor(private vararg var plugins: ExamPlugin) : Concor
 
         @JvmStatic
         fun contentTypeConfig(type: String): ContentTypeConfig = CONTENT_TYPE_CONFIGS[type]
-            ?: throw IllegalStateException("Content type config for type '$type' not found. Provide it via ExamExtension(...).withContentTypeConfigs(...) method.")
+            ?: throw IllegalStateException(
+                "Content type config for type '$type' not found. " +
+                    "Provide it via ExamExtension(...).withContentTypeConfigs(...) method."
+            )
 
         private val CONTENT_VERIFIERS: MutableMap<String, ContentVerifier> = mutableMapOf(
             "json" to JsonVerifier(),
@@ -189,7 +208,10 @@ class ExamExtension constructor(private vararg var plugins: ExamPlugin) : Concor
 
         @JvmStatic
         fun contentVerifier(type: String): ContentVerifier = CONTENT_VERIFIERS[type]
-            ?: throw IllegalStateException("Content verifier for type '$type' not found. Provide it via ExamExtension(...).withContentVerifiers(...) method.")
+            ?: throw IllegalStateException(
+                "Content verifier for type '$type' not found. " +
+                    "Provide it via ExamExtension(...).withContentVerifiers(...) method."
+            )
 
         private val CONTENT_RESOLVERS: MutableMap<String, ContentResolver> = mutableMapOf(
             "json" to JsonResolver(),
@@ -208,5 +230,7 @@ class ExamExtension constructor(private vararg var plugins: ExamPlugin) : Concor
 
         @JvmStatic
         fun prettyJson(text: String) = text.prettyJson()
+
+        var LOGGING_FILTER: TurboFilter = LoggerLevelFilter()
     }
 }

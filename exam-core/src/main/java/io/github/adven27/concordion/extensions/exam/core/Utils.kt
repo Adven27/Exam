@@ -1,3 +1,5 @@
+@file:Suppress("TooManyFunctions")
+
 package io.github.adven27.concordion.extensions.exam.core
 
 import io.github.adven27.concordion.extensions.exam.core.html.Html
@@ -98,11 +100,20 @@ private fun failTemplate(header: String = "", help: String = "", cntId: String) 
     """
     <div class="card border-danger alert-warning shadow-lg">
       ${if (header.isNotEmpty()) "<div class='card-header bg-danger text-white'>$header</div>" else ""}
-      <div id='$cntId' class="card-body mb-1 mt-1">
-        $help
+      <div class="card-body mb-1 mt-1">
+        <div id='$cntId'> </div>
+        ${help(help, cntId)}
       </div>
     </div>
     """
+
+//language=xml
+private fun help(help: String, cntId: String) = if (help.isNotEmpty()) """
+<p data-bs-toggle="collapse" data-bs-target="#help-$cntId" aria-expanded="false">
+    <i class="far fa-caret-square-down"> </i><span> Help</span>
+</p>
+<div id='help-$cntId' class='collapse'>$help</div>
+""" else ""
 
 fun errorMessage(
     header: String = "",
@@ -120,12 +131,33 @@ fun errorMessage(
         }
     }
 
-fun String.fixIndent() = this.replace("\n            ", "\n")
-
 fun Throwable.rootCause(): Throwable {
     var rootCause = this
     while (rootCause.cause != null && rootCause.cause !== rootCause) {
         rootCause = rootCause.cause!!
     }
     return rootCause
+}
+
+fun List<String>.sameSizeWith(values: List<Any?>): List<String> = if (values.size != size) {
+    fun breakReason(cols: List<String>, vals: List<Any?>) =
+        if (cols.size > vals.size) "variable '${cols[vals.size]}' has no value" else "value '${vals[cols.size]}' has no variable"
+
+    fun msg(columns: List<String>, values: List<Any?>) =
+        "Zipped " + columns.zip(values) { a, b -> "$a=$b" } + " then breaks because " + breakReason(columns.toList(), values.toList())
+    throw IllegalArgumentException(
+        String.format(
+            "e:where has the variables and values mismatch\ngot %s vars: %s\ngot %s vals: %s:\n%s",
+            size,
+            this,
+            values.size,
+            values,
+            msg(this, values)
+        )
+    )
+} else this
+
+fun <R> memoized(fn: (Any) -> R): (Any) -> R {
+    val cache: MutableMap<Any, R> = HashMap()
+    return { cache.getOrPut(it) { fn(it) } }
 }

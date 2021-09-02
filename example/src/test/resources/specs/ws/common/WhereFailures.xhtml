@@ -1,0 +1,23 @@
+<html xmlns:e="http://exam.extension.io" xmlns:cc="http://www.concordion.org/2007/concordion">
+<body>
+    <h1>Parametrized case failures</h1>
+
+    <h2>Examples</h2>
+
+    <e:example name="post" status="ExpectedToFail">
+        <e:post url="relative/url" print="true">
+            <e:case desc="Parametrized request body and response body (last 2 cases should fail)">
+                <e:body>{"exact": "{{p1}}", "template": 1}</e:body>
+                <e:expected>{"exact": "{{p2}}", "template": "{{number}}"}</e:expected>
+                <e:where vars="p1, p2" separator="|">
+                    <e:vals desc="first">first value of p1                           | first value of p1</e:vals>
+                    <e:vals desc="second">second value of p1                         | second value of p1</e:vals>
+                    <e:vals desc="date">{{now 'dd.MM.yyyy' minus='2 months, 1 y' }}  | {{now 'dd.MM.yyyy' minus='2 months, 2 y'}}</e:vals>
+                    <e:vals desc="empty">|value is not empty</e:vals>
+                </e:where>
+            </e:case>
+        </e:post>
+    </e:example>
+
+</body>
+</html>

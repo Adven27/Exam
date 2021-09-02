@@ -6,6 +6,7 @@ import io.github.adven27.concordion.extensions.exam.core.commands.ExamCommand
 import io.github.adven27.concordion.extensions.exam.core.commands.ExamVerifyCommand
 import io.github.adven27.concordion.extensions.exam.core.content
 import io.github.adven27.concordion.extensions.exam.core.errorMessage
+import io.github.adven27.concordion.extensions.exam.core.handlebars.PLACEHOLDER_TYPE
 import io.github.adven27.concordion.extensions.exam.core.html.Html
 import io.github.adven27.concordion.extensions.exam.core.html.NAME
 import io.github.adven27.concordion.extensions.exam.core.html.RowParserEval
@@ -14,7 +15,7 @@ import io.github.adven27.concordion.extensions.exam.core.html.code
 import io.github.adven27.concordion.extensions.exam.core.html.codeHighlight
 import io.github.adven27.concordion.extensions.exam.core.html.div
 import io.github.adven27.concordion.extensions.exam.core.html.html
-import io.github.adven27.concordion.extensions.exam.core.html.link
+import io.github.adven27.concordion.extensions.exam.core.html.li
 import io.github.adven27.concordion.extensions.exam.core.html.pill
 import io.github.adven27.concordion.extensions.exam.core.html.span
 import io.github.adven27.concordion.extensions.exam.core.html.table
@@ -23,6 +24,7 @@ import io.github.adven27.concordion.extensions.exam.core.html.td
 import io.github.adven27.concordion.extensions.exam.core.html.th
 import io.github.adven27.concordion.extensions.exam.core.html.thead
 import io.github.adven27.concordion.extensions.exam.core.html.tr
+import io.github.adven27.concordion.extensions.exam.core.html.ul
 import io.github.adven27.concordion.extensions.exam.core.prettyJson
 import io.github.adven27.concordion.extensions.exam.core.prettyXml
 import io.github.adven27.concordion.extensions.exam.core.resolveForContentType
@@ -30,9 +32,9 @@ import io.github.adven27.concordion.extensions.exam.core.resolveJson
 import io.github.adven27.concordion.extensions.exam.core.resolveNoType
 import io.github.adven27.concordion.extensions.exam.core.resolveValues
 import io.github.adven27.concordion.extensions.exam.core.resolveXml
+import io.github.adven27.concordion.extensions.exam.core.sameSizeWith
 import io.github.adven27.concordion.extensions.exam.core.toHtml
 import io.github.adven27.concordion.extensions.exam.core.toMap
-import io.github.adven27.concordion.extensions.exam.core.utils.PLACEHOLDER_TYPE
 import io.github.adven27.concordion.extensions.exam.ws.RequestExecutor.Companion.fromEvaluator
 import io.restassured.http.ContentType
 import io.restassured.http.Method
@@ -109,20 +111,19 @@ sealed class RequestCommand(
         val cookies = cookies(evaluator, root)
         val headers = headers(evaluator, root)
 
-        startTable(root, executor.hasRequestBody()).prependChild(
+        startTable(root).prependChild(
             addRequestDescTo(url, type, cookies, headers)
         )
         executor.type(type).url(url).headers(headers).cookies(cookies)
     }
 
-    private fun startTable(html: Html, hasRequestBody: Boolean): Html = table()(
+    private fun startTable(html: Html): Html = table("class" to "ws-cases")(
         thead()(
-            if (hasRequestBody) th("Request", "style" to "text-align:center;") else null,
             th(
                 "Use cases:",
-                "colspan" to (if (hasRequestBody) "1" else "2"),
+                "colspan" to "2",
                 "style" to "text-align:center;",
-                "class" to "bg-light"
+                "class" to "text-secondary"
             )
         )
     ).apply { html.dropAllTo(this) }
@@ -179,7 +180,7 @@ class CaseCommand(
             caseRoot.remove(where)
             cases.putAll(
                 vals.map {
-                    it.key to vars.mapIndexed { i, name -> "#$name" to it.value[i] }.toMap()
+                    it.key to vars.sameSizeWith(it.value).mapIndexed { i, name -> "#$name" to it.value[i] }.toMap()
                 }.toMap()
             )
         }.orElseGet { cases["single"] = HashMap() }
@@ -370,7 +371,7 @@ class CaseCommand(
                 )
             )
         }
-        val caseDesc = caseDesc(rt.attr(DESC), evaluator)
+        val caseDesc = caseDesc(rt.attr(DESC))
         rt.attrs("data-type" to CASE, "id" to caseDesc).prependChild(
             tr()(
                 td(caseDesc, "colspan" to "2").muted().css("bg-light")
@@ -378,8 +379,7 @@ class CaseCommand(
         )
     }
 
-    private fun caseDesc(desc: String?, eval: Evaluator): String =
-        "${++number}) " + if (desc == null) "" else contentTypeConfig.resolver.resolve(desc, eval)
+    private fun caseDesc(desc: String?): String = "${++number}) " + (desc ?: "")
 
     @Suppress("LongParameterList")
     private fun check(
@@ -478,8 +478,12 @@ private fun whereCaseTemplate(tabs: List<Pair<Html, Html>>): Html = tabs.let { l
     val active = if (failed == -1) 0 else failed
     return div()(
         tag("nav")(
-            div("class" to "nav nav-tabs", "role" to "tablist")(
-                list.mapIndexed { i, p -> p.first.apply { if (i == active) css("active show") } }
+            ul("class" to "nav nav-tabs", "role" to "tablist")(
+                list.mapIndexed { i, p ->
+                    li().css("nav-item")(
+                        p.first.apply { if (i == active) css("active show") }
+                    )
+                }
             )
         ),
         div()(
@@ -497,10 +501,13 @@ private fun tab(id: Long, trs: List<Element>): Pair<Html, Html> {
     parentElement.removeChild(trs[1])
     val fail = cnt.any { it.descendants("fail").isNotEmpty() }
     val name = Random().nextInt()
-    return link(cnt[0].attrOrFail("data-case-title"), "#nav-$name-$id").attrs(
+    return Html(
+        "button",
+        cnt[0].attrOrFail("data-case-title"),
         "id" to "nav-$name-$id-tab",
-        "class" to "nav-item nav-link small ${if (fail) "rest-failure" else "text-success"} ",
-        "data-toggle" to "tab",
+        "class" to "nav-link small ${if (fail) "rest-failure" else "text-success"} ",
+        "data-bs-toggle" to "tab",
+        "data-bs-target" to "#nav-$name-$id",
         "role" to "tab",
         "aria-controls" to "nav-$name-$id",
         "aria-selected" to "false",

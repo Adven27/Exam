@@ -22,8 +22,8 @@ import org.concordion.api.Evaluator
 import org.concordion.api.Fixture
 import org.concordion.api.ResultRecorder
 
-class XmlCheckCommand(name: String, tag: String, private val verifier: ContentVerifier) :
-    ExamVerifyCommand(name, tag, ExamResultRenderer()) {
+class XmlCheckCommand(tag: String, private val verifier: ContentVerifier) :
+    ExamVerifyCommand("xml-check", tag, ExamResultRenderer()) {
 
     override fun verify(cmd: CommandCall, eval: Evaluator, resultRecorder: ResultRecorder, fixture: Fixture) {
         val root = cmd.html()
@@ -51,13 +51,13 @@ class XmlCheckCommand(name: String, tag: String, private val verifier: ContentVe
     }
 }
 
-class JsonCheckCommand(name: String, tag: String, private val verifier: ContentVerifier) :
-    ExamVerifyCommand(name, tag, ExamResultRenderer()) {
+class JsonCheckCommand(tag: String, private val verifier: ContentVerifier) :
+    ExamVerifyCommand("json-check", tag, ExamResultRenderer()) {
 
     override fun verify(cmd: CommandCall, eval: Evaluator, resultRecorder: ResultRecorder, fixture: Fixture) {
         val root = cmd.html()
         val actual = eval.evaluate(root.attr("actual")).toString().prettyJson()
-        val expected = eval.resolveJson(root.content(eval).trim()).prettyJson()
+        val expected = eval.resolveJson(root.content()).prettyJson()
         checkJsonContent(
             actual,
             expected,
@@ -67,17 +67,14 @@ class JsonCheckCommand(name: String, tag: String, private val verifier: ContentV
     }
 
     private fun checkJsonContent(act: String, exp: String, resultRecorder: ResultRecorder, root: Html) {
-        try {
-            verifier.verify(exp, act)
-            resultRecorder.pass(root)
+        verifier.verify(exp, act).fail.map { f ->
+            resultRecorder.failure(root, f.actual, f.expected)
+            root.below(
+                pre(f.details, CLASS to "exceptionMessage")
+            )
+        }.orElseGet {
             root.text(exp)
-        } catch (expected: Throwable) {
-            if (expected is AssertionError || expected is Exception) {
-                resultRecorder.failure(root, act.prettyJson(), exp.prettyJson())
-                root.below(
-                    pre(expected.message, CLASS to "exceptionMessage")
-                )
-            } else throw expected
+            resultRecorder.pass(root)
         }
     }
 }

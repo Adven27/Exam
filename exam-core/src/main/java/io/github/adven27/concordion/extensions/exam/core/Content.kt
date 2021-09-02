@@ -116,7 +116,6 @@ interface ContentVerifier {
 
         protected open fun assertThat(expected: String, actual: String) =
             MatcherAssert.assertThat(actual, Matchers.equalTo(expected))
-
     }
 
     data class Fail(val details: String, val expected: String, val actual: String)
@@ -135,8 +134,8 @@ interface ContentVerifier {
 open class XmlVerifier(private val nodeMatcher: NodeMatcher) : ContentVerifier.Default() {
 
     @JvmOverloads
-    constructor(configureNodeMatcher: (NodeMatcher) -> NodeMatcher = { it })
-        : this(configureNodeMatcher(ExamExtension.DEFAULT_NODE_MATCHER))
+    constructor(configureNodeMatcher: (NodeMatcher) -> NodeMatcher = { it }) :
+        this(configureNodeMatcher(ExamExtension.DEFAULT_NODE_MATCHER))
 
     override fun assertThat(expected: String, actual: String) = diff(expected, actual).let {
         if (it.hasDifferences()) throw AssertionError(it.toString())
@@ -183,12 +182,12 @@ open class JsonVerifier(private val configuration: Configuration) : ContentVerif
     }
 }
 
-fun Html.content(from: String?, eval: Evaluator) = from?.findResource(eval)?.readText()?.trim() ?: this.text().trim()
-fun Html.content(eval: Evaluator) = content(this.attr("from"), eval)
-fun String.findResource(eval: Evaluator) = ExamExtension::class.java.getResource(eval.resolveJson(this))
-    ?: throw FileNotFoundException("File not found: $this")
+fun Html.content(eval: Evaluator? = null) = content(this.attr("from"), eval)
+fun Html.content(from: String?, eval: Evaluator? = null) =
+    (from?.findResource(eval)?.readText() ?: this.text()).trimIndent()
 
-fun Html.content() = this.attr("from")?.findResource()?.readText() ?: this.text()
+fun String.findResource(eval: Evaluator? = null) =
+    ExamExtension::class.java.getResource(eval?.resolveJson(this) ?: this)
+        ?: throw FileNotFoundException("File not found: $this")
+
 fun String.readFile() = this.findResource().readText()
-fun String.findResource() = ExamExtension::class.java.getResource(this)
-    ?: throw FileNotFoundException("File not found: $this")

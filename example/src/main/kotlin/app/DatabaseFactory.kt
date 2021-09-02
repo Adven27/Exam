@@ -5,8 +5,8 @@ import kotlinx.coroutines.withContext
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils.create
 import org.jetbrains.exposed.sql.Table
-import org.jetbrains.exposed.sql.`java-time`.datetime
 import org.jetbrains.exposed.sql.insert
+import org.jetbrains.exposed.sql.javatime.datetime
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.time.LocalDateTime
 
@@ -39,16 +39,18 @@ object DatabaseFactory {
 
 @Suppress("MagicNumber")
 object Widgets : Table() {
-    val id = integer("id").primaryKey().autoIncrement()
+    val id = integer("id").autoIncrement()
     val name = varchar("name", 10)
     val quantity = integer("quantity")
     val updatedAt = datetime("updated")
+    override val primaryKey = PrimaryKey(id)
 }
 
 @Suppress("MagicNumber")
 object JobResult : Table() {
-    val id = integer("id").primaryKey().autoIncrement()
+    val id = integer("id").autoIncrement()
     val result = varchar("result", 10).nullable()
+    override val primaryKey = PrimaryKey(id)
 }
 
 data class Widget(val id: Int, val name: String, val quantity: Int, val updatedAt: LocalDateTime)

@@ -1,54 +1,61 @@
 <ignored xmlns:e="http://exam.extension.io" xmlns:cc="http://www.concordion.org/2007/concordion">
-    <h2>Message queue plugin</h2>
+    <h3>Message Queue plugin</h3>
     <hr/>
     <p>
-        <strong>MqPlugin</strong> enables to set up and verify the state of a some message queue. Message queue is represented as
+        <strong>MqPlugin</strong> enables to set up and verify the state of some message queue. A message queue is represented as
         an implementation of the <code>io.github.adven27.concordion.extensions.exam.mq.MqTester</code> interface
-        and basically <strong>off loads all the responsibilities for working with the specific queue to that implementation</strong>.
+        and that implementation <mark>is completely responsible for interacting with that specific queue</mark>.
     </p>
+    <figure class="figure">
+        <canvas class="nomnoml container" from="/specs/mq/mq.nomnoml"/>
+        <figcaption class="figure-caption text-center">Exam integration with MQ</figcaption>
+    </figure>
     <p>
-       There are several out-of-teb-box implementations
-        (<a href="https://github.com/Adven27/Exam/tree/master/exam-mq-kafka">exam-mq-kafka</a> /
-        <a href="https://github.com/Adven27/Exam/tree/master/exam-mq-rabbit">exam-mq-rabbit</a> /
-        <a href="https://github.com/Adven27/Exam/tree/master/exam-mq-ibmmq">exam-mq-ibmmq</a> /
-        <a href="https://github.com/Adven27/Exam/tree/master/exam-mq-redis">exam-mq-redis</a>)
-        that can be used directly or as an example for custom ones.
+       There are several out-of-the-box implementations that can be used directly or as an example for custom ones:
+        <a href="https://github.com/Adven27/Exam/tree/master/exam-mq-kafka">exam-mq-kafka</a>,
+        <a href="https://github.com/Adven27/Exam/tree/master/exam-mq-rabbit">exam-mq-rabbit</a>,
+        <a href="https://github.com/Adven27/Exam/tree/master/exam-mq-ibmmq">exam-mq-ibmmq</a>,
+        <a href="https://github.com/Adven27/Exam/tree/master/exam-mq-redis">exam-mq-redis</a>.
     </p>
 
-    <h3>Usage</h3>
-    <p>1. Add dependency <pre class="doc-code"><code>testImplementation "io.github.adven27:exam-mq:5.0.1"</code></pre></p>
-    <p>2. Configure and attach to ExamExtension the <a cc:run="concordion" href="mq/MqPlugin.html">MqPlugin</a></p>
+    <h4>Usage</h4>
+    <p>1. Add dependency <pre class="doc-code"><code>testImplementation "io.github.adven27:exam-mq:{{version}}"</code></pre></p>
+    <p>2. Configure and attach the <a cc:run="concordion" href="mq/MqPlugin.xhtml">MqPlugin</a></p>
 
-    <h3>Commands</h3>
+    <h4>Commands</h4>
     <p>
         There are commands for setting up and verifying queue state.
     </p>
 
-    <h4>Set up queue</h4>
+    <h5>Set up queue</h5>
 
     <dl>
-        <dt><code><a cc:run="concordion" href="mq/MqSend.html">mq-send</a></code></dt>
+        <dt><code><a cc:run="concordion" href="mq/MqSend.xhtml">mq-send</a></code></dt>
         <dd>
-            <p>Sends message to specified queue</p>
+            <p>Sends a message to specified queue:</p>
             <pre class="doc-code language-xml"><code> <![CDATA[<e:mq-send name="someQueue" from="/data/message.json"/>]]> </code></pre>
         </dd>
-        <dt><code><a cc:run="concordion" href="mq/MqPurge.html">mq-purge</a></code></dt>
+        <dt><code><a cc:run="concordion" href="mq/MqPurge.xhtml">mq-purge</a></code></dt>
         <dd>
-            <p>Purges specified queue</p>
+            <p>Purges specified queue:</p>
             <pre class="doc-code language-xml"><code><![CDATA[<e:mq-purge name="someQueue"/>]]></code></pre>
         </dd>
     </dl>
 
-    <h4>Verify queue</h4>
+    <h5>Verify queue</h5>
 
     <dl>
         <dt><code><a cc:run="concordion" href="mq/MqCheck.html">mq-check</a></code></dt>
         <dd>
-            <p>Verifies that specified messages exist in queue</p>
-            <pre class="doc-code language-xml"><code><![CDATA[<e:mq-check name="someQueue">
-    <e:message>{"msg" : "1"}</e:message>
-    <e:message from="/data/mq/msg2.json"/>
-</e:mq-check>]]></code></pre>
+            <p>Verifies that specified messages exist in a queue:</p>
+            <pre class="doc-code language-xml"><code>
+            <![CDATA[
+                <e:mq-check name="someQueue">
+                    <e:message>{"msg" : "1"}</e:message>
+                    <e:message from="/data/mq/msg2.json"/>
+                </e:mq-check>
+            ]]>
+            </code></pre>
         </dd>
     </dl>
 

@@ -1,24 +1,57 @@
 <configuration>
+
+    <turboFilter class="io.github.adven27.concordion.extensions.exam.core.logger.ExamDelegatingFilter"/>
+
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <pattern>%d{HH:mm:ss.SSS} %magenta([%10thread]) %highlight(%-5level) %cyan(%logger{36}.%M) - %msg%n</pattern>
         </encoder>
     </appender>
 
-    <root level="info">
+    <!-- Classic Text based Log File -->
+    <appender name="FILE" class="ch.qos.logback.classic.sift.SiftingAppender">
+        <discriminator>
+            <Key>testname</Key>
+            <DefaultValue>build/testrun</DefaultValue>
+        </discriminator>
+        <sift>
+            <appender name="FILE-${testname}" class="ch.qos.logback.core.FileAppender">
+                <!-- location is determined by concordion.output.dir property in gradle.build file -->
+                <File>${testname}.log</File>
+                <append>false</append>
+                <layout class="ch.qos.logback.classic.PatternLayout">
+                    <pattern>%d{HH:mm:ss.SSS} [%10thread] %-5level %logger{36}.%M - %msg%n</pattern>
+                </layout>
+            </appender>
+        </sift>
+    </appender>
+
+    <!-- HTML Log File -->
+    <appender name="HTML" class="ch.qos.logback.classic.sift.SiftingAppender">
+        <discriminator>
+            <key>testname</key>
+            <defaultValue>build/testrun</defaultValue>
+        </discriminator>
+        <sift>
+            <appender name="FILE-${testname}" class="ch.qos.logback.core.FileAppender">
+                <!-- location is determined by concordion.output.dir property in gradle.build file -->
+                <file>${testname}Log.html</file>
+                <append>false</append>
+
+                <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+                    <layout class="ch.qos.logback.classic.html.HTMLLayout">
+                        <pattern>%level%message%date{HH:mm:ss.SSS}%file%line</pattern>
+                    </layout>
+                </encoder>
+            </appender>
+        </sift>
+    </appender>
+
+    <root level="INFO">
         <appender-ref ref="STDOUT"/>
+        <appender-ref ref="${SPECS_LOG_VIEWER:-FILE}"/>
     </root>
 
-    <logger name="org.eclipse.jetty" level="WARN"/>
-    <logger name="io.netty" level="WARN"/>
-    <logger name="org.terracotta" level="WARN"/>
-    <logger name="com.mchange" level="WARN"/>
-    <logger name="com.zaxxer.hikari" level="WARN" />
-    <logger name="org.apache.http" level="WARN" />
-    <logger name="wiremock.org.eclipse" level="WARN"/>
-    <logger name="org.dbunit" level="INFO"/>
-    <logger name="com.github.jknack.handlebars" level="INFO"/>
-    <logger name="wiremock.com.github.jknack.handlebars" level="INFO"/>
-    <logger name="io.restassured.internal" level="INFO"/>
+    <logger name="io.github.adven27" level="DEBUG"/>
 
 </configuration>

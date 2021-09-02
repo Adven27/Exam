@@ -1,385 +1,84 @@
 <html xmlns:e="http://exam.extension.io" xmlns:cc="http://www.concordion.org/2007/concordion">
 <body>
-<e:main>
-    <h1>mq-check</h1>
+    <h1>POST</h1>
 
-    <p class="lead">Verifies that specified messages exist in queue</p>
+    <p class="lead">Specifying use cases of a <code>POST</code>-endpoint</p>
 
     <h2>Overview</h2>
 
-    <e:set var="cmd" value="e:mq-send"/>
-    <e:set var="cmdExample" silent="true"><![CDATA[
-<e:mq-check name="someQueue">
-    <e:message>{"msg" : "1"}</e:message>
-    <e:message from="/data/mq/msg2.json"/>
-</e:mq-check>
-]]>
+    <e:set var="cmd" value="e:post"/>
+    <e:set var="cmdExample" silent="true">
+        <![CDATA[
+        <e:post url="/some/url" contentType="application/json">
+            <e:case desc="use-case 1">
+                <e:body>
+                    {"request": "body"}
+                </e:body>
+                <e:expected statusCode="201" reasonPhrase="Created">
+                    { "response": "body" }
+                </e:expected>
+            </e:case>
+            <e:case desc="use-case 2">
+                <e:body from="/ws/request.json"/>
+                <e:expected from="/ws/response.json" statusCode="201" reasonPhrase="Created"/>
+            </e:case>
+        </e:post>
+    ]]>
     </e:set>
-    <e:include from="/specs/includes/mq/usage.xml"/>
+    <e:include from="/specs/includes/ws/usage.xml"/>
 
     <h3>Attributes</h3>
     <table class="table" style="table-layout: fixed;">
         <thead>
-            <tr><th style="width: 155px;">attribute</th><th style="width: 300px;">desc</th><th>example</th></tr>
+        <tr><th style="width: 180px;">attribute</th><th style="width: 300px;">desc</th><th>example</th></tr>
         </thead>
-        <e:include from="/specs/includes/mq/attr-name.xml"/>
-        <e:include from="/specs/includes/attr-from.xml"/>
-        <e:include from="/specs/includes/attr-vars.xml"/>
-        <e:include from="/specs/includes/attr-varsSeparator.xml"/>
-        <e:include from="/specs/includes/mq/attr-headers.xml"/>
-        <tr>
-            <td><code>contains</code></td>
-            <td>
-                <span> Messages list verifying  mode. Supported values: <i>EXACT</i>, <i>EXACT_IN_ANY_ORDER</i>.</span>
-            </td>
-            <td>
-                <var>Optional</var>. <var>Default: <strong>EXACT</strong> </var>
-                <pre class="doc-code language-json"><code>contains="EXACT_IN_ANY_ORDER"</code></pre>
-            </td>
-        </tr>
-        <tr>
-            <td><code>verifyAs</code></td>
-            <td>
-                <span>
-                    Content verifier to use. Built-in verifiers: <i>json</i>, <i>xml</i>.
-                    May be extended by passing <code>addContentVerifiers</code> parameter to
-                    <a cc:run="concordion" href="MqPlugin.html">MqPlugin</a> constructor.
-                </span>
-            </td>
-            <td>
-                <var>Optional</var>. <var>Default: <strong>json</strong> </var>
-                <pre class="doc-code language-json"><code>verifyAs="xml"</code></pre>
-            </td>
-        </tr>
-        <tr>
-            <td><code>jsonUnitOptions</code></td>
-            <td>
-                <span> ";"-separated list of
-                    <a href="https://github.com/lukas-krecan/JsonUnit#options">JsonUnit Options</a> to override defaults.
-                    Applicable only when <code>verifyAs="json"</code>.
-                </span>
-            </td>
-            <td>
-                <var>Optional</var>. <var>Default: <strong>-</strong> </var>
-                <pre class="doc-code language-json"><code>jsonUnitOptions="IGNORING_EXTRA_FIELDS"</code></pre>
-            </td>
-        </tr>
-        <tr>
-            <td><code>layout</code></td>
-            <td>
-                <span>How to layout list of messages in report. Supported values: <i>horizontally</i>, <i>vertically</i>.</span>
-            </td>
-            <td>
-                <var>Optional</var>. <var>Default: <strong>vertically</strong> </var>
-                <pre class="doc-code language-json"><code>layout="horizontally"</code></pre>
-            </td>
-        </tr>
-        <e:include from="/specs/includes/mq/attr-collapsable.xml"/>
-        <e:include from="/specs/includes/attr-awaitAtMostSec.xml"/>
-        <e:include from="/specs/includes/attr-awaitPollDelayMillis.xml"/>
-        <e:include from="/specs/includes/attr-awaitPollIntervalMillis.xml"/>
+        <e:include from="/specs/includes/ws/attr-url.xml"/>
+        <e:include from="/specs/includes/ws/attr-contentType.xml"/>
+        <e:include from="/specs/includes/ws/attr-headers.xml"/>
+        <e:include from="/specs/includes/ws/attr-cookies.xml"/>
+        <e:include from="/specs/includes/ws/attr-caseDesc.xml"/>
+        <e:include from="/specs/includes/ws/attr-caseUrlParams.xml"/>
+        <e:include from="/specs/includes/ws/attr-caseBody.xml"/>
+        <e:include from="/specs/includes/ws/attr-caseExpected.xml"/>
     </table>
-    <e:include from="/specs/includes/await-footnote.xml"/>
 
     <h2>Examples</h2>
 
-    <e:before-each>
-        <e:given>
-            Queue is empty:
-            <e:mq-purge name="myQueue"/>
-        </e:given>
-    </e:before-each>
-
-    <h3>Verify single message</h3>
-
-    <h4>Specifying message in tag body</h4>
-
+    <h3>Query string</h3>
     <p>
-        To verify single message short form of the command may be used:
-        expected message template may be specified without nested <code>e:message</code> tag.
+        To specify case specific query string <code>case.urlParams</code> attribute may be used.
     </p>
-    <e:example name="Single message">
-        <e:given>
-            Queue has a message:
-            <e:mq-send name="myQueue">{"date" : "{{now 'yyyy-MM-dd'}}"}</e:mq-send>
-        </e:given>
-        <e:then>
-            Verify that there is the message:
-            <e:mq-check name="myQueue" print="true">{"date" : "{{now 'yyyy-MM-dd'}}"}</e:mq-check>
-        </e:then>
+    <e:example name="urlParams">
+        <e:post url="/method/withParams">
+            <e:case desc="POST with query parameters" urlParams="param1=1&amp;param2=2">
+                <e:body>
+                {
+                    "bodyValue": 111
+                }
+                </e:body>
+                <e:expected>
+                {
+                    "request": {
+                        "POST": "/method/withParams?param1=1&amp;param2=2"
+                    },
+                    "body": {
+                        "bodyValue": 111
+                    }
+                }
+                </e:expected>
+            </e:case>
+        </e:post>
     </e:example>
 
-    <h4>Specifying message in file</h4>
-
-    <p>
-        Expected message template could be specified in file via <code>from</code> attribute.
-        The <code>vars</code> attribute could be used to conveniently provide context variables for message template.
-    </p>
-    <e:example name="Single message from file">
-        <e:given>
-            Queue has the message:
-            <e:mq-send name="myQueue" from="/specs/mq/check/msg.json"
-                       vars="myVar1={{now 'yyyy-MM-dd'}} | myVar2={{date myVar1 minus='1 d'}} | myVar3=str with commas , signs"
-                       varsSeparator="|"/>
-            And there is the expected message file template:
-            <e:fl-check dir="dir">
-                <e:file name="msg.json"/>
-            </e:fl-check>
-        </e:given>
-        <e:then>
-            Verify that there is the message:
-            <e:mq-check name="myQueue" from="/specs/mq/check/msg.json"
-                        vars="myVar1={{now 'yyyy-MM-dd'}} | myVar2={{date myVar1 minus='1 d'}} | myVar3=str with commas , signs"
-                        varsSeparator="|" print="true"/>
-        </e:then>
-    </e:example>
-
-    <h4>Verify empty queue</h4>
-
-    <p>
-        To verify that queue is empty the <code>e:check</code> command with empty tag body could be used.
-    </p>
-    <e:example name="empty">
-        <e:then>
-            Verify that queue is empty:
-            <e:mq-check name="myQueue" print="true"/>
-        </e:then>
-    </e:example>
-
-    <h4>Overriding verification configuration for specific check</h4>
-
-    <p>
-        To override global JsonUnit configuration for specific check
-        the <code>jsonUnitOptions</code> attribute could be used.
-    </p>
-    <e:example name="jsonUnitOptions">
-        <e:given>
-            Queue has the message:
-            <e:mq-send name="myQueue">
-                { "param1":"1", "extra":"ignore", "arr": [{"param3":"3", "extra":"ignore"}, {"extra":"ignore",
-                "param4":"4"}]}
-            </e:mq-send>
-        </e:given>
-        <e:then>
-            Verify ignoring extra fields:
-            <e:mq-check name="myQueue" jsonUnitOptions="IGNORING_EXTRA_FIELDS" print="true">
-                { "param1": "1", "arr": [{ "param3": "3" }, { "param4": "4"}] }
-            </e:mq-check>
-        </e:then>
-    </e:example>
-
-    <h3>Verifying message list</h3>
-
-    <h4>Overview</h4>
-
-    <p>
-        Expected message list may be specified via nested<code>e:message</code> tags. Each message template may be
-        specified either as <code>e:message</code> tag body or in a file via <code>from</code> attribute.
-        The <code>vars</code> attribute could be used to conveniently provide context variables for message template.
-    </p>
-    <e:example name="Message list">
-        <e:given>
-            Queue has messages:
-            <div class="row no-gutters">
-                <e:mq-send name="myQueue">{"msg" : "1"}</e:mq-send>
-                <e:mq-send name="myQueue" from="/specs/mq/check/msg.json"
-                           vars="myVar1={{now 'yyyy-MM-dd'}} | myVar2={{date myVar1 minus='1 d'}} | myVar3=str with commas , signs"
-                           varsSeparator="|"/>
-                <e:mq-send name="myQueue">{"msg" : "3"}</e:mq-send>
-            </div>
-        </e:given>
-        <e:then>
-            Verify that there is the exact message list:
-            <e:mq-check name="myQueue" print="true">
-                <e:message>{"msg" : "1"}</e:message>
-                <e:message from="/specs/mq/check/msg.json"
-                           vars="myVar1={{now 'yyyy-MM-dd'}} | myVar2={{date myVar1 minus='1 d'}} | myVar3=str with commas , signs"
-                           varsSeparator="|"/>
-                <e:message>{"msg" : "3"}</e:message>
-            </e:mq-check>
-        </e:then>
-    </e:example>
-
-    <h4>Message order</h4>
-
-    <p>
-        <code>contains</code> attribute could be used to specify message order restriction.
-    </p>
-    <p>
-        By default <code>e:mq-check</code>command waits until exact specified message list will appear in a queue in
-        exact provided order. To ignore order set <code>contains="EXACT_IN_ANY_ORDER"</code>.
-    </p>
-    <e:example name="Ignore order">
-        <e:given>
-            Queue has messages:
-            <div class="row no-gutters">
-                <e:mq-send name="myQueue">{"msg" : "1"}</e:mq-send>
-                <e:mq-send name="myQueue">{"msg" : "2"}</e:mq-send>
-                <e:mq-send name="myQueue">{"msg" : "3"}</e:mq-send>
-            </div>
-        </e:given>
-        <e:then>
-            Verify that there is the exact message list but ignoring order:
-            <e:mq-check name="myQueue" contains="EXACT_IN_ANY_ORDER" print="true">
-                <e:message>{"msg" : "3"}</e:message>
-                <e:message>{"msg" : "2"}</e:message>
-                <e:message>{"msg" : "1"}</e:message>
-            </e:mq-check>
-        </e:then>
-    </e:example>
-
-    <h3>Verifying message headers</h3>
-
-    <p>
-        The <code>headers</code> attribute could be used for message headers verification.
-        <strong>Extracting actual</strong> headers from the message is the <strong>MqTester implementation
-        responsibility</strong>.
-    </p>
-    <e:example name="Single message with headers">
-        <e:given>
-            Queue has the message with headers <code>id</code> = <code cc:set="#id">some-id</code>
-            and <code>contentEncoding</code> = <code>UTF-8</code>:
-            <e:mq-send name="myQueue" headers="id={{id}}, contentEncoding=UTF-8">{}</e:mq-send>
-        </e:given>
-        <e:then>
-            Verify the message and its headers:
-            <e:mq-check name="myQueue" headers="id={{id}}, contentEncoding=UTF-8" print="true">{}</e:mq-check>
-        </e:then>
-    </e:example>
-
-    <p>
-        In case of message list verifying the <code>headers</code> attribute may be applicable
-        to <code>e:message</code> tag.
-    </p>
-    <e:example name="Message list with headers">
-        <e:given>
-            Queue has the messages with headers:
-            <e:mq-send name="myQueue" headers="id=1, contentEncoding=UTF-8">{}</e:mq-send>
-            <e:mq-send name="myQueue" headers="id=2, contentEncoding=UTF-8">{}</e:mq-send>
-        </e:given>
-        <e:then>
-            Verify the message list and their headers:
-            <e:mq-check name="myQueue" print="true">
-                <e:message headers="id=1, contentEncoding=UTF-8">{}</e:message>
-                <e:message headers="id=2, contentEncoding=UTF-8">{}</e:message>
-            </e:mq-check>
-        </e:then>
-    </e:example>
-
-    <h3>Verifying different message formats</h3>
-    <p>
-        An implementation of <code>io.github.adven27.concordion.extensions.exam.core.ContentVerifier</code> interface
-        is responsible for actual message body verifying. There are following built-in implementation:
-    </p>
-    <dl class="row">
-        <dt class="col-sm-4"><code>ContentVerifier.Json</code></dt>
-        <dd class="col-sm-8">
-            <p>
-                Enabled by default or by <code>verifyAs="json"</code>
-            </p>
-            <p>
-                Uses <code><a href="https://github.com/lukas-krecan/JsonUnit">JsonAssert.assertJsonEquals</a></code>
-                for verification.
-            </p>
-        </dd>
-        <dt class="col-sm-4"><code>ContentVerifier.Xml</code></dt>
-        <dd class="col-sm-8">
-            <p>
-                Enabled by <code>verifyAs="xml"</code>.
-            </p>
-            <p>
-                Uses <code><a href="https://github.com/xmlunit/xmlunit">DiffBuilder.compare</a></code> for verification.
-            </p>
-        </dd>
-        <dt class="col-sm-4"><code>ContentVerifier.Default</code></dt>
-        <dd class="col-sm-8">
-            <p>
-                Fallback verifier. Enabled if no verifier are found for specified <code>verifyAs</code> attribute.
-            </p>
-            <p>
-                Uses jUnit <code>Assert.assertEquals</code> for verification.
-            </p>
-        </dd>
-    </dl>
-    <p>
-        Additional verifier implementations may be provided by <code>addContentVerifiers</code> parameter of
-        <a cc:run="concordion" href="MqPlugin.html">MqPlugin</a> constructor.
-    </p>
-    <e:example name="verify different formats">
-        <e:when>
-            Queue has the message in <code>xml</code> format:
-            <e:mq-send name="myQueue" from="/data/mq/some.xml" formatAs="xml"/>
-        </e:when>
-        <e:then>
-            Verify the message as <code>xml</code>:
-            <e:mq-check name="myQueue" from="/data/mq/some.xml" verifyAs="xml" print="true"/>
-        </e:then>
-        <e:when>
-            Queue has the message in some custom format:
-            <e:mq-send name="myQueue" from="/data/mq/some.txt"/>
-        </e:when>
-        <e:then>
-            Verify the message as <code>customFormat</code>:
-            <e:mq-check name="myQueue" print="true">
-                <e:message from="/data/mq/some.txt" verifyAs="customFormat"/>
-            </e:mq-check>
-        </e:then>
-        <e:when>
-            Queue has the messages in <code>xml</code> and some custom format:
-            <e:mq-send name="myQueue" from="/data/mq/some.xml" formatAs="xml"/>
-            <e:mq-send name="myQueue" from="/data/mq/some.txt"/>
-        </e:when>
-        <e:then>
-            Verify the first message as <code>xml</code> and the second as <code>customFormat</code>:
-            <e:mq-check name="myQueue" print="true">
-                <e:message from="/data/mq/some.xml" verifyAs="xml"/>
-                <e:message from="/data/mq/some.txt" verifyAs="customFormat"/>
-            </e:mq-check>
-        </e:then>
-    </e:example>
-
-    <h3>Pretty-printing</h3>
-
-    <h4>Collapsable view</h4>
-
-    <p>
-        Big messages may be collapsed in report via the <code>collapsable</code> attribute.
-    </p>
-    <e:example name="collapsable messages">
-        <e:given>
-            Queue has some big message:
-            <e:mq-send name="myQueue" from="/data/mq/big.json" collapsable="true"/>
-        </e:given>
-        <e:then>
-            Verified message may be hide in a collapsable block:
-            <e:mq-check name="myQueue" from="/data/mq/big.json" collapsable="true" print="true"/>
-        </e:then>
-    </e:example>
-
-    <h4>Layout</h4>
-
-    <p>
-        Layout of the message list in report may be changed via the <code>layout</code> attribute.
-    </p>
-    <e:example name="layout">
-        <e:given>
-            Queue has messages:
-            <e:mq-send name="myQueue" from="/data/mq/big.json" collapsable="true"/>
-            <e:mq-send name="myQueue" from="/data/mq/big.json" collapsable="true"/>
-        </e:given>
-        <e:then>
-            Verify and print in horizontal layout:
-            <e:mq-check name="myQueue" collapsable="true" layout="horizontally" print="true">
-                <e:message from="/data/mq/big.json"/>
-                <e:message from="/data/mq/big.json"/>
-            </e:mq-check>
-        </e:then>
-    </e:example>
-
-    <h2>More</h2>
+    <h2>How to</h2>
     <ul>
-        <li><a cc:run="concordion" href="MqFailures.html">How do check failures look like?</a></li>
+        <li><a cc:run="concordion" href="common/ContentTypes.xhtml">How to set Content-Type?</a></li>
+        <li><a cc:run="concordion" href="common/ContentVerifiers.xhtml">How to verify different content types?</a></li>
+        <li><a cc:run="concordion" href="common/Headers.xhtml">How to set headers?</a></li>
+        <li><a cc:run="concordion" href="common/Cookies.xhtml">How to set cookies?</a></li>
+        <li><a cc:run="concordion" href="common/Checks.xhtml">How to do case specific checks?</a></li>
+        <li><a cc:run="concordion" href="common/Where.xhtml">How to turn case into parameterized test?</a></li>
     </ul>
-</e:main>
+
 </body>
 </html>

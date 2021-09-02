@@ -1,0 +1,51 @@
+<html xmlns:e="http://exam.extension.io" xmlns:cc="http://www.concordion.org/2007/concordion">
+<body>
+    <h1>db-execute</h1>
+    <p class="lead">Applies specified <a href="http://dbunit.sourceforge.net/">DbUnit</a> datasets to database</p>
+
+    <h2>Overview</h2>
+
+    <e:set var="cmd" value="e:db-execute"/>
+    <e:set var="cmdExample" silent="true"><![CDATA[<e:db-execute datasets='/db/adam.xml, /db/bob.json'/>]]></e:set>
+    <e:include from="/specs/includes/db/usage.xml"/>
+
+    <h3>Attributes</h3>
+
+    <table class="table" style="table-layout: fixed;">
+        <thead><tr><th style="width: 100px;">attribute</th><th style="width: 300px;">desc</th><th>example</th></tr></thead>
+        <e:include from="/specs/includes/db/attr-datasets.xml"/>
+        <e:include from="/specs/includes/db/attr-dir.xml"/>
+        <e:include from="/specs/includes/db/attr-operation.xml"/>
+        <e:include from="/specs/includes/db/attr-ds.xml"/>
+        <e:include from="/specs/includes/attr-vars.xml"/>
+        <e:include from="/specs/includes/attr-varsSeparator.xml"/>
+    </table>
+
+    <h2>Examples</h2>
+
+    <h3>Basic example</h3>
+    <e:example name="Basic example">
+        <e:given>
+            Empty table:
+            <e:db-set table="PERSON"/>
+            And following dataset files:
+            <e:fl-check dir="dir">
+                <e:file name="adam.xml"/>
+                <e:file name="bob.json"/>
+                <e:file name="carl/table-ordering.txt"/>
+                <e:file name="carl/person.csv"/>
+                <e:file name="carl/person_fields.csv"/>
+            </e:fl-check>
+        </e:given>
+        <e:when>
+            <e:db-execute dir="/specs/db/data/" datasets="adam.xml, bob.json, carl/person.csv"
+                          vars="a1=1, a2=2" varsSeparator="," print="true"/>
+        </e:when>
+        <e:then>
+            Datasets were applied to database:
+            <e:db-show table="PERSON"/>
+        </e:then>
+    </e:example>
+
+</body>
+</html>

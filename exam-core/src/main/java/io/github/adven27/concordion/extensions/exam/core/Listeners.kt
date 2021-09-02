@@ -1,13 +1,14 @@
 package io.github.adven27.concordion.extensions.exam.core
 
 import com.github.jknack.handlebars.Helper
+import io.github.adven27.concordion.extensions.exam.core.ExamDocumentParsingListener.Companion.CONTENT_ID
 import io.github.adven27.concordion.extensions.exam.core.ExamExtension.Companion.PARSED_COMMANDS
-import io.github.adven27.concordion.extensions.exam.core.commands.MainCommand
+import io.github.adven27.concordion.extensions.exam.core.commands.BeforeParseExamCommand
+import io.github.adven27.concordion.extensions.exam.core.handlebars.HelperMissing.Companion.helpersDesc
+import io.github.adven27.concordion.extensions.exam.core.handlebars.MissingHelperException
 import io.github.adven27.concordion.extensions.exam.core.html.CLASS
 import io.github.adven27.concordion.extensions.exam.core.html.Html
 import io.github.adven27.concordion.extensions.exam.core.html.ID
-import io.github.adven27.concordion.extensions.exam.core.html.ONCLICK
-import io.github.adven27.concordion.extensions.exam.core.html.button
 import io.github.adven27.concordion.extensions.exam.core.html.buttonCollapse
 import io.github.adven27.concordion.extensions.exam.core.html.codeHighlight
 import io.github.adven27.concordion.extensions.exam.core.html.div
@@ -16,13 +17,10 @@ import io.github.adven27.concordion.extensions.exam.core.html.italic
 import io.github.adven27.concordion.extensions.exam.core.html.menuItemA
 import io.github.adven27.concordion.extensions.exam.core.html.pill
 import io.github.adven27.concordion.extensions.exam.core.html.tag
-import io.github.adven27.concordion.extensions.exam.core.utils.HelperMissing.Companion.helpersDesc
-import io.github.adven27.concordion.extensions.exam.core.utils.MissingHelperException
+import io.github.adven27.concordion.extensions.exam.core.html.trWithTDs
 import nu.xom.Attribute
 import nu.xom.Document
 import nu.xom.Element
-import nu.xom.XPathContext
-import nu.xom.converters.DOMConverter
 import org.concordion.api.ImplementationStatus.EXPECTED_TO_FAIL
 import org.concordion.api.ImplementationStatus.EXPECTED_TO_PASS
 import org.concordion.api.ResultSummary
@@ -87,6 +85,7 @@ internal class ExamExampleListener(private val skipDecider: SkipDecider) : Examp
     }
 }
 
+@Suppress("NestedBlockDepth")
 class FocusOnErrorsListener : SpecificationProcessingListener {
     override fun beforeProcessingSpecification(event: SpecificationProcessingEvent) = exampleResults.clear()
     override fun afterProcessingSpecification(event: SpecificationProcessingEvent) {
@@ -114,7 +113,7 @@ class FocusOnErrorsListener : SpecificationProcessingListener {
 
     private fun ownerOf(example: Html?, content: ConcordionElement): ConcordionElement? {
         var result: ConcordionElement? = null
-        for (it in content.getElementById(MainCommand.CONTENT_ID).childElements) {
+        for (it in content.getElementById(CONTENT_ID).childElements) {
             when {
                 it.localName.matches("h\\d".toRegex()) -> result = it
                 it == example?.el -> break
@@ -146,79 +145,42 @@ private fun Html.collapse() {
 }
 
 internal class ExamDocumentParsingListener(private val registry: CommandRegistry) : DocumentParsingListener {
+    companion object {
+        const val CONTENT_ID = "content"
+        const val MENU_ID = "table-of-contents"
+    }
+
     override fun beforeParsing(document: Document) {
-        document.rootElement.apply {
-            resolveIncludes()
-            visit(this)
-            addToTopButton(this)
-        }
+        layout(document)
+        visit(document.rootElement)
     }
 
-    private fun Element.resolveIncludes() {
-        val name = "include"
-        this.query(".//$name | .//e:$name", XPathContext("e", ExamExtension.NS))?.let {
-            for (i in 0 until it.size()) {
-                val node = it[i]
-                val template = DOMConverter.convert(
-                    loadXMLFromString(Html(ConcordionElement(node as Element)).content())
-                ).rootElement
-                val parent = node.parent
-                val position = parent.indexOf(node)
-                for (j in template.childElements.size() - 1 downTo 0) {
-                    parent.insertChild(template.childElements[j].apply { detach() }, position)
-                }
-                parent.removeChild(node)
-            }
-        }
-    }
-
-    private fun addToTopButton(elem: Element) {
-        Html(ConcordionElement(elem))(
-            button("", ID to "btnToTop", ONCLICK to "topFunction()")(
-                italic("").css("fa fa-arrow-up")
+    private fun layout(document: Document) {
+        val content = div("class" to "bd-content ps-lg-4", "id" to CONTENT_ID)
+        val toc = div("class" to "bd-toc mt-4 mb-5 my-md-0 ps-xl-3 mb-lg-5 text-muted")(
+            tag("strong").css("d-block h6 my-2 pb-2 border-bottom").text("On this page"),
+            tag("nav").attrs("id" to MENU_ID, "class" to "js-toc toc toc-right")
+        )
+        val container = div("class" to "container-fluid")(
+            div("class" to "container-xxl my-md-4 bd-layout")(
+                Html("main").css("bd-main order-1")(
+                    toc, content
+                )
             )
         )
+        document.rootElement.html().first("body")!!.moveChildrenTo(content)(container)
     }
 
     private fun visit(elem: Element) {
-        log(elem)
-        val children = elem.childElements
-
-        for (i in 0 until children.size()) {
-            visit(children.get(i))
-        }
-
-        if (ExamExtension.NS == elem.namespaceURI && registry.commands().map { it.name() }.contains(elem.localName)) {
+        elem.childElements.forEach { visit(it) }
+        if (ExamExtension.NS == elem.namespaceURI && registry.commands().map { it.name }.contains(elem.localName)) {
             val cmdId = UUID.randomUUID().toString()
-            PARSED_COMMANDS[cmdId] = elem.toXML()
+            PARSED_COMMANDS[cmdId] = elem.toXML().let {
+                it.lines().last().takeWhile { c -> c == ' ' } + it
+            }.trimIndent()
             elem.addAttribute(Attribute("cmdId", cmdId))
-            registry.getBy(elem.localName)?.beforeParse(elem)
+            registry.getBy(elem.localName)?.let { if (it is BeforeParseExamCommand) it.beforeParse(elem) }
         }
-    }
-
-    private fun log(elem: Element) {
-        if ((elem.getAttributeValue("print") ?: "false").toBoolean()) {
-            (elem.parent as Element).also {
-                it.insertChild(codeOf(elem), it.indexOf(elem))
-            }
-        }
-    }
-
-    private fun codeOf(elem: Element) = Element("pre").apply {
-        addAttribute(Attribute("class", "doc-code language-xml mt-2"))
-        appendChild(
-            Element("code").apply {
-                appendChild(
-                    Document(elem.copy() as Element).prettyXml()
-                        .replace(" xmlns:e=\"http://exam.extension.io\"", "")
-                        .replace(" print=\"true\"", "")
-                        .lines()
-                        .filterNot { it.startsWith("<?xml version") }
-                        .filterNot { it.isBlank() }
-                        .joinToString(separator = "\n")
-                )
-            }
-        )
     }
 }
 
@@ -288,20 +250,32 @@ class ErrorListener : ThrowableCaughtListener {
             header = "Error while executing command",
             message = "${event.throwable.rootCause().message}",
             help = help(event),
-            html = codeHighlight(
-                PARSED_COMMANDS[event.element.getAttributeValue("cmdId")]?.fixIndent(),
-                "xml"
+            html = div("while executing:")(
+                codeHighlight(PARSED_COMMANDS[event.element.getAttributeValue("cmdId")], "xml")
             ),
             type = "text"
         )
         val html = Html(event.element)
-        html.below(errorMessage)
-        html.moveChildrenTo(errorMessage.findBy(id)!!.parent())
+        when (html.el.localName) {
+            "tr" -> html.below(trWithTDs(errorMessage))
+            else -> html.below(errorMessage)
+        }
+
+        html.parent().remove(html)
+        errorMessage.findBy(id)?.below(
+            div()(
+                html.childs().filter { it.attr("class") in listOf("stackTrace", "stackTraceButton") }.map {
+                    it.parent().remove(it)
+                    it
+                }
+            )
+        )
     }
 
     private fun help(event: ThrowableCaughtEvent) =
         if (event.throwable.rootCause() is MissingHelperException) // language=xml
-            """<p>Available helpers:</p>
+            """
+            <p>Available helpers:</p>
             <div class='table-responsive'>${helpersDesc().map { packageWithHelpers(it) }.joinToString("")}</div>
             """.trimIndent()
         else
@@ -309,13 +283,13 @@ class ErrorListener : ThrowableCaughtListener {
 
     private fun packageWithHelpers(it: Map.Entry<Package, Map<String, Helper<*>>>) = // language=xml
         """
-        <table class='table table-sm caption-top'>
-            <caption>${it.key}</caption>
-            <thead><tr><th>Name</th><th>Desc</th></tr></thead>
-            <tbody> ${it.value.map { (n, v) -> tr(n, v) }.joinToString("")} </tbody>
-        </table>
+        <var>${it.key}</var>:
+        <hr/>
+        <dl>
+            ${it.value.map { (n, v) -> tr(n, v) }.joinToString("")}
+        </dl>
         """.trimIndent()
 
     private fun tr(n: String, v: Helper<*>) = // language=xml
-        """<tr><td><code>$n</code></td><td><pre class='doc-code language-kotlin'><code>$v</code></pre></td></tr>"""
+        """<dt><code>$n</code></dt><dd><pre class='doc-code language-kotlin'><code>$v</code></pre></dd>"""
 }

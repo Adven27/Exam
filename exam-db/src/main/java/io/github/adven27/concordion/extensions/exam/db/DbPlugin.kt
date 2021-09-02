@@ -102,7 +102,7 @@ class DbPlugin @JvmOverloads constructor(
         DBShowCommand("db-show", "div", dbTester, valuePrinter),
         DBCheckCommand("db-check", "div", dbTester, valuePrinter),
         DBSetCommand("db-set", "div", dbTester, valuePrinter, allowedSeedStrategies),
-        DBCleanCommand("db-clean", "span", dbTester)
+        DBCleanCommand("db-clean", "pre", dbTester)
     )
 
     override fun setUp() {

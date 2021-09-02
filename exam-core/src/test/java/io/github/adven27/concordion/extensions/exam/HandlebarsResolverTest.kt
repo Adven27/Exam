@@ -6,11 +6,11 @@ import io.github.adven27.concordion.extensions.exam.core.html.Html
 import io.github.adven27.concordion.extensions.exam.core.parseDate
 import io.github.adven27.concordion.extensions.exam.core.resolveToObj
 import io.github.adven27.concordion.extensions.exam.core.toDate
-import io.github.adven27.concordion.extensions.exam.core.utils.HANDLEBARS
-import io.github.adven27.concordion.extensions.exam.core.utils.HelperSource
-import io.github.adven27.concordion.extensions.exam.core.utils.HelperSource.Companion.DEFAULT_FORMAT
-import io.github.adven27.concordion.extensions.exam.core.utils.resolve
-import io.github.adven27.concordion.extensions.exam.core.utils.resolveObj
+import io.github.adven27.concordion.extensions.exam.core.handlebars.HANDLEBARS
+import io.github.adven27.concordion.extensions.exam.core.handlebars.HelperSource
+import io.github.adven27.concordion.extensions.exam.core.handlebars.HelperSource.Companion.DEFAULT_FORMAT
+import io.github.adven27.concordion.extensions.exam.core.handlebars.resolve
+import io.github.adven27.concordion.extensions.exam.core.handlebars.resolveObj
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.concordion.internal.FixtureInstance
@@ -59,11 +59,8 @@ class HandlebarsResolverTest {
 
     @Test
     fun dateFormat_wrongContext() {
-        val placeholder = """{{dateFormat someDate "yyyy-MM-dd" tz="GMT+3"}}"""
-
-        assertThatExceptionOfType(HandlebarsException::class.java).isThrownBy { sut(placeholder) }
-            .withMessageContaining("Wrong context for helper '$placeholder': 'null', expected instance of Date. Example: ${HelperSource.dateFormat.example}")
-            .withRootCauseExactlyInstanceOf(IllegalArgumentException::class.java)
+        assertThatExceptionOfType(HandlebarsException::class.java)
+            .isThrownBy { sut("""{{dateFormat someDate "yyyy-MM-dd" tz="GMT+3"}}""") }
     }
 
     @Test

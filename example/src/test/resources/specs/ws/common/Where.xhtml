@@ -1,0 +1,138 @@
+<html xmlns:e="http://exam.extension.io" xmlns:cc="http://www.concordion.org/2007/concordion">
+<body>
+    <h1>Parameterized cases</h1>
+
+    <p class="lead">
+        Parameterized cases are a good way to define and run multiple cases, where the only difference between them is the data.
+    </p>
+
+    <h2>Overview</h2>
+    <p>
+        To turn <code>e:case</code> into the parametrized case the <code>e:where</code> nested tag could be used.
+    </p>
+
+    <pre class="doc-code language-xml"><code><![CDATA[<e:where vars="lang, token" separator=",">
+    <e:vals desc="english local">en, {{now 'ddMMyyyy'}}</e:vals>
+    <e:vals desc="russian local">ru, 01012000</e:vals>
+</e:where> ]]> </code></pre>
+
+    <h3>Attributes</h3>
+    <table class="table" style="table-layout: fixed;">
+        <thead>
+        <tr><th style="width: 180px;">attribute</th><th style="width: 300px;">desc</th><th>example</th></tr>
+        </thead>
+        <tr>
+            <td><code>vars</code></td>
+            <td><span>List of comma-separated variable names</span></td>
+            <td><var>Required</var>. <var>Default: -</var><pre class="doc-code language-json"><code>vars="var1, var2"</code></pre></td>
+        </tr>
+        <tr>
+            <td><code>separator</code></td>
+            <td><span><i>value</i> separator to use in <code>e:vals</code> tag</span></td>
+            <td><var>Optional</var>. <var>Default: <strong>,</strong></var><pre class="doc-code language-json"><code>varsSeparator="|"</code></pre></td>
+        </tr>
+        <tr>
+            <td><code>vals.desc</code></td>
+            <td><span>Description of specific parameter values</span></td>
+            <td><var>Optional</var>. <var>Default: <strong>number</strong></var><pre class="doc-code language-json"><code>desc="some description"</code></pre></td>
+        </tr>
+    </table>
+    <p>
+        Each parameterized case will be zipped from <code>vars</code> and <code>e:vals</code> declarations (hence order of <code>vars</code> and order of values inside <code>e:vals</code> should match).
+    </p>
+
+    <h2>Examples</h2>
+
+    <h3>GET</h3>
+
+    <e:example name="get">
+        <e:get url="mirror" print="true">
+            <e:case desc="Parametrized headers and response body" headers="Authorization = Bearer {{token}}, Accept-Language = {{lang}}">
+                <e:expected>
+                    {
+                    "GET": "/mirror",
+                    "Authorization": "Bearer {{token}}",
+                    "Accept-Language": "{{lang}}",
+                    "cookies": "{}"
+                    }
+                </e:expected>
+                <e:where vars="lang, token" separator=",">
+                    <e:vals desc="en + now">en, {{now 'ddMMyyyy'}}</e:vals>
+                    <e:vals desc="ru + 01012000">ru, 01012000</e:vals>
+                </e:where>
+            </e:case>
+        </e:get>
+    </e:example>
+
+    <h3>POST</h3>
+
+    <e:example name="post">
+        <e:post url="relative/url" print="true">
+            <e:case desc="Parametrized request body and response body">
+                <e:body>{"exact": "{{p1}}", "template": 1}</e:body>
+                <e:expected>{"exact": "{{p2}}", "template": "{{number}}"}</e:expected>
+                <e:where vars="p1, p2" separator="|">
+                    <e:vals desc="first">first value of p1                           | first value of p1</e:vals>
+                    <e:vals desc="second">second value of p1                         | second value of p1</e:vals>
+                </e:where>
+            </e:case>
+        </e:post>
+    </e:example>
+
+    <h3>DELETE</h3>
+
+    <e:example name="delete">
+        <e:delete url="mirror" print="true">
+            <e:case desc="Parametrized headers and response body" headers="Authorization = Bearer {{token}}, Accept-Language = {{lang}}">
+                <e:expected>
+                    {
+                    "DELETE": "/mirror",
+                    "Authorization": "Bearer {{token}}",
+                    "Accept-Language": "{{lang}}",
+                    "cookies": "{}"
+                    }
+                </e:expected>
+                <e:where vars="lang, token" separator=",">
+                    <e:vals desc="en + now">en, {{now 'ddMMyyyy'}}</e:vals>
+                    <e:vals desc="ru + 01012000">ru, 01012000</e:vals>
+                </e:where>
+            </e:case>
+        </e:delete>
+    </e:example>
+
+    <h3>PUT</h3>
+
+    <e:example name="put">
+        <e:put url="relative/url" print="true">
+            <e:case desc="Parametrized request body and response body">
+                <e:body>{"exact": "{{p1}}", "template": 1}</e:body>
+                <e:expected>{"exact": "{{p2}}", "template": "{{number}}"}</e:expected>
+                <e:where vars="p1, p2" separator="|">
+                    <e:vals desc="first">first value of p1   | first value of p1</e:vals>
+                    <e:vals desc="second">second value of p1 | second value of p1</e:vals>
+                </e:where>
+            </e:case>
+        </e:put>
+    </e:example>
+
+    <h3>SOAP</h3>
+
+    <e:example name="soap">
+        <e:soap url="relative/url" print="true">
+            <e:case desc="Parameterized name of file">
+                <e:body from="/data/soap/{{body}}"/>
+                <e:expected from="/data/soap/expected.xml"/>
+                <e:where vars="body">
+                    <e:vals>body.xml</e:vals>
+                </e:where>
+            </e:case>
+        </e:soap>
+    </e:example>
+
+    <h2>More</h2>
+    <ul>
+        <li><a cc:run="concordion" href="WhereFailures.xhtml">How do failures look like?</a></li>
+    </ul>
+
+</body>
+</html>

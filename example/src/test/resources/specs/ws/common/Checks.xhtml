@@ -1,0 +1,47 @@
+<html xmlns:e="http://exam.extension.io" xmlns:cc="http://www.concordion.org/2007/concordion">
+<body>
+    <h1>Case-specific checks</h1>
+
+    <p class="lead">
+        To specify any additional case-specific checks <code>e:check</code> tag may be used.
+    </p>
+
+    <h2>Examples</h2>
+
+    <e:example name="checks">
+        <e:get url="/mirror" print="true">
+            <e:case desc="Case 1">
+                <e:expected>
+                    {
+                    "GET": "/mirror",
+                    "Authorization": "",
+                    "Accept-Language": "",
+                    "cookies": "{}"
+                    }
+                </e:expected>
+                <e:check>
+                    <p>
+                        Some additional check for <span cc:assertTrue="true">case 1</span>
+                    </p>
+                </e:check>
+            </e:case>
+            <e:case desc="Case 2">
+                <e:expected>
+                    {
+                    "GET": "/mirror",
+                    "Authorization": "",
+                    "Accept-Language": "",
+                    "cookies": "{}"
+                    }
+                </e:expected>
+                <e:check>
+                    <p>
+                        Some additional check for <span cc:assertTrue="true">case 2</span>
+                    </p>
+                </e:check>
+            </e:case>
+        </e:get>
+    </e:example>
+
+</body>
+</html>

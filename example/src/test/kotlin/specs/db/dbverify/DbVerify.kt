@@ -6,5 +6,4 @@ import specs.Specs
 class DbVerify : Specs() {
     val dir: String
         get() = "/specs/db/data".findResource().path
-
 }

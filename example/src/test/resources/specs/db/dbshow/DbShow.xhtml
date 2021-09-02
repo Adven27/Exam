@@ -1,0 +1,71 @@
+<html xmlns:e="http://exam.extension.io" xmlns:cc="http://www.concordion.org/2007/concordion">
+<body>
+    <h1>db-show</h1>
+    <p class="lead">Shows content of specified database table and creates DbUnit dataset in xml, json or csv formats</p>
+    <h2>Overview</h2>
+
+    <e:set var="cmd" value="e:db-show"/>
+    <e:set var="cmdExample" silent="true"> <![CDATA[ <e:db-show table="ANDROIDS_TABLE"/> ]]> </e:set>
+    <e:include from="/specs/includes/db/usage.xml"/>
+
+    <h3>Attributes</h3>
+
+    <table class="table" style="table-layout: fixed;">
+        <thead><tr><th style="width: 100px;">attribute</th><th style="width: 300px;">desc</th><th>example</th></tr></thead>
+        <e:include from="/specs/includes/db/attr-table.xml"/>
+        <tr>
+            <td><code>cols</code></td>
+            <td><span>List of comma-separated column names to include in dataset</span></td>
+            <td><var>Optional</var>. <var>Default: -</var><pre class="doc-code language-json"><code>cols="id, name"</code></pre></td>
+        </tr>
+        <tr>
+            <td><code>saveToResources</code></td>
+            <td><span>Path in <code>srs/test/resources/</code> where to store generated dataset</span></td>
+            <td><var>Optional</var>. <var>Default: -</var><pre class="doc-code language-json"><code>saveToResources="/data/db/person.xml"</code></pre></td>
+        </tr>
+        <e:include from="/specs/includes/db/attr-where.xml"/>
+        <e:include from="/specs/includes/db/attr-ds.xml"/>
+        <e:include from="/specs/includes/db/attr-caption.xml"/>
+    </table>
+
+    <h2>Examples</h2>
+
+    <h3>Show empty table</h3>
+    <e:example name="Show empty table">
+        <e:given>
+            Empty table:
+            <e:db-set table="ANDROIDS_TABLE"/>
+        </e:given>
+        <e:then>
+            <e:db-show table="ANDROIDS_TABLE" print="true"/>
+        </e:then>
+    </e:example>
+
+    <h3>Show not empty table</h3>
+    <e:example name="Not empty table">
+        <e:given>
+            <e:db-set table="ANDROIDS_TABLE" cols="id=1..10, name, weight, height, manufactured">
+                <e:row>Adam, 10, 110, 2001-01-01</e:row>
+                <e:row> Bob, 20, 120, 2002-02-02</e:row>
+            </e:db-set>
+        </e:given>
+        <e:then >
+            <e:db-show table="ANDROIDS_TABLE" cols="name, weight, manufactured" print="true"/>
+        </e:then>
+    </e:example>
+
+    <h3>Filtered table</h3>
+    <e:example name="Filtered table">
+        <e:given>
+            <e:db-set table="ANDROIDS_TABLE" cols="id=1..10, name, weight, height, manufactured">
+                <e:row>Adam, 10, 110, 2001-01-01</e:row>
+                <e:row> Bob, 20, 120, 2002-02-02</e:row>
+            </e:db-set>
+        </e:given>
+        <e:then>
+            <e:db-show table="ANDROIDS_TABLE" cols="name, weight" where="name='Adam'" print="true"/>
+        </e:then>
+    </e:example>
+
+</body>
+</html>

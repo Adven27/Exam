@@ -1,6 +1,5 @@
 <html xmlns:e="http://exam.extension.io" xmlns:cc="http://www.concordion.org/2007/concordion">
 <body>
-<e:main>
     <h1>mq-check</h1>
 
     <p class="lead">Verifies that specified messages exist in queue</p>
@@ -9,11 +8,11 @@
 
     <e:set var="cmd" value="e:mq-send"/>
     <e:set var="cmdExample" silent="true"><![CDATA[
-<e:mq-check name="someQueue">
-    <e:message>{"msg" : "1"}</e:message>
-    <e:message from="/data/mq/msg2.json"/>
-</e:mq-check>
-]]>
+    <e:mq-check name="someQueue">
+        <e:message>{"msg" : "1"}</e:message>
+        <e:message from="/data/mq/msg2.json"/>
+    </e:mq-check>
+    ]]>
     </e:set>
     <e:include from="/specs/includes/mq/usage.xml"/>
 
@@ -43,7 +42,7 @@
                 <span>
                     Content verifier to use. Built-in verifiers: <i>json</i>, <i>xml</i>.
                     May be extended by passing <code>addContentVerifiers</code> parameter to
-                    <a cc:run="concordion" href="MqPlugin.html">MqPlugin</a> constructor.
+                    <a cc:run="concordion" href="MqPlugin.xhtml">MqPlugin</a> constructor.
                 </span>
             </td>
             <td>
@@ -83,12 +82,10 @@
 
     <h2>Examples</h2>
 
-    <e:before-each>
-        <e:given>
-            Queue is empty:
-            <e:mq-purge name="myQueue"/>
-        </e:given>
-    </e:before-each>
+    <div cc:example="before">
+        Purging queue before each example:
+        <e:mq-purge name="myQueue"/>
+    </div>
 
     <h3>Verify single message</h3>
 
@@ -303,7 +300,7 @@
     </dl>
     <p>
         Additional verifier implementations may be provided by <code>addContentVerifiers</code> parameter of
-        <a cc:run="concordion" href="MqPlugin.html">MqPlugin</a> constructor.
+        <a cc:run="concordion" href="MqPlugin.xhtml">MqPlugin</a> constructor.
     </p>
     <e:example name="verify different formats">
         <e:when>
@@ -378,8 +375,7 @@
 
     <h2>More</h2>
     <ul>
-        <li><a cc:run="concordion" href="MqFailures.html">How do check failures look like?</a></li>
+        <li><a cc:run="concordion" href="MqFailures.xhtml">How do check failures look like?</a></li>
     </ul>
-</e:main>
 </body>
 </html>
