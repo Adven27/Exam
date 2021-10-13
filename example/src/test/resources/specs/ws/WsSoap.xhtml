@@ -1,0 +1,108 @@
+<html xmlns:e="http://exam.extension.io" xmlns:cc="http://www.concordion.org/2007/concordion">
+<body>
+<h1>SOAP</h1>
+
+<p class="lead">Specifying use cases of a <code>SOAP</code>-endpoint</p>
+
+<h2>Overview</h2>
+
+<e:set var="cmd" style="display:none;" value="e:soap"/>
+<pre cc:set="#cmdExample" style="display: none"><![CDATA[
+    <e:soap url="/some/url">
+        <e:case desc="use-case 1">
+            <e:body>
+            <! [CDATA[
+                <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+                    <soap:Body>
+                        <ns2:getItemRequest xmlns:ns2="http://ws.io">
+                            <date>{{now 'yyyy-MM-dd'}}</date>
+                        </ns2:getItemRequest>
+                    </soap:Body>
+                </soap:Envelope>
+            ] ]>
+            </e:body>
+            <e:expected>
+            <! [CDATA[
+                <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+                    <soap:Body>
+                        <ns2:getItemResponse xmlns:ns2="http://ws.io">
+                            <val>{{placeholder}}</val>
+                        </ns2:getItemResponse>
+                    </soap:Body>
+                </soap:Envelope>
+            ] ]>
+            </e:expected>
+        </e:case>
+        <e:case desc="use-case 2">
+            <e:body from="/ws/request.xml"/>
+            <e:expected from="/ws/response.xml"/>
+        </e:case>
+    </e:soap>
+]]>
+</pre>
+<e:include from="/specs/includes/ws/usage.xml"/>
+
+<h3>Attributes</h3>
+<table class="table" style="table-layout: fixed;">
+    <thead>
+    <tr><th style="width: 180px;">attribute</th><th style="width: 300px;">desc</th><th>example</th></tr>
+    </thead>
+    <e:include from="/specs/includes/ws/attr-url.xml"/>
+    <e:include from="/specs/includes/ws/attr-contentType.xml"/>
+    <e:include from="/specs/includes/ws/attr-headers.xml"/>
+    <e:include from="/specs/includes/ws/attr-cookies.xml"/>
+    <e:include from="/specs/includes/ws/attr-caseDesc.xml"/>
+    <e:include from="/specs/includes/ws/attr-caseUrlParams.xml"/>
+    <e:include from="/specs/includes/ws/attr-caseBody.xml"/>
+    <e:include from="/specs/includes/ws/attr-caseExpected.xml"/>
+</table>
+
+<h2>Examples</h2>
+
+<h3>Basic example</h3>
+
+<e:example name="Basic">
+    <e:soap url="mirror/body">
+        <e:case desc="Content can be inlined">
+            <e:body>
+                <![CDATA[
+                <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+                    <soap:Body>
+                        <ns2:getItemRequest xmlns:ns2="http://ws.io">
+                            <date>{{now 'yyyy-MM-dd'}}</date>
+                        </ns2:getItemRequest>
+                    </soap:Body>
+                </soap:Envelope>
+                ]]>
+            </e:body>
+            <e:expected>
+                <![CDATA[
+                <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+                    <soap:Body>
+                        <ns2:getItemRequest xmlns:ns2="http://ws.io">
+                            <date>{{now 'yyyy-MM-dd'}}</date>
+                        </ns2:getItemRequest>
+                    </soap:Body>
+                </soap:Envelope>
+                ]]>
+            </e:expected>
+        </e:case>
+        <e:case desc="Or stored in file">
+            <e:body from="/data/soap/body.xml"/>
+            <e:expected from="/data/soap/expected.xml"/>
+        </e:case>
+    </e:soap>
+</e:example>
+
+<h2>How to</h2>
+<ul>
+    <li><a cc:run="concordion" href="common/ContentTypes.xhtml">How to set Content-Type?</a></li>
+    <li><a cc:run="concordion" href="common/ContentVerifiers.xhtml">How to verify different content types?</a></li>
+    <li><a cc:run="concordion" href="common/Headers.xhtml">How to set headers?</a></li>
+    <li><a cc:run="concordion" href="common/Cookies.xhtml">How to set cookies?</a></li>
+    <li><a cc:run="concordion" href="common/Checks.xhtml">How to do case specific checks?</a></li>
+    <li><a cc:run="concordion" href="common/Where.xhtml">How to turn case into parameterized test?</a></li>
+</ul>
+
+</body>
+</html>

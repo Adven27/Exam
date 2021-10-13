@@ -1,0 +1,54 @@
+<html xmlns:e="http://exam.extension.io" xmlns:cc="http://www.concordion.org/2007/concordion">
+<body>
+<h1>Decorating commands</h1>
+
+<p class="lead">Allow to replace a boilerplate decorating markup by dedicated code snippets.</p>
+
+<h2>Overview</h2>
+
+<p>
+    Main purpose of the decorating commands is to simplify specification code by
+    hiding a complex frequently used decoration markup to dedicated commands.
+</p>
+
+<h2>Examples</h2>
+
+<h3>Given-when-then</h3>
+
+<p>
+    To describe an example in <a href="https://martinfowler.com/bliki/GivenWhenThen.html">the BDD given-when-then style</a>
+    dedicated <code>e:given</code>, <code>e:when</code>, <code>e:then</code> commands may be used.
+</p>
+<p>
+    This commands are purely decorating, have no effect on example logic and may be used in any order.
+</p>
+<e:example name="multistep example" print="true">
+
+    <e:given>
+        Given this...
+    </e:given>
+
+    <e:given>
+        and that.
+    </e:given>
+
+    <e:when>
+        Do action 1.
+    </e:when>
+
+    <e:then>
+        Got result 1.
+    </e:then>
+
+    <e:when>
+        Do action 2.
+    </e:when>
+
+    <e:then>
+        Got result 2.
+    </e:then>
+
+</e:example>
+
+</body>
+</html>

@@ -1,6 +1,7 @@
 package io.github.adven27.concordion.extensions.exam.db.commands
 
 import io.github.adven27.concordion.extensions.exam.core.fileExt
+import io.github.adven27.concordion.extensions.exam.core.html.code
 import io.github.adven27.concordion.extensions.exam.core.html.html
 import io.github.adven27.concordion.extensions.exam.core.html.pre
 import io.github.adven27.concordion.extensions.exam.db.DbPlugin
@@ -30,6 +31,7 @@ class DBShowCommand(name: String, tag: String, dbTester: DbTester, valuePrinter:
         val el = cmd.html()
         val tableName = el.takeAwayAttr("table", eval)!!
         val where = el.takeAwayAttr("where", eval)
+        val createDataSet = el.takeAwayAttr("createDataSet", "false")
         val saveToResources = el.takeAwayAttr("saveToResources", eval)
         val ds = el.takeAwayAttr("ds", DbTester.DEFAULT_DATASOURCE)
         val conn = dbTester.connectionFor(ds)
@@ -49,10 +51,11 @@ class DBShowCommand(name: String, tag: String, dbTester: DbTester, valuePrinter:
                 valuePrinter
             )
         )
-        val dataSet = conn.createDataSet(getAllDependentTables(conn, tableName))
-        ByteArrayOutputStream().use {
-            save(saveToResources, dataSet, it)
-            el(pre(it.toString("UTF-8")))
+        if (createDataSet.toBoolean() || !saveToResources.isNullOrEmpty()) {
+            ByteArrayOutputStream().use {
+                save(saveToResources, conn.createDataSet(getAllDependentTables(conn, tableName)), it)
+                el(pre().attrs("class" to "doc-code language-xml")(code(it.toString("UTF-8"))))
+            }
         }
     }
 

@@ -15,8 +15,6 @@ import org.dbunit.dataset.datatype.DataType
 import org.dbunit.operation.CompositeOperation
 import org.dbunit.operation.DatabaseOperation
 import org.slf4j.LoggerFactory
-import java.util.ArrayList
-import java.util.HashMap
 import java.util.logging.Level
 import java.util.logging.Logger
 import java.util.regex.Pattern
@@ -213,7 +211,7 @@ class ContainsFilterTable(actualTable: ITable?, expectedTable: ITable?, ignoredC
     private fun toUpper(ignoredCols: List<String>): List<String> {
         val upperCaseColumns: MutableList<String> = ArrayList()
         for (ignoredCol in ignoredCols) {
-            upperCaseColumns.add(ignoredCol.toUpperCase())
+            upperCaseColumns.add(ignoredCol.uppercase())
         }
         return upperCaseColumns
     }
@@ -279,7 +277,7 @@ class ContainsFilterTable(actualTable: ITable?, expectedTable: ITable?, ignoredC
     }
 
     private fun match(ignoredCols: List<String>?, cell: Map.Entry<String, Any?>, row: Int) =
-        if (ignoredCols == null || !ignoredCols.contains(cell.key.toUpperCase())) {
+        if (ignoredCols == null || !ignoredCols.contains(cell.key.uppercase())) {
             if (cell.value != null && cell.value.toString().startsWith("regex:")) {
                 regexMatches(cell.value.toString(), originalTable.getValue(row, cell.key).toString())
             } else dataType(cell.key).matches(cell.value, originalTable.getValue(row, cell.key))

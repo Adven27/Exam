@@ -27,13 +27,21 @@ private fun template(id: Long) = //language=xml
     """
     <div>
         <nav>
-          <div class="nav nav-tabs" role="tablist">
-            <a class="nav-item nav-link active small text-success" id="nav-et-$id-tab" data-toggle="tab" 
-            href="#nav-et-$id" role="tab" aria-controls="nav-et-$id" aria-selected="true"> Expected </a>
-            <a class="nav-item nav-link small" id="nav-at-$id-tab" data-toggle="tab" href="#nav-at-$id" 
-            role="tab" aria-controls="nav-at-$id" aria-selected="false" 
-            onclick="setTimeout(() => { window.dispatchEvent(new Event('resize')); }, 200)"> Actual </a>
-          </div>
+          <ul class="nav nav-tabs" role="tablist">
+            <li class="nav-item" role="presentation"> 
+                <button class="nav-link active small text-success" type="button" role="tab"
+                id="nav-et-$id-tab"
+                data-bs-toggle="tab" data-bs-target="#nav-et-$id"  
+                aria-controls="nav-et-$id" aria-selected="true">Expected</button>
+            </li>
+            <li class="nav-item" role="presentation"> 
+                <button class="nav-link small" type="button" role="tab"
+                onclick="setTimeout(() => { window.dispatchEvent(new Event('resize')); }, 200)"
+                id="nav-at-$id-tab" 
+                data-bs-toggle="tab" data-bs-target="#nav-at-$id" 
+                aria-controls="nav-at-$id" aria-selected="false">Actual</button>
+            </li>
+          </ul>
         </nav>
         <div class="tab-content">
           <div class="tab-pane fade show active" id="nav-et-$id" role="tabpanel" aria-labelledby="nav-et-$id-tab">

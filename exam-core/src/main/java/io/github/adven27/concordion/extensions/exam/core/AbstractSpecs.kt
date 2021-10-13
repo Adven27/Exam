@@ -43,6 +43,8 @@ abstract class AbstractSpecs {
     protected open fun afterSutStop() = Unit
     protected open fun afterTearDown() = Unit
 
+    fun addToMap(old: Map<String, String>?, name: String, value: String) = mapOf(name to value) + (old ?: emptyMap())
+
     companion object {
         const val PROP_SPECS_SUT_START = "SPECS_SUT_START"
         @JvmField

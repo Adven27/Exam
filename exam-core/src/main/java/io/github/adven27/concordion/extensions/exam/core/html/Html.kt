@@ -7,6 +7,7 @@ import org.concordion.api.CommandCall
 import org.concordion.api.Element
 import org.concordion.api.Evaluator
 import java.util.Optional
+import java.util.UUID
 
 const val ID = "id"
 const val ONCLICK = "onclick"
@@ -45,6 +46,14 @@ class Html(val el: Element) {
         return result
     }
 
+    fun childs(name: String): List<Html> {
+        val result = ArrayList<Html>()
+        for (e in el.getChildElements(name)) {
+            result.add(Html(e))
+        }
+        return result
+    }
+
     fun attrs(vararg attrs: Pair<String, String>): Html {
         attrs.forEach {
             el.addAttribute(it.first, it.second)
@@ -62,12 +71,8 @@ class Html(val el: Element) {
         return this
     }
 
-    infix fun collapse(target: String) = attrs(
-        "data-toggle" to "collapse",
-        "data-target" to "#$target",
-        "aria-expanded" to "true",
-        "aria-controls" to target
-    )
+    infix fun collapse(target: String) =
+        attrs("data-bs-toggle" to "collapse", "data-bs-target" to "#$target", "aria-expanded" to "true")
 
     infix fun css(classes: String): Html {
         el.addStyleClass(classes)
@@ -90,7 +95,7 @@ class Html(val el: Element) {
         return this
     }
 
-    infix fun above(html: Html): Html {
+    infix fun prependChild(html: Html): Html {
         el.prependChild(html.el)
         return this
     }
@@ -120,21 +125,25 @@ class Html(val el: Element) {
         return this
     }
 
-    fun panel(header: String): Html {
-        css("card mb-3")
-        val id = header.hashCode().toString()
-        val body = div().css("card-body collapse show").attrs("id" to id)
-        moveChildrenTo(body)
+    fun panel(header: String, lvl: Int): Html = generateId().let {
         this(
-            div().css("card-header")(
-                link(header).attrs("name" to header, "data-type" to "example")
-            ).collapse(id)
-        )
-        val footer = div().css("card-footer text-muted").collapse(id)
-        el.appendChild(body.el)
-        el.appendChild(footer.el())
-        return this
+            title(header, it, lvl),
+            body(this, it)
+        ).css("exam-example mb-3").attrs("data-type" to "example")
     }
+
+    private fun body(root: Html, id: String) = div()
+        .css("bd-example collapse show rounded bg-light bg-gradient")
+        .attrs("id" to id).apply {
+            root.moveChildrenTo(this)
+        }
+
+    private fun title(header: String, id: String, lvl: Int) = div()(
+        tag("h$lvl").text(header).style("visibility: hidden; height:0;").css("test-class"),
+        italic("", "class" to "far fa-caret-square-down"),
+        tag("span").text(" "),
+        tag("a").text(header).css("bd-example-title text-muted fw-lighter")
+    ) collapse id
 
     fun localName() = el.localName!!
 
@@ -160,6 +169,8 @@ class Html(val el: Element) {
     infix fun insteadOf(original: Element): Html {
         original.moveChildrenTo(this.el)
         original.moveAttributesTo(this.el)
+        // FIXME may skip some attributes after first turn, repeat to move the rest... probably bug
+        original.moveAttributesTo(this.el)
         original.appendSister(this.el)
         original.parentElement.removeChild(original)
         return this
@@ -170,6 +181,11 @@ class Html(val el: Element) {
     fun first(tag: String): Html? {
         val first = el.childElements.firstOrNull { it.localName == tag }
         return if (first == null) null else Html(first)
+    }
+
+    fun last(tag: String): Html? {
+        val last = el.childElements.lastOrNull { it.localName == tag }
+        return if (last == null) null else Html(last)
     }
 
     fun firstOptional(tag: String): Optional<Html> = Optional.ofNullable(first(tag))
@@ -205,6 +221,16 @@ class Html(val el: Element) {
         (Html("span", txt, *attrs))
     }
 
+    fun removeClass(name: String): Html {
+        el.addAttribute(
+            "class",
+            el.getAttributeValue("class").let {
+                it.split(" ").filterNot { it == name }.joinToString(" ")
+            }
+        )
+        return this
+    }
+
     override fun toString(): String {
         return el.toXML()
     }
@@ -216,7 +242,7 @@ fun div(vararg attrs: Pair<String, String>) = Html("div", *attrs)
 
 fun table(vararg attrs: Pair<String, String>) = table(Html("table", *attrs))
 
-fun table(el: Html): Html = el.css("table table-sm")
+fun table(el: Html): Html = el.css("table table-sm caption-top")
 
 fun table(el: Element): Html = table(Html(el))
 
@@ -247,7 +273,7 @@ fun code(txt: String) = Html("code", txt)
 @JvmOverloads
 fun span(txt: String? = null, vararg attrs: Pair<String, String>) = Html("span", txt, *attrs)
 
-fun badge(txt: String, style: String) = span(txt).css("badge badge-$style ml-1 mr-1")
+fun badge(txt: String, style: String) = span(txt).css("badge bg-$style me-1 ms-1")
 
 fun pill(count: Long, style: String) = pill(if (count == 0L) "" else count.toString(), style)
 
@@ -302,7 +328,8 @@ fun paragraph(txt: String) = Html("p", txt)
 
 fun codeXml(text: String?) = pre(text ?: "") css "xml card"
 
-fun codeXmlBlack(text: String?) = pre(text ?: "").attr("lineNumbers", "true") css "htmlmixed darcula"
+fun codeHighlight(text: String?, lang: String? = null) =
+    pre().attrs("class" to "doc-code ${if (lang != null) "language-$lang" else ""}")(code(text ?: ""))
 
 fun tag(tag: String) = Html(tag)
 
@@ -310,14 +337,12 @@ fun body() = Html("body")
 
 fun body(txt: String) = Html("body", txt)
 
-fun ul() = Html("ul")
+fun ul(vararg attrs: Pair<String, String>) = Html("ul", *attrs)
 
 fun list() = ul() css "list-group"
 
 @JvmOverloads
 fun li(text: String? = null) = Html("li", text)
-
-fun menuItemLi() = li() css "list-group-item list-group-item-action d-flex justify-content-between align-items-center"
 
 fun menuItemA(txt: String) =
     link(txt) css "list-group-item list-group-item-action" style "border-left: none; border-right: none;"
@@ -326,22 +351,18 @@ fun menuItemA(txt: String, vararg children: Html) =
     link(txt, *children) css "list-group-item list-group-item-action" style "border-left: none; border-right: none;"
 
 fun button(txt: String = "", vararg attrs: Pair<String, String>) =
-    Html("button", txt, *attrs).attrs("type" to "button") css "btn btn-light btn-sm text-muted ml-1"
+    Html("button", txt, *attrs).attrs("type" to "button") css "btn btn-light btn-sm text-muted me-1"
 
 fun buttonCollapse(txt: String, target: String) = button(txt) collapse target
 
-fun divCollapse(txt: String, target: String) = div(txt) collapse target
+fun divCollapse(txt: String, target: String) = div(txt).css("far fa-caret-square-down") collapse target
 
 fun footerOf(card: Html) = Html(card.el.getChildElements("div")[2])
 
-fun bodyOf(card: Html) = Html(card.el.getChildElements("div")[1])
-
 fun stat() = Html("small")
 
-fun CommandCall?.htmlCss(styleClass: String) {
-    this.html().css(styleClass)
-}
-
 fun CommandCall?.html() = Html(this!!.element)
-fun CommandCall?.takeAttr(name: String, def: String) = html().takeAwayAttr(name, def)
+fun CommandCall?.takeAttr(name: String) = html().takeAwayAttr(name)
 fun CommandCall?.attr(name: String, def: String) = html().attr(name) ?: def
+
+fun generateId(): String = "e${UUID.randomUUID()}"

@@ -1,45 +1,28 @@
 package io.github.adven27.concordion.extensions.exam.core.commands
 
-import io.github.adven27.concordion.extensions.exam.core.html.CLASS
-import io.github.adven27.concordion.extensions.exam.core.html.ID
-import io.github.adven27.concordion.extensions.exam.core.html.buttonCollapse
-import io.github.adven27.concordion.extensions.exam.core.html.div
-import io.github.adven27.concordion.extensions.exam.core.html.h
+import io.github.adven27.concordion.extensions.exam.core.html.Html
 import io.github.adven27.concordion.extensions.exam.core.html.html
-import io.github.adven27.concordion.extensions.exam.core.html.htmlCss
+import io.github.adven27.concordion.extensions.exam.core.html.tag
 import org.concordion.api.CommandCall
 import org.concordion.api.Evaluator
 import org.concordion.api.Fixture
 import org.concordion.api.ResultRecorder
 
-class GivenCommand(tag: String) : ExamCommand("given", tag) {
-    override fun setUp(cmd: CommandCall?, evaluator: Evaluator?, resultRecorder: ResultRecorder?, fixture: Fixture) {
-        cmd.htmlCss("bd-callout bd-callout-info")
-    }
+class GivenCommand : ExamCommand("given", "div") {
+    override fun setUp(cmd: CommandCall?, evaluator: Evaluator?, resultRecorder: ResultRecorder?, fixture: Fixture) =
+        pLeadAndHr(cmd.html().css("given"), "text-primary", "Given")
 }
 
-class WhenCommand(tag: String) : ExamCommand("when", tag) {
-    override fun setUp(cmd: CommandCall?, evaluator: Evaluator?, resultRecorder: ResultRecorder?, fixture: Fixture) {
-        cmd.htmlCss("bd-callout bd-callout-warning")
-    }
+class WhenCommand : ExamCommand("when", "div") {
+    override fun setUp(cmd: CommandCall?, evaluator: Evaluator?, resultRecorder: ResultRecorder?, fixture: Fixture) =
+        pLeadAndHr(cmd.html().css("when"), "text-warning", "When")
 }
 
-class ThenCommand(tag: String) : ExamCommand("then", tag) {
-    override fun setUp(cmd: CommandCall?, evaluator: Evaluator?, resultRecorder: ResultRecorder?, fixture: Fixture) {
-        cmd.htmlCss("bd-callout bd-callout-success")
-    }
+class ThenCommand : ExamCommand("then", "div") {
+    override fun setUp(cmd: CommandCall?, evaluator: Evaluator?, resultRecorder: ResultRecorder?, fixture: Fixture) =
+        pLeadAndHr(cmd.html().css("then"), "text-success", "Then")
 }
 
-class ExamplesSummaryCommand(name: String, tag: String) : ExamCommand(name, tag) {
-    override fun setUp(cmd: CommandCall?, evaluator: Evaluator?, resultRecorder: ResultRecorder?, fixture: Fixture) {
-        val id = "summary"
-        val html = cmd.html()
-        val title = html.takeAwayAttr("title", evaluator)
-        html(
-            h(4, title ?: "Summary")(
-                buttonCollapse("collapse", id)
-            ),
-            div(ID to id, CLASS to "collapse show")
-        )
-    }
+private fun pLeadAndHr(html: Html, style: String, title: String) {
+    html.prependChild(tag("hr")).prependChild(tag("p").css("lead $style").text(title))
 }

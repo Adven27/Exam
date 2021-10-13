@@ -2,10 +2,10 @@
 
 package io.github.adven27.concordion.extensions.exam.core
 
-import io.github.adven27.concordion.extensions.exam.core.utils.HANDLEBARS
-import io.github.adven27.concordion.extensions.exam.core.utils.PLACEHOLDER_TYPE
-import io.github.adven27.concordion.extensions.exam.core.utils.resolve
-import io.github.adven27.concordion.extensions.exam.core.utils.resolveObj
+import io.github.adven27.concordion.extensions.exam.core.handlebars.HANDLEBARS
+import io.github.adven27.concordion.extensions.exam.core.handlebars.PLACEHOLDER_TYPE
+import io.github.adven27.concordion.extensions.exam.core.handlebars.resolve
+import io.github.adven27.concordion.extensions.exam.core.handlebars.resolveObj
 import org.concordion.api.Evaluator
 import java.lang.Integer.parseInt
 import java.time.Duration
@@ -61,5 +61,5 @@ fun String?.vars(eval: Evaluator, setVar: Boolean = false, separator: String = "
     this?.split(separator)
         ?.map { it.split('=', limit = 2) }
         ?.map { (k, v) -> k.trim() to v.trim() }
-        ?.map { (k, v) -> k to eval.resolveToObj(v).apply { if (setVar) eval.setVariable("#$k", this) } }
-        ?.toMap() ?: emptyMap()
+        ?.associate { (k, v) -> k to eval.resolveToObj(v).apply { if (setVar) eval.setVariable("#$k", this) } }
+        ?: emptyMap()

@@ -1,0 +1,24 @@
+#.tester: fill=#0ee visual=actor
+#.sut: fill=#0e0
+#.db: fill=#0e0 visual=database
+#.fs: fill=#0e0 visual=note
+#.api: fill=#0e0 visual=lollipop
+#.usecase: fill=#fff visual=ellipse dashed
+#gravity: 2
+#padding: 18
+#spacing: 0
+#direction: right
+
+[<actor> Team]-->[<usecase> Test cases]
+[Test cases]-->[<tester> Manual Tester]
+
+
+[Manual Tester]<-->[<api> REST API]
+[Manual Tester]<-->[<api> MQ API]
+[Manual Tester]<-->[<db> DB]
+[Manual Tester]<-->[<fs> File System]
+
+[DB]<->[<sut> System Under Test]
+[REST API] - [System Under Test]
+[MQ API] - [System Under Test]
+[File System]<->[System Under Test]

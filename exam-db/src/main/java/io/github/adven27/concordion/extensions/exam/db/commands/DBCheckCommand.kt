@@ -3,6 +3,7 @@ package io.github.adven27.concordion.extensions.exam.db.commands
 import io.github.adven27.concordion.extensions.exam.core.commands.await
 import io.github.adven27.concordion.extensions.exam.core.commands.awaitConfig
 import io.github.adven27.concordion.extensions.exam.core.commands.timeoutMessage
+import io.github.adven27.concordion.extensions.exam.core.errorMessage
 import io.github.adven27.concordion.extensions.exam.core.html.Html
 import io.github.adven27.concordion.extensions.exam.core.html.div
 import io.github.adven27.concordion.extensions.exam.core.html.html
@@ -79,7 +80,7 @@ class DBCheckCommand(
     override fun verify(cmd: CommandCall?, evaluator: Evaluator?, resultRecorder: ResultRecorder?, fixture: Fixture) {
         dbTester.dbUnitConfig.valueComparer.setEvaluator(evaluator!!)
         dbTester.dbUnitConfig.columnValueComparers.forEach { it.value.setEvaluator(evaluator) }
-        assertEq(cmd.html(), resultRecorder)
+        assertEq(cmd.html().apply { attr("class", "db-check") }, resultRecorder)
     }
 
     private fun assertEq(rootEl: Html, resultRecorder: ResultRecorder?) {
@@ -147,18 +148,20 @@ class DBCheckCommand(
         root: Html,
         actual: SortedTable
     ): Html {
-        var root1 = root
         resultRecorder!!.record(FAILURE)
-        val errorContainer = div().css("rest-failure bd-callout bd-callout-danger")(div(f.message))
-        root1.below(errorContainer)
-
         val exp = div()
-        errorContainer(span("Expected: "), exp)
-        root1 = exp
-
-        val act = renderTable(null, actual, remarks, valuePrinter)
-        errorContainer(span("but was: "), act)
-        return root1
+        val (_, errorMsg) = errorMessage(
+            message = f.message ?: "",
+            html = div().css("")(
+                span("Expected: "),
+                exp,
+                span("but was: "),
+                renderTable(null, actual, remarks, valuePrinter)
+            ),
+            type = "text"
+        )
+        root(errorMsg)
+        return exp
     }
 
     private fun dbUnitAssert(expected: SortedTable, actual: ITable) {
@@ -293,7 +296,7 @@ open class RegexAndWithinAwareValueComparer : IsActualEqualToExpectedValueCompar
         if (actualValue == null) false else Pattern.compile(pattern).matcher(actualValue.toString()).matches()
 }
 
-/***
+/**
  * Base class for default comparer overriding
  * @see IgnoreMillisComparer
  */

@@ -32,7 +32,7 @@ public class FilesShowCommand extends BaseCommand {
             element.childs(
                 thead().childs(
                     th().childs(
-                        italic("").css("fa fa-folder-open ml-1")
+                        italic(" ").css("far fa-folder-open me-1")
                     ).text(evalPath)
                 )
             );

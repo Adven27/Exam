@@ -8,8 +8,8 @@ import io.github.adven27.concordion.extensions.exam.core.toStringOr
 import org.assertj.core.api.Assertions
 import org.concordion.internal.FixtureInstance
 import org.concordion.internal.OgnlEvaluator
+import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.`is`
-import org.junit.Assert.assertThat
 import org.junit.Test
 import java.time.LocalDateTime
 import java.util.Date

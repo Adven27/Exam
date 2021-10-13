@@ -3,7 +3,7 @@ package io.github.adven27.concordion.extensions.exam.db.builder
 import io.github.adven27.concordion.extensions.exam.core.commands.AwaitConfig
 import io.github.adven27.concordion.extensions.exam.core.commands.await
 import io.github.adven27.concordion.extensions.exam.core.fileExt
-import io.github.adven27.concordion.extensions.exam.core.utils.findResource
+import io.github.adven27.concordion.extensions.exam.core.findResource
 import io.github.adven27.concordion.extensions.exam.db.DbTester
 import io.github.adven27.concordion.extensions.exam.db.builder.CompareOperation.EQUALS
 import io.github.adven27.concordion.extensions.exam.db.commands.columnNamesArray
@@ -226,8 +226,8 @@ class DataSetExecutor(private val dbTester: DbTester) {
     }
 
     private fun Array<String>.filterBy(tableName: String) =
-        this.map { it.toUpperCase() }.filter { it.startsWith("${tableName.toUpperCase()}.") }
-            .map { it.removePrefix("${tableName.toUpperCase()}.") }.toTypedArray()
+        this.map { it.uppercase() }.filter { it.startsWith("${tableName.uppercase()}.") }
+            .map { it.removePrefix("${tableName.uppercase()}.") }.toTypedArray()
 
     data class DataSetsCompareResult(
         val expected: IDataSet,

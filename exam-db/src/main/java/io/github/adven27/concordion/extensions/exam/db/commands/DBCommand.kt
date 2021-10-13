@@ -10,7 +10,6 @@ import io.github.adven27.concordion.extensions.exam.core.html.caption
 import io.github.adven27.concordion.extensions.exam.core.html.div
 import io.github.adven27.concordion.extensions.exam.core.html.html
 import io.github.adven27.concordion.extensions.exam.core.html.italic
-import io.github.adven27.concordion.extensions.exam.core.html.span
 import io.github.adven27.concordion.extensions.exam.core.html.table
 import io.github.adven27.concordion.extensions.exam.core.html.tbody
 import io.github.adven27.concordion.extensions.exam.core.html.td
@@ -21,6 +20,7 @@ import io.github.adven27.concordion.extensions.exam.db.DbPlugin
 import io.github.adven27.concordion.extensions.exam.db.DbTester
 import io.github.adven27.concordion.extensions.exam.db.MarkedHasNoDefaultValue
 import io.github.adven27.concordion.extensions.exam.db.TableData
+import io.github.adven27.concordion.extensions.exam.db.builder.SeedStrategy
 import org.concordion.api.CommandCall
 import org.concordion.api.Evaluator
 import org.concordion.api.Fixture
@@ -44,10 +44,7 @@ open class DBCommand(
     protected var ds: String? = null
 
     override fun setUp(cmd: CommandCall?, eval: Evaluator?, resultRecorder: ResultRecorder?, fixture: Fixture) {
-        val root = cmd.html()(
-            div(""),
-            span("")
-        ).apply {
+        val root = cmd.html().apply {
             attr("style")?.let { style(it) }
             attr("class") ?: css("table table-sm table-hover")
         }
@@ -129,10 +126,10 @@ fun renderTable(
     return div("class" to "table-responsive mb-1 p-1")(
         table()(
             tableCaption(caption, t.tableName()),
-            if (t.empty()) null else thead()(tr()(cols.map { th(it, CLASS to styleCol(it)) })),
+            if (t.empty()) thead()(tr()(th())) else thead()(tr()(cols.map { th(it, CLASS to styleCol(it)) })),
             tbody()(
                 if (t.empty()) {
-                    listOf(tr()(td("<EMPTY>").attrs("colspan" to "${cols.size}").apply(ifEmpty)))
+                    listOf(tr()(td("EMPTY").attrs("colspan" to "${cols.size}").apply(ifEmpty)))
                 } else {
                     t.mapRows { row -> cols.map { cell(td(CLASS to styleCol(it)), row, it) } }
                         .map { tr()(*it.toTypedArray()) }
@@ -144,9 +141,21 @@ fun renderTable(
 
 private fun ITable.empty() = this.rowCount == 0
 
-fun tableCaption(title: String?, def: String?): Html = caption().style("width:max-content")(
-    italic(
-        " ${if (!title.isNullOrBlank()) title else def}",
-        CLASS to "fa fa-database ml-1"
-    )
-)
+fun tableCaption(title: String?, def: String?): Html = caption()
+    .style("width:max-content")(italic(" ", CLASS to "fa fa-database me-1"))
+    .text("  ${if (!title.isNullOrBlank()) title else def}")
+
+data class SetAttrs(val seedStrategy: SeedStrategy) {
+    companion object {
+        private const val OPERATION = "operation"
+
+        fun from(root: Html, allowedSeedStrategies: List<SeedStrategy>) = SetAttrs(
+            SeedStrategy.valueOf(root.takeAwayAttr(OPERATION, SeedStrategy.CLEAN_INSERT.name).uppercase())
+                .isAllowed(allowedSeedStrategies),
+        )
+
+        private fun SeedStrategy.isAllowed(allowed: List<SeedStrategy>): SeedStrategy =
+            allowed.find { it == this }
+                ?: throw IllegalArgumentException("Forbidden seed strategy $this. Allowed strategies: $allowed")
+    }
+}

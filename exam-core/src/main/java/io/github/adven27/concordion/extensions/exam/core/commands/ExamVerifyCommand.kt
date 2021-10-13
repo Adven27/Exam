@@ -32,12 +32,17 @@ open class ExamVerifyCommand(name: String, tag: String, listener: AssertEqualsLi
     protected fun failure(resultRecorder: ResultRecorder, element: Html, actual: Any, expected: String) =
         failure(resultRecorder, element.el(), actual, expected)
 
-    protected fun ResultRecorder.pass(element: Html) = success(this, element)
+    protected fun ResultRecorder.pass(element: Html): Html = element.also { success(this, it) }
 
     protected fun ResultRecorder.failure(element: Html, actual: String, expected: String) =
-        failure(this, element, actual, expected)
+        element.also { failure(this, it, actual, expected) }
 
-    protected fun ResultRecorder.check(root: Html, actual: String, expected: String, test: (String, String) -> Boolean) =
+    protected fun ResultRecorder.check(
+        root: Html,
+        actual: String,
+        expected: String,
+        test: (String, String) -> Boolean = { a, e -> a == e }
+    ) =
         if (test(actual, expected)) {
             root.text(expected)
             this.pass(root)

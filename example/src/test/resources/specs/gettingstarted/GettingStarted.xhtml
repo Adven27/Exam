@@ -1,0 +1,399 @@
+<html xmlns:e="http://exam.extension.io" xmlns:cc="http://www.concordion.org/2007/concordion">
+<body>
+<h1>Getting started</h1>
+
+<h2>Overview</h2>
+
+<p>
+    Given a simple <a href="https://en.wikipedia.org/wiki/Create,_read,_update_and_delete">CRUD</a>
+    web service for <i>widgets</i> management.
+</p>
+<figure class="figure">
+    <canvas class="nomnoml container" from="/specs/gettingstarted/widgets.nomnoml"/>
+    <figcaption class="figure-caption text-center">Widgets service</figcaption>
+</figure>
+<p>
+    Widgets are stored in DB like this:
+    <e:db-show table="WIDGETS"/>
+</p>
+
+<h2>Testing API</h2>
+
+<h3>Creation API</h3>
+
+<p>
+    Let's illustrate the logic of the POST-endpoint with the basic happy-path example.
+</p>
+<e:example name="Successful widget creation" print="true">
+
+    <e:given>
+        <e:db-set caption="There are no widgets" table="WIDGETS"/>
+    </e:given>
+
+    <e:then>
+        <e:post url="/widgets">
+            <e:case desc="Successful creation">
+                <e:body>
+                    {"name" : "widget1", "quantity": "10"}
+                </e:body>
+                <e:expected statusCode="201" reasonPhrase="Created">
+                    {
+                    "id": "{{number}}",
+                    "name": "widget1",
+                    "quantity": 10,
+                    "updatedAt": "{{formattedAndWithinNow "yyyy-MM-dd'T'HH:mm:ss.SSS" "5s"}}"
+                    }
+                </e:expected>
+                <e:check>
+                    <e:db-check caption="Widget was created:" table="widgets" cols="id, name, quantity, updated" orderBy="name">
+                        <e:row>!{number}, widget1, 10, !{within 5s}</e:row>
+                    </e:db-check>
+                    <p>
+                        or the same but with <var>regex</var> and <var>not null</var> matchers:
+                    </p>
+                    <e:db-check caption="Widget was created:" table="widgets" cols="id, name, quantity, updated" orderBy="name">
+                        <e:row>!{regex}\d, widget1, 10, !{notNull}</e:row>
+                    </e:db-check>
+                </e:check>
+            </e:case>
+        </e:post>
+    </e:then>
+
+</e:example>
+
+<p>
+    Request has required fields. Invalid request should return error description.
+</p>
+<e:example name="Validation" print="true">
+
+    <e:given>
+        <e:db-set caption="There are no widgets" table="widgets"/>
+    </e:given>
+
+    <e:then>
+        <e:post url="/widgets">
+            <e:case desc="quantity is required">
+                <e:body>
+                    {"name": "widget1"}
+                </e:body>
+                <e:expected statusCode="400" reasonPhrase="Bad Request">
+                    { "error": "quantity is required" }
+                </e:expected>
+            </e:case>
+            <e:case desc="name is required">
+                <e:body>
+                    {"quantity": "10"}
+                </e:body>
+                <e:expected statusCode="400" reasonPhrase="Bad Request">
+                    { "error": "name is required" }
+                </e:expected>
+            </e:case>
+            <e:case desc="name should't be blank or more than 10 symbols">
+                <e:body>
+                    {"name": "{{invalid}}", "quantity": "10"}
+                </e:body>
+                <e:expected statusCode="400" reasonPhrase="Bad Request">
+                    { "error": "{{error}}" }
+                </e:expected>
+                <e:where vars="invalid, error">
+                    <e:vals>''          , blank value not allowed</e:vals>
+                    <e:vals>more_than_10, Value 'more_than_10' can't be stored to database column because exceeds length (10)</e:vals>
+                </e:where>
+            </e:case>
+            <e:check>
+                <e:db-check caption="No widgets were created:" table="widgets"/>
+            </e:check>
+        </e:post>
+    </e:then>
+
+</e:example>
+
+<p>
+    Or more compact equivalent of previous example (request/response body templates are stored in files):
+</p>
+<e:example name="Validate - parametrized" print="true">
+
+    <e:given>
+        <e:db-set caption="There are no widgets" table="widgets"/>
+    </e:given>
+
+    <e:then>
+        <e:post url="/widgets">
+            <e:case desc="Name and quantity validation">
+                <e:body from="/data/getting-started/{{req}}"/>
+                <e:expected from="/data/getting-started/error.json" statusCode="400" reasonPhrase="Bad Request"/>
+                <e:where vars="name, req, error">
+                    <e:vals>ignored     , invalid-no-name.json    , name is required</e:vals>
+                    <e:vals>ignored     , invalid-no-quantity.json, quantity is required</e:vals>
+                    <e:vals>''          , create-req.json         , blank value not allowed</e:vals>
+                    <e:vals>more_than_10, create-req.json         , Value 'more_than_10' can't be stored to database column because exceeds length (10)</e:vals>
+                </e:where>
+            </e:case>
+            <e:check>
+                <e:db-check caption="No widgets were created:" table="widgets"/>
+            </e:check>
+        </e:post>
+    </e:then>
+
+</e:example>
+
+<h3>Deletion API</h3>
+
+<p>
+    Widget can be deleted by <code>id</code>.
+</p>
+<e:example name="Successful widget deletion" print="true">
+
+    <e:given>
+        <e:db-set caption="Given widget:" table="widgets" cols="name, quantity, id=1, updated={{now}}">
+            <e:row>widget1, 10</e:row>
+        </e:db-set>
+    </e:given>
+
+    <e:then>
+        <e:delete url="/widgets/1">
+            <e:case desc="Successful deletion">
+                <e:expected/>
+                <e:check>
+                    <e:db-check caption="Widget was deleted:" table="widgets"/>
+                </e:check>
+            </e:case>
+            <e:case desc="Absent widget deletion">
+                <e:expected statusCode="404" reasonPhrase="Not Found"/>
+            </e:case>
+        </e:delete>
+    </e:then>
+
+</e:example>
+
+<h3>Retrieving API</h3>
+
+<p>
+    There is endpoint for retrieving all widgets.
+</p>
+<e:example name="Successful widget retrieving" print="true">
+
+    <e:given>
+        <e:set var="upd1" value="{{now tz='GMT+1'}}" style="display:none"/>
+        <e:set var="upd2" value="{{now plus='1 day'}}" style="display:none"/>
+        <e:set var="format" value="yyyy-MM-dd'T'HH:mm:ss.SSS" style="display:none"/>
+        <e:db-set caption="Given widgets:" table="widgets" cols="*name, *quantity, updated, id=1..10">
+            <e:row>widget1, 10, {{upd1}}</e:row>
+            <e:row>widget2, 20, {{upd2}}</e:row>
+            <e:row>widget3, 30, {{date '01.02.2000 10:20+03:00' format="dd.MM.yyyy HH:mmz"}}</e:row>
+            <e:row>widget4, 40, {{date upd2 plus='12 h'}}</e:row>
+        </e:db-set>
+    </e:given>
+
+    <e:then>
+        <e:get url="/widgets">
+            <e:case desc="Can retrieve stored widgets">
+                <e:expected>
+                    [{
+                    "id": 1,
+                    "name": "widget1",
+                    "quantity": 10,
+                    "updatedAt": "{{dateFormat upd1 format}}"
+                    }, {
+                    "id": 2,
+                    "name": "widget2",
+                    "quantity": 20,
+                    "updatedAt": "{{dateFormat upd2 format}}"
+                    }, {
+                    "id": 3,
+                    "name": "widget3",
+                    "quantity": 30,
+                    "updatedAt": "{{dateFormat (date '01.02.2000 10:20+03:00' format="dd.MM.yyyy HH:mmz") format}}"
+                    }, {
+                    "id": 4,
+                    "name": "widget4",
+                    "quantity": 40,
+                    "updatedAt": "{{dateFormat (date upd2 plus='12 h') format}}"
+                    }]
+                </e:expected>
+            </e:case>
+        </e:get>
+    </e:then>
+
+</e:example>
+
+<h3>CRUD-style testing</h3>
+
+<p>
+    If gray-box testing (with direct Database checking) is not viable, here is the example of black-box approach:
+</p>
+<e:example name="black-box CRUD" print="true">
+
+    <e:given>
+        <e:db-set caption="Given no widgets:" table="widgets" />
+    </e:given>
+
+    <e:when>
+        Posting a new widget:
+        <e:post url="/widgets">
+            <e:case desc="Create">
+                <e:body>{"name" : "widget1", "quantity": "10"}</e:body>
+                <e:expected statusCode="201" reasonPhrase="Created">
+                    {
+                    "id": "{{number}}",
+                    "name": "widget1",
+                    "quantity": 10,
+                    "updatedAt": "{{string}}"
+                    }
+                </e:expected>
+            </e:case>
+        </e:post>
+    </e:when>
+
+    <e:then>
+        <e:set var="id" value="{{responseBody 'id'}}" style="display:none"/>
+        <e:set var="updatedAt" value="{{responseBody 'updatedAt'}}" style="display:none"/>
+        <p>
+            The widget has been created with <var>id</var> = <code cc:echo="#id"/> and <var>updatedAt</var> = <code cc:echo="#updatedAt"/>
+            and is available in widget list:
+        </p>
+        <e:get url="/widgets">
+            <e:case desc="Read">
+                <e:expected>
+                    [{ "id": {{id}}, "name": "widget1", "quantity": 10, "updatedAt": "{{updatedAt}}" }]
+                </e:expected>
+            </e:case>
+        </e:get>
+    </e:then>
+
+    <e:when>
+        Updating the widget <var>name</var> and <var>quantity</var>:
+        <e:put url="/widgets">
+            <e:case desc="Update">
+                <e:body>{"id": {{id}}, "name": "new name", "quantity": "0"}</e:body>
+                <e:expected>
+                    { "id": {{id}}, "name": "new name", "quantity": 0, "updatedAt": "{{formattedAndWithinNow "yyyy-MM-dd'T'HH:mm:ss.SSS" "5s"}}" }
+                </e:expected>
+            </e:case>
+        </e:put>
+    </e:when>
+
+    <e:then>
+        <p>
+            The widget data has been changed:
+        </p>
+        <e:get url="/widgets">
+            <e:case desc="Read">
+                <e:expected>
+                    [{ "id": {{id}}, "name": "new name", "quantity": 0, "updatedAt": "{{formattedAndWithinNow "yyyy-MM-dd'T'HH:mm:ss.SSS" "5s"}}" }]
+                </e:expected>
+            </e:case>
+        </e:get>
+    </e:then>
+
+    <e:when>
+        Deleting the widget:
+        <e:delete url="/widgets/{{id}}">
+            <e:case desc="Delete">
+                <e:expected/>
+            </e:case>
+        </e:delete>
+    </e:when>
+
+    <e:then>
+        <p>
+            The widget disappeared from the list:
+        </p>
+        <e:get url="/widgets">
+            <e:case desc="Read">
+                <e:expected>
+                    []
+                </e:expected>
+            </e:case>
+        </e:get>
+    </e:then>
+
+</e:example>
+
+<h2>Testing async behavior</h2>
+
+<p>
+    Assume we need to trigger a job and do checks only after it's finished:
+</p>
+
+<h3>Await with custom method</h3>
+
+<p>
+    Trigger the job and check that it's finished by polling custom method <code>isDone</code>:
+</p>
+<e:example name="custom polling" print="true">
+
+    <e:given>
+        <e:post url="/jobs">
+            <e:case desc="Trigger job with some optional body">
+                <e:body>{"name" : "value"}</e:body>
+                <e:expected>{"id" : "{{number}}" }</e:expected>
+            </e:case>
+        </e:post>
+    </e:given>
+
+    <e:when>
+        <e:set var="id" value="{{responseBody 'id'}}" style="display:none"/>
+        <e:await untilTrue="isDone(#id)" atMostSec="3" pollDelayMillis="500" pollIntervalMillis="1000"/>
+        Job <code cc:echo="#id"/> is finished.
+    </e:when>
+
+    <e:then>
+        Now we can check result:
+        <e:db-check table="jobResult" cols="result" where="id={{id}}">
+            <e:row>done</e:row>
+        </e:db-check>
+    </e:then>
+
+</e:example>
+
+<h3>Await with API polling</h3>
+
+<p>
+    Same but with http polling of some job-execution API:
+</p>
+<e:example name="http polling" print="true">
+
+    <e:when>
+        Trigger job on <code cc:set="#url">/jobs</code> with some optional body <code cc:set="#json">{"name" : "value"}</code>
+        <e:await untilHttpPost="{{url}}" hasStatusCode="200">{{json}}</e:await>
+        <e:set var="id" value="{{responseBody 'id'}}" style="display:none"/>
+        and wait until it's finished.
+        <e:await untilHttpGet="/jobs/{{id}}" hasBodyFrom="/data/getting-started/job-finished.json"/>
+        Job id = <code cc:echo="#id"/>
+    </e:when>
+
+    <e:then>
+        Now we can check result:
+        <e:db-check table="jobResult" cols="result" where="id={{id}}">
+            <e:row>done</e:row>
+        </e:db-check>
+    </e:then>
+
+</e:example>
+
+<h3>Await on check</h3>
+
+<p>
+    Same but with awaiting by <code>db-check</code> command:
+</p>
+<e:example name="db-check polling" print="true">
+
+    <e:when>
+        Trigger job on <code cc:set="#url">/jobs</code> with some optional body <code cc:set="#json">{"name" : "value"}</code>
+        <e:await untilHttpPost="{{url}}"  hasStatusCode="200">{{json}}</e:await>
+        <e:set var="id" value="{{responseBody 'id'}}" style="display:none"/>
+        Job id = <code cc:echo="#id"/>
+    </e:when>
+
+    <e:then>
+        Await for result:
+        <e:db-check table="jobResult" cols="id, result" where="id={{id}}" awaitAtMostSec="4">
+            <e:row>{{id}}, done</e:row>
+        </e:db-check>
+    </e:then>
+
+</e:example>
+
+</body>
+</html>

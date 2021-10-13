@@ -1,0 +1,41 @@
+<html xmlns:e="http://exam.extension.io" xmlns:cc="http://www.concordion.org/2007/concordion">
+<body>
+    <h1>Cookies</h1>
+
+    <p class="lead">
+        To specify cookies the <code>cookies</code> attribute may be used to specify cookies for all cases and
+        the <code>case.cookies</code> attribute to completely replace them for specific case.
+    </p>
+
+    <h2>Examples</h2>
+
+    <e:example name="cookies">
+        <e:given>
+            Client has cookie <code>c1</code> = <code cc:set="#cookie">111</code>.
+        </e:given>
+        <e:get url="/mirror/headers" cookies="c1={{cookie}}, c2=2" print="true">
+            <e:case desc="Case with default cookies">
+                <e:expected>
+                    {
+                    "GET": "/mirror/headers",
+                    "Authorization": null,
+                    "Accept-Language": null,
+                    "cookies": {"c1": "111", "c2": "2"}
+                    }
+                </e:expected>
+            </e:case>
+            <e:case desc="Case with custom cookies" cookies="c2 = 22">
+                <e:expected>
+                    {
+                    "GET": "/mirror/headers",
+                    "Authorization": null,
+                    "Accept-Language": null,
+                    "cookies": {"c2": "22"}
+                    }
+                </e:expected>
+            </e:case>
+        </e:get>
+    </e:example>
+
+</body>
+</html>

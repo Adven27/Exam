@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns="http://exam.extension.io"
-            xmlns:xs="http://www.w3.org/2001/XMLSchema"
-            targetNamespace="http://exam.extension.io"
-            elementFormDefault="qualified">
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           targetNamespace="http://exam.extension.io"
+           elementFormDefault="qualified">
     <xs:attribute name="status" default="ExpectedToPass">
         <xs:simpleType>
             <xs:restriction base="xs:string">
@@ -49,8 +49,12 @@
         </xs:complexType>
     </xs:element>
     <xs:element name="given" type="given-info"/>
+
     <xs:element name="before-each">
         <xs:complexType mixed="true">
+            <xs:sequence>
+                <xs:any processContents="lax" minOccurs="0"/>
+            </xs:sequence>
             <xs:all>
                 <xs:element name="given" type="given-info"/>
                 <xs:element name="set" type="set-info"/>
@@ -66,6 +70,9 @@
 
 
     <xs:complexType name="given-info" mixed="true">
+        <xs:sequence>
+            <xs:any processContents="lax" minOccurs="0"/>
+        </xs:sequence>
         <xs:all>
             <xs:element name="set" type="set-info"/>
             <xs:element name="await" type="await-info"/>
@@ -166,6 +173,7 @@
             <xs:extension base="xs:string">
                 <xs:attribute type="xs:string" name="var" use="required"/>
                 <xs:attribute type="xs:string" name="value"/>
+                <xs:attribute type="xs:string" name="style"/>
                 <xs:attribute type="xs:string" name="from" default="/data/value.json"/>
                 <xs:attribute type="xs:string" name="vars" default="v1=value1, v2={{now}}"/>
                 <xs:attribute type="xs:string" name="varsSeparator" default=","/>
@@ -247,6 +255,7 @@
                     <xs:simpleContent>
                         <xs:extension base="xs:string">
                             <xs:attribute type="xs:anyURI" name="from" default="/data/mq/msg.json"/>
+                            <xs:attribute type="xs:string" name="headers" default="type=String, contentEncoding=UTF-8"/>
                         </xs:extension>
                     </xs:simpleContent>
                 </xs:complexType>
@@ -258,7 +267,8 @@
         <xs:attribute type="xs:string" name="name" use="required"/>
         <xs:attribute type="xs:string" name="formatAs" default="json"/>
         <xs:attribute type="xs:boolean" name="collapsable" default="false"/>
-        <xs:attribute type="xs:string" name="headers" default="type=String,contentEncoding=UTF-8"/>
+        <xs:attribute type="xs:string" name="headers" default="type=String, contentEncoding=UTF-8"/>
+        <xs:attribute type="xs:string" name="params" default="param1=1, param2=2"/>
     </xs:complexType>
     <xs:complexType name="mq-purge-info">
         <xs:attribute type="xs:string" name="name" use="required"/>
@@ -273,6 +283,7 @@
                             <xs:attribute type="xs:string" name="vars" default="v1=1, v2={{now}}"/>
                             <xs:attribute type="xs:string" name="varsSeparator" default=","/>
                             <xs:attribute type="xs:string" name="verifyAs" default="json"/>
+                            <xs:attribute type="xs:string" name="headers" default="type=String,contentEncoding=UTF-8"/>
                         </xs:extension>
                     </xs:simpleContent>
                 </xs:complexType>
@@ -317,6 +328,7 @@
 
     <xs:complexType name="check-info" mixed="true">
         <xs:all>
+            <xs:any processContents="lax" minOccurs="0"/>
             <xs:element name="await" type="await-info"/>
             <xs:element name="xml-check" type="xj-info"/>
             <xs:element name="json-check" type="xj-info"/>
@@ -330,6 +342,9 @@
         </xs:all>
     </xs:complexType>
     <xs:complexType name="then-info" mixed="true">
+        <xs:sequence>
+            <xs:any processContents="skip" minOccurs="0"/>
+        </xs:sequence>
         <xs:all>
             <xs:element name="await" type="await-info"/>
             <xs:element name="xml-check" type="xj-info"/>
@@ -378,23 +393,7 @@
                 <xs:attribute type="xs:anyURI" name="from" default="/data/ws/expected.json"/>
                 <xs:attribute type="xs:string" name="reasonPhrase" default="Server Error"/>
                 <xs:attribute type="xs:integer" name="statusCode" default="500"/>
-                <xs:attribute type="xs:string" name="ignoredPaths" default="jsonPathToField;arrayField[*].nodeInArray">
-                    <xs:annotation>
-                        <xs:documentation>
-                            Option makes JsonUnit ignore the specified paths in the actual value
-                            <a href="https://github.com/lukas-krecan/JsonUnit#ignoring-paths">Read more...</a>
-                        </xs:documentation>
-                    </xs:annotation>
-                </xs:attribute>
-                <xs:attribute type="xs:string" name="jsonUnitOptions"
-                              default="IGNORING_EXTRA_FIELDS;TREATING_NULL_AS_ABSENT">
-                    <xs:annotation>
-                        <xs:documentation>
-                            With Options you can configure different compare modes
-                            <a href="https://github.com/lukas-krecan/JsonUnit#options">Read more...</a>
-                        </xs:documentation>
-                    </xs:annotation>
-                </xs:attribute>
+                <xs:attribute type="xs:string" name="verifyAs"/>
             </xs:extension>
         </xs:simpleContent>
     </xs:complexType>
@@ -435,6 +434,7 @@
                         <xs:element name="check" type="check-info"/>
                     </xs:sequence>
                     <xs:attribute type="xs:string" name="desc"/>
+                    <xs:attribute type="xs:string" name="urlParams" default="param1=1&amp;param2=2"/>
                 </xs:complexType>
             </xs:element>
             <xs:element name="check" type="check-info"/>
@@ -469,7 +469,8 @@
 
     <xs:element name="example">
         <xs:complexType>
-            <xs:sequence>
+            <xs:all>
+                <xs:any processContents="skip" minOccurs="0"/>
                 <xs:element name="given" type="given-info" minOccurs="0"/>
                 <xs:element name="when" type="given-info" minOccurs="0"/>
                 <xs:element name="then" type="then-info" minOccurs="0"/>
@@ -479,7 +480,7 @@
                 <xs:element name="delete" type="post-info" minOccurs="0"/>
                 <xs:element name="put" type="post-info" minOccurs="0"/>
                 <xs:element name="browser" type="browser-info"/>
-            </xs:sequence>
+            </xs:all>
             <xs:attribute type="xs:string" name="name" use="required"/>
             <xs:attribute type="xs:string" name="print"/>
             <xs:attribute ref="status"/>

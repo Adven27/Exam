@@ -1,6 +1,5 @@
 package io.github.adven27.concordion.extensions.exam.core.utils;
 
-import net.javacrumbs.jsonunit.core.Configuration;
 import net.javacrumbs.jsonunit.core.ParametrizedMatcher;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Node;
@@ -9,6 +8,7 @@ import org.xmlunit.diff.Comparison;
 import org.xmlunit.diff.ComparisonResult;
 import org.xmlunit.diff.DifferenceEvaluator;
 
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -21,11 +21,10 @@ public class PlaceholderSupportDiffEvaluator implements DifferenceEvaluator {
     private static final String IGNORE_PLACEHOLDER = "${xml-unit.ignore}";
     private static final String REGEX_PLACEHOLDER = "${xml-unit.regex}";
     private static final Pattern MATCHER_PLACEHOLDER_PATTERN = Pattern.compile("\\$\\{xml-unit.matches:(.+)\\}(.*)");
-    //FIXME temporary(HA!) reuse json-unit cfg for matchers retrieving
-    private final Configuration configuration;
+    private final Map<String, org.hamcrest.Matcher<?>> matchers;
 
-    public PlaceholderSupportDiffEvaluator(Configuration jsonUnitCfg) {
-        this.configuration = jsonUnitCfg;
+    public PlaceholderSupportDiffEvaluator(Map<String, org.hamcrest.Matcher<?>> matchers) {
+        this.matchers = matchers;
     }
 
     @Override
@@ -56,7 +55,7 @@ public class PlaceholderSupportDiffEvaluator implements DifferenceEvaluator {
         Matcher patternMatcher = MATCHER_PLACEHOLDER_PATTERN.matcher(expected);
         if (patternMatcher.matches()) {
             String matcherName = patternMatcher.group(1);
-            org.hamcrest.Matcher<?> matcher = configuration.getMatcher(matcherName);
+            org.hamcrest.Matcher<?> matcher = matchers.get(matcherName);
             if (matcher != null) {
                 if (matcher instanceof ParametrizedMatcher) {
                     ((ParametrizedMatcher) matcher).setParameter(patternMatcher.group(2));

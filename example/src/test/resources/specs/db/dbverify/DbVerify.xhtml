@@ -1,0 +1,62 @@
+<html xmlns:e="http://exam.extension.io" xmlns:cc="http://www.concordion.org/2007/concordion">
+<body>
+    <h1>db-verify</h1>
+    <p class="lead">Applies specified <a href="http://dbunit.sourceforge.net/">DbUnit</a> datasets to database</p>
+
+    <h2>Overview</h2>
+
+    <e:set var="cmd" style="display:none;" value="e:db-verify"/>
+    <e:set var="cmdExample" style="display:none;"> <![CDATA[ <e:db-verify datasets='/db/adam.xml, /db/bob.json'/> ]]> </e:set>
+    <e:include from="/specs/includes/db/usage.xml"/>
+
+    <h3>Attributes</h3>
+
+    <table class="table" style="table-layout: fixed;">
+        <thead><tr><th style="width: 155px;">attribute</th><th style="width: 300px;">desc</th><th>example</th></tr></thead>
+        <e:include from="/specs/includes/db/attr-datasets.xml"/>
+        <e:include from="/specs/includes/db/attr-dir.xml"/>
+        <e:include from="/specs/includes/db/attr-ds.xml"/>
+        <tr>
+            <td><code>orderBy</code></td>
+            <td>
+                <span>
+                    List of columns to sort records before verifying. Useful when default sorting results
+                    in different order for actual and expected datasets due to using of placeholders.
+                </span>
+            </td>
+            <td><var>Optional</var>. <var>Default: -</var><pre class="doc-code language-json"><code>orderBy="person_fields.value, person.birthday"</code></pre></td>
+        </tr>
+        <e:include from="/specs/includes/attr-vars.xml"/>
+        <e:include from="/specs/includes/attr-varsSeparator.xml"/>
+        <e:include from="/specs/includes/attr-awaitAtMostSec.xml"/>
+        <e:include from="/specs/includes/attr-awaitPollDelayMillis.xml"/>
+        <e:include from="/specs/includes/attr-awaitPollIntervalMillis.xml"/>
+    </table>
+    <e:include from="/specs/includes/await-footnote.xml"/>
+
+    <h2>Examples</h2>
+
+    <h3>Basic example</h3>
+    <e:example name="Basic example">
+        <e:given>
+            <e:db-execute dir="/specs/db/data/" datasets="adam.xml, bob.json, carl/person.csv"
+                          vars="a1=1, a2=2" varsSeparator=","/>
+            And following dataset files:
+            <e:fl-check dir="dir">
+                <e:file name="adam.xml"/>
+                <e:file name="bob.json"/>
+                <e:file name="carl/table-ordering.txt"/>
+                <e:file name="carl/person.csv"/>
+                <e:file name="carl/person_fields.csv"/>
+            </e:fl-check>
+        </e:given>
+        <e:then>
+            <e:db-verify dir="/specs/db/data/" datasets="adam.xml, bob.json, carl/person.csv"
+                         orderBy="person_fields.value, person.birthday"
+                         vars="a1=1, a2=2" varsSeparator=","
+                         print="true"/>
+        </e:then>
+    </e:example>
+
+</body>
+</html>

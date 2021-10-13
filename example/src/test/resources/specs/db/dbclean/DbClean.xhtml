@@ -1,0 +1,42 @@
+<html xmlns:e="http://exam.extension.io" xmlns:cc="http://www.concordion.org/2007/concordion">
+<body>
+    <h1>db-clean</h1>
+    <p class="lead">Cleans specified tables in a database</p>
+
+    <h2>Overview</h2>
+
+    <e:set var="cmd" style="display:none;" value="e:db-clean"/>
+    <e:set var="cmdExample" style="display:none;"><![CDATA[ <e:db-clean tables="person, person_fields"/> ]]> </e:set>
+    <e:include from="/specs/includes/db/usage.xml"/>
+
+    <h3>Attributes</h3>
+
+    <table class="table" style="table-layout: fixed;">
+        <thead><tr><th style="width: 100px;">attribute</th><th style="width: 300px;">desc</th><th>example</th></tr></thead>
+        <tr>
+            <td><code>tables</code></td>
+            <td><span>Tables to clean. Tables will be cleaned up in the order opposite to declaration, hence the "referenced" tables should go first and the "referencing" - last</span></td>
+            <td><var>Required</var>. <var>Default: -</var><pre class="doc-code language-json"><code>tables="person, person_fields"</code></pre></td>
+        </tr>
+        <e:include from="/specs/includes/db/attr-ds.xml"/>
+    </table>
+
+    <h3>Example</h3>
+    <e:example name="Clean">
+        <e:given>
+            Table has the following records:
+            <e:db-set table="ANDROIDS_TABLE" cols="id=1, name">
+                <e:row>Adam</e:row>
+            </e:db-set>
+        </e:given>
+        <e:when>
+            Clean:<e:db-clean tables="ANDROIDS_TABLE" print="true"/>
+        </e:when>
+        <e:then>
+            Table is empty:
+            <e:db-check table="ANDROIDS_TABLE"/>
+        </e:then>
+    </e:example>
+
+</body>
+</html>

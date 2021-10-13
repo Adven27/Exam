@@ -1,0 +1,20 @@
+#.exam: fill=#0ee
+#.interface: fill=#0ee
+#.mq: fill=#0e0 bold visual=transceiver
+
+#gravity: 3
+#padding: 18
+#spacing: 45
+#direction: right
+
+[<interface>MqTester|start();stop();send();receive();purge()]
+
+[<exam>MqPlugin]uses->[MqTester]
+[MqTester]<:-- implements[<class> RabbitTesterImpl]
+[MqTester]<:-- implements[<class> KafkaTesterImpl]
+[MqTester]<:--[<label> ...]
+[MqTester]<:-- implements[<class> AnyCustomImpl]
+
+[RabbitTesterImpl]interacts with->[<mq> Rabbit MQ]
+[KafkaTesterImpl]interacts with->[<mq> Kafka]
+[AnyCustomImpl]interacts with->[<mq> Any other MQ]

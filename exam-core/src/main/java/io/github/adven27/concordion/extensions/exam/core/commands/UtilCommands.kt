@@ -1,29 +1,31 @@
 package io.github.adven27.concordion.extensions.exam.core.commands
 
 import io.github.adven27.concordion.extensions.exam.core.ExamExtension
+import io.github.adven27.concordion.extensions.exam.core.JsonContentTypeConfig
+import io.github.adven27.concordion.extensions.exam.core.XmlContentTypeConfig
+import io.github.adven27.concordion.extensions.exam.core.html.Html
 import io.github.adven27.concordion.extensions.exam.core.html.html
+import io.github.adven27.concordion.extensions.exam.core.readFile
 import io.github.adven27.concordion.extensions.exam.core.resolve
 import io.github.adven27.concordion.extensions.exam.core.resolveToObj
 import io.github.adven27.concordion.extensions.exam.core.resolveXml
-import io.github.adven27.concordion.extensions.exam.core.utils.readFile
 import io.github.adven27.concordion.extensions.exam.core.vars
 import io.restassured.RestAssured
-import io.restassured.RestAssured.given
-import nu.xom.Attribute
 import nu.xom.Element
 import nu.xom.XPathContext
-import org.awaitility.Awaitility
 import org.awaitility.core.ConditionFactory
 import org.concordion.api.CommandCall
 import org.concordion.api.Evaluator
 import org.concordion.api.Fixture
 import org.concordion.api.ResultRecorder
-import org.concordion.internal.ConcordionBuilder
+import org.concordion.internal.command.SetCommand
 import org.junit.Assert.assertEquals
-import java.lang.Boolean
-import java.util.concurrent.TimeUnit
 
-class SetVarCommand(tag: String) : ExamCommand("set", tag) {
+open class SetVarCommand(
+    override val name: String,
+    override val tag: String
+) : SetCommand(), NamedExamCommand, BeforeParseExamCommand {
+
     override fun setUp(cmd: CommandCall, eval: Evaluator, resultRecorder: ResultRecorder, fixture: Fixture) {
         val el = cmd.html()
         val valueAttr = el.attr("value")
@@ -36,142 +38,114 @@ class SetVarCommand(tag: String) : ExamCommand("set", tag) {
             }
             eval.setVariable(key, it.value)
         }
-        eval.setVariable(
-            "#${el.attr("var")!!}",
-            when {
-                valueAttr != null -> eval.resolveToObj(valueAttr)
-                valueFrom != null -> eval.resolveXml(valueFrom.readFile())
-                else -> {
-                    val body = el.text()
-                    val silent = el.attr("silent")
-                    if (silent != null && silent == "true") {
-                        el.removeChildren()
-                    }
-                    eval.resolveXml(body)
-                }
+        val value = when {
+            valueAttr != null -> eval.resolveToObj(valueAttr)
+            valueFrom != null -> eval.resolveXml(valueFrom.readFile())
+            else -> eval.resolveXml(el.text().trimIndent()).apply {
+                el.text(this)
+                el.el.appendNonBreakingSpaceIfBlank()
             }
-        )
+        }
+
+        eval.setVariable(varExp(varAttr(el) ?: cmd.expression), value)
         vars.forEach { eval.setVariable("#${it.key}", null) }
+        cmd.swapText(value.toString())
+    }
+
+    protected fun CommandCall.swapText(value: String) {
+        Html(element.localName).text(value).el.also {
+            element.moveAttributesTo(it)
+            // FIXME may skip some attributes after first turn, repeat to move the rest... probably bug
+            element.moveAttributesTo(it)
+            element.appendSister(it)
+            element.parentElement.removeChild(element)
+            element = it
+        }
+    }
+
+    private fun varAttr(el: Html) =
+        el.attr("var") ?: el.el.getAttributeValue("set", ExamExtension.NS)
+
+    private fun varExp(varName: String) = if (varName.startsWith("#")) varName else "#$varName"
+
+    override fun beforeParse(elem: Element) {
+        if (elem.localName == "set") super.beforeParse(elem)
     }
 }
 
 class WaitCommand(tag: String) : ExamCommand("await", tag) {
-    @Suppress("ComplexMethod")
     override fun setUp(cmd: CommandCall, eval: Evaluator, resultRecorder: ResultRecorder, fixture: Fixture) {
         val el = cmd.html()
         val untilTrue = el.takeAwayAttr("untilTrue")
         val untilGet = eval.resolve(el.takeAwayAttr("untilHttpGet", ""))
         val untilPost = eval.resolve(el.takeAwayAttr("untilHttpPost", ""))
-        val withBodyFrom = eval.resolve(el.takeAwayAttr("withBodyFrom", ""))
+        val withBody = (el.takeAwayAttr("withBodyFrom")?.readFile() ?: el.text()).let {
+            eval.resolve(it)
+        }
         val withContentType = eval.resolve(el.takeAwayAttr("withContentType", "application/json"))
-        val hasBody = el.takeAwayAttr("hasBody")
-        val hasBodyFrom = el.takeAwayAttr("hasBodyFrom")
-        val expectedStatus = el.takeAwayAttr("hasStatusCode")
+        val hasBody = el.takeAwayAttr("hasBody") ?: el.takeAwayAttr("hasBodyFrom")?.readFile()?.let {
+            eval.resolve(it)
+        }
+        val hasStatus = el.takeAwayAttr("hasStatusCode")
 
-        val body = if (withBodyFrom.isEmpty()) el.text() else eval.resolve(withBodyFrom.readFile())
         el.removeChildren()
 
-        val await = Awaitility.await()
-            .atMost(el.takeAwayAttr("atMostSec", "4").toLong(), TimeUnit.SECONDS)
-            .pollDelay(el.takeAwayAttr("pollDelayMillis", "0").toLong(), TimeUnit.MILLISECONDS)
-            .pollInterval(el.takeAwayAttr("pollIntervalMillis", "1000").toLong(), TimeUnit.MILLISECONDS)
-
         Thread.sleep(1000L * eval.resolve(el.takeAwayAttr("seconds", "0")).toInt())
-        when {
-            untilTrue != null -> await.alias(untilTrue).until { Boolean.TRUE == eval.evaluate(untilTrue) }
-            untilGet.isNotEmpty() && hasAny(hasBody, hasBodyFrom, expectedStatus) -> {
-                when {
-                    hasBody != null ->
-                        await.awaitGet(eval, untilGet, eval.resolve(hasBody), expectedStatus)
-                    hasBodyFrom != null ->
-                        await.awaitGet(eval, untilGet, eval.resolve(hasBodyFrom.readFile()), expectedStatus)
-                    expectedStatus != null -> await.untilAsserted {
-                        RestAssured.get(untilGet)
-                            .apply { eval.setVariable("#exam_response", this) }
-                            .then().statusCode(expectedStatus.toInt())
-                    }
-                }
-            }
-            untilPost.isNotEmpty() && hasAny(hasBody, hasBodyFrom, expectedStatus) -> {
-                when {
-                    hasBody != null ->
-                        await.awaitPost(eval, body, withContentType, untilPost, eval.resolve(hasBody), expectedStatus)
-                    hasBodyFrom != null ->
-                        await.awaitPost(
-                            eval,
-                            body,
-                            withContentType,
-                            untilPost,
-                            eval.resolve(hasBodyFrom.readFile()),
-                            expectedStatus
-                        )
-                    expectedStatus != null -> await.untilAsserted {
-                        given().body(eval.resolve(body)).contentType(withContentType).post(untilPost)
-                            .apply { eval.setVariable("#exam_response", this) }
-                            .then().statusCode(expectedStatus.toInt())
-                    }
-                }
+        el.awaitConfig("").await().let { await ->
+            when {
+                untilTrue != null -> await.alias(untilTrue).until { eval.evaluate(untilTrue) == true }
+                untilGet.isNotEmpty() -> await.get(eval, untilGet, hasBody, hasStatus)
+                untilPost.isNotEmpty() -> await.post(eval, withBody, withContentType, untilPost, hasBody, hasStatus)
             }
         }
     }
 
-    private fun hasAny(hasBody: String?, hasBodyFrom: String?, expectedStatus: String?) =
-        hasBody != null || hasBodyFrom != null || expectedStatus != null
-
     @Suppress("LongParameterList")
-    private fun ConditionFactory.awaitPost(
+    private fun ConditionFactory.post(
         eval: Evaluator,
         body: String,
         contentType: String,
         url: String,
-        expectedBody: String,
+        expectedBody: String?,
         expectedStatus: String?
     ) = untilAsserted {
-        val response = RestAssured.given().body(eval.resolve(body)).contentType(contentType).post(url)
+        RestAssured.given().body(body).contentType(contentType).post(url)
             .apply { eval.setVariable("#exam_response", this) }
-            .then()
-        if (expectedStatus != null) response.statusCode(expectedStatus.toInt())
-        assertEquals(expectedBody, response.extract().body().asString())
+            .then().let {
+                if (expectedStatus != null) it.statusCode(expectedStatus.toInt())
+                if (expectedBody != null) assertEquals(expectedBody, it.extract().body().asString())
+            }
     }
 
-    private fun ConditionFactory.awaitGet(
+    private fun ConditionFactory.get(
         eval: Evaluator,
         url: String,
-        expectedBody: String,
+        expectedBody: String?,
         expectedStatus: String?
     ) = untilAsserted {
-        val response = RestAssured.get(url)
+        RestAssured.get(url)
             .apply { eval.setVariable("#exam_response", this) }
-            .then()
-        if (expectedStatus != null) response.statusCode(expectedStatus.toInt())
-        assertEquals(expectedBody, response.extract().body().asString())
+            .then().let {
+                if (expectedStatus != null) it.statusCode(expectedStatus.toInt())
+                if (expectedBody != null) assertEquals(expectedBody, it.extract().body().asString())
+            }
     }
 }
 
 class BeforeEachExampleCommand(tag: String) : ExamCommand("before-each", tag) {
     override fun beforeParse(elem: Element) {
         super.beforeParse(elem)
-        val ns = XPathContext("e", ExamExtension.NS)
-        val examples = elem.document.rootElement.getFirstChildElement("body").query(".//e:example", ns)
-        elem.detach()
-        for (i in 0 until examples.size()) {
-            val example = examples.get(i) as Element
-            if (example.childElements.size() > 0) {
-                example.insertChild(elem.copy(), 0)
-            }
-        }
-    }
-}
-
-class ExamBeforeExampleCommand(tag: String) : ExamCommand("before", tag) {
-    override fun beforeParse(elem: Element) {
-        transformToConcordionExample(elem)
-        super.beforeParse(elem)
+        examples(elem).apply { elem.detach() }.forEach { (it as Element).insertChild(elem.copy(), 0) }
     }
 
-    private fun transformToConcordionExample(elem: Element) {
-        val attr = Attribute("example", "before")
-        attr.setNamespace("c", ConcordionBuilder.NAMESPACE_CONCORDION_2007)
-        elem.addAttribute(attr)
-    }
+    private fun examples(elem: Element) =
+        elem.document.rootElement.getFirstChildElement("body")
+            .query(".//e:example", XPathContext("e", ExamExtension.NS))
 }
+
+class XmlEqualsCommand : ExamAssertEqualsCommand("xmlEquals", XmlContentTypeConfig())
+class XmlEqualsFileCommand : ExamAssertEqualsCommand("xmlEqualsFile", XmlContentTypeConfig(), { it.readFile() })
+class JsonEqualsCommand : ExamAssertEqualsCommand("jsonEquals", JsonContentTypeConfig())
+class JsonEqualsFileCommand : ExamAssertEqualsCommand("jsonEqualsFile", JsonContentTypeConfig(), { it.readFile() })
+class TextEqualsCommand : ExamAssertEqualsCommand("equals")
+class TextEqualsFileCommand : ExamAssertEqualsCommand("equalsFile", content = { it.readFile() })

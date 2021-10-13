@@ -1,0 +1,41 @@
+<html xmlns:e="http://exam.extension.io" xmlns:cc="http://www.concordion.org/2007/concordion">
+<body>
+    <h1>Headers</h1>
+
+    <p class="lead">
+        The <code>headers</code> attribute may be used to specify headers for all cases and
+        the <code>case.headers</code> attribute to completely replace them for specific case.
+    </p>
+
+    <h2>Examples</h2>
+
+    <e:example name="headers">
+        <e:given>
+            Set <code>Authorization</code> header with token <code cc:set="#token">111</code>.
+        </e:given>
+        <e:get url="/mirror/headers" headers="Authorization = Bearer {{token}}, Accept-Language = en" print="true">
+            <e:case desc="Case with default headers">
+                <e:expected>
+                    {
+                    "GET": "/mirror/headers",
+                    "Authorization": "Bearer 111",
+                    "Accept-Language": "en",
+                    "cookies": {}
+                    }
+                </e:expected>
+            </e:case>
+            <e:case desc="Override default headers" headers="Authorization = Bearer 222">
+                <e:expected>
+                    {
+                    "GET": "/mirror/headers",
+                    "Authorization": "Bearer 222",
+                    "Accept-Language": null,
+                    "cookies": {}
+                    }
+                </e:expected>
+            </e:case>
+        </e:get>
+    </e:example>
+
+</body>
+</html>

@@ -1,0 +1,82 @@
+<html xmlns:e="http://exam.extension.io" xmlns:cc="http://www.concordion.org/2007/concordion">
+<body>
+    <h1>POST</h1>
+
+    <p class="lead">Specifying use cases of a <code>POST</code>-endpoint</p>
+
+    <h2>Overview</h2>
+
+    <e:set var="cmd" style="display:none;" value="e:post"/>
+    <e:set var="cmdExample" style="display:none;">
+        <![CDATA[
+        <e:post url="/some/url" contentType="application/json">
+            <e:case desc="use-case 1">
+                <e:body>
+                    {"request": "body"}
+                </e:body>
+                <e:expected statusCode="201" reasonPhrase="Created">
+                    { "response": "body" }
+                </e:expected>
+            </e:case>
+            <e:case desc="use-case 2">
+                <e:body from="/ws/request.json"/>
+                <e:expected from="/ws/response.json" statusCode="201" reasonPhrase="Created"/>
+            </e:case>
+        </e:post>
+    ]]>
+    </e:set>
+    <e:include from="/specs/includes/ws/usage.xml"/>
+
+    <h3>Attributes</h3>
+    <table class="table" style="table-layout: fixed;">
+        <thead>
+        <tr><th style="width: 180px;">attribute</th><th style="width: 300px;">desc</th><th>example</th></tr>
+        </thead>
+        <e:include from="/specs/includes/ws/attr-url.xml"/>
+        <e:include from="/specs/includes/ws/attr-contentType.xml"/>
+        <e:include from="/specs/includes/ws/attr-headers.xml"/>
+        <e:include from="/specs/includes/ws/attr-cookies.xml"/>
+        <e:include from="/specs/includes/ws/attr-caseDesc.xml"/>
+        <e:include from="/specs/includes/ws/attr-caseUrlParams.xml"/>
+        <e:include from="/specs/includes/ws/attr-caseBody.xml"/>
+        <e:include from="/specs/includes/ws/attr-caseExpected.xml"/>
+    </table>
+
+    <h2>Examples</h2>
+
+    <h3>Query string</h3>
+    <p>
+        To specify case specific query string <code>case.urlParams</code> attribute may be used.
+    </p>
+    <e:example name="urlParams">
+        <e:post url="/mirror/request">
+            <e:case desc="POST with query parameters" urlParams="param1=1&amp;param2=2">
+                <e:body>
+                {
+                    "bodyValue": 111
+                }
+                </e:body>
+                <e:expected>
+                {
+                    "POST": "/mirror/request?param1=1&amp;param2=2",
+                    "body": {
+                        "bodyValue": 111
+                    }
+                }
+                </e:expected>
+            </e:case>
+        </e:post>
+    </e:example>
+
+    <h2>How to</h2>
+    <ul>
+        <li><a cc:run="concordion" href="common/ContentTypes.xhtml">How to set Content-Type?</a></li>
+        <li><a cc:run="concordion" href="common/ContentVerifiers.xhtml">How to verify different content types?</a></li>
+        <li><a cc:run="concordion" href="common/Headers.xhtml">How to set headers?</a></li>
+        <li><a cc:run="concordion" href="common/Cookies.xhtml">How to set cookies?</a></li>
+        <li><a cc:run="concordion" href="common/Checks.xhtml">How to do case specific checks?</a></li>
+        <li><a cc:run="concordion" href="common/Where.xhtml">How to turn case into parameterized test?</a></li>
+    </ul>
+
+</body>
+</html>

@@ -21,15 +21,15 @@
 
 ```groovy
 // Typical microservices setup (Web API + DB + MQ) testing:
-testImplementation "io.github.adven27:exam-ms:5.1.1"
+testImplementation "io.github.adven27:exam-ms:6.0.0"
 
 //same as:
-//testImplementation "io.github.adven27:exam-ws:5.1.1"
-//testImplementation "io.github.adven27:exam-db:5.1.1"
-//testImplementation "io.github.adven27:exam-mq:5.1.1"
+//testImplementation "io.github.adven27:exam-ws:6.0.0"
+//testImplementation "io.github.adven27:exam-db:6.0.0"
+//testImplementation "io.github.adven27:exam-mq:6.0.0"
 
 // UI testing
-testImplementation "io.github.adven27:exam-ui:5.1.1"
+testImplementation "io.github.adven27:exam-ui:6.0.0"
 ```
 ### 2) Use
 
