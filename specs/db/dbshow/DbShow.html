@@ -1,0 +1,310 @@
+<?xml version="1.0" encoding="UTF-8"?><html xmlns:e="http://exam.extension.io" xmlns:cc="http://www.concordion.org/2007/concordion"><head><script type="text/javascript">document.addEventListener('DOMContentLoaded', function (event) {
+    Array.from(document.getElementsByClassName("nomnoml")).forEach(function(el) {
+        nomnoml.draw(el, el.textContent); 
+    });  
+});</script><script type="text/javascript">window.addEventListener('DOMContentLoaded', function (event) {
+    anchors.options = {
+        placement: 'left',
+        icon: '#'
+    };
+    anchors.add();
+    tocbot.init({
+        tocSelector: '.js-toc',
+        contentSelector: '.bd-content',
+        headingSelector: 'h1, h2, h3, h4, h5, h6',
+        hasInnerContainers: true,
+        collapseDepth: 3,
+        scrollSmooth: false,
+        fixedSidebarOffset: 'auto',
+        includeHtml: true
+    });
+    var collapseDepth = 3; 
+    jQuery( "#example-summary-badge" ).click(function() {
+        if (collapseDepth === 3) {
+            collapseDepth = 30;
+        } else {
+            collapseDepth = 3;
+        }
+        tocbot.refresh({
+            tocSelector: '.js-toc',
+            contentSelector: '.bd-content',
+            headingSelector: 'h1, h2, h3, h4, h5, h6',
+            hasInnerContainers: true,
+            collapseDepth: collapseDepth,
+            scrollSmooth: false,
+            fixedSidebarOffset: 'auto',
+            includeHtml: true
+        });
+        if (collapseDepth === 30) {
+            jQuery( ".toc-link" ).filter(function( index ) {
+                return jQuery( "i", this ).length !== 1
+            }).css("display", "none");
+        } else {
+            jQuery( ".toc-link" ).filter(function( index ) {
+                return jQuery( "i", this ).length !== 1
+            }).css("display", "unset");
+        }
+    });
+}); </script><script type="text/javascript">document.addEventListener('DOMContentLoaded', function (event) {
+    hljs.configure({
+        cssSelector: 'pre code, pre.highlight'
+    });
+    hljs.highlightAll();
+});</script><style>* {
+  font-family: Arial;
+}
+body {
+  padding: 32px;  
+}
+pre {
+  padding: 6px 28px 6px 28px;
+  background-color: #E8EEF7;
+}
+pre, pre *, code, code *, kbd {
+  font-family: Courier New, Courier;
+  font-size: 10pt;
+}
+h1, h1 * {
+  font-size: 24pt;	
+}
+p, td, th, li, .breadcrumbs {
+  font-size: 10pt;
+}
+p, li {
+  line-height: 140%;
+  max-width: 720px;
+}
+table {
+  border-collapse: collapse;
+  empty-cells: show;
+  margin: 8px 0px 8px 0px;
+}
+th, td {
+  border: 1px solid black;
+  padding: 3px;
+}
+td {
+  background-color: white;
+  vertical-align: top;
+}
+th {
+  background-color: #C3D9FF;
+}
+li {
+  margin-top: 6px;
+  margin-bottom: 6px; 
+}
+
+.example, :not(th)[cc\:example] {
+  padding: 6px 16px 6px 16px;
+  border: 1px solid #C3D9FF;
+  margin: 6px 0px 28px 0px;
+  background-color: #F5F9FD;
+}
+.example h3, [cc\:example] h3 {
+  margin-top: 8px;
+  margin-bottom: 8px;
+  font-size: 12pt;
+}
+
+p.success {
+  padding: 2px;
+}
+.success, .success * {
+  background-color: #afa !important;
+}
+.success pre {
+  background-color: #bbffbb;
+}
+.failure, .failure * {
+  background-color: #ffb0b0;
+  padding: 1px;
+}
+.failure .expected {
+  text-decoration: line-through;
+  color: #bb5050;
+}
+.ignored, .ignored * {
+  background-color: #f0f0f0 !important;	
+}
+
+ins {
+  text-decoration: none;	
+}
+
+.exceptionMessage {
+  background-color: #fdd;
+  font-family: Courier New, Courier, Monospace;
+  font-size: 10pt;
+  display: block;
+  font-weight: normal;
+  padding: 4px;
+  text-decoration: none !important;
+}
+.stackTrace, .stackTrace * {
+  font-weight: normal;
+}
+.stackTrace {
+  display: none;
+  padding: 1px 4px 4px 4px;
+  background-color: #fdd;
+  border-top: 1px dotted black;
+}
+.stackTraceExceptionMessage {
+  display: block;
+  font-family: Courier New, Courier, Monospace;
+  font-size: 8pt;
+  white-space: wrap;
+  padding: 1px 0px 1px 0px;
+}
+.stackTraceEntry {
+  white-space: nowrap;
+  font-family: Courier New, Courier, Monospace;
+  display: block;
+  font-size: 8pt;
+  padding: 1px 0px 1px 32px;
+}
+.stackTraceButton {
+  font-size: 8pt;
+  margin: 2px 8px 2px 0px;
+  font-weight: normal;
+  font-family: Arial;
+}
+
+.special {
+  font-style: italic;
+}
+.missing, .missing * {
+  background-color: #ff9999;
+  color:#bb5050;
+  text-decoration: line-through;
+}
+.surplus, .surplus * {
+  background-color: #ff9999;
+}
+.footer {
+  text-align: right;
+  margin-top: 40px;
+  font-size: 8pt;
+  width: 100%;
+  color: #999;
+}
+.footer .testTime {
+  padding: 2px 10px 0px 0px;
+}
+
+.idea {
+  font-size: 9pt;
+  color: #888;
+  font-style: italic;	
+}
+.tight li {
+  margin-top: 1px;
+  margin-bottom: 1px; 
+}
+.commentary {
+  float: right;
+  width: 200px;
+  background-color: #ffffd0;
+  padding:8px;
+  border: 3px solid #eeeeb0;	 
+  margin: 10px 0px 10px 10px;	 
+}
+.commentary, .commentary * {
+  font-size: 8pt;
+}
+</style><meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<link type="text/css" rel="stylesheet" href="../../../ext/codemirror/codemirror.css" /><link type="text/css" rel="stylesheet" href="../../../ext/codemirror/enable-codemirror.css" /><link type="text/css" rel="stylesheet" href="../../../ext/codemirror/merge.css" /><link type="text/css" rel="stylesheet" href="../../../ext/codemirror/foldgutter.css" /><link type="text/css" rel="stylesheet" href="../../../ext/codemirror/simplescrollbar.css" /><script type="text/javascript" src="../../../ext/codemirror/codemirror.js"></script><script type="text/javascript" src="../../../ext/codemirror/enable-codemirror.js"></script><script type="text/javascript" src="../../../ext/codemirror/javascript.js"></script><script type="text/javascript" src="../../../ext/codemirror/xml.js"></script><script type="text/javascript" src="../../../ext/codemirror/addon/mode/simple.js"></script><script type="text/javascript" src="../../../ext/codemirror/http.js"></script><script type="text/javascript" src="../../../ext/codemirror/diff_match_patch.js"></script><script type="text/javascript" src="../../../ext/codemirror/merge.js"></script><script type="text/javascript" src="../../../ext/codemirror/xml-fold.js"></script><script type="text/javascript" src="../../../ext/codemirror/simplescrollbar.js"></script><link type="text/css" rel="stylesheet" href="../../../ext/highlight/stackoverflow-light.min.css" /><script type="text/javascript" src="../../../ext/highlight/highlight.min.js"></script><script type="text/javascript" src="../../../ext/highlight/http.min.js"></script><script type="text/javascript" src="../../../ext/highlight/java.min.js"></script><link type="text/css" rel="stylesheet" href="../../../ext/tocbot/tocbot.css" /><script type="text/javascript" src="../../../ext/tocbot/tocbot.min.js"></script><link type="text/css" rel="stylesheet" href="../../../ext/fontawesome/css/all.min.css" /><link type="text/css" rel="stylesheet" href="../../../ext/fontawesome/css/regular.min.css" /><link type="text/css" rel="stylesheet" href="../../../ext/fontawesome/css/solid.min.css" /><link type="text/css" rel="stylesheet" href="../../../ext/fontawesome/css/all.min.css" /><link type="text/css" rel="stylesheet" href="../../../ext/bootstrap/bootstrap.min.css" /><link type="text/css" rel="stylesheet" href="../../../ext/bootstrap/enable-bootstrap.css" /><link type="text/css" rel="stylesheet" href="../../../ext/bootstrap/doc.min.css" /><link type="text/css" rel="stylesheet" href="../../../ext/bootstrap/scrollToTop.css" /><script type="text/javascript" src="../../../ext/bootstrap/bootstrap.min.js"></script><script type="text/javascript" src="../../../ext/bootstrap/jquery-3.2.1.slim.min.js"></script><script type="text/javascript" src="../../../ext/bootstrap/sidebar.js"></script><script type="text/javascript" src="../../../ext/bootstrap/doc.min.js"></script><script type="text/javascript" src="../../../ext/bootstrap/scrollToTop.js"></script><script type="text/javascript" src="../../../ext/nomnoml/graphre.js"></script><script type="text/javascript" src="../../../ext/nomnoml/nomnoml.min.js"></script></head><body><span class="breadcrumbs"><a href="../../Specs.html">Exam</a> &gt;</span><div class="container-fluid"><div class="container-xxl my-md-4 bd-layout"><main class="bd-main order-1"><div class="bd-toc mt-4 mb-5 my-md-0 ps-xl-3 mb-lg-5 text-muted"><div class="row my-2 pb-2 border-bottom"><div class="col-9"><strong class="h6">On this page</strong></div><div class="col-2"><i id="example-summary-badge" class="fa fa-list-check"></i></div></div><nav id="table-of-contents" class="js-toc toc toc-right" /></div><div class="bd-content ps-lg-4" id="content">
+    <h1>db-show</h1>
+    <p class="lead">Shows content of specified database table and creates DbUnit dataset in xml, json or csv formats</p>
+    <h2>Overview</h2>
+
+    <pre var="cmd" value="e:db-show" e:set="" style="display:none;">e:db-show</pre>
+    <pre var="cmdExample" cmdId="92214141-546b-48dd-b767-677630346869" style="display:none;">&lt;e:db-show table="ANDROIDS_TABLE"/&gt;  </pre>
+    <h3>Usage</h3><p>1. Configure a connection to database via <a cc:run="concordion" href="../DbPlugin.html" class="success">DbPlugin</a>.</p><p>
+        2. Use <code cc:echo="#cmd">e:db-show</code> tag in specification:
+        <div class="card">
+            <div class="card-header font-monospace">src/test/resources/specs/Specs.html</div>
+            <div class="card-body">
+                <pre class="doc-code language-xml"><code cc:echo="#cmdExample">&lt;e:db-show table="ANDROIDS_TABLE"/&gt;  </code></pre>
+            </div>
+        </div>
+    </p>
+
+    <h3>Attributes</h3>
+
+    <table class="table" style="table-layout: fixed;">
+        <thead><tr><th style="width: 100px;">attribute</th><th style="width: 300px;">desc</th><th>example</th></tr></thead>
+        <tr>
+        <td><code>table</code></td>
+        <td><span>Table name</span></td>
+        <td><var>Required</var>. <var>Default: -</var><pre class="doc-code language-json"><code>table="androids_table"</code></pre></td>
+    </tr>
+        <tr>
+            <td><code>cols</code></td>
+            <td><span>List of comma-separated column names to include in dataset</span></td>
+            <td><var>Optional</var>. <var>Default: -</var><pre class="doc-code language-json"><code>cols="id, name"</code></pre></td>
+        </tr>
+        <tr>
+            <td><code>saveToResources</code></td>
+            <td><span>Path in <code>srs/test/resources/</code> where to store generated dataset</span></td>
+            <td><var>Optional</var>. <var>Default: -</var><pre class="doc-code language-json"><code>saveToResources="/data/db/person.xml"</code></pre></td>
+        </tr>
+        <tr>
+        <td><code>where</code></td>
+        <td><span><var>WHERE clause</var> in database-specific SQL format to filter actual dataset</span></td>
+        <td><var>Optional</var>. <var>Default: -</var><pre class="doc-code language-json"><code>where="name='andrew'"</code></pre></td>
+    </tr>
+        <tr>
+        <td><code>ds</code></td>
+        <td><span>Datasource to which dataset will be applied. By default only 1 datasource with name <strong>default</strong> exists, other may be added by DbPlugin configuration. <!--TODO add link to config example--></span></td>
+        <td><var>Optional</var>. <var>Default: <strong>default</strong></var><pre class="doc-code language-json"><code>ds="myOtherDatasource"</code></pre></td>
+    </tr>
+        <tr>
+        <td><code>caption</code></td>
+        <td><span>Caption to display instead of table name in report</span></td>
+        <td><var>Optional</var>. <var>Default: -</var><pre class="doc-code language-json"><code>caption="Androids"</code></pre></td>
+    </tr>
+    </table>
+
+    <h2>Examples</h2>
+
+    <h3>Show empty table</h3>
+    <div xmlns:c="http://www.concordion.org/2007/concordion" name="Show empty table" cmdId="8c986d86-614b-4780-8376-51da1b604c6b" c:example="Show empty table" c:status="ExpectedToPass" class="exam-example mb-3" data-type="example" e:example="" id="Show empty table" data-summary-success="0" data-summary-ignore="0" data-summary-failure="0" data-summary-exception="0" data-summary-status="ExpectedToPass"><div data-bs-toggle="collapse" data-bs-target="#e9f09edec-5b51-400d-ace0-59d633dac921" aria-expanded="true"><h4 style="visibility: hidden; height:0;" class="test-class"><i class="example-badge fa fa-check m-1 text-success"></i>Show empty table</h4><i class="far fa-caret-square-down"></i><span> </span><a class="bd-example-title text-muted fw-lighter">Show empty table</a></div><div class="bd-example collapse show rounded bg-light bg-gradient" id="e9f09edec-5b51-400d-ace0-59d633dac921">
+        <div cmdId="324f0850-f332-4cbe-9f88-ce75f6674778" e:given="" class="given"><p class="lead text-primary">Given</p><hr />
+            Empty table:
+            <div cmdId="c9235616-705b-4938-8080-9fb08e359fd7" e:db-set="" class="table table-sm table-hover"><div class="table-responsive mb-1 p-1"><table class="table table-sm caption-top"><caption style="width:max-content"><i class="fa fa-database me-1"> </i>  ANDROIDS_TABLE</caption><thead class="thead-default"><tr><th /></tr></thead><tbody><tr><td colspan="0">EMPTY</td></tr></tbody></table></div></div>
+        </div>
+        <div cmdId="612dea33-a813-4bff-b9cf-ba55c268f47c" e:then="" class="then"><p class="lead text-success">Then</p><hr />
+            <div class="mb-4 mt-4"><mark>The following markup:</mark><pre class="doc-code language-xml mt-2"><code>&lt;e:db-show table="ANDROIDS_TABLE"/&gt;</code></pre><mark>will be rendered as:</mark></div><div print="true" cmdId="bca1bae1-0a9b-4c72-b9d3-150bc1097249" e:db-show=""><div class="table-responsive mb-1 p-1"><table class="table table-sm caption-top"><caption style="width:max-content"><i class="fa fa-database me-1"> </i>  ANDROIDS_TABLE</caption><thead class="thead-default"><tr><th /></tr></thead><tbody><tr><td colspan="5">EMPTY</td></tr></tbody></table></div></div>
+        </div>
+    </div></div>
+
+    <h3>Show not empty table</h3>
+    <div xmlns:c="http://www.concordion.org/2007/concordion" name="Not empty table" cmdId="25efcaf8-2478-4917-8bd4-34e5ac757567" c:example="Not empty table" c:status="ExpectedToPass" class="exam-example mb-3" data-type="example" e:example="" id="Not empty table" data-summary-success="0" data-summary-ignore="0" data-summary-failure="0" data-summary-exception="0" data-summary-status="ExpectedToPass"><div data-bs-toggle="collapse" data-bs-target="#ec63f8877-b8a1-49be-b428-e6daa48e3389" aria-expanded="true"><h4 style="visibility: hidden; height:0;" class="test-class"><i class="example-badge fa fa-check m-1 text-success"></i>Not empty table</h4><i class="far fa-caret-square-down"></i><span> </span><a class="bd-example-title text-muted fw-lighter">Not empty table</a></div><div class="bd-example collapse show rounded bg-light bg-gradient" id="ec63f8877-b8a1-49be-b428-e6daa48e3389">
+        <div cmdId="44197fbf-f156-4452-96af-ff90534728ce" e:given="" class="given"><p class="lead text-primary">Given</p><hr />
+            <div cmdId="41f101aa-dbf7-4ebc-91d9-ccce695166e1" e:db-set="" class="table table-sm table-hover">
+                
+                
+            <div class="table-responsive mb-1 p-1"><table class="table table-sm caption-top"><caption style="width:max-content"><i class="fa fa-database me-1"> </i>  ANDROIDS_TABLE</caption><thead class="thead-default"><tr><th class="">id</th><th class="">name</th><th class="">weight</th><th class="">height</th><th class="">manufactured</th></tr></thead><tbody><tr><td class=""><span>1</span></td><td class=""><span>Adam</span></td><td class=""><span>10</span></td><td class=""><span>110</span></td><td class=""><span>2001-01-01</span></td></tr><tr><td class=""><span>2</span></td><td class=""><span>Bob</span></td><td class=""><span>20</span></td><td class=""><span>120</span></td><td class=""><span>2002-02-02</span></td></tr></tbody></table></div></div>
+        </div>
+        <div cmdId="20a044ef-cbe0-4b2d-bc1c-af629d82494b" e:then="" class="then"><p class="lead text-success">Then</p><hr />
+            <div class="mb-4 mt-4"><mark>The following markup:</mark><pre class="doc-code language-xml mt-2"><code>&lt;e:db-show table="ANDROIDS_TABLE" cols="name, weight, manufactured"/&gt;</code></pre><mark>will be rendered as:</mark></div><div print="true" cmdId="0f5493d7-7d59-4514-adfd-2d51e5b32792" e:db-show=""><div class="table-responsive mb-1 p-1"><table class="table table-sm caption-top"><caption style="width:max-content"><i class="fa fa-database me-1"> </i>  ANDROIDS_TABLE</caption><thead class="thead-default"><tr><th class="">NAME</th><th class="">WEIGHT</th><th class="">MANUFACTURED</th></tr></thead><tbody><tr><td class=""><span>Adam</span></td><td class=""><span>10</span></td><td class=""><span>2001-01-01 00:00:00.000</span></td></tr><tr><td class=""><span>Bob</span></td><td class=""><span>20</span></td><td class=""><span>2002-02-02 00:00:00.000</span></td></tr></tbody></table></div></div>
+        </div>
+    </div></div>
+
+    <h3>Filtered table</h3>
+    <div xmlns:c="http://www.concordion.org/2007/concordion" name="Filtered table" cmdId="e48e825b-1d52-4645-a77f-5088520acec4" c:example="Filtered table" c:status="ExpectedToPass" class="exam-example mb-3" data-type="example" e:example="" id="Filtered table" data-summary-success="0" data-summary-ignore="0" data-summary-failure="0" data-summary-exception="0" data-summary-status="ExpectedToPass"><div data-bs-toggle="collapse" data-bs-target="#e2cff561f-35e7-4d53-834e-092566abc63f" aria-expanded="true"><h4 style="visibility: hidden; height:0;" class="test-class"><i class="example-badge fa fa-check m-1 text-success"></i>Filtered table</h4><i class="far fa-caret-square-down"></i><span> </span><a class="bd-example-title text-muted fw-lighter">Filtered table</a></div><div class="bd-example collapse show rounded bg-light bg-gradient" id="e2cff561f-35e7-4d53-834e-092566abc63f">
+        <div cmdId="f02694a4-9fe2-4386-bd21-8cc73fdd0654" e:given="" class="given"><p class="lead text-primary">Given</p><hr />
+            <div cmdId="7efb98c9-0ccf-4350-abba-f05b60d5cd38" e:db-set="" class="table table-sm table-hover">
+                
+                
+            <div class="table-responsive mb-1 p-1"><table class="table table-sm caption-top"><caption style="width:max-content"><i class="fa fa-database me-1"> </i>  ANDROIDS_TABLE</caption><thead class="thead-default"><tr><th class="">id</th><th class="">name</th><th class="">weight</th><th class="">height</th><th class="">manufactured</th></tr></thead><tbody><tr><td class=""><span>1</span></td><td class=""><span>Adam</span></td><td class=""><span>10</span></td><td class=""><span>110</span></td><td class=""><span>2001-01-01</span></td></tr><tr><td class=""><span>2</span></td><td class=""><span>Bob</span></td><td class=""><span>20</span></td><td class=""><span>120</span></td><td class=""><span>2002-02-02</span></td></tr></tbody></table></div></div>
+        </div>
+        <div cmdId="9c8bfaa0-6a3f-4329-a266-98d05d39a3b4" e:then="" class="then"><p class="lead text-success">Then</p><hr />
+            <div class="mb-4 mt-4"><mark>The following markup:</mark><pre class="doc-code language-xml mt-2"><code>&lt;e:db-show table="ANDROIDS_TABLE" cols="name, weight" where="name='Adam'"/&gt;</code></pre><mark>will be rendered as:</mark></div><div print="true" cmdId="f3ca3c37-1dfc-47a4-a402-b89cc0ad8ac8" e:db-show=""><div class="table-responsive mb-1 p-1"><table class="table table-sm caption-top"><caption style="width:max-content"><i class="fa fa-database me-1"> </i>  ANDROIDS_TABLE</caption><thead class="thead-default"><tr><th class="">NAME</th><th class="">WEIGHT</th></tr></thead><tbody><tr><td class=""><span>Adam</span></td><td class=""><span>10</span></td></tr></tbody></table></div></div>
+        </div>
+    </div></div>
+
+</div></main></div></div><div class="footer">Results generated by <a href="http://www.concordion.org" style="font-weight: bold; text-decoration: none; color: #89C;">Concordion</a><div class="testTime">in 77 ms on 13-Oct-2021 at 16:06:36 MSK</div></div></body>
+<button id="btnToTop" onclick="topFunction()" type="button" class="btn btn-light btn-sm text-muted me-1"><i class="fa fa-arrow-up"></i></button></html>
