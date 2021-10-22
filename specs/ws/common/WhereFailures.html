@@ -1,0 +1,346 @@
+<?xml version="1.0" encoding="UTF-8"?><html xmlns:e="http://exam.extension.io" xmlns:cc="http://www.concordion.org/2007/concordion"><head><script type="text/javascript">document.addEventListener('DOMContentLoaded', function (event) {
+    Array.from(document.getElementsByClassName("nomnoml")).forEach(function(el) {
+        nomnoml.draw(el, el.textContent); 
+    });  
+});</script><script type="text/javascript">window.addEventListener('DOMContentLoaded', function (event) {
+    anchors.options = {
+        placement: 'left',
+        icon: '#'
+    };
+    anchors.add();
+    tocbot.init({
+        tocSelector: '.js-toc',
+        contentSelector: '.bd-content',
+        headingSelector: 'h1, h2, h3, h4, h5, h6',
+        hasInnerContainers: true,
+        collapseDepth: 3,
+        scrollSmooth: false,
+        fixedSidebarOffset: 'auto',
+        includeHtml: true
+    });
+    var collapseDepth = 3; 
+    jQuery( "#example-summary-badge" ).click(function() {
+        if (collapseDepth === 3) {
+            collapseDepth = 30;
+        } else {
+            collapseDepth = 3;
+        }
+        tocbot.refresh({
+            tocSelector: '.js-toc',
+            contentSelector: '.bd-content',
+            headingSelector: 'h1, h2, h3, h4, h5, h6',
+            hasInnerContainers: true,
+            collapseDepth: collapseDepth,
+            scrollSmooth: false,
+            fixedSidebarOffset: 'auto',
+            includeHtml: true
+        });
+        if (collapseDepth === 30) {
+            jQuery( ".toc-link" ).filter(function( index ) {
+                return jQuery( "i", this ).length !== 1
+            }).css("display", "none");
+        } else {
+            jQuery( ".toc-link" ).filter(function( index ) {
+                return jQuery( "i", this ).length !== 1
+            }).css("display", "unset");
+        }
+    });
+}); </script><script type="text/javascript">document.addEventListener('DOMContentLoaded', function (event) {
+    hljs.configure({
+        cssSelector: 'pre code, pre.highlight'
+    });
+    hljs.highlightAll();
+});</script><style>* {
+  font-family: Arial;
+}
+body {
+  padding: 32px;  
+}
+pre {
+  padding: 6px 28px 6px 28px;
+  background-color: #E8EEF7;
+}
+pre, pre *, code, code *, kbd {
+  font-family: Courier New, Courier;
+  font-size: 10pt;
+}
+h1, h1 * {
+  font-size: 24pt;	
+}
+p, td, th, li, .breadcrumbs {
+  font-size: 10pt;
+}
+p, li {
+  line-height: 140%;
+  max-width: 720px;
+}
+table {
+  border-collapse: collapse;
+  empty-cells: show;
+  margin: 8px 0px 8px 0px;
+}
+th, td {
+  border: 1px solid black;
+  padding: 3px;
+}
+td {
+  background-color: white;
+  vertical-align: top;
+}
+th {
+  background-color: #C3D9FF;
+}
+li {
+  margin-top: 6px;
+  margin-bottom: 6px; 
+}
+
+.example, :not(th)[cc\:example] {
+  padding: 6px 16px 6px 16px;
+  border: 1px solid #C3D9FF;
+  margin: 6px 0px 28px 0px;
+  background-color: #F5F9FD;
+}
+.example h3, [cc\:example] h3 {
+  margin-top: 8px;
+  margin-bottom: 8px;
+  font-size: 12pt;
+}
+
+p.success {
+  padding: 2px;
+}
+.success, .success * {
+  background-color: #afa !important;
+}
+.success pre {
+  background-color: #bbffbb;
+}
+.failure, .failure * {
+  background-color: #ffb0b0;
+  padding: 1px;
+}
+.failure .expected {
+  text-decoration: line-through;
+  color: #bb5050;
+}
+.ignored, .ignored * {
+  background-color: #f0f0f0 !important;	
+}
+
+ins {
+  text-decoration: none;	
+}
+
+.exceptionMessage {
+  background-color: #fdd;
+  font-family: Courier New, Courier, Monospace;
+  font-size: 10pt;
+  display: block;
+  font-weight: normal;
+  padding: 4px;
+  text-decoration: none !important;
+}
+.stackTrace, .stackTrace * {
+  font-weight: normal;
+}
+.stackTrace {
+  display: none;
+  padding: 1px 4px 4px 4px;
+  background-color: #fdd;
+  border-top: 1px dotted black;
+}
+.stackTraceExceptionMessage {
+  display: block;
+  font-family: Courier New, Courier, Monospace;
+  font-size: 8pt;
+  white-space: wrap;
+  padding: 1px 0px 1px 0px;
+}
+.stackTraceEntry {
+  white-space: nowrap;
+  font-family: Courier New, Courier, Monospace;
+  display: block;
+  font-size: 8pt;
+  padding: 1px 0px 1px 32px;
+}
+.stackTraceButton {
+  font-size: 8pt;
+  margin: 2px 8px 2px 0px;
+  font-weight: normal;
+  font-family: Arial;
+}
+
+.special {
+  font-style: italic;
+}
+.missing, .missing * {
+  background-color: #ff9999;
+  color:#bb5050;
+  text-decoration: line-through;
+}
+.surplus, .surplus * {
+  background-color: #ff9999;
+}
+.footer {
+  text-align: right;
+  margin-top: 40px;
+  font-size: 8pt;
+  width: 100%;
+  color: #999;
+}
+.footer .testTime {
+  padding: 2px 10px 0px 0px;
+}
+
+.idea {
+  font-size: 9pt;
+  color: #888;
+  font-style: italic;	
+}
+.tight li {
+  margin-top: 1px;
+  margin-bottom: 1px; 
+}
+.commentary {
+  float: right;
+  width: 200px;
+  background-color: #ffffd0;
+  padding:8px;
+  border: 3px solid #eeeeb0;	 
+  margin: 10px 0px 10px 10px;	 
+}
+.commentary, .commentary * {
+  font-size: 8pt;
+}
+</style><meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<link type="text/css" rel="stylesheet" href="../../../ext/codemirror/codemirror.css" /><link type="text/css" rel="stylesheet" href="../../../ext/codemirror/enable-codemirror.css" /><link type="text/css" rel="stylesheet" href="../../../ext/codemirror/merge.css" /><link type="text/css" rel="stylesheet" href="../../../ext/codemirror/foldgutter.css" /><link type="text/css" rel="stylesheet" href="../../../ext/codemirror/simplescrollbar.css" /><script type="text/javascript" src="../../../ext/codemirror/codemirror.js"></script><script type="text/javascript" src="../../../ext/codemirror/enable-codemirror.js"></script><script type="text/javascript" src="../../../ext/codemirror/javascript.js"></script><script type="text/javascript" src="../../../ext/codemirror/xml.js"></script><script type="text/javascript" src="../../../ext/codemirror/addon/mode/simple.js"></script><script type="text/javascript" src="../../../ext/codemirror/http.js"></script><script type="text/javascript" src="../../../ext/codemirror/diff_match_patch.js"></script><script type="text/javascript" src="../../../ext/codemirror/merge.js"></script><script type="text/javascript" src="../../../ext/codemirror/xml-fold.js"></script><script type="text/javascript" src="../../../ext/codemirror/simplescrollbar.js"></script><link type="text/css" rel="stylesheet" href="../../../ext/highlight/stackoverflow-light.min.css" /><script type="text/javascript" src="../../../ext/highlight/highlight.min.js"></script><script type="text/javascript" src="../../../ext/highlight/http.min.js"></script><script type="text/javascript" src="../../../ext/highlight/java.min.js"></script><link type="text/css" rel="stylesheet" href="../../../ext/tocbot/tocbot.css" /><script type="text/javascript" src="../../../ext/tocbot/tocbot.min.js"></script><link type="text/css" rel="stylesheet" href="../../../ext/fontawesome/css/all.min.css" /><link type="text/css" rel="stylesheet" href="../../../ext/fontawesome/css/regular.min.css" /><link type="text/css" rel="stylesheet" href="../../../ext/fontawesome/css/solid.min.css" /><link type="text/css" rel="stylesheet" href="../../../ext/fontawesome/css/all.min.css" /><link type="text/css" rel="stylesheet" href="../../../ext/bootstrap/bootstrap.min.css" /><link type="text/css" rel="stylesheet" href="../../../ext/bootstrap/enable-bootstrap.css" /><link type="text/css" rel="stylesheet" href="../../../ext/bootstrap/doc.min.css" /><link type="text/css" rel="stylesheet" href="../../../ext/bootstrap/scrollToTop.css" /><script type="text/javascript" src="../../../ext/bootstrap/bootstrap.min.js"></script><script type="text/javascript" src="../../../ext/bootstrap/jquery-3.2.1.slim.min.js"></script><script type="text/javascript" src="../../../ext/bootstrap/sidebar.js"></script><script type="text/javascript" src="../../../ext/bootstrap/doc.min.js"></script><script type="text/javascript" src="../../../ext/bootstrap/scrollToTop.js"></script><script type="text/javascript" src="../../../ext/nomnoml/graphre.js"></script><script type="text/javascript" src="../../../ext/nomnoml/nomnoml.min.js"></script></head><body><span class="breadcrumbs"><a href="../../Specs.html">Exam</a> &gt;</span><div class="container-fluid"><div class="container-xxl my-md-4 bd-layout"><main class="bd-main order-1"><div class="bd-toc mt-4 mb-5 my-md-0 ps-xl-3 mb-lg-5 text-muted"><div class="row my-2 pb-2 border-bottom"><div class="col-9"><strong class="h6">On this page</strong></div><div class="col-2"><i id="example-summary-badge" class="fa fa-list-check text-danger"></i></div></div><nav id="table-of-contents" class="js-toc toc toc-right" /></div><div class="bd-content ps-lg-4" id="content">
+    <h1>Parametrized case failures</h1>
+
+    <h2>Examples<a class="examples" href="#post"></a></h2>
+
+    <div xmlns:c="http://www.concordion.org/2007/concordion" name="post" status="ExpectedToFail" cmdId="cf850df9-64aa-45eb-a26e-d832ae9e5d24" c:example="post" c:status="ExpectedToFail" class="exam-example mb-3" data-type="example" e:example="" id="post" data-summary-success="6" data-summary-ignore="0" data-summary-failure="2" data-summary-exception="0" data-summary-status="ExpectedToFail"><div data-bs-toggle="collapse" data-bs-target="#efb37b485-ed3b-4f96-8514-facc4862b8f8" aria-expanded="true"><h3 style="visibility: hidden; height:0;" class="test-class"><i class="example-badge fa fa-bug m-1 text-danger"></i>post</h3><i class="far fa-caret-square-down"></i><span> </span><a class="bd-example-title text-muted fw-lighter">post</a></div><div class="bd-example collapse show rounded bg-light bg-gradient" id="efb37b485-ed3b-4f96-8514-facc4862b8f8">
+        <div class="mb-4 mt-4"><mark>The following markup:</mark><pre class="doc-code language-xml mt-2"><code>&lt;e:post url="mirror/body"&gt;
+    &lt;e:case desc="Parametrized request body and response body (last 2 cases should fail)"&gt;
+        &lt;e:body&gt;{"exact": "{{p1}}", "template": 1}&lt;/e:body&gt;
+        &lt;e:expected&gt;{"exact": "{{p2}}", "template": "{{number}}"}&lt;/e:expected&gt;
+        &lt;e:where vars="p1, p2" separator="|"&gt;
+            &lt;e:vals desc="first"&gt;first value of p1 | first value of p1&lt;/e:vals&gt;
+            &lt;e:vals desc="second"&gt;second value of p1 | second value of p1&lt;/e:vals&gt;
+            &lt;e:vals desc="date"&gt;{{now 'dd.MM.yyyy' minus='2 months, 1 y' }} | {{now 'dd.MM.yyyy' minus='2 months, 2 y'}}&lt;/e:vals&gt;
+            &lt;e:vals desc="empty"&gt;|value is not empty&lt;/e:vals&gt;
+        &lt;/e:where&gt;
+    &lt;/e:case&gt;
+&lt;/e:post&gt;</code></pre><mark>will be rendered as:</mark></div><div print="true" cmdId="d39f501d-ef47-4b2a-b73d-a1c6c8423f39" e:post=""><table class="ws-cases table table-sm caption-top"><div><div class="input-group mb-1 mt-1">
+        <span class="input-group-text bg-success text-white">POST</span>
+        <span class="form-control bg-light text-primary font-weight-light" id="endpoint-668553207">mirror/body</span>
+    </div><div class="input-group input-group-sm">
+        <span class="input-group-text">Content-Type</span>
+        <span id="header--1499055639" class="form-control bg-light text-dark font-weight-light">application/json</span>
+    </div></div><thead class="thead-default"><th colspan="2" style="text-align:center;" class="text-secondary">Use cases:</th></thead>
+            <tr desc="Parametrized request body and response body (last 2 cases should fail)" cmdId="70f55974-1698-401c-8e45-aeca51ffcfe8" e:case="" data-type="case" id="1) Parametrized request body and response body (last 2 cases should fail)"><tr><td colspan="2" class="text-muted bg-light" style="border-bottom: 1px solid lightgray;">1) Parametrized request body and response body (last 2 cases should fail)</td></tr>
+                
+                
+                
+            </tr><tr><td colspan="2"><div><nav><ul class="nav nav-tabs" role="tablist"><li class="nav-item"><button id="nav-2025259166-1634912247972-tab" class="nav-link small text-success " data-bs-toggle="tab" data-bs-target="#nav-2025259166-1634912247972" role="tab" aria-controls="nav-2025259166-1634912247972" aria-selected="false" onclick="setTimeout(() =&gt; { window.dispatchEvent(new Event('resize')); }, 200)">first</button></li><li class="nav-item"><button id="nav-1824563931-1634912247972-tab" class="nav-link small text-success " data-bs-toggle="tab" data-bs-target="#nav-1824563931-1634912247972" role="tab" aria-controls="nav-1824563931-1634912247972" aria-selected="false" onclick="setTimeout(() =&gt; { window.dispatchEvent(new Event('resize')); }, 200)">second</button></li><li class="nav-item"><button id="nav--1736969287-1634912247972-tab" data-bs-toggle="tab" data-bs-target="#nav--1736969287-1634912247972" role="tab" aria-controls="nav--1736969287-1634912247972" aria-selected="false" onclick="setTimeout(() =&gt; { window.dispatchEvent(new Event('resize')); }, 200)" class="nav-link small rest-failure  active show">date</button></li><li class="nav-item"><button id="nav--498886054-1634912247973-tab" class="nav-link small rest-failure " data-bs-toggle="tab" data-bs-target="#nav--498886054-1634912247973" role="tab" aria-controls="nav--498886054-1634912247973" aria-selected="false" onclick="setTimeout(() =&gt; { window.dispatchEvent(new Event('resize')); }, 200)">empty</button></li></ul></nav><div><div class="tab-content"><div class="tab-pane fade" id="nav-2025259166-1634912247972" role="tabpanel" aria-labelledby="nav-2025259166-1634912247972-tab"><table class="table table-sm caption-top"><tr data-case-title="first"><td style="width: 50%;"><div class="httpstyle"><pre class="doc-code language-http"><code>POST mirror/body HTTP/1.1
+</code></pre></div></td><td style="padding-left: 0;"><small><span class="exp-status rest-success">200</span><span class="badge badge-pill badge-light">55ms</span></small></td></tr><tr><td class="json exp-body" style="min-width: 20%; width: 50%;">{
+  "exact": "first value of p1",
+  "template": 1
+}</td><td colspan="1" class="exp-body"><div>
+        <nav>
+          <ul class="nav nav-tabs" role="tablist">
+            <li class="nav-item" role="presentation"> 
+                <button class="nav-link active small text-success" type="button" role="tab" id="nav-et-1634912247898-tab" data-bs-toggle="tab" data-bs-target="#nav-et-1634912247898" aria-controls="nav-et-1634912247898" aria-selected="true">Expected</button>
+            </li>
+            <li class="nav-item" role="presentation"> 
+                <button class="nav-link small" type="button" role="tab" onclick="setTimeout(() =&gt; { window.dispatchEvent(new Event('resize')); }, 200)" id="nav-at-1634912247898-tab" data-bs-toggle="tab" data-bs-target="#nav-at-1634912247898" aria-controls="nav-at-1634912247898" aria-selected="false">Actual</button>
+            </li>
+          </ul>
+        </nav>
+        <div class="tab-content">
+          <div class="tab-pane fade show active" id="nav-et-1634912247898" role="tabpanel" aria-labelledby="nav-et-1634912247898-tab">
+            <pre id="e-1634912247898" class="rest-success json">{
+  "exact": "first value of p1",
+  "template": "${json-unit.any-number}"
+}</pre>
+          </div>
+          <div class="tab-pane fade" id="nav-at-1634912247898" role="tabpanel" aria-labelledby="nav-at-1634912247898-tab">
+            <pre id="a-1634912247898" class="rest-success json">{
+  "exact": "first value of p1",
+  "template": 1
+}</pre>
+          </div>
+        </div>
+    </div></td></tr></table></div><div class="tab-pane fade" id="nav-1824563931-1634912247972" role="tabpanel" aria-labelledby="nav-1824563931-1634912247972-tab"><table class="table table-sm caption-top"><tr data-case-title="second"><td style="width: 50%;"><div class="httpstyle"><pre class="doc-code language-http"><code>POST mirror/body HTTP/1.1
+</code></pre></div></td><td style="padding-left: 0;"><small><span class="exp-status rest-success">200</span><span class="badge badge-pill badge-light">11ms</span></small></td></tr><tr><td class="json exp-body" style="min-width: 20%; width: 50%;">{
+  "exact": "second value of p1",
+  "template": 1
+}</td><td colspan="1" class="exp-body"><div>
+        <nav>
+          <ul class="nav nav-tabs" role="tablist">
+            <li class="nav-item" role="presentation"> 
+                <button class="nav-link active small text-success" type="button" role="tab" id="nav-et-1634912247917-tab" data-bs-toggle="tab" data-bs-target="#nav-et-1634912247917" aria-controls="nav-et-1634912247917" aria-selected="true">Expected</button>
+            </li>
+            <li class="nav-item" role="presentation"> 
+                <button class="nav-link small" type="button" role="tab" onclick="setTimeout(() =&gt; { window.dispatchEvent(new Event('resize')); }, 200)" id="nav-at-1634912247917-tab" data-bs-toggle="tab" data-bs-target="#nav-at-1634912247917" aria-controls="nav-at-1634912247917" aria-selected="false">Actual</button>
+            </li>
+          </ul>
+        </nav>
+        <div class="tab-content">
+          <div class="tab-pane fade show active" id="nav-et-1634912247917" role="tabpanel" aria-labelledby="nav-et-1634912247917-tab">
+            <pre id="e-1634912247917" class="rest-success json">{
+  "exact": "second value of p1",
+  "template": "${json-unit.any-number}"
+}</pre>
+          </div>
+          <div class="tab-pane fade" id="nav-at-1634912247917" role="tabpanel" aria-labelledby="nav-at-1634912247917-tab">
+            <pre id="a-1634912247917" class="rest-success json">{
+  "exact": "second value of p1",
+  "template": 1
+}</pre>
+          </div>
+        </div>
+    </div></td></tr></table></div><div id="nav--1736969287-1634912247972" role="tabpanel" aria-labelledby="nav--1736969287-1634912247972-tab" class="tab-pane fade active show"><table class="table table-sm caption-top"><tr data-case-title="date"><td style="width: 50%;"><div class="httpstyle"><pre class="doc-code language-http"><code>POST mirror/body HTTP/1.1
+</code></pre></div></td><td style="padding-left: 0;"><small><span class="exp-status rest-success">200</span><span class="badge badge-pill badge-light">15ms</span></small></td></tr><tr><td class="json exp-body" style="min-width: 20%; width: 50%;">{
+  "exact": "22.08.2020",
+  "template": 1
+}</td><td colspan="1" class="exp-body"><div class="card border-danger alert-warning shadow-lg">
+      
+      <div class="card-body mb-1 mt-1">
+        <div id="error-1148178336"> <pre class="doc-code language-json"><code>JSON documents are different:
+Different value found in node "exact", expected: &lt;"22.08.2019"&gt; but was: &lt;"22.08.2020"&gt;.
+</code></pre><div class="json rest-failure"><del class="expected">{
+  "exact": "22.08.2019",
+  "template": "${json-unit.any-number}"
+}<fail style="display: none;" /></del>
+<ins class="actual">{
+  "exact": "22.08.2020",
+  "template": 1
+}</ins></div></div>
+        
+      </div>
+    </div></td></tr></table></div><div class="tab-pane fade" id="nav--498886054-1634912247973" role="tabpanel" aria-labelledby="nav--498886054-1634912247973-tab"><table class="table table-sm caption-top"><tr data-case-title="empty"><td style="width: 50%;"><div class="httpstyle"><pre class="doc-code language-http"><code>POST mirror/body HTTP/1.1
+</code></pre></div></td><td style="padding-left: 0;"><small><span class="exp-status rest-success">200</span><span class="badge badge-pill badge-light">20ms</span></small></td></tr><tr><td class="json exp-body" style="min-width: 20%; width: 50%;">{
+  "exact": "",
+  "template": 1
+}</td><td colspan="1" class="exp-body"><div class="card border-danger alert-warning shadow-lg">
+      
+      <div class="card-body mb-1 mt-1">
+        <div id="error--502564228"> <pre class="doc-code language-json"><code>JSON documents are different:
+Different value found in node "exact", expected: &lt;"value is not empty"&gt; but was: &lt;""&gt;.
+</code></pre><div class="json rest-failure"><del class="expected">{
+  "exact": "value is not empty",
+  "template": "${json-unit.any-number}"
+}<fail style="display: none;" /></del>
+<ins class="actual">{
+  "exact": "",
+  "template": 1
+}</ins></div></div>
+        
+      </div>
+    </div></td></tr></table></div></div></div></div></td></tr>
+        </table></div>
+    </div></div>
+
+</div></main></div></div><div class="footer">Results generated by <a href="http://www.concordion.org" style="font-weight: bold; text-decoration: none; color: #89C;">Concordion</a><div class="testTime">in 146 ms on 22-Oct-2021 at 17:17:27 MSK</div></div></body>
+<button id="btnToTop" onclick="topFunction()" type="button" class="btn btn-light btn-sm text-muted me-1"><i class="fa fa-arrow-up"></i></button></html>

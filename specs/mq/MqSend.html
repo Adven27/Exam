@@ -1,0 +1,526 @@
+<?xml version="1.0" encoding="UTF-8"?><html xmlns:e="http://exam.extension.io" xmlns:cc="http://www.concordion.org/2007/concordion"><head><script type="text/javascript">document.addEventListener('DOMContentLoaded', function (event) {
+    Array.from(document.getElementsByClassName("nomnoml")).forEach(function(el) {
+        nomnoml.draw(el, el.textContent); 
+    });  
+});</script><script type="text/javascript">window.addEventListener('DOMContentLoaded', function (event) {
+    anchors.options = {
+        placement: 'left',
+        icon: '#'
+    };
+    anchors.add();
+    tocbot.init({
+        tocSelector: '.js-toc',
+        contentSelector: '.bd-content',
+        headingSelector: 'h1, h2, h3, h4, h5, h6',
+        hasInnerContainers: true,
+        collapseDepth: 3,
+        scrollSmooth: false,
+        fixedSidebarOffset: 'auto',
+        includeHtml: true
+    });
+    var collapseDepth = 3; 
+    jQuery( "#example-summary-badge" ).click(function() {
+        if (collapseDepth === 3) {
+            collapseDepth = 30;
+        } else {
+            collapseDepth = 3;
+        }
+        tocbot.refresh({
+            tocSelector: '.js-toc',
+            contentSelector: '.bd-content',
+            headingSelector: 'h1, h2, h3, h4, h5, h6',
+            hasInnerContainers: true,
+            collapseDepth: collapseDepth,
+            scrollSmooth: false,
+            fixedSidebarOffset: 'auto',
+            includeHtml: true
+        });
+        if (collapseDepth === 30) {
+            jQuery( ".toc-link" ).filter(function( index ) {
+                return jQuery( "i", this ).length !== 1
+            }).css("display", "none");
+        } else {
+            jQuery( ".toc-link" ).filter(function( index ) {
+                return jQuery( "i", this ).length !== 1
+            }).css("display", "unset");
+        }
+    });
+}); </script><script type="text/javascript">document.addEventListener('DOMContentLoaded', function (event) {
+    hljs.configure({
+        cssSelector: 'pre code, pre.highlight'
+    });
+    hljs.highlightAll();
+});</script><style>* {
+  font-family: Arial;
+}
+body {
+  padding: 32px;  
+}
+pre {
+  padding: 6px 28px 6px 28px;
+  background-color: #E8EEF7;
+}
+pre, pre *, code, code *, kbd {
+  font-family: Courier New, Courier;
+  font-size: 10pt;
+}
+h1, h1 * {
+  font-size: 24pt;	
+}
+p, td, th, li, .breadcrumbs {
+  font-size: 10pt;
+}
+p, li {
+  line-height: 140%;
+  max-width: 720px;
+}
+table {
+  border-collapse: collapse;
+  empty-cells: show;
+  margin: 8px 0px 8px 0px;
+}
+th, td {
+  border: 1px solid black;
+  padding: 3px;
+}
+td {
+  background-color: white;
+  vertical-align: top;
+}
+th {
+  background-color: #C3D9FF;
+}
+li {
+  margin-top: 6px;
+  margin-bottom: 6px; 
+}
+
+.example, :not(th)[cc\:example] {
+  padding: 6px 16px 6px 16px;
+  border: 1px solid #C3D9FF;
+  margin: 6px 0px 28px 0px;
+  background-color: #F5F9FD;
+}
+.example h3, [cc\:example] h3 {
+  margin-top: 8px;
+  margin-bottom: 8px;
+  font-size: 12pt;
+}
+
+p.success {
+  padding: 2px;
+}
+.success, .success * {
+  background-color: #afa !important;
+}
+.success pre {
+  background-color: #bbffbb;
+}
+.failure, .failure * {
+  background-color: #ffb0b0;
+  padding: 1px;
+}
+.failure .expected {
+  text-decoration: line-through;
+  color: #bb5050;
+}
+.ignored, .ignored * {
+  background-color: #f0f0f0 !important;	
+}
+
+ins {
+  text-decoration: none;	
+}
+
+.exceptionMessage {
+  background-color: #fdd;
+  font-family: Courier New, Courier, Monospace;
+  font-size: 10pt;
+  display: block;
+  font-weight: normal;
+  padding: 4px;
+  text-decoration: none !important;
+}
+.stackTrace, .stackTrace * {
+  font-weight: normal;
+}
+.stackTrace {
+  display: none;
+  padding: 1px 4px 4px 4px;
+  background-color: #fdd;
+  border-top: 1px dotted black;
+}
+.stackTraceExceptionMessage {
+  display: block;
+  font-family: Courier New, Courier, Monospace;
+  font-size: 8pt;
+  white-space: wrap;
+  padding: 1px 0px 1px 0px;
+}
+.stackTraceEntry {
+  white-space: nowrap;
+  font-family: Courier New, Courier, Monospace;
+  display: block;
+  font-size: 8pt;
+  padding: 1px 0px 1px 32px;
+}
+.stackTraceButton {
+  font-size: 8pt;
+  margin: 2px 8px 2px 0px;
+  font-weight: normal;
+  font-family: Arial;
+}
+
+.special {
+  font-style: italic;
+}
+.missing, .missing * {
+  background-color: #ff9999;
+  color:#bb5050;
+  text-decoration: line-through;
+}
+.surplus, .surplus * {
+  background-color: #ff9999;
+}
+.footer {
+  text-align: right;
+  margin-top: 40px;
+  font-size: 8pt;
+  width: 100%;
+  color: #999;
+}
+.footer .testTime {
+  padding: 2px 10px 0px 0px;
+}
+
+.idea {
+  font-size: 9pt;
+  color: #888;
+  font-style: italic;	
+}
+.tight li {
+  margin-top: 1px;
+  margin-bottom: 1px; 
+}
+.commentary {
+  float: right;
+  width: 200px;
+  background-color: #ffffd0;
+  padding:8px;
+  border: 3px solid #eeeeb0;	 
+  margin: 10px 0px 10px 10px;	 
+}
+.commentary, .commentary * {
+  font-size: 8pt;
+}
+</style><meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<link type="text/css" rel="stylesheet" href="../../ext/codemirror/codemirror.css" /><link type="text/css" rel="stylesheet" href="../../ext/codemirror/enable-codemirror.css" /><link type="text/css" rel="stylesheet" href="../../ext/codemirror/merge.css" /><link type="text/css" rel="stylesheet" href="../../ext/codemirror/foldgutter.css" /><link type="text/css" rel="stylesheet" href="../../ext/codemirror/simplescrollbar.css" /><script type="text/javascript" src="../../ext/codemirror/codemirror.js"></script><script type="text/javascript" src="../../ext/codemirror/enable-codemirror.js"></script><script type="text/javascript" src="../../ext/codemirror/javascript.js"></script><script type="text/javascript" src="../../ext/codemirror/xml.js"></script><script type="text/javascript" src="../../ext/codemirror/addon/mode/simple.js"></script><script type="text/javascript" src="../../ext/codemirror/http.js"></script><script type="text/javascript" src="../../ext/codemirror/diff_match_patch.js"></script><script type="text/javascript" src="../../ext/codemirror/merge.js"></script><script type="text/javascript" src="../../ext/codemirror/xml-fold.js"></script><script type="text/javascript" src="../../ext/codemirror/simplescrollbar.js"></script><link type="text/css" rel="stylesheet" href="../../ext/highlight/stackoverflow-light.min.css" /><script type="text/javascript" src="../../ext/highlight/highlight.min.js"></script><script type="text/javascript" src="../../ext/highlight/http.min.js"></script><script type="text/javascript" src="../../ext/highlight/java.min.js"></script><link type="text/css" rel="stylesheet" href="../../ext/tocbot/tocbot.css" /><script type="text/javascript" src="../../ext/tocbot/tocbot.min.js"></script><link type="text/css" rel="stylesheet" href="../../ext/fontawesome/css/all.min.css" /><link type="text/css" rel="stylesheet" href="../../ext/fontawesome/css/regular.min.css" /><link type="text/css" rel="stylesheet" href="../../ext/fontawesome/css/solid.min.css" /><link type="text/css" rel="stylesheet" href="../../ext/fontawesome/css/all.min.css" /><link type="text/css" rel="stylesheet" href="../../ext/bootstrap/bootstrap.min.css" /><link type="text/css" rel="stylesheet" href="../../ext/bootstrap/enable-bootstrap.css" /><link type="text/css" rel="stylesheet" href="../../ext/bootstrap/doc.min.css" /><link type="text/css" rel="stylesheet" href="../../ext/bootstrap/scrollToTop.css" /><script type="text/javascript" src="../../ext/bootstrap/bootstrap.min.js"></script><script type="text/javascript" src="../../ext/bootstrap/jquery-3.2.1.slim.min.js"></script><script type="text/javascript" src="../../ext/bootstrap/sidebar.js"></script><script type="text/javascript" src="../../ext/bootstrap/doc.min.js"></script><script type="text/javascript" src="../../ext/bootstrap/scrollToTop.js"></script><script type="text/javascript" src="../../ext/nomnoml/graphre.js"></script><script type="text/javascript" src="../../ext/nomnoml/nomnoml.min.js"></script></head><body><span class="breadcrumbs"><a href="../Specs.html">Exam</a> &gt;</span><div class="container-fluid"><div class="container-xxl my-md-4 bd-layout"><main class="bd-main order-1"><div class="bd-toc mt-4 mb-5 my-md-0 ps-xl-3 mb-lg-5 text-muted"><div class="row my-2 pb-2 border-bottom"><div class="col-9"><strong class="h6">On this page</strong></div><div class="col-2"><i id="example-summary-badge" class="fa fa-list-check"></i></div></div><nav id="table-of-contents" class="js-toc toc toc-right" /></div><div class="bd-content ps-lg-4" id="content">
+<h1>mq-send</h1>
+
+<p class="lead">Sends message to specified queue</p>
+
+<h2>Overview</h2>
+
+<pre var="cmd" value="e:mq-send" e:set="" style="display:none;">e:mq-send</pre>
+<pre var="cmdExample" cmdId="247eee30-3566-450d-a42f-124193a9c84e" style="display:none;">&lt;e:mq-send name="someQueue"&gt;
+    { "some": "message"}
+&lt;/e:mq-send&gt;</pre>
+<h3>Usage</h3><p>1. Configure a map of queue aliases to <code>MqTester</code> implementations via <a cc:run="concordion" href="MqPlugin.html" class="success">MqPlugin</a>.</p><p>
+        2. Use <code cc:echo="#cmd">e:mq-send</code> tag in specification:
+        <div class="card">
+            <div class="card-header filename">src/test/resources/specs/Specs.html</div>
+            <div class="card-body">
+                <pre class="doc-code language-xml"><code cc:echo="#cmdExample">&lt;e:mq-send name="someQueue"&gt;
+    { "some": "message"}
+&lt;/e:mq-send&gt;</code></pre>
+            </div>
+        </div>
+    </p>
+
+<h3>Attributes</h3>
+<table class="table" style="table-layout: fixed;">
+    <thead><tr><th style="width: 100px;">attribute</th><th style="width: 300px;">desc</th><th>example</th></tr></thead>
+    <tr>
+        <td><code>name</code></td>
+        <td>
+            <span>
+                Key from the map of a queue aliases to <strong>MqTester</strong> implementations
+                configured in <a cc:run="concordion" href="MqPlugin.html" class="success">MqPlugin</a>.
+            </span>
+        </td>
+        <td><var>Required</var>. <var>Default: -</var><pre class="doc-code language-json"><code>name="myQueue"</code></pre></td>
+    </tr>
+    <tr>
+        <td><code>from</code></td>
+        <td><span>Use content of the specified file as a value instead of the tag body (empty tag can be used)</span></td>
+        <td><var>Optional</var>. <var>Default: -</var><pre class="doc-code language-json"><code>from="/data/file.json"</code></pre></td>
+    </tr>
+    <tr>
+        <td><code>vars</code></td>
+        <td><span>Comma-separated list of <i>name=value</i> pairs to set as variables</span></td>
+        <td><var>Optional</var>. <var>Default: -</var><pre class="doc-code language-json"><code>vars="var1=1, var2={{now}}, var3=' preserved spaces string '"</code></pre></td>
+    </tr>
+    <tr>
+        <td><code>varsSeparator</code></td>
+        <td><span><i>name=value</i> pairs separator to use in <code>vars</code> attribute</span></td>
+        <td><var>Optional</var>. <var>Default: <strong>,</strong></var><pre class="doc-code language-json"><code>varsSeparator="|"</code></pre></td>
+    </tr>
+    <tr>
+        <td><code>headers</code></td>
+        <td>
+            <span>
+                Comma-separated <var>name=value</var> list of headers to pass to the <code>MqTester.send</code> method.
+                Specific implementation of the <code>MqTester</code> may use this list as the message headers.
+            </span>
+        </td>
+        <td><var>Optional</var>. <var>Default: empty</var><pre class="doc-code language-json"><code>headers="type=String, contentEncoding=UTF-8"</code></pre></td>
+    </tr>
+    <tr>
+        <td><code>params</code></td>
+        <td>
+            <span>
+                Comma-separated <var>name=value</var> list of parameters to pass to the <code>MqTester.send</code> method.
+                Specific implementation of the <code>MqTester</code> may use this list to fine-tune sending.
+            </span>
+        </td>
+        <td><var>Optional</var>. <var>Default: empty</var><pre class="doc-code language-json"><code>params="param1=1, param2=2"</code></pre></td>
+    </tr>
+    <tr>
+        <td><code>formatAs</code></td>
+        <td><span>Format to use for pretty-print message in report. Supported values: <i>json</i>, <i>xml</i>.</span></td>
+        <td><var>Optional</var>. <var>Default: <strong>json</strong> </var><pre class="doc-code language-json"><code>formatAs="xml"</code></pre></td>
+    </tr>
+    <tr>
+        <td><code>collapsable</code></td>
+        <td><span>Render message in report as a collapsable block.</span></td>
+        <td><var>Optional</var>. <var>Default: false</var><pre class="doc-code language-json"><code>collapsable="true"</code></pre></td>
+    </tr>
+</table>
+
+
+<h2>Examples</h2>
+
+
+
+<h3>Specifying message</h3>
+
+<p>
+    Message could be specified in the tag body:
+</p>
+<div xmlns:c="http://www.concordion.org/2007/concordion" name="Message in tag body" cmdId="25d6596e-ba34-4dfb-a0ab-d9cf964ab6d2" c:example="Message in tag body" c:status="ExpectedToPass" class="exam-example mb-3" data-type="example" e:example="" id="Message in tag body" data-summary-success="1" data-summary-ignore="0" data-summary-failure="0" data-summary-exception="0" data-summary-status="ExpectedToPass"><a style="font-size: 9pt; font-weight: bold; float: right; display: inline-block; margin-top: 20px; text-decoration: none; color: #89C;" href="MqSend[Message in tag body]LogViewer.html">Log File</a><div data-bs-toggle="collapse" data-bs-target="#e12ab7a22-cc9a-4aab-bc39-60acabc48a4c" aria-expanded="true"><h4 style="visibility: hidden; height:0;" class="test-class"><i class="example-badge fa fa-check m-1 text-success"></i>Message in tag body</h4><i class="far fa-caret-square-down"></i><span> </span><a class="bd-example-title text-muted fw-lighter">Message in tag body</a></div><div class="bd-example collapse show rounded bg-light bg-gradient" id="e12ab7a22-cc9a-4aab-bc39-60acabc48a4c"><div cmdId="f6405009-f890-46f3-b34d-93bddfa44325" e:before-each="">
+    <div cmdId="c56044e5-e806-4cd6-ad16-a0472d5e3228" e:given="" class="given"><p class="lead text-primary">Given</p><hr /><div name="myQueue" cmdId="3b4bf0b9-4d86-46b9-89e6-296a2a33b457" e:mq-purge=""><table class="table table-sm caption-top"><caption><i class="far fa-envelope-open me-1"> </i><span>myQueue purged</span></caption></table></div></div>
+</div>
+    <div cmdId="30d084c3-cb9f-4016-9d1a-d3af547e3761" e:when="" class="when"><p class="lead text-warning">When</p><hr />
+        <div class="mb-4 mt-4"><mark>The following markup:</mark><pre class="doc-code language-xml mt-2"><code>&lt;e:mq-send name="myQueue"&gt;{"date" : "{{now 'yyyy-MM-dd'}}"}&lt;/e:mq-send&gt;</code></pre><mark>will be rendered as:</mark></div><div name="myQueue" print="true" cmdId="ef0b09f4-5522-474f-89af-d465f870d343" e:mq-send="" class="mq-send"><table class="table table-sm caption-top table-borderless"><caption><i class="fa fa-envelope me-1"> </i><span>myQueue</span></caption><tr><td /></tr><tr><td><pre class="json">{"date" : "2021-10-22"}</pre></td></tr></table></div>
+    </div>
+    <div cmdId="45f44a12-35f7-4c3f-8b8c-348ee957c85f" e:then="" class="then"><p class="lead text-success">Then</p><hr />
+        <div name="myQueue" cmdId="64f6f97e-d969-4ae1-8fab-87aaa6a2a092" e:mq-check="" class="mq-check"><table class="table table-sm caption-top"><caption><i class="fa fa-envelope-open me-1"> </i><span>myQueue</span></caption><tr><td /></tr><tr><td style="margin: 0" class="json exp-body rest-success">{
+  "date": "2021-10-22"
+}</td></tr></table></div>
+    </div>
+</div></div>
+
+<p>
+    Or in the file:
+</p>
+<div xmlns:c="http://www.concordion.org/2007/concordion" name="Message in file" cmdId="086cfa39-0857-4a6d-a192-48bfc1002d85" c:example="Message in file" c:status="ExpectedToPass" class="exam-example mb-3" data-type="example" e:example="" id="Message in file" data-summary-success="1" data-summary-ignore="0" data-summary-failure="0" data-summary-exception="0" data-summary-status="ExpectedToPass"><a style="font-size: 9pt; font-weight: bold; float: right; display: inline-block; margin-top: 20px; text-decoration: none; color: #89C;" href="MqSend[Message in file]LogViewer.html">Log File</a><div data-bs-toggle="collapse" data-bs-target="#ec6c76891-f218-4d5d-8f9f-c10167eb5dda" aria-expanded="true"><h4 style="visibility: hidden; height:0;" class="test-class"><i class="example-badge fa fa-check m-1 text-success"></i>Message in file</h4><i class="far fa-caret-square-down"></i><span> </span><a class="bd-example-title text-muted fw-lighter">Message in file</a></div><div class="bd-example collapse show rounded bg-light bg-gradient" id="ec6c76891-f218-4d5d-8f9f-c10167eb5dda"><div cmdId="f6405009-f890-46f3-b34d-93bddfa44325" e:before-each="">
+    <div cmdId="c56044e5-e806-4cd6-ad16-a0472d5e3228" e:given="" class="given"><p class="lead text-primary">Given</p><hr /><div name="myQueue" cmdId="3b4bf0b9-4d86-46b9-89e6-296a2a33b457" e:mq-purge=""><table class="table table-sm caption-top"><caption><i class="far fa-envelope-open me-1"> </i><span>myQueue purged</span></caption></table></div></div>
+</div>
+    <div cmdId="fac2cbfb-a730-435c-8173-75e89ad16473" e:when="" class="when"><p class="lead text-warning">When</p><hr />
+        <div class="mb-4 mt-4"><mark>The following markup:</mark><pre class="doc-code language-xml mt-2"><code>&lt;e:mq-send name="myQueue" from="/specs/mq/data/message.json"/&gt;</code></pre><mark>will be rendered as:</mark></div><div name="myQueue" from="/specs/mq/data/message.json" print="true" cmdId="8ed2e832-be89-4f45-998e-05d7689ceabd" e:mq-send="" class="mq-send"><table class="table table-sm caption-top table-borderless"><caption><i class="fa fa-envelope me-1"> </i><span>myQueue</span></caption><tr><td /></tr><tr><td><pre class="json">{
+  "date": "2021-10-22"
+}</pre></td></tr></table></div>
+    </div>
+    <div cmdId="ed9d49e5-f0b3-43de-8cc8-ca6e4292ce88" e:then="" class="then"><p class="lead text-success">Then</p><hr />
+        Queue has the message:
+        <div name="myQueue" cmdId="b38e9f77-2d3b-4c49-8051-46e7c3cd6a96" e:mq-check="" class="mq-check"><table class="table table-sm caption-top"><caption><i class="fa fa-envelope-open me-1"> </i><span>myQueue</span></caption><tr><td /></tr><tr><td style="margin: 0" class="json exp-body rest-success">{
+  "date": "2021-10-22"
+}</td></tr></table></div>
+    </div>
+</div></div>
+
+<p>
+    Specified message value basically is a <a href="https://github.com/jknack/handlebars.java">Handlebar template</a>
+    hence <strong>context variables</strong> and <strong>handlebars helpers</strong> may be used to resolve the final message.
+</p>
+<p>
+    The <code>vars</code> attribute could be used to conveniently provide context variables for message template.
+</p>
+<div xmlns:c="http://www.concordion.org/2007/concordion" name="Message templates" cmdId="35cacef4-614e-42d6-b0b6-672b22b13b7b" c:example="Message templates" c:status="ExpectedToPass" class="exam-example mb-3" data-type="example" e:example="" id="Message templates" data-summary-success="1" data-summary-ignore="0" data-summary-failure="0" data-summary-exception="0" data-summary-status="ExpectedToPass"><a style="font-size: 9pt; font-weight: bold; float: right; display: inline-block; margin-top: 20px; text-decoration: none; color: #89C;" href="MqSend[Message templates]LogViewer.html">Log File</a><div data-bs-toggle="collapse" data-bs-target="#e328cd68c-e37b-4379-8868-a64d0cb7acc3" aria-expanded="true"><h4 style="visibility: hidden; height:0;" class="test-class"><i class="example-badge fa fa-check m-1 text-success"></i>Message templates</h4><i class="far fa-caret-square-down"></i><span> </span><a class="bd-example-title text-muted fw-lighter">Message templates</a></div><div class="bd-example collapse show rounded bg-light bg-gradient" id="e328cd68c-e37b-4379-8868-a64d0cb7acc3"><div cmdId="f6405009-f890-46f3-b34d-93bddfa44325" e:before-each="">
+    <div cmdId="c56044e5-e806-4cd6-ad16-a0472d5e3228" e:given="" class="given"><p class="lead text-primary">Given</p><hr /><div name="myQueue" cmdId="3b4bf0b9-4d86-46b9-89e6-296a2a33b457" e:mq-purge=""><table class="table table-sm caption-top"><caption><i class="far fa-envelope-open me-1"> </i><span>myQueue purged</span></caption></table></div></div>
+</div>
+    <div cmdId="95280f6d-fe99-4409-b159-b19abce2d971" e:when="" class="when"><p class="lead text-warning">When</p><hr />
+        <div class="mb-4 mt-4"><mark>The following markup:</mark><pre class="doc-code language-xml mt-2"><code>&lt;e:mq-send name="myQueue" from="/data/mq/msg.json" vars="myVar1={{now 'yyyy-MM-dd'}} | myVar2={{date myVar1 minus='1 d'}} | myVar3=str with commas , signs" varsSeparator="|"/&gt;</code></pre><mark>will be rendered as:</mark></div><div name="myQueue" from="/data/mq/msg.json" print="true" cmdId="897a2f13-c97d-40d9-9531-acb46d2d42d6" e:mq-send="" class="mq-send"><table class="table table-sm caption-top table-borderless"><caption><i class="fa fa-envelope me-1"> </i><span>myQueue</span></caption><tr><td /></tr><tr><td><pre class="json">{
+  "date": "2021-10-22",
+  "var1": "2021-10-22",
+  "var2": "Thu Oct 21 00:00:00 MSK 2021",
+  "var3": "str with commas , signs"
+}</pre></td></tr></table></div>
+    </div>
+    <div cmdId="617d6092-f074-4f5f-a31b-5af3af35489f" e:then="" class="then"><p class="lead text-success">Then</p><hr />
+        Queue has the message:
+        <div name="myQueue" from="/data/mq/msg.json" cmdId="855e678f-6d88-418b-8d9a-6cc5f9bf0b4c" e:mq-check="" class="mq-check"><table class="table table-sm caption-top"><caption><i class="fa fa-envelope-open me-1"> </i><span>myQueue</span></caption><tr><td /></tr><tr><td style="margin: 0" class="json exp-body rest-success">{
+  "date": "2021-10-22",
+  "var1": "2021-10-22",
+  "var2": "Thu Oct 21 00:00:00 MSK 2021",
+  "var3": "str with commas , signs"
+}</td></tr></table></div>
+    </div>
+</div></div>
+
+<h3>Specifying message headers</h3>
+<p>
+    The <code>headers</code> attribute could be used to pass desired message headers to the <code>MqTester</code> implementation.
+    <strong>Propagating</strong> this headers to the actual message is the <strong>MqTester implementation responsibility</strong>.
+</p>
+<div xmlns:c="http://www.concordion.org/2007/concordion" name="Message headers" cmdId="14240b6d-3762-4ffa-8077-99228e0cb20a" c:example="Message headers" c:status="ExpectedToPass" class="exam-example mb-3" data-type="example" e:example="" id="Message headers" data-summary-success="5" data-summary-ignore="0" data-summary-failure="0" data-summary-exception="0" data-summary-status="ExpectedToPass"><a style="font-size: 9pt; font-weight: bold; float: right; display: inline-block; margin-top: 20px; text-decoration: none; color: #89C;" href="MqSend[Message headers]LogViewer.html">Log File</a><div data-bs-toggle="collapse" data-bs-target="#e8c26842f-0835-4577-bd95-4208b7d57fbb" aria-expanded="true"><h4 style="visibility: hidden; height:0;" class="test-class"><i class="example-badge fa fa-check m-1 text-success"></i>Message headers</h4><i class="far fa-caret-square-down"></i><span> </span><a class="bd-example-title text-muted fw-lighter">Message headers</a></div><div class="bd-example collapse show rounded bg-light bg-gradient" id="e8c26842f-0835-4577-bd95-4208b7d57fbb"><div cmdId="f6405009-f890-46f3-b34d-93bddfa44325" e:before-each="">
+    <div cmdId="c56044e5-e806-4cd6-ad16-a0472d5e3228" e:given="" class="given"><p class="lead text-primary">Given</p><hr /><div name="myQueue" cmdId="3b4bf0b9-4d86-46b9-89e6-296a2a33b457" e:mq-purge=""><table class="table table-sm caption-top"><caption><i class="far fa-envelope-open me-1"> </i><span>myQueue purged</span></caption></table></div></div>
+</div>
+    <div cmdId="5722d029-1934-408a-9a8b-e6757a58175b" e:when="" class="when"><p class="lead text-warning">When</p><hr />
+        <pre var="id" cmdId="849d0222-96a3-4f8d-9e4b-eebdb9141e31" value="some-id">some-id</pre>
+        <div class="mb-4 mt-4"><mark>The following markup:</mark><pre class="doc-code language-xml mt-2"><code>&lt;e:mq-send name="myQueue" headers="id={{id}}, contentEncoding=UTF-8"&gt;{}&lt;/e:mq-send&gt;</code></pre><mark>will be rendered as:</mark></div><div name="myQueue" print="true" cmdId="85539d63-5cdc-4fe8-b362-cf5c7f5e5676" e:mq-send="" class="mq-send"><table class="table table-sm caption-top table-borderless"><caption><i class="fa fa-envelope me-1"> </i><span>myQueue</span></caption><tr><td><table class="table table-sm caption-top"><caption class="small">Headers</caption><tr><td>contentEncoding</td><td>UTF-8</td></tr><tr><td>id</td><td>some-id</td></tr></table></td></tr><tr><td><pre class="json">{}</pre></td></tr></table></div>
+    </div>
+    <div cmdId="5c1e6baa-da53-4d23-80a1-3cd6c759ad04" e:then="" class="then"><p class="lead text-success">Then</p><hr />
+        Queue has the message with headers:
+        <div name="myQueue" cmdId="5608c943-7003-4b9b-bf14-505a2b178384" e:mq-check="" class="mq-check"><table class="table table-sm caption-top"><caption><i class="fa fa-envelope-open me-1"> </i><span>myQueue</span></caption><tr><td><table class="table table-sm caption-top"><caption class="small">Headers</caption><tr><td class="rest-success">contentEncoding</td><td class="rest-success">UTF-8</td></tr><tr><td class="rest-success">id</td><td class="rest-success">some-id</td></tr></table></td></tr><tr><td style="margin: 0" class="json exp-body rest-success">{}</td></tr></table></div>
+    </div>
+</div></div>
+
+<h3>Pretty-printing</h3>
+
+<h2>Collapsable view</h2>
+
+<p>
+    Big messages may be collapsed in report via the <code>collapsable</code> attribute.
+</p>
+<div xmlns:c="http://www.concordion.org/2007/concordion" name="collapsable messages" cmdId="5b891f2c-7531-4a9d-a9b4-14cb01628a09" c:example="collapsable messages" c:status="ExpectedToPass" class="exam-example mb-3" data-type="example" e:example="" id="collapsable messages" data-summary-success="1" data-summary-ignore="0" data-summary-failure="0" data-summary-exception="0" data-summary-status="ExpectedToPass"><a style="font-size: 9pt; font-weight: bold; float: right; display: inline-block; margin-top: 20px; text-decoration: none; color: #89C;" href="MqSend[collapsable messages]LogViewer.html">Log File</a><div data-bs-toggle="collapse" data-bs-target="#eb98aae6a-bbc3-4e6c-83d3-0bd4a2b66ad1" aria-expanded="true"><h3 style="visibility: hidden; height:0;" class="test-class"><i class="example-badge fa fa-check m-1 text-success"></i>collapsable messages</h3><i class="far fa-caret-square-down"></i><span> </span><a class="bd-example-title text-muted fw-lighter">collapsable messages</a></div><div class="bd-example collapse show rounded bg-light bg-gradient" id="eb98aae6a-bbc3-4e6c-83d3-0bd4a2b66ad1"><div cmdId="f6405009-f890-46f3-b34d-93bddfa44325" e:before-each="">
+    <div cmdId="c56044e5-e806-4cd6-ad16-a0472d5e3228" e:given="" class="given"><p class="lead text-primary">Given</p><hr /><div name="myQueue" cmdId="3b4bf0b9-4d86-46b9-89e6-296a2a33b457" e:mq-purge=""><table class="table table-sm caption-top"><caption><i class="far fa-envelope-open me-1"> </i><span>myQueue purged</span></caption></table></div></div>
+</div>
+    <div cmdId="d8969425-b485-46b4-9007-c091ceddc8b9" e:then="" class="then"><p class="lead text-success">Then</p><hr />
+        <div class="mb-4 mt-4"><mark>The following markup:</mark><pre class="doc-code language-xml mt-2"><code>&lt;e:mq-send name="myQueue" from="/data/mq/big.json" collapsable="true"/&gt;</code></pre><mark>will be rendered as:</mark></div><div name="myQueue" from="/data/mq/big.json" print="true" cmdId="23c4b459-6903-48e9-a859-63900b4bcaf8" e:mq-send="" class="mq-send"><table class="table table-sm caption-top table-borderless"><caption><i class="fa fa-envelope me-1"> </i><span>myQueue</span></caption><tr><td /></tr><tr><td class="exp-body"><div style="position: relative"><div data-bs-toggle="collapse" data-bs-target="#e8cae9b52-48c5-4249-82ca-37036f95f91b" aria-expanded="true" class="far fa-caret-square-down default-collapsed"></div><div id="e8cae9b52-48c5-4249-82ca-37036f95f91b" class="json file collapse show">[{
+  "index": 0,
+  "isActive": false,
+  "age": 28,
+  "name": "LongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLong"
+}, {
+  "index": 1,
+  "isActive": true,
+  "age": 29,
+  "name": "Kasey Burris"
+}, {
+  "index": 2,
+  "isActive": false,
+  "age": 40,
+  "name": "Antoinette Morse"
+}, {
+  "index": 3,
+  "isActive": true,
+  "age": 32,
+  "name": "Lilia Ramirez"
+}, {
+  "index": 4,
+  "isActive": true,
+  "age": 35,
+  "name": "Lily Joyner"
+}, {
+  "index": 5,
+  "isActive": false,
+  "age": 22,
+  "name": "Ronda Norton"
+}, {
+  "index": 6,
+  "isActive": false,
+  "age": 31,
+  "name": "Tiffany Davidson"
+}, {
+  "index": 7,
+  "isActive": false,
+  "age": 40,
+  "name": "Allie Wise"
+}, {
+  "index": 8,
+  "isActive": true,
+  "age": 40,
+  "name": "Giles Lopez"
+}, {
+  "index": 9,
+  "isActive": false,
+  "age": 25,
+  "name": "Ramsey Cain"
+}]</div></div></td></tr></table></div>
+        <div name="myQueue" from="/data/mq/big.json" cmdId="31516355-cfd2-4edc-9ed2-bd6fa0f3e454" e:mq-check="" class="mq-check"><table class="table table-sm caption-top"><caption><i class="fa fa-envelope-open me-1"> </i><span>myQueue</span></caption><tr><td /></tr><tr><td class="exp-body"><div style="position: relative"><div data-bs-toggle="collapse" data-bs-target="#e95d5787c-90b2-46bb-82e1-267fa99fa2a3" aria-expanded="true" class="far fa-caret-square-down default-collapsed"></div><div id="e95d5787c-90b2-46bb-82e1-267fa99fa2a3" style="margin: 0" class="json file collapse show rest-success">[{
+  "index": 0,
+  "isActive": false,
+  "age": 28,
+  "name": "LongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLong"
+}, {
+  "index": 1,
+  "isActive": true,
+  "age": 29,
+  "name": "Kasey Burris"
+}, {
+  "index": 2,
+  "isActive": false,
+  "age": 40,
+  "name": "Antoinette Morse"
+}, {
+  "index": 3,
+  "isActive": true,
+  "age": 32,
+  "name": "Lilia Ramirez"
+}, {
+  "index": 4,
+  "isActive": true,
+  "age": 35,
+  "name": "Lily Joyner"
+}, {
+  "index": 5,
+  "isActive": false,
+  "age": 22,
+  "name": "Ronda Norton"
+}, {
+  "index": 6,
+  "isActive": false,
+  "age": 31,
+  "name": "Tiffany Davidson"
+}, {
+  "index": 7,
+  "isActive": false,
+  "age": 40,
+  "name": "Allie Wise"
+}, {
+  "index": 8,
+  "isActive": true,
+  "age": 40,
+  "name": "Giles Lopez"
+}, {
+  "index": 9,
+  "isActive": false,
+  "age": 25,
+  "name": "Ramsey Cain"
+}]</div></div></td></tr></table></div>
+    </div>
+</div></div>
+
+<h2>Highlighting</h2>
+
+<p>
+    To hint report about the message format the <code>formatAs</code> attribute can be used.
+    Supported values: <var>xml</var>, <var>json</var> (default).
+</p>
+<div xmlns:c="http://www.concordion.org/2007/concordion" name="pretty print messages" cmdId="72d35230-ba82-4ee6-af5e-3c1b69dae94c" c:example="pretty print messages" c:status="ExpectedToPass" class="exam-example mb-3" data-type="example" e:example="" id="pretty print messages" data-summary-success="0" data-summary-ignore="0" data-summary-failure="0" data-summary-exception="0" data-summary-status="ExpectedToPass"><div data-bs-toggle="collapse" data-bs-target="#eb174188e-81d6-4d6e-a7b4-fd7f68b77b0f" aria-expanded="true"><h3 style="visibility: hidden; height:0;" class="test-class"><i class="example-badge fa fa-check m-1 text-success"></i>pretty print messages</h3><i class="far fa-caret-square-down"></i><span> </span><a class="bd-example-title text-muted fw-lighter">pretty print messages</a></div><div class="bd-example collapse show rounded bg-light bg-gradient" id="eb174188e-81d6-4d6e-a7b4-fd7f68b77b0f"><div cmdId="f6405009-f890-46f3-b34d-93bddfa44325" e:before-each="">
+    <div cmdId="c56044e5-e806-4cd6-ad16-a0472d5e3228" e:given="" class="given"><p class="lead text-primary">Given</p><hr /><div name="myQueue" cmdId="3b4bf0b9-4d86-46b9-89e6-296a2a33b457" e:mq-purge=""><table class="table table-sm caption-top"><caption><i class="far fa-envelope-open me-1"> </i><span>myQueue purged</span></caption></table></div></div>
+</div>
+    <div cmdId="cc46cbde-62f4-49a7-8226-f23e3087f4a4" e:when="" class="when"><p class="lead text-warning">When</p><hr />
+        <div class="mb-4 mt-4"><mark>The following markup:</mark><pre class="doc-code language-xml mt-2"><code>&lt;e:mq-send name="myQueue" from="/data/mq/some.xml" formatAs="xml"/&gt;</code></pre><mark>will be rendered as:</mark></div><div name="myQueue" from="/data/mq/some.xml" print="true" cmdId="46ab3366-8473-422c-9ba2-b2e2adc6ed96" e:mq-send="" class="mq-send"><table class="table table-sm caption-top table-borderless"><caption><i class="fa fa-envelope me-1"> </i><span>myQueue</span></caption><tr><td /></tr><tr><td><pre class="xml">&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;
+&lt;data&gt;
+    &lt;date&gt;2021-10-22&lt;/date&gt;
+&lt;/data&gt;</pre></td></tr></table></div>
+    </div>
+    <div cmdId="d1c44828-9744-4951-94ca-be4c37b07d76" e:when="" class="when"><p class="lead text-warning">When</p><hr />
+        <div class="mb-4 mt-4"><mark>The following markup:</mark><pre class="doc-code language-xml mt-2"><code>&lt;e:mq-send name="myQueue" from="/data/mq/some.txt"/&gt;</code></pre><mark>will be rendered as:</mark></div><div name="myQueue" from="/data/mq/some.txt" print="true" cmdId="c85dfe15-232b-4d7f-9879-6301336bfd17" e:mq-send="" class="mq-send"><table class="table table-sm caption-top table-borderless"><caption><i class="fa fa-envelope me-1"> </i><span>myQueue</span></caption><tr><td /></tr><tr><td><pre class="txt">date 2021-10-22</pre></td></tr></table></div>
+    </div>
+</div></div>
+
+</div></main></div></div><div class="footer">Results generated by <a href="http://www.concordion.org" style="font-weight: bold; text-decoration: none; color: #89C;">Concordion</a><div class="testTime">in 115 ms on 22-Oct-2021 at 17:17:29 MSK</div></div></body>
+<button id="btnToTop" onclick="topFunction()" type="button" class="btn btn-light btn-sm text-muted me-1"><i class="fa fa-arrow-up"></i></button></html>
