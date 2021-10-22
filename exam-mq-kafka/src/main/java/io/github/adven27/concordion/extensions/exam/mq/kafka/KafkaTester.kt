@@ -24,13 +24,13 @@ import java.util.concurrent.TimeUnit
 
 @Suppress("unused")
 open class KafkaConsumeAndSendTester @JvmOverloads constructor(
-    sutConsumerGroup: String,
     bootstrapServers: String,
     topic: String,
+    sutConsumerGroup: String? = null,
     properties: MutableMap<String, Any?> = (DEFAULT_PRODUCER_CONFIG + DEFAULT_CONSUMER_CONFIG).toMutableMap(),
     pollTimeout: Duration = ofMillis(POLL_MILLIS),
     accumulateOnRetries: Boolean = false
-) : KafkaConsumeOnlyTester(sutConsumerGroup, bootstrapServers, topic, properties, pollTimeout, accumulateOnRetries) {
+) : KafkaConsumeOnlyTester(bootstrapServers, topic, sutConsumerGroup, properties, pollTimeout, accumulateOnRetries) {
     protected lateinit var producer: KafkaProducer<String, String>
 
     override fun start() {
@@ -46,7 +46,7 @@ open class KafkaConsumeAndSendTester @JvmOverloads constructor(
     }
 
     override fun send(message: MqTester.Message, params: Map<String, String>) =
-        logger.info("Sending to {}...", topic).also {
+        logger.debug("Sending to {}...", topic).also {
             producer.send(record(message, partitionFrom(params), keyFrom(params))).get().apply {
                 logger.info(
                     "Sent to topic {} and partition {} with offset {}:\n{}", topic(), partition(), offset(), message
@@ -60,7 +60,6 @@ open class KafkaConsumeAndSendTester @JvmOverloads constructor(
 
     companion object : KLogging() {
         private const val POLL_MILLIS: Long = 1500
-        private const val FETCH_CONSUMER_GROUP_OFFSETS_TIMEOUT: Long = 10
         private const val PARAM_PARTITION = "partition"
         private const val PARAM_KEY = "key"
 
@@ -77,9 +76,9 @@ open class KafkaConsumeAndSendTester @JvmOverloads constructor(
 
 @Suppress("unused", "TooManyFunctions")
 open class KafkaConsumeOnlyTester @JvmOverloads constructor(
-    protected val sutConsumerGroup: String,
     protected val bootstrapServers: String,
     protected val topic: String,
+    protected val sutConsumerGroup: String?,
     protected val properties: MutableMap<String, Any?> = DEFAULT_CONSUMER_CONFIG.toMutableMap(),
     protected val pollTimeout: Duration = ofMillis(POLL_MILLIS),
     protected val accumulateOnRetries: Boolean = false
@@ -91,8 +90,9 @@ open class KafkaConsumeOnlyTester @JvmOverloads constructor(
 
     override fun start() {
         properties[ConsumerConfig.GROUP_ID_CONFIG] = "kafka-tester-$topic"
-        properties[ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG] = bootstrapServers
-        consumer = KafkaConsumer<String, String>(properties).apply { subscribe(listOf(topic)) }
+        consumer = KafkaConsumer<String, String>(properties).apply {
+            assign(partitionsFor(topic).map { TopicPartition(it.topic(), it.partition()) })
+        }
         adminClient = AdminClient.create(properties)
         logger.info("KafkaTester started with properties:\n{}", properties)
     }
@@ -101,11 +101,11 @@ open class KafkaConsumeOnlyTester @JvmOverloads constructor(
         consumer.close(ofSeconds(4))
     }
 
-    override fun purge() = logger.info("Purging topic {}...", topic).also {
+    override fun purge() = logger.debug("Purging topic {}...", topic).also {
         adminClient.deleteRecords(
             listLatestOffsets()
                 .map { it.key to RecordsToDelete.beforeOffset(it.value.offset()) }
-                .associate { it.apply { logger.info("Purging partition {}", this) } }
+                .associate { it.apply { logger.debug("Purging partition {}", this) } }
         )
         logger.info("Topic {} is purged", topic)
     }
@@ -129,20 +129,19 @@ open class KafkaConsumeOnlyTester @JvmOverloads constructor(
     }
 
     private fun sutOffsets(): Map<TopicPartition, OffsetAndMetadata> =
-        adminClient.listConsumerGroupOffsets(sutConsumerGroup)
+        if (sutConsumerGroup == null) emptyMap()
+        else adminClient.listConsumerGroupOffsets(sutConsumerGroup)
             .partitionsToOffsetAndMetadata()[KAFKA_FETCHING_TIMEOUT, TimeUnit.SECONDS]
             .filterKeys { it.topic() == topic }
-            .apply { logger.info("SUT [consumerGroup: {}] offsets: {}", sutConsumerGroup, this) }
+            .apply { logger.debug("SUT [consumer group: {}] offsets: {}", sutConsumerGroup, this) }
 
     private fun KafkaConsumer<String, String>.seekTo(offsets: Map<TopicPartition, OffsetAndMetadata>) {
         if (offsets.isEmpty()) {
-            logger.info("Offsets are empty - seek from beginning...")
-            seekToBeginning()
+            logger.debug("Offsets are empty - seek to beginning...").also { seekToBeginning(assignment()) }
         } else {
-            offsets.entries.map { it.key to it.value.offset() }.forEach { (partition, committed) ->
-                val end = endOf(partition)
-                logger.info("Committed offset: {} {}", "$committed/$end", partition)
-                if (committed != end) seekTo(committed, partition)
+            offsets.entries.forEach { (partition, committed) ->
+                logger.debug("Seek to committed offset: {} in {}", committed, partition)
+                seek(partition, committed)
             }
         }
     }
@@ -150,21 +149,9 @@ open class KafkaConsumeOnlyTester @JvmOverloads constructor(
     private fun endOf(p: TopicPartition): Long =
         adminClient.listOffsets(mapOf(p to OffsetSpec.latest())).all().get()[p]?.offset() ?: 0L
 
-    private fun KafkaConsumer<String, String>.seekToBeginning() {
-        // At this point, there is no heartbeat from consumer and seek() wont work... So call poll() first
-        poll(pollTimeout)
-        seekToBeginning(assignment())
-    }
-
-    private fun KafkaConsumer<String, String>.seekTo(pointer: Long, p: TopicPartition) {
-        // At this point, there is no heartbeat from consumer and seek() wont work... So call poll() first
-        poll(pollTimeout)
-        seek(p, pointer)
-    }
-
     private fun KafkaConsumer<String, String>.consume(): List<MqTester.Message> =
-        logger.info("Consuming events...").let {
-            poll(pollTimeout).apply { commitAsync() }.map {
+        logger.debug("Consuming events... {}ms", pollTimeout.toMillis()).let {
+            poll(pollTimeout).map {
                 MqTester.Message(it.value()).apply {
                     logger.info("Event consumed:\n{}", this)
                 }
@@ -172,7 +159,7 @@ open class KafkaConsumeOnlyTester @JvmOverloads constructor(
         }
 
     companion object : KLogging() {
-        private const val POLL_MILLIS: Long = 1500
+        private const val POLL_MILLIS: Long = 50
         private const val KAFKA_FETCHING_TIMEOUT: Long = 10
 
         @JvmField
