@@ -83,8 +83,7 @@ open class ExamAssertCommand(private val listener: VerifyListener) : AbstractCom
         actual: Any,
         expected: Any,
         error: Throwable
-    ) =
-        failure(resultRecorder, element.el(), actual, expected, error)
+    ) = failure(resultRecorder, element.el(), actual, expected, error)
 
     protected fun ResultRecorder.pass(element: Html): Html = element.also { success(this, it) }
 
