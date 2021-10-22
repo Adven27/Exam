@@ -61,11 +61,11 @@ fun Handlebars.resolveObj(eval: Evaluator, placeholder: String): Any? {
     return HB_RESULT.get()
 }
 
-interface ExamHelper<T> : Helper<T> {
+interface ExamHelper : Helper<Any?> {
     val example: String
     val context: Map<String, Any?>
     val expected: Any?
-    val exampleOptions: Map<String, String>
+    val options: Map<String, String>
 
     fun describe() =
         "$example will produce: ${expectedStr()} ${if (context.isEmpty()) "" else "(given context has variables: $context)"}"

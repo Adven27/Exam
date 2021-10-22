@@ -10,12 +10,13 @@ import io.github.adven27.concordion.extensions.exam.core.resolveToObj
 import io.github.adven27.concordion.extensions.exam.core.toDate
 import java.time.LocalDate
 
+@Suppress("EnumNaming")
 enum class MiscHelpers(
     override val example: String,
     override val context: Map<String, Any?> = emptyMap(),
     override val expected: Any? = "",
-    override val exampleOptions: Map<String, String> = emptyMap()
-) : ExamHelper<Any?> {
+    override val options: Map<String, String> = emptyMap()
+) : ExamHelper {
     set("""{{set 1 "someVar"}}""", mapOf(), 1, mapOf()) {
         override fun invoke(context: Any?, options: Options): Any? = options.params.map {
             options.evaluator().setVariable("#$it", context)
@@ -65,9 +66,9 @@ enum class MiscHelpers(
 
     private fun validate(options: Options) {
         if ("resolve" == this.name || "resolveFile" == this.name) return
-        val unexpected = options.hash.keys - exampleOptions.keys
+        val unexpected = options.hash.keys - this.options.keys
         if (unexpected.isNotEmpty()) throw IllegalArgumentException(
-            "Wrong options for helper '${options.fn.text()}': found '$unexpected', expected any of '$exampleOptions'"
+            "Wrong options for helper '${options.fn.text()}': found '$unexpected', expected any of '${this.options}'"
         )
     }
 

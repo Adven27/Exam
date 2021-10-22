@@ -6,7 +6,7 @@ import io.github.adven27.concordion.extensions.exam.core.commands.ExamCommand
 import io.github.adven27.concordion.extensions.exam.core.commands.ExamVerifyCommand
 import io.github.adven27.concordion.extensions.exam.core.content
 import io.github.adven27.concordion.extensions.exam.core.errorMessage
-import io.github.adven27.concordion.extensions.exam.core.handlebars.PLACEHOLDER_TYPE
+import io.github.adven27.concordion.extensions.exam.core.handlebars.matchers.PLACEHOLDER_TYPE
 import io.github.adven27.concordion.extensions.exam.core.html.Html
 import io.github.adven27.concordion.extensions.exam.core.html.NAME
 import io.github.adven27.concordion.extensions.exam.core.html.RowParserEval

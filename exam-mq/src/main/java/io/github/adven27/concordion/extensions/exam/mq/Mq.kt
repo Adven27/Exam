@@ -24,11 +24,11 @@ import org.junit.Assert
 
 class MqResultRenderer : VerifyListener {
     override fun successReported(event: VerifySuccessEvent) {
-        //TODO("Not yet implemented")
+        // TODO("Not yet implemented")
     }
 
     override fun failureReported(event: VerifyFailureEvent) {
-       // TODO("Not yet implemented")
+        // TODO("Not yet implemented")
     }
 }
 

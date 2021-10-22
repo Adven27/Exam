@@ -77,8 +77,8 @@ enum class WsHelperSource(
     override val example: String,
     override val context: Map<String, Any?> = emptyMap(),
     override val expected: Any? = "",
-    override val exampleOptions: Map<String, String> = emptyMap()
-) : ExamHelper<Any?> {
+    override val options: Map<String, String> = emptyMap()
+) : ExamHelper {
     responseBody(
         "{{responseBody 'name'}}",
         mapOf("exam_response" to "{\"name\" : \"adam\"}".response()),

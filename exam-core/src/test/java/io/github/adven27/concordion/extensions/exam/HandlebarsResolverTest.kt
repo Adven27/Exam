@@ -2,9 +2,10 @@ package io.github.adven27.concordion.extensions.exam
 
 import com.github.jknack.handlebars.Handlebars
 import com.github.jknack.handlebars.HandlebarsException
+import io.github.adven27.concordion.extensions.exam.core.handlebars.ExamHelper
 import io.github.adven27.concordion.extensions.exam.core.handlebars.HANDLEBARS
-import io.github.adven27.concordion.extensions.exam.core.handlebars.HelperSource
-import io.github.adven27.concordion.extensions.exam.core.handlebars.HelperSource.Companion.DEFAULT_FORMAT
+import io.github.adven27.concordion.extensions.exam.core.handlebars.date.DateHelpers
+import io.github.adven27.concordion.extensions.exam.core.handlebars.date.DateHelpers.Companion.DEFAULT_FORMAT
 import io.github.adven27.concordion.extensions.exam.core.handlebars.resolve
 import io.github.adven27.concordion.extensions.exam.core.handlebars.resolveObj
 import io.github.adven27.concordion.extensions.exam.core.html.Html
@@ -69,7 +70,7 @@ class HandlebarsResolverTest {
         val placeholder = """{{dateFormat someDate wrong="yyyy-MM-dd" tz="GMT+3"}}"""
 
         assertThatExceptionOfType(HandlebarsException::class.java).isThrownBy { sut(placeholder) }
-            .withMessageContaining("""Wrong options for helper '$placeholder': found '[wrong]', expected any of '${HelperSource.dateFormat.opts}""")
+            .withMessageContaining("""Wrong options for helper '$placeholder': found '[wrong]', expected any of '${DateHelpers.dateFormat.options}""")
             .withRootCauseExactlyInstanceOf(IllegalArgumentException::class.java)
     }
 
@@ -83,21 +84,21 @@ class HandlebarsResolverTest {
         val placeholder = """{{now wrong="yyyy-MM-dd" tz="GMT+3"}}"""
 
         assertThatExceptionOfType(HandlebarsException::class.java).isThrownBy { sut(placeholder) }
-            .withMessageContaining("""Wrong options for helper '$placeholder': found '[wrong]', expected any of '${HelperSource.now.opts}""")
+            .withMessageContaining("""Wrong options for helper '$placeholder': found '[wrong]', expected any of '${DateHelpers.now.options}""")
             .withRootCauseExactlyInstanceOf(IllegalArgumentException::class.java)
     }
 
     @Test
     fun defaults() {
-        HelperSource.values().forEach {
+        DateHelpers.values().forEach {
             val expected = it.expected
-            if (expected is Date) assertThat(sut(it) as Date).describedAs("Failed helper: %s", it)
+            if (expected is Date) assertThat(helper(it) as Date).describedAs("Failed helper: %s", it)
                 .isCloseTo(expected, 2000)
-            else assertEquals(expected, sut(it), "Failed helper: $it")
+            else assertEquals(expected, helper(it), "Failed helper: $it")
         }
     }
 
-    private fun sut(h: HelperSource): Any? {
+    private fun helper(h: ExamHelper): Any? {
         h.context.forEach { (t, u) -> eval.setVariable("#$t", u) }
         return eval.resolveToObj(h.example)
     }

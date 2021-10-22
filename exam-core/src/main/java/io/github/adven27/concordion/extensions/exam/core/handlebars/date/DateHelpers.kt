@@ -24,12 +24,13 @@ private const val FORMAT = "format"
 private const val PLUS = "plus"
 private const val MINUS = "minus"
 
+@Suppress("EnumNaming", "MagicNumber")
 enum class DateHelpers(
     override val example: String,
     override val context: Map<String, Any?> = emptyMap(),
     override val expected: Any? = "",
-    override val exampleOptions: Map<String, String> = emptyMap()
-) : ExamHelper<Any?> {
+    override val options: Map<String, String> = emptyMap()
+) : ExamHelper {
     weeksAgo(
         example = "{{weeksAgo 2}}",
         expected = now().minusWeeks(2).atStartOfDay().toDate()
@@ -48,7 +49,7 @@ enum class DateHelpers(
         example = """{{dateFormat date "yyyy-MM-dd'T'HH:mm O" tz="GMT+3" minus="1 y, 2 months, d 3" plus="4 h, 5 min, 6 s"}}""",
         context = mapOf("date" to "2000-01-02T10:20+03:00".parseDate()),
         expected = "1998-10-30T14:25 GMT+3",
-        exampleOptions = mapOf(TZ to "\"GMT+3\"", PLUS to "\"1 day\"", MINUS to "\"5 hours\"")
+        options = mapOf(TZ to "\"GMT+3\"", PLUS to "\"1 day\"", MINUS to "\"5 hours\"")
     ) {
         override fun invoke(context: Any?, options: Options): Any? {
             isInstanceOf(
@@ -75,7 +76,7 @@ enum class DateHelpers(
             .minusYears(1).minusMonths(2).minusDays(3)
             .plusHours(4).plusMinutes(5).plusSeconds(6)
             .toString("yyyy-MM-dd'T'HH:mm Z"),
-        exampleOptions = mapOf(TZ to "\"GMT+3\"", PLUS to "\"1 day\"", MINUS to "\"5 hours\"")
+        options = mapOf(TZ to "\"GMT+3\"", PLUS to "\"1 day\"", MINUS to "\"5 hours\"")
     ) {
         override fun invoke(context: Any?, options: Options): Any? = if (context is String && context.isNotBlank()) {
             dateFormat(
@@ -96,7 +97,7 @@ enum class DateHelpers(
         expected = ZonedDateTime.now(ZoneId.systemDefault())
             .minusYears(1).minusMonths(2).minusDays(3)
             .toString("yyyy-MM-dd"),
-        exampleOptions = mapOf(PLUS to "\"1 day\"", MINUS to "\"5 hours\"")
+        options = mapOf(PLUS to "\"1 day\"", MINUS to "\"5 hours\"")
     ) {
         override fun invoke(context: Any?, options: Options): Any? = if (context is String && context.isNotBlank()) {
             dateFormat(
@@ -115,7 +116,7 @@ enum class DateHelpers(
     date(
         example = """{{date '01.02.2000 10:20' format="dd.MM.yyyy HH:mm" minus="1 h" plus="1 h"}}""",
         expected = LocalDateTime.of(2000, 2, 1, 10, 20).toDate(),
-        exampleOptions = mapOf(FORMAT to "\"dd.MM.yyyy\"", PLUS to "\"1 day\"", MINUS to "\"5 hours\"")
+        options = mapOf(FORMAT to "\"dd.MM.yyyy\"", PLUS to "\"1 day\"", MINUS to "\"5 hours\"")
     ) {
         override fun invoke(context: Any?, options: Options): Any = parseDate(context, options)
             .plus(parsePeriodFrom(options.hash(PLUS, "")))
@@ -148,9 +149,9 @@ enum class DateHelpers(
     }
 
     private fun validate(options: Options) {
-        val unexpected = options.hash.keys - exampleOptions.keys
+        val unexpected = options.hash.keys - this.options.keys
         if (unexpected.isNotEmpty()) throw IllegalArgumentException(
-            "Wrong options for helper '${options.fn.text()}': found '$unexpected', expected any of '$exampleOptions'"
+            "Wrong options for helper '${options.fn.text()}': found '$unexpected', expected any of '${this.options}'"
         )
     }
 

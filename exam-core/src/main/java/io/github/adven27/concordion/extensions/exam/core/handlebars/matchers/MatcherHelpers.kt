@@ -10,12 +10,13 @@ import java.util.regex.Pattern
 const val PLACEHOLDER_TYPE = "placeholder_type"
 const val DB_ACTUAL = "db_actual"
 
+@Suppress("EnumNaming")
 enum class MatcherHelpers(
     override val example: String,
     override val context: Map<String, Any?> = emptyMap(),
     override val expected: Any? = "",
-    override val exampleOptions: Map<String, String> = emptyMap()
-) : ExamHelper<Any?> {
+    override val options: Map<String, String> = emptyMap()
+) : ExamHelper {
 
     string(
         example = "{{string}}",
@@ -110,9 +111,9 @@ enum class MatcherHelpers(
     }
 
     private fun validate(options: Options) {
-        val unexpected = options.hash.keys - exampleOptions.keys
+        val unexpected = options.hash.keys - this.options.keys
         if (unexpected.isNotEmpty()) throw IllegalArgumentException(
-            "Wrong options for helper '${options.fn.text()}': found '$unexpected', expected any of '$exampleOptions'"
+            "Wrong options for helper '${options.fn.text()}': found '$unexpected', expected any of '${this.options}'"
         )
     }
 
