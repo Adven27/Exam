@@ -14,7 +14,6 @@ import io.github.adven27.concordion.extensions.exam.core.XmlVerifier
 import io.github.adven27.concordion.extensions.exam.core.commands.ExamCommand
 import io.github.adven27.concordion.extensions.exam.core.handlebars.ExamHelper
 import io.github.adven27.concordion.extensions.exam.core.handlebars.HANDLEBARS
-import io.github.adven27.concordion.extensions.exam.core.handlebars.HelperSource.Companion.describe
 import io.github.adven27.concordion.extensions.exam.core.handlebars.evaluator
 import io.restassured.RestAssured
 import io.restassured.http.ContentType
@@ -78,7 +77,7 @@ enum class WsHelperSource(
     override val example: String,
     override val context: Map<String, Any?> = emptyMap(),
     override val expected: Any? = "",
-    override val opts: Map<String, String> = emptyMap()
+    override val exampleOptions: Map<String, String> = emptyMap()
 ) : ExamHelper<Any?> {
     responseBody(
         "{{responseBody 'name'}}",

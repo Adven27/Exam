@@ -47,8 +47,10 @@ interface BeforeParseExamCommand {
 
 open class BaseExamCommand(override val name: String) : NamedExamCommand, AbstractCommand()
 
-open class ExamCommand(override val name: String, override val tag: String) : BeforeParseExamCommand,
-    BaseExamCommand(name) {
+open class ExamCommand(
+    name: String,
+    override val tag: String
+) : BeforeParseExamCommand, BaseExamCommand(name) {
     private val listeners = Announcer.to(ExecuteListener::class.java)
 
     override fun execute(
@@ -107,7 +109,7 @@ fun Html.awaitConfig(prefix: String = "await") = AwaitConfig(
     takeAwayAttr("${prefix}PollIntervalMillis")?.toLong()
 )
 
-data class AwaitConfig(val atMostSec: Long?, val pollDelay: Long?, val pollInterval: Long?) {
+data class AwaitConfig(val atMostSec: Long? = null, val pollDelay: Long? = null, val pollInterval: Long? = null) {
     fun enabled(): Boolean = !(atMostSec == null && pollDelay == null && pollInterval == null)
 }
 
