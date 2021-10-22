@@ -1,9 +1,9 @@
 package io.github.adven27.concordion.extensions.exam.core
 
-import io.github.adven27.concordion.extensions.exam.core.commands.ExamCommand
+import io.github.adven27.concordion.extensions.exam.core.commands.NamedExamCommand
 
 interface ExamPlugin {
-    fun commands(): List<ExamCommand>
+    fun commands(): List<NamedExamCommand>
     fun setUp()
     fun tearDown()
 

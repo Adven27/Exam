@@ -16,5 +16,5 @@ interface MqTester {
         override fun purge() = Unit
     }
 
-    data class Message @JvmOverloads constructor(val body: String = "", val headers: Map<String, String> = emptyMap())
+    open class Message @JvmOverloads constructor(val body: String = "", val headers: Map<String, String> = emptyMap())
 }

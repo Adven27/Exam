@@ -3,7 +3,7 @@
 package io.github.adven27.concordion.extensions.exam.core
 
 import io.github.adven27.concordion.extensions.exam.core.handlebars.HANDLEBARS
-import io.github.adven27.concordion.extensions.exam.core.handlebars.PLACEHOLDER_TYPE
+import io.github.adven27.concordion.extensions.exam.core.handlebars.matchers.PLACEHOLDER_TYPE
 import io.github.adven27.concordion.extensions.exam.core.handlebars.resolve
 import io.github.adven27.concordion.extensions.exam.core.handlebars.resolveObj
 import org.concordion.api.Evaluator

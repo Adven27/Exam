@@ -47,7 +47,7 @@ class MqCheckCommand(
     @Suppress("LongMethod", "TooGenericExceptionCaught", "NestedBlockDepth")
     override fun verify(cmd: CommandCall, eval: Evaluator, resultRecorder: ResultRecorder, fixture: Fixture) {
         val root = cmd.html()
-        Attrs(root).let { attrs ->
+        Attrs(cmd).let { attrs ->
             val expectedMessages: List<TypedMessage> = expectedMessages(root, eval)
             var actualMessages: List<MqTester.Message> = mqTesters.getOrFail(attrs.mqName).receive().toMutableList()
 
@@ -97,13 +97,13 @@ class MqCheckCommand(
                     val bodyContainer = container("", attrs.collapsable, typeConfig.printer.style())
                     val headersContainer = checkHeaders(
                         it.actual.headers,
-                        it.expected.message.headers,
+                        it.expected.headers,
                         resultRecorder,
                     )
                     checkContent(
                         typeConfig,
                         it.actual.body,
-                        it.expected.message.body,
+                        it.expected.body,
                         resultRecorder,
                         bodyContainer
                     )
@@ -187,10 +187,10 @@ class MqCheckCommand(
 
     private fun nullOrMessage(from: FromAttrs, headers: Map<String, String>) =
         if (from.content.isEmpty()) null
-        else TypedMessage(from.contentType, MqTester.Message(from.content, headers))
+        else TypedMessage(from.contentType, from.content, headers)
 
     private fun List<TypedMessage>.sortedTyped(contains: String) =
-        if (needSort(contains)) sortedBy { it.message.body } else this
+        if (needSort(contains)) sortedBy { it.body } else this
 
     private fun List<MqTester.Message>.sorted(contains: String) =
         if (needSort(contains)) sortedBy { it.body } else this
@@ -203,7 +203,7 @@ class MqCheckCommand(
             table()(
                 captionEnvelopOpen(mqName),
                 tbody()(
-                    messages.map { tr()(container(it.message.body, type = it.type)) }
+                    messages.map { tr()(container(it.body, type = it.type)) }
                 )
             )
         )
@@ -288,10 +288,12 @@ class MqCheckCommand(
     ): Html = div().css("rest-failure bd-callout bd-callout-danger")(
         div(msg),
         *renderMessages("Expected: ", expected, mqName).toTypedArray(),
-        *renderMessages("but was: ", actual.map { TypedMessage("xml", it) }, mqName).toTypedArray()
+        *renderMessages("but was: ", actual.map { TypedMessage("xml", it.body, it.headers) }, mqName).toTypedArray()
     )
 
-    data class TypedMessage(val type: String, val message: MqTester.Message)
+    class TypedMessage(val type: String, body: String = "", headers: Map<String, String> = emptyMap()) :
+        MqTester.Message(body, headers)
+
     data class VerifyPair(val actual: MqTester.Message, val expected: TypedMessage) {
         override fun toString() = "actual=$actual, expected=$expected"
     }
@@ -308,13 +310,12 @@ class MqCheckCommand(
         }
     }
 
-    class Attrs(root: Html) {
-        val mqName: String = root.attrOrFail(NAME)
-        val vertically = root.takeAwayAttr("layout", "VERTICALLY").uppercase() == "VERTICALLY"
-        val contains = root.takeAwayAttr("contains", "EXACT")
-        val collapsable = root.takeAwayAttr("collapsable", "false").toBoolean()
-        val jsonUnitOptions = root.attr("jsonUnitOptions")
-        val awaitConfig = root.awaitConfig()
+    class Attrs(call: CommandCall) {
+        val mqName: String = call.html().attr(NAME) ?: call.expression
+        val vertically = call.html().takeAwayAttr("layout", "VERTICALLY").uppercase() == "VERTICALLY"
+        val contains = call.html().takeAwayAttr("contains", "EXACT")
+        val collapsable = call.html().takeAwayAttr("collapsable", "false").toBoolean()
+        val awaitConfig = call.awaitConfig()
 
         companion object {
             private const val NAME = "name"
@@ -407,7 +408,7 @@ class MqPurgeCommand(name: String, tag: String, private val mqTesters: Map<Strin
         root.removeChildren()(
             table()(
                 caption()(
-                    italic(" ", CLASS to "fa fa-envelope me-1"),
+                    italic(" ", CLASS to "far fa-envelope-open me-1"),
                     span("$mqName purged")
                 )
             )
