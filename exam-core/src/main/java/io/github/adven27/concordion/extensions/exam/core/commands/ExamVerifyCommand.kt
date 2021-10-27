@@ -12,12 +12,14 @@ import org.concordion.api.listener.AssertFailureEvent
 import org.concordion.api.listener.AssertSuccessEvent
 import java.util.EventListener
 
-class VerifyFailureEvent(el: Element, val expected: Any?, val actual: Any?, error: Throwable) : AbstractElementEvent(el)
-class VerifySuccessEvent(el: Element, val expected: Any? = null, val actual: Any? = null) : AbstractElementEvent(el)
+class VerifyFailureEvent<E>(el: Element, val expected: E, val fail: Throwable) :
+    AbstractElementEvent(el)
 
-interface VerifyListener : EventListener {
-    fun successReported(event: VerifySuccessEvent)
-    fun failureReported(event: VerifyFailureEvent)
+class VerifySuccessEvent<E, A>(el: Element, val expected: E, val actual: A) : AbstractElementEvent(el)
+
+interface VerifyListener<E, A> : EventListener {
+    fun successReported(event: VerifySuccessEvent<E, A>)
+    fun failureReported(event: VerifyFailureEvent<E>)
 }
 
 open class ExamVerifyCommand(
@@ -57,36 +59,27 @@ open class ExamVerifyCommand(
     } else this.failure(root, actual, expected)
 }
 
-open class ExamAssertCommand(private val listener: VerifyListener) : AbstractCommand() {
+open class ExamAssertCommand<E, A>(private val listener: VerifyListener<E, A>) : AbstractCommand() {
 
-    protected fun success(resultRecorder: ResultRecorder, element: Element) {
+    protected fun success(resultRecorder: ResultRecorder, element: Element, actual: A, expected: E) {
         resultRecorder.record(SUCCESS)
-        listener.successReported(VerifySuccessEvent(element))
+        listener.successReported(VerifySuccessEvent(element, expected, actual))
     }
 
-    protected fun success(resultRecorder: ResultRecorder, element: Html) = success(resultRecorder, element.el())
+    protected fun success(resultRecorder: ResultRecorder, element: Html, actual: A, expected: E) =
+        success(resultRecorder, element.el(), actual, expected)
 
-    protected fun failure(
-        resultRecorder: ResultRecorder,
-        element: Element,
-        actual: Any,
-        expected: Any,
-        error: Throwable
-    ) {
-        resultRecorder.record(FAILURE)
-        listener.failureReported(VerifyFailureEvent(element, expected, actual, error))
+    protected fun failure(recorder: ResultRecorder, element: Element, expected: E, fail: Throwable) {
+        recorder.record(FAILURE)
+        listener.failureReported(VerifyFailureEvent(element, expected, fail))
     }
 
-    protected fun failure(
-        resultRecorder: ResultRecorder,
-        element: Html,
-        actual: Any,
-        expected: Any,
-        error: Throwable
-    ) = failure(resultRecorder, element.el(), actual, expected, error)
+    protected fun failure(recorder: ResultRecorder, element: Html, expected: E, fail: Throwable) =
+        failure(recorder, element.el(), expected, fail)
 
-    protected fun ResultRecorder.pass(element: Html): Html = element.also { success(this, it) }
+    protected fun ResultRecorder.pass(element: Html, actual: A, expected: E): Html =
+        element.also { success(this, it, actual, expected) }
 
-    protected fun ResultRecorder.failure(element: Html, actual: String, expected: String, error: Throwable) =
-        element.also { failure(this, it, actual, expected, error) }
+    protected fun ResultRecorder.failure(element: Html, expected: E, fail: Throwable) =
+        element.also { failure(this, it, expected, fail) }
 }

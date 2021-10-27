@@ -73,7 +73,7 @@ open class ExamAssertEqualsCommand(
     val content: (text: String) -> String = { it }
 ) : NamedExamCommand, AssertEqualsCommand(
     Comparator { actual, expected ->
-        config.verifier.verify(normalize(expected), normalize(actual)).fail.map { -1 }.orElse(0)
+        config.verifier.verify(normalize(expected), normalize(actual)).fold({ 0 }, { -1 })
     }
 ) {
     init {

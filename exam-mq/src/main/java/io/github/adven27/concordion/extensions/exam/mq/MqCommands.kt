@@ -1,6 +1,7 @@
 package io.github.adven27.concordion.extensions.exam.mq
 
 import io.github.adven27.concordion.extensions.exam.core.ContentTypeConfig
+import io.github.adven27.concordion.extensions.exam.core.ContentVerifier
 import io.github.adven27.concordion.extensions.exam.core.ExamExtension.Companion.contentTypeConfig
 import io.github.adven27.concordion.extensions.exam.core.ExamResultRenderer
 import io.github.adven27.concordion.extensions.exam.core.commands.AwaitConfig
@@ -263,17 +264,22 @@ class MqCheckCommand(
         resultRecorder: ResultRecorder,
         root: Html
     ) = typeConfig.let { (_, verifier, printer) ->
-        verifier.verify(expected, actual).fail.map { f ->
-            root.attr("class", "")
-            // FIXME for 'Verify queue with horizontal layout'
-            if (root.el.localName == "td") {
-                root.css("exp-body")
+        verifier.verify(expected, actual).onFailure { f ->
+            when (f) {
+                is ContentVerifier.Fail -> {
+                    root.attr("class", "")
+                    // FIXME for 'Verify queue with horizontal layout'
+                    if (root.el.localName == "td") {
+                        root.css("exp-body")
+                    }
+                    val diff = div().css(typeConfig.printer.style())
+                    val (_, errorMsg) = errorMessage(message = f.details, html = diff, type = typeConfig.printer.style())
+                    resultRecorder.failure(diff, printer.print(f.actual), printer.print(f.expected))
+                    root(errorMsg)
+                }
+                else -> throw f
             }
-            val diff = div().css(typeConfig.printer.style())
-            val (_, errorMsg) = errorMessage(message = f.details, html = diff, type = typeConfig.printer.style())
-            resultRecorder.failure(diff, printer.print(f.actual), printer.print(f.expected))
-            root(errorMsg)
-        }.orElseGet {
+        }.onSuccess {
             root.text(printer.print(expected))
             resultRecorder.pass(root)
         }
@@ -291,7 +297,7 @@ class MqCheckCommand(
         *renderMessages("but was: ", actual.map { TypedMessage("xml", it.body, it.headers) }, mqName).toTypedArray()
     )
 
-    class TypedMessage(val type: String, body: String = "", headers: Map<String, String> = emptyMap()) :
+    open class TypedMessage(val type: String, body: String = "", headers: Map<String, String> = emptyMap()) :
         MqTester.Message(body, headers)
 
     data class VerifyPair(val actual: MqTester.Message, val expected: TypedMessage) {
@@ -332,7 +338,7 @@ class MqSendCommand(name: String, tag: String, private val mqTesters: Map<String
     ) {
         super.execute(commandCall, evaluator, resultRecorder, fixture)
         commandCall.html().also { root ->
-            Attrs(root, evaluator).also { attrs ->
+            Attrs(commandCall, evaluator).also { attrs ->
                 renderAndSend(root, attrs, attrs.from.content)
             }
         }
@@ -361,14 +367,14 @@ class MqSendCommand(name: String, tag: String, private val mqTesters: Map<String
         else td()(pre(message).css(formatAs))
     )
 
-    class Attrs(root: Html, evaluator: Evaluator) {
-        val mqName: String = root.attrOrFail(NAME)
-        val from: FromAttrs = FromAttrs(root, evaluator)
-        val formatAs: String? = root.takeAwayAttr(FORMAT_AS)
-        val headers: Map<String, String> = root.takeAwayAttr(HEADERS).attrToMap(evaluator)
-        val params: Map<String, String> = root.takeAwayAttr(PARAMS).attrToMap(evaluator)
-        val vars: VarsAttrs = VarsAttrs(root, evaluator)
-        val collapsable: Boolean = root.takeAwayAttr(COLLAPSABLE, "false").toBoolean()
+    class Attrs(call: CommandCall, evaluator: Evaluator) {
+        val mqName: String = call.html().attr(NAME) ?: call.expression
+        val from: FromAttrs = FromAttrs(call.html(), evaluator)
+        val formatAs: String? = call.html().takeAwayAttr(FORMAT_AS)
+        val headers: Map<String, String> = call.html().takeAwayAttr(HEADERS).attrToMap(evaluator)
+        val params: Map<String, String> = call.html().takeAwayAttr(PARAMS).attrToMap(evaluator)
+        val vars: VarsAttrs = VarsAttrs(call.html(), evaluator)
+        val collapsable: Boolean = call.html().takeAwayAttr(COLLAPSABLE, "false").toBoolean()
 
         companion object {
             private const val NAME = "name"

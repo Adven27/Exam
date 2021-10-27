@@ -1,181 +1,140 @@
 package io.github.adven27.concordion.extensions.exam.mq
 
-import io.github.adven27.concordion.extensions.exam.core.ContentVerifier
-import io.github.adven27.concordion.extensions.exam.core.ExamExtension
-import io.github.adven27.concordion.extensions.exam.core.commands.AwaitConfig
-import io.github.adven27.concordion.extensions.exam.core.commands.ExamAssertCommand
-import io.github.adven27.concordion.extensions.exam.core.commands.NamedExamCommand
-import io.github.adven27.concordion.extensions.exam.core.commands.VerifyFailureEvent
-import io.github.adven27.concordion.extensions.exam.core.commands.VerifyListener
-import io.github.adven27.concordion.extensions.exam.core.commands.VerifySuccessEvent
+import io.github.adven27.concordion.extensions.exam.core.commands.ActualProvider
+import io.github.adven27.concordion.extensions.exam.core.commands.SuitableCommandParser
 import io.github.adven27.concordion.extensions.exam.core.commands.await
+import io.github.adven27.concordion.extensions.exam.core.html.Html
+import io.github.adven27.concordion.extensions.exam.core.readFile
+import io.github.adven27.concordion.extensions.exam.mq.MqCheckCommand.MessageAttrs
 import io.github.adven27.concordion.extensions.exam.mq.MqCheckCommand.TypedMessage
-import io.github.adven27.concordion.extensions.exam.mq.MqCheckCommand.VerifyPair
-import io.github.adven27.concordion.extensions.exam.mq.MqTester.Message
-import io.github.adven27.concordion.extensions.exam.mq.MqVerifier.MessageVerifyResult
-import org.awaitility.core.ConditionFactory
+import io.github.adven27.concordion.extensions.exam.mq.commands.CheckCommand
+import io.github.adven27.concordion.extensions.exam.mq.commands.CheckCommand.Actual
+import io.github.adven27.concordion.extensions.exam.mq.commands.SendCommand
+import io.github.adven27.concordion.extensions.exam.mq.commands.SendCommand.ParametrizedTypedMessage
 import org.concordion.api.CommandCall
 import org.concordion.api.Element
 import org.concordion.api.Evaluator
-import org.concordion.api.Fixture
-import org.concordion.api.ResultRecorder
-import org.concordion.internal.util.Check
-import org.junit.Assert
 
-class MqResultRenderer : VerifyListener {
-    override fun successReported(event: VerifySuccessEvent) {
-        // TODO("Not yet implemented")
-    }
+class MdSendParser : SuitableCommandParser<SendCommand.Send>() {
+    override fun isSuitFor(element: Element): Boolean = element.localName != "div"
 
-    override fun failureReported(event: VerifyFailureEvent) {
-        // TODO("Not yet implemented")
-    }
-}
+    override fun parse(command: CommandCall, evaluator: Evaluator) =
+        SendCommand.Send(queue = command.expression, messages = messages(command, evaluator))
 
-interface Verifier<E, A, R> {
-    fun verify(expected: E, actual: A): Result<R>
-}
+    private fun messages(command: CommandCall, eval: Evaluator): List<ParametrizedTypedMessage> {
+        return command.element.parentElement.parentElement.childElements.filter { it.localName == "dd" }.map { dd ->
+            var formatAs = "json"
+            val headers: MutableMap<String, String> = mutableMapOf()
+            val params: MutableMap<String, String> = mutableMapOf()
+            lateinit var payload: String
 
-interface AwaitVerifier<E, A, R> : Verifier<E, A, R> {
-    fun verify(expected: E, getActual: () -> A, await: ConditionFactory): Result<R>
-}
-
-class MqVerifier(var exactMatch: Boolean = true) :
-    AwaitVerifier<List<TypedMessage>, List<Message>, List<MessageVerifyResult>> {
-
-    fun withExactMatch(exact: Boolean) = this.apply { exactMatch = exact }
-
-    override fun verify(
-        expected: List<TypedMessage>,
-        getActual: () -> List<Message>,
-        await: ConditionFactory
-    ): Result<List<MessageVerifyResult>> {
-        val actual: List<Message>
-        try {
-            actual = awaitExpectedSize(expected, emptyList(), getActual, await)
-        } catch (e: java.lang.AssertionError) {
-            return Result.failure(e)
-        }
-
-        return expected.sortedTyped()
-            .zip(actual.sorted()) { e, a -> VerifyPair(a, e) }
-            .map {
-                MqCheckCommand.logger.info("Verifying {}", it)
-                val typeConfig = ExamExtension.contentTypeConfig(it.expected.type)
-                MessageVerifyResult(
-                    checkHeaders(
-                        it.actual.headers,
-                        it.expected.headers,
-                    ),
-                    typeConfig.let { (_, verifier, _) ->
-                        verifier.verify(it.expected.body, it.actual.body)
+            dd.childElements.forEach { el ->
+                when (el.localName) {
+                    "pre" -> payload = el.text
+                    "a" -> payload = parsePayload(el, eval)
+                    "code" -> parseOption(el).also { (name, value) -> if (name == "formatAs") formatAs = value }
+                    "em" -> parseOption(el).also { (name, value) -> headers[name] = value }
+                    "strong" -> parseOption(el).also { (name, value) -> params[name] = value }
+                    "p" -> el.childElements.forEach { pChild ->
+                        when (pChild.localName) {
+                            "pre" -> payload = pChild.text
+                            "a" -> payload = parsePayload(pChild, eval)
+                            "code" -> parseOption(pChild).also { (name, value) ->
+                                if (name == "formatAs") formatAs = value
+                            }
+                            "em" -> parseOption(pChild).also { (name, value) -> headers[name] = value }
+                            "strong" -> parseOption(pChild).also { (name, value) -> params[name] = value }
+                        }
                     }
-                )
-            }.let { results ->
-                if (results.any { it.unmatchedHeaders.isNotEmpty() || it.content.fail.isPresent })
-                    Result.success(results)
+                }
+            }
+            ParametrizedTypedMessage(formatAs, payload, headers, params)
+        }
+    }
+}
+
+class MdCheckParser : SuitableCommandParser<CheckCommand.Expected>() {
+    override fun isSuitFor(element: Element): Boolean = element.localName != "div"
+
+    override fun parse(command: CommandCall, evaluator: Evaluator): CheckCommand.Expected {
+        val attrs = MqCheckCommand.Attrs(command)
+        return CheckCommand.Expected(
+            queue = command.expression,
+            messages = messagesFromDd(command, evaluator),
+            exact = attrs.contains.lowercase() == "exact",
+            await = attrs.awaitConfig.await("Await MQ ${command.expression}")
+        )
+    }
+
+    private fun messagesFromDd(command: CommandCall, eval: Evaluator): List<TypedMessage> =
+        command.element.parentElement.parentElement.childElements.filter { it.localName == "dd" }.map { dd ->
+            var verifyAs = "json"
+            val headers: MutableMap<String, String> = mutableMapOf()
+            lateinit var payload: String
+
+            dd.childElements.forEach { el ->
+                when (el.localName) {
+                    "pre" -> payload = el.text
+                    "a" -> payload = parsePayload(el, eval)
+                    "code" -> parseOption(el).also { (name, value) -> if (name == "verifyAs") verifyAs = value }
+                    "em" -> parseOption(el).also { (name, value) -> headers[name] = value }
+                    "p" -> el.childElements.forEach { pChild ->
+                        when (pChild.localName) {
+                            "pre" -> payload = pChild.text
+                            "a" -> payload = parsePayload(pChild, eval)
+                            "code" -> parseOption(pChild).also { (name, value) ->
+                                if (name == "verifyAs") verifyAs = value
+                            }
+                            "em" -> parseOption(pChild).also { (name, value) -> headers[name] = value }
+                        }
+                    }
+                }
+            }
+            TypedMessage(verifyAs, payload, headers)
+        }
+}
+
+class HtmlCheckParser : SuitableCommandParser<CheckCommand.Expected>() {
+    override fun isSuitFor(element: Element): Boolean = element.localName == "div"
+
+    override fun parse(command: CommandCall, evaluator: Evaluator): CheckCommand.Expected {
+        val attrs = MqCheckCommand.Attrs(command)
+        return CheckCommand.Expected(
+            queue = attrs.mqName,
+            messages = messages(evaluator, command.element),
+            exact = attrs.contains.lowercase() == "exact",
+            await = attrs.awaitConfig.await("Await MQ ${command.expression}")
+        )
+    }
+
+    private fun messages(evaluator: Evaluator, element: Element): List<TypedMessage> =
+        element.childElements.filter { it.localName == "message" }
+            .map { toMsg(it, evaluator) }
+            .ifEmpty {
+                if (element.getAttributeValue("from") != null || element.text.isNotEmpty())
+                    listOf(toMsg(element, evaluator))
                 else
-                    Result.failure(MessageVerifyingError(results))
+                    listOf()
             }
-    }
 
-    @Suppress("SpreadOperator")
-    private fun checkHeaders(
-        actual: Map<String, String>,
-        expected: Map<String, String>,
-    ): List<Pair<Map.Entry<String, String>, Map.Entry<String, String>>> =
-        if (expected.isEmpty())
-            emptyList()
-        else try {
-            Assert.assertEquals("Different headers size", expected.size, actual.size)
-            expected.entries.partition { actual[it.key] != null }.let { (m, u) ->
-                u.zip(unmatchedActual(actual, m))
-            }
-        } catch (e: AssertionError) {
-            throw HeadersSizeVerifyingError(expected, actual, e.message!!, e)
-        }
-
-    private fun unmatchedActual(actual: Map<String, String>, matched: List<Map.Entry<String, String>>) =
-        actual.entries.filterNot { matched.hasKey(it) }
-
-    private fun List<Map.Entry<String, String>>.hasKey(it: Map.Entry<String, String>) = map { it.key }.contains(it.key)
-
-    private fun List<Message>.sorted() = if (!exactMatch) sortedBy { it.body } else this
-    private fun List<TypedMessage>.sortedTyped() = if (!exactMatch) sortedBy { it.body } else this
-
-    @Suppress("TooGenericExceptionCaught")
-    private fun awaitExpectedSize(
-        expected: List<TypedMessage>,
-        originalActual: List<Message>,
-        receive: () -> List<Message>,
-        await: ConditionFactory,
-    ): List<Message> {
-        val actual = originalActual.toMutableList()
-        val prevActual: MutableList<Message> = mutableListOf()
-        try {
-            await.untilAsserted {
-                actual.apply { prevActual.apply { clear(); addAll(this) } }.addAll(receive())
-                Assert.assertEquals(expected.size, actual.size)
-            }
-            return actual
-        } catch (e: Exception) {
-            throw SizeVerifyingError(expected, prevActual, e.cause?.message ?: e.message ?: "$e", e)
-        }
-    }
-
-    override fun verify(expected: List<TypedMessage>, actual: List<Message>) =
-        verify(expected, { actual }, AwaitConfig().await())
-
-    data class MessageVerifyResult(
-        val unmatchedHeaders: List<Pair<Map.Entry<String, String>, Map.Entry<String, String>>>,
-        val content: ContentVerifier.Result
-    )
-
-    class MessageVerifyingError(val expected: List<MessageVerifyResult>) : java.lang.AssertionError()
-
-    class SizeVerifyingError(
-        val expected: List<Message>,
-        val actual: List<Message>,
-        message: String,
-        exception: Throwable
-    ) : java.lang.AssertionError(message, exception)
-
-    class HeadersSizeVerifyingError(
-        val expected: Map<String, String>,
-        val actual: Map<String, String>,
-        message: String,
-        exception: Throwable
-    ) : java.lang.AssertionError(message, exception)
-}
-
-class CheckCommand(
-    override val name: String,
-    private val mqTesters: Map<String, MqTester>,
-    private val verifier: MqVerifier = MqVerifier(),
-    resultRenderer: VerifyListener = MqResultRenderer(),
-) : ExamAssertCommand(resultRenderer), NamedExamCommand {
-
-    override fun verify(cmd: CommandCall, eval: Evaluator, resultRecorder: ResultRecorder, fixture: Fixture) {
-        Check.isFalse(cmd.hasChildCommands(), "Nesting commands inside an 'mq-check' is not supported")
-
-        val element: Element = cmd.element
-        val attrs = MqCheckCommand.Attrs(cmd)
-        val queue: String = cmd.expression
-        val tester = mqTesters.getOrFail(queue)
-        val expected: List<TypedMessage> = listOf()
-        val actual: MutableList<Message> = mutableListOf()
-        val getActual: () -> MutableList<Message> = {
-            actual
-                .apply { if (!tester.accumulateOnRetries()) clear() }
-                .apply { addAll(tester.receive()) }
-        }
-
-        verifier.withExactMatch("EXACT" == attrs.contains)
-            .verify(expected, getActual, attrs.awaitConfig.await("Await MQ $queue"))
-            .onSuccess { success(resultRecorder, element) }
-            .onFailure { failure(resultRecorder, element, actual, expected, it) }
+    private fun toMsg(msg: Element, evaluator: Evaluator) = MessageAttrs(Html(msg), evaluator).let {
+        TypedMessage(it.from.contentType, it.from.content, it.headers)
     }
 }
 
-private fun Map<String, MqTester>.getOrFail(mqName: String?): MqTester = this[mqName]
-    ?: throw IllegalArgumentException("MQ with name $mqName not registered in MqPlugin")
+class MqActualProvider(private val mqTesters: Map<String, MqTester>) : ActualProvider<String, Pair<Boolean, Actual>> {
+    override fun provide(source: String) =
+        mqTesters.getOrFail(source).let { it.accumulateOnRetries() to Actual(it.receive()) }
+
+    private fun Map<String, MqTester>.getOrFail(mqName: String?): MqTester = this[mqName]
+        ?: throw IllegalArgumentException("MQ with name $mqName not registered in MqPlugin")
+}
+
+private fun parsePayload(link: Element, eval: Evaluator): String {
+    link.childElements.filter { it.localName == "code" }.forEach {
+        parseOption(it).also { (name, value) -> eval.setVariable("#$name", value) }
+    }
+    return link.getAttributeValue("href").readFile(eval)
+}
+
+private fun parseOption(el: Element) = el.text.split("=", limit = 2).let { it[0] to it[1] }

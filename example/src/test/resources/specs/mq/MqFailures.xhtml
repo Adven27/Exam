@@ -75,30 +75,30 @@
     <e:example name="wrong" status="ExpectedToFail">
         <e:when>
             Queue has the messages:
-            <e:mq-send name="myQueue">{ "message": "1" }</e:mq-send>
+            <e:mq-send name="myQueue">{ "message": "wrong" }</e:mq-send>
         </e:when>
         <e:then>
             Verify queue with wrong message:
-            <e:mq-check name="myQueue">{}</e:mq-check>
+            <e:mq-check name="myQueue">{ "message": "right" }</e:mq-check>
         </e:then>
         <e:when>
             Queue has the messages:
-            <e:mq-send name="myQueue" formatAs="xml"><![CDATA[<message>right</message>]]></e:mq-send>
+            <e:mq-send name="myQueue" formatAs="xml"><![CDATA[<message>wrong</message>]]></e:mq-send>
         </e:when>
         <e:then>
             Verify queue with wrong message:
-            <e:mq-check name="myQueue" verifyAs="xml"><![CDATA[<message>wrong</message>]]></e:mq-check>
+            <e:mq-check name="myQueue" verifyAs="xml"><![CDATA[<message>right</message>]]></e:mq-check>
         </e:then>
         <e:when>
             Queue has the messages:
-            <e:mq-send name="myQueue">{ "message": "1" }</e:mq-send>
-            <e:mq-send name="myQueue" formatAs="xml"><![CDATA[<message>right</message>]]></e:mq-send>
+            <e:mq-send name="myQueue">{ "message": "wrong" }</e:mq-send>
+            <e:mq-send name="myQueue" formatAs="xml"><![CDATA[<message>wrong</message>]]></e:mq-send>
         </e:when>
         <e:then>
             Verify queue with wrong messages:
             <e:mq-check name="myQueue">
-                <e:message>{}</e:message>
-                <e:message verifyAs="xml"><![CDATA[<message>wrong</message>]]></e:message>
+                <e:message>{ "message": "right" }</e:message>
+                <e:message verifyAs="xml"><![CDATA[<message>right</message>]]></e:message>
             </e:mq-check>
         </e:then>
     </e:example>
@@ -176,7 +176,7 @@
         <e:when>
             Queue has the messages:
             <e:mq-send name="myQueue" headers="h1=11, h2=12">{ "message": "1" }</e:mq-send>
-            <e:mq-send name="myQueue" headers="h1=21, h2=22">{ "message": "2" }</e:mq-send>
+            <e:mq-send name="myQueue" headers="h1=2&lt;1&gt;, h2=22">{ "message": "2" }</e:mq-send>
             <e:mq-send name="myQueue" headers="h1=31, h2=32" formatAs="xml"><![CDATA[<message>right</message>]]></e:mq-send>
             <e:mq-send name="myQueue" headers="h1=41, h2=42" formatAs="xml"><![CDATA[<message>right</message>]]></e:mq-send>
             <e:mq-send name="myQueue" headers="h1=41, h2=42" formatAs="xml"><![CDATA[<message>right</message>]]></e:mq-send>
@@ -194,7 +194,7 @@
             </ul>
             <e:mq-check name="myQueue">
                 <e:message headers="h2=1, h3=1">{ "message": "1" }</e:message>
-                <e:message headers="h1=21, h2=22">{ "message": "3" }</e:message>
+                <e:message headers="h1=2&lt;1&gt;, h2=22">{ "message": "3" }</e:message>
                 <e:message headers="h1=3, h2=32" verifyAs="xml"><![CDATA[<message>wrong</message>]]></e:message>
                 <e:message headers="h1=41, h2=42" verifyAs="xml"><![CDATA[<message>right</message>]]></e:message>
                 <e:message headers="h1=41, h2=42, h3=3" verifyAs="xml"><![CDATA[<message>right</message>]]></e:message>

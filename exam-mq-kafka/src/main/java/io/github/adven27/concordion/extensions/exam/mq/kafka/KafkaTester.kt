@@ -59,7 +59,6 @@ open class KafkaConsumeAndSendTester @JvmOverloads constructor(
     )
 
     companion object : KLogging() {
-        private const val POLL_MILLIS: Long = 1500
         private const val PARAM_PARTITION = "partition"
         private const val PARAM_KEY = "key"
 
@@ -67,6 +66,8 @@ open class KafkaConsumeAndSendTester @JvmOverloads constructor(
         val DEFAULT_PRODUCER_CONFIG: Map<String, String?> = mapOf(
             ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG to StringSerializer::class.java.name,
             ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG to StringSerializer::class.java.name,
+            ProducerConfig.ACKS_CONFIG to "all",
+            ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG to "true",
         )
 
         private fun partitionFrom(headers: Map<String, String>) = headers[PARAM_PARTITION]?.toInt()
@@ -159,7 +160,7 @@ open class KafkaConsumeOnlyTester @JvmOverloads constructor(
         }
 
     companion object : KLogging() {
-        private const val POLL_MILLIS: Long = 50
+        const val POLL_MILLIS: Long = 50
         private const val KAFKA_FETCHING_TIMEOUT: Long = 10
 
         @JvmField
