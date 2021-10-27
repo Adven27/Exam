@@ -266,7 +266,7 @@ class ErrorListener : ThrowableCaughtListener {
     override fun throwableCaught(event: ThrowableCaughtEvent) {
         val (id, errorMessage) = errorMessage(
             header = "Error while executing command",
-            message = "${event.throwable.rootCause().message}",
+            message = event.throwable.rootCauseMessage(),
             help = help(event),
             html = PARSED_COMMANDS[event.element.getAttributeValue("cmdId")]?.let {
                 div("while executing:")(

@@ -1,5 +1,6 @@
 package io.github.adven27.concordion.extensions.exam.core.commands
 
+import io.github.adven27.concordion.extensions.exam.core.commands.Verifier.Success
 import org.concordion.api.CommandCall
 import org.concordion.api.Element
 import org.concordion.api.Evaluator
@@ -14,7 +15,7 @@ interface SuitableCommandParser<T> : CommandParser<T> {
     fun isSuitFor(element: Element): Boolean
 }
 
-class FirsSuitableCommandParser<T>(private vararg val parsers: SuitableCommandParser<T>) : CommandParser<T> {
+class FirstSuitableCommandParser<T>(private vararg val parsers: SuitableCommandParser<T>) : CommandParser<T> {
     override fun parse(command: CommandCall, evaluator: Evaluator): T =
         parsers.first { it.isSuitFor(command.element) }.parse(command, evaluator)
 }
@@ -23,12 +24,13 @@ interface ActualProvider<S, R> {
     fun provide(source: S): R
 }
 
-interface Verifier<E, A, R> {
-    fun verify(expected: E, actual: A): Result<R>
+interface Verifier<E, A> {
+    fun verify(expected: E, actual: A): Result<Success<E, A>>
+    data class Success<E, A>(val expected: E, val actual: A)
 }
 
-interface AwaitVerifier<E, A, R> : Verifier<E, A, R> {
-    fun verify(expected: E, getActual: () -> Pair<Boolean, A>): Result<R>
+interface AwaitVerifier<E, A> : Verifier<E, A> {
+    fun verify(expected: E, getActual: () -> Pair<Boolean, A>): Result<Success<E, A>>
 }
 
 interface SetUpListener<T> : EventListener {

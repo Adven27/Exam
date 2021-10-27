@@ -2,6 +2,7 @@ package io.github.adven27.concordion.extensions.exam.db.commands.set
 
 import io.github.adven27.concordion.extensions.exam.core.commands.SuitableCommandParser
 import io.github.adven27.concordion.extensions.exam.core.html.attr
+import io.github.adven27.concordion.extensions.exam.core.html.takeAttr
 import io.github.adven27.concordion.extensions.exam.db.DbTester.Companion.DEFAULT_DATASOURCE
 import io.github.adven27.concordion.extensions.exam.db.builder.SeedStrategy
 import io.github.adven27.concordion.extensions.exam.db.commands.SetAttrs
@@ -19,18 +20,9 @@ class SetParser(
     fun table(command: CommandCall, evaluator: Evaluator): ITable = parser.parse(command, evaluator)
 
     override fun parse(command: CommandCall, evaluator: Evaluator) = Operation(
-        operation = Attrs.from(command, allowedSeedStrategies).setAttrs.seedStrategy.operation,
+        operation = SetAttrs.from(command, allowedSeedStrategies).seedStrategy.operation,
         ds = command.attr("ds", DEFAULT_DATASOURCE),
         table = table(command, evaluator),
-        caption = command.element.text.ifBlank { null }
+        caption = command.takeAttr("caption") ?: command.element.text.ifBlank { null }
     )
-
-    data class Attrs(val setAttrs: SetAttrs, val caption: String?) {
-        companion object {
-            fun from(root: CommandCall, allowedSeedStrategies: List<SeedStrategy>) = Attrs(
-                SetAttrs.from(root, allowedSeedStrategies),
-                root.element.getAttributeValue("caption"),
-            )
-        }
-    }
 }

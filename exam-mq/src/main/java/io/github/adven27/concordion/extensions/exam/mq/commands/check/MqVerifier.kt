@@ -3,25 +3,23 @@ package io.github.adven27.concordion.extensions.exam.mq.commands.check
 import io.github.adven27.concordion.extensions.exam.core.ContentVerifier.ExpectedContent
 import io.github.adven27.concordion.extensions.exam.core.ExamExtension
 import io.github.adven27.concordion.extensions.exam.core.commands.AwaitVerifier
-import io.github.adven27.concordion.extensions.exam.mq.MqCheckCommand
-import io.github.adven27.concordion.extensions.exam.mq.MqCheckCommand.TypedMessage
+import io.github.adven27.concordion.extensions.exam.core.commands.Verifier.Success
 import io.github.adven27.concordion.extensions.exam.mq.MqTester.Message
+import io.github.adven27.concordion.extensions.exam.mq.TypedMessage
+import io.github.adven27.concordion.extensions.exam.mq.VerifyPair
 import io.github.adven27.concordion.extensions.exam.mq.commands.check.CheckCommand.Actual
 import io.github.adven27.concordion.extensions.exam.mq.commands.check.CheckCommand.Expected
 import mu.KLogging
 import org.junit.Assert.assertEquals
 
-class MqVerifier : AwaitVerifier<Expected, Actual, MqVerifier.VerifyingResult> {
+class MqVerifier : AwaitVerifier<Expected, Actual> {
     companion object : KLogging()
 
-    override fun verify(
-        expected: Expected,
-        getActual: () -> Pair<Boolean, Actual>,
-    ): Result<VerifyingResult> {
+    override fun verify(expected: Expected, getActual: () -> Pair<Boolean, Actual>): Result<Success<Expected, Actual>> {
         try {
             return awaitSize(expected, getActual).let { actual ->
                 expected.messages.sortedTyped(expected.exact)
-                    .zip(actual.messages.sorted(expected.exact)) { e, a -> MqCheckCommand.VerifyPair(a, e) }
+                    .zip(actual.messages.sorted(expected.exact)) { e, a -> VerifyPair(a, e) }
                     .map {
                         logger.info("Verifying {}", it)
                         val typeConfig = ExamExtension.contentTypeConfig(it.expected.type)
@@ -33,7 +31,7 @@ class MqVerifier : AwaitVerifier<Expected, Actual, MqVerifier.VerifyingResult> {
                         if (results.any { it.headers.isFailure || it.content.isFailure })
                             Result.failure(MessageVerifyingError(results))
                         else
-                            Result.success(VerifyingResult(expected, actual))
+                            Result.success(Success(expected, actual))
                     }
             }
         } catch (e: java.lang.AssertionError) {
@@ -102,7 +100,7 @@ class MqVerifier : AwaitVerifier<Expected, Actual, MqVerifier.VerifyingResult> {
                 }
             } ?: assertEquals(expected.messages.size, prevActual.messages.size)
             return prevActual
-        } catch (e: Exception) {
+        } catch (e: AssertionError) {
             throw SizeVerifyingError(expected.messages, prevActual.messages, e.cause?.message ?: e.message ?: "$e", e)
         }
     }
@@ -110,8 +108,6 @@ class MqVerifier : AwaitVerifier<Expected, Actual, MqVerifier.VerifyingResult> {
     override fun verify(expected: Expected, actual: Actual) = verify(expected) { false to actual }
 
     data class MessageVerifyResult(val headers: Result<Map<String, String>>, val content: Result<ExpectedContent>)
-
-    data class VerifyingResult(val expected: Expected, val actual: Actual)
 
     class MessageVerifyingError(val expected: List<MessageVerifyResult>) : java.lang.AssertionError()
 

@@ -21,7 +21,7 @@ abstract class BaseSetRenderer(private val printer: ValuePrinter) : SuitableSetU
     abstract fun root(event: AbstractElementEvent): Element
 
     override fun setUpCompleted(event: SetUpEvent<SetCommand.Operation>) = with(root(event)) {
-        addAttribute("hidden", "true")
         appendSister(renderTable(event.target.table, printer, event.target.caption).el)
+        parentElement.removeChild(this)
     }
 }

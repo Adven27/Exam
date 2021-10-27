@@ -3,7 +3,7 @@ package io.github.adven27.concordion.extensions.exam.mq.commands
 import io.github.adven27.concordion.extensions.exam.core.commands.SuitableCommandParser
 import io.github.adven27.concordion.extensions.exam.core.html.Html
 import io.github.adven27.concordion.extensions.exam.mq.MessageAttrs
-import io.github.adven27.concordion.extensions.exam.mq.MqCheckCommand.ParametrizedTypedMessage
+import io.github.adven27.concordion.extensions.exam.mq.ParametrizedTypedMessage
 import org.concordion.api.CommandCall
 import org.concordion.api.Element
 import org.concordion.api.Evaluator

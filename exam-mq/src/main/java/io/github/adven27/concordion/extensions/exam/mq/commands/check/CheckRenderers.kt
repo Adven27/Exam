@@ -20,7 +20,7 @@ import org.concordion.api.listener.AbstractElementEvent
 
 class HtmlResultRenderer : SuitableResultRenderer<Expected, Actual>() {
     override fun isSuitFor(element: Element) = element.localName == "div"
-    private fun root(event: AbstractElementEvent) = event.element.parentElement.parentElement
+    private fun root(event: AbstractElementEvent) = event.element
 
     override fun successReported(event: VerifySuccessEvent<Expected, Actual>) = with(root(event)) {
         appendSister(

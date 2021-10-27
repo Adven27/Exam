@@ -23,10 +23,11 @@ import org.dbunit.dataset.datatype.DataType
 
 abstract class CheckParser : SuitableCommandParser<Expected> {
     abstract fun table(command: CommandCall, evaluator: Evaluator): ITable
+    abstract fun caption(command: CommandCall): String?
 
     override fun parse(command: CommandCall, evaluator: Evaluator) = Expected(
         ds = command.attr("ds", DEFAULT_DATASOURCE),
-        caption = command.element.text.ifBlank { null },
+        caption = caption(command),
         table = table(command, evaluator),
         orderBy = command.html().takeAwayAttr("orderBy", evaluator)?.split(",")?.map { it.trim() } ?: listOf(),
         where = command.html().takeAwayAttr("where", evaluator) ?: "",
@@ -36,7 +37,7 @@ abstract class CheckParser : SuitableCommandParser<Expected> {
 
 class MdCheckParser : CheckParser() {
     override fun isSuitFor(element: Element): Boolean = element.localName != "div"
-
+    override fun caption(command: CommandCall) = command.element.text.ifBlank { null }
     private fun root(command: CommandCall) = command.element.parentElement.parentElement
 
     override fun table(command: CommandCall, evaluator: Evaluator): ITable {
@@ -71,7 +72,7 @@ class HtmlCheckParser : CheckParser() {
     private val colParser = ColParser()
 
     override fun isSuitFor(element: Element): Boolean = element.localName == "div"
-
+    override fun caption(command: CommandCall) = command.html().attr("caption")
     override fun table(command: CommandCall, evaluator: Evaluator): ITable = command.html().let {
         TableData.filled(
             it.takeAwayAttr("table", evaluator)!!,

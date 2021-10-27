@@ -1,23 +1,37 @@
 package io.github.adven27.concordion.extensions.exam.mq.commands.send
 
 import io.github.adven27.concordion.extensions.exam.core.commands.SetUpEvent
-import io.github.adven27.concordion.extensions.exam.core.commands.SetUpListener
+import io.github.adven27.concordion.extensions.exam.core.commands.SuitableSetUpListener
 import io.github.adven27.concordion.extensions.exam.core.escapeHtml
 import io.github.adven27.concordion.extensions.exam.core.pretty
 import io.github.adven27.concordion.extensions.exam.core.toHtml
-import io.github.adven27.concordion.extensions.exam.mq.MqCheckCommand
+import io.github.adven27.concordion.extensions.exam.mq.ParametrizedTypedMessage
 import io.github.adven27.concordion.extensions.exam.mq.commands.send.SendCommand.Send
+import org.concordion.api.Element
+import org.concordion.api.listener.AbstractElementEvent
 
-class SendRenderer : SetUpListener<Send> {
+class MdSendRenderer : BaseSendRenderer() {
+    override fun root(event: AbstractElementEvent): Element = event.element.parentElement.parentElement
+    override fun isSuitFor(element: Element) = element.localName != "div"
+}
+
+class HtmlSendRenderer : BaseSendRenderer() {
+    override fun root(event: AbstractElementEvent): Element = event.element
+    override fun isSuitFor(element: Element) = element.localName == "div"
+}
+
+abstract class BaseSendRenderer : SuitableSetUpListener<Send>() {
+    abstract fun root(event: AbstractElementEvent): Element
+
     override fun setUpCompleted(event: SetUpEvent<Send>) {
-        event.element.parentElement.parentElement.let {
-            it.addAttribute("hidden", "")
-            it.appendSister(template(event.target.queue, event.target.messages).toHtml().el)
+        with(root(event)) {
+            appendSister(template(event.target.queue, event.target.messages).toHtml().el)
+            parentElement.removeChild(this)
         }
     }
 }
 
-fun template(name: String, messages: List<MqCheckCommand.ParametrizedTypedMessage>) = //language=html
+fun template(name: String, messages: List<ParametrizedTypedMessage>) = //language=html
     """
 <div class="mq-send">
     <table class="table table-sm caption-top">
@@ -28,7 +42,7 @@ fun template(name: String, messages: List<MqCheckCommand.ParametrizedTypedMessag
 """.trimIndent()
 
 //language=html
-fun renderMessages(messages: List<MqCheckCommand.ParametrizedTypedMessage>) = messages.joinToString("\n") {
+fun renderMessages(messages: List<ParametrizedTypedMessage>) = messages.joinToString("\n") {
     """
 ${renderHeaders(it.headers)}
 <tr><td class='exp-body'>${renderBody(it)}</td></tr>
@@ -36,7 +50,7 @@ ${renderHeaders(it.headers)}
 }.ifEmpty { """<tr><td class='exp-body'>EMPTY</td></tr>""" }
 
 // language=html
-fun renderBody(msg: MqCheckCommand.ParametrizedTypedMessage): String =
+fun renderBody(msg: ParametrizedTypedMessage): String =
     """<div class="${msg.type}"></div>""".toHtml().text(msg.body.pretty(msg.type)).el.toXML()
 
 // language=html
