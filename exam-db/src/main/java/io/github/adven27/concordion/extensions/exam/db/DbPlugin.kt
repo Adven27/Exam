@@ -1,17 +1,17 @@
 package io.github.adven27.concordion.extensions.exam.db
 
 import io.github.adven27.concordion.extensions.exam.core.ExamPlugin
-import io.github.adven27.concordion.extensions.exam.core.commands.ExamCommand
+import io.github.adven27.concordion.extensions.exam.core.commands.NamedExamCommand
 import io.github.adven27.concordion.extensions.exam.core.html.span
 import io.github.adven27.concordion.extensions.exam.core.toDatePattern
 import io.github.adven27.concordion.extensions.exam.db.builder.SeedStrategy
-import io.github.adven27.concordion.extensions.exam.db.commands.DBCheckCommand
 import io.github.adven27.concordion.extensions.exam.db.commands.DBCleanCommand
-import io.github.adven27.concordion.extensions.exam.db.commands.DBSetCommand
-import io.github.adven27.concordion.extensions.exam.db.commands.DBShowCommand
 import io.github.adven27.concordion.extensions.exam.db.commands.DataSetExecuteCommand
 import io.github.adven27.concordion.extensions.exam.db.commands.DataSetVerifyCommand
-import io.github.adven27.concordion.extensions.exam.db.commands.RegexAndWithinAwareValueComparer
+import io.github.adven27.concordion.extensions.exam.db.commands.ExamMatchersAwareValueComparer
+import io.github.adven27.concordion.extensions.exam.db.commands.check.CheckCommand
+import io.github.adven27.concordion.extensions.exam.db.commands.set.SetCommand
+import io.github.adven27.concordion.extensions.exam.db.commands.show.ShowCommand
 import org.concordion.api.Element
 import org.dbunit.assertion.DiffCollectingFailureHandler
 import org.dbunit.dataset.Column
@@ -46,7 +46,12 @@ class DbPlugin @JvmOverloads constructor(
         valuePrinter: ValuePrinter = ValuePrinter.Simple(),
         dbUnitConfig: DbUnitConfig = DbUnitConfig(),
         allowedSeedStrategies: List<SeedStrategy> = SeedStrategy.values().toList(),
-    ) : this(DbTester(driver, url, user, password, schema, dbUnitConfig), connectOnDemand, valuePrinter, allowedSeedStrategies)
+    ) : this(
+        DbTester(driver, url, user, password, schema, dbUnitConfig),
+        connectOnDemand,
+        valuePrinter,
+        allowedSeedStrategies
+    )
 
     @JvmOverloads
     @Suppress("unused")
@@ -96,12 +101,12 @@ class DbPlugin @JvmOverloads constructor(
         connectOnDemand: Boolean = true
     ) : this(defaultTester, others, connectOnDemand, ValuePrinter.Simple(), allowedSeedStrategies)
 
-    override fun commands(): List<ExamCommand> = listOf(
+    override fun commands(): List<NamedExamCommand> = listOf(
         DataSetExecuteCommand("db-execute", "span", dbTester, valuePrinter, allowedSeedStrategies),
         DataSetVerifyCommand("db-verify", "span", dbTester, valuePrinter),
-        DBShowCommand("db-show", "div", dbTester, valuePrinter),
-        DBCheckCommand("db-check", "div", dbTester, valuePrinter),
-        DBSetCommand("db-set", "div", dbTester, valuePrinter, allowedSeedStrategies),
+        ShowCommand("db-show", dbTester, valuePrinter),
+        CheckCommand("db-check", dbTester, valuePrinter),
+        SetCommand("db-set", dbTester, valuePrinter, allowedSeedStrategies),
         DBCleanCommand("db-clean", "pre", dbTester)
     )
 
@@ -123,7 +128,7 @@ class DbPlugin @JvmOverloads constructor(
             override fun orElse(value: Any): String = value.toString()
         }
 
-        abstract class AbstractDefault @JvmOverloads constructor(private val dateFormat: String = "yyyy-MM-dd HH:mm:ss.SSS") :
+        abstract class AbstractDefault @JvmOverloads constructor(private val dateFormat: String = "yyyy-MM-dd'T'HH:mm:ss.SSS") :
             ValuePrinter {
             override fun print(value: Any?): String = when (value) {
                 null -> "(null)"
@@ -155,8 +160,8 @@ class DbPlugin @JvmOverloads constructor(
 
 data class DbUnitConfig @JvmOverloads constructor(
     val databaseConfigProperties: Map<String, Any?> = mapOf(),
-    val valueComparer: RegexAndWithinAwareValueComparer = RegexAndWithinAwareValueComparer(),
-    val columnValueComparers: Map<String, RegexAndWithinAwareValueComparer> = emptyMap(),
+    val valueComparer: ExamMatchersAwareValueComparer = ExamMatchersAwareValueComparer(),
+    val columnValueComparers: Map<String, ExamMatchersAwareValueComparer> = emptyMap(),
     val overrideRowSortingComparer: RowComparator = RowComparator(),
     val diffFailureHandler: DiffCollectingFailureHandler = DiffCollectingFailureHandler(),
     val isColumnSensing: Boolean = false
@@ -164,8 +169,8 @@ data class DbUnitConfig @JvmOverloads constructor(
     @Suppress("unused")
     class Builder {
         var databaseConfigProperties: Map<String, Any?> = mapOf()
-        var valueComparer: RegexAndWithinAwareValueComparer = RegexAndWithinAwareValueComparer()
-        var columnValueComparers: Map<String, RegexAndWithinAwareValueComparer> = emptyMap()
+        var valueComparer: ExamMatchersAwareValueComparer = ExamMatchersAwareValueComparer()
+        var columnValueComparers: Map<String, ExamMatchersAwareValueComparer> = emptyMap()
         var overrideRowSortingComparer: RowComparator = RowComparator()
         var diffFailureHandler: DiffCollectingFailureHandler = DiffCollectingFailureHandler()
         var columnSensing: Boolean = false
@@ -173,10 +178,10 @@ data class DbUnitConfig @JvmOverloads constructor(
         fun databaseConfigProperties(databaseConfigProperties: Map<String, Any?>) =
             apply { this.databaseConfigProperties += databaseConfigProperties }
 
-        fun valueComparer(valueComparer: RegexAndWithinAwareValueComparer) =
+        fun valueComparer(valueComparer: ExamMatchersAwareValueComparer) =
             apply { this.valueComparer = valueComparer }
 
-        fun columnValueComparers(columnValueComparers: Map<String, RegexAndWithinAwareValueComparer>) =
+        fun columnValueComparers(columnValueComparers: Map<String, ExamMatchersAwareValueComparer>) =
             apply { this.columnValueComparers = columnValueComparers }
 
         fun overrideRowSortingComparer(overrideRowSortingComparer: RowComparator = RowComparator()) =

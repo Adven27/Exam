@@ -21,7 +21,7 @@ public class BrowserCommand extends ExamVerifyCommand {
     private static final String FAIL_FAST = "failFast";
     private static final String URL = "url";
     private static boolean alreadyRunning = false;
-    private static WebDriverContainer driverContainer = new WebDriverThreadLocalContainer();
+    private static final WebDriverContainer driverContainer = new WebDriverThreadLocalContainer();
     private final DesiredCapabilities capabilities;
     private String url;
     private boolean failFast;

@@ -6,3 +6,12 @@ CREATE TABLE IF NOT EXISTS EMPTY (NAME VARCHAR2(255 CHAR), VALUE NUMBER);
 CREATE TABLE IF NOT EXISTS TYPES (ID INT PRIMARY KEY, TIMESTAMP_TYPE TIMESTAMP, DATETIME_TYPE SMALLDATETIME, DATE_TYPE DATE);
 
 CREATE TABLE IF NOT EXISTS androids_table (ID INT PRIMARY KEY, NAME VARCHAR2(255 CHAR), HEIGHT NUMBER, WEIGHT NUMBER, MANUFACTURED TIMESTAMP);
+
+create table if not exists orders (
+    id int primary key,
+    status varchar2(25 char),
+    client number,
+    driver number,
+    created timestamp,
+    updated timestamp
+);

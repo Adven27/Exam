@@ -12,14 +12,35 @@ import org.concordion.api.listener.AssertFailureEvent
 import org.concordion.api.listener.AssertSuccessEvent
 import java.util.EventListener
 
-class VerifyFailureEvent<E>(el: Element, val expected: E, val fail: Throwable) :
-    AbstractElementEvent(el)
-
+class VerifyFailureEvent<E>(el: Element, val expected: E, val fail: Throwable) : AbstractElementEvent(el)
 class VerifySuccessEvent<E, A>(el: Element, val expected: E, val actual: A) : AbstractElementEvent(el)
 
 interface VerifyListener<E, A> : EventListener {
     fun successReported(event: VerifySuccessEvent<E, A>)
     fun failureReported(event: VerifyFailureEvent<E>)
+}
+
+class FirsSuitableResultRenderer<E, A>(private vararg val renderers: SuitableResultRenderer<E, A>) :
+    VerifyListener<E, A> {
+
+    override fun successReported(event: VerifySuccessEvent<E, A>) =
+        renderers.first { it.isSuitFor(event.element) }.successReported(event)
+
+    override fun failureReported(event: VerifyFailureEvent<E>) =
+        renderers.first { it.isSuitFor(event.element) }.failureReported(event)
+}
+
+abstract class SuitableResultRenderer<E, A> : VerifyListener<E, A> {
+    abstract fun isSuitFor(element: Element): Boolean
+}
+
+class FirsSuitableSetUpListener<T>(private vararg val renderers: SuitableSetUpListener<T>) : SetUpListener<T> {
+    override fun setUpCompleted(event: SetUpEvent<T>) =
+        renderers.first { it.isSuitFor(event.element) }.setUpCompleted(event)
+}
+
+abstract class SuitableSetUpListener<T> : SetUpListener<T> {
+    abstract fun isSuitFor(element: Element): Boolean
 }
 
 open class ExamVerifyCommand(
@@ -57,6 +78,10 @@ open class ExamVerifyCommand(
         root.text(expected)
         this.pass(root)
     } else this.failure(root, actual, expected)
+}
+
+open class ExamSetUpCommand<T>(private val listener: SetUpListener<T>) : AbstractCommand() {
+    protected fun setUpCompleted(element: Element, target: T) = listener.setUpCompleted(SetUpEvent(element, target))
 }
 
 open class ExamAssertCommand<E, A>(private val listener: VerifyListener<E, A>) : AbstractCommand() {

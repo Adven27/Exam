@@ -4,7 +4,19 @@
 
 ### [Mq example 1](-)
 
-[send to myQueue](- "e:mq-send-exp=myQueue collapsable=true")
+**Given**
+
+| Empty |
+|-------|
+[[Orders list](- "e:db-set=orders")]
+
+| Empty |
+|-------|
+[[](- "e:db-check=orders")]
+
+**When**
+
+[send to myQueue](- "e:mq-send=myQueue collapsable=true")
 :
   ```json
   {"a" :  1}
@@ -26,9 +38,9 @@
   _d2=2_
   [`var1=1` `var2=2`][my message]
 
----
+**Then**
 
-[check myQueue](- "e:mq-check=myQueue contains=exact collapsable=true layout=vertically")
+[Events are sent to myQueue](- "e:mq-check=myQueue contains=exact collapsable=true layout=vertically")
 :   
   ```json
   {"a" :  1}
@@ -49,6 +61,20 @@
   _d1=1_
   _d2=2_ 
   [`var1=1` `var2=2`][my message]
+
+| id  | client | driver   | status    | created               | updated   |
+|-----|--------|----------|-----------|-----------------------|-----------|
+| 1   | 111    | {{NULL}} | PLACED    | {{today}}             | {{today}} |
+| 2   | 222    | 11       | COMPLETED | {{today minus='1 d'}} | {{today}} |
+[[Set orders](- "e:db-set=orders")]
+
+Orders updated:
+
+| id        | client | driver     | status    | created               | updated      |
+|-----------|--------|------------|-----------|-----------------------|--------------|
+| !{number} | 111    | {{NULL}}   | PLACED    | {{today}}             | {{today}}    |
+| !{string} | 222    | !{notNull} | COMPLETED | {{today minus='1 d'}} | !{within 2d} |
+[[Check orders](- "e:db-check=orders awaitAtMostSec=2")]
 
 ### ~~Mq example 1~~
 

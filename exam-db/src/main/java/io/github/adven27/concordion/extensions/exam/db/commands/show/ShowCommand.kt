@@ -1,5 +1,8 @@
-package io.github.adven27.concordion.extensions.exam.db.commands
+package io.github.adven27.concordion.extensions.exam.db.commands.show
 
+import io.github.adven27.concordion.extensions.exam.core.commands.BeforeParseExamCommand
+import io.github.adven27.concordion.extensions.exam.core.commands.CommandParser
+import io.github.adven27.concordion.extensions.exam.core.commands.NamedExamCommand
 import io.github.adven27.concordion.extensions.exam.core.fileExt
 import io.github.adven27.concordion.extensions.exam.core.html.code
 import io.github.adven27.concordion.extensions.exam.core.html.html
@@ -7,6 +10,8 @@ import io.github.adven27.concordion.extensions.exam.core.html.pre
 import io.github.adven27.concordion.extensions.exam.db.DbPlugin
 import io.github.adven27.concordion.extensions.exam.db.DbTester
 import io.github.adven27.concordion.extensions.exam.db.builder.JSONWriter
+import io.github.adven27.concordion.extensions.exam.db.commands.renderTable
+import org.concordion.api.AbstractCommand
 import org.concordion.api.CommandCall
 import org.concordion.api.Evaluator
 import org.concordion.api.Fixture
@@ -19,44 +24,64 @@ import org.dbunit.dataset.csv.CsvDataSetWriter
 import org.dbunit.dataset.excel.XlsDataSet
 import org.dbunit.dataset.filter.DefaultColumnFilter.includedColumnsTable
 import org.dbunit.dataset.xml.FlatXmlDataSet
+import org.dbunit.util.QualifiedTableName
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
 import java.nio.file.Paths
 
-class DBShowCommand(name: String, tag: String, dbTester: DbTester, valuePrinter: DbPlugin.ValuePrinter) :
-    DBCommand(name, tag, dbTester, valuePrinter) {
+class ShowCommand(
+    override val name: String,
+    val dbTester: DbTester,
+    private val valuePrinter: DbPlugin.ValuePrinter,
+    private val commandParser: CommandParser<Attrs> = ShowParser(),
+) : AbstractCommand(), NamedExamCommand, BeforeParseExamCommand {
+    override val tag = "div"
 
-    override fun setUp(cmd: CommandCall?, eval: Evaluator?, resultRecorder: ResultRecorder?, fixture: Fixture) {
-        val el = cmd.html()
-        val tableName = el.takeAwayAttr("table", eval)!!
-        val where = el.takeAwayAttr("where", eval)
-        val createDataSet = el.takeAwayAttr("createDataSet", "false")
-        val saveToResources = el.takeAwayAttr("saveToResources", eval)
-        val ds = el.takeAwayAttr("ds", DbTester.DEFAULT_DATASOURCE)
-        val conn = dbTester.connectionFor(ds)
+    data class Attrs(
+        val ds: String,
+        val table: String,
+        val createDataSet: Boolean,
+        val saveToResources: String?,
+        val where: String?,
+        val cols: Set<String>
+    )
 
-        el(
-            renderTable(
-                el.takeAwayAttr("caption"),
-                includedColumnsTable(
-                    if (where == null || where.isEmpty()) {
-                        conn.createTable(tableName)
-                    } else {
-                        getFilteredTable(conn, tableName, where)
-                    },
-                    parseCols(el).keys.toTypedArray()
-                ),
-                remarks,
-                valuePrinter
+    override fun setUp(cmd: CommandCall, eval: Evaluator, resultRecorder: ResultRecorder?, fixture: Fixture) {
+        with(commandParser.parse(cmd, eval)) {
+            val conn = dbTester.connectionFor(ds)
+            val el = cmd.html()
+            el(
+                renderTable(
+                    includedColumnsTable(
+                        if (where == null || where.isEmpty()) {
+                            conn.createTable(table)
+                        } else {
+                            getFilteredTable(conn, table, where)
+                        },
+                        cols.toTypedArray()
+                    ),
+                    valuePrinter,
+                    el.takeAwayAttr("caption"),
+                )
             )
-        )
-        if (createDataSet.toBoolean() || !saveToResources.isNullOrEmpty()) {
-            ByteArrayOutputStream().use {
-                save(saveToResources, conn.createDataSet(getAllDependentTables(conn, tableName)), it)
-                el(pre().attrs("class" to "doc-code language-xml")(code(it.toString("UTF-8"))))
+            if (createDataSet || !saveToResources.isNullOrEmpty()) {
+                ByteArrayOutputStream().use {
+                    save(
+                        saveToResources,
+                        conn.createDataSet(
+                            getAllDependentTables(
+                                conn,
+                                QualifiedTableName(table, conn.schema).qualifiedName
+                            )
+                        ),
+                        it
+                    )
+                    el(pre().attrs("class" to "doc-code language-xml")(code(it.toString("UTF-8"))))
+                }
             }
         }
+
     }
 
     private fun save(saveToResources: String?, dataSet: IDataSet, it: ByteArrayOutputStream) {

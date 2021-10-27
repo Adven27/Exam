@@ -1,7 +1,6 @@
 package io.github.adven27.concordion.extensions.exam.db.builder
 
 import io.github.adven27.concordion.extensions.exam.core.commands.AwaitConfig
-import io.github.adven27.concordion.extensions.exam.core.commands.await
 import io.github.adven27.concordion.extensions.exam.core.fileExt
 import io.github.adven27.concordion.extensions.exam.core.findResource
 import io.github.adven27.concordion.extensions.exam.db.DbTester
@@ -140,7 +139,7 @@ class DataSetExecutor(private val dbTester: DbTester) {
             dataSet = "/$dataSet"
         }
         return javaClass.getResourceAsStream(dataSet) ?: javaClass.getResourceAsStream("/datasets$dataSet")
-            ?: throw DatasetNotFound(dataSet.substring(1))
+        ?: throw DatasetNotFound(dataSet.substring(1))
     }
 
     class DatasetNotFound(name: String) :
@@ -159,7 +158,7 @@ class DataSetExecutor(private val dbTester: DbTester) {
         val rowsMismatchFailures = mutableListOf<Triple<ITable, ITable, DbComparisonFailure>>()
         val current: IDataSet = dbTester.connection.createDataSet()
         val expected: IDataSet = loadDataSets(eval, expectedDataSetConfig.datasets)
-        return expected.tableNames.map { tableName ->
+        return expected.tableNames.associate { tableName ->
             var expectedTable = expected.getTable(tableName)
             val sortCols = if (orderBy.isEmpty()) expectedTable.columnNamesArray() else orderBy.filterBy(tableName)
             var actualTable = DefaultColumnFilter.includedColumnsTable(
@@ -186,7 +185,7 @@ class DataSetExecutor(private val dbTester: DbTester) {
                 rowsMismatchFailures.add(Triple(expectedTable, actualTable, f))
             }
             expectedTable to actualTable
-        }.toMap().let {
+        }.let {
             DataSetsCompareResult(
                 CompositeDataSet(it.keys.toTypedArray()),
                 CompositeDataSet(it.values.toTypedArray()),
@@ -203,7 +202,7 @@ class DataSetExecutor(private val dbTester: DbTester) {
     @JvmOverloads
     @Suppress("LongParameterList")
     fun awaitCompareCurrentDataSetWith(
-        await: AwaitConfig,
+        await: AwaitConfig?,
         expected: DataSetConfig,
         eval: Evaluator,
         excludeCols: Array<String> = emptyArray(),
@@ -211,7 +210,7 @@ class DataSetExecutor(private val dbTester: DbTester) {
         compareOperation: CompareOperation = EQUALS
     ): DataSetsCompareResult {
         lateinit var result: DataSetsCompareResult
-        if (await.enabled()) {
+        return await?.let {
             try {
                 await.await("Await $compareOperation $expected").until {
                     result = compareCurrentDataSetWith(expected, eval, excludeCols, orderBy, compareOperation)
@@ -219,10 +218,8 @@ class DataSetExecutor(private val dbTester: DbTester) {
                 }
             } catch (ignore: ConditionTimeoutException) {
             }
-        } else {
-            result = compareCurrentDataSetWith(expected, eval, excludeCols, orderBy, compareOperation)
-        }
-        return result
+            result
+        } ?: compareCurrentDataSetWith(expected, eval, excludeCols, orderBy, compareOperation)
     }
 
     private fun Array<String>.filterBy(tableName: String) =

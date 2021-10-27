@@ -160,6 +160,8 @@ fun Throwable.rootCause(): Throwable {
     return rootCause
 }
 
+fun Throwable.rootCauseMessage() = this.rootCause().let { it.message ?: it.toString() }
+
 fun List<String>.sameSizeWith(values: List<Any?>): List<String> = if (values.size != size) {
     fun breakReason(cols: List<String>, vals: List<Any?>) =
         if (cols.size > vals.size) "variable '${cols[vals.size]}' has no value" else "value '${vals[cols.size]}' has no variable"
@@ -186,4 +188,4 @@ fun <R> memoized(fn: (Any) -> R): (Any) -> R {
     return { cache.getOrPut(it) { fn(it) } }
 }
 
-fun String.escapeHtml() = StringEscapeUtils.escapeHtml4(this)
+fun String.escapeHtml(): String = StringEscapeUtils.escapeHtml4(this)

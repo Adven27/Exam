@@ -5,7 +5,7 @@
 <head>
     <style type="text/css">
         h1 {
-            margin-bottom: 0px;
+            margin-bottom: 0;
         }
 
         .levelkey {
@@ -101,19 +101,23 @@
 
         ul.content {
             margin-top: 125px;
-            padding-left: 0px;
+            padding-left: 0;
             white-space: nowrap;
             list-style-type: none;
         }
 
         pre {
-            margin: 0px;
-            padding 0px;
+            margin: 0;
+            padding: 0;
             display: inline-block;
         }
 
     </style>
     <script type="text/javascript">
+        function filterTestWorker(cb) {
+            doFilter("test-worker", cb.checked);
+        }
+
         function filterDebug(cb) {
             doFilter("debug", cb.checked);
             doSplit("split-debug-levels", cb.checked);
@@ -141,6 +145,7 @@
                 all[i].style.borderBottom = setting;
             }
         }
+
         function filter() {
             let input, filter, ul, lines, line;
             input = document.getElementById("search");
@@ -152,11 +157,7 @@
                 line = lines[i];
                 if (line) {
                     let txtValue = line.textContent || line.innerText;
-                    if (txtValue.toUpperCase().indexOf(filter) > -1) {
-                        line.style.display = "";
-                    } else {
-                        line.style.display = "none";
-                    }
+                    line.style.display = txtValue.toUpperCase().indexOf(filter) > -1 ? "" : "none";
                 }
             }
         }
@@ -164,7 +165,7 @@
 </head>
 <body>
 <div class="header-fixed">
-    <h1 class="alignleft">Log File Viewer</h1>
+    <h1 class="alignleft">LOG_FILE_NAME</h1>
     <table class="levelkey floatright">
         <tr>
             <td class="trace-color">Trace</td>
@@ -178,6 +179,7 @@
     <p>
         <label class="alignleft"><input id="chkDebug" type="checkbox" onclick="filterDebug(this);" checked>DEBUG</label>
         <label class="alignleft"><input id="chkTrace" type="checkbox" onclick="filterTrace(this);" checked>TRACE</label>
+        <label class="alignleft"><input id="chkTestWorker" type="checkbox" onclick="filterTestWorker(this);" checked>Test worker</label>
         <input type="text" id="search" onkeyup="filter()" placeholder="Search...">
         <span class="floatright"><a href="LOG_FILE_NAME">Raw Log File</a></span>
     </p>

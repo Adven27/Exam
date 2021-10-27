@@ -6,8 +6,9 @@ import io.github.adven27.concordion.extensions.exam.core.ExamResultRenderer
 import io.github.adven27.concordion.extensions.exam.core.TextContentTypeConfig
 import io.github.adven27.concordion.extensions.exam.core.content
 import io.github.adven27.concordion.extensions.exam.core.html.Html
-import io.github.adven27.concordion.extensions.exam.core.html.takeAttr
+import io.github.adven27.concordion.extensions.exam.core.html.html
 import io.github.adven27.concordion.extensions.exam.core.resolveForContentType
+import io.github.adven27.concordion.extensions.exam.core.rootCauseMessage
 import io.github.adven27.concordion.extensions.exam.core.vars
 import mu.KLogging
 import nu.xom.Attribute
@@ -25,7 +26,8 @@ import org.concordion.api.listener.ExecuteListener
 import org.concordion.internal.CatchAllExpectationChecker.normalize
 import org.concordion.internal.command.AssertEqualsCommand
 import org.concordion.internal.util.Announcer
-import java.util.concurrent.TimeUnit
+import java.util.concurrent.TimeUnit.MILLISECONDS
+import java.util.concurrent.TimeUnit.SECONDS
 
 interface NamedExamCommand : Command {
     val name: String
@@ -97,29 +99,45 @@ open class ExamAssertEqualsCommand(
     companion object : KLogging()
 }
 
-fun CommandCall?.awaitConfig() = AwaitConfig(
-    takeAttr("awaitAtMostSec")?.toLong(),
-    takeAttr("awaitPollDelayMillis")?.toLong(),
-    takeAttr("awaitPollIntervalMillis")?.toLong()
-)
+fun CommandCall?.awaitConfig(): AwaitConfig? = html().awaitConfig()
 
-fun Html.awaitConfig(prefix: String = "await") = AwaitConfig(
+fun Html.awaitConfig(prefix: String = "await") = AwaitConfig.build(
     takeAwayAttr("${prefix}AtMostSec")?.toLong(),
     takeAwayAttr("${prefix}PollDelayMillis")?.toLong(),
     takeAwayAttr("${prefix}PollIntervalMillis")?.toLong()
 )
 
-data class AwaitConfig(val atMostSec: Long? = null, val pollDelay: Long? = null, val pollInterval: Long? = null) {
-    fun enabled(): Boolean = !(atMostSec == null && pollDelay == null && pollInterval == null)
+data class AwaitConfig(
+    val atMostSec: Long = DEFAULT_AT_MOST_SEC,
+    val pollDelay: Long = DEFAULT_POLL_DELAY,
+    val pollInterval: Long = DEFAULT_POLL_INTERVAL
+) {
+    fun timeoutMessage(e: Throwable) = "Check didn't complete within $atMostSec seconds " +
+        "(poll delay $pollDelay ms, interval $pollInterval ms) because ${e.rootCauseMessage()}"
+
+    fun await(desc: String? = null): ConditionFactory = Awaitility.await(desc)
+        .atMost(atMostSec, SECONDS)
+        .pollDelay(pollDelay, MILLISECONDS)
+        .pollInterval(pollInterval, MILLISECONDS)
+
+    companion object {
+        var DEFAULT_AT_MOST_SEC = 4L
+        var DEFAULT_POLL_DELAY = 0L
+        var DEFAULT_POLL_INTERVAL = 1000L
+
+        fun build(atMostSec: Long?, pollDelay: Long?, pollInterval: Long?): AwaitConfig? =
+            if (enabled(atMostSec, pollDelay, pollInterval))
+                AwaitConfig(
+                    atMostSec ?: DEFAULT_AT_MOST_SEC,
+                    pollDelay ?: DEFAULT_POLL_DELAY,
+                    pollInterval ?: DEFAULT_POLL_INTERVAL
+                )
+            else null
+
+        private fun enabled(atMostSec: Long?, pollDelay: Long?, pollInterval: Long?) =
+            !(atMostSec == null && pollDelay == null && pollInterval == null)
+    }
 }
-
-fun AwaitConfig.await(desc: String? = null): ConditionFactory = Awaitility.await(desc)
-    .atMost(atMostSec ?: 4, TimeUnit.SECONDS)
-    .pollDelay(pollDelay ?: 0, TimeUnit.MILLISECONDS)
-    .pollInterval(pollInterval ?: 1000, TimeUnit.MILLISECONDS)
-
-fun AwaitConfig.timeoutMessage(e: Throwable) =
-    "Check with poll delay $pollDelay ms and poll interval $pollInterval ms didn't complete within $atMostSec seconds because ${e.cause?.message}"
 
 class VarsAttrs(root: Html, evaluator: Evaluator) {
     val vars: String? = root.takeAwayAttr(VARS)

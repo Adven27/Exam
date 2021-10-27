@@ -13,7 +13,7 @@ import io.github.adven27.concordion.extensions.exam.db.DbTester
 import io.github.adven27.concordion.extensions.exam.db.builder.DataSetConfig
 import io.github.adven27.concordion.extensions.exam.db.builder.DataSetExecutor
 import io.github.adven27.concordion.extensions.exam.db.builder.SeedStrategy
-import io.github.adven27.concordion.extensions.exam.db.commands.DBCheckCommand.Companion.isDbMatcher
+import io.github.adven27.concordion.extensions.exam.db.commands.ExamMatchersAwareValueComparer.Companion.isDbMatcher
 import org.concordion.api.CommandCall
 import org.concordion.api.Evaluator
 import org.concordion.api.Fixture
@@ -43,7 +43,7 @@ class DataSetExecuteCommand(
         fixture: Fixture
     ) {
         cmd.html().also { root ->
-            Attrs.from(root, evaluator, allowedSeedStrategies).also { attrs ->
+            Attrs.from(cmd, evaluator, allowedSeedStrategies).also { attrs ->
                 insertDataSet(attrs, evaluator).iterator().apply {
                     while (next()) {
                         render(cmd.html())
@@ -66,11 +66,7 @@ class DataSetExecuteCommand(
     private fun ITableIterator.render(root: Html) {
         root(
             table.let {
-                renderTable(
-                    null,
-                    it,
-                    { td, row, col -> td()(Html(valuePrinter.wrap(it[row, col]))) }
-                )
+                renderTable(it, { td, row, col -> td()(Html(valuePrinter.wrap(it[row, col]))) })
             }
         )
     }
@@ -80,9 +76,9 @@ class DataSetExecuteCommand(
         val setAttrs: SetAttrs,
     ) {
         companion object {
-            fun from(root: Html, evaluator: Evaluator, allowedSeedStrategies: List<SeedStrategy>) = Attrs(
-                DatasetCommandAttrs.from(root, evaluator),
-                SetAttrs.from(root, allowedSeedStrategies),
+            fun from(cmd: CommandCall, evaluator: Evaluator, allowedSeedStrategies: List<SeedStrategy>) = Attrs(
+                DatasetCommandAttrs.from(cmd.html(), evaluator),
+                SetAttrs.from(cmd, allowedSeedStrategies),
             )
         }
     }
@@ -135,7 +131,6 @@ class DataSetVerifyCommand(name: String, tag: String, val dbTester: DbTester, va
                         table.let { expected ->
                             val actual = actual.getTable(expected.tableName())
                             renderTable(
-                                null,
                                 expected,
                                 markAsSuccess(expected, actual, resultRecorder),
                                 ifEmpty = { markAsSuccess(resultRecorder) }
@@ -166,7 +161,6 @@ class DataSetVerifyCommand(name: String, tag: String, val dbTester: DbTester, va
             }
             root(
                 renderTable(
-                    null,
                     expected,
                     markAsSuccessOrFailure,
                     ifEmpty = { markAsSuccess(recorder) }
@@ -207,7 +201,7 @@ class DataSetVerifyCommand(name: String, tag: String, val dbTester: DbTester, va
     }
 
     private fun render(tbl: ITable): Html =
-        renderTable(null, tbl, { td, row, col -> td()(Html(valuePrinter.wrap(tbl[row, col]))) })
+        renderTable(tbl, { td, row, col -> td()(Html(valuePrinter.wrap(tbl[row, col]))) })
 
     private fun appendIf(append: Boolean, actual: ITable, row: Int, col: String): String =
         if (append) " (${actual[row, col]})" else ""

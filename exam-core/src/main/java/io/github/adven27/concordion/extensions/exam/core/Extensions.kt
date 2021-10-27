@@ -166,7 +166,7 @@ class FontAwesomeExtension : ConcordionExtension {
 class BootstrapExtension : ConcordionExtension {
     override fun addTo(e: ConcordionExtender) {
         e.linkedCss(BASE, "bootstrap.min.css", "enable-bootstrap.css", "doc.min.css", "scrollToTop.css")
-        e.linkedJs(BASE, "bootstrap.min.js", "jquery-3.2.1.slim.min.js", "sidebar.js", "doc.min.js", "scrollToTop.js")
+        e.linkedJs(BASE, "bootstrap.bundle.min.js", "jquery-3.2.1.slim.min.js", "sidebar.js", "doc.min.js", "scrollToTop.js")
     }
 
     companion object {

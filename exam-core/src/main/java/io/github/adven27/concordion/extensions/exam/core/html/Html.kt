@@ -221,6 +221,13 @@ class Html(val el: Element) {
         (Html("span", txt, *attrs))
     }
 
+    fun tooltip(text: String, decorate: Boolean = false) = attrs(
+        "title" to text,
+        "data-toggle" to "tooltip",
+        "data-placement" to "top",
+        "style" to if (decorate) "text-decoration: underline grey dashed !important;" else ""
+    )
+
     fun removeClass(name: String): Html {
         el.addAttribute(
             "class",
