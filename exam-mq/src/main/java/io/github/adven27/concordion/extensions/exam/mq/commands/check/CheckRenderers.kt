@@ -18,9 +18,8 @@ import io.github.adven27.concordion.extensions.exam.mq.commands.check.MqVerifier
 import org.concordion.api.Element
 import org.concordion.api.listener.AbstractElementEvent
 
-class HtmlResultRenderer : SuitableResultRenderer<Expected, Actual>() {
-    override fun isSuitFor(element: Element) = element.localName == "div"
-    private fun root(event: AbstractElementEvent) = event.element
+abstract class BaseResultRenderer : SuitableResultRenderer<Expected, Actual>() {
+    abstract fun root(event: AbstractElementEvent): Element
 
     override fun successReported(event: VerifySuccessEvent<Expected, Actual>) = with(root(event)) {
         appendSister(
@@ -83,30 +82,14 @@ class HtmlResultRenderer : SuitableResultRenderer<Expected, Actual>() {
         ).second.el
 }
 
-class MdResultRenderer : SuitableResultRenderer<Expected, Actual>() {
+class HtmlResultRenderer : BaseResultRenderer() {
+    override fun isSuitFor(element: Element) = element.localName == "div"
+    override fun root(event: AbstractElementEvent) = event.element
+}
+
+class MdResultRenderer : BaseResultRenderer() {
     override fun isSuitFor(element: Element) = element.localName != "div"
-
-    private fun root(event: AbstractElementEvent) = event.element.parentElement.parentElement
-
-    override fun successReported(event: VerifySuccessEvent<Expected, Actual>) = with(root(event)) {
-        addAttribute("hidden", "")
-        appendSister(
-            div()(
-                pre(event.expected.toString()),
-                pre(event.actual.toString())
-            ).el
-        )
-    }
-
-    override fun failureReported(event: VerifyFailureEvent<Expected>) = with(root(event)) {
-        addAttribute("hidden", "")
-        appendSister(
-            div()(
-                pre(event.fail.toString()),
-                pre(event.expected.toString()),
-            ).el
-        )
-    }
+    override fun root(event: AbstractElementEvent) = event.element.parentElement.parentElement
 }
 
 private fun template(name: String, messages: List<MessageVerifyResult>) = //language=html
