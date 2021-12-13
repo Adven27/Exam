@@ -138,8 +138,9 @@ class DataSetExecutor(private val dbTester: DbTester) {
         if (!dataSet.startsWith("/")) {
             dataSet = "/$dataSet"
         }
-        return javaClass.getResourceAsStream(dataSet) ?: javaClass.getResourceAsStream("/datasets$dataSet")
-        ?: throw DatasetNotFound(dataSet.substring(1))
+        return javaClass.getResourceAsStream(dataSet)
+            ?: javaClass.getResourceAsStream("/datasets$dataSet")
+            ?: throw DatasetNotFound(dataSet.substring(1))
     }
 
     class DatasetNotFound(name: String) :

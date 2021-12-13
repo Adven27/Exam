@@ -13,6 +13,7 @@ interface QueueParser : SuitableCommandParser<List<ParametrizedTypedMessage>>
 class MdQueueParser(private val typeAttr: String = "verifyAs") : QueueParser {
     override fun isSuitFor(element: Element): Boolean = element.localName != "div"
 
+    @Suppress("ComplexMethod")
     override fun parse(command: CommandCall, evaluator: Evaluator) = root(command).childElements
         .filter { it.localName == "dd" }
         .map { dd ->

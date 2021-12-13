@@ -20,6 +20,7 @@ import org.concordion.api.ResultRecorder
 import org.dbunit.dataset.ITable
 import org.dbunit.util.QualifiedTableName
 
+@Suppress("LongParameterList")
 class CheckCommand(
     override val name: String,
     val dbTester: DbTester,

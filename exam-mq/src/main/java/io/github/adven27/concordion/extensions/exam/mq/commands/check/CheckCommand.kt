@@ -16,6 +16,7 @@ import io.github.adven27.concordion.extensions.exam.mq.commands.MdQueueParser
 import io.github.adven27.concordion.extensions.exam.mq.commands.check.CheckCommand.Actual
 import io.github.adven27.concordion.extensions.exam.mq.commands.check.CheckCommand.Expected
 
+@Suppress("LongParameterList")
 class CheckCommand(
     override val name: String,
     mqTesters: Map<String, MqTester>,

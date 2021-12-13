@@ -30,6 +30,8 @@ import java.io.File
 class FilesCheckCommand(name: String?, tag: String?, filesLoader: FilesLoader) : BaseCommand(name, tag) {
     private val listeners = Announcer.to(AssertEqualsListener::class.java)
     private val filesLoader: FilesLoader
+
+    @Suppress("LongMethod", "NestedBlockDepth", "SpreadOperator")
     override fun verify(
         commandCall: CommandCall,
         evaluator: Evaluator,
@@ -132,8 +134,8 @@ class FilesCheckCommand(name: String?, tag: String?, filesLoader: FilesLoader) :
                     element.appendText(prettyActual)
                     xmlEquals(resultRecorder, element)
                 }
-        } catch (e: Exception) {
-            LOG.debug("Got exception on xml checking: {}", e.message)
+        } catch (ignore: Exception) {
+            LOG.debug("Got exception on xml checking: {}", ignore.message)
             xmlDoesNotEqual(resultRecorder, element, prettyActual, expected)
         }
     }

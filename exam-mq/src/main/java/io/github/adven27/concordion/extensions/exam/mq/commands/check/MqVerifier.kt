@@ -15,6 +15,7 @@ import org.junit.Assert.assertEquals
 class MqVerifier : AwaitVerifier<Expected, Actual> {
     companion object : KLogging()
 
+    @Suppress("NestedBlockDepth")
     override fun verify(expected: Expected, getActual: () -> Pair<Boolean, Actual>): Result<Success<Expected, Actual>> {
         try {
             return awaitSize(expected, getActual).let { actual ->
@@ -28,10 +29,11 @@ class MqVerifier : AwaitVerifier<Expected, Actual> {
                             typeConfig.let { (_, verifier, _) -> verifier.verify(it.expected.body, it.actual.body) }
                         )
                     }.let { results ->
-                        if (results.any { it.headers.isFailure || it.content.isFailure })
+                        if (results.any { it.headers.isFailure || it.content.isFailure }) {
                             Result.failure(MessageVerifyingError(results))
-                        else
+                        } else {
                             Result.success(Success(expected, actual))
+                        }
                     }
             }
         } catch (e: java.lang.AssertionError) {
@@ -39,7 +41,7 @@ class MqVerifier : AwaitVerifier<Expected, Actual> {
         }
     }
 
-    @Suppress("SpreadOperator")
+    @Suppress("SpreadOperator", "NestedBlockDepth")
     private fun checkHeaders(actual: Map<String, String>, expected: Map<String, String>): Result<Map<String, String>> =
         if (expected.isEmpty()) Result.success(emptyMap())
         else try {
@@ -48,13 +50,13 @@ class MqVerifier : AwaitVerifier<Expected, Actual> {
                 (
                     matched.map { (it.key to it.value) to (it.key to actual[it.key]) } +
                         absentInActual.map { it.toPair() }.zip(absentInExpected(actual, matched))
-                    ).map { (expected, actual) ->
-                        headerCheckResult(expected, actual)
-                    }.let { results ->
-                        if (results.any { it.actualValue != null || it.actualKey != null })
+                    ).map { (expected, actual) -> headerCheckResult(expected, actual) }
+                    .let { results ->
+                        if (results.any { it.actualValue != null || it.actualKey != null }) {
                             Result.failure(HeadersVerifyingError(results))
-                        else
+                        } else {
                             Result.success(results.associate { it.header })
+                        }
                     }
             }
         } catch (e: AssertionError) {
@@ -62,10 +64,10 @@ class MqVerifier : AwaitVerifier<Expected, Actual> {
         }
 
     private fun headerCheckResult(expected: Pair<String, String>, actual: Pair<String, String?>) =
-        if (expected.first == actual.first)
+        if (expected.first == actual.first) {
             if (expected.second == actual.second) HeaderCheckResult(expected)
             else HeaderCheckResult(expected, actualValue = actual.second)
-        else HeaderCheckResult(expected, actualKey = actual.first)
+        } else HeaderCheckResult(expected, actualKey = actual.first)
 
     data class HeaderCheckResult(
         val header: Pair<String, String>,
