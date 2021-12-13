@@ -91,7 +91,7 @@ class WaitCommand(tag: String) : ExamCommand("await", tag) {
         el.removeChildren()
 
         Thread.sleep(1000L * eval.resolve(el.takeAwayAttr("seconds", "0")).toInt())
-        el.awaitConfig("").await().let { await ->
+        (cmd.awaitConfig() ?: AwaitConfig()).await().let { await ->
             when {
                 untilTrue != null -> await.alias(untilTrue).until { eval.evaluate(untilTrue) == true }
                 untilGet.isNotEmpty() -> await.get(eval, untilGet, hasBody, hasStatus)

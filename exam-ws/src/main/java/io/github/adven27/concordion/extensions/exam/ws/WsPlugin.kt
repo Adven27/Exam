@@ -36,7 +36,7 @@ class WsPlugin @JvmOverloads constructor(
     private val contentTypeConfigs: MutableMap<ContentType, ContentTypeConfig> = mutableMapOf(
         ContentType.JSON to ContentTypeConfig(JsonResolver(), JsonVerifier(), JsonPrinter()),
         ContentType.XML to ContentTypeConfig(XmlResolver(), XmlVerifier(), XmlPrinter()),
-        ContentType.TEXT to ContentTypeConfig(JsonResolver(), ContentVerifier.Default(), ContentPrinter.AsIs()),
+        ContentType.TEXT to ContentTypeConfig(JsonResolver(), ContentVerifier.Default("text"), ContentPrinter.AsIs()),
     )
 
     init {

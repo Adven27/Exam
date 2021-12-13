@@ -1,12 +1,14 @@
 package io.github.adven27.concordion.extensions.exam.mq.kafka
 
 import io.github.adven27.concordion.extensions.exam.mq.MqTester
+import io.github.adven27.concordion.extensions.exam.mq.MqTester.Message
 import mu.KLogging
 import org.apache.kafka.clients.admin.AdminClient
 import org.apache.kafka.clients.admin.OffsetSpec
 import org.apache.kafka.clients.admin.RecordsToDelete
 import org.apache.kafka.clients.admin.TopicDescription
 import org.apache.kafka.clients.consumer.ConsumerConfig
+import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.apache.kafka.clients.consumer.KafkaConsumer
 import org.apache.kafka.clients.consumer.OffsetAndMetadata
 import org.apache.kafka.clients.producer.KafkaProducer
@@ -27,16 +29,26 @@ open class KafkaConsumeAndSendTester @JvmOverloads constructor(
     bootstrapServers: String,
     topic: String,
     sutConsumerGroup: String? = null,
-    properties: MutableMap<String, Any?> = (DEFAULT_PRODUCER_CONFIG + DEFAULT_CONSUMER_CONFIG).toMutableMap(),
+    consumerProperties: MutableMap<String, Any?> = DEFAULT_CONSUMER_CONFIG.toMutableMap(),
+    private val producerProperties: MutableMap<String, Any?> = DEFAULT_PRODUCER_CONFIG.toMutableMap(),
     pollTimeout: Duration = ofMillis(POLL_MILLIS),
-    accumulateOnRetries: Boolean = false
-) : KafkaConsumeOnlyTester(bootstrapServers, topic, sutConsumerGroup, properties, pollTimeout, accumulateOnRetries) {
+    accumulateOnRetries: Boolean = false,
+    recordMapper: (ConsumerRecord<String, String>) -> Message = DEFAULT_RECORD_MAPPER
+) : KafkaConsumeOnlyTester(
+    bootstrapServers,
+    topic,
+    sutConsumerGroup,
+    consumerProperties,
+    pollTimeout,
+    accumulateOnRetries,
+    recordMapper
+) {
     protected lateinit var producer: KafkaProducer<String, String>
 
     override fun start() {
         properties[ProducerConfig.CLIENT_ID_CONFIG] = "kafka-tester-$topic"
         properties[ProducerConfig.BOOTSTRAP_SERVERS_CONFIG] = bootstrapServers
-        producer = KafkaProducer<String, String>(properties)
+        producer = KafkaProducer<String, String>(producerProperties)
         super.start()
     }
 
@@ -45,7 +57,7 @@ open class KafkaConsumeAndSendTester @JvmOverloads constructor(
         super.stop()
     }
 
-    override fun send(message: MqTester.Message, params: Map<String, String>) =
+    override fun send(message: Message, params: Map<String, String>) =
         logger.debug("Sending to {}...", topic).also {
             producer.send(record(message, partitionFrom(params), keyFrom(params))).get().apply {
                 logger.info(
@@ -54,12 +66,11 @@ open class KafkaConsumeAndSendTester @JvmOverloads constructor(
             }
         }
 
-    private fun record(message: MqTester.Message, partition: Int?, key: String?) = ProducerRecord(
+    private fun record(message: Message, partition: Int?, key: String?) = ProducerRecord(
         topic, partition, key, message.body, message.headers.map { RecordHeader(it.key, it.value.toByteArray()) }
     )
 
     companion object : KLogging() {
-        private const val POLL_MILLIS: Long = 1500
         private const val PARAM_PARTITION = "partition"
         private const val PARAM_KEY = "key"
 
@@ -67,6 +78,8 @@ open class KafkaConsumeAndSendTester @JvmOverloads constructor(
         val DEFAULT_PRODUCER_CONFIG: Map<String, String?> = mapOf(
             ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG to StringSerializer::class.java.name,
             ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG to StringSerializer::class.java.name,
+            ProducerConfig.ACKS_CONFIG to "all",
+            ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG to "true",
         )
 
         private fun partitionFrom(headers: Map<String, String>) = headers[PARAM_PARTITION]?.toInt()
@@ -81,7 +94,8 @@ open class KafkaConsumeOnlyTester @JvmOverloads constructor(
     protected val sutConsumerGroup: String?,
     protected val properties: MutableMap<String, Any?> = DEFAULT_CONSUMER_CONFIG.toMutableMap(),
     protected val pollTimeout: Duration = ofMillis(POLL_MILLIS),
-    protected val accumulateOnRetries: Boolean = false
+    protected val accumulateOnRetries: Boolean = false,
+    protected val recordMapper: (ConsumerRecord<String, String>) -> Message = DEFAULT_RECORD_MAPPER
 ) : MqTester {
     protected lateinit var consumer: KafkaConsumer<String, String>
     protected lateinit var adminClient: AdminClient
@@ -122,22 +136,23 @@ open class KafkaConsumeOnlyTester @JvmOverloads constructor(
     private fun KafkaFuture<TopicDescription>.toPartitions() =
         this[KAFKA_FETCHING_TIMEOUT, TimeUnit.SECONDS].partitions().map { it.partition() }
 
-    override fun receive(): List<MqTester.Message> = consumer.apply { seekTo(sutOffsets()) }.consume()
+    override fun receive(): List<Message> = consumer.apply { seekTo(sutOffsets()) }.consume()
 
-    override fun send(message: MqTester.Message, params: Map<String, String>) {
+    override fun send(message: Message, params: Map<String, String>) {
         throw UnsupportedOperationException("$javaClass doesn't support sending messages")
     }
 
-    private fun sutOffsets(): Map<TopicPartition, OffsetAndMetadata> =
+    protected fun sutOffsets(): Map<TopicPartition, OffsetAndMetadata> =
         if (sutConsumerGroup == null) emptyMap()
         else adminClient.listConsumerGroupOffsets(sutConsumerGroup)
             .partitionsToOffsetAndMetadata()[KAFKA_FETCHING_TIMEOUT, TimeUnit.SECONDS]
             .filterKeys { it.topic() == topic }
             .apply { logger.debug("SUT [consumer group: {}] offsets: {}", sutConsumerGroup, this) }
 
-    private fun KafkaConsumer<String, String>.seekTo(offsets: Map<TopicPartition, OffsetAndMetadata>) {
+    protected fun KafkaConsumer<String, String>.seekTo(offsets: Map<TopicPartition, OffsetAndMetadata>) {
         if (offsets.isEmpty()) {
-            logger.debug("Offsets are empty - seek to beginning...").also { seekToBeginning(assignment()) }
+            logger.debug("Offsets are empty - seek to beginning...")
+            seekToBeginning(assignment()).also { assignment().forEach(::position) }
         } else {
             offsets.entries.forEach { (partition, committed) ->
                 logger.debug("Seek to committed offset: {} in {}", committed, partition)
@@ -149,17 +164,13 @@ open class KafkaConsumeOnlyTester @JvmOverloads constructor(
     private fun endOf(p: TopicPartition): Long =
         adminClient.listOffsets(mapOf(p to OffsetSpec.latest())).all().get()[p]?.offset() ?: 0L
 
-    private fun KafkaConsumer<String, String>.consume(): List<MqTester.Message> =
+    private fun KafkaConsumer<String, String>.consume(): List<Message> =
         logger.debug("Consuming events... {}ms", pollTimeout.toMillis()).let {
-            poll(pollTimeout).map {
-                MqTester.Message(it.value()).apply {
-                    logger.info("Event consumed:\n{}", this)
-                }
-            }
+            poll(pollTimeout).map { recordMapper(it) }.apply { logger.info("Events consumed:\n{}", this) }
         }
 
     companion object : KLogging() {
-        private const val POLL_MILLIS: Long = 50
+        const val POLL_MILLIS: Long = 50
         private const val KAFKA_FETCHING_TIMEOUT: Long = 10
 
         @JvmField
@@ -169,5 +180,10 @@ open class KafkaConsumeOnlyTester @JvmOverloads constructor(
             ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG to "false",
             ConsumerConfig.AUTO_OFFSET_RESET_CONFIG to "earliest",
         )
+
+        @JvmField
+        val DEFAULT_RECORD_MAPPER: (ConsumerRecord<String, String>) -> Message = { record ->
+            Message(record.value(), record.headers().associate { it.key() to String(it.value()) })
+        }
     }
 }

@@ -469,8 +469,10 @@
 
     <xs:element name="example">
         <xs:complexType>
+            <xs:sequence>
+                <xs:any processContents="lax" minOccurs="0"/>
+            </xs:sequence>
             <xs:all>
-                <xs:any processContents="skip" minOccurs="0"/>
                 <xs:element name="given" type="given-info" minOccurs="0"/>
                 <xs:element name="when" type="given-info" minOccurs="0"/>
                 <xs:element name="then" type="then-info" minOccurs="0"/>

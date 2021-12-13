@@ -206,7 +206,7 @@ class ExamExtension constructor(private vararg var plugins: ExamPlugin) : Concor
         private val CONTENT_VERIFIERS: MutableMap<String, ContentVerifier> = mutableMapOf(
             "json" to JsonVerifier(),
             "xml" to XmlVerifier(),
-            "text" to ContentVerifier.Default(),
+            "text" to ContentVerifier.Default("text"),
         )
 
         @JvmStatic

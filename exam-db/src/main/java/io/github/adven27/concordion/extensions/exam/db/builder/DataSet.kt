@@ -1,6 +1,9 @@
 package io.github.adven27.concordion.extensions.exam.db.builder
 
 import io.github.adven27.concordion.extensions.exam.core.resolveToObj
+import io.github.adven27.concordion.extensions.exam.core.rootCauseMessage
+import io.github.adven27.concordion.extensions.exam.db.commands.ExamMatchersAwareValueComparer.Companion.ERROR_MARKER
+import mu.KLogging
 import org.concordion.api.Evaluator
 import org.dbunit.dataset.AbstractDataSet
 import org.dbunit.dataset.DataSetException
@@ -15,13 +18,12 @@ import org.dbunit.dataset.datatype.DataType
 import org.dbunit.operation.CompositeOperation
 import org.dbunit.operation.DatabaseOperation
 import org.slf4j.LoggerFactory
-import java.util.logging.Level
-import java.util.logging.Logger
 import java.util.regex.Pattern
 import javax.script.ScriptEngine
 import javax.script.ScriptEngineManager
 import javax.script.ScriptException
 
+@Suppress("unused")
 class ScriptableDataSet(caseSensitiveTableNames: Boolean, private val delegate: IDataSet) :
     AbstractDataSet(caseSensitiveTableNames) {
     @Throws(DataSetException::class)
@@ -48,7 +50,7 @@ class ScriptableDataSetIterator(private val delegate: ITableIterator) : ITableIt
 }
 
 class ScriptableTable(private val delegate: ITable) : ITable {
-    var manager: ScriptEngineManager
+    private var manager: ScriptEngineManager
     private val engines: MutableMap<String, ScriptEngine>
     override fun getTableMetaData(): ITableMetaData {
         return delegate.tableMetaData
@@ -67,13 +69,10 @@ class ScriptableTable(private val delegate: ITable) : ITable {
                 try {
                     return getScriptResult(value.toString(), engine)
                 } catch (expected: Exception) {
-                    log.log(
-                        Level.WARNING,
-                        String.format(
-                            "Could not evaluate script expression for table '%s', column '%s'. The original value will be used.",
-                            tableMetaData.tableName,
-                            column
-                        ),
+                    logger.warn(
+                        "Could not evaluate script expression for table '{}', column '{}'. The original value will be used.",
+                        tableMetaData.tableName,
+                        column,
                         expected
                     )
                 }
@@ -97,7 +96,7 @@ class ScriptableTable(private val delegate: ITable) : ITable {
             if (engine != null) {
                 engines[engineName] = engine
             } else {
-                log.warning(String.format("Could not find script engine by name '%s'", engineName))
+                logger.warn("Could not find script engine by name '{}'", engineName)
             }
             engine
         }
@@ -114,10 +113,9 @@ class ScriptableTable(private val delegate: ITable) : ITable {
         return engine.eval(scriptToExecute)
     }
 
-    companion object {
+    companion object : KLogging() {
         // any non digit char (except 'regex') followed by ':' followed by 1 or more chars e.g: js: new Date().toString()
         private val scriptEnginePattern = Pattern.compile("^(?!regex)[a-zA-Z]+:.+")
-        var log = Logger.getLogger(ScriptableTable::class.java.name)
     }
 
     init {
@@ -126,7 +124,11 @@ class ScriptableTable(private val delegate: ITable) : ITable {
     }
 }
 
-class ExamDataSet(caseSensitiveTableNames: Boolean = false, private val delegate: IDataSet, val eval: Evaluator) :
+class ExamDataSet(
+    caseSensitiveTableNames: Boolean = false,
+    private val delegate: IDataSet,
+    private val eval: Evaluator
+) :
     AbstractDataSet(caseSensitiveTableNames) {
     constructor(
         table: ITable,
@@ -139,7 +141,7 @@ class ExamDataSet(caseSensitiveTableNames: Boolean = false, private val delegate
         ExamDataSetIterator(if (reversed) delegate.reverseIterator() else delegate.iterator(), eval)
 }
 
-class ExamDataSetIterator(private val delegate: ITableIterator, val eval: Evaluator) : ITableIterator {
+class ExamDataSetIterator(private val delegate: ITableIterator, private val eval: Evaluator) : ITableIterator {
     @Throws(DataSetException::class)
     override fun next(): Boolean = delegate.next()
 
@@ -162,11 +164,15 @@ class ExamTable(private val delegate: ITable, private val eval: Evaluator) : ITa
     @Throws(DataSetException::class)
     override fun getValue(row: Int, column: String): Any? {
         val value = delegate.getValue(row, column)
-        return when {
-            value == null -> null
-            value is String && value.isRange() -> value.toRange().toList().let { it[row % it.size] }
-            value is String && !value.startsWith("!{") -> eval.resolveToObj(value)
-            else -> value
+        return try {
+            when {
+                value is String && value.isRange() -> value.toRange().toList().let { it[row % it.size] }
+                value is String && !value.startsWith("!{") -> eval.resolveToObj(value)
+                else -> value
+            }
+        } catch (expected: Throwable) {
+            logger.error("Fail to get value ${tableMetaData.tableName}[$row, $column]", expected)
+            ERROR_MARKER + expected.rootCauseMessage()
         }
     }
 
@@ -179,6 +185,8 @@ class ExamTable(private val delegate: ITable, private val eval: Evaluator) : ITa
         }
         else -> throw IllegalArgumentException("Couldn't parse range from string $this")
     }
+
+    companion object : KLogging()
 }
 
 class ContainsFilterTable(actualTable: ITable?, expectedTable: ITable?, ignoredCols: List<String>) : ITable {

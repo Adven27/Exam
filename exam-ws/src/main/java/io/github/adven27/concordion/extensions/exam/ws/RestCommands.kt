@@ -1,6 +1,7 @@
 package io.github.adven27.concordion.extensions.exam.ws
 
 import io.github.adven27.concordion.extensions.exam.core.ContentTypeConfig
+import io.github.adven27.concordion.extensions.exam.core.ContentVerifier
 import io.github.adven27.concordion.extensions.exam.core.ExamExtension.Companion.contentTypeConfig
 import io.github.adven27.concordion.extensions.exam.core.commands.ExamCommand
 import io.github.adven27.concordion.extensions.exam.core.commands.ExamVerifyCommand
@@ -408,12 +409,17 @@ class CaseCommand(
 
     private fun check(actual: String, expected: String, resultRecorder: ResultRecorder, root: Html) {
         (contentTypeConfig.verifier to contentTypeConfig.printer).let { (verifier, printer) ->
-            verifier.verify(expected, actual).fail.map {
-                val diff = div().css(printer.style())
-                val (_, errorMsg) = errorMessage(message = it.details, html = diff, type = printer.style())
-                root.removeChildren()(errorMsg)
-                resultRecorder.failure(diff, printer.print(it.actual), printer.print(it.expected))
-            }.orElseGet {
+            verifier.verify(expected, actual).onFailure {
+                when (it) {
+                    is ContentVerifier.Fail -> {
+                        val diff = div().css(printer.style())
+                        val (_, errorMsg) = errorMessage(message = it.details, html = diff, type = printer.style())
+                        root.removeChildren()(errorMsg)
+                        resultRecorder.failure(diff, printer.print(it.actual), printer.print(it.expected))
+                    }
+                    else -> throw it
+                }
+            }.onSuccess {
                 root.removeChildren()(
                     tag("exp").text(printer.print(expected)) css printer.style(),
                     tag("act").text(printer.print(actual)) css printer.style()

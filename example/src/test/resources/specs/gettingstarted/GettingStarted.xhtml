@@ -174,9 +174,9 @@
 <e:example name="Successful widget retrieving" print="true">
 
     <e:given>
-        <e:set var="upd1" value="{{now tz='GMT+1'}}" style="display:none"/>
-        <e:set var="upd2" value="{{now plus='1 day'}}" style="display:none"/>
-        <e:set var="format" value="yyyy-MM-dd'T'HH:mm:ss.SSS" style="display:none"/>
+        <e:set var="upd1" value="{{now tz='GMT+1'}}" hidden=""/>
+        <e:set var="upd2" value="{{now plus='1 day'}}" hidden=""/>
+        <e:set var="format" value="yyyy-MM-dd'T'HH:mm:ss.SSS" hidden=""/>
         <e:db-set caption="Given widgets:" table="widgets" cols="*name, *quantity, updated, id=1..10">
             <e:row>widget1, 10, {{upd1}}</e:row>
             <e:row>widget2, 20, {{upd2}}</e:row>
@@ -246,8 +246,8 @@
     </e:when>
 
     <e:then>
-        <e:set var="id" value="{{responseBody 'id'}}" style="display:none"/>
-        <e:set var="updatedAt" value="{{responseBody 'updatedAt'}}" style="display:none"/>
+        <e:set var="id" value="{{responseBody 'id'}}" hidden=""/>
+        <e:set var="updatedAt" value="{{responseBody 'updatedAt'}}" hidden=""/>
         <p>
             The widget has been created with <var>id</var> = <code cc:echo="#id"/> and <var>updatedAt</var> = <code cc:echo="#updatedAt"/>
             and is available in widget list:
@@ -333,7 +333,7 @@
     </e:given>
 
     <e:when>
-        <e:set var="id" value="{{responseBody 'id'}}" style="display:none"/>
+        <e:set var="id" value="{{responseBody 'id'}}" hidden=""/>
         <e:await untilTrue="isDone(#id)" atMostSec="3" pollDelayMillis="500" pollIntervalMillis="1000"/>
         Job <code cc:echo="#id"/> is finished.
     </e:when>
@@ -357,7 +357,7 @@
     <e:when>
         Trigger job on <code cc:set="#url">/jobs</code> with some optional body <code cc:set="#json">{"name" : "value"}</code>
         <e:await untilHttpPost="{{url}}" hasStatusCode="200">{{json}}</e:await>
-        <e:set var="id" value="{{responseBody 'id'}}" style="display:none"/>
+        <e:set var="id" value="{{responseBody 'id'}}" hidden=""/>
         and wait until it's finished.
         <e:await untilHttpGet="/jobs/{{id}}" hasBodyFrom="/data/getting-started/job-finished.json"/>
         Job id = <code cc:echo="#id"/>
@@ -382,7 +382,7 @@
     <e:when>
         Trigger job on <code cc:set="#url">/jobs</code> with some optional body <code cc:set="#json">{"name" : "value"}</code>
         <e:await untilHttpPost="{{url}}"  hasStatusCode="200">{{json}}</e:await>
-        <e:set var="id" value="{{responseBody 'id'}}" style="display:none"/>
+        <e:set var="id" value="{{responseBody 'id'}}" hidden=""/>
         Job id = <code cc:echo="#id"/>
     </e:when>
 

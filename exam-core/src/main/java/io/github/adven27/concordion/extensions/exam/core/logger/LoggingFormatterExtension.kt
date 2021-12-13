@@ -22,6 +22,10 @@ class LoggingFormatterExtension @JvmOverloads constructor(loggingAdaptor: Loggin
     ConcordionExtension {
     private val listener = LoggingFormatterListener(loggingAdaptor)
 
+    companion object {
+        const val THREAD_REGEXP = "^2\\d|[01]?[0-9]:[0-5]?[0-9]:[0-5]?[0-9].[0-9][0-9][0-9] \\[(.*)\\] .*"
+    }
+
     override fun addTo(extender: ConcordionExtender) {
         extender.withSpecificationProcessingListener(listener)
         extender.withExampleListener(listener)
@@ -91,6 +95,7 @@ class LoggingFormatterExtension @JvmOverloads constructor(loggingAdaptor: Loggin
             val logContent = StringBuilder()
             var br: BufferedReader?
             try {
+                var thread = ""
                 var line: String?
                 var prevline: String? = null
                 var lineLevel = ""
@@ -110,7 +115,7 @@ class LoggingFormatterExtension @JvmOverloads constructor(loggingAdaptor: Loggin
                             line!!.contains("TRACE ") -> "trace"
                             line!!.contains("WARN ") -> "warn"
                             line!!.contains("ERROR ") -> "error"
-                            else -> "unknown"
+                            else -> lineLevel
                         }
                         if (prevLineLevel !== lineLevel && (lineLevel === "debug" || lineLevel === "trace")) {
                             if (prevline != null) {
@@ -125,8 +130,10 @@ class LoggingFormatterExtension @JvmOverloads constructor(loggingAdaptor: Loggin
                     if (prevline != null) {
                         logContent.append(prevline).append("\n")
                     }
+                    thread = (THREAD_REGEXP.toRegex().find(line!!)?.groupValues?.get(1) ?: thread).lowercase()
+                        .replace(" ", "-")
                     prevline =
-                        "<li class=\"line $lineLevel $lineLevel-color\"><div class=\"line-numbers\">$lineNumber</div><pre>$line</pre></li>"
+                        "<li class=\"line $lineLevel $lineLevel-color $thread\"><div class=\"line-numbers\">$lineNumber</div><pre>$line</pre></li>"
                 }
                 if (prevline != null) logContent.append(prevline).append("\n")
                 br.close()

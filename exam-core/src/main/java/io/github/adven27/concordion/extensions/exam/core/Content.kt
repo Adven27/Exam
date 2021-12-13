@@ -19,7 +19,6 @@ import org.xmlunit.diff.NodeMatcher
 import java.io.ByteArrayOutputStream
 import java.io.FileNotFoundException
 import java.io.StringReader
-import java.util.Optional
 
 open class ContentTypeConfig(
     val resolver: ContentResolver,
@@ -45,7 +44,7 @@ open class XmlContentTypeConfig @JvmOverloads constructor(
 
 open class TextContentTypeConfig @JvmOverloads constructor(
     resolver: ContentResolver = JsonResolver(),
-    verifier: ContentVerifier = ContentVerifier.Default(),
+    verifier: ContentVerifier = ContentVerifier.Default("text"),
     printer: ContentPrinter = ContentPrinter.AsIs(),
 ) : ContentTypeConfig(resolver, verifier, printer)
 
@@ -81,15 +80,23 @@ open class XmlPrinter : ContentPrinter {
     override fun style(): String = "xml"
 }
 
-fun String.prettyXml(): String = Builder().build(StringReader(this.trim())).prettyXml()
+fun String.prettyXml(): String = Builder().build(StringReader(this.trim())).prettyXml().let { removeXmlTag(it) }
+private fun removeXmlTag(it: String) = it.substring(it.indexOf('\n') + 1)
+
 fun String.prettyJson() = JsonPrettyPrinter().prettyPrint(this)
+fun String.pretty(type: String) = when (type) {
+    "json" -> prettyJson()
+    "xml" -> prettyXml()
+    else -> this
+}
+
 fun Document.prettyXml(): String {
     try {
         val out = ByteArrayOutputStream()
         val serializer = Serializer(out, "UTF-8")
-        serializer.indent = 4
+        serializer.indent = 2
         serializer.write(this)
-        return out.toString("UTF-8")
+        return out.toString("UTF-8").trimEnd()
     } catch (expected: Exception) {
         throw InvalidXml(expected)
     }
@@ -98,40 +105,39 @@ fun Document.prettyXml(): String {
 class InvalidXml(t: Throwable) : RuntimeException(t)
 
 interface ContentVerifier {
-    fun verify(expected: String, actual: String): Result
+    fun verify(expected: String, actual: String): Result<ExpectedContent>
 
-    open class Default : ContentVerifier {
+    open class Default(val type: String) : ContentVerifier {
         override fun verify(expected: String, actual: String) = try {
             when {
                 actual.isEmpty() ->
-                    if (expected.isEmpty()) Result.passed() else Result.failed("Actual is empty", actual, expected)
+                    if (expected.isEmpty()) Result.success(ExpectedContent(type, expected))
+                    else Result.failure(Fail("Actual is empty", expected, actual))
                 else -> {
                     assertThat(expected, actual)
-                    Result.passed()
+                    Result.success(ExpectedContent(type, expected))
                 }
             }
         } catch (e: AssertionError) {
-            Result.failed(e.message ?: "$e", actual, expected)
+            Result.failure(Fail(e.message ?: "$e", expected, actual))
         }
 
         protected open fun assertThat(expected: String, actual: String) =
             MatcherAssert.assertThat(actual, Matchers.equalTo(expected))
     }
 
-    data class Fail(val details: String, val expected: String, val actual: String)
-    data class Result(val fail: Optional<Fail>) {
-        companion object {
-            fun passed(): Result = Result(Optional.empty())
-            fun failed(details: String, actual: String, expected: String): Result =
-                Result(Optional.of(Fail(details, expected, actual)))
-        }
+    data class ExpectedContent(val type: String, val content: String) {
+        fun pretty() = content.pretty(type)
     }
+
+    data class Fail(val details: String, val expected: String, val actual: String, val type: String = "text") :
+        java.lang.AssertionError()
 
     class Exception(actual: String, expected: String, throwable: Throwable) :
         RuntimeException("Failed to verify content:\n$actual\nExpected:\n$expected", throwable)
 }
 
-open class XmlVerifier(private val nodeMatcher: NodeMatcher) : ContentVerifier.Default() {
+open class XmlVerifier(private val nodeMatcher: NodeMatcher) : ContentVerifier.Default("xml") {
 
     @JvmOverloads
     constructor(configureNodeMatcher: (NodeMatcher) -> NodeMatcher = { it }) :
@@ -154,7 +160,7 @@ open class XmlVerifier(private val nodeMatcher: NodeMatcher) : ContentVerifier.D
 }
 
 @Suppress("TooGenericExceptionCaught")
-open class JsonVerifier(private val configuration: Configuration) : ContentVerifier.Default() {
+open class JsonVerifier(private val configuration: Configuration) : ContentVerifier.Default("json") {
 
     @JvmOverloads
     constructor(configure: (Configuration) -> Configuration = { it }) : this(configure(ExamExtension.DEFAULT_JSON_UNIT_CFG))
@@ -190,4 +196,4 @@ fun String.findResource(eval: Evaluator? = null) =
     ExamExtension::class.java.getResource(eval?.resolveJson(this) ?: this)
         ?: throw FileNotFoundException("File not found: $this")
 
-fun String.readFile() = this.findResource().readText()
+fun String.readFile(eval: Evaluator? = null) = findResource(eval).readText().trimIndent()
