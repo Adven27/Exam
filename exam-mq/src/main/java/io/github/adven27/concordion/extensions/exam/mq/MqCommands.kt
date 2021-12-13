@@ -31,7 +31,7 @@ open class ParametrizedTypedMessage(
 ) : TypedMessage(type, body, headers)
 
 data class VerifyPair(val actual: MqTester.Message, val expected: TypedMessage) {
-    override fun toString() = "actual=$actual, expected=$expected"
+    override fun toString() = "actual={$actual}, expected={$expected}"
 }
 
 class MessageAttrs(root: Html, evaluator: Evaluator) {

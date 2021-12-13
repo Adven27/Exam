@@ -6,16 +6,10 @@ import io.github.adven27.concordion.extensions.exam.core.ExamExtension.Companion
 import io.github.adven27.concordion.extensions.exam.core.commands.BeforeParseExamCommand
 import io.github.adven27.concordion.extensions.exam.core.handlebars.HelperMissing.Companion.helpersDesc
 import io.github.adven27.concordion.extensions.exam.core.handlebars.MissingHelperException
-import io.github.adven27.concordion.extensions.exam.core.html.CLASS
 import io.github.adven27.concordion.extensions.exam.core.html.Html
-import io.github.adven27.concordion.extensions.exam.core.html.ID
-import io.github.adven27.concordion.extensions.exam.core.html.buttonCollapse
 import io.github.adven27.concordion.extensions.exam.core.html.codeHighlight
 import io.github.adven27.concordion.extensions.exam.core.html.div
-import io.github.adven27.concordion.extensions.exam.core.html.footerOf
 import io.github.adven27.concordion.extensions.exam.core.html.italic
-import io.github.adven27.concordion.extensions.exam.core.html.menuItemA
-import io.github.adven27.concordion.extensions.exam.core.html.pill
 import io.github.adven27.concordion.extensions.exam.core.html.span
 import io.github.adven27.concordion.extensions.exam.core.html.tag
 import io.github.adven27.concordion.extensions.exam.core.html.trWithTDs
@@ -56,6 +50,14 @@ internal class ExamExampleListener(private val skipDecider: SkipDecider) : Examp
     override fun beforeExample(event: ExampleEvent) {
         val name = event.resultSummary.specificationDescription.substringAfterLast(File.separator)
         val elem = event.element
+        elem.getFirstChildElement("h3")?.let { elem.removeChild(it) }
+        Html(elem).panel(
+            elem.getAttributeValue("name") ?: elem.getAttributeValue(
+                "example",
+                "http://www.concordion.org/2007/concordion"
+            ),
+            levelOfOwnerHeader(elem) + 1
+        )
         if (skipDecider.test(event)) {
             elem.appendSister(
                 ConcordionElement("div").apply {
@@ -65,6 +67,20 @@ internal class ExamExampleListener(private val skipDecider: SkipDecider) : Examp
             elem.parentElement.removeChild(elem)
             throw FailFastException("Skipping example", AssertionError("Skipping example"))
         }
+    }
+
+    private fun levelOfOwnerHeader(elem: ConcordionElement) =
+        ownerOf(elem, elem.rootElement)?.localName?.substring(1)?.toInt() ?: 0
+
+    private fun ownerOf(example: ConcordionElement?, content: ConcordionElement): ConcordionElement? {
+        var result: ConcordionElement? = null
+        for (it in content.getElementById(CONTENT_ID).childElements) {
+            when {
+                it.localName.matches("h\\d".toRegex()) -> result = it
+                it == example -> break
+            }
+        }
+        return result
     }
 
     override fun afterExample(event: ExampleEvent) {
@@ -205,61 +221,6 @@ internal class ExamDocumentParsingListener(private val registry: CommandRegistry
 fun loadXMLFromString(xml: String): org.w3c.dom.Document? = DocumentBuilderFactory.newInstance().let {
     it.isNamespaceAware = true
     it.newDocumentBuilder().parse(ByteArrayInputStream(xml.toByteArray()))
-}
-
-class SpecSummaryListener : SpecificationProcessingListener {
-    override fun beforeProcessingSpecification(event: SpecificationProcessingEvent) {
-        // NOOP
-    }
-
-    @Suppress("SpreadOperator")
-    override fun afterProcessingSpecification(event: SpecificationProcessingEvent) {
-        val body = Html(event.rootElement).first("body")
-        if (body != null) {
-            val menu = body.findBy("example-summary-badge")
-            val examples = body.descendants("a").filter { "example" == it.attr("data-type") }
-            if (menu != null && examples.isNotEmpty()) {
-                menu.parent().css("pin")
-                menu(div(CLASS to "list-group")(*examples.flatMap { menuItem(it) }.toTypedArray()))
-            }
-        }
-    }
-
-    private fun menuItem(it: Html): List<Html> {
-        val anchor = it.attr("name")!!
-        val id = UUID.randomUUID().toString()
-        val rootExampleEl = it.parent().parent()
-        val item = menuItemA(anchor).attrs("href" to "#$anchor")(
-            footerOf(rootExampleEl)
-                .firstOrThrow("small")
-                .deepClone()
-                .css("card-img-overlay m-1")
-                .style("padding:0; left:inherit;")
-                .prependChild(pill(extractElapsedTime(rootExampleEl), "light"))
-        )
-        val cases = cases(rootExampleEl, id)
-
-        return if (cases.childs().isEmpty()) {
-            listOf(item)
-        } else listOf(item(buttonCollapse("cases", id)), cases)
-    }
-
-    private fun extractElapsedTime(card: Html): String =
-        card.childs().firstOrNull { "time-fig" == it.attr("class") }.let {
-            card.remove(it)
-            it?.text() ?: ""
-        }
-
-    private fun cases(exampleEl: Html, id: String): Html {
-        return div(ID to id, CLASS to "collapse")(
-            exampleEl.descendants("tr").filter { "case" == it.attr("data-type") }.map {
-                val anchor = it.attr("id")!!
-                menuItemA(anchor, italic(""))
-                    .attrs("href" to "#$anchor", "style" to "font-size: small;")
-                    .muted()
-            }
-        )
-    }
 }
 
 class ErrorListener : ThrowableCaughtListener {

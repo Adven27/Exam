@@ -2,6 +2,9 @@
 
 ## Commands
 
+https://concordion.github.io/concordion/latest/spec/specificationType/markdown/MarkdownExampleCommand.html
+https://www.markdownguide.org/extended-syntax/#definition-lists
+
 ### [Mq example 1](-)
 
 **Given**
@@ -80,7 +83,7 @@ Orders updated:
 
 Next example:
 
-### [Mq example 2](-)
+### [Mq example 2](- "mq-2 c:status=ExpectedToFail")
 
 [simplest form of mq-check](- "e:mq-check=myQueue")
 :
