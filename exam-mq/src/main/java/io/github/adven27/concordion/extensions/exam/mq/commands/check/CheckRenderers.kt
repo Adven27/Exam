@@ -128,7 +128,7 @@ private fun renderBodyError(error: Throwable) = when (error) {
 }
 
 // language=html
-private fun renderHeaders(headers: Map<String, String>) = if (headers.isNotEmpty())
+private fun renderHeaders(headers: Map<String, String>) = if (headers.isNotEmpty()) {
     """
     <tr><td> 
         <table class="table table-sm caption-top">
@@ -137,7 +137,7 @@ private fun renderHeaders(headers: Map<String, String>) = if (headers.isNotEmpty
         </table> 
     </td></tr>
     """.trimIndent()
-else ""
+} else ""
 
 // language=html
 private fun renderHeadersError(error: Throwable) = when (error) {
