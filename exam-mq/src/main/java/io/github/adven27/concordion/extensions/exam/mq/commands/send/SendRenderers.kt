@@ -39,14 +39,14 @@ fun template(name: String, messages: List<ParametrizedTypedMessage>) = //languag
         <tbody> ${renderMessages(messages)} </tbody>
     </table>
 </div>
-    """.trimIndent()
+""".trimIndent()
 
 //language=html
 fun renderMessages(messages: List<ParametrizedTypedMessage>) = messages.joinToString("\n") {
     """
 ${renderHeaders(it.headers)}
 <tr><td class='exp-body'>${renderBody(it)}</td></tr>
-    """.trimIndent()
+""".trimIndent()
 }.ifEmpty { """<tr><td class='exp-body'>EMPTY</td></tr>""" }
 
 // language=html
@@ -54,16 +54,16 @@ fun renderBody(msg: ParametrizedTypedMessage): String =
     """<div class="${msg.type}"></div>""".toHtml().text(msg.body.pretty(msg.type)).el.toXML()
 
 // language=html
-private fun renderHeaders(headers: Map<String, String>) =
-    if (headers.isNotEmpty()) """
+private fun renderHeaders(headers: Map<String, String>) = if (headers.isNotEmpty())
+    """
 <tr><td> 
     <table class="table table-sm caption-top">
         <caption class="small">Headers</caption>
         <tbody> ${toRows(headers)} </tbody>
     </table> 
 </td></tr>
-    """.trimIndent()
-    else ""
+""".trimIndent()
+else ""
 
 // language=html
 private fun toRows(headers: Map<String, String>) = headers.entries.joinToString("\n") { (k, v) ->

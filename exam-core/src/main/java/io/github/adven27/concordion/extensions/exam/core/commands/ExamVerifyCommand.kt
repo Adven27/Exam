@@ -84,8 +84,7 @@ open class ExamVerifyCommand(
 }
 
 abstract class ExamSetUpCommand<T>(
-    private val parser: CommandParser<T>,
-    private val listener: SetUpListener<T>
+    private val parser: CommandParser<T>, private val listener: SetUpListener<T>
 ) : AbstractCommand() {
     protected fun setUpCompleted(element: Element, target: T) = listener.setUpCompleted(SetUpEvent(element, target))
 

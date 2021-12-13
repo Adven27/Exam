@@ -30,7 +30,6 @@ class HtmlResultRenderer(printer: ValuePrinter) : BaseResultRenderer(printer) {
     override fun root(event: AbstractElementEvent): Element = event.element
 }
 
-@Suppress("TooManyFunctions")
 abstract class BaseResultRenderer(private val printer: ValuePrinter) : SuitableResultRenderer<Expected, ITable>() {
     abstract fun root(event: AbstractElementEvent): Element
 

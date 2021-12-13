@@ -10,6 +10,8 @@ import mu.KotlinLogging
 import nu.xom.Builder
 import org.concordion.api.Element
 import org.concordion.api.Evaluator
+import org.w3c.dom.Document
+import org.xml.sax.InputSource
 import java.io.StringReader
 import java.time.Duration
 import java.time.LocalDate
@@ -19,16 +21,34 @@ import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
-import java.time.format.ResolverStyle.SMART
+import java.time.format.ResolverStyle
 import java.util.Date
 import java.util.Random
+import javax.xml.parsers.DocumentBuilderFactory
 
 fun String.toHtml() = parseTemplate(this)
 fun parseTemplate(tmpl: String) = Html(Element(Builder().build(StringReader(tmpl)).rootElement).deepClone())
 
-private val DEFAULT_ZONED_DATETIME_FORMAT = DateTimeFormatter.ISO_OFFSET_DATE_TIME.withResolverStyle(SMART)
-private val DEFAULT_LOCAL_DATETIME_FORMAT = DateTimeFormatter.ISO_DATE_TIME.withResolverStyle(SMART)
-private val DEFAULT_LOCAL_DATE_FORMAT = DateTimeFormatter.ISO_DATE.withResolverStyle(SMART)
+fun getDomElement(xml: String): Document? {
+    var doc: Document? = null
+    val dbf = DocumentBuilderFactory.newInstance()
+    dbf.isCoalescing = true
+    dbf.isNamespaceAware = true
+    try {
+        val db = dbf.newDocumentBuilder()
+        val `is` = InputSource()
+        `is`.characterStream = StringReader(xml)
+        doc = db.parse(`is`)
+    } catch (e: Exception) {
+        e.printStackTrace()
+    }
+    return doc
+}
+
+private val DEFAULT_ZONED_DATETIME_FORMAT =
+    DateTimeFormatter.ISO_OFFSET_DATE_TIME.withResolverStyle(ResolverStyle.SMART)
+private val DEFAULT_LOCAL_DATETIME_FORMAT = DateTimeFormatter.ISO_DATE_TIME.withResolverStyle(ResolverStyle.SMART)
+private val DEFAULT_LOCAL_DATE_FORMAT = DateTimeFormatter.ISO_DATE.withResolverStyle(ResolverStyle.SMART)
 
 fun ZonedDateTime.toString(pattern: String): String = this.format(DateTimeFormatter.ofPattern(pattern))
 fun Date.toString(pattern: String): String =
@@ -162,5 +182,10 @@ fun List<String>.sameSizeWith(values: List<Any?>): List<String> = if (values.siz
         )
     )
 } else this
+
+fun <R> memoized(fn: (Any) -> R): (Any) -> R {
+    val cache: MutableMap<Any, R> = HashMap()
+    return { cache.getOrPut(it) { fn(it) } }
+}
 
 fun String.escapeHtml(): String = StringEscapeUtils.escapeHtml4(this)
