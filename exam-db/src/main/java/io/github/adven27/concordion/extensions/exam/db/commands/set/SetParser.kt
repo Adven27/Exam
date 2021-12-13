@@ -14,7 +14,8 @@ import org.concordion.api.Evaluator
 import org.dbunit.dataset.ITable
 
 class SetParser(
-    private val parser: TableParser, private val allowedSeedStrategies: List<SeedStrategy>
+    private val parser: TableParser,
+    private val allowedSeedStrategies: List<SeedStrategy>
 ) : SuitableCommandParser<Operation> {
     override fun isSuitFor(element: Element): Boolean = parser.isSuitFor(element)
     fun table(command: CommandCall, evaluator: Evaluator): ITable = parser.parse(command, evaluator)

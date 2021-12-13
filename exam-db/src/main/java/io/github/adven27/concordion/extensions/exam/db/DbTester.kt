@@ -26,6 +26,7 @@ import java.sql.Statement
 import java.sql.Types
 import java.util.concurrent.ConcurrentHashMap
 
+@Suppress("LongParameterList")
 open class DbTester @JvmOverloads constructor(
     driver: String,
     url: String,

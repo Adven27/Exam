@@ -67,7 +67,7 @@ class MdCheckParser : CheckParser() {
     }
 }
 
-class HtmlCheckParser : CheckParser() {
+open class HtmlCheckParser : CheckParser() {
     private val remarks = HashMap<String, Int>()
     private val colParser = ColParser()
 

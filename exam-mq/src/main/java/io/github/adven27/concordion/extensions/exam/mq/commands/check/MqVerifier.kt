@@ -15,12 +15,12 @@ import org.junit.Assert.assertEquals
 class MqVerifier : AwaitVerifier<Expected, Actual> {
     companion object : KLogging()
 
+    @Suppress("NestedBlockDepth")
     override fun verify(expected: Expected, getActual: () -> Pair<Boolean, Actual>): Result<Success<Expected, Actual>> {
         try {
             return awaitSize(expected, getActual).let { actual ->
                 expected.messages.sortedTyped(expected.exact)
-                    .zip(actual.messages.sorted(expected.exact)) { e, a -> VerifyPair(a, e) }
-                    .map {
+                    .zip(actual.messages.sorted(expected.exact)) { e, a -> VerifyPair(a, e) }.map {
                         logger.info("Verifying {}", it)
                         val typeConfig = ExamExtension.contentTypeConfig(it.expected.type)
                         MessageVerifyResult(
@@ -28,10 +28,11 @@ class MqVerifier : AwaitVerifier<Expected, Actual> {
                             typeConfig.let { (_, verifier, _) -> verifier.verify(it.expected.body, it.actual.body) }
                         )
                     }.let { results ->
-                        if (results.any { it.headers.isFailure || it.content.isFailure })
+                        if (results.any { it.headers.isFailure || it.content.isFailure }) {
                             Result.failure(MessageVerifyingError(results))
-                        else
+                        } else {
                             Result.success(Success(expected, actual))
+                        }
                     }
             }
         } catch (e: java.lang.AssertionError) {
@@ -39,7 +40,7 @@ class MqVerifier : AwaitVerifier<Expected, Actual> {
         }
     }
 
-    @Suppress("SpreadOperator")
+    @Suppress("SpreadOperator", "NestedBlockDepth")
     private fun checkHeaders(actual: Map<String, String>, expected: Map<String, String>): Result<Map<String, String>> =
         if (expected.isEmpty()) Result.success(emptyMap())
         else try {
@@ -48,13 +49,13 @@ class MqVerifier : AwaitVerifier<Expected, Actual> {
                 (
                     matched.map { (it.key to it.value) to (it.key to actual[it.key]) } +
                         absentInActual.map { it.toPair() }.zip(absentInExpected(actual, matched))
-                    ).map { (expected, actual) ->
-                        headerCheckResult(expected, actual)
-                    }.let { results ->
-                        if (results.any { it.actualValue != null || it.actualKey != null })
+                    ).map { (expected, actual) -> headerCheckResult(expected, actual) }
+                    .let { results ->
+                        if (results.any { it.actualValue != null || it.actualKey != null }) {
                             Result.failure(HeadersVerifyingError(results))
-                        else
+                        } else {
                             Result.success(results.associate { it.header })
+                        }
                     }
             }
         } catch (e: AssertionError) {
@@ -62,10 +63,10 @@ class MqVerifier : AwaitVerifier<Expected, Actual> {
         }
 
     private fun headerCheckResult(expected: Pair<String, String>, actual: Pair<String, String?>) =
-        if (expected.first == actual.first)
+        if (expected.first == actual.first) {
             if (expected.second == actual.second) HeaderCheckResult(expected)
             else HeaderCheckResult(expected, actualValue = actual.second)
-        else HeaderCheckResult(expected, actualKey = actual.first)
+        } else HeaderCheckResult(expected, actualKey = actual.first)
 
     data class HeaderCheckResult(
         val header: Pair<String, String>,
@@ -79,8 +80,7 @@ class MqVerifier : AwaitVerifier<Expected, Actual> {
     private fun List<Map.Entry<String, String>>.hasKey(it: Map.Entry<String, String>) = map { it.key }.contains(it.key)
 
     private fun List<Message>.sorted(exactMatch: Boolean) = if (!exactMatch) sortedBy { it.body } else this
-    private fun List<TypedMessage>.sortedTyped(exactMatch: Boolean) =
-        if (!exactMatch) sortedBy { it.body } else this
+    private fun List<TypedMessage>.sortedTyped(exactMatch: Boolean) = if (!exactMatch) sortedBy { it.body } else this
 
     @Suppress("TooGenericExceptionCaught")
     private fun awaitSize(expected: Expected, receive: () -> Pair<Boolean, Actual>): Actual {

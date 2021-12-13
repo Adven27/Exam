@@ -70,9 +70,7 @@ class DataSetExecutor(private val dbTester: DbTester) {
     fun loadDataSets(eval: Evaluator, dataSetNames: List<String>): IDataSet {
         val sensitiveTableNames = dbTester.dbUnitConfig.isCaseSensitiveTableNames()
         return CompositeDataSet(
-            load(dataSetNames, sensitiveTableNames, eval).toTypedArray(),
-            true,
-            sensitiveTableNames
+            load(dataSetNames, sensitiveTableNames, eval).toTypedArray(), true, sensitiveTableNames
         )
     }
 
@@ -82,27 +80,19 @@ class DataSetExecutor(private val dbTester: DbTester) {
             when (name.fileExt()) {
                 "xml" -> {
                     try {
-                        FlatXmlDataSetBuilder()
-                            .setColumnSensing(dbTester.dbUnitConfig.isColumnSensing)
-                            .setCaseSensitiveTableNames(sensitiveTableNames)
-                            .build(getDataSetUrl(name))
+                        FlatXmlDataSetBuilder().setColumnSensing(dbTester.dbUnitConfig.isColumnSensing)
+                            .setCaseSensitiveTableNames(sensitiveTableNames).build(getDataSetUrl(name))
                     } catch (expected: Exception) {
-                        FlatXmlDataSetBuilder()
-                            .setColumnSensing(dbTester.dbUnitConfig.isColumnSensing)
-                            .setCaseSensitiveTableNames(sensitiveTableNames)
-                            .build(getDataSetStream(name))
+                        FlatXmlDataSetBuilder().setColumnSensing(dbTester.dbUnitConfig.isColumnSensing)
+                            .setCaseSensitiveTableNames(sensitiveTableNames).build(getDataSetStream(name))
                     }
                 }
                 "json" -> JSONDataSet(getDataSetStream(name))
                 "xls" -> XlsDataSet(getDataSetStream(name))
                 "csv" -> CsvDataSet(File(name.findResource().file).parentFile)
-                else -> {
-                    logger.error("Unsupported dataset extension")
-                    null
-                }
+                else -> null.also { logger.error("Unsupported dataset extension") }
             }
-        }.map { ExamDataSet(sensitiveTableNames, it, eval) }
-            .ifEmpty { throw NoDatasetLoaded(dataSetNames) }
+        }.map { ExamDataSet(sensitiveTableNames, it, eval) }.ifEmpty { throw NoDatasetLoaded(dataSetNames) }
 
     class NoDatasetLoaded(names: List<String>) : RuntimeException("No dataset loaded for $names")
 
@@ -138,8 +128,9 @@ class DataSetExecutor(private val dbTester: DbTester) {
         if (!dataSet.startsWith("/")) {
             dataSet = "/$dataSet"
         }
-        return javaClass.getResourceAsStream(dataSet) ?: javaClass.getResourceAsStream("/datasets$dataSet")
-        ?: throw DatasetNotFound(dataSet.substring(1))
+        return javaClass.getResourceAsStream(dataSet)
+            ?: javaClass.getResourceAsStream("/datasets$dataSet")
+            ?: throw DatasetNotFound(dataSet.substring(1))
     }
 
     class DatasetNotFound(name: String) :

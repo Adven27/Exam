@@ -24,7 +24,7 @@ import java.time.Duration.ofMillis
 import java.time.Duration.ofSeconds
 import java.util.concurrent.TimeUnit
 
-@Suppress("unused")
+@Suppress("unused", "LongParameterList")
 open class KafkaConsumeAndSendTester @JvmOverloads constructor(
     bootstrapServers: String,
     topic: String,
@@ -87,7 +87,7 @@ open class KafkaConsumeAndSendTester @JvmOverloads constructor(
     }
 }
 
-@Suppress("unused", "TooManyFunctions")
+@Suppress("unused", "TooManyFunctions", "LongParameterList")
 open class KafkaConsumeOnlyTester @JvmOverloads constructor(
     protected val bootstrapServers: String,
     protected val topic: String,
