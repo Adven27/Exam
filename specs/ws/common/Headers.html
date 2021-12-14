@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="UTF-8"?><html xmlns:e="http://exam.extension.io" xmlns:cc="http://www.concordion.org/2007/concordion"><head><script type="text/javascript">document.addEventListener('DOMContentLoaded', function (event) {
+    Array.from(document.getElementsByClassName("nomnoml")).forEach(function(el) {
+        nomnoml.draw(el, el.textContent); 
+    });  
+});</script><script type="text/javascript">window.addEventListener('DOMContentLoaded', function (event) {
+    anchors.options = {
+        placement: 'left',
+        icon: '#'
+    };
+    anchors.add();
+    tocbot.init({
+        tocSelector: '.js-toc',
+        contentSelector: '.bd-content',
+        headingSelector: 'h1, h2, h3, h4, h5, h6',
+        hasInnerContainers: true,
+        collapseDepth: 3,
+        scrollSmooth: false,
+        fixedSidebarOffset: 'auto',
+        includeHtml: true
+    });
+    var collapseDepth = 3; 
+    jQuery( "#example-summary-badge" ).click(function() {
+        if (collapseDepth === 3) {
+            collapseDepth = 30;
+        } else {
+            collapseDepth = 3;
+        }
+        tocbot.refresh({
+            tocSelector: '.js-toc',
+            contentSelector: '.bd-content',
+            headingSelector: 'h1, h2, h3, h4, h5, h6',
+            hasInnerContainers: true,
+            collapseDepth: collapseDepth,
+            scrollSmooth: false,
+            fixedSidebarOffset: 'auto',
+            includeHtml: true
+        });
+        if (collapseDepth === 30) {
+            jQuery( ".toc-link" ).filter(function( index ) {
+                return jQuery( "i", this ).length !== 1
+            }).css("display", "none");
+        } else {
+            jQuery( ".toc-link" ).filter(function( index ) {
+                return jQuery( "i", this ).length !== 1
+            }).css("display", "unset");
+        }
+    });
+}); </script><script type="text/javascript">document.addEventListener('DOMContentLoaded', function (event) {
+    hljs.configure({
+        cssSelector: 'pre code, pre.highlight'
+    });
+    hljs.highlightAll();
+});</script><style>* {
+  font-family: Arial;
+}
+body {
+  padding: 32px;  
+}
+pre {
+  padding: 6px 28px 6px 28px;
+  background-color: #E8EEF7;
+}
+pre, pre *, code, code *, kbd {
+  font-family: Courier New, Courier;
+  font-size: 10pt;
+}
+h1, h1 * {
+  font-size: 24pt;	
+}
+p, td, th, li, .breadcrumbs {
+  font-size: 10pt;
+}
+p, li {
+  line-height: 140%;
+  max-width: 720px;
+}
+table {
+  border-collapse: collapse;
+  empty-cells: show;
+  margin: 8px 0px 8px 0px;
+}
+th, td {
+  border: 1px solid black;
+  padding: 3px;
+}
+td {
+  background-color: white;
+  vertical-align: top;
+}
+th {
+  background-color: #C3D9FF;
+}
+li {
+  margin-top: 6px;
+  margin-bottom: 6px; 
+}
+
+.example, :not(th)[cc\:example] {
+  padding: 6px 16px 6px 16px;
+  border: 1px solid #C3D9FF;
+  margin: 6px 0px 28px 0px;
+  background-color: #F5F9FD;
+}
+.example h3, [cc\:example] h3 {
+  margin-top: 8px;
+  margin-bottom: 8px;
+  font-size: 12pt;
+}
+
+p.success {
+  padding: 2px;
+}
+.success, .success * {
+  background-color: #afa !important;
+}
+.success pre {
+  background-color: #bbffbb;
+}
+.failure, .failure * {
+  background-color: #ffb0b0;
+  padding: 1px;
+}
+.failure .expected {
+  text-decoration: line-through;
+  color: #bb5050;
+}
+.ignored, .ignored * {
+  background-color: #f0f0f0 !important;	
+}
+
+ins {
+  text-decoration: none;	
+}
+
+.exceptionMessage {
+  background-color: #fdd;
+  font-family: Courier New, Courier, Monospace;
+  font-size: 10pt;
+  display: block;
+  font-weight: normal;
+  padding: 4px;
+  text-decoration: none !important;
+}
+.stackTrace, .stackTrace * {
+  font-weight: normal;
+}
+.stackTrace {
+  display: none;
+  padding: 1px 4px 4px 4px;
+  background-color: #fdd;
+  border-top: 1px dotted black;
+}
+.stackTraceExceptionMessage {
+  display: block;
+  font-family: Courier New, Courier, Monospace;
+  font-size: 8pt;
+  white-space: wrap;
+  padding: 1px 0px 1px 0px;
+}
+.stackTraceEntry {
+  white-space: nowrap;
+  font-family: Courier New, Courier, Monospace;
+  display: block;
+  font-size: 8pt;
+  padding: 1px 0px 1px 32px;
+}
+.stackTraceButton {
+  font-size: 8pt;
+  margin: 2px 8px 2px 0px;
+  font-weight: normal;
+  font-family: Arial;
+}
+
+.special {
+  font-style: italic;
+}
+.missing, .missing * {
+  background-color: #ff9999;
+  color:#bb5050;
+  text-decoration: line-through;
+}
+.surplus, .surplus * {
+  background-color: #ff9999;
+}
+.footer {
+  text-align: right;
+  margin-top: 40px;
+  font-size: 8pt;
+  width: 100%;
+  color: #999;
+}
+.footer .testTime {
+  padding: 2px 10px 0px 0px;
+}
+
+.idea {
+  font-size: 9pt;
+  color: #888;
+  font-style: italic;	
+}
+.tight li {
+  margin-top: 1px;
+  margin-bottom: 1px; 
+}
+.commentary {
+  float: right;
+  width: 200px;
+  background-color: #ffffd0;
+  padding:8px;
+  border: 3px solid #eeeeb0;	 
+  margin: 10px 0px 10px 10px;	 
+}
+.commentary, .commentary * {
+  font-size: 8pt;
+}
+</style><meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<link type="text/css" rel="stylesheet" href="../../../ext/codemirror/codemirror.css" /><link type="text/css" rel="stylesheet" href="../../../ext/codemirror/enable-codemirror.css" /><link type="text/css" rel="stylesheet" href="../../../ext/codemirror/merge.css" /><link type="text/css" rel="stylesheet" href="../../../ext/codemirror/foldgutter.css" /><link type="text/css" rel="stylesheet" href="../../../ext/codemirror/simplescrollbar.css" /><script type="text/javascript" src="../../../ext/codemirror/codemirror.js"></script><script type="text/javascript" src="../../../ext/codemirror/enable-codemirror.js"></script><script type="text/javascript" src="../../../ext/codemirror/javascript.js"></script><script type="text/javascript" src="../../../ext/codemirror/xml.js"></script><script type="text/javascript" src="../../../ext/codemirror/addon/mode/simple.js"></script><script type="text/javascript" src="../../../ext/codemirror/http.js"></script><script type="text/javascript" src="../../../ext/codemirror/diff_match_patch.js"></script><script type="text/javascript" src="../../../ext/codemirror/merge.js"></script><script type="text/javascript" src="../../../ext/codemirror/xml-fold.js"></script><script type="text/javascript" src="../../../ext/codemirror/simplescrollbar.js"></script><link type="text/css" rel="stylesheet" href="../../../ext/highlight/stackoverflow-light.min.css" /><script type="text/javascript" src="../../../ext/highlight/highlight.min.js"></script><script type="text/javascript" src="../../../ext/highlight/http.min.js"></script><script type="text/javascript" src="../../../ext/highlight/java.min.js"></script><link type="text/css" rel="stylesheet" href="../../../ext/tocbot/tocbot.css" /><script type="text/javascript" src="../../../ext/tocbot/tocbot.min.js"></script><link type="text/css" rel="stylesheet" href="../../../ext/fontawesome/css/all.min.css" /><link type="text/css" rel="stylesheet" href="../../../ext/fontawesome/css/regular.min.css" /><link type="text/css" rel="stylesheet" href="../../../ext/fontawesome/css/solid.min.css" /><link type="text/css" rel="stylesheet" href="../../../ext/fontawesome/css/all.min.css" /><link type="text/css" rel="stylesheet" href="../../../ext/bootstrap/bootstrap.min.css" /><link type="text/css" rel="stylesheet" href="../../../ext/bootstrap/enable-bootstrap.css" /><link type="text/css" rel="stylesheet" href="../../../ext/bootstrap/doc.min.css" /><link type="text/css" rel="stylesheet" href="../../../ext/bootstrap/scrollToTop.css" /><script type="text/javascript" src="../../../ext/bootstrap/bootstrap.bundle.min.js"></script><script type="text/javascript" src="../../../ext/bootstrap/jquery-3.2.1.slim.min.js"></script><script type="text/javascript" src="../../../ext/bootstrap/sidebar.js"></script><script type="text/javascript" src="../../../ext/bootstrap/doc.min.js"></script><script type="text/javascript" src="../../../ext/bootstrap/scrollToTop.js"></script><script type="text/javascript" src="../../../ext/nomnoml/graphre.js"></script><script type="text/javascript" src="../../../ext/nomnoml/nomnoml.min.js"></script></head><body><span class="breadcrumbs"><a href="../../Specs.html">Exam</a> &gt;</span><div class="container-fluid"><div class="container-xxl my-md-4 bd-layout"><main class="bd-main order-1"><div class="bd-toc mt-4 mb-5 my-md-0 ps-xl-3 mb-lg-5 text-muted"><div class="row my-2 pb-2 border-bottom"><div class="col-9"><strong class="h6">On this page</strong></div><div class="col-2"><i id="example-summary-badge" class="fa fa-list-check"></i></div></div><nav id="table-of-contents" class="js-toc toc toc-right" /></div><div class="bd-content ps-lg-4" id="content">
+    <h1>Headers</h1>
+
+    <p class="lead">
+        The <code>headers</code> attribute may be used to specify headers for all cases and
+        the <code>case.headers</code> attribute to completely replace them for specific case.
+    </p>
+
+    <h2>Examples</h2>
+
+    <div xmlns:c="http://www.concordion.org/2007/concordion" name="headers" cmdId="49c89bc8-52bb-426b-8df9-dcfbfb798f8d" c:example="headers" c:status="ExpectedToPass" e:example="" class="exam-example mb-3" data-type="example" id="headers" data-summary-success="4" data-summary-ignore="0" data-summary-failure="0" data-summary-exception="0" data-summary-status="ExpectedToPass"><div data-bs-toggle="collapse" data-bs-target="#e3b6cf76b-3057-450b-a21f-75ff5f9bc577" aria-expanded="true"><h3 style="visibility: hidden; height:0;" class="test-class"><i class="example-badge fa fa-check m-1 text-success"></i>headers</h3><i class="far fa-caret-square-down"></i><span> </span><a class="bd-example-title text-muted fw-lighter">headers</a></div><div class="bd-example collapse show rounded bg-light bg-gradient" id="e3b6cf76b-3057-450b-a21f-75ff5f9bc577">
+        <div cmdId="982c8c70-6323-4c72-a184-993d68e112bc" e:given="" class="given"><p class="lead text-primary">Given</p><hr />
+            Set <code>Authorization</code> header with token <code cc:set="#token">111</code>.
+        </div>
+        <div class="mb-4 mt-4"><mark>The following markup:</mark><pre class="doc-code language-xml mt-2"><code>&lt;e:get url="/mirror/headers" headers="Authorization = Bearer {{token}}, Accept-Language = en"&gt;
+  &lt;e:case desc="Case with default headers"&gt;
+    &lt;e:expected&gt; { "GET": "/mirror/headers", "Authorization": "Bearer 111", "Accept-Language": "en", "cookies": {} } &lt;/e:expected&gt;
+  &lt;/e:case&gt;
+  &lt;e:case desc="Override default headers" headers="Authorization = Bearer 222"&gt;
+    &lt;e:expected&gt; { "GET": "/mirror/headers", "Authorization": "Bearer 222", "Accept-Language": null, "cookies": {} } &lt;/e:expected&gt;
+  &lt;/e:case&gt;
+&lt;/e:get&gt;</code></pre><mark>will be rendered as:</mark></div><div print="true" cmdId="2b85846e-8bde-4aae-9830-90c419856f6e" e:get=""><table class="ws-cases table table-sm caption-top"><div><div class="input-group mb-1 mt-1">
+        <span class="input-group-text bg-primary text-white">GET</span>
+        <span class="form-control bg-light text-primary font-weight-light" id="endpoint--627445424">/mirror/headers</span>
+    </div><div class="input-group input-group-sm">
+        <span class="input-group-text">Content-Type</span>
+        <span id="header--496735120" class="form-control bg-light text-dark font-weight-light">application/json</span>
+    </div><div class="input-group input-group-sm">
+        <span class="input-group-text">Authorization</span>
+        <span id="header-704131855" class="form-control bg-light text-dark font-weight-light">Bearer 111</span>
+    </div><div class="input-group input-group-sm">
+        <span class="input-group-text">Accept-Language</span>
+        <span id="header-2034832600" class="form-control bg-light text-dark font-weight-light">en</span>
+    </div></div><thead class="thead-default"><th colspan="2" style="text-align:center;" class="text-secondary">Use cases:</th></thead>
+            <tr desc="Case with default headers" cmdId="20a74a46-efe6-4ad8-8126-967b60e1686a" e:case="" data-type="case" id="1) Case with default headers"><tr><td colspan="2" class="text-muted bg-light" style="border-bottom: 1px solid lightgray;">1) Case with default headers</td></tr>
+                
+            <tr data-case-title="single"><td style="width: 100%;"><div class="httpstyle"><pre class="doc-code language-http"><code>GET /mirror/headers HTTP/1.1
+Authorization: Bearer 111
+Accept-Language: en</code></pre></div></td><td style="padding-left: 0;"><small><span class="exp-status rest-success">200</span><span class="badge badge-pill badge-light">198ms</span></small></td></tr><tr><td colspan="2" class="exp-body"><div>
+        <nav>
+          <ul class="nav nav-tabs" role="tablist">
+            <li class="nav-item" role="presentation"> 
+                <button class="nav-link active small text-success" type="button" role="tab" id="nav-et-1639487503454-tab" data-bs-toggle="tab" data-bs-target="#nav-et-1639487503454" aria-controls="nav-et-1639487503454" aria-selected="true">Expected</button>
+            </li>
+            <li class="nav-item" role="presentation"> 
+                <button class="nav-link small" type="button" role="tab" onclick="setTimeout(() =&gt; { window.dispatchEvent(new Event('resize')); }, 200)" id="nav-at-1639487503454-tab" data-bs-toggle="tab" data-bs-target="#nav-at-1639487503454" aria-controls="nav-at-1639487503454" aria-selected="false">Actual</button>
+            </li>
+          </ul>
+        </nav>
+        <div class="tab-content">
+          <div class="tab-pane fade show active" id="nav-et-1639487503454" role="tabpanel" aria-labelledby="nav-et-1639487503454-tab">
+            <pre id="e-1639487503454" class="rest-success json">{
+  "GET": "/mirror/headers",
+  "Authorization": "Bearer 111",
+  "Accept-Language": "en",
+  "cookies": {}
+}</pre>
+          </div>
+          <div class="tab-pane fade" id="nav-at-1639487503454" role="tabpanel" aria-labelledby="nav-at-1639487503454-tab">
+            <pre id="a-1639487503454" class="rest-success json">{
+  "GET": "/mirror/headers",
+  "Authorization": "Bearer 111",
+  "Accept-Language": "en",
+  "cookies": {}
+}</pre>
+          </div>
+        </div>
+    </div></td></tr></tr>
+            <tr desc="Override default headers" cmdId="7d7375be-8174-4d6f-8a33-b63cc3b1de46" e:case="" data-type="case" id="2) Override default headers"><tr><td colspan="2" class="text-muted bg-light" style="border-bottom: 1px solid lightgray;">2) Override default headers</td></tr>
+                
+            <tr data-case-title="single"><td style="width: 100%;"><div class="httpstyle"><pre class="doc-code language-http"><code>GET /mirror/headers HTTP/1.1
+Authorization: Bearer 222</code></pre></div></td><td style="padding-left: 0;"><small><span class="exp-status rest-success">200</span><span class="badge badge-pill badge-light">15ms</span></small></td></tr><tr><td colspan="2" class="exp-body"><div>
+        <nav>
+          <ul class="nav nav-tabs" role="tablist">
+            <li class="nav-item" role="presentation"> 
+                <button class="nav-link active small text-success" type="button" role="tab" id="nav-et-1639487503480-tab" data-bs-toggle="tab" data-bs-target="#nav-et-1639487503480" aria-controls="nav-et-1639487503480" aria-selected="true">Expected</button>
+            </li>
+            <li class="nav-item" role="presentation"> 
+                <button class="nav-link small" type="button" role="tab" onclick="setTimeout(() =&gt; { window.dispatchEvent(new Event('resize')); }, 200)" id="nav-at-1639487503480-tab" data-bs-toggle="tab" data-bs-target="#nav-at-1639487503480" aria-controls="nav-at-1639487503480" aria-selected="false">Actual</button>
+            </li>
+          </ul>
+        </nav>
+        <div class="tab-content">
+          <div class="tab-pane fade show active" id="nav-et-1639487503480" role="tabpanel" aria-labelledby="nav-et-1639487503480-tab">
+            <pre id="e-1639487503480" class="rest-success json">{
+  "GET": "/mirror/headers",
+  "Authorization": "Bearer 222",
+  "Accept-Language": null,
+  "cookies": {}
+}</pre>
+          </div>
+          <div class="tab-pane fade" id="nav-at-1639487503480" role="tabpanel" aria-labelledby="nav-at-1639487503480-tab">
+            <pre id="a-1639487503480" class="rest-success json">{
+  "GET": "/mirror/headers",
+  "Authorization": "Bearer 222",
+  "Accept-Language": null,
+  "cookies": {}
+}</pre>
+          </div>
+        </div>
+    </div></td></tr></tr>
+        </table></div>
+    </div></div>
+
+</div></main></div></div><div class="footer">Results generated by <a href="http://www.concordion.org" style="font-weight: bold; text-decoration: none; color: #89C;">Concordion</a><div class="testTime">in 247 ms on 14-Dec-2021 at 16:11:43 MSK</div></div></body>
+<button id="btnToTop" onclick="topFunction()" type="button" class="btn btn-light btn-sm text-muted me-1"><i class="fa fa-arrow-up"></i></button></html>
