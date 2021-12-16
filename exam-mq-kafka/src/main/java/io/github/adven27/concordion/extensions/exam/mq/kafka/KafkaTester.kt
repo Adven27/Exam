@@ -46,9 +46,10 @@ open class KafkaConsumeAndSendTester @JvmOverloads constructor(
     protected lateinit var producer: KafkaProducer<String, String>
 
     override fun start() {
-        properties[ProducerConfig.CLIENT_ID_CONFIG] = "kafka-tester-$topic"
-        properties[ProducerConfig.BOOTSTRAP_SERVERS_CONFIG] = bootstrapServers
+        producerProperties[ProducerConfig.CLIENT_ID_CONFIG] = "kafka-tester-$topic"
+        producerProperties[ProducerConfig.BOOTSTRAP_SERVERS_CONFIG] = bootstrapServers
         producer = KafkaProducer<String, String>(producerProperties)
+        logger.info("Producer started with properties:\n{}", producerProperties)
         super.start()
     }
 
@@ -60,9 +61,7 @@ open class KafkaConsumeAndSendTester @JvmOverloads constructor(
     override fun send(message: Message, params: Map<String, String>) =
         logger.debug("Sending to {}...", topic).also {
             producer.send(record(message, partitionFrom(params), keyFrom(params))).get().apply {
-                logger.info(
-                    "Sent to topic {} and partition {} with offset {}:\n{}", topic(), partition(), offset(), message
-                )
+                logger.info("Message sent to {}-{} {}: {}", topic(), partition(), offset(), message)
             }
         }
 
@@ -92,7 +91,7 @@ open class KafkaConsumeOnlyTester @JvmOverloads constructor(
     protected val bootstrapServers: String,
     protected val topic: String,
     protected val sutConsumerGroup: String?,
-    protected val properties: MutableMap<String, Any?> = DEFAULT_CONSUMER_CONFIG.toMutableMap(),
+    protected val consumerProperties: MutableMap<String, Any?> = DEFAULT_CONSUMER_CONFIG.toMutableMap(),
     protected val pollTimeout: Duration = ofMillis(POLL_MILLIS),
     protected val accumulateOnRetries: Boolean = false,
     protected val recordMapper: (ConsumerRecord<String, String>) -> Message = DEFAULT_RECORD_MAPPER
@@ -103,12 +102,13 @@ open class KafkaConsumeOnlyTester @JvmOverloads constructor(
     override fun accumulateOnRetries() = accumulateOnRetries
 
     override fun start() {
-        properties[ConsumerConfig.GROUP_ID_CONFIG] = "kafka-tester-$topic"
-        consumer = KafkaConsumer<String, String>(properties).apply {
+        consumerProperties[ConsumerConfig.GROUP_ID_CONFIG] = "kafka-tester-$topic"
+        consumerProperties[ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG] = bootstrapServers
+        consumer = KafkaConsumer<String, String>(consumerProperties).apply {
             assign(partitionsFor(topic).map { TopicPartition(it.topic(), it.partition()) })
         }
-        adminClient = AdminClient.create(properties)
-        logger.info("KafkaTester started with properties:\n{}", properties)
+        adminClient = AdminClient.create(consumerProperties)
+        logger.info("Consumer started with properties:\n{}", consumerProperties)
     }
 
     override fun stop() {
@@ -121,7 +121,7 @@ open class KafkaConsumeOnlyTester @JvmOverloads constructor(
                 .map { it.key to RecordsToDelete.beforeOffset(it.value.offset()) }
                 .associate { it.apply { logger.debug("Purging partition {}", this) } }
         )
-        logger.info("Topic {} is purged", topic)
+        logger.info("Topic purged: {}", topic)
     }
 
     private fun listLatestOffsets() = adminClient.listOffsets(latestOffsetsSpec())
