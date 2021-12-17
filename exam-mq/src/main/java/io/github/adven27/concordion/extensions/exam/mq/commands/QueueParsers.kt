@@ -2,6 +2,7 @@ package io.github.adven27.concordion.extensions.exam.mq.commands
 
 import io.github.adven27.concordion.extensions.exam.core.commands.SuitableCommandParser
 import io.github.adven27.concordion.extensions.exam.core.html.Html
+import io.github.adven27.concordion.extensions.exam.core.resolveNoType
 import io.github.adven27.concordion.extensions.exam.mq.MessageAttrs
 import io.github.adven27.concordion.extensions.exam.mq.ParametrizedTypedMessage
 import org.concordion.api.CommandCall
@@ -40,7 +41,7 @@ class MdQueueParser(private val typeAttr: String = "verifyAs") : QueueParser {
                     }
                 }
             }
-            ParametrizedTypedMessage(type, payload, headers, params)
+            ParametrizedTypedMessage(type, payload, headers.mapValues { evaluator.resolveNoType(it.value) }, params)
         }
 
     private fun root(command: CommandCall) = command.element.parentElement.parentElement

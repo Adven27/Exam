@@ -4,19 +4,27 @@ import io.github.adven27.concordion.extensions.exam.core.ContentVerifier.Expecte
 import io.github.adven27.concordion.extensions.exam.core.ExamExtension
 import io.github.adven27.concordion.extensions.exam.core.commands.AwaitVerifier
 import io.github.adven27.concordion.extensions.exam.core.commands.Verifier.Success
+import io.github.adven27.concordion.extensions.exam.core.commands.checkAndSet
+import io.github.adven27.concordion.extensions.exam.core.resolveNoType
+import io.github.adven27.concordion.extensions.exam.core.resolveToObj
 import io.github.adven27.concordion.extensions.exam.mq.MqTester.Message
 import io.github.adven27.concordion.extensions.exam.mq.TypedMessage
 import io.github.adven27.concordion.extensions.exam.mq.VerifyPair
 import io.github.adven27.concordion.extensions.exam.mq.commands.check.CheckCommand.Actual
 import io.github.adven27.concordion.extensions.exam.mq.commands.check.CheckCommand.Expected
 import mu.KLogging
+import org.concordion.api.Evaluator
 import org.junit.Assert.assertEquals
 
 class MqVerifier : AwaitVerifier<Expected, Actual> {
     companion object : KLogging()
 
     @Suppress("NestedBlockDepth")
-    override fun verify(expected: Expected, getActual: () -> Pair<Boolean, Actual>): Result<Success<Expected, Actual>> {
+    override fun verify(
+        eval: Evaluator,
+        expected: Expected,
+        getActual: () -> Pair<Boolean, Actual>
+    ): Result<Success<Expected, Actual>> {
         try {
             return awaitSize(expected, getActual).let { actual ->
                 expected.messages.sortedTyped(expected.exact)
@@ -25,7 +33,7 @@ class MqVerifier : AwaitVerifier<Expected, Actual> {
                         logger.info("Verifying {}", it)
                         val typeConfig = ExamExtension.contentTypeConfig(it.expected.type)
                         MessageVerifyResult(
-                            checkHeaders(it.actual.headers, it.expected.headers),
+                            checkHeaders(it.actual.headers, it.expected.headers, eval),
                             typeConfig.let { (_, verifier, _) -> verifier.verify(it.expected.body, it.actual.body) }
                         )
                     }.let { results ->
@@ -42,7 +50,7 @@ class MqVerifier : AwaitVerifier<Expected, Actual> {
     }
 
     @Suppress("SpreadOperator", "NestedBlockDepth")
-    private fun checkHeaders(actual: Map<String, String>, expected: Map<String, String>): Result<Map<String, String>> =
+    private fun checkHeaders(actual: Map<String, String>, expected: Map<String, String>, eval: Evaluator) =
         if (expected.isEmpty()) Result.success(emptyMap())
         else try {
             assertEquals("Different headers size", expected.size, actual.size)
@@ -50,7 +58,7 @@ class MqVerifier : AwaitVerifier<Expected, Actual> {
                 (
                     matched.map { (it.key to it.value) to (it.key to actual[it.key]) } +
                         absentInActual.map { it.toPair() }.zip(absentInExpected(actual, matched))
-                    ).map { (expected, actual) -> headerCheckResult(expected, actual) }
+                    ).map { (expected, actual) -> headerCheckResult(expected, actual, eval) }
                     .let { results ->
                         if (results.any { it.actualValue != null || it.actualKey != null }) {
                             Result.failure(HeadersVerifyingError(results))
@@ -63,9 +71,9 @@ class MqVerifier : AwaitVerifier<Expected, Actual> {
             Result.failure(HeadersSizeVerifyingError(expected, actual, e.message!!, e))
         }
 
-    private fun headerCheckResult(expected: Pair<String, String>, actual: Pair<String, String?>) =
+    private fun headerCheckResult(expected: Pair<String, String>, actual: Pair<String, String?>, eval: Evaluator) =
         if (expected.first == actual.first) {
-            if (expected.second == actual.second) HeaderCheckResult(expected)
+            if (checkAndSet(eval, eval.resolveToObj(actual.second), eval.resolveNoType(expected.second))) HeaderCheckResult(expected)
             else HeaderCheckResult(expected, actualValue = actual.second)
         } else HeaderCheckResult(expected, actualKey = actual.first)
 
@@ -107,7 +115,8 @@ class MqVerifier : AwaitVerifier<Expected, Actual> {
         }
     }
 
-    override fun verify(expected: Expected, actual: Actual) = verify(expected) { false to actual }
+    override fun verify(eval: Evaluator, expected: Expected, actual: Actual) =
+        verify(eval, expected) { false to actual }
 
     data class MessageVerifyResult(val headers: Result<Map<String, String>>, val content: Result<ExpectedContent>)
 

@@ -108,7 +108,7 @@ open class ExamAssertCommand<E, A>(
 
     override fun verify(cmd: CommandCall, eval: Evaluator, resultRecorder: ResultRecorder, fixture: Fixture) {
         commandParser.parse(cmd, eval).apply {
-            verifier.verify(this) { actualProvider.provide(this) }
+            verifier.verify(eval, this) { actualProvider.provide(this) }
                 .onSuccess { success(resultRecorder, cmd.element, it.actual, it.expected) }
                 .onFailure { failure(resultRecorder, cmd.element, this, it) }
         }

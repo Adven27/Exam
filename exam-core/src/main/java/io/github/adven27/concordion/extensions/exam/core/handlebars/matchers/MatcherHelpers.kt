@@ -94,6 +94,22 @@ enum class MatcherHelpers(
         override fun invoke(context: Any?, options: Options): Any =
             "\${${placeholderType(options.context)}-unit.matches:$name}" +
                 "[$context][${options.param(0, "5s")}][${options.param(1, "")}]"
+    },
+    after(
+        example = "{{after '2000-01-31T23:59:59.000'}}",
+        context = mapOf(PLACEHOLDER_TYPE to "json"),
+        expected = "\${json-unit.matches:after}2000-01-31T23:59:59.000"
+    ) {
+        override fun invoke(context: Any?, options: Options): Any =
+            "\${${placeholderType(options.context)}-unit.matches:$name}$context"
+    },
+    before(
+        example = "{{before '2000-01-31T23:59:59.000'}}",
+        context = mapOf(PLACEHOLDER_TYPE to "json"),
+        expected = "\${json-unit.matches:before}2000-01-31T23:59:59.000"
+    ) {
+        override fun invoke(context: Any?, options: Options): Any =
+            "\${${placeholderType(options.context)}-unit.matches:$name}$context"
     };
 
     protected fun placeholderType(context: Context) = (context.model() as Evaluator).getVariable("#$PLACEHOLDER_TYPE")

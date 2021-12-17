@@ -15,8 +15,7 @@ import java.time.temporal.TemporalAmount
 fun Evaluator.resolveForContentType(body: String, type: String): String =
     if (type.contains("xml", true)) resolveXml(body) else resolveJson(body)
 
-fun Evaluator.resolveNoType(body: String) = resolveJson(body)
-
+fun Evaluator.resolveNoType(body: String): String = resolveTxt(body, "text", this)
 fun Evaluator.resolveJson(body: String): String = resolveTxt(body, "json", this)
 fun Evaluator.resolveXml(body: String): String = resolveTxt(body, "xml", this)
 
@@ -58,8 +57,13 @@ private fun String.insideApostrophes() = this.startsWith("'") && this.endsWith("
 fun resolveToObj(placeholder: String?, evaluator: Evaluator): Any? = evaluator.resolveToObj(placeholder)
 
 fun String?.vars(eval: Evaluator, setVar: Boolean = false, separator: String = ","): Map<String, Any?> =
-    this?.split(separator)
-        ?.map { it.split('=', limit = 2) }
-        ?.map { (k, v) -> k.trim() to v.trim() }
-        ?.associate { (k, v) -> k to eval.resolveToObj(v).apply { if (setVar) eval.setVariable("#$k", this) } }
-        ?: emptyMap()
+    pairs(separator)
+        .mapValues { (k, v) -> k to eval.resolveToObj(v).apply { if (setVar) eval.setVariable("#$k", this) } }
+
+fun String?.headers(separator: String = ","): Map<String, String> =
+    pairs(separator)
+
+private fun String?.pairs(separator: String) = this?.split(separator)
+    ?.map { it.split('=', limit = 2) }
+    ?.associate { (k, v) -> k.trim() to v.trim() }
+    ?: emptyMap()

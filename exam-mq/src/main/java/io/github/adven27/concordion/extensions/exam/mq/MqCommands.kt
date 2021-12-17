@@ -3,6 +3,7 @@ package io.github.adven27.concordion.extensions.exam.mq
 import io.github.adven27.concordion.extensions.exam.core.commands.ExamCommand
 import io.github.adven27.concordion.extensions.exam.core.commands.FromAttrs
 import io.github.adven27.concordion.extensions.exam.core.commands.VarsAttrs
+import io.github.adven27.concordion.extensions.exam.core.headers
 import io.github.adven27.concordion.extensions.exam.core.html.CLASS
 import io.github.adven27.concordion.extensions.exam.core.html.Html
 import io.github.adven27.concordion.extensions.exam.core.html.caption
@@ -14,7 +15,6 @@ import io.github.adven27.concordion.extensions.exam.core.html.italic
 import io.github.adven27.concordion.extensions.exam.core.html.span
 import io.github.adven27.concordion.extensions.exam.core.html.table
 import io.github.adven27.concordion.extensions.exam.core.html.td
-import io.github.adven27.concordion.extensions.exam.core.vars
 import org.concordion.api.CommandCall
 import org.concordion.api.Evaluator
 import org.concordion.api.Fixture
@@ -39,7 +39,7 @@ class MessageAttrs(root: Html, evaluator: Evaluator) {
     private val formatAs: String? = root.takeAwayAttr(FORMAT_AS)
     val from: FromAttrs = FromAttrs(root, evaluator, verifyAs ?: formatAs)
     val vars: VarsAttrs = VarsAttrs(root, evaluator)
-    val headers: Map<String, String> = root.takeAwayAttr(HEADERS).attrToMap(evaluator)
+    val headers: Map<String, String> = root.takeAwayAttr(HEADERS).attrToMap()
 
     companion object {
         private const val VERIFY_AS = "verifyAs"
@@ -84,8 +84,7 @@ class MqPurgeCommand(name: String, tag: String, private val mqTesters: Map<Strin
     }
 }
 
-private fun String?.attrToMap(eval: Evaluator): Map<String, String> =
-    this?.vars(eval)?.mapValues { it.value.toString() } ?: emptyMap()
+private fun String?.attrToMap(): Map<String, String> = this?.headers()?.mapValues { it.value } ?: emptyMap()
 
 private fun Map<String, MqTester>.getOrFail(mqName: String?): MqTester = this[mqName]
     ?: throw IllegalArgumentException("MQ with name $mqName not registered in MqPlugin")

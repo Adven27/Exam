@@ -1,5 +1,11 @@
 package io.github.adven27.concordion.extensions.exam.db.commands
 
+import io.github.adven27.concordion.extensions.exam.core.commands.checkAndSet
+import io.github.adven27.concordion.extensions.exam.core.commands.expression
+import io.github.adven27.concordion.extensions.exam.core.commands.matchesAnyNumber
+import io.github.adven27.concordion.extensions.exam.core.commands.matchesAnyString
+import io.github.adven27.concordion.extensions.exam.core.commands.matchesAnyUuid
+import io.github.adven27.concordion.extensions.exam.core.commands.matchesRegex
 import io.github.adven27.concordion.extensions.exam.core.resolveToObj
 import io.github.adven27.concordion.extensions.exam.core.toLocalDateTime
 import io.github.adven27.concordion.extensions.exam.core.utils.parsePeriod
@@ -14,8 +20,6 @@ import java.sql.Timestamp
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 import java.util.Date
-import java.util.UUID
-import java.util.regex.Pattern
 
 open class ExamMatchersAwareValueComparer : IsActualEqualToExpectedValueComparer() {
     protected lateinit var evaluator: Evaluator
@@ -35,49 +39,22 @@ open class ExamMatchersAwareValueComparer : IsActualEqualToExpectedValueComparer
         actual: Any?
     ): Boolean = when {
         expected.isError() -> false
-        expected.isNumber() -> setVarAndCheck(actual, expected) { a, _ -> regexMatches("^\\d+\$", a) }
-        expected.isString() -> setVarAndCheck(actual, expected) { a, _ -> regexMatches("^\\w+\$", a) }
-        expected.isRegex() -> setVarAndCheck(actual, expected) { a, e -> regexMatches(e, a) }
-        expected.isNotNull() -> setVarAndCheck(actual, expected) { a, _ -> a != null }
-        expected.isUuid() -> setVarAndCheck(actual, expected) { a, _ -> isUuid(a) }
-        expected.isWithin() -> setVarAndCheck(actual, expected) { a, e ->
+        expected.isNumber() -> checkAndSet(evaluator, actual, expected.toString()) { a, _ -> matchesAnyNumber(a) }
+        expected.isString() -> checkAndSet(evaluator, actual, expected.toString()) { a, _ -> matchesAnyString(a) }
+        expected.isRegex() -> checkAndSet(evaluator, actual, expected.toString()) { a, e -> matchesRegex(e.expression(), a) }
+        expected.isNotNull() -> checkAndSet(evaluator, actual, expected.toString()) { a, _ -> a != null }
+        expected.isUuid() -> checkAndSet(evaluator, actual, expected.toString()) { a, _ -> matchesAnyUuid(a) }
+        expected.isWithin() -> checkAndSet(evaluator, actual, expected.toString()) { a, e ->
             WithinValueComparer(expected.toString().withinPeriod()).isExpected(
-                expectedTable, actualTable, rowNum, columnName, dataType, resolve(e.toString()), a
+                expectedTable, actualTable, rowNum, columnName, dataType, resolve(e), a
             )
         }
         else -> super.isExpected(expectedTable, actualTable, rowNum, columnName, dataType, expected, actual)
     }
 
-    private fun isUuid(a: Any?) = a is String && try {
-        UUID.fromString(a)
-        true
-    } catch (ignore: Exception) {
-        false
-    }
-
-    private fun setVarAndCheck(
-        actual: Any?,
-        expected: Any?,
-        check: (actual: Any?, expected: Any?) -> Boolean
-    ): Boolean {
-        val split = expected.toString().split(">>")
-        if (split.size > 1) evaluator.setVariable("#${split[1]}", actual)
-        return check(actual, split[0])
-    }
-
     private fun resolve(expected: String): Timestamp = expected.expression().let {
         Timestamp((if (it.isBlank()) Date() else (evaluator.resolveToObj(it) as Date)).time)
     }
-
-    private fun regexMatches(expectedValue: Any?, actualValue: Any?): Boolean {
-        if (actualValue == null) return false
-        return regexMatches(expectedValue.toString().expression(), actualValue)
-    }
-
-    private fun String.expression() = substring(indexOf("}") + 1).trim()
-
-    private fun regexMatches(pattern: String, actualValue: Any?): Boolean =
-        if (actualValue == null) false else Pattern.compile(pattern).matcher(actualValue.toString()).matches()
 
     companion object {
         @JvmField

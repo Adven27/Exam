@@ -8,6 +8,8 @@ import io.github.adven27.concordion.extensions.exam.core.handlebars.HANDLEBARS
 import io.github.adven27.concordion.extensions.exam.core.json.DefaultObjectMapperProvider
 import io.github.adven27.concordion.extensions.exam.core.logger.LoggerLevelFilter
 import io.github.adven27.concordion.extensions.exam.core.logger.LoggingFormatterExtension
+import io.github.adven27.concordion.extensions.exam.core.utils.After
+import io.github.adven27.concordion.extensions.exam.core.utils.Before
 import io.github.adven27.concordion.extensions.exam.core.utils.DateFormatMatcher
 import io.github.adven27.concordion.extensions.exam.core.utils.DateWithin
 import io.github.adven27.concordion.extensions.exam.core.utils.XMLDateWithin
@@ -176,6 +178,8 @@ class ExamExtension constructor(private vararg var plugins: ExamPlugin) : Concor
             "formattedAndWithin" to DateWithin.param(),
             "formattedAndWithinNow" to DateWithin.now(),
             "xmlDateWithinNow" to XMLDateWithin(),
+            "after" to After(),
+            "before" to Before(),
         )
 
         @JvmField
