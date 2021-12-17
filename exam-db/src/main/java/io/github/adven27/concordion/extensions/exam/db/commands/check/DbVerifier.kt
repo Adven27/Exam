@@ -32,7 +32,8 @@ open class DbVerifier(val dbTester: DbTester) : AwaitVerifier<Expected, ITable> 
     ): Result<Success<Expected, ITable>> =
         try {
             val sortCols: Array<String> =
-                if (expected.orderBy.isEmpty()) expected.table.columnNamesArray() else expected.orderBy.toTypedArray()
+                if (expected.orderBy.isEmpty() && expected.table.rowCount > 0) expected.table.columnNamesArray()
+                else expected.orderBy.toTypedArray()
             var actualTable = sortedTable(
                 getActual().second.withColumnsAsIn(expected.table),
                 sortCols,
