@@ -7,6 +7,7 @@ import io.github.adven27.concordion.extensions.exam.core.commands.Verifier.Succe
 import io.github.adven27.concordion.extensions.exam.core.commands.checkAndSet
 import io.github.adven27.concordion.extensions.exam.core.resolveNoType
 import io.github.adven27.concordion.extensions.exam.core.resolveToObj
+import io.github.adven27.concordion.extensions.exam.core.rootCauseMessage
 import io.github.adven27.concordion.extensions.exam.mq.MqTester.Message
 import io.github.adven27.concordion.extensions.exam.mq.TypedMessage
 import io.github.adven27.concordion.extensions.exam.mq.VerifyPair
@@ -110,8 +111,8 @@ class MqVerifier : AwaitVerifier<Expected, Actual> {
                 }
             } ?: assertEquals(expected.messages.size, prevActual.messages.size)
             return prevActual
-        } catch (e: AssertionError) {
-            throw SizeVerifyingError(expected.messages, prevActual.messages, e.cause?.message ?: e.message ?: "$e", e)
+        } catch (ignore: Throwable) {
+            throw SizeVerifyingError(expected.messages, prevActual.messages, ignore.rootCauseMessage(), ignore)
         }
     }
 

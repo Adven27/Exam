@@ -55,7 +55,7 @@ abstract class BaseResultRenderer : SuitableResultRenderer<Expected, Actual>() {
 
     private fun renderSizeError(event: VerifyFailureEvent<Expected>) =
         errorMessage(
-            message = event.fail.message ?: "",
+            message = "Size verifying error: " + event.fail.message,
             type = "json",
             html = div()(
                 span("Expected:"),
