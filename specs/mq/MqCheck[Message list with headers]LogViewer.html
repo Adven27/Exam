@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <style type="text/css">
+        h1 {
+            margin-bottom: 0;
+        }
+
+        .levelkey {
+            margin-top: 25px;
+            padding 0;
+            border-collapse: collapse;
+        }
+
+        .levelkey td {
+            width: 48px;
+            border: 1px solid gray;
+            text-align: center;
+        }
+
+        .alignleft {
+            display: inline-block;
+        }
+
+        .floatright {
+            display: inline-block;
+            float: right;
+            margin-right: 40px;
+        }
+
+        .line {
+            font-family: monospace;
+        }
+
+        .info {
+        }
+
+        .info-color {
+            background-color: White;
+        }
+
+        .debug {
+        }
+
+        .debug-color {
+            background-color: Gainsboro;
+        }
+
+        .trace {
+        }
+
+        .trace-color {
+            background-color: Khaki;
+        }
+
+        .warn {
+        }
+
+        .warn-color {
+            background-color: Orange;
+        }
+
+        .error {
+        }
+
+        .error-color {
+            background-color: #ffbbbb;
+        }
+
+        .line-numbers {
+            background: #e9e9e9;
+            border-right: 1px solid #666;
+            display: inline-block;
+            width: 40px;
+            text-align: right;
+            padding: 0 5px;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+        }
+
+        .split-debug-levels {
+            border-bottom: none;
+        }
+
+        .split-trace-levels {
+            border-bottom: none;
+        }
+
+        div.header-fixed {
+            background-color: white;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding-left: 10px;
+            z-index: 100000;
+        }
+
+        ul.content {
+            margin-top: 125px;
+            padding-left: 0;
+            white-space: nowrap;
+            list-style-type: none;
+        }
+
+        pre {
+            margin: 0;
+            padding: 0;
+            display: inline-block;
+        }
+
+    </style>
+    <script type="text/javascript">
+        function filterTestWorker(cb) {
+            doFilter("test-worker", cb.checked);
+        }
+
+        function filterDebug(cb) {
+            doFilter("debug", cb.checked);
+            doSplit("split-debug-levels", cb.checked);
+        }
+
+        function filterTrace(cb) {
+            doFilter("trace", cb.checked);
+            doSplit("split-trace-levels", cb.checked);
+        }
+
+        function doFilter(className, checked) {
+            var setting = checked ? "inherit" : "none";
+
+            var all = document.getElementsByClassName(className);
+            for (var i = 0; i < all.length; i++) {
+                all[i].style.display = setting;
+            }
+        }
+
+        function doSplit(className, checked) {
+            var setting = checked ? "none" : "1px dotted black";
+
+            var all = document.getElementsByClassName(className);
+            for (var i = 0; i < all.length; i++) {
+                all[i].style.borderBottom = setting;
+            }
+        }
+
+        function filter() {
+            let input, filter, ul, lines, line;
+            input = document.getElementById("search");
+            filter = input.value.toUpperCase();
+            ul = document.getElementById("content");
+            lines = ul.getElementsByTagName("li");
+
+            for (let i = 0; i < lines.length; i++) {
+                line = lines[i];
+                if (line) {
+                    let txtValue = line.textContent || line.innerText;
+                    line.style.display = txtValue.toUpperCase().indexOf(filter) > -1 ? "" : "none";
+                }
+            }
+        }
+    </script>
+</head>
+<body>
+<div class="header-fixed">
+    <h1 class="alignleft">MqCheck[Message list with headers].log</h1>
+    <table class="levelkey floatright">
+        <tr>
+            <td class="trace-color">Trace</td>
+            <td class="debug-color">Debug</td>
+            <td class="info-color">Info</td>
+            <td class="warn-color">Warn</td>
+            <td class="error-color">Error</td>
+        </tr>
+    </table>
+
+    <p>
+        <label class="alignleft"><input id="chkDebug" type="checkbox" onclick="filterDebug(this);" checked>DEBUG</label>
+        <label class="alignleft"><input id="chkTrace" type="checkbox" onclick="filterTrace(this);" checked>TRACE</label>
+        <label class="alignleft"><input id="chkTestWorker" type="checkbox" onclick="filterTestWorker(this);" checked>Test worker</label>
+        <input type="text" id="search" onkeyup="filter()" placeholder="Search...">
+        <span class="floatright"><a href="MqCheck[Message list with headers].log">Raw Log File</a></span>
+    </p>
+    <hr style="clear: both;">
+</div>
+<ul class="content" id="content">
+    <li class="line info info-color test-worker"><div class="line-numbers">1</div><pre>18:01:06.496 [Test worker] INFO  i.g.a.c.e.e.m.c.check.MqVerifier.verify-0E7RQCE - Verifying actual={headers: {id=1, date=2000-01-31T23:59:59}; body:{}}, expected={headers: {id=1, date={{ignore}}&gt;&gt;firstMessage}; body:{}}</pre></li>
+<li class="line info info-color test-worker"><div class="line-numbers">2</div><pre>18:01:06.499 [Test worker] INFO  i.g.a.c.e.e.m.c.check.MqVerifier.verify-0E7RQCE - Verifying actual={headers: {id=2, date=2000-02-01T00:00:05}; body:{}}, expected={headers: {id=2, date={{after (dateFormat (date firstMessage plus='5 s'))}}}; body:{}}</pre></li>
+
+</ul>
+</div>
+</body>
+</html>
