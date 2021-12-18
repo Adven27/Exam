@@ -102,10 +102,12 @@ open class ExamAssertEqualsCommand(
 fun CommandCall?.awaitConfig(): AwaitConfig? = html().awaitConfig()
 
 fun Html.awaitConfig(prefix: String = "await") = AwaitConfig.build(
-    takeAwayAttr("${prefix}AtMostSec")?.toLong(),
-    takeAwayAttr("${prefix}PollDelayMillis")?.toLong(),
-    takeAwayAttr("${prefix}PollIntervalMillis")?.toLong()
+    takeAwayAttr("${prefix}AtMostSec".decap())?.toLong(),
+    takeAwayAttr("${prefix}PollDelayMillis".decap())?.toLong(),
+    takeAwayAttr("${prefix}PollIntervalMillis".decap())?.toLong()
 )
+
+fun String.decap() = replaceFirstChar { it.lowercase() }
 
 data class AwaitConfig(
     val atMostSec: Long = DEFAULT_AT_MOST_SEC,
@@ -126,13 +128,13 @@ data class AwaitConfig(
         var DEFAULT_POLL_INTERVAL = 1000L
 
         fun build(atMostSec: Long?, pollDelay: Long?, pollInterval: Long?): AwaitConfig? =
-            if (enabled(atMostSec, pollDelay, pollInterval))
+            if (enabled(atMostSec, pollDelay, pollInterval)) {
                 AwaitConfig(
                     atMostSec ?: DEFAULT_AT_MOST_SEC,
                     pollDelay ?: DEFAULT_POLL_DELAY,
                     pollInterval ?: DEFAULT_POLL_INTERVAL
                 )
-            else null
+            } else null
 
         private fun enabled(atMostSec: Long?, pollDelay: Long?, pollInterval: Long?) =
             !(atMostSec == null && pollDelay == null && pollInterval == null)

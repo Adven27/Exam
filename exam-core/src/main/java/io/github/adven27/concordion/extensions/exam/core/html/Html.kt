@@ -110,7 +110,7 @@ class Html(val el: Element) {
         var attr = attr(name)
         if (attr != null) {
             attr = eval?.resolve(attr) ?: attr
-            el.removeAttribute(name)
+//            el.removeAttribute(name)
         }
         return attr
     }
