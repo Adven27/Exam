@@ -3,6 +3,7 @@ package io.github.adven27.concordion.extensions.exam.mq.commands.send
 import io.github.adven27.concordion.extensions.exam.core.commands.SetUpEvent
 import io.github.adven27.concordion.extensions.exam.core.commands.SuitableSetUpListener
 import io.github.adven27.concordion.extensions.exam.core.escapeHtml
+import io.github.adven27.concordion.extensions.exam.core.html.paragraph
 import io.github.adven27.concordion.extensions.exam.core.pretty
 import io.github.adven27.concordion.extensions.exam.core.toHtml
 import io.github.adven27.concordion.extensions.exam.mq.ParametrizedTypedMessage
@@ -12,20 +13,26 @@ import org.concordion.api.listener.AbstractElementEvent
 
 class MdSendRenderer : BaseSendRenderer() {
     override fun root(event: AbstractElementEvent): Element = event.element.parentElement.parentElement
+    override fun caption(event: AbstractElementEvent): Element? = paragraph(event.element.text).el
+
     override fun isSuitFor(element: Element) = element.localName != "div"
 }
 
 class HtmlSendRenderer : BaseSendRenderer() {
     override fun root(event: AbstractElementEvent): Element = event.element
+    override fun caption(event: AbstractElementEvent): Element? = null
+
     override fun isSuitFor(element: Element) = element.localName == "div"
 }
 
 abstract class BaseSendRenderer : SuitableSetUpListener<Send>() {
     abstract fun root(event: AbstractElementEvent): Element
+    abstract fun caption(event: AbstractElementEvent): Element?
 
     override fun setUpCompleted(event: SetUpEvent<Send>) {
         with(root(event)) {
             appendSister(template(event.target.queue, event.target.messages).toHtml().el)
+            caption(event)?.let { appendSister(it) }
             parentElement.removeChild(this)
         }
     }

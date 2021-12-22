@@ -112,7 +112,12 @@ class MqVerifier : AwaitVerifier<Expected, Actual> {
             } ?: assertEquals(expected.messages.size, prevActual.messages.size)
             return prevActual
         } catch (ignore: Throwable) {
-            throw SizeVerifyingError(expected.messages, prevActual.messages, ignore.rootCauseMessage(), ignore)
+            throw SizeVerifyingError(
+                expected.messages,
+                prevActual.messages,
+                expected.await?.timeoutMessage(ignore) ?: ignore.rootCauseMessage(),
+                ignore
+            )
         }
     }
 

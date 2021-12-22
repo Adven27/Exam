@@ -22,6 +22,9 @@ enum class MiscHelpers(
             options.evaluator().setVariable("#$it", context)
         }.let { context }
     },
+    getOr("""{{getOr var "default value"}}""", mapOf(), "default value", mapOf()) {
+        override fun invoke(context: Any?, options: Options): Any? = context ?: options.param<String>(0)
+    },
     NULL("{{NULL}}", emptyMap(), null) {
         override fun invoke(context: Any?, options: Options): Any? = null
     },

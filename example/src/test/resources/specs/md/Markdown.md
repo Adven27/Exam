@@ -2,7 +2,7 @@
 
 ## Commands
 
-https://concordion.github.io/concordion/latest/spec/specificationType/markdown/MarkdownExampleCommand.html
+https://concordion.github.io/concordion/latest/spec/specificationType/markdown/Markdown.html
 https://www.markdownguide.org/extended-syntax/#definition-lists
 
 ### [Mq example 1](-)
@@ -21,49 +21,49 @@ https://www.markdownguide.org/extended-syntax/#definition-lists
 
 [send to myQueue](- "e:mq-send=myQueue collapsable=true")
 :
-  ```json
-  {"a" :  1}
-  ```
+```json
+{
+  "a": 1
+}
+```
 : `formatAs=xml`
-  ```xml
-    <message>123</message>
-  ```
+```xml
+<message>123</message>
+```
 : `formatAs=xml`
-  _d1=1_
-  _d2=2_
+_d1=1_
+_d2=2_
   ```xml
-    <message>123</message>
+<message>123</message>
   ```
-: [`var1=1` `var2=2`](/data/mq/msg.json)
-: `formatAs=json` [`var1=1` `var2=2`](/data/mq/msg.json)
+: [`myVar1=1` `myVar2=2`](/data/mq/msg.json)
 : `formatAs=json`
-  _d1=1_
-  _d2=2_
-  [`var1=1` `var2=2`][my message]
+_d1=1_
+_d2=2_
+[`myVar1=1` `myVar2=2`][my message]
 
 **Then**
 
 [Events are sent to myQueue](- "e:mq-check=myQueue contains=exact collapsable=true layout=vertically")
 :   
-  ```json
+```json
   {"a" :  1}
-  ```
+```
 : `verifyAs=xml` 
-  ```xml
+```xml
     <message>123</message>
-  ```
+```
 : `verifyAs=xml`
-  _d1=1_
-  _d2=2_
-  ```xml
+_d1=1_
+_d2=2_
+```xml
     <message>123</message>
-  ```
-: [`var1=1` `var2=2`](/data/mq/msg.json)
-: `verifyAs=json` [`var1=1` `var2=2`](/data/mq/msg.json)
+```
+: [`myVar1=1` `myVar2=2`](/data/mq/msg.json)
 : `verifyAs=json` 
-  _d1=1_
-  _d2=2_ 
-  [`var1=1` `var2=2`][my message]
+_d1=1_
+_d2=2_ 
+[`myVar1=1` `myVar2=2`][my message]
 
 | id  | client | driver   | status    | created               | updated   |
 |-----|--------|----------|-----------|-----------------------|-----------|
@@ -100,7 +100,7 @@ Some text
 
 ### Notes
 
- **Note:** ddddd 
+**Note:** some note
 
 ### Font Awesome
 
@@ -124,7 +124,6 @@ Some text
     DESCRIPTION
   </div>
 </div>
-
 
 ### Callouts
 

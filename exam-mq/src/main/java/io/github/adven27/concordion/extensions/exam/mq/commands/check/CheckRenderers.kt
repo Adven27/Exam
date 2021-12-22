@@ -9,6 +9,7 @@ import io.github.adven27.concordion.extensions.exam.core.errorMessage
 import io.github.adven27.concordion.extensions.exam.core.escapeHtml
 import io.github.adven27.concordion.extensions.exam.core.html.Html
 import io.github.adven27.concordion.extensions.exam.core.html.div
+import io.github.adven27.concordion.extensions.exam.core.html.paragraph
 import io.github.adven27.concordion.extensions.exam.core.html.pre
 import io.github.adven27.concordion.extensions.exam.core.html.span
 import io.github.adven27.concordion.extensions.exam.core.toHtml
@@ -20,6 +21,7 @@ import org.concordion.api.listener.AbstractElementEvent
 
 abstract class BaseResultRenderer : SuitableResultRenderer<Expected, Actual>() {
     abstract fun root(event: AbstractElementEvent): Element
+    abstract fun caption(event: AbstractElementEvent): Element?
 
     override fun successReported(event: VerifySuccessEvent<Expected, Actual>) = with(root(event)) {
         appendSister(
@@ -33,6 +35,7 @@ abstract class BaseResultRenderer : SuitableResultRenderer<Expected, Actual>() {
                 }
             ).toHtml().el
         )
+        caption(event)?.let { appendSister(it) }
         parentElement.removeChild(this)
     }
 
@@ -47,6 +50,7 @@ abstract class BaseResultRenderer : SuitableResultRenderer<Expected, Actual>() {
                 ).el
             }
         )
+        caption(event)?.let { appendSister(it) }
         parentElement.removeChild(this)
     }
 
@@ -84,12 +88,14 @@ abstract class BaseResultRenderer : SuitableResultRenderer<Expected, Actual>() {
 
 class HtmlResultRenderer : BaseResultRenderer() {
     override fun isSuitFor(element: Element) = element.localName == "div"
-    override fun root(event: AbstractElementEvent) = event.element
+    override fun root(event: AbstractElementEvent): Element = event.element
+    override fun caption(event: AbstractElementEvent): Element? = null
 }
 
 class MdResultRenderer : BaseResultRenderer() {
     override fun isSuitFor(element: Element) = element.localName != "div"
-    override fun root(event: AbstractElementEvent) = event.element.parentElement.parentElement
+    override fun root(event: AbstractElementEvent): Element = event.element.parentElement.parentElement
+    override fun caption(event: AbstractElementEvent) = paragraph(event.element.text).el
 }
 
 private fun template(name: String, messages: List<MessageVerifyResult>) = //language=html

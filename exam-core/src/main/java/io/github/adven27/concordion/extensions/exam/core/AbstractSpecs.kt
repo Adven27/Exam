@@ -4,12 +4,21 @@ import org.concordion.api.AfterSuite
 import org.concordion.api.BeforeSuite
 import org.concordion.api.extension.Extension
 import org.concordion.api.option.ConcordionOptions
+import org.concordion.api.option.MarkdownExtensions.AUTOLINKS
+import org.concordion.api.option.MarkdownExtensions.DEFINITIONS
+import org.concordion.api.option.MarkdownExtensions.FENCED_CODE_BLOCKS
+import org.concordion.api.option.MarkdownExtensions.FORCELISTITEMPARA
+import org.concordion.api.option.MarkdownExtensions.TASKLISTITEMS
+import org.concordion.api.option.MarkdownExtensions.WIKILINKS
 import org.concordion.integration.junit4.ConcordionRunner
 import org.junit.runner.RunWith
 
 @Suppress("unused")
 @RunWith(ConcordionRunner::class)
-@ConcordionOptions(declareNamespaces = ["c", "http://www.concordion.org/2007/concordion", "e", ExamExtension.NS])
+@ConcordionOptions(
+    markdownExtensions = [WIKILINKS, AUTOLINKS, FENCED_CODE_BLOCKS, DEFINITIONS, FORCELISTITEMPARA, TASKLISTITEMS],
+    declareNamespaces = ["c", "http://www.concordion.org/2007/concordion", "e", ExamExtension.NS]
+)
 abstract class AbstractSpecs {
 
     @Extension
