@@ -35,7 +35,7 @@ class Handlebar : Specs() {
               "after": "$datetime",
               "before": "$datetime"
             }
-        """.trimIndent()
+            """.trimIndent()
         }
     }
 
