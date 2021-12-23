@@ -71,24 +71,18 @@ class DateWithin private constructor(private val now: Boolean) : BaseMatcher<Any
     }
 
     override fun setParameter(p: String) {
-        pattern = p.substring(1, p.indexOf("]"))
-        var param = p.substring(pattern.length + 2)
-        val within = param.substring(1, param.indexOf("]"))
-
-        if (now) {
-            expected = ZonedDateTime.now()
-        } else {
-            param = param.substring(within.length + 2)
-            val date = param.substring(1, param.indexOf("]"))
-            expected = date.parseDate(pattern).toZonedDateTime()
-        }
-        this.period = parsePeriod(within)
+        val params = p.split(PARAMS_SEPARATOR)
+        this.pattern = params[0]
+        this.period = parsePeriod(params[1])
+        this.expected = if (now) ZonedDateTime.now() else params[2].parseDate(pattern).toZonedDateTime()
     }
 
     companion object : KLogging() {
         fun param() = DateWithin(false)
         fun now() = DateWithin(true)
-        fun now(param: String) = DateWithin(true).apply { setParameter("[][$param]") }
+        fun now(param: String) = DateWithin(true).apply { setParameter("$PARAMS_SEPARATOR$param") }
+
+        internal const val PARAMS_SEPARATOR = "|param|"
     }
 }
 

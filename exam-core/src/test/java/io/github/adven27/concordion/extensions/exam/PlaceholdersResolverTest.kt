@@ -55,7 +55,19 @@ class PlaceholdersResolverTest {
         )
         assertThat(
             eval.resolveJson("{{formattedAndWithin 'yyyy-MM-dd' '1d' '1951-05-13'}}"),
-            `is`("\${json-unit.matches:formattedAndWithin}[yyyy-MM-dd][1d][1951-05-13]")
+            `is`("\${json-unit.matches:formattedAndWithin}yyyy-MM-dd|param|1d|param|1951-05-13")
+        )
+    }
+
+    @Test
+    fun canUseJsonUnitMatcherAliasWithRegexp() {
+        assertThat(
+            eval.resolveJson("{{formattedAs 'yyyy-MM-dd\\'T\\'HH:mm:ss[.SSSSSSSSS][.SSSSSS][.SSS]'}}"),
+            `is`("\${json-unit.matches:formattedAs}yyyy-MM-dd'T'HH:mm:ss[.SSSSSSSSS][.SSSSSS][.SSS]")
+        )
+        assertThat(
+            eval.resolveJson("{{formattedAndWithinNow 'yyyy-MM-dd\\'T\\'HH:mm:ss[.SSSSSSSSS][.SSSSSS][.SSS]' '1d'}}"),
+            `is`("\${json-unit.matches:formattedAndWithinNow}yyyy-MM-dd'T'HH:mm:ss[.SSSSSSSSS][.SSSSSS][.SSS]|param|1d")
         )
     }
 
