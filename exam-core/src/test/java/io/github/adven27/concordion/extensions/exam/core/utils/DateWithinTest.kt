@@ -32,7 +32,7 @@ class DateWithinTest {
 
     @Test
     fun `should match date pattern within period`() {
-        val sut = DateWithin.param().apply { setParameter("$DATE_PATTERN|param|1d|param|1951-05-13") }
+        val sut = DateWithinParam().apply { setParameter("$DATE_PATTERN|param|1d|param|1951-05-13") }
 
         assertTrue(sut.matches("1951-05-12"))
         assertTrue(sut.matches("1951-05-13"))
@@ -41,7 +41,7 @@ class DateWithinTest {
 
     @Test
     fun `should not match date pattern outside of period`() {
-        val sut = DateWithin.param().apply { setParameter("$DATE_PATTERN|param|1d|param|1951-05-13") }
+        val sut = DateWithinParam().apply { setParameter("$DATE_PATTERN|param|1d|param|1951-05-13") }
 
         assertFalse(sut.matches("1951-05-11"))
         assertFalse(sut.matches("1951-05-15"))
@@ -49,7 +49,7 @@ class DateWithinTest {
 
     @Test
     fun `should match date pattern with regexp within period`() {
-        val sut = DateWithin.param().apply { setParameter("$DATE_WITH_REGEXP_PATTERN|param|1d|param|1951-05-13T16:07:15.239223") }
+        val sut = DateWithinParam().apply { setParameter("$DATE_WITH_REGEXP_PATTERN|param|1d|param|1951-05-13T16:07:15.239223") }
 
         assertTrue(sut.matches("1951-05-12T16:07:15.239223"))
         assertTrue(sut.matches("1951-05-13T16:07:15.239223"))
@@ -58,7 +58,7 @@ class DateWithinTest {
 
     @Test
     fun `should match date pattern with regexp outside of period`() {
-        val sut = DateWithin.param().apply { setParameter("$DATE_WITH_REGEXP_PATTERN|param|1d|param|1951-05-13T16:07:15.239223") }
+        val sut = DateWithinParam().apply { setParameter("$DATE_WITH_REGEXP_PATTERN|param|1d|param|1951-05-13T16:07:15.239223") }
 
         assertFalse(sut.matches("1951-05-11T16:07:15.239223"))
         assertFalse(sut.matches("1951-05-15T16:07:15.239223"))
@@ -66,7 +66,7 @@ class DateWithinTest {
 
     @Test
     fun `should match now date pattern with regexp within period`() {
-        val sut = DateWithin.now().apply { setParameter("$DATE_WITH_REGEXP_PATTERN|param|1d") }
+        val sut = DateWithinNow().apply { setParameter("$DATE_WITH_REGEXP_PATTERN|param|1d") }
         val now = LocalDateTime.now()
 
         assertTrue(sut.matches(now.minusDays(1).plus(DELTA).format(ISO_DATE_TIME)))
@@ -76,7 +76,7 @@ class DateWithinTest {
 
     @Test
     fun `should match now date pattern with regexp outside of period`() {
-        val sut = DateWithin.now().apply { setParameter("$DATE_WITH_REGEXP_PATTERN|param|1d") }
+        val sut = DateWithinNow().apply { setParameter("$DATE_WITH_REGEXP_PATTERN|param|1d") }
         val now = LocalDateTime.now()
 
         assertFalse(sut.matches(now.minusDays(2).plus(DELTA).format(ISO_DATE_TIME)))
