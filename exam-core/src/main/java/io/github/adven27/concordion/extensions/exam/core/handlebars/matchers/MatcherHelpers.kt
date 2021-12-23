@@ -113,7 +113,7 @@ enum class MatcherHelpers(
     ) {
         override fun invoke(context: Any?, options: Options): Any =
             "\${${placeholderType(options.context)}-unit.matches:formattedAndWithinNow}$ISO_LOCAL_DATE_FORMAT" +
-                "${PARAMS_SEPARATOR}${options.param(0, "5s")}"
+                "${PARAMS_SEPARATOR}$context"
     },
     isoLocalDateTimeAndWithinNow(
         example = "{{isoLocalDateTimeAndWithinNow \"5s\"}}",
@@ -122,7 +122,7 @@ enum class MatcherHelpers(
     ) {
         override fun invoke(context: Any?, options: Options): Any =
             "\${${placeholderType(options.context)}-unit.matches:formattedAndWithinNow}$ISO_LOCAL_DATETIME_FORMAT" +
-                "${PARAMS_SEPARATOR}${options.param(0, "5s")}"
+                "${PARAMS_SEPARATOR}$context"
     },
     formattedAndWithin(
         example = "{{formattedAndWithin 'yyyy-MM-dd' '5s' '1951-05-13'}}",
@@ -145,8 +145,8 @@ enum class MatcherHelpers(
     ) {
         override fun invoke(context: Any?, options: Options): Any =
             "\${${placeholderType(options.context)}-unit.matches:formattedAndWithin}$ISO_LOCAL_DATE_FORMAT" +
-                "${PARAMS_SEPARATOR}${options.param(0, "5s")}" +
-                "${PARAMS_SEPARATOR}${options.param(1, "")}"
+                "${PARAMS_SEPARATOR}$context" +
+                "${PARAMS_SEPARATOR}${options.param(0, "")}"
     },
     isoLocalDateTimeAndWithin(
         example = "{{isoLocalDateTimeAndWithin '5s' '1951-05-13'}}",
@@ -157,8 +157,8 @@ enum class MatcherHelpers(
     ) {
         override fun invoke(context: Any?, options: Options): Any =
             "\${${placeholderType(options.context)}-unit.matches:formattedAndWithin}$ISO_LOCAL_DATETIME_FORMAT" +
-                "${PARAMS_SEPARATOR}${options.param(0, "5s")}" +
-                "${PARAMS_SEPARATOR}${options.param(1, "")}"
+                "${PARAMS_SEPARATOR}$context" +
+                "${PARAMS_SEPARATOR}${options.param(0, "")}"
     },
     after(
         example = "{{after '2000-01-31T23:59:59.000'}}",
