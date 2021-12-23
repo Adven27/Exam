@@ -81,7 +81,7 @@ open class DateWithin(
             this.pattern = params[0]
         }
         this.period = parsePeriod(params[1])
-        this.expected = if (now) ZonedDateTime.now() else params[2].parseDate(pattern).toZonedDateTime()
+        this.expected = if (now) ZonedDateTime.now() else params[2].parseDate().toZonedDateTime()
     }
 
     companion object : KLogging() {

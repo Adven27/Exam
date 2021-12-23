@@ -1,0 +1,86 @@
+<html xmlns:e="http://exam.extension.io" xmlns:cc="http://www.concordion.org/2007/concordion">
+<body>
+<h1>Handlebar support</h1>
+
+<p class="lead">
+    <a href="https://github.com/jknack/handlebars.java">The Handlebars templates</a> may be used
+    for templating values in Exam commands.
+</p>
+
+<h2>Overview</h2>
+
+<p>
+    Exam provides following built-in <a href="https://github.com/jknack/handlebars.java#helpers">helpers</a> groups:
+</p>
+<dl>
+    <dt>Date helpers</dt>
+    <dd>
+        <pre><code cc:echo="dateHelpers"/></pre>
+    </dd>
+    <dt>Data matcher helpers</dt>
+    <dd>
+        <pre><code cc:echo="matcherHelpers"/></pre>
+    </dd>
+    <dt>Misc helpers</dt>
+    <dd>
+        <pre><code cc:echo="miscHelpers"/></pre>
+    </dd>
+</dl>
+
+<h2>Examples</h2>
+
+<h3>Data matchers</h3>
+
+<e:example name="Data types matchers">
+
+    <e:given>
+        <code>givenDataJson</code>:
+        <pre class="language-json"><code cc:echo="givenDataJson"/></pre>
+    </e:given>
+
+    <e:then>
+        <e:json-check actual="givenDataJson" print="true">
+            {
+            "string": "{{string}}",
+            "number": "{{number}}",
+            "bool": "{{bool}}",
+            "ignore": "{{ignore}}",
+            "regex": "{{regex '\\d+'}}"
+            }
+        </e:json-check>
+    </e:then>
+
+</e:example>
+
+<e:example name="Date matchers">
+
+    <e:given>
+        <code>givenDateJson</code>:
+        <pre class="language-json"><code cc:echo="givenDateJson"/></pre>
+    </e:given>
+
+    <e:then>
+        <e:json-check actual="givenDateJson" print="true">
+            {
+            "formattedAs": "{{formattedAs 'yyyy/MM/dd\'T\'HH:mm.ss'}}",
+            "isoLocalDate": "{{isoLocalDate}}",
+            "isoLocalDateTime": "{{isoLocalDateTime}}",
+
+            "formattedAndWithinNow": "{{formattedAndWithinNow 'yyyy/MM/dd\'T\'HH:mm.ss' '5s'}}",
+            "isoLocalDateAndWithinNow": "{{isoLocalDateAndWithinNow '1d'}}",
+            "isoLocalDateTimeAndWithinNow": "{{isoLocalDateTimeAndWithinNow '5s'}}",
+
+            "formattedAndWithin": "{{formattedAndWithin 'yyyy/MM/dd\'T\'HH:mm.ss' '5s' (dateFormat (now))}}",
+            "isoLocalDateAndWithin": "{{isoLocalDateAndWithin '1d' (dateFormat (now))}}",
+            "isoLocalDateTimeAndWithin": "{{isoLocalDateTimeAndWithin '5s' (dateFormat (now))}}",
+
+            "after": "{{after (dateFormat (now minus='1 hour'))}}",
+            "before": "{{before (dateFormat (now plus='1 hour'))}}"
+            }
+        </e:json-check>
+    </e:then>
+
+</e:example>
+
+</body>
+</html>

@@ -10,7 +10,7 @@ import java.util.regex.Pattern
 
 const val PLACEHOLDER_TYPE = "placeholder_type"
 const val DB_ACTUAL = "db_actual"
-const val ISO_LOCAL_DATETIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss[.SSSSSSSSS][.SSSSSS][.SSS]"
+const val ISO_LOCAL_DATETIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss"
 const val ISO_LOCAL_DATE_FORMAT = "yyyy-MM-dd"
 
 @Suppress("EnumNaming")
@@ -20,7 +20,6 @@ enum class MatcherHelpers(
     override val expected: Any? = "",
     override val options: Map<String, String> = emptyMap()
 ) : ExamHelper {
-
     string(
         example = "{{string}}",
         context = mapOf(PLACEHOLDER_TYPE to "json"),

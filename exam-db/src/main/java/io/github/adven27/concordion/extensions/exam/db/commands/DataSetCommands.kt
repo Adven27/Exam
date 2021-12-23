@@ -42,7 +42,7 @@ class DataSetExecuteCommand(
         resultRecorder: ResultRecorder,
         fixture: Fixture
     ) {
-        cmd.html().also { root ->
+        cmd.html().also { _ ->
             Attrs.from(cmd, evaluator, allowedSeedStrategies).also { attrs ->
                 insertDataSet(attrs, evaluator).iterator().apply {
                     while (next()) {

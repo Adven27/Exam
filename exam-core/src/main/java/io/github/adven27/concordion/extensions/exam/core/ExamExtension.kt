@@ -192,7 +192,11 @@ class ExamExtension constructor(private vararg var plugins: ExamPlugin) : Concor
         @JvmField
         val DEFAULT_JSON_UNIT_CFG: Configuration = `when`(IGNORING_ARRAY_ORDER).let { cfg ->
             MATCHERS.map { cfg to it }
-                .reduce { acc, cur -> acc.first.withMatcher(cur.second.key, cur.second.value) to cur.second }.first
+                .reduce { acc, cur ->
+                    acc.first
+                        .withMatcher(acc.second.key, acc.second.value)
+                        .withMatcher(cur.second.key, cur.second.value) to cur.second
+                }.first
         }
 
         val CONTENT_TYPE_CONFIGS: MutableMap<String, ContentTypeConfig> = mutableMapOf(
