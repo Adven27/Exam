@@ -3,6 +3,7 @@
 package io.github.adven27.concordion.extensions.exam.core
 
 import com.github.jknack.handlebars.internal.text.StringEscapeUtils
+import io.github.adven27.concordion.extensions.exam.core.handlebars.matchers.ISO_LOCAL_DATETIME_FORMAT
 import io.github.adven27.concordion.extensions.exam.core.html.Html
 import io.github.adven27.concordion.extensions.exam.core.html.codeHighlight
 import io.github.adven27.concordion.extensions.exam.core.html.span
@@ -84,10 +85,12 @@ fun String.parseLocalDate(format: String? = null): LocalDate = LocalDate.parse(
 )
 
 @Suppress("MagicNumber")
-fun String.toDatePattern(): DateTimeFormatter = DateTimeFormatterBuilder()
-    .appendPattern(this)
-    .appendFraction(MICRO_OF_SECOND, 0, 9, true)
-    .toFormatter()
+fun String.toDatePattern(): DateTimeFormatter = if (this == "ISO_LOCAL") {
+    DateTimeFormatterBuilder()
+        .appendPattern(ISO_LOCAL_DATETIME_FORMAT)
+        .appendFraction(MICRO_OF_SECOND, 0, 9, true)
+        .toFormatter()
+} else DateTimeFormatter.ofPattern(this)
 
 fun String.fileExt() = substring(lastIndexOf('.') + 1).lowercase()
 
