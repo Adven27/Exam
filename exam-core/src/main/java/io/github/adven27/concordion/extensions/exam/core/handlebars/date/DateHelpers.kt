@@ -2,7 +2,7 @@ package io.github.adven27.concordion.extensions.exam.core.handlebars.date
 
 import com.github.jknack.handlebars.Options
 import com.github.jknack.handlebars.internal.lang3.LocaleUtils
-import com.github.jknack.handlebars.internal.lang3.Validate.isInstanceOf
+import com.github.jknack.handlebars.internal.lang3.Validate
 import io.github.adven27.concordion.extensions.exam.core.handlebars.ExamHelper
 import io.github.adven27.concordion.extensions.exam.core.handlebars.HB_RESULT
 import io.github.adven27.concordion.extensions.exam.core.minus
@@ -31,45 +31,6 @@ enum class DateHelpers(
     override val expected: Any? = "",
     override val options: Map<String, String> = emptyMap()
 ) : ExamHelper {
-    weeksAgo(
-        example = "{{weeksAgo 2}}",
-        expected = now().minusWeeks(2).atStartOfDay().toDate()
-    ) {
-        override fun invoke(context: Any?, options: Options) =
-            now().minusWeeks(context?.toString()?.toLong() ?: 1).atStartOfDay().toDate()
-    },
-    daysAgo(
-        example = "{{daysAgo 2}}",
-        expected = now().minusDays(2).atStartOfDay().toDate()
-    ) {
-        override fun invoke(context: Any?, options: Options) =
-            now().minusDays(context?.toString()?.toLong() ?: 1).atStartOfDay().toDate()
-    },
-    dateFormat(
-        example = """{{dateFormat date "yyyy-MM-dd'T'HH:mm O" tz="GMT+3" minus="1 y, 2 months, d 3" plus="4 h, 5 min, 6 s"}}""",
-        context = mapOf("date" to "2000-01-02T10:20+03:00".parseDate()),
-        expected = "1998-10-30T14:25 GMT+3",
-        options = mapOf(TZ to "\"GMT+3\"", PLUS to "\"1 day\"", MINUS to "\"5 hours\"")
-    ) {
-        override fun invoke(context: Any?, options: Options): Any? {
-            isInstanceOf(
-                Date::class.java,
-                context,
-                "Wrong context for helper '%s': '%s', expected instance of Date. Example: %s",
-                options.fn.text(),
-                context,
-                example
-            )
-            return dateFormat(
-                context as Date,
-                options.param(0, DEFAULT_FORMAT),
-                options.param(1, Locale.getDefault().toString()),
-                options.hash(PLUS, ""),
-                options.hash(MINUS, ""),
-                options.hash(TZ)
-            )
-        }
-    },
     now(
         example = """{{now "yyyy-MM-dd'T'HH:mm Z" tz="GMT+3" minus="1 y, 2 months, d 3" plus="4 h, 5 min, 6 s"}}""",
         expected = ZonedDateTime.now("GMT+3".timeZoneId())
@@ -127,6 +88,45 @@ enum class DateHelpers(
             context.parseDate(options.hash<String>(FORMAT, null))
         } else {
             context as Date
+        }
+    },
+    weeksAgo(
+        example = "{{weeksAgo 2}}",
+        expected = now().minusWeeks(2).atStartOfDay().toDate()
+    ) {
+        override fun invoke(context: Any?, options: Options) =
+            now().minusWeeks(context?.toString()?.toLongOrNull() ?: 1).atStartOfDay().toDate()
+    },
+    daysAgo(
+        example = "{{daysAgo 2}}",
+        expected = now().minusDays(2).atStartOfDay().toDate()
+    ) {
+        override fun invoke(context: Any?, options: Options) =
+            now().minusDays(context?.toString()?.toLongOrNull() ?: 1).atStartOfDay().toDate()
+    },
+    dateFormat(
+        example = """{{dateFormat date "yyyy-MM-dd'T'HH:mm O" tz="GMT+3" minus="1 y, 2 months, d 3" plus="4 h, 5 min, 6 s"}}""",
+        context = mapOf("date" to "2000-01-02T10:20+03:00".parseDate()),
+        expected = "1998-10-30T14:25 GMT+3",
+        options = mapOf(TZ to "\"GMT+3\"", PLUS to "\"1 day\"", MINUS to "\"5 hours\"")
+    ) {
+        override fun invoke(context: Any?, options: Options): Any? {
+            Validate.isInstanceOf(
+                Date::class.java,
+                context,
+                "Wrong context for helper '%s': '%s', expected instance of Date. Example: %s",
+                options.fn.text(),
+                context,
+                example
+            )
+            return dateFormat(
+                context as Date,
+                options.param(0, DEFAULT_FORMAT),
+                options.param(1, Locale.getDefault().toString()),
+                options.hash(PLUS, ""),
+                options.hash(MINUS, ""),
+                options.hash(TZ)
+            )
         }
     };
 

@@ -3,6 +3,7 @@ package io.github.adven27.concordion.extensions.exam.core
 import io.github.adven27.concordion.extensions.exam.core.html.Html
 import io.github.adven27.concordion.extensions.exam.core.utils.JsonPrettyPrinter
 import io.github.adven27.concordion.extensions.exam.core.utils.PlaceholderSupportDiffEvaluator
+import mu.KLogging
 import net.javacrumbs.jsonunit.JsonAssert
 import net.javacrumbs.jsonunit.core.Configuration
 import net.javacrumbs.jsonunit.core.internal.JsonUtils
@@ -119,6 +120,7 @@ interface ContentVerifier {
                 }
             }
         } catch (e: AssertionError) {
+            logger.warn("Content verification error", e)
             Result.failure(Fail(e.message ?: "$e", expected, actual))
         }
 
@@ -135,6 +137,8 @@ interface ContentVerifier {
 
     class Exception(actual: String, expected: String, throwable: Throwable) :
         RuntimeException("Failed to verify content:\n$actual\nExpected:\n$expected", throwable)
+
+    companion object : KLogging()
 }
 
 open class XmlVerifier(private val nodeMatcher: NodeMatcher) : ContentVerifier.Default("xml") {

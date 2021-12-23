@@ -10,7 +10,7 @@ import java.util.regex.Pattern
 
 const val PLACEHOLDER_TYPE = "placeholder_type"
 const val DB_ACTUAL = "db_actual"
-const val ISO_LOCAL_DATETIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss[.SSSSSSSSS][.SSSSSS][.SSS]"
+const val ISO_LOCAL_DATETIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss"
 const val ISO_LOCAL_DATE_FORMAT = "yyyy-MM-dd"
 
 @Suppress("EnumNaming")
@@ -20,7 +20,6 @@ enum class MatcherHelpers(
     override val expected: Any? = "",
     override val options: Map<String, String> = emptyMap()
 ) : ExamHelper {
-
     string(
         example = "{{string}}",
         context = mapOf(PLACEHOLDER_TYPE to "json"),
@@ -92,10 +91,10 @@ enum class MatcherHelpers(
     isoLocalDateTime(
         example = "{{isoLocalDateTime}}",
         context = mapOf(PLACEHOLDER_TYPE to "json"),
-        expected = "\${json-unit.matches:formattedAs}$ISO_LOCAL_DATETIME_FORMAT"
+        expected = "\${json-unit.matches:formattedAs}ISO_LOCAL"
     ) {
         override fun invoke(context: Any?, options: Options): Any =
-            "\${${placeholderType(options.context)}-unit.matches:formattedAs}$ISO_LOCAL_DATETIME_FORMAT"
+            "\${${placeholderType(options.context)}-unit.matches:formattedAs}ISO_LOCAL"
     },
     formattedAndWithinNow(
         example = "{{formattedAndWithinNow \"yyyy-MM-dd'T'hh:mm:ss\" \"5s\"}}",
@@ -118,10 +117,10 @@ enum class MatcherHelpers(
     isoLocalDateTimeAndWithinNow(
         example = "{{isoLocalDateTimeAndWithinNow \"5s\"}}",
         context = mapOf(PLACEHOLDER_TYPE to "json"),
-        expected = "\${json-unit.matches:formattedAndWithinNow}$ISO_LOCAL_DATETIME_FORMAT${PARAMS_SEPARATOR}5s"
+        expected = "\${json-unit.matches:formattedAndWithinNow}ISO_LOCAL${PARAMS_SEPARATOR}5s"
     ) {
         override fun invoke(context: Any?, options: Options): Any =
-            "\${${placeholderType(options.context)}-unit.matches:formattedAndWithinNow}$ISO_LOCAL_DATETIME_FORMAT" +
+            "\${${placeholderType(options.context)}-unit.matches:formattedAndWithinNow}ISO_LOCAL" +
                 "${PARAMS_SEPARATOR}$context"
     },
     formattedAndWithin(
@@ -151,12 +150,12 @@ enum class MatcherHelpers(
     isoLocalDateTimeAndWithin(
         example = "{{isoLocalDateTimeAndWithin '5s' '1951-05-13'}}",
         context = mapOf(PLACEHOLDER_TYPE to "json"),
-        expected = "\${json-unit.matches:formattedAndWithin}$ISO_LOCAL_DATETIME_FORMAT" +
+        expected = "\${json-unit.matches:formattedAndWithin}ISO_LOCAL" +
             "${PARAMS_SEPARATOR}5s" +
             "${PARAMS_SEPARATOR}1951-05-13"
     ) {
         override fun invoke(context: Any?, options: Options): Any =
-            "\${${placeholderType(options.context)}-unit.matches:formattedAndWithin}$ISO_LOCAL_DATETIME_FORMAT" +
+            "\${${placeholderType(options.context)}-unit.matches:formattedAndWithin}ISO_LOCAL" +
                 "${PARAMS_SEPARATOR}$context" +
                 "${PARAMS_SEPARATOR}${options.param(0, "")}"
     },

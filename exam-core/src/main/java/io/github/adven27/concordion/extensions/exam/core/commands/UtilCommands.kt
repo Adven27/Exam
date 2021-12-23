@@ -7,8 +7,8 @@ import io.github.adven27.concordion.extensions.exam.core.html.Html
 import io.github.adven27.concordion.extensions.exam.core.html.html
 import io.github.adven27.concordion.extensions.exam.core.readFile
 import io.github.adven27.concordion.extensions.exam.core.resolve
+import io.github.adven27.concordion.extensions.exam.core.resolveNoType
 import io.github.adven27.concordion.extensions.exam.core.resolveToObj
-import io.github.adven27.concordion.extensions.exam.core.resolveXml
 import io.github.adven27.concordion.extensions.exam.core.vars
 import io.restassured.RestAssured
 import nu.xom.Element
@@ -40,8 +40,8 @@ open class SetVarCommand(
         }
         val value = when {
             valueAttr != null -> eval.resolveToObj(valueAttr)
-            valueFrom != null -> eval.resolveXml(valueFrom.readFile())
-            else -> eval.resolveXml(el.text().trimIndent()).apply {
+            valueFrom != null -> eval.resolveNoType(valueFrom.readFile())
+            else -> eval.resolveNoType(el.text().trimIndent()).apply {
                 el.text(this)
                 el.el.appendNonBreakingSpaceIfBlank()
             }

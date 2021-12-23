@@ -3,6 +3,7 @@
 package io.github.adven27.concordion.extensions.exam.core
 
 import com.github.jknack.handlebars.internal.text.StringEscapeUtils
+import io.github.adven27.concordion.extensions.exam.core.handlebars.matchers.ISO_LOCAL_DATETIME_FORMAT
 import io.github.adven27.concordion.extensions.exam.core.html.Html
 import io.github.adven27.concordion.extensions.exam.core.html.codeHighlight
 import io.github.adven27.concordion.extensions.exam.core.html.span
@@ -18,8 +19,10 @@ import java.time.Period
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
+import java.time.format.DateTimeFormatterBuilder
 import java.time.format.DateTimeParseException
 import java.time.format.ResolverStyle
+import java.time.temporal.ChronoField.MICRO_OF_SECOND
 import java.util.Date
 import java.util.Random
 
@@ -81,7 +84,13 @@ fun String.parseLocalDate(format: String? = null): LocalDate = LocalDate.parse(
     format?.toDatePattern() ?: DEFAULT_LOCAL_DATE_FORMAT
 )
 
-fun String.toDatePattern(): DateTimeFormatter = DateTimeFormatter.ofPattern(this)
+@Suppress("MagicNumber")
+fun String.toDatePattern(): DateTimeFormatter = if (this == "ISO_LOCAL") {
+    DateTimeFormatterBuilder()
+        .appendPattern(ISO_LOCAL_DATETIME_FORMAT)
+        .appendFraction(MICRO_OF_SECOND, 0, 9, true)
+        .toFormatter()
+} else DateTimeFormatter.ofPattern(this)
 
 fun String.fileExt() = substring(lastIndexOf('.') + 1).lowercase()
 
