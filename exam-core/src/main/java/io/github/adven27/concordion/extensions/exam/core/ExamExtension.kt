@@ -11,7 +11,8 @@ import io.github.adven27.concordion.extensions.exam.core.logger.LoggingFormatter
 import io.github.adven27.concordion.extensions.exam.core.utils.After
 import io.github.adven27.concordion.extensions.exam.core.utils.Before
 import io.github.adven27.concordion.extensions.exam.core.utils.DateFormatMatcher
-import io.github.adven27.concordion.extensions.exam.core.utils.DateWithin
+import io.github.adven27.concordion.extensions.exam.core.utils.DateWithinNow
+import io.github.adven27.concordion.extensions.exam.core.utils.DateWithinParam
 import io.github.adven27.concordion.extensions.exam.core.utils.XMLDateWithin
 import net.javacrumbs.jsonunit.JsonAssert.`when`
 import net.javacrumbs.jsonunit.core.Configuration
@@ -175,8 +176,8 @@ class ExamExtension constructor(private vararg var plugins: ExamPlugin) : Concor
 
         val MATCHERS: MutableMap<String, Matcher<*>> = mutableMapOf(
             "formattedAs" to DateFormatMatcher(),
-            "formattedAndWithin" to DateWithin.param(),
-            "formattedAndWithinNow" to DateWithin.now(),
+            "formattedAndWithin" to DateWithinParam(),
+            "formattedAndWithinNow" to DateWithinNow(),
             "xmlDateWithinNow" to XMLDateWithin(),
             "after" to After(),
             "before" to Before(),

@@ -6,6 +6,7 @@ import io.github.adven27.concordion.extensions.exam.core.handlebars.ExamHelper
 import io.github.adven27.concordion.extensions.exam.core.handlebars.HANDLEBARS
 import io.github.adven27.concordion.extensions.exam.core.handlebars.date.DateHelpers
 import io.github.adven27.concordion.extensions.exam.core.handlebars.date.DateHelpers.Companion.DEFAULT_FORMAT
+import io.github.adven27.concordion.extensions.exam.core.handlebars.matchers.MatcherHelpers
 import io.github.adven27.concordion.extensions.exam.core.handlebars.resolve
 import io.github.adven27.concordion.extensions.exam.core.handlebars.resolveObj
 import io.github.adven27.concordion.extensions.exam.core.html.Html
@@ -89,12 +90,20 @@ class HandlebarsResolverTest {
     }
 
     @Test
-    fun defaults() {
+    fun `defaults date`() {
         DateHelpers.values().forEach {
             val expected = it.expected
             if (expected is Date) assertThat(helper(it) as Date).describedAs("Failed helper: %s", it)
                 .isCloseTo(expected, 2000)
             else assertEquals(expected, helper(it), "Failed helper: $it")
+        }
+    }
+
+    @Test
+    fun `defaults matcher`() {
+        MatcherHelpers.values().forEach {
+            val expected = it.expected
+            assertEquals(expected, helper(it), "Failed helper: $it")
         }
     }
 

@@ -4,11 +4,14 @@ import com.github.jknack.handlebars.Context
 import com.github.jknack.handlebars.Options
 import io.github.adven27.concordion.extensions.exam.core.handlebars.ExamHelper
 import io.github.adven27.concordion.extensions.exam.core.handlebars.HB_RESULT
+import io.github.adven27.concordion.extensions.exam.core.utils.DateWithin.Companion.PARAMS_SEPARATOR
 import org.concordion.api.Evaluator
 import java.util.regex.Pattern
 
 const val PLACEHOLDER_TYPE = "placeholder_type"
 const val DB_ACTUAL = "db_actual"
+const val ISO_LOCAL_DATETIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss[.SSSSSSSSS][.SSSSSS][.SSS]"
+const val ISO_LOCAL_DATE_FORMAT = "yyyy-MM-dd"
 
 @Suppress("EnumNaming")
 enum class MatcherHelpers(
@@ -78,22 +81,84 @@ enum class MatcherHelpers(
         override fun invoke(context: Any?, options: Options): Any =
             "\${${placeholderType(options.context)}-unit.matches:$name}$context"
     },
+    isoLocalDate(
+        example = "{{isoLocalDate}}",
+        context = mapOf(PLACEHOLDER_TYPE to "json"),
+        expected = "\${json-unit.matches:formattedAs}$ISO_LOCAL_DATE_FORMAT"
+    ) {
+        override fun invoke(context: Any?, options: Options): Any =
+            "\${${placeholderType(options.context)}-unit.matches:formattedAs}$ISO_LOCAL_DATE_FORMAT"
+    },
+    isoLocalDateTime(
+        example = "{{isoLocalDateTime}}",
+        context = mapOf(PLACEHOLDER_TYPE to "json"),
+        expected = "\${json-unit.matches:formattedAs}$ISO_LOCAL_DATETIME_FORMAT"
+    ) {
+        override fun invoke(context: Any?, options: Options): Any =
+            "\${${placeholderType(options.context)}-unit.matches:formattedAs}$ISO_LOCAL_DATETIME_FORMAT"
+    },
     formattedAndWithinNow(
         example = "{{formattedAndWithinNow \"yyyy-MM-dd'T'hh:mm:ss\" \"5s\"}}",
         context = mapOf(PLACEHOLDER_TYPE to "json"),
-        expected = "\${json-unit.matches:formattedAndWithinNow}[yyyy-MM-dd'T'hh:mm:ss][5s]"
+        expected = "\${json-unit.matches:formattedAndWithinNow}yyyy-MM-dd'T'hh:mm:ss${PARAMS_SEPARATOR}5s"
     ) {
         override fun invoke(context: Any?, options: Options): Any =
-            "\${${placeholderType(options.context)}-unit.matches:$name}[$context][${options.param(0, "5s")}]"
+            "\${${placeholderType(options.context)}-unit.matches:$name}$context" +
+                "${PARAMS_SEPARATOR}${options.param(0, "5s")}"
+    },
+    isoLocalDateAndWithinNow(
+        example = "{{isoLocalDateAndWithinNow \"5s\"}}",
+        context = mapOf(PLACEHOLDER_TYPE to "json"),
+        expected = "\${json-unit.matches:formattedAndWithinNow}$ISO_LOCAL_DATE_FORMAT${PARAMS_SEPARATOR}5s"
+    ) {
+        override fun invoke(context: Any?, options: Options): Any =
+            "\${${placeholderType(options.context)}-unit.matches:formattedAndWithinNow}$ISO_LOCAL_DATE_FORMAT" +
+                "${PARAMS_SEPARATOR}$context"
+    },
+    isoLocalDateTimeAndWithinNow(
+        example = "{{isoLocalDateTimeAndWithinNow \"5s\"}}",
+        context = mapOf(PLACEHOLDER_TYPE to "json"),
+        expected = "\${json-unit.matches:formattedAndWithinNow}$ISO_LOCAL_DATETIME_FORMAT${PARAMS_SEPARATOR}5s"
+    ) {
+        override fun invoke(context: Any?, options: Options): Any =
+            "\${${placeholderType(options.context)}-unit.matches:formattedAndWithinNow}$ISO_LOCAL_DATETIME_FORMAT" +
+                "${PARAMS_SEPARATOR}$context"
     },
     formattedAndWithin(
         example = "{{formattedAndWithin 'yyyy-MM-dd' '5s' '1951-05-13'}}",
         context = mapOf(PLACEHOLDER_TYPE to "json"),
-        expected = "\${json-unit.matches:formattedAndWithin}[yyyy-MM-dd][5s][1951-05-13]"
+        expected = "\${json-unit.matches:formattedAndWithin}yyyy-MM-dd" +
+            "${PARAMS_SEPARATOR}5s" +
+            "${PARAMS_SEPARATOR}1951-05-13"
     ) {
         override fun invoke(context: Any?, options: Options): Any =
-            "\${${placeholderType(options.context)}-unit.matches:$name}" +
-                "[$context][${options.param(0, "5s")}][${options.param(1, "")}]"
+            "\${${placeholderType(options.context)}-unit.matches:$name}$context" +
+                "${PARAMS_SEPARATOR}${options.param(0, "5s")}" +
+                "${PARAMS_SEPARATOR}${options.param(1, "")}"
+    },
+    isoLocalDateAndWithin(
+        example = "{{isoLocalDateAndWithin '5s' '1951-05-13'}}",
+        context = mapOf(PLACEHOLDER_TYPE to "json"),
+        expected = "\${json-unit.matches:formattedAndWithin}$ISO_LOCAL_DATE_FORMAT" +
+            "${PARAMS_SEPARATOR}5s" +
+            "${PARAMS_SEPARATOR}1951-05-13"
+    ) {
+        override fun invoke(context: Any?, options: Options): Any =
+            "\${${placeholderType(options.context)}-unit.matches:formattedAndWithin}$ISO_LOCAL_DATE_FORMAT" +
+                "${PARAMS_SEPARATOR}$context" +
+                "${PARAMS_SEPARATOR}${options.param(0, "")}"
+    },
+    isoLocalDateTimeAndWithin(
+        example = "{{isoLocalDateTimeAndWithin '5s' '1951-05-13'}}",
+        context = mapOf(PLACEHOLDER_TYPE to "json"),
+        expected = "\${json-unit.matches:formattedAndWithin}$ISO_LOCAL_DATETIME_FORMAT" +
+            "${PARAMS_SEPARATOR}5s" +
+            "${PARAMS_SEPARATOR}1951-05-13"
+    ) {
+        override fun invoke(context: Any?, options: Options): Any =
+            "\${${placeholderType(options.context)}-unit.matches:formattedAndWithin}$ISO_LOCAL_DATETIME_FORMAT" +
+                "${PARAMS_SEPARATOR}$context" +
+                "${PARAMS_SEPARATOR}${options.param(0, "")}"
     },
     after(
         example = "{{after '2000-01-31T23:59:59.000'}}",
