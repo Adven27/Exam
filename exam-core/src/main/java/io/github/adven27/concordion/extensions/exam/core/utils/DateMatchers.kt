@@ -15,33 +15,38 @@ import java.time.temporal.TemporalAmount
 import java.util.Date
 import javax.xml.datatype.DatatypeFactory
 
-class DateFormatMatcher : BaseMatcher<Any>(), ParametrizedMatcher {
-    private lateinit var param: String
-
+open class DateFormatMatcher(var pattern: String? = null) : BaseMatcher<Any>(), ParametrizedMatcher {
     override fun matches(item: Any): Boolean = try {
-        (item as String).parseDate(param)
+        (item as String).parseDate(pattern)
         true
     } catch (expected: Exception) {
         false
     }
 
     override fun describeTo(description: Description) {
-        description.appendValue(param)
+        description.appendValue(pattern)
     }
 
     override fun describeMismatch(item: Any, description: Description) {
-        description.appendText("The date is not properly formatted ").appendValue(param)
+        description.appendText("The date is not properly formatted ").appendValue(pattern)
     }
 
     override fun setParameter(parameter: String) {
-        this.param = parameter
+        if (parameter.isNotBlank()) {
+            this.pattern = parameter
+        }
     }
 }
 
-class DateWithin private constructor(private val now: Boolean) : BaseMatcher<Any>(), ParametrizedMatcher {
+class DateWithinNow : DateWithin()
+class DateWithinParam : DateWithin(false)
+
+open class DateWithin(
+    private val now: Boolean = true,
+    var pattern: String? = null
+) : BaseMatcher<Any>(), ParametrizedMatcher {
     private lateinit var period: TemporalAmount
     private lateinit var expected: ZonedDateTime
-    private lateinit var pattern: String
     private var parseError = false
 
     override fun matches(item: Any): Boolean {
@@ -72,16 +77,14 @@ class DateWithin private constructor(private val now: Boolean) : BaseMatcher<Any
 
     override fun setParameter(p: String) {
         val params = p.split(PARAMS_SEPARATOR)
-        this.pattern = params[0]
+        if (params[0].isNotBlank()) {
+            this.pattern = params[0]
+        }
         this.period = parsePeriod(params[1])
         this.expected = if (now) ZonedDateTime.now() else params[2].parseDate(pattern).toZonedDateTime()
     }
 
     companion object : KLogging() {
-        fun param() = DateWithin(false)
-        fun now() = DateWithin(true)
-        fun now(param: String) = DateWithin(true).apply { setParameter("$PARAMS_SEPARATOR$param") }
-
         internal const val PARAMS_SEPARATOR = "|param|"
     }
 }
@@ -112,8 +115,14 @@ class XMLDateWithin : BaseMatcher<Any>(), ParametrizedMatcher {
     }
 }
 
-class After : BaseMatcher<Any>(), ParametrizedMatcher {
-    private lateinit var expected: ZonedDateTime
+class After : ExpectedDateMatcher("The date should be after ", { expected, actual -> actual.isAfter(expected) })
+class Before : ExpectedDateMatcher("The date should be before ", { expected, actual -> actual.isBefore(expected) })
+
+abstract class ExpectedDateMatcher(
+    private val mismatchDesc: String,
+    val check: (expected: ZonedDateTime, actual: ZonedDateTime) -> Boolean
+) : BaseMatcher<Any>(), ParametrizedMatcher {
+    protected lateinit var expected: ZonedDateTime
 
     override fun matches(item: Any): Boolean {
         val actual = try {
@@ -121,7 +130,7 @@ class After : BaseMatcher<Any>(), ParametrizedMatcher {
         } catch (expected: Exception) {
             return false
         }
-        return actual.isAfter(expected)
+        return check(expected, actual)
     }
 
     override fun describeTo(description: Description) {
@@ -129,32 +138,7 @@ class After : BaseMatcher<Any>(), ParametrizedMatcher {
     }
 
     override fun describeMismatch(item: Any, description: Description) {
-        description.appendText("The date should be after ").appendValue(expected)
-    }
-
-    override fun setParameter(date: String) {
-        expected = date.parseDate().toZonedDateTime()
-    }
-}
-
-class Before : BaseMatcher<Any>(), ParametrizedMatcher {
-    private lateinit var expected: ZonedDateTime
-
-    override fun matches(item: Any): Boolean {
-        val actual = try {
-            date(item)
-        } catch (expected: Exception) {
-            return false
-        }
-        return actual.isBefore(expected)
-    }
-
-    override fun describeTo(description: Description) {
-        description.appendValue(expected)
-    }
-
-    override fun describeMismatch(item: Any, description: Description) {
-        description.appendText("The date should be before ").appendValue(expected)
+        description.appendText(mismatchDesc).appendValue(expected)
     }
 
     override fun setParameter(date: String) {
