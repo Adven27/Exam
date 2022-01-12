@@ -41,10 +41,7 @@ open class SetVarCommand(
         val value = when {
             valueAttr != null -> eval.resolveToObj(valueAttr)
             valueFrom != null -> eval.resolveNoType(valueFrom.readFile())
-            else -> eval.resolveNoType(el.text().trimIndent()).apply {
-                el.text(this)
-                el.el.appendNonBreakingSpaceIfBlank()
-            }
+            else -> eval.resolveNoType(el.text().trimIndent())
         }
 
         eval.setVariable(varExp(varAttr(el) ?: cmd.expression), value)
@@ -52,20 +49,16 @@ open class SetVarCommand(
         cmd.swapText(value.toString())
     }
 
-    protected fun CommandCall.swapText(value: String) {
-        Html(element.localName).text(value).el.also {
-            element.moveAttributesTo(it)
-            // FIXME may skip some attributes after first turn, repeat to move the rest... probably bug
-            element.moveAttributesTo(it)
-            element.appendSister(it)
-            element.parentElement.removeChild(element)
-            element = it
-        }
+    private fun CommandCall.swapText(value: String) {
+        Html(textChild(element)).removeChildren().text(value).el.appendNonBreakingSpaceIfBlank()
     }
 
-    private fun varAttr(el: Html) =
-        el.attr("var") ?: el.el.getAttributeValue("set", ExamExtension.NS)
+    private fun textChild(element: org.concordion.api.Element): org.concordion.api.Element {
+        val child = element.childElements.firstOrNull()
+        return if (child == null) element else textChild(child)
+    }
 
+    private fun varAttr(el: Html) = el.attr("var") ?: el.el.getAttributeValue("set", ExamExtension.NS)
     private fun varExp(varName: String) = if (varName.startsWith("#")) varName else "#$varName"
 
     override fun beforeParse(elem: Element) {
