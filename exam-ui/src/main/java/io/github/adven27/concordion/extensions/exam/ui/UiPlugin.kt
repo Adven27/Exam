@@ -22,7 +22,7 @@ open class UiPlugin @JvmOverloads constructor(
     private val screenshotsOnSuccess: Boolean = true,
     screenshotsOnFail: Boolean = true,
     private var capabilities: DesiredCapabilities? = null
-) : ExamPlugin.NoSetUp() {
+) : ExamPlugin.NoSetUp(), ExamPlugin {
 
     companion object {
         private var webDriverInited: Boolean = false

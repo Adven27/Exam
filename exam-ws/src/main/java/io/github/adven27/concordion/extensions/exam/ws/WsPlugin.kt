@@ -28,7 +28,7 @@ class WsPlugin @JvmOverloads constructor(
     port: Int = 8080,
     additionalContentTypeConfigs: Map<ContentType, ContentTypeConfig> = emptyMap(),
     private val contentTypeResolver: ContentTypeResolver = MultiPartAware()
-) : ExamPlugin.NoSetUp() {
+) : ExamPlugin.NoSetUp(), ExamPlugin {
 
     constructor(withPort: Int) : this(port = withPort)
     constructor(withBasePath: String, withPort: Int) : this(basePath = withBasePath, port = withPort)

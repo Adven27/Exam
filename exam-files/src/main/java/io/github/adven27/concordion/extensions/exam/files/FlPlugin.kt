@@ -17,7 +17,7 @@ class FlPlugin @JvmOverloads constructor(
     private var filesLoader: FilesLoader = DefaultFilesLoader(),
     private var jsonUnitCfg: Configuration = ExamExtension.DEFAULT_JSON_UNIT_CFG,
     private var nodeMatcher: NodeMatcher = DefaultNodeMatcher(byNameAndText, byName)
-) : ExamPlugin.NoSetUp() {
+) : ExamPlugin.NoSetUp(), ExamPlugin {
     override fun commands(): List<ExamCommand> = listOf(
         FilesShowCommand("fl-show", TABLE, filesLoader),
         FilesSetCommand("fl-set", TABLE, filesLoader),
