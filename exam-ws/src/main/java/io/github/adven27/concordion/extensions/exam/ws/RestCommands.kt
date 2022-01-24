@@ -53,7 +53,6 @@ private const val URL = "url"
 private const val DESC = "desc"
 private const val URL_PARAMS = "urlParams"
 private const val COOKIES = "cookies"
-private const val HEADER_MAX_LENGTH = 200
 private const val VARIABLES = "vars"
 private const val VALUES = "vals"
 private const val BODY = "body"
@@ -73,14 +72,14 @@ private const val ENDPOINT_HEADER_TMPL = //language=xml
     """
     <div class="input-group input-group-sm">
         <span class="input-group-text">%s</span>
-        <span id='%s' class="form-control bg-light text-dark font-weight-light"/>
+        <span id='%s' class="form-control bg-light text-dark font-weight-light overflow-scroll"/>
     </div>
     """
 private const val ENDPOINT_TMPL = //language=xml
     """
     <div class="input-group mb-1 mt-1">
         <span class="input-group-text %s text-white">%s</span>
-        <span class="form-control bg-light text-primary font-weight-light" id='%s'/>
+        <span class="form-control bg-light text-primary font-weight-light overflow-scroll" id='%s'/>
     </div>
     """
 
@@ -461,23 +460,21 @@ private fun Method.background() = when (this) {
 
 private fun header(it: Map.Entry<String, String>) = "header-${Random().nextInt()}".let { id ->
     String.format(ENDPOINT_HEADER_TMPL, it.key, id).toHtml().apply {
-        findBy(id)?.text(it.value.cutString(HEADER_MAX_LENGTH))
+        findBy(id)?.text(it.value)
     }
 }
 
 private fun cookies(cookies: String) = "header-${Random().nextInt()}".let { id ->
     String.format(ENDPOINT_HEADER_TMPL, "Cookies", id).toHtml().apply {
-        findBy(id)?.text(cookies.cutString(HEADER_MAX_LENGTH))
+        findBy(id)?.text(cookies)
     }
 }
 
 private fun contentType(type: String) = "header-${Random().nextInt()}".let { id ->
     String.format(ENDPOINT_HEADER_TMPL, "Content-Type", id).toHtml().apply {
-        findBy(id)?.text(type.cutString(HEADER_MAX_LENGTH))
+        findBy(id)?.text(type)
     }
 }
-
-private fun String.cutString(max: Int) = if (length > max) take(max) + "..." else this
 
 private fun whereCaseTemplate(tabs: List<Pair<Html, Html>>): Html = tabs.let { list ->
     val failed = tabs.indexOfFirst { it.first.attr("class")?.contains("rest-failure") ?: false }

@@ -90,7 +90,7 @@ open class KafkaConsumeAndSendTester @JvmOverloads constructor(
 open class KafkaConsumeOnlyTester @JvmOverloads constructor(
     protected val bootstrapServers: String,
     protected val topic: String,
-    protected val sutConsumerGroup: String?,
+    protected val sutConsumerGroup: String? = null,
     protected val consumerProperties: MutableMap<String, Any?> = DEFAULT_CONSUMER_CONFIG.toMutableMap(),
     protected val pollTimeout: Duration = ofMillis(POLL_MILLIS),
     protected val accumulateOnRetries: Boolean = false,
