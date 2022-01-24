@@ -48,7 +48,8 @@ class MdQueueParser(private val typeAttr: String = "verifyAs") : QueueParser {
                     type,
                     evaluator.resolveForContentType(body, type),
                     headers.mapValues { evaluator.resolveNoType(it.value) },
-                    params.mapValues { evaluator.resolveNoType(it.value) })
+                    params.mapValues { evaluator.resolveNoType(it.value) }
+                )
             }
         }
 
