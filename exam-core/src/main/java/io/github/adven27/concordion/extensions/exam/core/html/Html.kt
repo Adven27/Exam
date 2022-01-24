@@ -318,6 +318,11 @@ fun noImageOverlay(title: String, desc: String, descStyle: String): Html {
     )
 }
 
+fun descendantTextContainer(element: Element): Element {
+    val child = element.childElements.firstOrNull()
+    return if (child == null) element else descendantTextContainer(child)
+}
+
 fun image(src: String) = Html("image").attrs("src" to src)
 
 fun image(src: String, width: Int, height: Int) = image(src).css("img-thumbnail")

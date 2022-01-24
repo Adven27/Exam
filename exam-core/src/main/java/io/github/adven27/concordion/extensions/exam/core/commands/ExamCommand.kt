@@ -6,6 +6,8 @@ import io.github.adven27.concordion.extensions.exam.core.ExamResultRenderer
 import io.github.adven27.concordion.extensions.exam.core.TextContentTypeConfig
 import io.github.adven27.concordion.extensions.exam.core.content
 import io.github.adven27.concordion.extensions.exam.core.html.Html
+import io.github.adven27.concordion.extensions.exam.core.html.codeHighlight
+import io.github.adven27.concordion.extensions.exam.core.html.descendantTextContainer
 import io.github.adven27.concordion.extensions.exam.core.html.html
 import io.github.adven27.concordion.extensions.exam.core.resolveForContentType
 import io.github.adven27.concordion.extensions.exam.core.rootCauseMessage
@@ -87,13 +89,13 @@ open class ExamAssertEqualsCommand(
     }
 
     protected fun CommandCall.resolve(eval: Evaluator) {
-        Html(element.localName).text(
-            config.resolver.resolve(content(normalize(element.text)), eval)
-        ).el.also {
-            element.appendSister(it)
-            element.parentElement.removeChild(element)
-            element = it
-        }
+        swapText(config.resolver.resolve(content(normalize(element.text)), eval))
+    }
+
+    private fun CommandCall.swapText(value: String) {
+        Html(descendantTextContainer(element)).removeChildren()(
+            codeHighlight(value, config.printer.style()).apply { el.appendNonBreakingSpaceIfBlank() }
+        )
     }
 
     companion object : KLogging()

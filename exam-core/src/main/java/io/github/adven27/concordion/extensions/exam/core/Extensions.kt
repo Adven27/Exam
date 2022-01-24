@@ -54,7 +54,7 @@ class HighlightExtension : ConcordionExtension {
             """
             document.addEventListener('DOMContentLoaded', function (event) {
                 hljs.configure({
-                    cssSelector: 'pre code, pre.highlight'
+                    cssSelector: 'pre code, pre.code'
                 });
                 hljs.highlightAll();
             });
