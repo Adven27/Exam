@@ -14,6 +14,8 @@ import io.ktor.features.ContentNegotiation
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.HttpStatusCode.Companion.BadRequest
 import io.ktor.http.HttpStatusCode.Companion.Created
+import io.ktor.http.content.resources
+import io.ktor.http.content.static
 import io.ktor.jackson.jackson
 import io.ktor.request.header
 import io.ktor.request.httpMethod
@@ -141,6 +143,9 @@ private val engine = embeddedServer(Netty, port = System.getProperty("server.por
                     }
                 """.trimIndent()
             )
+        }
+        static("/ui") {
+            resources("files")
         }
     }
 }

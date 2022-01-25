@@ -1,0 +1,41 @@
+<ignored xmlns:e="http://exam.extension.io" xmlns:cc="http://www.concordion.org/2007/concordion">
+    <h3>UI plugin</h3>
+    <hr/>
+    <p>
+        <strong>UiPlugin</strong> is a wrapper around <a href="https://selenide.org/">Selenide</a> and
+        <a href="https://github.com/bonigarcia/webdrivermanager">WebDriverManager</a> libraries and
+        enables to verify Web UI.
+    </p>
+    <figure class="figure">
+        <canvas class="nomnoml container" from="/specs/ui/ui.nomnoml"/>
+        <figcaption class="figure-caption text-center">Exam interactions with Web UI</figcaption>
+    </figure>
+
+    <h4>Usage</h4>
+    <p>1. Add dependency <pre class="doc-code language-java"><code>testImplementation "io.github.adven27:exam-ui:{{version}}"</code></pre></p>
+    <p>2. Configure and attach the <a cc:run="concordion" href="ui/UiPlugin.xhtml">UiPlugin</a></p>
+
+    <h4>Commands</h4>
+    <p>
+        There is a command for starting browser, open an URL and executing step methods.
+    </p>
+
+    <h5>Open browser</h5>
+
+    <dl>
+        <dt><code><a cc:run="concordion" href="ui/Ui.xhtml">browser</a></code></dt>
+        <dd>
+            <p>Starts browser and executes step methods:</p>
+            <pre class="doc-code language-xml"><code>
+            <![CDATA[
+                <e:browser url=":8888/sut/url" failFast="false">
+                    <e:step name="someTextCheck" set="checkResult" desc="Checking text and setting result to variable">text to check</e:step>
+                    <e:step name="usePrevResultAndText(#checkResult, #TEXT)" desc="Do something with previous check result and some text">some text</e:step>
+                    <e:step name="doSomething" desc="Just execute doSomething method"/>
+                </e:db-check>
+            ]]>
+            </code></pre>
+        </dd>
+    </dl>
+
+</ignored>

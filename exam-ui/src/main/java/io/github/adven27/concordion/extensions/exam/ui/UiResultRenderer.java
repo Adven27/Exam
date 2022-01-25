@@ -12,8 +12,10 @@ import java.io.File;
 import java.util.concurrent.atomic.AtomicLong;
 
 import static com.codeborne.selenide.Selenide.screenshot;
+import static io.github.adven27.concordion.extensions.exam.core.html.HtmlBuilder.codeHighlight;
 import static io.github.adven27.concordion.extensions.exam.core.html.HtmlBuilder.imageOverlay;
 import static io.github.adven27.concordion.extensions.exam.core.html.HtmlBuilder.noImageOverlay;
+import static io.github.adven27.concordion.extensions.exam.core.html.HtmlBuilder.paragraph;
 
 public class UiResultRenderer implements AssertEqualsListener, AssertTrueListener, AssertFalseListener {
     private static final AtomicLong screenshotsCounter = new AtomicLong();
@@ -27,12 +29,13 @@ public class UiResultRenderer implements AssertEqualsListener, AssertTrueListene
     public void failureReported(AssertFailureEvent event) {
         Html s = new Html(event.getElement());
         Html el = s.parent();
-        Fail fail =  new Fail(event.getActual());
+        Fail fail = new Fail(event.getActual());
         el.remove(s);
+        Html desc = codeHighlight(fail.message, "bash");
         el.childs(
             fail.screenshot.isEmpty()
-                ? noImageOverlay(event.getExpected(), fail.message, "rest-failure")
-                : imageOverlay(getPath(fail.screenshot), 360, event.getExpected(), fail.message, "rest-failure")
+                ? noImageOverlay(event.getExpected(), desc, true)
+                : imageOverlay(getPath(fail.screenshot), 360, event.getExpected(), desc, true)
         );
     }
 
@@ -42,10 +45,11 @@ public class UiResultRenderer implements AssertEqualsListener, AssertTrueListene
         String name = s.attrOrFail("name");
         String desc = s.attr("desc");
         el.remove(s);
+        Html paragraph = paragraph(checkAndGetDesc(desc)).css("card-text small");
         el.childs(
             screenshots
-                ? imageOverlay(getPath(screenshot(getFileName(name))), 360, name, checkAndGetDesc(desc), "rest-success")
-                : noImageOverlay(name, checkAndGetDesc(desc), "rest-success")
+                ? imageOverlay(getPath(screenshot(getFileName(name))), 360, name, paragraph, false)
+                : noImageOverlay(name, paragraph, false)
         );
     }
 

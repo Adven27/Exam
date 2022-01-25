@@ -1,0 +1,75 @@
+<html xmlns:e="http://exam.extension.io" xmlns:cc="http://www.concordion.org/2007/concordion">
+<body>
+<h1>Web UI testing</h1>
+
+<e:example name="Steps chain fail fast by default" status="ExpectedToFail">
+    <e:given>
+        <div class="card">
+            <div class="card-header filename">src/test/java/specs/Specs.java</div>
+            <div class="card-body">
+                <pre class="doc-code language-java"><code>
+                public void hasParagraphText(String text) {
+                    $(By.tagName("p")).shouldHave(Condition.text(text));
+                }
+                </code></pre>
+            </div>
+        </div>
+    </e:given>
+
+    <e:then>
+        <e:browser url="/ui/dummy.html" print="true">
+            <e:step name="hasParagraphText">Should fail</e:step>
+            <e:step name="hasParagraphText">Shouldn't be executed</e:step>
+        </e:browser>
+    </e:then>
+</e:example>
+
+<e:example name="Can disable fail fast"  status="ExpectedToFail">
+    <e:given>
+        <div class="card">
+            <div class="card-header filename">src/test/java/specs/Specs.java</div>
+            <div class="card-body">
+                <pre class="doc-code language-java"><code>
+                public void hasParagraphText(String text) {
+                    $(By.tagName("p")).shouldHave(Condition.text(text));
+                }
+                </code></pre>
+            </div>
+        </div>
+    </e:given>
+
+    <e:then>
+        <e:browser url="/ui/dummy.html" failFast="false" print="true">
+            <e:step name="hasParagraphText">Fails but next step should run</e:step>
+            <e:step name="hasParagraphText" desc="Should successfully check text">Hello world!</e:step>
+        </e:browser>
+    </e:then>
+</e:example>
+
+<e:example name="Can set check result to variable">
+    <e:given>
+        <div class="card">
+            <div class="card-header filename">src/test/java/specs/Specs.java</div>
+            <div class="card-body">
+                <pre class="doc-code language-java"><code>
+                public String noParamsCheck() {
+                    $(By.tagName("p")).should(Condition.exist);
+                    return "valueFromMethodCall";
+                }
+                </code></pre>
+            </div>
+        </div>
+    </e:given>
+
+    <e:then>
+        <e:browser url="/ui/dummy.html" print="true">
+            <e:step set="someVar" name="noParamsCheck"/>
+        </e:browser>
+        <p>
+            Variable <var>#someVar</var> = <code cc:assertTrue="areEqual(#someVar, #TEXT)">valueFromMethodCall</code>
+        </p>
+    </e:then>
+</e:example>
+
+</body>
+</html>

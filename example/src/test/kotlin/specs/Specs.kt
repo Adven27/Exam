@@ -15,6 +15,7 @@ import io.github.adven27.concordion.extensions.exam.db.commands.IgnoreMillisComp
 import io.github.adven27.concordion.extensions.exam.files.FlPlugin
 import io.github.adven27.concordion.extensions.exam.mq.MqPlugin
 import io.github.adven27.concordion.extensions.exam.mq.MqTester
+import io.github.adven27.concordion.extensions.exam.ui.UiPlugin
 import io.github.adven27.concordion.extensions.exam.ws.WsPlugin
 import net.javacrumbs.jsonunit.core.Option.IGNORING_EXTRA_FIELDS
 import java.util.ArrayDeque
@@ -24,7 +25,6 @@ open class Specs : AbstractSpecs() {
     override fun init() = ExamExtension(
         WsPlugin(PORT.apply { System.setProperty("server.port", this.toString()) }),
         DbPlugin(dbTester),
-        FlPlugin(),
         MqPlugin(
             mapOf(
                 "myQueue" to object : MqTester.NOOP() {
@@ -39,7 +39,8 @@ open class Specs : AbstractSpecs() {
                 }
             )
         ),
-//        UiPlugin(screenshotsOnFail = true, screenshotsOnSuccess = false)
+        FlPlugin(),
+        UiPlugin(baseUrl = "http://localhost:$PORT")
     ).withHandlebar { hb ->
         hb.registerHelper(
             "hi",
@@ -72,7 +73,7 @@ open class Specs : AbstractSpecs() {
     }
 
     companion object {
-        const val PORT = 8080
+        const val PORT = 8888
 
         @JvmStatic
         val dbTester = dbTester()

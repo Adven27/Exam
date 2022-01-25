@@ -10,6 +10,7 @@ import org.concordion.api.CommandCall;
 import org.concordion.api.Evaluator;
 import org.concordion.api.Fixture;
 import org.concordion.api.ResultRecorder;
+import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
@@ -51,7 +52,7 @@ public class BrowserCommand extends ExamVerifyCommand {
         runCustomDriverIfSet(capabilities);
 
         open(url);
-        Html root = new Html(commandCall.getElement()).css("card-group");
+        Html root = new Html(commandCall.getElement()).css("row row-cols-1 row-cols-md-3 g-2");
         evalSteps(root, evaluator, resultRecorder);
         saveScreenshotsTo(originalSelenideReportsFolder);
     }
@@ -87,16 +88,11 @@ public class BrowserCommand extends ExamVerifyCommand {
     }
 
     private boolean eval(Evaluator ev, ResultRecorder resultRecorder, Html el) {
-        final String name = el.attr("name");
+        final String name = el.attr("name").trim();
         final String var = el.attr("set");
-        String exp = name + "()";
         String text = el.text();
-        if (!"".equals(text)) {
-            exp = name + "(#TEXT)";
-            ev.setVariable("#TEXT", text);
-        }
         try {
-            Object res = ev.evaluate(exp);
+            Object res = ev.evaluate(expression(ev, name, text));
             if (var != null) {
                 ev.setVariable("#" + var, res);
             }
@@ -108,6 +104,19 @@ public class BrowserCommand extends ExamVerifyCommand {
             }
         }
         return true;
+    }
+
+    @NotNull
+    private String expression(Evaluator ev, String name, String text) {
+        String exp;
+        if (name.endsWith(")")) return name;
+        if (!"".equals(text)) {
+            ev.setVariable("#TEXT", text);
+            exp = name + "(#TEXT)";
+        } else {
+            exp = name + "()";
+        }
+        return exp;
     }
 
     private String attr(Html html, String attrName, String defaultValue, Evaluator evaluator) {

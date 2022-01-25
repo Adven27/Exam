@@ -6,13 +6,14 @@ import com.codeborne.selenide.Selenide.`$`
 import org.openqa.selenium.By
 import specs.Specs
 
+class UiPlugin : Specs()
 class Ui : Specs() {
-    fun hasText(text: String) {
-        `$`(By.tagName("span")).shouldHave(text(text))
+    fun hasParagraphText(text: String) {
+        `$`(By.tagName("p")).shouldHave(text(text))
     }
 
     fun noParamsCheck(): String {
-        `$`(By.tagName("span")).should(exist)
+        `$`(By.tagName("p")).should(exist)
         return "valueFromMethodCall"
     }
 

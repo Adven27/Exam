@@ -1,9 +1,9 @@
 package io.github.adven27.concordion.extensions.exam.ui
 
+import com.codeborne.selenide.Browsers.CHROME
+import com.codeborne.selenide.Browsers.FIREFOX
+import com.codeborne.selenide.Browsers.INTERNET_EXPLORER
 import com.codeborne.selenide.Configuration
-import com.codeborne.selenide.WebDriverRunner
-import com.codeborne.selenide.WebDriverRunner.FIREFOX
-import com.codeborne.selenide.WebDriverRunner.INTERNET_EXPLORER
 import io.github.adven27.concordion.extensions.exam.core.ExamPlugin
 import io.github.adven27.concordion.extensions.exam.core.commands.ExamCommand
 import io.github.bonigarcia.wdm.WebDriverManager
@@ -11,18 +11,34 @@ import io.github.bonigarcia.wdm.config.DriverManagerType
 import org.openqa.selenium.chrome.ChromeOptions
 import org.openqa.selenium.chrome.ChromeOptions.CAPABILITY
 import org.openqa.selenium.remote.DesiredCapabilities
+import java.time.Duration
 
-@Suppress("LongParameterList")
 open class UiPlugin @JvmOverloads constructor(
-    timeout: Long = Configuration.timeout,
-    browser: String = WebDriverRunner.CHROME,
-    version: String? = null,
     baseUrl: String = Configuration.baseUrl,
-    headless: Boolean = true,
-    private val screenshotsOnSuccess: Boolean = true,
-    screenshotsOnFail: Boolean = true,
-    private var capabilities: DesiredCapabilities? = null
+    private val browser: Browser = Browser(),
+    private val screenshots: Screenshots = Screenshots.ALWAYS,
+    timeout: Duration = Duration.ofMillis(Configuration.timeout)
 ) : ExamPlugin.NoSetUp(), ExamPlugin {
+
+    data class Browser @JvmOverloads constructor(
+        val name: String = CHROME,
+        val version: String? = null,
+        var capabilities: DesiredCapabilities? = null,
+        val headless: Boolean = true
+    )
+
+    data class Screenshots @JvmOverloads constructor(val onSuccess: Boolean = true, val onFail: Boolean = true) {
+        companion object {
+            @JvmField
+            val ON_SUCCESS_ONLY: Screenshots = Screenshots(onSuccess = true, onFail = false)
+
+            @JvmField
+            val ON_FAIL_ONLY: Screenshots = Screenshots(onSuccess = false, onFail = true)
+
+            @JvmField
+            val ALWAYS: Screenshots = Screenshots(onSuccess = true, onFail = true)
+        }
+    }
 
     companion object {
         private var webDriverInited: Boolean = false
@@ -30,18 +46,18 @@ open class UiPlugin @JvmOverloads constructor(
 
     init {
         if (!webDriverInited) {
-            Configuration.screenshots = screenshotsOnFail
-            Configuration.timeout = timeout
+            Configuration.screenshots = screenshots.onFail
+            Configuration.timeout = timeout.toMillis()
             Configuration.baseUrl = baseUrl
-            Configuration.browser = browser
+            Configuration.browser = browser.name
             Configuration.holdBrowserOpen = false
             Configuration.browserSize = "1680x1050"
-            when (browser) {
-                FIREFOX -> DriverManagerType.FIREFOX.setup(version)
-                INTERNET_EXPLORER -> DriverManagerType.IEXPLORER.setup(version)
-                else -> DriverManagerType.CHROME.setup(version).apply {
-                    if (headless) {
-                        capabilities = headlessCapabilities()
+            when (browser.name) {
+                FIREFOX -> DriverManagerType.FIREFOX.setup(browser.version)
+                INTERNET_EXPLORER -> DriverManagerType.IEXPLORER.setup(browser.version)
+                else -> DriverManagerType.CHROME.setup(browser.version).apply {
+                    if (browser.headless) {
+                        browser.capabilities = headlessCapabilities()
                     }
                 }
             }
@@ -60,5 +76,6 @@ open class UiPlugin @JvmOverloads constructor(
         )
     )
 
-    override fun commands(): List<ExamCommand> = listOf(BrowserCommand("div", screenshotsOnSuccess, capabilities))
+    override fun commands(): List<ExamCommand> =
+        listOf(BrowserCommand("div", screenshots.onSuccess, browser.capabilities))
 }

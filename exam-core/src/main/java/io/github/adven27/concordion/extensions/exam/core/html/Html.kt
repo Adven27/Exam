@@ -297,23 +297,29 @@ fun link(txt: String, src: String) = link(txt).attrs("href" to src)
 @JvmOverloads
 fun thumbnail(src: String, size: Int = 360) = link("", src)(image(src, size, size))
 
-fun imageOverlay(src: String, size: Int, title: String, desc: String, descStyle: String): Html {
-    return div().css("card bg-light")(
-        link("", src)(
-            image(src, size, size)
-        ),
-        div().css("card-img-top $descStyle")(
-            h(4, title),
-            paragraph(desc) css "card-text"
+fun imageOverlay(src: String, size: Int, title: String, desc: Html, fail: Boolean): Html {
+    return div().css("col")(
+        div().css("card ${if (fail) "border border-danger" else ""}")(
+            link("", src)(
+                image(src, size, size).css("card-img-top")
+            ),
+            div().css("card-body ${if (fail) "rest-failure" else "rest-success"}")(
+                Html("dl")(
+                    Html("dt", title),
+                    Html("dd").style("overflow: auto;")(desc)
+                )
+            )
         )
     )
 }
 
-fun noImageOverlay(title: String, desc: String, descStyle: String): Html {
-    return div().css("card bg-light")(
-        div().css("card-img-top $descStyle")(
-            h(4, title),
-            paragraph(desc) css "card-text"
+fun noImageOverlay(title: String, desc: Html, fail: Boolean): Html {
+    return div().css("col")(
+        div().css("card ${if (fail) "border border-danger" else ""}")(
+            div().css("card-body ${if (fail) "rest-failure" else "rest-success"}")(
+                h(4, title),
+                desc
+            )
         )
     )
 }
