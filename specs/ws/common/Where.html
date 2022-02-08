@@ -1,0 +1,675 @@
+<?xml version="1.0" encoding="UTF-8"?><html xmlns:e="http://exam.extension.io" xmlns:cc="http://www.concordion.org/2007/concordion"><head><script type="text/javascript">document.addEventListener('DOMContentLoaded', function (event) {
+    Array.from(document.getElementsByClassName("nomnoml")).forEach(function(el) {
+        nomnoml.draw(el, el.textContent); 
+    });  
+});</script><script type="text/javascript">window.addEventListener('DOMContentLoaded', function (event) {
+    anchors.options = {
+        placement: 'left',
+        icon: '#'
+    };
+    anchors.add();
+    tocbot.init({
+        tocSelector: '.js-toc',
+        contentSelector: '.bd-content',
+        headingSelector: 'h1, h2, h3, h4, h5, h6',
+        hasInnerContainers: true,
+        collapseDepth: 3,
+        scrollSmooth: false,
+        fixedSidebarOffset: 'auto',
+        includeHtml: true
+    });
+    var collapseDepth = 3; 
+    jQuery( "#example-summary-badge" ).click(function() {
+        if (collapseDepth === 3) {
+            collapseDepth = 30;
+        } else {
+            collapseDepth = 3;
+        }
+        tocbot.refresh({
+            tocSelector: '.js-toc',
+            contentSelector: '.bd-content',
+            headingSelector: 'h1, h2, h3, h4, h5, h6',
+            hasInnerContainers: true,
+            collapseDepth: collapseDepth,
+            scrollSmooth: false,
+            fixedSidebarOffset: 'auto',
+            includeHtml: true
+        });
+        if (collapseDepth === 30) {
+            jQuery( ".toc-link" ).filter(function( index ) {
+                return jQuery( "i", this ).length !== 1
+            }).css("display", "none");
+        } else {
+            jQuery( ".toc-link" ).filter(function( index ) {
+                return jQuery( "i", this ).length !== 1
+            }).css("display", "unset");
+        }
+    });
+}); </script><script type="text/javascript">document.addEventListener('DOMContentLoaded', function (event) {
+    hljs.configure({
+        cssSelector: 'pre code, pre.code'
+    });
+    hljs.highlightAll();
+});</script><style>* {
+  font-family: Arial;
+}
+body {
+  padding: 32px;  
+}
+pre {
+  padding: 6px 28px 6px 28px;
+  background-color: #E8EEF7;
+}
+pre, pre *, code, code *, kbd {
+  font-family: Courier New, Courier;
+  font-size: 10pt;
+}
+h1, h1 * {
+  font-size: 24pt;	
+}
+p, td, th, li, .breadcrumbs {
+  font-size: 10pt;
+}
+p, li {
+  line-height: 140%;
+  max-width: 720px;
+}
+table {
+  border-collapse: collapse;
+  empty-cells: show;
+  margin: 8px 0px 8px 0px;
+}
+th, td {
+  border: 1px solid black;
+  padding: 3px;
+}
+td {
+  background-color: white;
+  vertical-align: top;
+}
+th {
+  background-color: #C3D9FF;
+}
+li {
+  margin-top: 6px;
+  margin-bottom: 6px; 
+}
+
+.example, :not(th)[cc\:example] {
+  padding: 6px 16px 6px 16px;
+  border: 1px solid #C3D9FF;
+  margin: 6px 0px 28px 0px;
+  background-color: #F5F9FD;
+}
+.example h3, [cc\:example] h3 {
+  margin-top: 8px;
+  margin-bottom: 8px;
+  font-size: 12pt;
+}
+
+p.success {
+  padding: 2px;
+}
+.success, .success * {
+  background-color: #afa !important;
+}
+.success pre {
+  background-color: #bbffbb;
+}
+.failure, .failure * {
+  background-color: #ffb0b0;
+  padding: 1px;
+}
+.failure .expected {
+  text-decoration: line-through;
+  color: #bb5050;
+}
+.ignored, .ignored * {
+  background-color: #f0f0f0 !important;	
+}
+
+ins {
+  text-decoration: none;	
+}
+
+.exceptionMessage {
+  background-color: #fdd;
+  font-family: Courier New, Courier, Monospace;
+  font-size: 10pt;
+  display: block;
+  font-weight: normal;
+  padding: 4px;
+  text-decoration: none !important;
+}
+.stackTrace, .stackTrace * {
+  font-weight: normal;
+}
+.stackTrace {
+  display: none;
+  padding: 1px 4px 4px 4px;
+  background-color: #fdd;
+  border-top: 1px dotted black;
+}
+.stackTraceExceptionMessage {
+  display: block;
+  font-family: Courier New, Courier, Monospace;
+  font-size: 8pt;
+  white-space: wrap;
+  padding: 1px 0px 1px 0px;
+}
+.stackTraceEntry {
+  white-space: nowrap;
+  font-family: Courier New, Courier, Monospace;
+  display: block;
+  font-size: 8pt;
+  padding: 1px 0px 1px 32px;
+}
+.stackTraceButton {
+  font-size: 8pt;
+  margin: 2px 8px 2px 0px;
+  font-weight: normal;
+  font-family: Arial;
+}
+
+.special {
+  font-style: italic;
+}
+.missing, .missing * {
+  background-color: #ff9999;
+  color:#bb5050;
+  text-decoration: line-through;
+}
+.surplus, .surplus * {
+  background-color: #ff9999;
+}
+.footer {
+  text-align: right;
+  margin-top: 40px;
+  font-size: 8pt;
+  width: 100%;
+  color: #999;
+}
+.footer .testTime {
+  padding: 2px 10px 0px 0px;
+}
+
+.idea {
+  font-size: 9pt;
+  color: #888;
+  font-style: italic;	
+}
+.tight li {
+  margin-top: 1px;
+  margin-bottom: 1px; 
+}
+.commentary {
+  float: right;
+  width: 200px;
+  background-color: #ffffd0;
+  padding:8px;
+  border: 3px solid #eeeeb0;	 
+  margin: 10px 0px 10px 10px;	 
+}
+.commentary, .commentary * {
+  font-size: 8pt;
+}
+</style><meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<link type="text/css" rel="stylesheet" href="../../../ext/codemirror/codemirror.css" /><link type="text/css" rel="stylesheet" href="../../../ext/codemirror/enable-codemirror.css" /><link type="text/css" rel="stylesheet" href="../../../ext/codemirror/merge.css" /><link type="text/css" rel="stylesheet" href="../../../ext/codemirror/foldgutter.css" /><link type="text/css" rel="stylesheet" href="../../../ext/codemirror/simplescrollbar.css" /><script type="text/javascript" src="../../../ext/codemirror/codemirror.js"></script><script type="text/javascript" src="../../../ext/codemirror/enable-codemirror.js"></script><script type="text/javascript" src="../../../ext/codemirror/javascript.js"></script><script type="text/javascript" src="../../../ext/codemirror/xml.js"></script><script type="text/javascript" src="../../../ext/codemirror/addon/mode/simple.js"></script><script type="text/javascript" src="../../../ext/codemirror/http.js"></script><script type="text/javascript" src="../../../ext/codemirror/diff_match_patch.js"></script><script type="text/javascript" src="../../../ext/codemirror/merge.js"></script><script type="text/javascript" src="../../../ext/codemirror/xml-fold.js"></script><script type="text/javascript" src="../../../ext/codemirror/simplescrollbar.js"></script><link type="text/css" rel="stylesheet" href="../../../ext/highlight/stackoverflow-light.min.css" /><script type="text/javascript" src="../../../ext/highlight/highlight.min.js"></script><script type="text/javascript" src="../../../ext/highlight/http.min.js"></script><script type="text/javascript" src="../../../ext/highlight/java.min.js"></script><link type="text/css" rel="stylesheet" href="../../../ext/tocbot/tocbot.css" /><script type="text/javascript" src="../../../ext/tocbot/tocbot.min.js"></script><link type="text/css" rel="stylesheet" href="../../../ext/fontawesome/css/all.min.css" /><link type="text/css" rel="stylesheet" href="../../../ext/fontawesome/css/regular.min.css" /><link type="text/css" rel="stylesheet" href="../../../ext/fontawesome/css/solid.min.css" /><link type="text/css" rel="stylesheet" href="../../../ext/fontawesome/css/all.min.css" /><link type="text/css" rel="stylesheet" href="../../../ext/bootstrap/bootstrap.min.css" /><link type="text/css" rel="stylesheet" href="../../../ext/bootstrap/enable-bootstrap.css" /><link type="text/css" rel="stylesheet" href="../../../ext/bootstrap/doc.min.css" /><link type="text/css" rel="stylesheet" href="../../../ext/bootstrap/scrollToTop.css" /><script type="text/javascript" src="../../../ext/bootstrap/bootstrap.bundle.min.js"></script><script type="text/javascript" src="../../../ext/bootstrap/jquery-3.2.1.slim.min.js"></script><script type="text/javascript" src="../../../ext/bootstrap/sidebar.js"></script><script type="text/javascript" src="../../../ext/bootstrap/doc.min.js"></script><script type="text/javascript" src="../../../ext/bootstrap/scrollToTop.js"></script><script type="text/javascript" src="../../../ext/nomnoml/graphre.js"></script><script type="text/javascript" src="../../../ext/nomnoml/nomnoml.min.js"></script></head><body><span class="breadcrumbs"><a href="../../Specs.html">Exam</a> &gt;</span><div class="container-fluid"><div class="container-xxl my-md-4 bd-layout"><main class="bd-main order-1"><div class="bd-toc mt-4 mb-5 my-md-0 ps-xl-3 mb-lg-5 text-muted"><div class="row my-2 pb-2 border-bottom"><div class="col-9"><strong class="h6">On this page</strong></div><div class="col-2"><i id="example-summary-badge" class="fa fa-list-check"></i></div></div><nav id="table-of-contents" class="js-toc toc toc-right" /></div><div class="bd-content ps-lg-4" id="content">
+    <h1>Parameterized cases</h1>
+
+    <p class="lead">
+        Parameterized cases are a good way to define and run multiple cases, where the only difference between them is the data.
+    </p>
+
+    <h2>Overview</h2>
+    <p>
+        To turn <code>e:case</code> into the parametrized case the <code>e:where</code> nested tag could be used.
+    </p>
+
+    <pre class="doc-code language-xml"><code>&lt;e:where vars="lang, token" separator=","&gt;
+    &lt;e:vals desc="english local"&gt;en, {{now 'ddMMyyyy'}}&lt;/e:vals&gt;
+    &lt;e:vals desc="russian local"&gt;ru, 01012000&lt;/e:vals&gt;
+&lt;/e:where&gt;  </code></pre>
+
+    <h3>Attributes</h3>
+    <table class="table" style="table-layout: fixed;">
+        <thead>
+        <tr><th style="width: 180px;">attribute</th><th style="width: 300px;">desc</th><th>example</th></tr>
+        </thead>
+        <tr>
+            <td><code>vars</code></td>
+            <td><span>List of comma-separated variable names</span></td>
+            <td><var>Required</var>. <var>Default: -</var><pre class="doc-code language-json"><code>vars="var1, var2"</code></pre></td>
+        </tr>
+        <tr>
+            <td><code>separator</code></td>
+            <td><span><i>value</i> separator to use in <code>e:vals</code> tag</span></td>
+            <td><var>Optional</var>. <var>Default: <strong>,</strong></var><pre class="doc-code language-json"><code>varsSeparator="|"</code></pre></td>
+        </tr>
+        <tr>
+            <td><code>vals.desc</code></td>
+            <td><span>Description of specific parameter values</span></td>
+            <td><var>Optional</var>. <var>Default: <strong>number</strong></var><pre class="doc-code language-json"><code>desc="some description"</code></pre></td>
+        </tr>
+    </table>
+    <p>
+        Each parameterized case will be zipped from <code>vars</code> and <code>e:vals</code> declarations (hence order of <code>vars</code> and order of values inside <code>e:vals</code> should match).
+    </p>
+
+    <h2>Examples</h2>
+
+    <h3>GET</h3>
+
+    <div xmlns:c="http://www.concordion.org/2007/concordion" name="get" cmdId="4b166cdb-cf1d-4af1-a4f6-fb51e54c949b" c:example="get" c:status="ExpectedToPass" e:example="" class="exam-example mb-3" data-type="example" id="get" data-summary-success="4" data-summary-ignore="0" data-summary-failure="0" data-summary-exception="0" data-summary-status="ExpectedToPass"><div data-bs-toggle="collapse" data-bs-target="#e656d235d-ec93-4503-b0ae-f5976169d371" aria-expanded="true"><h4 style="visibility: hidden; height:0;" class="test-class"><i class="example-badge fa fa-check m-1 text-success"></i>get</h4><i class="far fa-caret-square-down"></i><span> </span><a class="bd-example-title text-muted fw-lighter">get</a></div><div class="bd-example collapse show rounded bg-light bg-gradient" id="e656d235d-ec93-4503-b0ae-f5976169d371">
+        <div class="mb-4 mt-4"><mark>The following markup:</mark><pre class="doc-code language-xml mt-2"><code>&lt;e:get url="mirror/headers"&gt;
+  &lt;e:case desc="Parametrized headers and response body" headers="Authorization = Bearer {{token}}, Accept-Language = {{lang}}"&gt;
+    &lt;e:expected&gt; { "GET": "/mirror/headers", "Authorization": "Bearer {{token}}", "Accept-Language": "{{lang}}", "cookies": {} } &lt;/e:expected&gt;
+    &lt;e:where vars="lang, token" separator=","&gt;
+      &lt;e:vals desc="en + now"&gt;en, {{now 'ddMMyyyy'}}&lt;/e:vals&gt;
+      &lt;e:vals desc="ru + 01012000"&gt;ru, 01012000&lt;/e:vals&gt;
+    &lt;/e:where&gt;
+  &lt;/e:case&gt;
+&lt;/e:get&gt;</code></pre><mark>will be rendered as:</mark></div><div url="mirror/headers" print="true" cmdId="d0e28970-f3ef-4262-95d8-6beb83a34e1a" e:get=""><table class="ws-cases table table-sm caption-top"><div><div class="input-group mb-1 mt-1">
+        <span class="input-group-text bg-primary text-white">GET</span>
+        <span class="form-control bg-light text-primary font-weight-light overflow-scroll" id="endpoint-1563484743">mirror/headers</span>
+    </div><div class="input-group input-group-sm">
+        <span class="input-group-text">Content-Type</span>
+        <span id="header--1990963217" class="form-control bg-light text-dark font-weight-light overflow-scroll">application/json</span>
+    </div></div><thead class="thead-default"><th colspan="2" style="text-align:center;" class="text-secondary">Use cases:</th></thead>
+            <tr desc="Parametrized headers and response body" headers="Authorization = Bearer {{token}}, Accept-Language = {{lang}}" cmdId="167355a8-9844-4ff0-85d9-891f0ee5f5e5" e:case="" data-type="case" id="1) Parametrized headers and response body"><tr><td colspan="2" class="text-muted bg-light" style="border-bottom: 1px solid lightgray;">1) Parametrized headers and response body</td></tr>
+                
+                
+            </tr><tr><td colspan="2"><div><nav><ul class="nav nav-tabs" role="tablist"><li class="nav-item"><button id="nav--615013873-1644313204855-tab" data-bs-toggle="tab" data-bs-target="#nav--615013873-1644313204855" role="tab" aria-controls="nav--615013873-1644313204855" aria-selected="false" onclick="setTimeout(() =&gt; { window.dispatchEvent(new Event('resize')); }, 200)" class="nav-link small text-success  active show">en + now</button></li><li class="nav-item"><button id="nav--62422475-1644313204855-tab" class="nav-link small text-success " data-bs-toggle="tab" data-bs-target="#nav--62422475-1644313204855" role="tab" aria-controls="nav--62422475-1644313204855" aria-selected="false" onclick="setTimeout(() =&gt; { window.dispatchEvent(new Event('resize')); }, 200)">ru + 01012000</button></li></ul></nav><div><div class="tab-content"><div id="nav--615013873-1644313204855" role="tabpanel" aria-labelledby="nav--615013873-1644313204855-tab" class="tab-pane fade active show"><table class="table table-sm caption-top"><tr data-case-title="en + now"><td style="width: 100%;"><div class="httpstyle"><pre class="doc-code language-http"><code>GET mirror/headers HTTP/1.1
+Authorization: Bearer 08022022
+Accept-Language: en</code></pre></div></td><td style="padding-left: 0;"><small><span class="exp-status rest-success">200</span><span class="badge badge-pill badge-light">13ms</span></small></td></tr><tr><td colspan="2" class="exp-body"><div>
+        <nav>
+          <ul class="nav nav-tabs" role="tablist">
+            <li class="nav-item" role="presentation"> 
+                <button class="nav-link active small text-success" type="button" role="tab" id="nav-et-1644313204805-tab" data-bs-toggle="tab" data-bs-target="#nav-et-1644313204805" aria-controls="nav-et-1644313204805" aria-selected="true">Expected</button>
+            </li>
+            <li class="nav-item" role="presentation"> 
+                <button class="nav-link small" type="button" role="tab" onclick="setTimeout(() =&gt; { window.dispatchEvent(new Event('resize')); }, 200)" id="nav-at-1644313204805-tab" data-bs-toggle="tab" data-bs-target="#nav-at-1644313204805" aria-controls="nav-at-1644313204805" aria-selected="false">Actual</button>
+            </li>
+          </ul>
+        </nav>
+        <div class="tab-content">
+          <div class="tab-pane fade show active" id="nav-et-1644313204805" role="tabpanel" aria-labelledby="nav-et-1644313204805-tab">
+            <pre id="e-1644313204805" class="rest-success json">{
+  "GET": "/mirror/headers",
+  "Authorization": "Bearer 08022022",
+  "Accept-Language": "en",
+  "cookies": {}
+}</pre>
+          </div>
+          <div class="tab-pane fade" id="nav-at-1644313204805" role="tabpanel" aria-labelledby="nav-at-1644313204805-tab">
+            <pre id="a-1644313204805" class="rest-success json">{
+  "GET": "/mirror/headers",
+  "Authorization": "Bearer 08022022",
+  "Accept-Language": "en",
+  "cookies": {}
+}</pre>
+          </div>
+        </div>
+    </div></td></tr></table></div><div class="tab-pane fade" id="nav--62422475-1644313204855" role="tabpanel" aria-labelledby="nav--62422475-1644313204855-tab"><table class="table table-sm caption-top"><tr data-case-title="ru + 01012000"><td style="width: 100%;"><div class="httpstyle"><pre class="doc-code language-http"><code>GET mirror/headers HTTP/1.1
+Authorization: Bearer 01012000
+Accept-Language: ru</code></pre></div></td><td style="padding-left: 0;"><small><span class="exp-status rest-success">200</span><span class="badge badge-pill badge-light">25ms</span></small></td></tr><tr><td colspan="2" class="exp-body"><div>
+        <nav>
+          <ul class="nav nav-tabs" role="tablist">
+            <li class="nav-item" role="presentation"> 
+                <button class="nav-link active small text-success" type="button" role="tab" id="nav-et-1644313204853-tab" data-bs-toggle="tab" data-bs-target="#nav-et-1644313204853" aria-controls="nav-et-1644313204853" aria-selected="true">Expected</button>
+            </li>
+            <li class="nav-item" role="presentation"> 
+                <button class="nav-link small" type="button" role="tab" onclick="setTimeout(() =&gt; { window.dispatchEvent(new Event('resize')); }, 200)" id="nav-at-1644313204853-tab" data-bs-toggle="tab" data-bs-target="#nav-at-1644313204853" aria-controls="nav-at-1644313204853" aria-selected="false">Actual</button>
+            </li>
+          </ul>
+        </nav>
+        <div class="tab-content">
+          <div class="tab-pane fade show active" id="nav-et-1644313204853" role="tabpanel" aria-labelledby="nav-et-1644313204853-tab">
+            <pre id="e-1644313204853" class="rest-success json">{
+  "GET": "/mirror/headers",
+  "Authorization": "Bearer 01012000",
+  "Accept-Language": "ru",
+  "cookies": {}
+}</pre>
+          </div>
+          <div class="tab-pane fade" id="nav-at-1644313204853" role="tabpanel" aria-labelledby="nav-at-1644313204853-tab">
+            <pre id="a-1644313204853" class="rest-success json">{
+  "GET": "/mirror/headers",
+  "Authorization": "Bearer 01012000",
+  "Accept-Language": "ru",
+  "cookies": {}
+}</pre>
+          </div>
+        </div>
+    </div></td></tr></table></div></div></div></div></td></tr>
+        </table></div>
+    </div></div>
+
+    <h3>POST</h3>
+
+    <div xmlns:c="http://www.concordion.org/2007/concordion" name="post" cmdId="6e9eb349-4c0e-4847-b013-e2ba5f68c40f" c:example="post" c:status="ExpectedToPass" e:example="" class="exam-example mb-3" data-type="example" id="post" data-summary-success="4" data-summary-ignore="0" data-summary-failure="0" data-summary-exception="0" data-summary-status="ExpectedToPass"><div data-bs-toggle="collapse" data-bs-target="#efca67f4c-4472-4051-9206-806e0ccf538e" aria-expanded="true"><h4 style="visibility: hidden; height:0;" class="test-class"><i class="example-badge fa fa-check m-1 text-success"></i>post</h4><i class="far fa-caret-square-down"></i><span> </span><a class="bd-example-title text-muted fw-lighter">post</a></div><div class="bd-example collapse show rounded bg-light bg-gradient" id="efca67f4c-4472-4051-9206-806e0ccf538e">
+        <div class="mb-4 mt-4"><mark>The following markup:</mark><pre class="doc-code language-xml mt-2"><code>&lt;e:post url="mirror/body"&gt;
+  &lt;e:case desc="Parametrized request body and response body"&gt;
+    &lt;e:body&gt;{"exact": "{{p1}}", "template": 1}&lt;/e:body&gt;
+    &lt;e:expected&gt;{"exact": "{{p2}}", "template": "{{number}}"}&lt;/e:expected&gt;
+    &lt;e:where vars="p1, p2" separator="|"&gt;
+      &lt;e:vals desc="first"&gt;first value of p1 | first value of p1&lt;/e:vals&gt;
+      &lt;e:vals desc="second"&gt;second value of p1 | second value of p1&lt;/e:vals&gt;
+    &lt;/e:where&gt;
+  &lt;/e:case&gt;
+&lt;/e:post&gt;</code></pre><mark>will be rendered as:</mark></div><div url="mirror/body" print="true" cmdId="6c94e0a7-7f0f-4a0d-969a-ea3904a5a9c4" e:post=""><table class="ws-cases table table-sm caption-top"><div><div class="input-group mb-1 mt-1">
+        <span class="input-group-text bg-success text-white">POST</span>
+        <span class="form-control bg-light text-primary font-weight-light overflow-scroll" id="endpoint-601535808">mirror/body</span>
+    </div><div class="input-group input-group-sm">
+        <span class="input-group-text">Content-Type</span>
+        <span id="header-917015265" class="form-control bg-light text-dark font-weight-light overflow-scroll">application/json</span>
+    </div></div><thead class="thead-default"><th colspan="2" style="text-align:center;" class="text-secondary">Use cases:</th></thead>
+            <tr desc="Parametrized request body and response body" cmdId="97188651-7a91-4f9d-a523-32a6ee9a096e" e:case="" data-type="case" id="2) Parametrized request body and response body"><tr><td colspan="2" class="text-muted bg-light" style="border-bottom: 1px solid lightgray;">2) Parametrized request body and response body</td></tr>
+                
+                
+                
+            </tr><tr><td colspan="2"><div><nav><ul class="nav nav-tabs" role="tablist"><li class="nav-item"><button id="nav--1222478435-1644313204891-tab" data-bs-toggle="tab" data-bs-target="#nav--1222478435-1644313204891" role="tab" aria-controls="nav--1222478435-1644313204891" aria-selected="false" onclick="setTimeout(() =&gt; { window.dispatchEvent(new Event('resize')); }, 200)" class="nav-link small text-success  active show">first</button></li><li class="nav-item"><button id="nav-548283087-1644313204891-tab" class="nav-link small text-success " data-bs-toggle="tab" data-bs-target="#nav-548283087-1644313204891" role="tab" aria-controls="nav-548283087-1644313204891" aria-selected="false" onclick="setTimeout(() =&gt; { window.dispatchEvent(new Event('resize')); }, 200)">second</button></li></ul></nav><div><div class="tab-content"><div id="nav--1222478435-1644313204891" role="tabpanel" aria-labelledby="nav--1222478435-1644313204891-tab" class="tab-pane fade active show"><table class="table table-sm caption-top"><tr data-case-title="first"><td style="width: 50%;"><div class="httpstyle"><pre class="doc-code language-http"><code>POST mirror/body HTTP/1.1
+</code></pre></div></td><td style="padding-left: 0;"><small><span class="exp-status rest-success">200</span><span class="badge badge-pill badge-light">10ms</span></small></td></tr><tr><td class="json exp-body" style="min-width: 20%; width: 50%;">{
+  "exact": "first value of p1",
+  "template": 1
+}</td><td colspan="1" class="exp-body"><div>
+        <nav>
+          <ul class="nav nav-tabs" role="tablist">
+            <li class="nav-item" role="presentation"> 
+                <button class="nav-link active small text-success" type="button" role="tab" id="nav-et-1644313204871-tab" data-bs-toggle="tab" data-bs-target="#nav-et-1644313204871" aria-controls="nav-et-1644313204871" aria-selected="true">Expected</button>
+            </li>
+            <li class="nav-item" role="presentation"> 
+                <button class="nav-link small" type="button" role="tab" onclick="setTimeout(() =&gt; { window.dispatchEvent(new Event('resize')); }, 200)" id="nav-at-1644313204871-tab" data-bs-toggle="tab" data-bs-target="#nav-at-1644313204871" aria-controls="nav-at-1644313204871" aria-selected="false">Actual</button>
+            </li>
+          </ul>
+        </nav>
+        <div class="tab-content">
+          <div class="tab-pane fade show active" id="nav-et-1644313204871" role="tabpanel" aria-labelledby="nav-et-1644313204871-tab">
+            <pre id="e-1644313204871" class="rest-success json">{
+  "exact": "first value of p1",
+  "template": "${json-unit.any-number}"
+}</pre>
+          </div>
+          <div class="tab-pane fade" id="nav-at-1644313204871" role="tabpanel" aria-labelledby="nav-at-1644313204871-tab">
+            <pre id="a-1644313204871" class="rest-success json">{
+  "exact": "first value of p1",
+  "template": 1
+}</pre>
+          </div>
+        </div>
+    </div></td></tr></table></div><div class="tab-pane fade" id="nav-548283087-1644313204891" role="tabpanel" aria-labelledby="nav-548283087-1644313204891-tab"><table class="table table-sm caption-top"><tr data-case-title="second"><td style="width: 50%;"><div class="httpstyle"><pre class="doc-code language-http"><code>POST mirror/body HTTP/1.1
+</code></pre></div></td><td style="padding-left: 0;"><small><span class="exp-status rest-success">200</span><span class="badge badge-pill badge-light">16ms</span></small></td></tr><tr><td class="json exp-body" style="min-width: 20%; width: 50%;">{
+  "exact": "second value of p1",
+  "template": 1
+}</td><td colspan="1" class="exp-body"><div>
+        <nav>
+          <ul class="nav nav-tabs" role="tablist">
+            <li class="nav-item" role="presentation"> 
+                <button class="nav-link active small text-success" type="button" role="tab" id="nav-et-1644313204890-tab" data-bs-toggle="tab" data-bs-target="#nav-et-1644313204890" aria-controls="nav-et-1644313204890" aria-selected="true">Expected</button>
+            </li>
+            <li class="nav-item" role="presentation"> 
+                <button class="nav-link small" type="button" role="tab" onclick="setTimeout(() =&gt; { window.dispatchEvent(new Event('resize')); }, 200)" id="nav-at-1644313204890-tab" data-bs-toggle="tab" data-bs-target="#nav-at-1644313204890" aria-controls="nav-at-1644313204890" aria-selected="false">Actual</button>
+            </li>
+          </ul>
+        </nav>
+        <div class="tab-content">
+          <div class="tab-pane fade show active" id="nav-et-1644313204890" role="tabpanel" aria-labelledby="nav-et-1644313204890-tab">
+            <pre id="e-1644313204890" class="rest-success json">{
+  "exact": "second value of p1",
+  "template": "${json-unit.any-number}"
+}</pre>
+          </div>
+          <div class="tab-pane fade" id="nav-at-1644313204890" role="tabpanel" aria-labelledby="nav-at-1644313204890-tab">
+            <pre id="a-1644313204890" class="rest-success json">{
+  "exact": "second value of p1",
+  "template": 1
+}</pre>
+          </div>
+        </div>
+    </div></td></tr></table></div></div></div></div></td></tr>
+        </table></div>
+    </div></div>
+
+    <h3>DELETE</h3>
+
+    <div xmlns:c="http://www.concordion.org/2007/concordion" name="delete" cmdId="b8a25383-fdcc-440b-81a4-f6020d7d85e4" c:example="delete" c:status="ExpectedToPass" e:example="" class="exam-example mb-3" data-type="example" id="delete" data-summary-success="4" data-summary-ignore="0" data-summary-failure="0" data-summary-exception="0" data-summary-status="ExpectedToPass"><div data-bs-toggle="collapse" data-bs-target="#ec9f9da27-9f28-4dff-8d5c-94299c1176c7" aria-expanded="true"><h4 style="visibility: hidden; height:0;" class="test-class"><i class="example-badge fa fa-check m-1 text-success"></i>delete</h4><i class="far fa-caret-square-down"></i><span> </span><a class="bd-example-title text-muted fw-lighter">delete</a></div><div class="bd-example collapse show rounded bg-light bg-gradient" id="ec9f9da27-9f28-4dff-8d5c-94299c1176c7">
+        <div class="mb-4 mt-4"><mark>The following markup:</mark><pre class="doc-code language-xml mt-2"><code>&lt;e:delete url="mirror/headers"&gt;
+  &lt;e:case desc="Parametrized headers and response body" headers="Authorization = Bearer {{token}}, Accept-Language = {{lang}}"&gt;
+    &lt;e:expected&gt; { "DELETE": "/mirror/headers", "Authorization": "Bearer {{token}}", "Accept-Language": "{{lang}}", "cookies": {} } &lt;/e:expected&gt;
+    &lt;e:where vars="lang, token" separator=","&gt;
+      &lt;e:vals desc="en + now"&gt;en, {{now 'ddMMyyyy'}}&lt;/e:vals&gt;
+      &lt;e:vals desc="ru + 01012000"&gt;ru, 01012000&lt;/e:vals&gt;
+    &lt;/e:where&gt;
+  &lt;/e:case&gt;
+&lt;/e:delete&gt;</code></pre><mark>will be rendered as:</mark></div><div url="mirror/headers" print="true" cmdId="8b6065b4-49fb-45b2-9afb-050c11eab719" e:delete=""><table class="ws-cases table table-sm caption-top"><div><div class="input-group mb-1 mt-1">
+        <span class="input-group-text bg-danger text-white">DELETE</span>
+        <span class="form-control bg-light text-primary font-weight-light overflow-scroll" id="endpoint-655813565">mirror/headers</span>
+    </div><div class="input-group input-group-sm">
+        <span class="input-group-text">Content-Type</span>
+        <span id="header--440919874" class="form-control bg-light text-dark font-weight-light overflow-scroll">application/json</span>
+    </div></div><thead class="thead-default"><th colspan="2" style="text-align:center;" class="text-secondary">Use cases:</th></thead>
+            <tr desc="Parametrized headers and response body" headers="Authorization = Bearer {{token}}, Accept-Language = {{lang}}" cmdId="e4ad5b50-5c67-4e99-9217-1b601e7b688d" e:case="" data-type="case" id="3) Parametrized headers and response body"><tr><td colspan="2" class="text-muted bg-light" style="border-bottom: 1px solid lightgray;">3) Parametrized headers and response body</td></tr>
+                
+                
+            </tr><tr><td colspan="2"><div><nav><ul class="nav nav-tabs" role="tablist"><li class="nav-item"><button id="nav-281037300-1644313204965-tab" data-bs-toggle="tab" data-bs-target="#nav-281037300-1644313204965" role="tab" aria-controls="nav-281037300-1644313204965" aria-selected="false" onclick="setTimeout(() =&gt; { window.dispatchEvent(new Event('resize')); }, 200)" class="nav-link small text-success  active show">en + now</button></li><li class="nav-item"><button id="nav-510944724-1644313204965-tab" class="nav-link small text-success " data-bs-toggle="tab" data-bs-target="#nav-510944724-1644313204965" role="tab" aria-controls="nav-510944724-1644313204965" aria-selected="false" onclick="setTimeout(() =&gt; { window.dispatchEvent(new Event('resize')); }, 200)">ru + 01012000</button></li></ul></nav><div><div class="tab-content"><div id="nav-281037300-1644313204965" role="tabpanel" aria-labelledby="nav-281037300-1644313204965-tab" class="tab-pane fade active show"><table class="table table-sm caption-top"><tr data-case-title="en + now"><td style="width: 100%;"><div class="httpstyle"><pre class="doc-code language-http"><code>DELETE mirror/headers HTTP/1.1
+Authorization: Bearer 08022022
+Accept-Language: en</code></pre></div></td><td style="padding-left: 0;"><small><span class="exp-status rest-success">200</span><span class="badge badge-pill badge-light">15ms</span></small></td></tr><tr><td colspan="2" class="exp-body"><div>
+        <nav>
+          <ul class="nav nav-tabs" role="tablist">
+            <li class="nav-item" role="presentation"> 
+                <button class="nav-link active small text-success" type="button" role="tab" id="nav-et-1644313204915-tab" data-bs-toggle="tab" data-bs-target="#nav-et-1644313204915" aria-controls="nav-et-1644313204915" aria-selected="true">Expected</button>
+            </li>
+            <li class="nav-item" role="presentation"> 
+                <button class="nav-link small" type="button" role="tab" onclick="setTimeout(() =&gt; { window.dispatchEvent(new Event('resize')); }, 200)" id="nav-at-1644313204915-tab" data-bs-toggle="tab" data-bs-target="#nav-at-1644313204915" aria-controls="nav-at-1644313204915" aria-selected="false">Actual</button>
+            </li>
+          </ul>
+        </nav>
+        <div class="tab-content">
+          <div class="tab-pane fade show active" id="nav-et-1644313204915" role="tabpanel" aria-labelledby="nav-et-1644313204915-tab">
+            <pre id="e-1644313204915" class="rest-success json">{
+  "DELETE": "/mirror/headers",
+  "Authorization": "Bearer 08022022",
+  "Accept-Language": "en",
+  "cookies": {}
+}</pre>
+          </div>
+          <div class="tab-pane fade" id="nav-at-1644313204915" role="tabpanel" aria-labelledby="nav-at-1644313204915-tab">
+            <pre id="a-1644313204915" class="rest-success json">{
+  "DELETE": "/mirror/headers",
+  "Authorization": "Bearer 08022022",
+  "Accept-Language": "en",
+  "cookies": {}
+}</pre>
+          </div>
+        </div>
+    </div></td></tr></table></div><div class="tab-pane fade" id="nav-510944724-1644313204965" role="tabpanel" aria-labelledby="nav-510944724-1644313204965-tab"><table class="table table-sm caption-top"><tr data-case-title="ru + 01012000"><td style="width: 100%;"><div class="httpstyle"><pre class="doc-code language-http"><code>DELETE mirror/headers HTTP/1.1
+Authorization: Bearer 01012000
+Accept-Language: ru</code></pre></div></td><td style="padding-left: 0;"><small><span class="exp-status rest-success">200</span><span class="badge badge-pill badge-light">20ms</span></small></td></tr><tr><td colspan="2" class="exp-body"><div>
+        <nav>
+          <ul class="nav nav-tabs" role="tablist">
+            <li class="nav-item" role="presentation"> 
+                <button class="nav-link active small text-success" type="button" role="tab" id="nav-et-1644313204960-tab" data-bs-toggle="tab" data-bs-target="#nav-et-1644313204960" aria-controls="nav-et-1644313204960" aria-selected="true">Expected</button>
+            </li>
+            <li class="nav-item" role="presentation"> 
+                <button class="nav-link small" type="button" role="tab" onclick="setTimeout(() =&gt; { window.dispatchEvent(new Event('resize')); }, 200)" id="nav-at-1644313204960-tab" data-bs-toggle="tab" data-bs-target="#nav-at-1644313204960" aria-controls="nav-at-1644313204960" aria-selected="false">Actual</button>
+            </li>
+          </ul>
+        </nav>
+        <div class="tab-content">
+          <div class="tab-pane fade show active" id="nav-et-1644313204960" role="tabpanel" aria-labelledby="nav-et-1644313204960-tab">
+            <pre id="e-1644313204960" class="rest-success json">{
+  "DELETE": "/mirror/headers",
+  "Authorization": "Bearer 01012000",
+  "Accept-Language": "ru",
+  "cookies": {}
+}</pre>
+          </div>
+          <div class="tab-pane fade" id="nav-at-1644313204960" role="tabpanel" aria-labelledby="nav-at-1644313204960-tab">
+            <pre id="a-1644313204960" class="rest-success json">{
+  "DELETE": "/mirror/headers",
+  "Authorization": "Bearer 01012000",
+  "Accept-Language": "ru",
+  "cookies": {}
+}</pre>
+          </div>
+        </div>
+    </div></td></tr></table></div></div></div></div></td></tr>
+        </table></div>
+    </div></div>
+
+    <h3>PUT</h3>
+
+    <div xmlns:c="http://www.concordion.org/2007/concordion" name="put" cmdId="69eae93c-7b3e-4f6e-a84f-5eb1547e3234" c:example="put" c:status="ExpectedToPass" e:example="" class="exam-example mb-3" data-type="example" id="put" data-summary-success="4" data-summary-ignore="0" data-summary-failure="0" data-summary-exception="0" data-summary-status="ExpectedToPass"><div data-bs-toggle="collapse" data-bs-target="#e2806008a-161c-43fb-b2b2-1525ff9082c3" aria-expanded="true"><h4 style="visibility: hidden; height:0;" class="test-class"><i class="example-badge fa fa-check m-1 text-success"></i>put</h4><i class="far fa-caret-square-down"></i><span> </span><a class="bd-example-title text-muted fw-lighter">put</a></div><div class="bd-example collapse show rounded bg-light bg-gradient" id="e2806008a-161c-43fb-b2b2-1525ff9082c3">
+        <div class="mb-4 mt-4"><mark>The following markup:</mark><pre class="doc-code language-xml mt-2"><code>&lt;e:put url="mirror/body"&gt;
+  &lt;e:case desc="Parametrized request body and response body"&gt;
+    &lt;e:body&gt;{"exact": "{{p1}}", "template": 1}&lt;/e:body&gt;
+    &lt;e:expected&gt;{"exact": "{{p2}}", "template": "{{number}}"}&lt;/e:expected&gt;
+    &lt;e:where vars="p1, p2" separator="|"&gt;
+      &lt;e:vals desc="first"&gt;first value of p1 | first value of p1&lt;/e:vals&gt;
+      &lt;e:vals desc="second"&gt;second value of p1 | second value of p1&lt;/e:vals&gt;
+    &lt;/e:where&gt;
+  &lt;/e:case&gt;
+&lt;/e:put&gt;</code></pre><mark>will be rendered as:</mark></div><div url="mirror/body" print="true" cmdId="966b52c5-6699-4bb3-9dea-31fb7b39b378" e:put=""><table class="ws-cases table table-sm caption-top"><div><div class="input-group mb-1 mt-1">
+        <span class="input-group-text bg-warning text-white">PUT</span>
+        <span class="form-control bg-light text-primary font-weight-light overflow-scroll" id="endpoint--238246757">mirror/body</span>
+    </div><div class="input-group input-group-sm">
+        <span class="input-group-text">Content-Type</span>
+        <span id="header--872032500" class="form-control bg-light text-dark font-weight-light overflow-scroll">application/json</span>
+    </div></div><thead class="thead-default"><th colspan="2" style="text-align:center;" class="text-secondary">Use cases:</th></thead>
+            <tr desc="Parametrized request body and response body" cmdId="2fc5e015-51e2-46a9-9548-8b474e05b21f" e:case="" data-type="case" id="4) Parametrized request body and response body"><tr><td colspan="2" class="text-muted bg-light" style="border-bottom: 1px solid lightgray;">4) Parametrized request body and response body</td></tr>
+                
+                
+                
+            </tr><tr><td colspan="2"><div><nav><ul class="nav nav-tabs" role="tablist"><li class="nav-item"><button id="nav--1675421760-1644313205029-tab" data-bs-toggle="tab" data-bs-target="#nav--1675421760-1644313205029" role="tab" aria-controls="nav--1675421760-1644313205029" aria-selected="false" onclick="setTimeout(() =&gt; { window.dispatchEvent(new Event('resize')); }, 200)" class="nav-link small text-success  active show">first</button></li><li class="nav-item"><button id="nav--2094720151-1644313205030-tab" class="nav-link small text-success " data-bs-toggle="tab" data-bs-target="#nav--2094720151-1644313205030" role="tab" aria-controls="nav--2094720151-1644313205030" aria-selected="false" onclick="setTimeout(() =&gt; { window.dispatchEvent(new Event('resize')); }, 200)">second</button></li></ul></nav><div><div class="tab-content"><div id="nav--1675421760-1644313205029" role="tabpanel" aria-labelledby="nav--1675421760-1644313205029-tab" class="tab-pane fade active show"><table class="table table-sm caption-top"><tr data-case-title="first"><td style="width: 50%;"><div class="httpstyle"><pre class="doc-code language-http"><code>PUT mirror/body HTTP/1.1
+</code></pre></div></td><td style="padding-left: 0;"><small><span class="exp-status rest-success">200</span><span class="badge badge-pill badge-light">19ms</span></small></td></tr><tr><td class="json exp-body" style="min-width: 20%; width: 50%;">{
+  "exact": "first value of p1",
+  "template": 1
+}</td><td colspan="1" class="exp-body"><div>
+        <nav>
+          <ul class="nav nav-tabs" role="tablist">
+            <li class="nav-item" role="presentation"> 
+                <button class="nav-link active small text-success" type="button" role="tab" id="nav-et-1644313204998-tab" data-bs-toggle="tab" data-bs-target="#nav-et-1644313204998" aria-controls="nav-et-1644313204998" aria-selected="true">Expected</button>
+            </li>
+            <li class="nav-item" role="presentation"> 
+                <button class="nav-link small" type="button" role="tab" onclick="setTimeout(() =&gt; { window.dispatchEvent(new Event('resize')); }, 200)" id="nav-at-1644313204998-tab" data-bs-toggle="tab" data-bs-target="#nav-at-1644313204998" aria-controls="nav-at-1644313204998" aria-selected="false">Actual</button>
+            </li>
+          </ul>
+        </nav>
+        <div class="tab-content">
+          <div class="tab-pane fade show active" id="nav-et-1644313204998" role="tabpanel" aria-labelledby="nav-et-1644313204998-tab">
+            <pre id="e-1644313204998" class="rest-success json">{
+  "exact": "first value of p1",
+  "template": "${json-unit.any-number}"
+}</pre>
+          </div>
+          <div class="tab-pane fade" id="nav-at-1644313204998" role="tabpanel" aria-labelledby="nav-at-1644313204998-tab">
+            <pre id="a-1644313204998" class="rest-success json">{
+  "exact": "first value of p1",
+  "template": 1
+}</pre>
+          </div>
+        </div>
+    </div></td></tr></table></div><div class="tab-pane fade" id="nav--2094720151-1644313205030" role="tabpanel" aria-labelledby="nav--2094720151-1644313205030-tab"><table class="table table-sm caption-top"><tr data-case-title="second"><td style="width: 50%;"><div class="httpstyle"><pre class="doc-code language-http"><code>PUT mirror/body HTTP/1.1
+</code></pre></div></td><td style="padding-left: 0;"><small><span class="exp-status rest-success">200</span><span class="badge badge-pill badge-light">20ms</span></small></td></tr><tr><td class="json exp-body" style="min-width: 20%; width: 50%;">{
+  "exact": "second value of p1",
+  "template": 1
+}</td><td colspan="1" class="exp-body"><div>
+        <nav>
+          <ul class="nav nav-tabs" role="tablist">
+            <li class="nav-item" role="presentation"> 
+                <button class="nav-link active small text-success" type="button" role="tab" id="nav-et-1644313205027-tab" data-bs-toggle="tab" data-bs-target="#nav-et-1644313205027" aria-controls="nav-et-1644313205027" aria-selected="true">Expected</button>
+            </li>
+            <li class="nav-item" role="presentation"> 
+                <button class="nav-link small" type="button" role="tab" onclick="setTimeout(() =&gt; { window.dispatchEvent(new Event('resize')); }, 200)" id="nav-at-1644313205027-tab" data-bs-toggle="tab" data-bs-target="#nav-at-1644313205027" aria-controls="nav-at-1644313205027" aria-selected="false">Actual</button>
+            </li>
+          </ul>
+        </nav>
+        <div class="tab-content">
+          <div class="tab-pane fade show active" id="nav-et-1644313205027" role="tabpanel" aria-labelledby="nav-et-1644313205027-tab">
+            <pre id="e-1644313205027" class="rest-success json">{
+  "exact": "second value of p1",
+  "template": "${json-unit.any-number}"
+}</pre>
+          </div>
+          <div class="tab-pane fade" id="nav-at-1644313205027" role="tabpanel" aria-labelledby="nav-at-1644313205027-tab">
+            <pre id="a-1644313205027" class="rest-success json">{
+  "exact": "second value of p1",
+  "template": 1
+}</pre>
+          </div>
+        </div>
+    </div></td></tr></table></div></div></div></div></td></tr>
+        </table></div>
+    </div></div>
+
+    <h3>SOAP</h3>
+
+    <div xmlns:c="http://www.concordion.org/2007/concordion" name="soap" cmdId="078168a8-9d3c-4663-a3d3-fc12300c93f8" c:example="soap" c:status="ExpectedToPass" e:example="" class="exam-example mb-3" data-type="example" id="soap" data-summary-success="2" data-summary-ignore="0" data-summary-failure="0" data-summary-exception="0" data-summary-status="ExpectedToPass"><div data-bs-toggle="collapse" data-bs-target="#e55381cdc-c3f6-46c0-93a4-9e25b01ce052" aria-expanded="true"><h4 style="visibility: hidden; height:0;" class="test-class"><i class="example-badge fa fa-check m-1 text-success"></i>soap</h4><i class="far fa-caret-square-down"></i><span> </span><a class="bd-example-title text-muted fw-lighter">soap</a></div><div class="bd-example collapse show rounded bg-light bg-gradient" id="e55381cdc-c3f6-46c0-93a4-9e25b01ce052">
+        <div class="mb-4 mt-4"><mark>The following markup:</mark><pre class="doc-code language-xml mt-2"><code>&lt;e:soap url="mirror/body"&gt;
+  &lt;e:case desc="Parameterized name of file"&gt;
+    &lt;e:body from="/data/soap/{{body}}"/&gt;
+    &lt;e:expected from="/data/soap/expected.xml"/&gt;
+    &lt;e:where vars="body"&gt;
+      &lt;e:vals&gt;body.xml&lt;/e:vals&gt;
+    &lt;/e:where&gt;
+  &lt;/e:case&gt;
+&lt;/e:soap&gt;</code></pre><mark>will be rendered as:</mark></div><div url="mirror/body" print="true" cmdId="7843d3c8-fa48-489d-b8ef-381a9ad143af" e:soap=""><table class="ws-cases table table-sm caption-top"><div><div class="input-group mb-1 mt-1">
+        <span class="input-group-text bg-success text-white">POST</span>
+        <span class="form-control bg-light text-primary font-weight-light overflow-scroll" id="endpoint-1436085874">mirror/body</span>
+    </div><div class="input-group input-group-sm">
+        <span class="input-group-text">Content-Type</span>
+        <span id="header-385582719" class="form-control bg-light text-dark font-weight-light overflow-scroll">application/soap+xml; charset=UTF-8;</span>
+    </div></div><thead class="thead-default"><th colspan="2" style="text-align:center;" class="text-secondary">Use cases:</th></thead>
+            <tr desc="Parameterized name of file" cmdId="f6c0bf9b-6b29-4008-b9a9-e6ac18b41d4c" e:case="" data-type="case" id="5) Parameterized name of file"><tr><td colspan="2" class="text-muted bg-light" style="border-bottom: 1px solid lightgray;">5) Parameterized name of file</td></tr>
+                
+                
+                
+            <tr data-case-title="1"><td style="width: 50%;"><div class="httpstyle"><pre class="doc-code language-http"><code>POST mirror/body HTTP/1.1
+</code></pre></div></td><td style="padding-left: 0;"><small><span class="exp-status rest-success">200</span><span class="badge badge-pill badge-light">18ms</span></small></td></tr><tr><td from="/data/soap/{{body}}" class="xml exp-body" style="min-width: 20%; width: 50%;">&lt;soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"&gt;&#x0D;
+  &lt;soap:Body&gt;&#x0D;
+    &lt;ns2:getItemRequest xmlns:ns2="http://ws.io"&gt;&#x0D;
+      &lt;date&gt;2021-02-08&lt;/date&gt;&#x0D;
+    &lt;/ns2:getItemRequest&gt;&#x0D;
+  &lt;/soap:Body&gt;&#x0D;
+&lt;/soap:Envelope&gt;</td><td colspan="1" class="exp-body" from="/data/soap/expected.xml"><div>
+        <nav>
+          <ul class="nav nav-tabs" role="tablist">
+            <li class="nav-item" role="presentation"> 
+                <button class="nav-link active small text-success" type="button" role="tab" id="nav-et-1644313205101-tab" data-bs-toggle="tab" data-bs-target="#nav-et-1644313205101" aria-controls="nav-et-1644313205101" aria-selected="true">Expected</button>
+            </li>
+            <li class="nav-item" role="presentation"> 
+                <button class="nav-link small" type="button" role="tab" onclick="setTimeout(() =&gt; { window.dispatchEvent(new Event('resize')); }, 200)" id="nav-at-1644313205101-tab" data-bs-toggle="tab" data-bs-target="#nav-at-1644313205101" aria-controls="nav-at-1644313205101" aria-selected="false">Actual</button>
+            </li>
+          </ul>
+        </nav>
+        <div class="tab-content">
+          <div class="tab-pane fade show active" id="nav-et-1644313205101" role="tabpanel" aria-labelledby="nav-et-1644313205101-tab">
+            <pre id="e-1644313205101" class="rest-success xml">&lt;soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"&gt;&#x0D;
+  &lt;soap:Body&gt;&#x0D;
+    &lt;ns2:getItemRequest xmlns:ns2="http://ws.io"&gt;&#x0D;
+      &lt;date&gt;2021-02-08&lt;/date&gt;&#x0D;
+    &lt;/ns2:getItemRequest&gt;&#x0D;
+  &lt;/soap:Body&gt;&#x0D;
+&lt;/soap:Envelope&gt;</pre>
+          </div>
+          <div class="tab-pane fade" id="nav-at-1644313205101" role="tabpanel" aria-labelledby="nav-at-1644313205101-tab">
+            <pre id="a-1644313205101" class="rest-success xml">&lt;soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"&gt;&#x0D;
+  &lt;soap:Body&gt;&#x0D;
+    &lt;ns2:getItemRequest xmlns:ns2="http://ws.io"&gt;&#x0D;
+      &lt;date&gt;2021-02-08&lt;/date&gt;&#x0D;
+    &lt;/ns2:getItemRequest&gt;&#x0D;
+  &lt;/soap:Body&gt;&#x0D;
+&lt;/soap:Envelope&gt;</pre>
+          </div>
+        </div>
+    </div></td></tr></tr>
+        </table></div>
+    </div></div>
+
+    <h2>More</h2>
+    <ul>
+        <li><a cc:run="concordion" href="WhereFailures.html" class="ignored">How do failures look like?</a></li>
+    </ul>
+
+</div></main></div></div><div class="footer">Results generated by <a href="http://www.concordion.org" style="font-weight: bold; text-decoration: none; color: #89C;">Concordion</a><div class="testTime">in 541 ms on 08-Feb-2022 at 12:40:05 MSK</div></div></body>
+<button id="btnToTop" onclick="topFunction()" type="button" class="btn btn-light btn-sm text-muted me-1"><i class="fa fa-arrow-up"></i></button></html>
