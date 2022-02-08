@@ -40,6 +40,7 @@ class MessageAttrs(root: Html, evaluator: Evaluator) {
     val from: FromAttrs = FromAttrs(root, evaluator, verifyAs ?: formatAs)
     val vars: VarsAttrs = VarsAttrs(root, evaluator)
     val headers: Map<String, String> = root.takeAwayAttr(HEADERS).attrToMap()
+    val params: Map<String, String> = root.takeAwayAttr(PARAMS).attrToMap()
 
     companion object {
         private const val VERIFY_AS = "verifyAs"

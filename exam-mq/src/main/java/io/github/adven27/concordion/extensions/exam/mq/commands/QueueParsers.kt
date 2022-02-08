@@ -73,6 +73,11 @@ class HtmlQueueParser : QueueParser {
     private fun root(command: CommandCall) = command.element
 
     private fun toMsg(msg: Element, evaluator: Evaluator) = with(MessageAttrs(Html(msg), evaluator)) {
-        ParametrizedTypedMessage(from.contentType, from.content, headers)
+        ParametrizedTypedMessage(
+            from.contentType,
+            from.content,
+            headers.mapValues { evaluator.resolveNoType(it.value) },
+            params.mapValues { evaluator.resolveNoType(it.value) }
+        )
     }
 }

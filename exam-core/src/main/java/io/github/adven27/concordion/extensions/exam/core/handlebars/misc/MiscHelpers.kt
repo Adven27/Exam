@@ -25,6 +25,9 @@ enum class MiscHelpers(
     getOr("""{{getOr var "default value"}}""", mapOf(), "default value", mapOf()) {
         override fun invoke(context: Any?, options: Options): Any? = context ?: options.param<String>(0)
     },
+    map("""{{map key='value'}}""", mapOf(), mapOf("key" to "value"), mapOf()) {
+        override fun invoke(context: Any?, options: Options): Any? = options.hash
+    },
     NULL("{{NULL}}", emptyMap(), null) {
         override fun invoke(context: Any?, options: Options): Any? = null
     },

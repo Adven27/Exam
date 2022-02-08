@@ -252,13 +252,13 @@
         <e:given>
             Queue has the messages with headers:
             <e:mq-send name="myQueue" headers="id=1, date=2000-01-31T23:59:59">{}</e:mq-send>
-            <e:mq-send name="myQueue" headers="id=2, date=2000-02-01T00:00:05">{}</e:mq-send>
+            <e:mq-send name="myQueue" headers="id=2, date={{dateFormat (today plus='1 d')}}">{}</e:mq-send>
         </e:given>
         <e:then>
             Verify the message list and their headers:
             <e:mq-check name="myQueue" print="true">
-                <e:message headers="id=1, date={{ignore}}>>firstMessage">{}</e:message>
-                <e:message headers="id=2, date={{after (dateFormat (date firstMessage plus='5 s'))}}">{}</e:message>
+                <e:message headers="id=1, date={{ignore}}">{}</e:message>
+                <e:message headers="id=2, date={{after (dateFormat (today))}}">{}</e:message>
             </e:mq-check>
         </e:then>
     </e:example>
