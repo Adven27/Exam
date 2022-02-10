@@ -1,0 +1,2298 @@
+<?xml version="1.0" encoding="UTF-8"?><html xmlns:e="http://exam.extension.io"><head><script type="text/javascript">document.addEventListener('DOMContentLoaded', function (event) {
+    Array.from(document.getElementsByClassName("nomnoml")).forEach(function(el) {
+        nomnoml.draw(el, el.textContent); 
+    });  
+});</script><script type="text/javascript">window.addEventListener('DOMContentLoaded', function (event) {
+    anchors.options = {
+        placement: 'left',
+        icon: '#'
+    };
+    anchors.add();
+    tocbot.init({
+        tocSelector: '.js-toc',
+        contentSelector: '.bd-content',
+        headingSelector: 'h1, h2, h3, h4, h5, h6',
+        hasInnerContainers: true,
+        collapseDepth: 3,
+        scrollSmooth: false,
+        fixedSidebarOffset: 'auto',
+        includeHtml: true
+    });
+    var collapseDepth = 3; 
+    jQuery( "#example-summary-badge" ).click(function() {
+        if (collapseDepth === 3) {
+            collapseDepth = 30;
+        } else {
+            collapseDepth = 3;
+        }
+        tocbot.refresh({
+            tocSelector: '.js-toc',
+            contentSelector: '.bd-content',
+            headingSelector: 'h1, h2, h3, h4, h5, h6',
+            hasInnerContainers: true,
+            collapseDepth: collapseDepth,
+            scrollSmooth: false,
+            fixedSidebarOffset: 'auto',
+            includeHtml: true
+        });
+        if (collapseDepth === 30) {
+            jQuery( ".toc-link" ).filter(function( index ) {
+                return jQuery( "i", this ).length !== 1
+            }).css("display", "none");
+        } else {
+            jQuery( ".toc-link" ).filter(function( index ) {
+                return jQuery( "i", this ).length !== 1
+            }).css("display", "unset");
+        }
+    });
+}); </script><script type="text/javascript">document.addEventListener('DOMContentLoaded', function (event) {
+    hljs.configure({
+        cssSelector: 'pre code, pre.code'
+    });
+    hljs.highlightAll();
+});</script><style>* {
+  font-family: Arial;
+}
+body {
+  padding: 32px;  
+}
+pre {
+  padding: 6px 28px 6px 28px;
+  background-color: #E8EEF7;
+}
+pre, pre *, code, code *, kbd {
+  font-family: Courier New, Courier;
+  font-size: 10pt;
+}
+h1, h1 * {
+  font-size: 24pt;	
+}
+p, td, th, li, .breadcrumbs {
+  font-size: 10pt;
+}
+p, li {
+  line-height: 140%;
+  max-width: 720px;
+}
+table {
+  border-collapse: collapse;
+  empty-cells: show;
+  margin: 8px 0px 8px 0px;
+}
+th, td {
+  border: 1px solid black;
+  padding: 3px;
+}
+td {
+  background-color: white;
+  vertical-align: top;
+}
+th {
+  background-color: #C3D9FF;
+}
+li {
+  margin-top: 6px;
+  margin-bottom: 6px; 
+}
+
+.example, :not(th)[concordion\:example] {
+  padding: 6px 16px 6px 16px;
+  border: 1px solid #C3D9FF;
+  margin: 6px 0px 28px 0px;
+  background-color: #F5F9FD;
+}
+.example h3, [concordion\:example] h3 {
+  margin-top: 8px;
+  margin-bottom: 8px;
+  font-size: 12pt;
+}
+
+p.success {
+  padding: 2px;
+}
+.success, .success * {
+  background-color: #afa !important;
+}
+.success pre {
+  background-color: #bbffbb;
+}
+.failure, .failure * {
+  background-color: #ffb0b0;
+  padding: 1px;
+}
+.failure .expected {
+  text-decoration: line-through;
+  color: #bb5050;
+}
+.ignored, .ignored * {
+  background-color: #f0f0f0 !important;	
+}
+
+ins {
+  text-decoration: none;	
+}
+
+.exceptionMessage {
+  background-color: #fdd;
+  font-family: Courier New, Courier, Monospace;
+  font-size: 10pt;
+  display: block;
+  font-weight: normal;
+  padding: 4px;
+  text-decoration: none !important;
+}
+.stackTrace, .stackTrace * {
+  font-weight: normal;
+}
+.stackTrace {
+  display: none;
+  padding: 1px 4px 4px 4px;
+  background-color: #fdd;
+  border-top: 1px dotted black;
+}
+.stackTraceExceptionMessage {
+  display: block;
+  font-family: Courier New, Courier, Monospace;
+  font-size: 8pt;
+  white-space: wrap;
+  padding: 1px 0px 1px 0px;
+}
+.stackTraceEntry {
+  white-space: nowrap;
+  font-family: Courier New, Courier, Monospace;
+  display: block;
+  font-size: 8pt;
+  padding: 1px 0px 1px 32px;
+}
+.stackTraceButton {
+  font-size: 8pt;
+  margin: 2px 8px 2px 0px;
+  font-weight: normal;
+  font-family: Arial;
+}
+
+.special {
+  font-style: italic;
+}
+.missing, .missing * {
+  background-color: #ff9999;
+  color:#bb5050;
+  text-decoration: line-through;
+}
+.surplus, .surplus * {
+  background-color: #ff9999;
+}
+.footer {
+  text-align: right;
+  margin-top: 40px;
+  font-size: 8pt;
+  width: 100%;
+  color: #999;
+}
+.footer .testTime {
+  padding: 2px 10px 0px 0px;
+}
+
+.idea {
+  font-size: 9pt;
+  color: #888;
+  font-style: italic;	
+}
+.tight li {
+  margin-top: 1px;
+  margin-bottom: 1px; 
+}
+.commentary {
+  float: right;
+  width: 200px;
+  background-color: #ffffd0;
+  padding:8px;
+  border: 3px solid #eeeeb0;	 
+  margin: 10px 0px 10px 10px;	 
+}
+.commentary, .commentary * {
+  font-size: 8pt;
+}
+</style><meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<link type="text/css" rel="stylesheet" href="../../ext/codemirror/codemirror.css" /><link type="text/css" rel="stylesheet" href="../../ext/codemirror/enable-codemirror.css" /><link type="text/css" rel="stylesheet" href="../../ext/codemirror/merge.css" /><link type="text/css" rel="stylesheet" href="../../ext/codemirror/foldgutter.css" /><link type="text/css" rel="stylesheet" href="../../ext/codemirror/simplescrollbar.css" /><script type="text/javascript" src="../../ext/codemirror/codemirror.js"></script><script type="text/javascript" src="../../ext/codemirror/enable-codemirror.js"></script><script type="text/javascript" src="../../ext/codemirror/javascript.js"></script><script type="text/javascript" src="../../ext/codemirror/xml.js"></script><script type="text/javascript" src="../../ext/codemirror/addon/mode/simple.js"></script><script type="text/javascript" src="../../ext/codemirror/http.js"></script><script type="text/javascript" src="../../ext/codemirror/diff_match_patch.js"></script><script type="text/javascript" src="../../ext/codemirror/merge.js"></script><script type="text/javascript" src="../../ext/codemirror/xml-fold.js"></script><script type="text/javascript" src="../../ext/codemirror/simplescrollbar.js"></script><link type="text/css" rel="stylesheet" href="../../ext/highlight/stackoverflow-light.min.css" /><script type="text/javascript" src="../../ext/highlight/highlight.min.js"></script><script type="text/javascript" src="../../ext/highlight/http.min.js"></script><script type="text/javascript" src="../../ext/highlight/java.min.js"></script><link type="text/css" rel="stylesheet" href="../../ext/tocbot/tocbot.css" /><script type="text/javascript" src="../../ext/tocbot/tocbot.min.js"></script><link type="text/css" rel="stylesheet" href="../../ext/fontawesome/css/all.min.css" /><link type="text/css" rel="stylesheet" href="../../ext/fontawesome/css/regular.min.css" /><link type="text/css" rel="stylesheet" href="../../ext/fontawesome/css/solid.min.css" /><link type="text/css" rel="stylesheet" href="../../ext/fontawesome/css/all.min.css" /><link type="text/css" rel="stylesheet" href="../../ext/bootstrap/bootstrap.min.css" /><link type="text/css" rel="stylesheet" href="../../ext/bootstrap/enable-bootstrap.css" /><link type="text/css" rel="stylesheet" href="../../ext/bootstrap/doc.min.css" /><link type="text/css" rel="stylesheet" href="../../ext/bootstrap/scrollToTop.css" /><script type="text/javascript" src="../../ext/bootstrap/bootstrap.bundle.min.js"></script><script type="text/javascript" src="../../ext/bootstrap/jquery-3.2.1.slim.min.js"></script><script type="text/javascript" src="../../ext/bootstrap/sidebar.js"></script><script type="text/javascript" src="../../ext/bootstrap/doc.min.js"></script><script type="text/javascript" src="../../ext/bootstrap/scrollToTop.js"></script><script type="text/javascript" src="../../ext/nomnoml/graphre.js"></script><script type="text/javascript" src="../../ext/nomnoml/nomnoml.min.js"></script></head><body><span class="breadcrumbs"><a href="../Specs.html">Exam</a> &gt;</span><div class="container-fluid"><div class="container-xxl my-md-4 bd-layout"><main class="bd-main order-1"><div class="bd-toc mt-4 mb-5 my-md-0 ps-xl-3 mb-lg-5 text-muted"><div class="row my-2 pb-2 border-bottom"><div class="col-9"><strong class="h6">On this page</strong></div><div class="col-2"><i id="example-summary-badge" class="fa fa-list-check text-danger text-danger text-danger text-danger text-danger text-danger text-danger text-danger"></i></div></div><nav id="table-of-contents" class="js-toc toc toc-right" /></div><div class="bd-content ps-lg-4" id="content">
+    
+
+    <h1>Failures</h1>
+
+    <h2>Extra messages<a class="examples" href="#extra-1"></a><a class="examples" href="#extra-2"></a><a class="examples" href="#extra-3"></a></h2>
+
+    <div xmlns:c="http://www.concordion.org/2007/concordion" name="extra-1" status="ExpectedToFail" cmdId="75dfd39f-942f-4f07-8722-5918d92ee65b" c:example="extra-1" c:status="ExpectedToFail" e:example="" class="exam-example mb-3" data-type="example" id="extra-1" data-summary-success="0" data-summary-ignore="0" data-summary-failure="1" data-summary-exception="0" data-summary-status="ExpectedToFail"><div data-bs-toggle="collapse" data-bs-target="#e374acaef-6902-4249-b264-44f837246ad1" aria-expanded="true"><h3 style="visibility: hidden; height:0;" class="test-class"><i class="example-badge fa fa-bug m-1 text-danger"></i>extra-1</h3><i class="far fa-caret-square-down"></i><span> </span><a class="bd-example-title text-muted fw-lighter">extra-1</a></div><div class="bd-example collapse show rounded bg-light bg-gradient" id="e374acaef-6902-4249-b264-44f837246ad1"><div cmdId="b456dc13-f00f-4ff8-a3e2-33a9df61055a" e:before-each="">
+        <div cmdId="726faffc-69ce-4166-932b-9524b3efc631" e:given="" class="given"><p class="lead text-primary">Given</p><hr />Queue is empty:<div name="myQueue" cmdId="351d796e-4971-4d98-a326-6c9b2fc76c7f" e:mq-purge=""><table class="table table-sm caption-top"><caption><i class="far fa-envelope-open me-1"> </i><span>myQueue purged</span></caption></table></div></div>
+    </div>
+        <div cmdId="fdff4ba7-ae79-411c-9fad-656a376ab2fb" e:when="" class="when"><p class="lead text-warning">When</p><hr />
+            Queue has the message:
+            <div class="mq-send">
+    <table class="table table-sm caption-top">
+        <caption><i class="fa fa-envelope me-1"> </i><span>myQueue</span></caption>
+        <tbody> 
+<tr><td class="exp-body"><div class="json">{
+  "message": "1"
+}</div></td></tr> </tbody>
+    </table>
+</div>
+        </div>
+        <div cmdId="e32f10b9-b778-4872-862d-4d5cda781eb7" e:then="" class="then"><p class="lead text-success">Then</p><hr />
+            Verify:
+            <div class="card border-danger alert-warning shadow-lg">
+      
+      <div class="card-body mb-1 mt-1">
+        <div id="error--437671388"> <pre class="doc-code language-json"><code>Size verifying error: expected:&lt;0&gt; but was:&lt;1&gt;</code></pre><div><span>Expected:</span><div class="mq-check">
+    <table class="table table-sm caption-top">
+        <caption><i class="fa fa-envelope-open me-1"> </i><span>myQueue</span></caption>
+        <tbody> <tr><td class="exp-body">EMPTY</td></tr> </tbody>
+    </table>
+</div><span>but was:</span><div class="mq-check">
+        <table class="table table-sm caption-top">
+            <caption><i class="fa fa-envelope-open me-1"> </i><span>myQueue</span></caption>
+            <tbody> 
+<tr><td class="exp-body"><div class="text rest-success">{ "message": "1" }</div></td></tr> </tbody>
+        </table>
+    </div></div></div>
+        
+      </div>
+    </div>
+        </div>
+    </div></div>
+
+    <div xmlns:c="http://www.concordion.org/2007/concordion" name="extra-2" status="ExpectedToFail" cmdId="85873f21-7ad1-401a-80b4-867578785b28" c:example="extra-2" c:status="ExpectedToFail" e:example="" class="exam-example mb-3" data-type="example" id="extra-2" data-summary-success="0" data-summary-ignore="0" data-summary-failure="1" data-summary-exception="0" data-summary-status="ExpectedToFail"><div data-bs-toggle="collapse" data-bs-target="#e9fddf75c-6b49-4f58-9b12-702dba419b3c" aria-expanded="true"><h3 style="visibility: hidden; height:0;" class="test-class"><i class="example-badge fa fa-bug m-1 text-danger"></i>extra-2</h3><i class="far fa-caret-square-down"></i><span> </span><a class="bd-example-title text-muted fw-lighter">extra-2</a></div><div class="bd-example collapse show rounded bg-light bg-gradient" id="e9fddf75c-6b49-4f58-9b12-702dba419b3c"><div cmdId="b456dc13-f00f-4ff8-a3e2-33a9df61055a" e:before-each="">
+        <div cmdId="726faffc-69ce-4166-932b-9524b3efc631" e:given="" class="given"><p class="lead text-primary">Given</p><hr />Queue is empty:<div name="myQueue" cmdId="351d796e-4971-4d98-a326-6c9b2fc76c7f" e:mq-purge=""><table class="table table-sm caption-top"><caption><i class="far fa-envelope-open me-1"> </i><span>myQueue purged</span></caption></table></div></div>
+    </div>
+        <div cmdId="3b9bb8c7-0f50-4b65-8566-f9af639d9ab7" e:when="" class="when"><p class="lead text-warning">When</p><hr />
+            Queue has the messages:
+            <div class="mq-send">
+    <table class="table table-sm caption-top">
+        <caption><i class="fa fa-envelope me-1"> </i><span>myQueue</span></caption>
+        <tbody> 
+<tr><td class="exp-body"><div class="json">{
+  "message": "1"
+}</div></td></tr> </tbody>
+    </table>
+</div>
+            <div class="mq-send">
+    <table class="table table-sm caption-top">
+        <caption><i class="fa fa-envelope me-1"> </i><span>myQueue</span></caption>
+        <tbody> 
+<tr><td class="exp-body"><div class="json">{
+  "message": "2"
+}</div></td></tr> </tbody>
+    </table>
+</div>
+        </div>
+        <div cmdId="af66fb29-b4cf-4634-a5f4-de100b24ff65" e:then="" class="then"><p class="lead text-success">Then</p><hr />
+            Verify:
+            <div class="card border-danger alert-warning shadow-lg">
+      
+      <div class="card-body mb-1 mt-1">
+        <div id="error--908191877"> <pre class="doc-code language-json"><code>Size verifying error: expected:&lt;1&gt; but was:&lt;2&gt;</code></pre><div><span>Expected:</span><div class="mq-check">
+        <table class="table table-sm caption-top">
+            <caption><i class="fa fa-envelope-open me-1"> </i><span>myQueue</span></caption>
+            <tbody>     
+    <tr><td class="exp-body"><div class="json rest-success">{
+  "message": "1"
+}</div></td></tr> </tbody>
+        </table>
+    </div><span>but was:</span><div class="mq-check">
+        <table class="table table-sm caption-top">
+            <caption><i class="fa fa-envelope-open me-1"> </i><span>myQueue</span></caption>
+            <tbody> 
+<tr><td class="exp-body"><div class="text rest-success">{ "message": "1" }</div></td></tr>
+
+<tr><td class="exp-body"><div class="text rest-success">{ "message": "2" }</div></td></tr> </tbody>
+        </table>
+    </div></div></div>
+        
+      </div>
+    </div>
+        </div>
+    </div></div>
+
+    <div xmlns:c="http://www.concordion.org/2007/concordion" name="extra-3" status="ExpectedToFail" cmdId="fde3ff02-b6dd-4372-a0e6-2a41c3238272" c:example="extra-3" c:status="ExpectedToFail" e:example="" class="exam-example mb-3" data-type="example" id="extra-3" data-summary-success="0" data-summary-ignore="0" data-summary-failure="1" data-summary-exception="0" data-summary-status="ExpectedToFail"><div data-bs-toggle="collapse" data-bs-target="#eeab27c73-d6eb-4800-9185-7315384729cc" aria-expanded="true"><h3 style="visibility: hidden; height:0;" class="test-class"><i class="example-badge fa fa-bug m-1 text-danger"></i>extra-3</h3><i class="far fa-caret-square-down"></i><span> </span><a class="bd-example-title text-muted fw-lighter">extra-3</a></div><div class="bd-example collapse show rounded bg-light bg-gradient" id="eeab27c73-d6eb-4800-9185-7315384729cc"><div cmdId="b456dc13-f00f-4ff8-a3e2-33a9df61055a" e:before-each="">
+        <div cmdId="726faffc-69ce-4166-932b-9524b3efc631" e:given="" class="given"><p class="lead text-primary">Given</p><hr />Queue is empty:<div name="myQueue" cmdId="351d796e-4971-4d98-a326-6c9b2fc76c7f" e:mq-purge=""><table class="table table-sm caption-top"><caption><i class="far fa-envelope-open me-1"> </i><span>myQueue purged</span></caption></table></div></div>
+    </div>
+        <div cmdId="b6c9ca81-31e1-46ca-8052-243d5a0a07a0" e:when="" class="when"><p class="lead text-warning">When</p><hr />
+            Queue has the messages:
+            <div class="mq-send">
+    <table class="table table-sm caption-top">
+        <caption><i class="fa fa-envelope me-1"> </i><span>myQueue</span></caption>
+        <tbody> 
+<tr><td class="exp-body"><div class="json">{
+  "message": "1"
+}</div></td></tr> </tbody>
+    </table>
+</div>
+            <div class="mq-send">
+    <table class="table table-sm caption-top">
+        <caption><i class="fa fa-envelope me-1"> </i><span>myQueue</span></caption>
+        <tbody> 
+<tr><td class="exp-body"><div class="json">{
+  "message": "2"
+}</div></td></tr> </tbody>
+    </table>
+</div>
+            <div class="mq-send">
+    <table class="table table-sm caption-top">
+        <caption><i class="fa fa-envelope me-1"> </i><span>myQueue</span></caption>
+        <tbody> 
+<tr><td class="exp-body"><div class="json">{
+  "message": "3"
+}</div></td></tr> </tbody>
+    </table>
+</div>
+        </div>
+        <div cmdId="00ab6bb4-92be-4f0c-a39c-a0ee99547517" e:then="" class="then"><p class="lead text-success">Then</p><hr />
+            Verify:
+            <div class="card border-danger alert-warning shadow-lg">
+      
+      <div class="card-body mb-1 mt-1">
+        <div id="error-1578100195"> <pre class="doc-code language-json"><code>Size verifying error: expected:&lt;2&gt; but was:&lt;3&gt;</code></pre><div><span>Expected:</span><div class="mq-check">
+        <table class="table table-sm caption-top">
+            <caption><i class="fa fa-envelope-open me-1"> </i><span>myQueue</span></caption>
+            <tbody>     
+    <tr><td class="exp-body"><div class="json rest-success">{
+  "message": "1"
+}</div></td></tr>
+    
+    <tr><td class="exp-body"><div class="json rest-success">{
+  "message": "2"
+}</div></td></tr> </tbody>
+        </table>
+    </div><span>but was:</span><div class="mq-check">
+        <table class="table table-sm caption-top">
+            <caption><i class="fa fa-envelope-open me-1"> </i><span>myQueue</span></caption>
+            <tbody> 
+<tr><td class="exp-body"><div class="text rest-success">{ "message": "1" }</div></td></tr>
+
+<tr><td class="exp-body"><div class="text rest-success">{ "message": "2" }</div></td></tr>
+
+<tr><td class="exp-body"><div class="text rest-success">{ "message": "3" }</div></td></tr> </tbody>
+        </table>
+    </div></div></div>
+        
+      </div>
+    </div>
+        </div>
+    </div></div>
+
+    <h2>Absent messages<a class="examples" href="#absent-1"></a><a class="examples" href="#absent-2"></a></h2>
+
+    <div xmlns:c="http://www.concordion.org/2007/concordion" name="absent-1" status="ExpectedToFail" cmdId="4f141700-3182-412e-9d15-1d0e93ff2f15" c:example="absent-1" c:status="ExpectedToFail" e:example="" class="exam-example mb-3" data-type="example" id="absent-1" data-summary-success="0" data-summary-ignore="0" data-summary-failure="1" data-summary-exception="0" data-summary-status="ExpectedToFail"><div data-bs-toggle="collapse" data-bs-target="#ea7fc9280-45cd-456e-90d0-7999f6489de4" aria-expanded="true"><h3 style="visibility: hidden; height:0;" class="test-class"><i class="example-badge fa fa-bug m-1 text-danger"></i>absent-1</h3><i class="far fa-caret-square-down"></i><span> </span><a class="bd-example-title text-muted fw-lighter">absent-1</a></div><div class="bd-example collapse show rounded bg-light bg-gradient" id="ea7fc9280-45cd-456e-90d0-7999f6489de4"><div cmdId="b456dc13-f00f-4ff8-a3e2-33a9df61055a" e:before-each="">
+        <div cmdId="726faffc-69ce-4166-932b-9524b3efc631" e:given="" class="given"><p class="lead text-primary">Given</p><hr />Queue is empty:<div name="myQueue" cmdId="351d796e-4971-4d98-a326-6c9b2fc76c7f" e:mq-purge=""><table class="table table-sm caption-top"><caption><i class="far fa-envelope-open me-1"> </i><span>myQueue purged</span></caption></table></div></div>
+    </div>
+        <div cmdId="4b9bb6dd-f27e-4370-a979-c43599e0f4a2" e:then="" class="then"><p class="lead text-success">Then</p><hr />
+            Verify:
+            <div class="card border-danger alert-warning shadow-lg">
+      
+      <div class="card-body mb-1 mt-1">
+        <div id="error-963956598"> <pre class="doc-code language-json"><code>Size verifying error: expected:&lt;1&gt; but was:&lt;0&gt;</code></pre><div><span>Expected:</span><div class="mq-check">
+        <table class="table table-sm caption-top">
+            <caption><i class="fa fa-envelope-open me-1"> </i><span>myQueue</span></caption>
+            <tbody>     
+    <tr><td class="exp-body"><div class="json rest-success">{
+  "message": "1"
+}</div></td></tr> </tbody>
+        </table>
+    </div><span>but was:</span><div class="mq-check">
+    <table class="table table-sm caption-top">
+        <caption><i class="fa fa-envelope-open me-1"> </i><span>myQueue</span></caption>
+        <tbody> <tr><td class="exp-body">EMPTY</td></tr> </tbody>
+    </table>
+</div></div></div>
+        
+      </div>
+    </div>
+        </div>
+    </div></div>
+
+    <div xmlns:c="http://www.concordion.org/2007/concordion" name="absent-2" status="ExpectedToFail" cmdId="306ac09a-ae34-4451-8a84-060f8a1f68a8" c:example="absent-2" c:status="ExpectedToFail" e:example="" class="exam-example mb-3" data-type="example" id="absent-2" data-summary-success="0" data-summary-ignore="0" data-summary-failure="1" data-summary-exception="0" data-summary-status="ExpectedToFail"><div data-bs-toggle="collapse" data-bs-target="#e1c1c3c72-9125-4dd2-b0e8-603feff56746" aria-expanded="true"><h3 style="visibility: hidden; height:0;" class="test-class"><i class="example-badge fa fa-bug m-1 text-danger"></i>absent-2</h3><i class="far fa-caret-square-down"></i><span> </span><a class="bd-example-title text-muted fw-lighter">absent-2</a></div><div class="bd-example collapse show rounded bg-light bg-gradient" id="e1c1c3c72-9125-4dd2-b0e8-603feff56746"><div cmdId="b456dc13-f00f-4ff8-a3e2-33a9df61055a" e:before-each="">
+        <div cmdId="726faffc-69ce-4166-932b-9524b3efc631" e:given="" class="given"><p class="lead text-primary">Given</p><hr />Queue is empty:<div name="myQueue" cmdId="351d796e-4971-4d98-a326-6c9b2fc76c7f" e:mq-purge=""><table class="table table-sm caption-top"><caption><i class="far fa-envelope-open me-1"> </i><span>myQueue purged</span></caption></table></div></div>
+    </div>
+        <div cmdId="5732777c-f37e-4b7b-98a7-c3e6098adc94" e:when="" class="when"><p class="lead text-warning">When</p><hr />
+            Queue has the messages:
+            <div class="mq-send">
+    <table class="table table-sm caption-top">
+        <caption><i class="fa fa-envelope me-1"> </i><span>myQueue</span></caption>
+        <tbody> 
+<tr><td class="exp-body"><div class="json">{
+  "message": "1"
+}</div></td></tr> </tbody>
+    </table>
+</div>
+        </div>
+        <div cmdId="1e80464e-a259-42cc-bfb4-1f319ea88994" e:then="" class="then"><p class="lead text-success">Then</p><hr />
+            Verify:
+            <div class="card border-danger alert-warning shadow-lg">
+      
+      <div class="card-body mb-1 mt-1">
+        <div id="error-1048783682"> <pre class="doc-code language-json"><code>Size verifying error: expected:&lt;2&gt; but was:&lt;1&gt;</code></pre><div><span>Expected:</span><div class="mq-check">
+        <table class="table table-sm caption-top">
+            <caption><i class="fa fa-envelope-open me-1"> </i><span>myQueue</span></caption>
+            <tbody>     
+    <tr><td class="exp-body"><div class="json rest-success">{
+  "message": "1"
+}</div></td></tr>
+    
+    <tr><td class="exp-body"><div class="json rest-success">{
+  "message": "2"
+}</div></td></tr> </tbody>
+        </table>
+    </div><span>but was:</span><div class="mq-check">
+        <table class="table table-sm caption-top">
+            <caption><i class="fa fa-envelope-open me-1"> </i><span>myQueue</span></caption>
+            <tbody> 
+<tr><td class="exp-body"><div class="text rest-success">{ "message": "1" }</div></td></tr> </tbody>
+        </table>
+    </div></div></div>
+        
+      </div>
+    </div>
+        </div>
+    </div></div>
+
+    <h2>Wrong messages<a class="examples" href="#wrong"></a><a class="examples" href="#wrong-big"></a></h2>
+
+    <div xmlns:c="http://www.concordion.org/2007/concordion" name="wrong" status="ExpectedToFail" cmdId="2a55d31d-e727-4c47-91c3-a449a21e29de" c:example="wrong" c:status="ExpectedToFail" e:example="" class="exam-example mb-3" data-type="example" id="wrong" data-summary-success="0" data-summary-ignore="0" data-summary-failure="3" data-summary-exception="0" data-summary-status="ExpectedToFail"><a style="font-size: 9pt; font-weight: bold; float: right; display: inline-block; margin-top: 20px; text-decoration: none; color: #89C;" href="MqFailures[wrong]LogViewer.html">Log File</a><div data-bs-toggle="collapse" data-bs-target="#e14e02b3f-8b9f-4203-8300-0ed539061963" aria-expanded="true"><h3 style="visibility: hidden; height:0;" class="test-class"><i class="example-badge fa fa-bug m-1 text-danger"></i>wrong</h3><i class="far fa-caret-square-down"></i><span> </span><a class="bd-example-title text-muted fw-lighter">wrong</a></div><div class="bd-example collapse show rounded bg-light bg-gradient" id="e14e02b3f-8b9f-4203-8300-0ed539061963"><div cmdId="b456dc13-f00f-4ff8-a3e2-33a9df61055a" e:before-each="">
+        <div cmdId="726faffc-69ce-4166-932b-9524b3efc631" e:given="" class="given"><p class="lead text-primary">Given</p><hr />Queue is empty:<div name="myQueue" cmdId="351d796e-4971-4d98-a326-6c9b2fc76c7f" e:mq-purge=""><table class="table table-sm caption-top"><caption><i class="far fa-envelope-open me-1"> </i><span>myQueue purged</span></caption></table></div></div>
+    </div>
+        <div cmdId="85ff4008-958d-41ce-8653-f07450922fa8" e:when="" class="when"><p class="lead text-warning">When</p><hr />
+            Queue has the messages:
+            <div class="mq-send">
+    <table class="table table-sm caption-top">
+        <caption><i class="fa fa-envelope me-1"> </i><span>myQueue</span></caption>
+        <tbody> 
+<tr><td class="exp-body"><div class="json">{
+  "message": "wrong"
+}</div></td></tr> </tbody>
+    </table>
+</div>
+        </div>
+        <div cmdId="7914d388-c827-40e2-9826-7a86799c90fc" e:then="" class="then"><p class="lead text-success">Then</p><hr />
+            Verify queue with wrong message:
+            <div class="mq-check">
+        <table class="table table-sm caption-top">
+            <caption><i class="fa fa-envelope-open me-1"> </i><span>myQueue</span></caption>
+            <tbody>     
+    <tr><td class="exp-body"><div class="card border-danger alert-warning shadow-lg">
+      
+      <div class="card-body mb-1 mt-1">
+        <div id="error--2014260526"> <pre class="doc-code language-json"><code>JSON documents are different:
+Different value found in node "message", expected: &lt;"right"&gt; but was: &lt;"wrong"&gt;.
+</code></pre><div class="text rest-failure"><del class="expected">{ "message": "right" }</del><ins class="actual">{ "message": "wrong" }</ins></div></div>
+        
+      </div>
+    </div></td></tr> </tbody>
+        </table>
+    </div>
+        </div>
+        <div cmdId="00409720-5f79-4e87-ab1f-9ef4d60ca2d3" e:when="" class="when"><p class="lead text-warning">When</p><hr />
+            Queue has the messages:
+            <div class="mq-send">
+    <table class="table table-sm caption-top">
+        <caption><i class="fa fa-envelope me-1"> </i><span>myQueue</span></caption>
+        <tbody> 
+<tr><td class="exp-body"><div class="xml">&lt;message&gt;wrong&lt;/message&gt;</div></td></tr> </tbody>
+    </table>
+</div>
+        </div>
+        <div cmdId="eefdd57e-4e5d-4722-b8d4-48e74ea9cb66" e:then="" class="then"><p class="lead text-success">Then</p><hr />
+            Verify queue with wrong message:
+            <div class="mq-check">
+        <table class="table table-sm caption-top">
+            <caption><i class="fa fa-envelope-open me-1"> </i><span>myQueue</span></caption>
+            <tbody> 
+<tr><td class="exp-body"><div class="card border-danger alert-warning shadow-lg">
+  
+  <div class="card-body mb-1 mt-1">
+    <div id="error-1320783023"> <pre class="doc-code language-json"><code>Expected text value 'right' but was 'wrong' - comparing &lt;message ...&gt;right&lt;/message&gt; at /message[1]/text()[1] to &lt;message ...&gt;wrong&lt;/message&gt; at /message[1]/text()[1]</code></pre><div class="text rest-failure"><del class="expected">&lt;message&gt;right&lt;/message&gt;</del><ins class="actual">&lt;message&gt;wrong&lt;/message&gt;</ins></div></div>
+    
+  </div>
+</div></td></tr> </tbody>
+        </table>
+    </div>
+        </div>
+        <div cmdId="0c890c61-d0f1-4427-90c8-57d2dae0ecf4" e:when="" class="when"><p class="lead text-warning">When</p><hr />
+            Queue has the messages:
+            <div class="mq-send">
+    <table class="table table-sm caption-top">
+        <caption><i class="fa fa-envelope me-1"> </i><span>myQueue</span></caption>
+        <tbody> 
+<tr><td class="exp-body"><div class="json">{
+  "message": "wrong"
+}</div></td></tr> </tbody>
+    </table>
+</div>
+            <div class="mq-send">
+    <table class="table table-sm caption-top">
+        <caption><i class="fa fa-envelope me-1"> </i><span>myQueue</span></caption>
+        <tbody> 
+<tr><td class="exp-body"><div class="xml">&lt;message&gt;wrong&lt;/message&gt;</div></td></tr> </tbody>
+    </table>
+</div>
+        </div>
+        <div cmdId="6aaef117-dc2a-4dc5-86ee-db19fbfbac3e" e:then="" class="then"><p class="lead text-success">Then</p><hr />
+            Verify queue with wrong messages:
+            <div class="mq-check">
+        <table class="table table-sm caption-top">
+            <caption><i class="fa fa-envelope-open me-1"> </i><span>myQueue</span></caption>
+            <tbody>     
+    <tr><td class="exp-body"><div class="card border-danger alert-warning shadow-lg">
+      
+      <div class="card-body mb-1 mt-1">
+        <div id="error--379193166"> <pre class="doc-code language-json"><code>JSON documents are different:
+Different value found in node "message", expected: &lt;"right"&gt; but was: &lt;"wrong"&gt;.
+</code></pre><div class="text rest-failure"><del class="expected">{ "message": "right" }</del><ins class="actual">{ "message": "wrong" }</ins></div></div>
+        
+      </div>
+    </div></td></tr>
+
+<tr><td class="exp-body"><div class="card border-danger alert-warning shadow-lg">
+  
+  <div class="card-body mb-1 mt-1">
+    <div id="error-642419080"> <pre class="doc-code language-json"><code>Expected text value 'right' but was 'wrong' - comparing &lt;message ...&gt;right&lt;/message&gt; at /message[1]/text()[1] to &lt;message ...&gt;wrong&lt;/message&gt; at /message[1]/text()[1]</code></pre><div class="text rest-failure"><del class="expected">&lt;message&gt;right&lt;/message&gt;</del><ins class="actual">&lt;message&gt;wrong&lt;/message&gt;</ins></div></div>
+    
+  </div>
+</div></td></tr> </tbody>
+        </table>
+    </div>
+        </div>
+    </div></div>
+
+    <div xmlns:c="http://www.concordion.org/2007/concordion" name="wrong-big" status="ExpectedToFail" cmdId="d876e2c3-b022-4efe-96fb-1a6aefdeb99c" c:example="wrong-big" c:status="ExpectedToFail" e:example="" class="exam-example mb-3" data-type="example" id="wrong-big" data-summary-success="0" data-summary-ignore="0" data-summary-failure="5" data-summary-exception="0" data-summary-status="ExpectedToFail"><a style="font-size: 9pt; font-weight: bold; float: right; display: inline-block; margin-top: 20px; text-decoration: none; color: #89C;" href="MqFailures[wrong-big]LogViewer.html">Log File</a><div data-bs-toggle="collapse" data-bs-target="#ea1a5c0f9-d211-4ebd-a57e-19755a727c0f" aria-expanded="true"><h3 style="visibility: hidden; height:0;" class="test-class"><i class="example-badge fa fa-bug m-1 text-danger"></i>wrong-big</h3><i class="far fa-caret-square-down"></i><span> </span><a class="bd-example-title text-muted fw-lighter">wrong-big</a></div><div class="bd-example collapse show rounded bg-light bg-gradient" id="ea1a5c0f9-d211-4ebd-a57e-19755a727c0f"><div cmdId="b456dc13-f00f-4ff8-a3e2-33a9df61055a" e:before-each="">
+        <div cmdId="726faffc-69ce-4166-932b-9524b3efc631" e:given="" class="given"><p class="lead text-primary">Given</p><hr />Queue is empty:<div name="myQueue" cmdId="351d796e-4971-4d98-a326-6c9b2fc76c7f" e:mq-purge=""><table class="table table-sm caption-top"><caption><i class="far fa-envelope-open me-1"> </i><span>myQueue purged</span></caption></table></div></div>
+    </div>
+        <div cmdId="90af0692-8274-4653-ada6-549231861bcb" e:when="" class="when"><p class="lead text-warning">When</p><hr />
+            Queue has the message:
+            <div class="mq-send">
+    <table class="table table-sm caption-top">
+        <caption><i class="fa fa-envelope me-1"> </i><span>myQueue</span></caption>
+        <tbody> 
+<tr><td class="exp-body"><div class="json">[{
+  "index": 0,
+  "isActive": false,
+  "age": 28,
+  "name": "LongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLong"
+}, {
+  "index": 1,
+  "isActive": true,
+  "age": 29,
+  "name": "Kasey Burris"
+}, {
+  "index": 2,
+  "isActive": false,
+  "age": 40,
+  "name": "Antoinette Morse"
+}, {
+  "index": 3,
+  "isActive": true,
+  "age": 32,
+  "name": "Lilia Ramirez"
+}, {
+  "index": 4,
+  "isActive": true,
+  "age": 35,
+  "name": "Lily Joyner"
+}, {
+  "index": 5,
+  "isActive": false,
+  "age": 22,
+  "name": "Ronda Norton"
+}, {
+  "index": 6,
+  "isActive": false,
+  "age": 31,
+  "name": "Tiffany Davidson"
+}, {
+  "index": 7,
+  "isActive": false,
+  "age": 40,
+  "name": "Allie Wise"
+}, {
+  "index": 8,
+  "isActive": true,
+  "age": 40,
+  "name": "Giles Lopez"
+}, {
+  "index": 9,
+  "isActive": false,
+  "age": 25,
+  "name": "Ramsey Cain"
+}]</div></td></tr> </tbody>
+    </table>
+</div>
+        </div>
+        <div cmdId="84639a68-07de-4d9b-a5a7-6eafc12b7ce6" e:then="" class="then"><p class="lead text-success">Then</p><hr />
+            Verify queue with wrong message:
+            <div class="mq-check">
+        <table class="table table-sm caption-top">
+            <caption><i class="fa fa-envelope-open me-1"> </i><span>myQueue</span></caption>
+            <tbody>     
+    <tr><td class="exp-body"><div class="card border-danger alert-warning shadow-lg">
+      
+      <div class="card-body mb-1 mt-1">
+        <div id="error--1024825406"> <pre class="doc-code language-json"><code>JSON documents are different:
+Different value found in node "", expected: &lt;{"wrong":"message"}&gt; but was: &lt;[{"index":0,"isActive":false,"age":28,"name":"LongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLong"},{"index":1,"isActive":true,"age":29,"name":"Kasey Burris"},{"index":2,"isActive":false,"age":40,"name":"Antoinette Morse"},{"index":3,"isActive":true,"age":32,"name":"Lilia Ramirez"},{"index":4,"isActive":true,"age":35,"name":"Lily Joyner"},{"index":5,"isActive":false,"age":22,"name":"Ronda Norton"},{"index":6,"isActive":false,"age":31,"name":"Tiffany Davidson"},{"index":7,"isActive":false,"age":40,"name":"Allie Wise"},{"index":8,"isActive":true,"age":40,"name":"Giles Lopez"},{"index":9,"isActive":false,"age":25,"name":"Ramsey Cain"}]&gt;.
+</code></pre><div class="text rest-failure"><del class="expected">{"wrong": "message"}</del><ins class="actual">[{
+  "index": 0,
+  "isActive": false,
+  "age": 28,
+  "name": "LongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLong"
+}, {
+  "index": 1,
+  "isActive": true,
+  "age": 29,
+  "name": "Kasey Burris"
+}, {
+  "index": 2,
+  "isActive": false,
+  "age": 40,
+  "name": "Antoinette Morse"
+}, {
+  "index": 3,
+  "isActive": true,
+  "age": 32,
+  "name": "Lilia Ramirez"
+}, {
+  "index": 4,
+  "isActive": true,
+  "age": 35,
+  "name": "Lily Joyner"
+}, {
+  "index": 5,
+  "isActive": false,
+  "age": 22,
+  "name": "Ronda Norton"
+}, {
+  "index": 6,
+  "isActive": false,
+  "age": 31,
+  "name": "Tiffany Davidson"
+}, {
+  "index": 7,
+  "isActive": false,
+  "age": 40,
+  "name": "Allie Wise"
+}, {
+  "index": 8,
+  "isActive": true,
+  "age": 40,
+  "name": "Giles Lopez"
+}, {
+  "index": 9,
+  "isActive": false,
+  "age": 25,
+  "name": "Ramsey Cain"
+}]</ins></div></div>
+        
+      </div>
+    </div></td></tr> </tbody>
+        </table>
+    </div>
+        </div>
+        <div cmdId="307b65f3-1958-4109-aa11-90a15cfba84c" e:when="" class="when"><p class="lead text-warning">When</p><hr />
+            Queue has the message:
+            <div class="mq-send">
+    <table class="table table-sm caption-top">
+        <caption><i class="fa fa-envelope me-1"> </i><span>myQueue</span></caption>
+        <tbody> 
+<tr><td class="exp-body"><div class="json">[{
+  "index": 0,
+  "isActive": false,
+  "age": 28,
+  "name": "LongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLong"
+}, {
+  "index": 1,
+  "isActive": true,
+  "age": 29,
+  "name": "Kasey Burris"
+}, {
+  "index": 2,
+  "isActive": false,
+  "age": 40,
+  "name": "Antoinette Morse"
+}, {
+  "index": 3,
+  "isActive": true,
+  "age": 32,
+  "name": "Lilia Ramirez"
+}, {
+  "index": 4,
+  "isActive": true,
+  "age": 35,
+  "name": "Lily Joyner"
+}, {
+  "index": 5,
+  "isActive": false,
+  "age": 22,
+  "name": "Ronda Norton"
+}, {
+  "index": 6,
+  "isActive": false,
+  "age": 31,
+  "name": "Tiffany Davidson"
+}, {
+  "index": 7,
+  "isActive": false,
+  "age": 40,
+  "name": "Allie Wise"
+}, {
+  "index": 8,
+  "isActive": true,
+  "age": 40,
+  "name": "Giles Lopez"
+}, {
+  "index": 9,
+  "isActive": false,
+  "age": 25,
+  "name": "Ramsey Cain"
+}]</div></td></tr> </tbody>
+    </table>
+</div>
+            <div class="mq-send">
+    <table class="table table-sm caption-top">
+        <caption><i class="fa fa-envelope me-1"> </i><span>myQueue</span></caption>
+        <tbody> 
+<tr><td class="exp-body"><div class="json">[{
+  "index": 0,
+  "isActive": false,
+  "age": 28,
+  "name": "LongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLong"
+}, {
+  "index": 1,
+  "isActive": true,
+  "age": 29,
+  "name": "Kasey Burris"
+}, {
+  "index": 2,
+  "isActive": false,
+  "age": 40,
+  "name": "Antoinette Morse"
+}, {
+  "index": 3,
+  "isActive": true,
+  "age": 32,
+  "name": "Lilia Ramirez"
+}, {
+  "index": 4,
+  "isActive": true,
+  "age": 35,
+  "name": "Lily Joyner"
+}, {
+  "index": 5,
+  "isActive": false,
+  "age": 22,
+  "name": "Ronda Norton"
+}, {
+  "index": 6,
+  "isActive": false,
+  "age": 31,
+  "name": "Tiffany Davidson"
+}, {
+  "index": 7,
+  "isActive": false,
+  "age": 40,
+  "name": "Allie Wise"
+}, {
+  "index": 8,
+  "isActive": true,
+  "age": 40,
+  "name": "Giles Lopez"
+}, {
+  "index": 9,
+  "isActive": false,
+  "age": 25,
+  "name": "Ramsey Cain"
+}]</div></td></tr> </tbody>
+    </table>
+</div>
+            <div class="mq-send">
+    <table class="table table-sm caption-top">
+        <caption><i class="fa fa-envelope me-1"> </i><span>myQueue</span></caption>
+        <tbody> 
+<tr><td class="exp-body"><div class="json">[{
+  "index": 0,
+  "isActive": false,
+  "age": 28,
+  "name": "LongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLong"
+}, {
+  "index": 1,
+  "isActive": true,
+  "age": 29,
+  "name": "Kasey Burris"
+}, {
+  "index": 2,
+  "isActive": false,
+  "age": 40,
+  "name": "Antoinette Morse"
+}, {
+  "index": 3,
+  "isActive": true,
+  "age": 32,
+  "name": "Lilia Ramirez"
+}, {
+  "index": 4,
+  "isActive": true,
+  "age": 35,
+  "name": "Lily Joyner"
+}, {
+  "index": 5,
+  "isActive": false,
+  "age": 22,
+  "name": "Ronda Norton"
+}, {
+  "index": 6,
+  "isActive": false,
+  "age": 31,
+  "name": "Tiffany Davidson"
+}, {
+  "index": 7,
+  "isActive": false,
+  "age": 40,
+  "name": "Allie Wise"
+}, {
+  "index": 8,
+  "isActive": true,
+  "age": 40,
+  "name": "Giles Lopez"
+}, {
+  "index": 9,
+  "isActive": false,
+  "age": 25,
+  "name": "Ramsey Cain"
+}]</div></td></tr> </tbody>
+    </table>
+</div>
+        </div>
+        <div cmdId="7d82c2da-7c23-44e6-8aa8-dc795e795154" e:then="" class="then"><p class="lead text-success">Then</p><hr />
+            Verify queue with vertical layout:
+            <div class="mq-check">
+        <table class="table table-sm caption-top">
+            <caption><i class="fa fa-envelope-open me-1"> </i><span>myQueue</span></caption>
+            <tbody>     
+    <tr><td class="exp-body"><div class="card border-danger alert-warning shadow-lg">
+      
+      <div class="card-body mb-1 mt-1">
+        <div id="error--1899177243"> <pre class="doc-code language-json"><code>JSON documents are different:
+Different value found in node "", expected: &lt;{"wrong":"1"}&gt; but was: &lt;[{"index":0,"isActive":false,"age":28,"name":"LongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLong"},{"index":1,"isActive":true,"age":29,"name":"Kasey Burris"},{"index":2,"isActive":false,"age":40,"name":"Antoinette Morse"},{"index":3,"isActive":true,"age":32,"name":"Lilia Ramirez"},{"index":4,"isActive":true,"age":35,"name":"Lily Joyner"},{"index":5,"isActive":false,"age":22,"name":"Ronda Norton"},{"index":6,"isActive":false,"age":31,"name":"Tiffany Davidson"},{"index":7,"isActive":false,"age":40,"name":"Allie Wise"},{"index":8,"isActive":true,"age":40,"name":"Giles Lopez"},{"index":9,"isActive":false,"age":25,"name":"Ramsey Cain"}]&gt;.
+</code></pre><div class="text rest-failure"><del class="expected">{"wrong": "1"}</del><ins class="actual">[{
+  "index": 0,
+  "isActive": false,
+  "age": 28,
+  "name": "LongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLong"
+}, {
+  "index": 1,
+  "isActive": true,
+  "age": 29,
+  "name": "Kasey Burris"
+}, {
+  "index": 2,
+  "isActive": false,
+  "age": 40,
+  "name": "Antoinette Morse"
+}, {
+  "index": 3,
+  "isActive": true,
+  "age": 32,
+  "name": "Lilia Ramirez"
+}, {
+  "index": 4,
+  "isActive": true,
+  "age": 35,
+  "name": "Lily Joyner"
+}, {
+  "index": 5,
+  "isActive": false,
+  "age": 22,
+  "name": "Ronda Norton"
+}, {
+  "index": 6,
+  "isActive": false,
+  "age": 31,
+  "name": "Tiffany Davidson"
+}, {
+  "index": 7,
+  "isActive": false,
+  "age": 40,
+  "name": "Allie Wise"
+}, {
+  "index": 8,
+  "isActive": true,
+  "age": 40,
+  "name": "Giles Lopez"
+}, {
+  "index": 9,
+  "isActive": false,
+  "age": 25,
+  "name": "Ramsey Cain"
+}]</ins></div></div>
+        
+      </div>
+    </div></td></tr>
+    
+    <tr><td class="exp-body"><div class="json rest-success">[{
+  "index": 0,
+  "isActive": false,
+  "age": 28,
+  "name": "LongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLong"
+}, {
+  "index": 1,
+  "isActive": true,
+  "age": 29,
+  "name": "Kasey Burris"
+}, {
+  "index": 2,
+  "isActive": false,
+  "age": 40,
+  "name": "Antoinette Morse"
+}, {
+  "index": 3,
+  "isActive": true,
+  "age": 32,
+  "name": "Lilia Ramirez"
+}, {
+  "index": 4,
+  "isActive": true,
+  "age": 35,
+  "name": "Lily Joyner"
+}, {
+  "index": 5,
+  "isActive": false,
+  "age": 22,
+  "name": "Ronda Norton"
+}, {
+  "index": 6,
+  "isActive": false,
+  "age": 31,
+  "name": "Tiffany Davidson"
+}, {
+  "index": 7,
+  "isActive": false,
+  "age": 40,
+  "name": "Allie Wise"
+}, {
+  "index": 8,
+  "isActive": true,
+  "age": 40,
+  "name": "Giles Lopez"
+}, {
+  "index": 9,
+  "isActive": false,
+  "age": 25,
+  "name": "Ramsey Cain"
+}]</div></td></tr>
+    
+    <tr><td class="exp-body"><div class="card border-danger alert-warning shadow-lg">
+      
+      <div class="card-body mb-1 mt-1">
+        <div id="error--1276134256"> <pre class="doc-code language-json"><code>JSON documents are different:
+Different value found in node "", expected: &lt;{"wrong":"2"}&gt; but was: &lt;[{"index":0,"isActive":false,"age":28,"name":"LongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLong"},{"index":1,"isActive":true,"age":29,"name":"Kasey Burris"},{"index":2,"isActive":false,"age":40,"name":"Antoinette Morse"},{"index":3,"isActive":true,"age":32,"name":"Lilia Ramirez"},{"index":4,"isActive":true,"age":35,"name":"Lily Joyner"},{"index":5,"isActive":false,"age":22,"name":"Ronda Norton"},{"index":6,"isActive":false,"age":31,"name":"Tiffany Davidson"},{"index":7,"isActive":false,"age":40,"name":"Allie Wise"},{"index":8,"isActive":true,"age":40,"name":"Giles Lopez"},{"index":9,"isActive":false,"age":25,"name":"Ramsey Cain"}]&gt;.
+</code></pre><div class="text rest-failure"><del class="expected">{"wrong": "2"}</del><ins class="actual">[{
+  "index": 0,
+  "isActive": false,
+  "age": 28,
+  "name": "LongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLong"
+}, {
+  "index": 1,
+  "isActive": true,
+  "age": 29,
+  "name": "Kasey Burris"
+}, {
+  "index": 2,
+  "isActive": false,
+  "age": 40,
+  "name": "Antoinette Morse"
+}, {
+  "index": 3,
+  "isActive": true,
+  "age": 32,
+  "name": "Lilia Ramirez"
+}, {
+  "index": 4,
+  "isActive": true,
+  "age": 35,
+  "name": "Lily Joyner"
+}, {
+  "index": 5,
+  "isActive": false,
+  "age": 22,
+  "name": "Ronda Norton"
+}, {
+  "index": 6,
+  "isActive": false,
+  "age": 31,
+  "name": "Tiffany Davidson"
+}, {
+  "index": 7,
+  "isActive": false,
+  "age": 40,
+  "name": "Allie Wise"
+}, {
+  "index": 8,
+  "isActive": true,
+  "age": 40,
+  "name": "Giles Lopez"
+}, {
+  "index": 9,
+  "isActive": false,
+  "age": 25,
+  "name": "Ramsey Cain"
+}]</ins></div></div>
+        
+      </div>
+    </div></td></tr> </tbody>
+        </table>
+    </div>
+        </div>
+        <div cmdId="8378f5dc-048f-4833-ab22-fa8168350966" e:when="" class="when"><p class="lead text-warning">When</p><hr />
+            Queue has the message:
+            <div class="mq-send">
+    <table class="table table-sm caption-top">
+        <caption><i class="fa fa-envelope me-1"> </i><span>myQueue</span></caption>
+        <tbody> 
+<tr><td class="exp-body"><div class="json">[{
+  "index": 0,
+  "isActive": false,
+  "age": 28,
+  "name": "LongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLong"
+}, {
+  "index": 1,
+  "isActive": true,
+  "age": 29,
+  "name": "Kasey Burris"
+}, {
+  "index": 2,
+  "isActive": false,
+  "age": 40,
+  "name": "Antoinette Morse"
+}, {
+  "index": 3,
+  "isActive": true,
+  "age": 32,
+  "name": "Lilia Ramirez"
+}, {
+  "index": 4,
+  "isActive": true,
+  "age": 35,
+  "name": "Lily Joyner"
+}, {
+  "index": 5,
+  "isActive": false,
+  "age": 22,
+  "name": "Ronda Norton"
+}, {
+  "index": 6,
+  "isActive": false,
+  "age": 31,
+  "name": "Tiffany Davidson"
+}, {
+  "index": 7,
+  "isActive": false,
+  "age": 40,
+  "name": "Allie Wise"
+}, {
+  "index": 8,
+  "isActive": true,
+  "age": 40,
+  "name": "Giles Lopez"
+}, {
+  "index": 9,
+  "isActive": false,
+  "age": 25,
+  "name": "Ramsey Cain"
+}]</div></td></tr> </tbody>
+    </table>
+</div>
+            <div class="mq-send">
+    <table class="table table-sm caption-top">
+        <caption><i class="fa fa-envelope me-1"> </i><span>myQueue</span></caption>
+        <tbody> 
+<tr><td class="exp-body"><div class="json">[{
+  "index": 0,
+  "isActive": false,
+  "age": 28,
+  "name": "LongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLong"
+}, {
+  "index": 1,
+  "isActive": true,
+  "age": 29,
+  "name": "Kasey Burris"
+}, {
+  "index": 2,
+  "isActive": false,
+  "age": 40,
+  "name": "Antoinette Morse"
+}, {
+  "index": 3,
+  "isActive": true,
+  "age": 32,
+  "name": "Lilia Ramirez"
+}, {
+  "index": 4,
+  "isActive": true,
+  "age": 35,
+  "name": "Lily Joyner"
+}, {
+  "index": 5,
+  "isActive": false,
+  "age": 22,
+  "name": "Ronda Norton"
+}, {
+  "index": 6,
+  "isActive": false,
+  "age": 31,
+  "name": "Tiffany Davidson"
+}, {
+  "index": 7,
+  "isActive": false,
+  "age": 40,
+  "name": "Allie Wise"
+}, {
+  "index": 8,
+  "isActive": true,
+  "age": 40,
+  "name": "Giles Lopez"
+}, {
+  "index": 9,
+  "isActive": false,
+  "age": 25,
+  "name": "Ramsey Cain"
+}]</div></td></tr> </tbody>
+    </table>
+</div>
+            <div class="mq-send">
+    <table class="table table-sm caption-top">
+        <caption><i class="fa fa-envelope me-1"> </i><span>myQueue</span></caption>
+        <tbody> 
+<tr><td class="exp-body"><div class="json">[{
+  "index": 0,
+  "isActive": false,
+  "age": 28,
+  "name": "LongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLong"
+}, {
+  "index": 1,
+  "isActive": true,
+  "age": 29,
+  "name": "Kasey Burris"
+}, {
+  "index": 2,
+  "isActive": false,
+  "age": 40,
+  "name": "Antoinette Morse"
+}, {
+  "index": 3,
+  "isActive": true,
+  "age": 32,
+  "name": "Lilia Ramirez"
+}, {
+  "index": 4,
+  "isActive": true,
+  "age": 35,
+  "name": "Lily Joyner"
+}, {
+  "index": 5,
+  "isActive": false,
+  "age": 22,
+  "name": "Ronda Norton"
+}, {
+  "index": 6,
+  "isActive": false,
+  "age": 31,
+  "name": "Tiffany Davidson"
+}, {
+  "index": 7,
+  "isActive": false,
+  "age": 40,
+  "name": "Allie Wise"
+}, {
+  "index": 8,
+  "isActive": true,
+  "age": 40,
+  "name": "Giles Lopez"
+}, {
+  "index": 9,
+  "isActive": false,
+  "age": 25,
+  "name": "Ramsey Cain"
+}]</div></td></tr> </tbody>
+    </table>
+</div>
+        </div>
+        <div cmdId="e0437c8a-ff8f-464f-bcf9-adf2a6c5c275" e:then="" class="then"><p class="lead text-success">Then</p><hr />
+            Verify queue with collapsed vertical layout:
+            <div class="mq-check">
+        <table class="table table-sm caption-top">
+            <caption><i class="fa fa-envelope-open me-1"> </i><span>myQueue</span></caption>
+            <tbody>     
+    <tr><td class="exp-body"><div class="card border-danger alert-warning shadow-lg">
+      
+      <div class="card-body mb-1 mt-1">
+        <div id="error-347225626"> <pre class="doc-code language-json"><code>JSON documents are different:
+Different value found in node "", expected: &lt;{"wrong":"1"}&gt; but was: &lt;[{"index":0,"isActive":false,"age":28,"name":"LongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLong"},{"index":1,"isActive":true,"age":29,"name":"Kasey Burris"},{"index":2,"isActive":false,"age":40,"name":"Antoinette Morse"},{"index":3,"isActive":true,"age":32,"name":"Lilia Ramirez"},{"index":4,"isActive":true,"age":35,"name":"Lily Joyner"},{"index":5,"isActive":false,"age":22,"name":"Ronda Norton"},{"index":6,"isActive":false,"age":31,"name":"Tiffany Davidson"},{"index":7,"isActive":false,"age":40,"name":"Allie Wise"},{"index":8,"isActive":true,"age":40,"name":"Giles Lopez"},{"index":9,"isActive":false,"age":25,"name":"Ramsey Cain"}]&gt;.
+</code></pre><div class="text rest-failure"><del class="expected">{"wrong": "1"}</del><ins class="actual">[{
+  "index": 0,
+  "isActive": false,
+  "age": 28,
+  "name": "LongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLong"
+}, {
+  "index": 1,
+  "isActive": true,
+  "age": 29,
+  "name": "Kasey Burris"
+}, {
+  "index": 2,
+  "isActive": false,
+  "age": 40,
+  "name": "Antoinette Morse"
+}, {
+  "index": 3,
+  "isActive": true,
+  "age": 32,
+  "name": "Lilia Ramirez"
+}, {
+  "index": 4,
+  "isActive": true,
+  "age": 35,
+  "name": "Lily Joyner"
+}, {
+  "index": 5,
+  "isActive": false,
+  "age": 22,
+  "name": "Ronda Norton"
+}, {
+  "index": 6,
+  "isActive": false,
+  "age": 31,
+  "name": "Tiffany Davidson"
+}, {
+  "index": 7,
+  "isActive": false,
+  "age": 40,
+  "name": "Allie Wise"
+}, {
+  "index": 8,
+  "isActive": true,
+  "age": 40,
+  "name": "Giles Lopez"
+}, {
+  "index": 9,
+  "isActive": false,
+  "age": 25,
+  "name": "Ramsey Cain"
+}]</ins></div></div>
+        
+      </div>
+    </div></td></tr>
+    
+    <tr><td class="exp-body"><div class="json rest-success">[{
+  "index": 0,
+  "isActive": false,
+  "age": 28,
+  "name": "LongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLong"
+}, {
+  "index": 1,
+  "isActive": true,
+  "age": 29,
+  "name": "Kasey Burris"
+}, {
+  "index": 2,
+  "isActive": false,
+  "age": 40,
+  "name": "Antoinette Morse"
+}, {
+  "index": 3,
+  "isActive": true,
+  "age": 32,
+  "name": "Lilia Ramirez"
+}, {
+  "index": 4,
+  "isActive": true,
+  "age": 35,
+  "name": "Lily Joyner"
+}, {
+  "index": 5,
+  "isActive": false,
+  "age": 22,
+  "name": "Ronda Norton"
+}, {
+  "index": 6,
+  "isActive": false,
+  "age": 31,
+  "name": "Tiffany Davidson"
+}, {
+  "index": 7,
+  "isActive": false,
+  "age": 40,
+  "name": "Allie Wise"
+}, {
+  "index": 8,
+  "isActive": true,
+  "age": 40,
+  "name": "Giles Lopez"
+}, {
+  "index": 9,
+  "isActive": false,
+  "age": 25,
+  "name": "Ramsey Cain"
+}]</div></td></tr>
+    
+    <tr><td class="exp-body"><div class="card border-danger alert-warning shadow-lg">
+      
+      <div class="card-body mb-1 mt-1">
+        <div id="error--2025750448"> <pre class="doc-code language-json"><code>JSON documents are different:
+Different value found in node "", expected: &lt;{"wrong":"2"}&gt; but was: &lt;[{"index":0,"isActive":false,"age":28,"name":"LongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLong"},{"index":1,"isActive":true,"age":29,"name":"Kasey Burris"},{"index":2,"isActive":false,"age":40,"name":"Antoinette Morse"},{"index":3,"isActive":true,"age":32,"name":"Lilia Ramirez"},{"index":4,"isActive":true,"age":35,"name":"Lily Joyner"},{"index":5,"isActive":false,"age":22,"name":"Ronda Norton"},{"index":6,"isActive":false,"age":31,"name":"Tiffany Davidson"},{"index":7,"isActive":false,"age":40,"name":"Allie Wise"},{"index":8,"isActive":true,"age":40,"name":"Giles Lopez"},{"index":9,"isActive":false,"age":25,"name":"Ramsey Cain"}]&gt;.
+</code></pre><div class="text rest-failure"><del class="expected">{"wrong": "2"}</del><ins class="actual">[{
+  "index": 0,
+  "isActive": false,
+  "age": 28,
+  "name": "LongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLong"
+}, {
+  "index": 1,
+  "isActive": true,
+  "age": 29,
+  "name": "Kasey Burris"
+}, {
+  "index": 2,
+  "isActive": false,
+  "age": 40,
+  "name": "Antoinette Morse"
+}, {
+  "index": 3,
+  "isActive": true,
+  "age": 32,
+  "name": "Lilia Ramirez"
+}, {
+  "index": 4,
+  "isActive": true,
+  "age": 35,
+  "name": "Lily Joyner"
+}, {
+  "index": 5,
+  "isActive": false,
+  "age": 22,
+  "name": "Ronda Norton"
+}, {
+  "index": 6,
+  "isActive": false,
+  "age": 31,
+  "name": "Tiffany Davidson"
+}, {
+  "index": 7,
+  "isActive": false,
+  "age": 40,
+  "name": "Allie Wise"
+}, {
+  "index": 8,
+  "isActive": true,
+  "age": 40,
+  "name": "Giles Lopez"
+}, {
+  "index": 9,
+  "isActive": false,
+  "age": 25,
+  "name": "Ramsey Cain"
+}]</ins></div></div>
+        
+      </div>
+    </div></td></tr> </tbody>
+        </table>
+    </div>
+        </div>
+        <div cmdId="86544dff-2daf-4b12-ba2c-99736d7542f7" e:when="" class="when"><p class="lead text-warning">When</p><hr />
+            Queue has the message:
+            <div class="mq-send">
+    <table class="table table-sm caption-top">
+        <caption><i class="fa fa-envelope me-1"> </i><span>myQueue</span></caption>
+        <tbody> 
+<tr><td class="exp-body"><div class="json">[{
+  "index": 0,
+  "isActive": false,
+  "age": 28,
+  "name": "LongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLong"
+}, {
+  "index": 1,
+  "isActive": true,
+  "age": 29,
+  "name": "Kasey Burris"
+}, {
+  "index": 2,
+  "isActive": false,
+  "age": 40,
+  "name": "Antoinette Morse"
+}, {
+  "index": 3,
+  "isActive": true,
+  "age": 32,
+  "name": "Lilia Ramirez"
+}, {
+  "index": 4,
+  "isActive": true,
+  "age": 35,
+  "name": "Lily Joyner"
+}, {
+  "index": 5,
+  "isActive": false,
+  "age": 22,
+  "name": "Ronda Norton"
+}, {
+  "index": 6,
+  "isActive": false,
+  "age": 31,
+  "name": "Tiffany Davidson"
+}, {
+  "index": 7,
+  "isActive": false,
+  "age": 40,
+  "name": "Allie Wise"
+}, {
+  "index": 8,
+  "isActive": true,
+  "age": 40,
+  "name": "Giles Lopez"
+}, {
+  "index": 9,
+  "isActive": false,
+  "age": 25,
+  "name": "Ramsey Cain"
+}]</div></td></tr> </tbody>
+    </table>
+</div>
+            <div class="mq-send">
+    <table class="table table-sm caption-top">
+        <caption><i class="fa fa-envelope me-1"> </i><span>myQueue</span></caption>
+        <tbody> 
+<tr><td class="exp-body"><div class="json">[{
+  "index": 0,
+  "isActive": false,
+  "age": 28,
+  "name": "LongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLong"
+}, {
+  "index": 1,
+  "isActive": true,
+  "age": 29,
+  "name": "Kasey Burris"
+}, {
+  "index": 2,
+  "isActive": false,
+  "age": 40,
+  "name": "Antoinette Morse"
+}, {
+  "index": 3,
+  "isActive": true,
+  "age": 32,
+  "name": "Lilia Ramirez"
+}, {
+  "index": 4,
+  "isActive": true,
+  "age": 35,
+  "name": "Lily Joyner"
+}, {
+  "index": 5,
+  "isActive": false,
+  "age": 22,
+  "name": "Ronda Norton"
+}, {
+  "index": 6,
+  "isActive": false,
+  "age": 31,
+  "name": "Tiffany Davidson"
+}, {
+  "index": 7,
+  "isActive": false,
+  "age": 40,
+  "name": "Allie Wise"
+}, {
+  "index": 8,
+  "isActive": true,
+  "age": 40,
+  "name": "Giles Lopez"
+}, {
+  "index": 9,
+  "isActive": false,
+  "age": 25,
+  "name": "Ramsey Cain"
+}]</div></td></tr> </tbody>
+    </table>
+</div>
+            <div class="mq-send">
+    <table class="table table-sm caption-top">
+        <caption><i class="fa fa-envelope me-1"> </i><span>myQueue</span></caption>
+        <tbody> 
+<tr><td class="exp-body"><div class="json">[{
+  "index": 0,
+  "isActive": false,
+  "age": 28,
+  "name": "LongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLong"
+}, {
+  "index": 1,
+  "isActive": true,
+  "age": 29,
+  "name": "Kasey Burris"
+}, {
+  "index": 2,
+  "isActive": false,
+  "age": 40,
+  "name": "Antoinette Morse"
+}, {
+  "index": 3,
+  "isActive": true,
+  "age": 32,
+  "name": "Lilia Ramirez"
+}, {
+  "index": 4,
+  "isActive": true,
+  "age": 35,
+  "name": "Lily Joyner"
+}, {
+  "index": 5,
+  "isActive": false,
+  "age": 22,
+  "name": "Ronda Norton"
+}, {
+  "index": 6,
+  "isActive": false,
+  "age": 31,
+  "name": "Tiffany Davidson"
+}, {
+  "index": 7,
+  "isActive": false,
+  "age": 40,
+  "name": "Allie Wise"
+}, {
+  "index": 8,
+  "isActive": true,
+  "age": 40,
+  "name": "Giles Lopez"
+}, {
+  "index": 9,
+  "isActive": false,
+  "age": 25,
+  "name": "Ramsey Cain"
+}]</div></td></tr> </tbody>
+    </table>
+</div>
+        </div>
+        <div cmdId="e1878edd-dd04-4c82-8490-111b4d672ed3" e:then="" class="then"><p class="lead text-success">Then</p><hr />
+            Verify queue with horizontal layout:
+            <div class="mq-check">
+        <table class="table table-sm caption-top">
+            <caption><i class="fa fa-envelope-open me-1"> </i><span>myQueue</span></caption>
+            <tbody>     
+    <tr><td class="exp-body"><div class="card border-danger alert-warning shadow-lg">
+      
+      <div class="card-body mb-1 mt-1">
+        <div id="error-1303663110"> <pre class="doc-code language-json"><code>JSON documents are different:
+Different value found in node "", expected: &lt;{"wrong":"1"}&gt; but was: &lt;[{"index":0,"isActive":false,"age":28,"name":"LongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLong"},{"index":1,"isActive":true,"age":29,"name":"Kasey Burris"},{"index":2,"isActive":false,"age":40,"name":"Antoinette Morse"},{"index":3,"isActive":true,"age":32,"name":"Lilia Ramirez"},{"index":4,"isActive":true,"age":35,"name":"Lily Joyner"},{"index":5,"isActive":false,"age":22,"name":"Ronda Norton"},{"index":6,"isActive":false,"age":31,"name":"Tiffany Davidson"},{"index":7,"isActive":false,"age":40,"name":"Allie Wise"},{"index":8,"isActive":true,"age":40,"name":"Giles Lopez"},{"index":9,"isActive":false,"age":25,"name":"Ramsey Cain"}]&gt;.
+</code></pre><div class="text rest-failure"><del class="expected">{"wrong": "1"}</del><ins class="actual">[{
+  "index": 0,
+  "isActive": false,
+  "age": 28,
+  "name": "LongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLong"
+}, {
+  "index": 1,
+  "isActive": true,
+  "age": 29,
+  "name": "Kasey Burris"
+}, {
+  "index": 2,
+  "isActive": false,
+  "age": 40,
+  "name": "Antoinette Morse"
+}, {
+  "index": 3,
+  "isActive": true,
+  "age": 32,
+  "name": "Lilia Ramirez"
+}, {
+  "index": 4,
+  "isActive": true,
+  "age": 35,
+  "name": "Lily Joyner"
+}, {
+  "index": 5,
+  "isActive": false,
+  "age": 22,
+  "name": "Ronda Norton"
+}, {
+  "index": 6,
+  "isActive": false,
+  "age": 31,
+  "name": "Tiffany Davidson"
+}, {
+  "index": 7,
+  "isActive": false,
+  "age": 40,
+  "name": "Allie Wise"
+}, {
+  "index": 8,
+  "isActive": true,
+  "age": 40,
+  "name": "Giles Lopez"
+}, {
+  "index": 9,
+  "isActive": false,
+  "age": 25,
+  "name": "Ramsey Cain"
+}]</ins></div></div>
+        
+      </div>
+    </div></td></tr>
+    
+    <tr><td class="exp-body"><div class="json rest-success">[{
+  "index": 0,
+  "isActive": false,
+  "age": 28,
+  "name": "LongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLong"
+}, {
+  "index": 1,
+  "isActive": true,
+  "age": 29,
+  "name": "Kasey Burris"
+}, {
+  "index": 2,
+  "isActive": false,
+  "age": 40,
+  "name": "Antoinette Morse"
+}, {
+  "index": 3,
+  "isActive": true,
+  "age": 32,
+  "name": "Lilia Ramirez"
+}, {
+  "index": 4,
+  "isActive": true,
+  "age": 35,
+  "name": "Lily Joyner"
+}, {
+  "index": 5,
+  "isActive": false,
+  "age": 22,
+  "name": "Ronda Norton"
+}, {
+  "index": 6,
+  "isActive": false,
+  "age": 31,
+  "name": "Tiffany Davidson"
+}, {
+  "index": 7,
+  "isActive": false,
+  "age": 40,
+  "name": "Allie Wise"
+}, {
+  "index": 8,
+  "isActive": true,
+  "age": 40,
+  "name": "Giles Lopez"
+}, {
+  "index": 9,
+  "isActive": false,
+  "age": 25,
+  "name": "Ramsey Cain"
+}]</div></td></tr>
+    
+    <tr><td class="exp-body"><div class="card border-danger alert-warning shadow-lg">
+      
+      <div class="card-body mb-1 mt-1">
+        <div id="error-1519975332"> <pre class="doc-code language-json"><code>JSON documents are different:
+Different value found in node "", expected: &lt;{"wrong":"2"}&gt; but was: &lt;[{"index":0,"isActive":false,"age":28,"name":"LongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLong"},{"index":1,"isActive":true,"age":29,"name":"Kasey Burris"},{"index":2,"isActive":false,"age":40,"name":"Antoinette Morse"},{"index":3,"isActive":true,"age":32,"name":"Lilia Ramirez"},{"index":4,"isActive":true,"age":35,"name":"Lily Joyner"},{"index":5,"isActive":false,"age":22,"name":"Ronda Norton"},{"index":6,"isActive":false,"age":31,"name":"Tiffany Davidson"},{"index":7,"isActive":false,"age":40,"name":"Allie Wise"},{"index":8,"isActive":true,"age":40,"name":"Giles Lopez"},{"index":9,"isActive":false,"age":25,"name":"Ramsey Cain"}]&gt;.
+</code></pre><div class="text rest-failure"><del class="expected">{"wrong": "2"}</del><ins class="actual">[{
+  "index": 0,
+  "isActive": false,
+  "age": 28,
+  "name": "LongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLong"
+}, {
+  "index": 1,
+  "isActive": true,
+  "age": 29,
+  "name": "Kasey Burris"
+}, {
+  "index": 2,
+  "isActive": false,
+  "age": 40,
+  "name": "Antoinette Morse"
+}, {
+  "index": 3,
+  "isActive": true,
+  "age": 32,
+  "name": "Lilia Ramirez"
+}, {
+  "index": 4,
+  "isActive": true,
+  "age": 35,
+  "name": "Lily Joyner"
+}, {
+  "index": 5,
+  "isActive": false,
+  "age": 22,
+  "name": "Ronda Norton"
+}, {
+  "index": 6,
+  "isActive": false,
+  "age": 31,
+  "name": "Tiffany Davidson"
+}, {
+  "index": 7,
+  "isActive": false,
+  "age": 40,
+  "name": "Allie Wise"
+}, {
+  "index": 8,
+  "isActive": true,
+  "age": 40,
+  "name": "Giles Lopez"
+}, {
+  "index": 9,
+  "isActive": false,
+  "age": 25,
+  "name": "Ramsey Cain"
+}]</ins></div></div>
+        
+      </div>
+    </div></td></tr> </tbody>
+        </table>
+    </div>
+        </div>
+        <div cmdId="05f58837-1e6f-401d-8236-04646e0c2e69" e:when="" class="when"><p class="lead text-warning">When</p><hr />
+            Queue has the message:
+            <div class="mq-send">
+    <table class="table table-sm caption-top">
+        <caption><i class="fa fa-envelope me-1"> </i><span>myQueue</span></caption>
+        <tbody> 
+<tr><td class="exp-body"><div class="json">[{
+  "index": 0,
+  "isActive": false,
+  "age": 28,
+  "name": "LongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLong"
+}, {
+  "index": 1,
+  "isActive": true,
+  "age": 29,
+  "name": "Kasey Burris"
+}, {
+  "index": 2,
+  "isActive": false,
+  "age": 40,
+  "name": "Antoinette Morse"
+}, {
+  "index": 3,
+  "isActive": true,
+  "age": 32,
+  "name": "Lilia Ramirez"
+}, {
+  "index": 4,
+  "isActive": true,
+  "age": 35,
+  "name": "Lily Joyner"
+}, {
+  "index": 5,
+  "isActive": false,
+  "age": 22,
+  "name": "Ronda Norton"
+}, {
+  "index": 6,
+  "isActive": false,
+  "age": 31,
+  "name": "Tiffany Davidson"
+}, {
+  "index": 7,
+  "isActive": false,
+  "age": 40,
+  "name": "Allie Wise"
+}, {
+  "index": 8,
+  "isActive": true,
+  "age": 40,
+  "name": "Giles Lopez"
+}, {
+  "index": 9,
+  "isActive": false,
+  "age": 25,
+  "name": "Ramsey Cain"
+}]</div></td></tr> </tbody>
+    </table>
+</div>
+            <div class="mq-send">
+    <table class="table table-sm caption-top">
+        <caption><i class="fa fa-envelope me-1"> </i><span>myQueue</span></caption>
+        <tbody> 
+<tr><td class="exp-body"><div class="json">[{
+  "index": 0,
+  "isActive": false,
+  "age": 28,
+  "name": "LongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLong"
+}, {
+  "index": 1,
+  "isActive": true,
+  "age": 29,
+  "name": "Kasey Burris"
+}, {
+  "index": 2,
+  "isActive": false,
+  "age": 40,
+  "name": "Antoinette Morse"
+}, {
+  "index": 3,
+  "isActive": true,
+  "age": 32,
+  "name": "Lilia Ramirez"
+}, {
+  "index": 4,
+  "isActive": true,
+  "age": 35,
+  "name": "Lily Joyner"
+}, {
+  "index": 5,
+  "isActive": false,
+  "age": 22,
+  "name": "Ronda Norton"
+}, {
+  "index": 6,
+  "isActive": false,
+  "age": 31,
+  "name": "Tiffany Davidson"
+}, {
+  "index": 7,
+  "isActive": false,
+  "age": 40,
+  "name": "Allie Wise"
+}, {
+  "index": 8,
+  "isActive": true,
+  "age": 40,
+  "name": "Giles Lopez"
+}, {
+  "index": 9,
+  "isActive": false,
+  "age": 25,
+  "name": "Ramsey Cain"
+}]</div></td></tr> </tbody>
+    </table>
+</div>
+            <div class="mq-send">
+    <table class="table table-sm caption-top">
+        <caption><i class="fa fa-envelope me-1"> </i><span>myQueue</span></caption>
+        <tbody> 
+<tr><td class="exp-body"><div class="json">[{
+  "index": 0,
+  "isActive": false,
+  "age": 28,
+  "name": "LongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLong"
+}, {
+  "index": 1,
+  "isActive": true,
+  "age": 29,
+  "name": "Kasey Burris"
+}, {
+  "index": 2,
+  "isActive": false,
+  "age": 40,
+  "name": "Antoinette Morse"
+}, {
+  "index": 3,
+  "isActive": true,
+  "age": 32,
+  "name": "Lilia Ramirez"
+}, {
+  "index": 4,
+  "isActive": true,
+  "age": 35,
+  "name": "Lily Joyner"
+}, {
+  "index": 5,
+  "isActive": false,
+  "age": 22,
+  "name": "Ronda Norton"
+}, {
+  "index": 6,
+  "isActive": false,
+  "age": 31,
+  "name": "Tiffany Davidson"
+}, {
+  "index": 7,
+  "isActive": false,
+  "age": 40,
+  "name": "Allie Wise"
+}, {
+  "index": 8,
+  "isActive": true,
+  "age": 40,
+  "name": "Giles Lopez"
+}, {
+  "index": 9,
+  "isActive": false,
+  "age": 25,
+  "name": "Ramsey Cain"
+}]</div></td></tr> </tbody>
+    </table>
+</div>
+        </div>
+        <div cmdId="0538cb90-bf85-4a63-8b93-cd608088fbb4" e:then="" class="then"><p class="lead text-success">Then</p><hr />
+            Verify queue with collapsed horizontal layout:
+            <div class="mq-check">
+        <table class="table table-sm caption-top">
+            <caption><i class="fa fa-envelope-open me-1"> </i><span>myQueue</span></caption>
+            <tbody>     
+    <tr><td class="exp-body"><div class="card border-danger alert-warning shadow-lg">
+      
+      <div class="card-body mb-1 mt-1">
+        <div id="error--818719457"> <pre class="doc-code language-json"><code>JSON documents are different:
+Different value found in node "", expected: &lt;{"wrong":"1"}&gt; but was: &lt;[{"index":0,"isActive":false,"age":28,"name":"LongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLong"},{"index":1,"isActive":true,"age":29,"name":"Kasey Burris"},{"index":2,"isActive":false,"age":40,"name":"Antoinette Morse"},{"index":3,"isActive":true,"age":32,"name":"Lilia Ramirez"},{"index":4,"isActive":true,"age":35,"name":"Lily Joyner"},{"index":5,"isActive":false,"age":22,"name":"Ronda Norton"},{"index":6,"isActive":false,"age":31,"name":"Tiffany Davidson"},{"index":7,"isActive":false,"age":40,"name":"Allie Wise"},{"index":8,"isActive":true,"age":40,"name":"Giles Lopez"},{"index":9,"isActive":false,"age":25,"name":"Ramsey Cain"}]&gt;.
+</code></pre><div class="text rest-failure"><del class="expected">{"wrong": "1"}</del><ins class="actual">[{
+  "index": 0,
+  "isActive": false,
+  "age": 28,
+  "name": "LongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLong"
+}, {
+  "index": 1,
+  "isActive": true,
+  "age": 29,
+  "name": "Kasey Burris"
+}, {
+  "index": 2,
+  "isActive": false,
+  "age": 40,
+  "name": "Antoinette Morse"
+}, {
+  "index": 3,
+  "isActive": true,
+  "age": 32,
+  "name": "Lilia Ramirez"
+}, {
+  "index": 4,
+  "isActive": true,
+  "age": 35,
+  "name": "Lily Joyner"
+}, {
+  "index": 5,
+  "isActive": false,
+  "age": 22,
+  "name": "Ronda Norton"
+}, {
+  "index": 6,
+  "isActive": false,
+  "age": 31,
+  "name": "Tiffany Davidson"
+}, {
+  "index": 7,
+  "isActive": false,
+  "age": 40,
+  "name": "Allie Wise"
+}, {
+  "index": 8,
+  "isActive": true,
+  "age": 40,
+  "name": "Giles Lopez"
+}, {
+  "index": 9,
+  "isActive": false,
+  "age": 25,
+  "name": "Ramsey Cain"
+}]</ins></div></div>
+        
+      </div>
+    </div></td></tr>
+    
+    <tr><td class="exp-body"><div class="json rest-success">[{
+  "index": 0,
+  "isActive": false,
+  "age": 28,
+  "name": "LongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLong"
+}, {
+  "index": 1,
+  "isActive": true,
+  "age": 29,
+  "name": "Kasey Burris"
+}, {
+  "index": 2,
+  "isActive": false,
+  "age": 40,
+  "name": "Antoinette Morse"
+}, {
+  "index": 3,
+  "isActive": true,
+  "age": 32,
+  "name": "Lilia Ramirez"
+}, {
+  "index": 4,
+  "isActive": true,
+  "age": 35,
+  "name": "Lily Joyner"
+}, {
+  "index": 5,
+  "isActive": false,
+  "age": 22,
+  "name": "Ronda Norton"
+}, {
+  "index": 6,
+  "isActive": false,
+  "age": 31,
+  "name": "Tiffany Davidson"
+}, {
+  "index": 7,
+  "isActive": false,
+  "age": 40,
+  "name": "Allie Wise"
+}, {
+  "index": 8,
+  "isActive": true,
+  "age": 40,
+  "name": "Giles Lopez"
+}, {
+  "index": 9,
+  "isActive": false,
+  "age": 25,
+  "name": "Ramsey Cain"
+}]</div></td></tr>
+    
+    <tr><td class="exp-body"><div class="card border-danger alert-warning shadow-lg">
+      
+      <div class="card-body mb-1 mt-1">
+        <div id="error-585619695"> <pre class="doc-code language-json"><code>JSON documents are different:
+Different value found in node "", expected: &lt;{"wrong":"2"}&gt; but was: &lt;[{"index":0,"isActive":false,"age":28,"name":"LongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLong"},{"index":1,"isActive":true,"age":29,"name":"Kasey Burris"},{"index":2,"isActive":false,"age":40,"name":"Antoinette Morse"},{"index":3,"isActive":true,"age":32,"name":"Lilia Ramirez"},{"index":4,"isActive":true,"age":35,"name":"Lily Joyner"},{"index":5,"isActive":false,"age":22,"name":"Ronda Norton"},{"index":6,"isActive":false,"age":31,"name":"Tiffany Davidson"},{"index":7,"isActive":false,"age":40,"name":"Allie Wise"},{"index":8,"isActive":true,"age":40,"name":"Giles Lopez"},{"index":9,"isActive":false,"age":25,"name":"Ramsey Cain"}]&gt;.
+</code></pre><div class="text rest-failure"><del class="expected">{"wrong": "2"}</del><ins class="actual">[{
+  "index": 0,
+  "isActive": false,
+  "age": 28,
+  "name": "LongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLongLong"
+}, {
+  "index": 1,
+  "isActive": true,
+  "age": 29,
+  "name": "Kasey Burris"
+}, {
+  "index": 2,
+  "isActive": false,
+  "age": 40,
+  "name": "Antoinette Morse"
+}, {
+  "index": 3,
+  "isActive": true,
+  "age": 32,
+  "name": "Lilia Ramirez"
+}, {
+  "index": 4,
+  "isActive": true,
+  "age": 35,
+  "name": "Lily Joyner"
+}, {
+  "index": 5,
+  "isActive": false,
+  "age": 22,
+  "name": "Ronda Norton"
+}, {
+  "index": 6,
+  "isActive": false,
+  "age": 31,
+  "name": "Tiffany Davidson"
+}, {
+  "index": 7,
+  "isActive": false,
+  "age": 40,
+  "name": "Allie Wise"
+}, {
+  "index": 8,
+  "isActive": true,
+  "age": 40,
+  "name": "Giles Lopez"
+}, {
+  "index": 9,
+  "isActive": false,
+  "age": 25,
+  "name": "Ramsey Cain"
+}]</ins></div></div>
+        
+      </div>
+    </div></td></tr> </tbody>
+        </table>
+    </div>
+        </div>
+    </div></div>
+
+    <h2>Wrong headers<a class="examples" href="#wrong-headers"></a></h2>
+
+    <div xmlns:c="http://www.concordion.org/2007/concordion" name="wrong-headers" status="ExpectedToFail" cmdId="df080f28-d8cb-49d3-bcc1-601ab0296e2d" c:example="wrong-headers" c:status="ExpectedToFail" e:example="" class="exam-example mb-3" data-type="example" id="wrong-headers" data-summary-success="0" data-summary-ignore="0" data-summary-failure="1" data-summary-exception="0" data-summary-status="ExpectedToFail"><a style="font-size: 9pt; font-weight: bold; float: right; display: inline-block; margin-top: 20px; text-decoration: none; color: #89C;" href="MqFailures[wrong-headers]LogViewer.html">Log File</a><div data-bs-toggle="collapse" data-bs-target="#e9c164a4a-91ad-4eb6-8675-00d97705b471" aria-expanded="true"><h3 style="visibility: hidden; height:0;" class="test-class"><i class="example-badge fa fa-bug m-1 text-danger"></i>wrong-headers</h3><i class="far fa-caret-square-down"></i><span> </span><a class="bd-example-title text-muted fw-lighter">wrong-headers</a></div><div class="bd-example collapse show rounded bg-light bg-gradient" id="e9c164a4a-91ad-4eb6-8675-00d97705b471"><div cmdId="b456dc13-f00f-4ff8-a3e2-33a9df61055a" e:before-each="">
+        <div cmdId="726faffc-69ce-4166-932b-9524b3efc631" e:given="" class="given"><p class="lead text-primary">Given</p><hr />Queue is empty:<div name="myQueue" cmdId="351d796e-4971-4d98-a326-6c9b2fc76c7f" e:mq-purge=""><table class="table table-sm caption-top"><caption><i class="far fa-envelope-open me-1"> </i><span>myQueue purged</span></caption></table></div></div>
+    </div>
+        <div cmdId="1822d75c-7b52-4b06-bc37-a1d6d9634e63" e:when="" class="when"><p class="lead text-warning">When</p><hr />
+            Queue has the messages:
+            <div class="mq-send">
+    <table class="table table-sm caption-top">
+        <caption><i class="fa fa-envelope me-1"> </i><span>myQueue</span></caption>
+        <tbody>     <tr><td> 
+        <table class="table table-sm caption-top">
+            <caption class="small">Headers</caption>
+            <tbody> <tr><td>h1</td><td>11</td></tr>
+<tr><td>h2</td><td>12</td></tr> </tbody>
+        </table> 
+    </td></tr>
+<tr><td class="exp-body"><div class="json">{
+  "message": "1"
+}</div></td></tr> </tbody>
+    </table>
+</div>
+            <div class="mq-send">
+    <table class="table table-sm caption-top">
+        <caption><i class="fa fa-envelope me-1"> </i><span>myQueue</span></caption>
+        <tbody>     <tr><td> 
+        <table class="table table-sm caption-top">
+            <caption class="small">Headers</caption>
+            <tbody> <tr><td>h1</td><td>2&lt;1&gt;</td></tr>
+<tr><td>h2</td><td>22</td></tr> </tbody>
+        </table> 
+    </td></tr>
+<tr><td class="exp-body"><div class="json">{
+  "message": "2"
+}</div></td></tr> </tbody>
+    </table>
+</div>
+            <div class="mq-send">
+    <table class="table table-sm caption-top">
+        <caption><i class="fa fa-envelope me-1"> </i><span>myQueue</span></caption>
+        <tbody>     <tr><td> 
+        <table class="table table-sm caption-top">
+            <caption class="small">Headers</caption>
+            <tbody> <tr><td>h1</td><td>31</td></tr>
+<tr><td>h2</td><td>32</td></tr> </tbody>
+        </table> 
+    </td></tr>
+<tr><td class="exp-body"><div class="xml">&lt;message&gt;right&lt;/message&gt;</div></td></tr> </tbody>
+    </table>
+</div>
+            <div class="mq-send">
+    <table class="table table-sm caption-top">
+        <caption><i class="fa fa-envelope me-1"> </i><span>myQueue</span></caption>
+        <tbody>     <tr><td> 
+        <table class="table table-sm caption-top">
+            <caption class="small">Headers</caption>
+            <tbody> <tr><td>h1</td><td>41</td></tr>
+<tr><td>h2</td><td>42</td></tr> </tbody>
+        </table> 
+    </td></tr>
+<tr><td class="exp-body"><div class="xml">&lt;message&gt;right&lt;/message&gt;</div></td></tr> </tbody>
+    </table>
+</div>
+            <div class="mq-send">
+    <table class="table table-sm caption-top">
+        <caption><i class="fa fa-envelope me-1"> </i><span>myQueue</span></caption>
+        <tbody>     <tr><td> 
+        <table class="table table-sm caption-top">
+            <caption class="small">Headers</caption>
+            <tbody> <tr><td>h1</td><td>41</td></tr>
+<tr><td>h2</td><td>42</td></tr> </tbody>
+        </table> 
+    </td></tr>
+<tr><td class="exp-body"><div class="xml">&lt;message&gt;right&lt;/message&gt;</div></td></tr> </tbody>
+    </table>
+</div>
+            <div class="mq-send">
+    <table class="table table-sm caption-top">
+        <caption><i class="fa fa-envelope me-1"> </i><span>myQueue</span></caption>
+        <tbody>     <tr><td> 
+        <table class="table table-sm caption-top">
+            <caption class="small">Headers</caption>
+            <tbody> <tr><td>h1</td><td>41</td></tr>
+<tr><td>h2</td><td>42</td></tr> </tbody>
+        </table> 
+    </td></tr>
+<tr><td class="exp-body"><div class="xml">&lt;message&gt;right&lt;/message&gt;</div></td></tr> </tbody>
+    </table>
+</div>
+        </div>
+        <div cmdId="5be7ec0a-3650-4d1e-9aa4-f728be1a707c" e:then="" class="then"><p class="lead text-success">Then</p><hr />
+            Verify queue with messages that:
+            <ul>
+                <li>wrong headers / right body</li>
+                <li>right headers / wrong body</li>
+                <li>wrong headers / wrong body</li>
+                <li>right headers / right body</li>
+                <li>wrong headers size (extra) / right body</li>
+                <li>wrong headers size (absent) / right body</li>
+            </ul>
+            <div class="mq-check">
+        <table class="table table-sm caption-top">
+            <caption><i class="fa fa-envelope-open me-1"> </i><span>myQueue</span></caption>
+            <tbody>     <tr><td> <table class="table table-sm caption-top">
+    <caption class="small"> Headers </caption>
+    <tbody> <tr> <td class="rest-success">h2</td> <td class="rest-failure"><del>1</del><ins>12</ins></td> </tr>
+<tr> <td class="rest-failure"><del>h3</del><ins>h1</ins></td> <td class="rest-success">1</td> </tr> </tbody>
+</table> </td></tr>
+    <tr><td class="exp-body"><div class="json rest-success">{
+  "message": "1"
+}</div></td></tr>
+        <tr><td> 
+        <table class="table table-sm caption-top">
+            <caption class="small">Headers</caption>
+            <tbody> <tr><td class="rest-success">h1</td><td class="rest-success">2&lt;1&gt;</td></tr>
+<tr><td class="rest-success">h2</td><td class="rest-success">22</td></tr> </tbody>
+        </table> 
+    </td></tr>
+    <tr><td class="exp-body"><div class="card border-danger alert-warning shadow-lg">
+      
+      <div class="card-body mb-1 mt-1">
+        <div id="error--561270908"> <pre class="doc-code language-json"><code>JSON documents are different:
+Different value found in node "message", expected: &lt;"3"&gt; but was: &lt;"2"&gt;.
+</code></pre><div class="text rest-failure"><del class="expected">{ "message": "3" }</del><ins class="actual">{ "message": "2" }</ins></div></div>
+        
+      </div>
+    </div></td></tr>
+    <tr><td> <table class="table table-sm caption-top">
+    <caption class="small"> Headers </caption>
+    <tbody> <tr> <td class="rest-success">h1</td> <td class="rest-failure"><del>3</del><ins>31</ins></td> </tr>
+<tr> <td class="rest-success">h2</td> <td class="rest-success">32</td> </tr> </tbody>
+</table> </td></tr>
+    <tr><td class="exp-body"><div class="card border-danger alert-warning shadow-lg">
+      
+      <div class="card-body mb-1 mt-1">
+        <div id="error--299960595"> <pre class="doc-code language-json"><code>Expected text value 'wrong' but was 'right' - comparing &lt;message ...&gt;wrong&lt;/message&gt; at /message[1]/text()[1] to &lt;message ...&gt;right&lt;/message&gt; at /message[1]/text()[1]</code></pre><div class="text rest-failure"><del class="expected">&lt;message&gt;wrong&lt;/message&gt;</del><ins class="actual">&lt;message&gt;right&lt;/message&gt;</ins></div></div>
+        
+      </div>
+    </div></td></tr>
+        <tr><td> 
+        <table class="table table-sm caption-top">
+            <caption class="small">Headers</caption>
+            <tbody> <tr><td class="rest-success">h1</td><td class="rest-success">41</td></tr>
+<tr><td class="rest-success">h2</td><td class="rest-success">42</td></tr> </tbody>
+        </table> 
+    </td></tr>
+    <tr><td class="exp-body"><div class="xml rest-success">&lt;message&gt;right&lt;/message&gt;</div></td></tr>
+    <tr><td> <div class="card border-danger alert-warning shadow-lg">
+      
+      <div class="card-body mb-1 mt-1">
+        <div id="error-1180580952"> <pre class="doc-code language-json"><code>Different headers size expected:&lt;3&gt; but was:&lt;2&gt;</code></pre><div><span>Expected:</span><table class="table table-sm caption-top">
+    <caption class="small"> Headers </caption>
+    <tbody> <tr><td class="rest-success">h1</td><td class="rest-success">41</td></tr>
+<tr><td class="rest-success">h2</td><td class="rest-success">42</td></tr>
+<tr><td class="rest-success">h3</td><td class="rest-success">3</td></tr> </tbody>
+</table><span>but was:</span><table class="table table-sm caption-top">
+    <caption class="small"> Headers </caption>
+    <tbody> <tr><td class="rest-success">h1</td><td class="rest-success">41</td></tr>
+<tr><td class="rest-success">h2</td><td class="rest-success">42</td></tr> </tbody>
+</table></div></div>
+        
+      </div>
+    </div> </td></tr>
+    <tr><td class="exp-body"><div class="xml rest-success">&lt;message&gt;right&lt;/message&gt;</div></td></tr>
+    <tr><td> <div class="card border-danger alert-warning shadow-lg">
+      
+      <div class="card-body mb-1 mt-1">
+        <div id="error-19526624"> <pre class="doc-code language-json"><code>Different headers size expected:&lt;1&gt; but was:&lt;2&gt;</code></pre><div><span>Expected:</span><table class="table table-sm caption-top">
+    <caption class="small"> Headers </caption>
+    <tbody> <tr><td class="rest-success">h1</td><td class="rest-success">41</td></tr> </tbody>
+</table><span>but was:</span><table class="table table-sm caption-top">
+    <caption class="small"> Headers </caption>
+    <tbody> <tr><td class="rest-success">h1</td><td class="rest-success">41</td></tr>
+<tr><td class="rest-success">h2</td><td class="rest-success">42</td></tr> </tbody>
+</table></div></div>
+        
+      </div>
+    </div> </td></tr>
+    <tr><td class="exp-body"><div class="xml rest-success">&lt;message&gt;right&lt;/message&gt;</div></td></tr> </tbody>
+        </table>
+    </div>
+        </div>
+    </div></div>
+
+</div></main></div></div><div class="footer">Results generated by <a href="http://www.concordion.org" style="font-weight: bold; text-decoration: none; color: #89C;">Concordion</a><div class="testTime">in 779 ms on 10-Feb-2022 at 09:45:36 MSK</div></div></body>
+<button id="btnToTop" onclick="topFunction()" type="button" class="btn btn-light btn-sm text-muted me-1"><i class="fa fa-arrow-up"></i></button></html>
