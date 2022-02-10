@@ -70,24 +70,6 @@ class ExamExtension constructor(private vararg var plugins: ExamPlugin) : Concor
         return this
     }
 
-    @Suppress("unused")
-    fun withContentVerifiers(addContentVerifiers: Map<String, ContentVerifier>): ExamExtension {
-        CONTENT_VERIFIERS += addContentVerifiers
-        return this
-    }
-
-    @Suppress("unused")
-    fun withContentResolvers(addContentResolvers: Map<String, ContentResolver>): ExamExtension {
-        CONTENT_RESOLVERS += addContentResolvers
-        return this
-    }
-
-    @Suppress("unused")
-    fun withContentPrinters(addContentPrinters: Map<String, ContentPrinter>): ExamExtension {
-        CONTENT_PRINTERS += addContentPrinters
-        return this
-    }
-
     /**
      * All examples but failed will be collapsed
      */
@@ -211,31 +193,6 @@ class ExamExtension constructor(private vararg var plugins: ExamPlugin) : Concor
                 "Content type config for type '$type' not found. " +
                     "Provide it via ExamExtension(...).withContentTypeConfigs(...) method."
             )
-
-        private val CONTENT_VERIFIERS: MutableMap<String, ContentVerifier> = mutableMapOf(
-            "json" to JsonVerifier(),
-            "xml" to XmlVerifier(),
-            "text" to ContentVerifier.Default("text"),
-        )
-
-        @JvmStatic
-        fun contentVerifier(type: String): ContentVerifier = CONTENT_VERIFIERS[type]
-            ?: throw IllegalStateException(
-                "Content verifier for type '$type' not found. " +
-                    "Provide it via ExamExtension(...).withContentVerifiers(...) method."
-            )
-
-        private val CONTENT_RESOLVERS: MutableMap<String, ContentResolver> = mutableMapOf(
-            "json" to JsonResolver(),
-            "xml" to XmlResolver(),
-            "text" to JsonResolver(),
-        )
-
-        private val CONTENT_PRINTERS: MutableMap<String, ContentPrinter> = mutableMapOf(
-            "json" to JsonPrinter(),
-            "xml" to XmlPrinter(),
-            "text" to ContentPrinter.AsIs(),
-        )
 
         @JvmStatic
         fun prettyXml(text: String) = text.prettyXml()

@@ -20,10 +20,8 @@ import org.concordion.api.Fixture
 import org.concordion.api.Result
 import org.concordion.api.Result.FAILURE
 import org.concordion.api.ResultRecorder
-import org.concordion.api.listener.AssertEqualsListener
 import org.concordion.api.listener.AssertFailureEvent
 import org.concordion.api.listener.AssertSuccessEvent
-import org.concordion.internal.util.Announcer
 import org.dbunit.assertion.DbComparisonFailure
 import org.dbunit.assertion.Difference
 import org.dbunit.dataset.ITable
@@ -87,11 +85,7 @@ class DataSetExecuteCommand(
 @Suppress("TooManyFunctions")
 class DataSetVerifyCommand(name: String, tag: String, val dbTester: DbTester, var valuePrinter: DbPlugin.ValuePrinter) :
     ExamCommand(name, tag) {
-    private val listeners = Announcer.to(AssertEqualsListener::class.java)
-
-    init {
-        listeners.addListener(DbResultRenderer())
-    }
+    private val listener = DbResultRenderer()
 
     override fun verify(
         commandCall: CommandCall,
@@ -213,13 +207,13 @@ class DataSetVerifyCommand(name: String, tag: String, val dbTester: DbTester, va
 
     private fun failure(resultRecorder: ResultRecorder, html: Html, actual: Any?, expected: String): Html {
         resultRecorder.record(FAILURE)
-        listeners.announce().failureReported(AssertFailureEvent(html.el, expected, actual))
+        listener.failureReported(AssertFailureEvent(html.el, expected, actual))
         return html
     }
 
     private fun success(resultRecorder: ResultRecorder, html: Html): Html {
         resultRecorder.record(Result.SUCCESS)
-        listeners.announce().successReported(AssertSuccessEvent(html.el))
+        listener.successReported(AssertSuccessEvent(html.el))
         return html
     }
 

@@ -19,7 +19,6 @@ import org.awaitility.core.ConditionFactory
 import org.concordion.api.AbstractCommand
 import org.concordion.api.Command
 import org.concordion.api.CommandCall
-import org.concordion.api.Element
 import org.concordion.api.Evaluator
 import org.concordion.api.Fixture
 import org.concordion.api.ResultRecorder
@@ -27,7 +26,6 @@ import org.concordion.api.listener.ExecuteEvent
 import org.concordion.api.listener.ExecuteListener
 import org.concordion.internal.CatchAllExpectationChecker.normalize
 import org.concordion.internal.command.AssertEqualsCommand
-import org.concordion.internal.util.Announcer
 import java.util.concurrent.TimeUnit.MILLISECONDS
 import java.util.concurrent.TimeUnit.SECONDS
 
@@ -55,7 +53,7 @@ open class ExamCommand(
     name: String,
     override val tag: String
 ) : BeforeParseExamCommand, BaseExamCommand(name) {
-    private val listeners = Announcer.to(ExecuteListener::class.java)
+    private val listener = ExecuteListener {}
 
     override fun execute(
         commandCall: CommandCall,
@@ -64,11 +62,8 @@ open class ExamCommand(
         fixture: Fixture
     ) {
         commandCall.children.processSequentially(evaluator, resultRecorder, fixture)
-        announceExecuteCompleted(commandCall.element)
+        listener.executeCompleted(ExecuteEvent(commandCall.element))
     }
-
-    private fun announceExecuteCompleted(element: Element) =
-        listeners.announce().executeCompleted(ExecuteEvent(element))
 }
 
 open class ExamAssertEqualsCommand(

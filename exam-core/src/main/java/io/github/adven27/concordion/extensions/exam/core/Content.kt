@@ -141,7 +141,7 @@ interface ContentVerifier {
     companion object : KLogging()
 }
 
-open class XmlVerifier(private val nodeMatcher: NodeMatcher) : ContentVerifier.Default("xml") {
+open class XmlVerifier(protected val nodeMatcher: NodeMatcher) : ContentVerifier.Default("xml") {
 
     @JvmOverloads
     constructor(configureNodeMatcher: (NodeMatcher) -> NodeMatcher = { it }) :
@@ -164,7 +164,7 @@ open class XmlVerifier(private val nodeMatcher: NodeMatcher) : ContentVerifier.D
 }
 
 @Suppress("TooGenericExceptionCaught")
-open class JsonVerifier(private val configuration: Configuration) : ContentVerifier.Default("json") {
+open class JsonVerifier(protected val configuration: Configuration) : ContentVerifier.Default("json") {
 
     @JvmOverloads
     constructor(configure: (Configuration) -> Configuration = { it }) : this(configure(ExamExtension.DEFAULT_JSON_UNIT_CFG))
@@ -172,8 +172,7 @@ open class JsonVerifier(private val configuration: Configuration) : ContentVerif
     override fun assertThat(expected: String, actual: String) {
         validate(actual)
         try {
-            // set tolerance because of https://github.com/lukas-krecan/JsonUnit/issues/468
-            JsonAssert.assertJsonEquals(expected, actual, configuration.withTolerance(0.0))
+            JsonAssert.assertJsonEquals(expected, actual, configuration)
         } catch (ae: AssertionError) {
             throw ae
         } catch (e: Exception) {

@@ -14,7 +14,8 @@ open class DefaultObjectMapperProvider : Jackson2ObjectMapperProvider {
         configure(WRITE_BIGDECIMAL_AS_PLAIN, true)
     }
     private val lenientMapper: ObjectMapper = ObjectMapper().apply {
-        configure(ALLOW_UNQUOTED_FIELD_NAMES, true)
+        configure(USE_BIG_DECIMAL_FOR_FLOATS, true)
+        configure(WRITE_BIGDECIMAL_AS_PLAIN, true)
         configure(ALLOW_UNQUOTED_FIELD_NAMES, true)
         configure(ALLOW_COMMENTS, true)
         configure(ALLOW_SINGLE_QUOTES, true)

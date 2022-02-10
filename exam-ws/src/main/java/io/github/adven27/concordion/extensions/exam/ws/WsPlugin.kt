@@ -1,16 +1,9 @@
 package io.github.adven27.concordion.extensions.exam.ws
 
 import com.github.jknack.handlebars.Options
-import io.github.adven27.concordion.extensions.exam.core.ContentPrinter
 import io.github.adven27.concordion.extensions.exam.core.ContentTypeConfig
-import io.github.adven27.concordion.extensions.exam.core.ContentVerifier
+import io.github.adven27.concordion.extensions.exam.core.ExamExtension.Companion.contentTypeConfig
 import io.github.adven27.concordion.extensions.exam.core.ExamPlugin
-import io.github.adven27.concordion.extensions.exam.core.JsonPrinter
-import io.github.adven27.concordion.extensions.exam.core.JsonResolver
-import io.github.adven27.concordion.extensions.exam.core.JsonVerifier
-import io.github.adven27.concordion.extensions.exam.core.XmlPrinter
-import io.github.adven27.concordion.extensions.exam.core.XmlResolver
-import io.github.adven27.concordion.extensions.exam.core.XmlVerifier
 import io.github.adven27.concordion.extensions.exam.core.commands.ExamCommand
 import io.github.adven27.concordion.extensions.exam.core.handlebars.ExamHelper
 import io.github.adven27.concordion.extensions.exam.core.handlebars.HANDLEBARS
@@ -34,9 +27,9 @@ class WsPlugin @JvmOverloads constructor(
     constructor(withBasePath: String, withPort: Int) : this(basePath = withBasePath, port = withPort)
 
     private val contentTypeConfigs: MutableMap<ContentType, ContentTypeConfig> = mutableMapOf(
-        ContentType.JSON to ContentTypeConfig(JsonResolver(), JsonVerifier(), JsonPrinter()),
-        ContentType.XML to ContentTypeConfig(XmlResolver(), XmlVerifier(), XmlPrinter()),
-        ContentType.TEXT to ContentTypeConfig(JsonResolver(), ContentVerifier.Default("text"), ContentPrinter.AsIs()),
+        ContentType.JSON to contentTypeConfig("json"),
+        ContentType.XML to contentTypeConfig("xml"),
+        ContentType.TEXT to contentTypeConfig("text"),
     )
 
     init {

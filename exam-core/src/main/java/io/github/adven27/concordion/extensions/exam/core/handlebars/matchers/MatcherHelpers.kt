@@ -5,6 +5,7 @@ import com.github.jknack.handlebars.Options
 import io.github.adven27.concordion.extensions.exam.core.handlebars.ExamHelper
 import io.github.adven27.concordion.extensions.exam.core.handlebars.HB_RESULT
 import io.github.adven27.concordion.extensions.exam.core.utils.DateWithin.Companion.PARAMS_SEPARATOR
+import io.github.adven27.concordion.extensions.exam.core.utils.asString
 import org.concordion.api.Evaluator
 import java.util.regex.Pattern
 
@@ -165,7 +166,7 @@ enum class MatcherHelpers(
         expected = "\${json-unit.matches:after}2000-01-31T23:59:59.000"
     ) {
         override fun invoke(context: Any?, options: Options): Any =
-            "\${${placeholderType(options.context)}-unit.matches:$name}$context"
+            "\${${placeholderType(options.context)}-unit.matches:$name}${context!!.asString()}"
     },
     before(
         example = "{{before '2000-01-31T23:59:59.000'}}",

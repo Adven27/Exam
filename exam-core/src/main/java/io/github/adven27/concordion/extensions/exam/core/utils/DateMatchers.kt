@@ -163,3 +163,8 @@ fun date(item: Any, pattern: String? = null): ZonedDateTime = when (item) {
     is Date -> item.toZonedDateTime()
     else -> item.toString().parseDate(pattern).toZonedDateTime()
 }
+
+fun Any.asString(): String = when (this) {
+    is Date -> toZonedDateTime().toString()
+    else -> toString()
+}

@@ -11,10 +11,14 @@
         <e:given>
             Configured additional content verifiers:
             <pre class="doc-code language-kotlin"><code>
-                withContentVerifiers(
+                .withContentTypeConfigs(
                     mapOf(
-                        "jsonIgnoreExtraFields" to JsonVerifier { it.withOptions(IGNORING_EXTRA_FIELDS) },
-                        "jsonIgnorePaths" to JsonVerifier { it.whenIgnoringPaths("param2", "arr[*].param4") }
+                        "jsonIgnoreExtraFields" to JsonContentTypeConfig(
+                            verifier = JsonVerifier { it.withOptions(IGNORING_EXTRA_FIELDS) }
+                        ),
+                        "jsonIgnorePaths" to JsonContentTypeConfig(
+                            verifier = JsonVerifier { it.whenIgnoringPaths("param2", "arr[*].param4") }
+                        ),
                     )
                 )
             </code></pre>
@@ -24,24 +28,24 @@
             <e:get url="ignoreJson" print="true">
                 <e:case desc="verify using jsonIgnoreExtraFields">
                     <e:expected verifyAs="jsonIgnoreExtraFields">
-                        {
+                    {
                         "param1":"value1",
                         "arr":[
                         {"param3":"value3"},
                         {"param3":"value3"}
                         ]
-                        }
+                    }
                     </e:expected>
                 </e:case>
                 <e:case desc="verify using jsonIgnorePaths">
                     <e:expected verifyAs="jsonIgnorePaths">
-                        {
+                    {
                         "param1":"value1",
                         "arr":[
                         {"param3":"value3"},
                         {"param3":"value3"}
                         ]
-                        }
+                    }
                     </e:expected>
                 </e:case>
             </e:get>
