@@ -1,5 +1,6 @@
 package io.github.adven27.concordion.extensions.exam.db
 
+import com.github.jknack.handlebars.Options
 import io.github.adven27.concordion.extensions.exam.core.ExamPlugin
 import io.github.adven27.concordion.extensions.exam.core.commands.NamedExamCommand
 import io.github.adven27.concordion.extensions.exam.core.html.span
@@ -12,12 +13,15 @@ import io.github.adven27.concordion.extensions.exam.db.commands.ExamMatchersAwar
 import io.github.adven27.concordion.extensions.exam.db.commands.check.CheckCommand
 import io.github.adven27.concordion.extensions.exam.db.commands.set.SetCommand
 import io.github.adven27.concordion.extensions.exam.db.commands.show.ShowCommand
+import mu.KLogging
 import org.concordion.api.Element
 import org.dbunit.assertion.DiffCollectingFailureHandler
 import org.dbunit.dataset.Column
 import org.dbunit.dataset.Columns.findColumnsByName
 import org.dbunit.dataset.ITable
 import org.dbunit.dataset.SortedTable
+import java.sql.ResultSet
+import java.sql.Statement
 import java.time.ZoneId
 import java.util.Date
 import kotlin.collections.component1
@@ -216,4 +220,42 @@ open class RowComparator {
     } catch (ignore: Exception) {
         0
     }
+}
+
+open class DbHelpers(private val dbTester: DbTester) {
+
+    protected fun queryStringFrom(table: String, target: String, filter: Map<String, Any>) =
+        dbTester.useStatement {
+            it.query(target, table, filter)
+                .getString(target)
+                .also { logger.debug { "${compositeFilter(filter)} $table id is $it" } }
+        }
+
+    protected fun queryIntFrom(table: String, target: String, filter: Map<String, Any>) =
+        dbTester.useStatement {
+            it.query(target, table, filter)
+                .getInt(target)
+                .also { logger.debug { "${compositeFilter(filter)} $table id is $it" } }
+        }
+
+    protected fun queryLongFrom(table: String, target: String, filter: Map<String, Any>) =
+        dbTester.useStatement {
+            it.query(target, table, filter)
+                .getLong(target)
+                .also { logger.debug { "${compositeFilter(filter)} $table id is $it" } }
+        }
+
+    protected fun compositeFilter(filter: Map<String, Any>) =
+        filter.entries.joinToString(separator = " and ") {
+            "${it.key}=${if (it.value is String) "'${it.value}'" else "${it.value}"}"
+        }
+
+    protected fun compositeKey(options: Options) =
+        options.hash.entries.joinToString(separator = "|") { "${it.key}=${it.value}" }
+
+    protected fun Statement.queryNext(sql: String): ResultSet = executeQuery(sql).apply { next() }
+    protected fun Statement.query(target: String, table: String, filter: Map<String, Any>) =
+        queryNext("select $target from $table where ${compositeFilter(filter)}")
+
+    companion object : KLogging()
 }

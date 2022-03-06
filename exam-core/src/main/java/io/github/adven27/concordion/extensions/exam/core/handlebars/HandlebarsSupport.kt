@@ -29,14 +29,6 @@ class MissingHelperException(options: Options) : IllegalArgumentException(
     "Variable or helper '${options.fn.text()}' not found"
 )
 
-const val REGISTER_HELPER_EXAMPLE = """ExamExtension().withHandlebar { hb ->
-    hb.registerHelper("hi", Helper { context: Any?, options ->
-        //{{hi '1' 'p1 'p2' o1='a' o2='b'}} => Hello context = 1; params = [p1, p2]; options = {o1=a, o2=b}!
-        //{{hi variable1 variable2 o1=variable3}} => Hello context = 1; params = [2]; options = {o1=3}!
-        "Hello context = ${"$"}context; params = ${"$"}{options.params.map { it.toString() }}; options = ${"$"}{options.hash}!"
-    })
-}"""
-
 class HelperMissing : Helper<Any?> {
     override fun apply(context: Any?, options: Options) = throw MissingHelperException(options)
 
