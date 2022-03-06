@@ -19,28 +19,27 @@ https://www.markdownguide.org/extended-syntax/#definition-lists
 
 **When**
 
-[send to myQueue](- "e:mq-send=myQueue collapsable=true")
-:
-```json
-{
-  "a": 1
-}
-```
-: `formatAs=xml`
-```xml
-<message>123</message>
-```
-: `formatAs=xml`
-_d1=1_
-_d2=2_
-  ```xml
-<message>123</message>
-  ```
-: [`myVar1=1` `myVar2=2`](/data/mq/msg.json)
-: `formatAs=json`
-_d1=1_
-_d2=2_
-[`myVar1=1` `myVar2=2`][my message]
+- [send to myQueue](- "e:mq-send=myQueue collapsable=true")
+-   ```json
+    {
+     "a": 1
+    }
+    ```
+-   `formatAs=xml`
+    ```xml
+    <message>123</message>
+    ```
+-   `formatAs=xml`
+    _d1=1_
+    _d2=2_
+    ```xml
+     <message>123</message>
+    ```
+-  [`myVar1=1` `myVar2=2`](/data/mq/msg.json)
+-   `formatAs=json`
+    _d1=1_
+    _d2=2_
+    [`myVar1=1` `myVar2=2`][my message]
 
 **Then**
 

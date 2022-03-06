@@ -12,13 +12,12 @@ import org.concordion.api.Evaluator
 
 interface QueueParser : SuitableCommandParser<List<ParametrizedTypedMessage>>
 
-class MdQueueParser(private val typeAttr: String = "verifyAs") : QueueParser {
+class MdQueueParser : QueueParser {
     override fun isSuitFor(element: Element): Boolean =
         element.localName != "div"
 
     @Suppress("ComplexMethod")
-    override fun parse(command: CommandCall, evaluator: Evaluator) = root(command).childElements
-        .filter { it.localName == "dd" }
+    override fun parse(command: CommandCall, evaluator: Evaluator) = elements(command)
         .mapNotNull { dd ->
             var type = "json"
             val headers: MutableMap<String, String> = mutableMapOf()
@@ -29,14 +28,14 @@ class MdQueueParser(private val typeAttr: String = "verifyAs") : QueueParser {
                 when (el.localName) {
                     "pre" -> payload = el.text
                     "a" -> payload = parsePayload(el, evaluator)
-                    "code" -> parseOption(el).also { (name, value) -> if (name == typeAttr) type = value }
+                    "code" -> parseOption(el).also { (name, value) -> if (isTypeOption(name)) type = value }
                     "em" -> parseOption(el).also { (name, value) -> headers[name] = value }
                     "strong" -> parseOption(el).also { (name, value) -> params[name] = value }
                     "p" -> el.childElements.forEach { pChild ->
                         when (pChild.localName) {
                             "pre" -> payload = pChild.text
                             "a" -> payload = parsePayload(pChild, evaluator)
-                            "code" -> parseOption(pChild).also { (name, value) -> if (name == typeAttr) type = value }
+                            "code" -> parseOption(pChild).also { (name, value) -> if (isTypeOption(name)) type = value }
                             "em" -> parseOption(pChild).also { (name, value) -> headers[name] = value }
                             "strong" -> parseOption(pChild).also { (name, value) -> params[name] = value }
                         }
@@ -52,6 +51,16 @@ class MdQueueParser(private val typeAttr: String = "verifyAs") : QueueParser {
                 )
             }
         }
+
+    private fun isTypeOption(name: String) = name == "verifyAs" || name == "formatAs"
+
+    private fun elements(command: CommandCall) = root(command).let {
+        when (it.localName) {
+            "dl" -> it.childElements.filter { el -> el.localName == "dd" }
+            "ul" -> it.childElements.drop(1)
+            else -> throw UnsupportedOperationException("Unsupported tag ${it.localName}")
+        }
+    }
 
     private fun root(command: CommandCall) = command.element.parentElement.parentElement
 }
