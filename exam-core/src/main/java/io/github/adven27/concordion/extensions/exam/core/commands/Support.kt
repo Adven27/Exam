@@ -1,6 +1,8 @@
 package io.github.adven27.concordion.extensions.exam.core.commands
 
 import io.github.adven27.concordion.extensions.exam.core.commands.Verifier.Success
+import io.github.adven27.concordion.extensions.exam.core.html.Html
+import io.github.adven27.concordion.extensions.exam.core.html.descendantTextContainer
 import io.github.adven27.concordion.extensions.exam.core.utils.After
 import io.github.adven27.concordion.extensions.exam.core.utils.Before
 import org.concordion.api.CommandCall
@@ -79,4 +81,8 @@ fun <T> checkAndSet(
     val split = expected.split(">>")
     if (split.size > 1) eval.setVariable("#${split[1]}", actual)
     return check(actual, split[0])
+}
+
+fun CommandCall.swapText(value: String) {
+    Html(descendantTextContainer(element)).removeChildren().text(value).el.appendNonBreakingSpaceIfBlank()
 }

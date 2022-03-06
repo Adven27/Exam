@@ -4,7 +4,6 @@ import io.github.adven27.concordion.extensions.exam.core.ExamExtension
 import io.github.adven27.concordion.extensions.exam.core.JsonContentTypeConfig
 import io.github.adven27.concordion.extensions.exam.core.XmlContentTypeConfig
 import io.github.adven27.concordion.extensions.exam.core.html.Html
-import io.github.adven27.concordion.extensions.exam.core.html.descendantTextContainer
 import io.github.adven27.concordion.extensions.exam.core.html.html
 import io.github.adven27.concordion.extensions.exam.core.readFile
 import io.github.adven27.concordion.extensions.exam.core.resolve
@@ -48,10 +47,6 @@ open class SetVarCommand(
         eval.setVariable(varExp(varAttr(el) ?: cmd.expression), value)
         vars.forEach { eval.setVariable("#${it.key}", null) }
         cmd.swapText(value.toString())
-    }
-
-    private fun CommandCall.swapText(value: String) {
-        Html(descendantTextContainer(element)).removeChildren().text(value).el.appendNonBreakingSpaceIfBlank()
     }
 
     private fun varAttr(el: Html) = el.attr("var") ?: el.el.getAttributeValue("set", ExamExtension.NS)

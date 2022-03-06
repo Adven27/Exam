@@ -5,6 +5,11 @@
 https://concordion.github.io/concordion/latest/spec/specificationType/markdown/Markdown.html
 https://www.markdownguide.org/extended-syntax/#definition-lists
 
+### [Before each example](- "before")
+
+- Purge queue **[myQueue](- "e:mq-purge=#TEXT")**.
+- Clean tables: **[orders](- "e:db-clean=#TEXT")**.
+
 ### [Mq example 1](-)
 
 **Given**

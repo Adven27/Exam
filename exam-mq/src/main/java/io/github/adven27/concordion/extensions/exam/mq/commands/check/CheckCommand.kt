@@ -52,5 +52,5 @@ class MqActualProvider(private val mqTesters: Map<String, MqTester>) : ActualPro
         mqTesters.getOrFail(source.queue).let { it.accumulateOnRetries() to Actual(it.receive()) }
 
     private fun Map<String, MqTester>.getOrFail(mqName: String?): MqTester = this[mqName]
-        ?: throw IllegalArgumentException("MQ with name $mqName not registered in MqPlugin")
+        ?: throw IllegalArgumentException("MQ with name '$mqName' not registered in MqPlugin")
 }

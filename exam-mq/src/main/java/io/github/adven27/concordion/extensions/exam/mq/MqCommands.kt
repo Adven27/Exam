@@ -58,12 +58,12 @@ class MqPurgeCommand(name: String, tag: String, private val mqTesters: Map<Strin
         fixture: Fixture
     ) {
         super.execute(commandCall, evaluator, resultRecorder, fixture)
-        commandCall.html().also { root ->
-            Attrs.from(root).also {
-                mqTesters.getOrFail(it.mqName).purge()
-                renderCommand(root, it.mqName)
-            }
-        }
+        mqTesters.getOrFail(queueName(evaluator, commandCall)).purge()
+    }
+
+    private fun queueName(evaluator: Evaluator, commandCall: CommandCall) = commandCall.html().let { root ->
+        root.attr("name")?.also { renderCommand(root, it) }
+            ?: evaluator.evaluate(commandCall.expression).toString()
     }
 
     private fun renderCommand(root: Html, mqName: String) {
@@ -76,19 +76,12 @@ class MqPurgeCommand(name: String, tag: String, private val mqTesters: Map<Strin
             )
         )
     }
-
-    data class Attrs(val mqName: String) {
-        companion object {
-            private const val NAME = "name"
-            fun from(root: Html) = Attrs(root.attrOrFail(NAME))
-        }
-    }
 }
 
 private fun String?.attrToMap(): Map<String, String> = this?.headers()?.mapValues { it.value } ?: emptyMap()
 
 private fun Map<String, MqTester>.getOrFail(mqName: String?): MqTester = this[mqName]
-    ?: throw IllegalArgumentException("MQ with name $mqName not registered in MqPlugin")
+    ?: throw IllegalArgumentException("MQ with name '$mqName' not registered in MqPlugin")
 
 private fun container(text: String, type: String, collapsable: Boolean) =
     if (collapsable) collapsableContainer(text, type) else fixedContainer(text, type)
