@@ -5,12 +5,18 @@
 https://concordion.github.io/concordion/latest/spec/specificationType/markdown/Markdown.html
 https://www.markdownguide.org/extended-syntax/#definition-lists
 
+## Examples
+
 ### [Before each example](- "before")
 
 - Purge queue **[myQueue](- "e:mq-purge=#TEXT")**.
 - Clean tables: **[orders](- "e:db-clean=#TEXT")**.
 
-### [Mq example 1](-)
+### ~~Before each example~~
+
+### MQ and DB support
+
+#### [Mq example 1](-)
 
 **Given**
 
@@ -83,11 +89,11 @@ Orders updated:
 | !{string} | 222    | !{notNull} | COMPLETED | {{today minus='1 d'}} | !{within 2d} |
 [[Check orders](- "e:db-check=orders awaitAtMostSec=2")]
 
-### ~~Mq example 1~~
+#### ~~Mq example 1~~
 
 Next example:
 
-### [Mq example 2](- "mq-2 c:status=ExpectedToFail")
+#### [Mq example 2](- "mq-2 c:status=ExpectedToFail")
 
 [simplest form of mq-check](- "e:mq-check=myQueue")
 :
@@ -96,21 +102,21 @@ Next example:
   ```
 : [my message]
 
-### ~~Mq example 2~~
+#### ~~Mq example 2~~
 
 Some text
 
-## Bootstrap
+### Bootstrap
 
-### Notes
+#### Notes
 
 **Note:** some note
 
-### Font Awesome
+#### Font Awesome
 
 <i class="fas fa-puzzle-piece" aria-hidden="true"> </i> Puzzle Icon
 
-### Cards
+#### Cards
 
 <div class="card">
   <div class="card-header">Header</div>
@@ -129,7 +135,7 @@ Some text
   </div>
 </div>
 
-### Callouts
+#### Callouts
 
 <div class="bd-callout bd-callout-info">Info</div>
 <div class="bd-callout bd-callout-danger bg-warning text-danger shadow-lg">Warning</div>

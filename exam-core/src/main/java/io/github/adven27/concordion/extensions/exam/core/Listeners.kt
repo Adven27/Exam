@@ -50,12 +50,10 @@ internal class ExamExampleListener(private val skipDecider: SkipDecider) : Examp
     override fun beforeExample(event: ExampleEvent) {
         val name = event.resultSummary.specificationDescription.substringAfterLast(File.separator)
         val elem = event.element
-        elem.getFirstChildElement("h3")?.let { elem.removeChild(it) }
+        val header = elem.childElements[0]
+        elem.removeChild(header)
         Html(elem).panel(
-            elem.getAttributeValue("name") ?: elem.getAttributeValue(
-                "example",
-                "http://www.concordion.org/2007/concordion"
-            ),
+            elem.getAttributeValue("name") ?: header.text,
             levelOfOwnerHeader(elem) + 1
         )
         if (skipDecider.test(event)) {
