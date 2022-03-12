@@ -21,15 +21,15 @@
 
 ```groovy
 // Typical microservices setup (Web API + DB + MQ) testing:
-testImplementation "io.github.adven27:exam-ms:6.0.0-alpha-1"
+testImplementation "io.github.adven27:exam-ms:6.0.0-alpha-2"
 
 //same as:
-//testImplementation "io.github.adven27:exam-ws:6.0.0-alpha-1"
-//testImplementation "io.github.adven27:exam-db:6.0.0-alpha-1"
-//testImplementation "io.github.adven27:exam-mq:6.0.0-alpha-1"
+//testImplementation "io.github.adven27:exam-ws:6.0.0-alpha-2"
+//testImplementation "io.github.adven27:exam-db:6.0.0-alpha-2"
+//testImplementation "io.github.adven27:exam-mq:6.0.0-alpha-2"
 
 // UI testing
-testImplementation "io.github.adven27:exam-ui:6.0.0-alpha-1"
+testImplementation "io.github.adven27:exam-ui:6.0.0-alpha-2"
 ```
 ### 2) Use
 
@@ -81,7 +81,6 @@ public class UserCreation extends Specs {
 <html xmlns:e="http://exam.extension.io" xmlns:cc="http://www.concordion.org/2007/concordion">
 <body>
     <h1>User creation</h1>
-    <e:summary/>
     <e:example name="My dummy user creation example">
         <e:given>
           Given users:
