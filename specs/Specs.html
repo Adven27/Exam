@@ -1,0 +1,720 @@
+<?xml version="1.0" encoding="UTF-8"?><html xmlns:e="http://exam.extension.io" xmlns:cc="http://www.concordion.org/2007/concordion"><head><script type="text/javascript">document.addEventListener('DOMContentLoaded', function (event) {
+    Array.from(document.getElementsByClassName("nomnoml")).forEach(function(el) {
+        nomnoml.draw(el, el.textContent); 
+    });  
+});</script><script type="text/javascript">window.addEventListener('DOMContentLoaded', function (event) {
+    anchors.options = {
+        placement: 'left',
+        icon: '#'
+    };
+    anchors.add();
+    tocbot.init({
+        tocSelector: '.js-toc',
+        contentSelector: '.bd-content',
+        headingSelector: 'h1, h2, h3, h4, h5, h6',
+        hasInnerContainers: true,
+        collapseDepth: 3,
+        scrollSmooth: false,
+        fixedSidebarOffset: 'auto',
+        includeHtml: true
+    });
+    var collapseDepth = 3; 
+    jQuery( "#example-summary-badge" ).click(function() {
+        if (collapseDepth === 3) {
+            collapseDepth = 30;
+        } else {
+            collapseDepth = 3;
+        }
+        tocbot.refresh({
+            tocSelector: '.js-toc',
+            contentSelector: '.bd-content',
+            headingSelector: 'h1, h2, h3, h4, h5, h6',
+            hasInnerContainers: true,
+            collapseDepth: collapseDepth,
+            scrollSmooth: false,
+            fixedSidebarOffset: 'auto',
+            includeHtml: true
+        });
+        if (collapseDepth === 30) {
+            jQuery( ".toc-link" ).filter(function( index ) {
+                return jQuery( "i", this ).length !== 1
+            }).css("display", "none");
+        } else {
+            jQuery( ".toc-link" ).filter(function( index ) {
+                return jQuery( "i", this ).length !== 1
+            }).css("display", "unset");
+        }
+    });
+}); </script><script type="text/javascript">document.addEventListener('DOMContentLoaded', function (event) {
+    hljs.configure({
+        cssSelector: 'pre code, pre.code'
+    });
+    hljs.highlightAll();
+});</script><style>* {
+  font-family: Arial;
+}
+body {
+  padding: 32px;  
+}
+pre {
+  padding: 6px 28px 6px 28px;
+  background-color: #E8EEF7;
+}
+pre, pre *, code, code *, kbd {
+  font-family: Courier New, Courier;
+  font-size: 10pt;
+}
+h1, h1 * {
+  font-size: 24pt;	
+}
+p, td, th, li, .breadcrumbs {
+  font-size: 10pt;
+}
+p, li {
+  line-height: 140%;
+  max-width: 720px;
+}
+table {
+  border-collapse: collapse;
+  empty-cells: show;
+  margin: 8px 0px 8px 0px;
+}
+th, td {
+  border: 1px solid black;
+  padding: 3px;
+}
+td {
+  background-color: white;
+  vertical-align: top;
+}
+th {
+  background-color: #C3D9FF;
+}
+li {
+  margin-top: 6px;
+  margin-bottom: 6px; 
+}
+
+.example, :not(th)[cc\:example] {
+  padding: 6px 16px 6px 16px;
+  border: 1px solid #C3D9FF;
+  margin: 6px 0px 28px 0px;
+  background-color: #F5F9FD;
+}
+.example h3, [cc\:example] h3 {
+  margin-top: 8px;
+  margin-bottom: 8px;
+  font-size: 12pt;
+}
+
+p.success {
+  padding: 2px;
+}
+.success, .success * {
+  background-color: #afa !important;
+}
+.success pre {
+  background-color: #bbffbb;
+}
+.failure, .failure * {
+  background-color: #ffb0b0;
+  padding: 1px;
+}
+.failure .expected {
+  text-decoration: line-through;
+  color: #bb5050;
+}
+.ignored, .ignored * {
+  background-color: #f0f0f0 !important;	
+}
+
+ins {
+  text-decoration: none;	
+}
+
+.exceptionMessage {
+  background-color: #fdd;
+  font-family: Courier New, Courier, Monospace;
+  font-size: 10pt;
+  display: block;
+  font-weight: normal;
+  padding: 4px;
+  text-decoration: none !important;
+}
+.stackTrace, .stackTrace * {
+  font-weight: normal;
+}
+.stackTrace {
+  display: none;
+  padding: 1px 4px 4px 4px;
+  background-color: #fdd;
+  border-top: 1px dotted black;
+}
+.stackTraceExceptionMessage {
+  display: block;
+  font-family: Courier New, Courier, Monospace;
+  font-size: 8pt;
+  white-space: wrap;
+  padding: 1px 0px 1px 0px;
+}
+.stackTraceEntry {
+  white-space: nowrap;
+  font-family: Courier New, Courier, Monospace;
+  display: block;
+  font-size: 8pt;
+  padding: 1px 0px 1px 32px;
+}
+.stackTraceButton {
+  font-size: 8pt;
+  margin: 2px 8px 2px 0px;
+  font-weight: normal;
+  font-family: Arial;
+}
+
+.special {
+  font-style: italic;
+}
+.missing, .missing * {
+  background-color: #ff9999;
+  color:#bb5050;
+  text-decoration: line-through;
+}
+.surplus, .surplus * {
+  background-color: #ff9999;
+}
+.footer {
+  text-align: right;
+  margin-top: 40px;
+  font-size: 8pt;
+  width: 100%;
+  color: #999;
+}
+.footer .testTime {
+  padding: 2px 10px 0px 0px;
+}
+
+.idea {
+  font-size: 9pt;
+  color: #888;
+  font-style: italic;	
+}
+.tight li {
+  margin-top: 1px;
+  margin-bottom: 1px; 
+}
+.commentary {
+  float: right;
+  width: 200px;
+  background-color: #ffffd0;
+  padding:8px;
+  border: 3px solid #eeeeb0;	 
+  margin: 10px 0px 10px 10px;	 
+}
+.commentary, .commentary * {
+  font-size: 8pt;
+}
+</style><meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<link type="text/css" rel="stylesheet" href="../ext/codemirror/codemirror.css" /><link type="text/css" rel="stylesheet" href="../ext/codemirror/enable-codemirror.css" /><link type="text/css" rel="stylesheet" href="../ext/codemirror/merge.css" /><link type="text/css" rel="stylesheet" href="../ext/codemirror/foldgutter.css" /><link type="text/css" rel="stylesheet" href="../ext/codemirror/simplescrollbar.css" /><script type="text/javascript" src="../ext/codemirror/codemirror.js"></script><script type="text/javascript" src="../ext/codemirror/enable-codemirror.js"></script><script type="text/javascript" src="../ext/codemirror/javascript.js"></script><script type="text/javascript" src="../ext/codemirror/xml.js"></script><script type="text/javascript" src="../ext/codemirror/addon/mode/simple.js"></script><script type="text/javascript" src="../ext/codemirror/http.js"></script><script type="text/javascript" src="../ext/codemirror/diff_match_patch.js"></script><script type="text/javascript" src="../ext/codemirror/merge.js"></script><script type="text/javascript" src="../ext/codemirror/xml-fold.js"></script><script type="text/javascript" src="../ext/codemirror/simplescrollbar.js"></script><link type="text/css" rel="stylesheet" href="../ext/highlight/stackoverflow-light.min.css" /><script type="text/javascript" src="../ext/highlight/highlight.min.js"></script><script type="text/javascript" src="../ext/highlight/http.min.js"></script><script type="text/javascript" src="../ext/highlight/java.min.js"></script><link type="text/css" rel="stylesheet" href="../ext/tocbot/tocbot.css" /><script type="text/javascript" src="../ext/tocbot/tocbot.min.js"></script><link type="text/css" rel="stylesheet" href="../ext/fontawesome/css/all.min.css" /><link type="text/css" rel="stylesheet" href="../ext/fontawesome/css/regular.min.css" /><link type="text/css" rel="stylesheet" href="../ext/fontawesome/css/solid.min.css" /><link type="text/css" rel="stylesheet" href="../ext/fontawesome/css/all.min.css" /><link type="text/css" rel="stylesheet" href="../ext/bootstrap/bootstrap.min.css" /><link type="text/css" rel="stylesheet" href="../ext/bootstrap/enable-bootstrap.css" /><link type="text/css" rel="stylesheet" href="../ext/bootstrap/doc.min.css" /><link type="text/css" rel="stylesheet" href="../ext/bootstrap/scrollToTop.css" /><script type="text/javascript" src="../ext/bootstrap/bootstrap.bundle.min.js"></script><script type="text/javascript" src="../ext/bootstrap/jquery-3.2.1.slim.min.js"></script><script type="text/javascript" src="../ext/bootstrap/sidebar.js"></script><script type="text/javascript" src="../ext/bootstrap/doc.min.js"></script><script type="text/javascript" src="../ext/bootstrap/scrollToTop.js"></script><script type="text/javascript" src="../ext/nomnoml/graphre.js"></script><script type="text/javascript" src="../ext/nomnoml/nomnoml.min.js"></script></head><body><span class="breadcrumbs"><a href="Specs.html">Exam</a> &gt;</span><div class="container-fluid"><div class="container-xxl my-md-4 bd-layout"><main class="bd-main order-1"><div class="bd-toc mt-4 mb-5 my-md-0 ps-xl-3 mb-lg-5 text-muted"><div class="row my-2 pb-2 border-bottom"><div class="col-9"><strong class="h6">On this page</strong></div><div class="col-2"><i id="example-summary-badge" class="fa fa-list-check"></i></div></div><nav id="table-of-contents" class="js-toc toc toc-right" /></div><div class="bd-content ps-lg-4" id="content">
+    <h1>Exam</h1>
+    <p class="lead">Extension for <a href="https://github.com/concordion/concordion/">Concordion</a> BDD framework</p>
+
+    <h2>Overview</h2><p>
+        Exam is oriented on <strong>declarative end-to-end <a href="https://en.wikipedia.org/wiki/Gray_box_testing">gray-box application testing</a></strong>
+        in a way a manual tester would do it: send request, verify response/database/message queue etc.
+    </p><figure class="figure">
+        <canvas class="nomnoml container" from="/specs/pic_man.nomnoml">#.tester: fill=#0ee visual=actor
+#.sut: fill=#0e0
+#.db: fill=#0e0 visual=database
+#.fs: fill=#0e0 visual=note
+#.api: fill=#0e0 visual=lollipop
+#.usecase: fill=#fff visual=ellipse dashed
+#gravity: 2
+#padding: 18
+#spacing: 0
+#direction: right
+
+[&lt;actor&gt; Team]--&gt;[&lt;usecase&gt; Test cases]
+[Test cases]--&gt;[&lt;tester&gt; Manual Tester]
+
+
+[Manual Tester]&lt;--&gt;[&lt;api&gt; REST API]
+[Manual Tester]&lt;--&gt;[&lt;api&gt; MQ API]
+[Manual Tester]&lt;--&gt;[&lt;db&gt; DB]
+[Manual Tester]&lt;--&gt;[&lt;fs&gt; File System]
+
+[DB]&lt;-&gt;[&lt;sut&gt; System Under Test]
+[REST API] - [System Under Test]
+[MQ API] - [System Under Test]
+[File System]&lt;-&gt;[System Under Test]</canvas>
+        <figcaption class="figure-caption text-center">Manual testing</figcaption>
+    </figure><p>
+        Hence the Exam functionality falls apart in <strong>different libraries (plugins)</strong> that are tailored
+        for specific kinds of checks: <i>database interactions, message queue interactions,
+        http interactions, file system interactions etc.</i> and may be used separately.
+    </p><figure class="figure">
+        <canvas class="nomnoml container" from="/specs/pic_exam.nomnoml">#.exam: fill=#0ee bold
+#.pl: fill=#0ee visual=roundrect
+#.sut: fill=#0e0
+#.db: fill=#0e0 visual=database
+#.fs: fill=#0e0 visual=note
+#.api: fill=#0e0 visual=lollipop
+#.usecase: fill=#fff visual=ellipse dashed
+#gravity: 2
+#padding: 18
+#spacing: 40
+#direction: right
+
+[&lt;actor&gt; Team]--&gt;[&lt;usecase&gt; Specification with examples |
+    [.xhtml]
+    [&lt;reference&gt;.java]
+]
+[Specification with examples]-&gt;[&lt;exam&gt; Exam]
+[Exam]&lt;-&gt;[&lt;pl&gt; DbPlugin]
+[Exam]&lt;-&gt;[&lt;pl&gt; MqPlugin]
+[Exam]&lt;-&gt;[&lt;pl&gt; WsPlugin]
+[Exam]&lt;-&gt;[&lt;pl&gt; FlPlugin]
+
+[WsPlugin]&lt;--&gt;[&lt;api&gt; REST API]
+[MqPlugin]&lt;--&gt;[&lt;api&gt; MQ API]
+[DbPlugin]&lt;--&gt;[&lt;db&gt; DB]
+[FlPlugin]&lt;--&gt;[&lt;fs&gt; File System]
+
+[DB]&lt;-&gt;[&lt;sut&gt; System Under Test]
+[REST API] - [System Under Test]
+[MQ API] - [System Under Test]
+[File System]&lt;-&gt;[System Under Test]</canvas>
+        <figcaption class="figure-caption text-center">Exam testing</figcaption>
+    </figure><p>
+        Each library consist of a <strong>plugin class</strong> that should be configured and attached to <strong>ExamExtension</strong>
+        and <strong>set of commands</strong> that can be used in <i>.xhtml</i> specification files.
+    </p><p>
+        Exam leverages the <a href="https://concordion.org/coding/java/markdown/#creating-an-extension">Concordion Extension API</a>
+        and may be enabled by standard Concordion annotation based way:
+        <pre class="doc-code language-java"><code from="/specs/example1.java">@RunWith(ConcordionRunner.class)
+@ConcordionOptions(declareNamespaces = {"c", "http://www.concordion.org/2007/concordion", "e", ExamExtension.NS})
+public class Specs {
+    @Extension
+    private final ExamExtension exam = new ExamExtension(
+        new WsPlugin("/app", 8080),
+        new DbPlugin("org.postgresql.Driver", "jdbc:postgresql://localhost:5432/postgres", "postgres", "postgres")
+    );
+}</code></pre>
+        But the <strong>recommended</strong> way is to implement <code>io.github.adven27.concordion.extensions.exam.core.AbstractSpecs</code> class
+        that will do the same internally but make configuration points more visible and abstract the enabling-related boilerplate code away:
+        <pre class="doc-code language-java"><code from="/specs/example2.java">public class Specs extends AbstractSpecs {
+    @Override
+    protected ExamExtension init() {
+        return new ExamExtension(
+            new WsPlugin("/app", 8080),
+            new DbPlugin("org.postgresql.Driver", "jdbc:postgresql://localhost:5432/postgres", "postgres", "postgres")
+        );
+    }
+...
+    /*  Methods are listed in order of execution: */
+
+    @Override
+    protected void beforeSetUp() {
+        // Optional: Run some actions BEFORE Exam set up
+    }
+
+    @Override
+    protected void beforeSutStart() {
+        // Optional: Run some actions AFTER Exam set up and BEFORE start of a System Under Test
+    }
+
+    @Override
+    protected void startSut() {
+        // Start System Under Test before specs suite if needed
+    }
+
+    @Override
+    protected void stopSut() {
+        // Stop System Under Test after specs suite if needed
+    }
+
+    @Override
+    protected void afterSutStop() {
+        // Optional: Run some actions AFTER stop of a System Under Test and BEFORE Exam tear down
+    }
+
+    @Override
+    protected void afterTearDown() {
+        // Optional: Run some actions AFTER Exam tear down
+    }
+}</code></pre>
+    </p>
+
+    <h2>Core</h2>
+
+    <p>
+        Core commands may be used to extend default Concordion possibilities of setting up, verifying and decorating of examples.
+    </p><h3>Commands</h3><p>
+        The following are core-commands available
+    </p><h4>Specification by example</h4><dl>
+        <dt><code><a cc:run="concordion" href="core/coreexample/CoreExample.html" class="ignored">example</a></code></dt>
+        <dd>
+            <p>Decorated version of <a href="https://concordion.org/instrumenting/java/html/#example-command">Concordion example command</a>:</p>
+            <pre class="doc-code language-xml"><code>&lt;e:example name="Happy path"&gt;
+...
+&lt;/e:example&gt;
+</code></pre>
+        </dd>
+    </dl><h4>Context variables setting</h4><dl>
+        <dt><code><a cc:run="concordion" href="core/CoreSet.html" class="success">set</a></code></dt>
+        <dd>
+            <p>Handlebars-aware version of <a href="https://concordion.org/instrumenting/java/html/#set-command">Concordion set command</a>:</p>
+            <pre class="doc-code language-xml"><code>&lt;pre e:set="dateVar"&gt;{{now}}&lt;/pre&gt;
+</code></pre>
+        </dd>
+    </dl><h4>Verifying</h4><dl>
+        <dt>
+            <code><a cc:run="concordion" href="core/CoreVerify.html" class="success">equals</a></code>,
+            <code><a cc:run="concordion" href="core/CoreVerify.html" class="success">equalsFile</a></code>
+        </dt>
+        <dd>
+            <p>Handlebars-aware version of <a href="https://concordion.org/instrumenting/java/html/#assert-equals-command">Concordion assert command</a>:</p>
+            <pre class="doc-code language-xml"><code>&lt;span e:equals="actual"&gt;{{now}}&lt;/span&gt;
+&lt;span e:equalsFile="actual"&gt;/data/expected.txt&lt;/span&gt;
+</code></pre>
+        </dd>
+        <dt>
+            <code><a cc:run="concordion" href="core/CoreVerify.html" class="success">jsonEquals</a></code>,
+            <code><a cc:run="concordion" href="core/CoreVerify.html" class="success">jsonEqualsFile</a></code>
+        </dt>
+        <dd>
+            <p>Json-aware version of <a href="https://concordion.org/instrumenting/java/html/#assert-equals-command">Concordion assert command</a>:</p>
+            <pre class="doc-code language-xml"><code>&lt;span e:jsonEquals="actual"&gt;{"a" : 1}&lt;/span&gt;
+&lt;span e:jsonEqualsFile="actual"&gt;/data/expected.json&lt;/span&gt;
+</code></pre>
+        </dd>
+        <dt>
+            <code><a cc:run="concordion" href="core/CoreVerify.html" class="success">xmlEquals</a></code>,
+            <code><a cc:run="concordion" href="core/CoreVerify.html" class="success">xmlEqualsFile</a></code>
+        </dt>
+        <dd>
+            <p>Xml-aware version of <a href="https://concordion.org/instrumenting/java/html/#assert-equals-command">Concordion assert command</a>:</p>
+            <pre class="doc-code language-xml"><code>&lt;span e:xmlEquals="actual"&gt;
+&lt;! [CDATA[
+    &lt;message&gt;
+        &lt;val&gt;{{placeholder}}&lt;/val&gt;
+    &lt;/message&gt;
+] ]&gt;
+&lt;/span&gt;
+
+&lt;span e:xmlEqualsFile="actual"&gt;/data/expected.xml&lt;/span&gt;
+</code></pre>
+        </dd>
+    </dl><h4>Decorating</h4><dl>
+        <dt>
+            <code><a cc:run="concordion" href="core/CoreDecor.html" class="success">given</a></code>,
+            <code><a cc:run="concordion" href="core/CoreDecor.html" class="success">when</a></code>,
+            <code><a cc:run="concordion" href="core/CoreDecor.html" class="success">then</a></code>
+        </dt>
+        <dd>
+            <p>Support of <a href="https://martinfowler.com/bliki/GivenWhenThen.html">the BDD-style</a> example description:</p>
+            <pre class="doc-code language-xml"><code>&lt;e:given&gt;
+...
+&lt;/e:given&gt;
+&lt;e:when&gt;
+...
+&lt;/e:when&gt;
+&lt;e:then&gt;
+...
+&lt;/e:then&gt;
+</code></pre>
+        </dd>
+    </dl><h4>Handlebar support</h4><p>
+        <a cc:run="concordion" href="core/handlebar/Handlebar.html" class="success">Support of</a> <a href="https://github.com/jknack/handlebars.java">the Handlebars templates</a>
+    </p>
+
+    <h2>Plugins</h2>
+
+    <h3>Database plugin</h3><hr /><p>
+        <strong>DbPlugin</strong> is a wrapper around <a href="http://dbunit.sourceforge.net">DbUnit</a> library and enables
+        to set up and verify state of the database.
+    </p><figure class="figure">
+        <canvas class="nomnoml container" from="/specs/db/db.nomnoml">#.exam: fill=#0ee
+#.db: fill=#0e0 visual=database
+
+#gravity: 3
+#padding: 18
+#spacing: 40
+#direction: right
+
+[&lt;exam&gt;DbTester]
+[&lt;exam&gt;DbPlugin]uses-&gt;[DbTester]
+[DbTester]configures-&gt;[DbUnit|
+[&lt;note&gt;Datasets]
+]
+[DbUnit]interacts with-&gt;[&lt;db&gt; DB]</canvas>
+        <figcaption class="figure-caption text-center">Exam integration with DB</figcaption>
+    </figure><h4>Usage</h4><p>1. Add dependency <pre class="doc-code language-java"><code>testImplementation "io.github.adven27:exam-db:{{version}}"</code></pre></p><p>2. Configure and attach the <a cc:run="concordion" href="db/DbPlugin.html" class="success">DbPlugin</a></p><h4>Commands</h4><p>
+        There are commands for setting up and verifying database state.
+        Also there is a command to just show current database state and generate dataset files based on it.
+    </p><h5>Set up database</h5><dl>
+        <dt><code><a cc:run="concordion" href="db/dbset/DbSet.html" class="success">db-set</a></code></dt>
+        <dd>
+            <p>Creates and applies a DbUnit dataset for specified table:</p>
+            <pre class="doc-code language-xml"><code>
+&lt;e:db-set table="person" cols="id=1..10, name, birthday, created={{now}}"&gt;
+    &lt;e:row&gt;Bob, {{date '01.01.2001' format='dd.MM.yyyy'}}&lt;/e:row&gt;
+    &lt;e:row&gt; Ed, {{date '02.02.2002' format='dd.MM.yyyy'}}&lt;/e:row&gt;
+&lt;/e:db-set&gt;
+</code></pre>
+        </dd>
+        <dt><code><a cc:run="concordion" href="db/dbexecute/DbExecute.html" class="success">db-execute</a></code></dt>
+        <dd>
+            <p>Applies specified DbUnit datasets:</p>
+            <pre class="doc-code language-xml"><code>&lt;e:db-execute datasets="/data/db/adam.xml, /data/db/bob.json, /data/db/carl/person.csv"/&gt; </code></pre>
+        </dd>
+        <dt><code><a cc:run="concordion" href="db/dbclean/DbClean.html" class="success">db-clean</a></code></dt>
+        <dd>
+            <p>Cleans specified tables with <code>DELETE_ALL</code> DbUnit operation:</p>
+            <pre class="doc-code language-xml"><code>&lt;e:db-clean tables="person, person_fields"/&gt;</code></pre>
+        </dd>
+    </dl><h5>Verify database</h5><dl>
+        <dt><code><a cc:run="concordion" href="db/dbcheck/DbCheck.html" class="ignored">db-check</a></code></dt>
+        <dd>
+            <p>Creates a DbUnit dataset and verifies that it matches specified database table:</p>
+            <pre class="doc-code language-xml"><code>
+&lt;e:db-check table="person" cols="id=1..10, name, birthday, created={{now}}"&gt;
+    &lt;e:row&gt;Bob, {{date '01.01.2001' format='dd.MM.yyyy'}}&lt;/e:row&gt;
+    &lt;e:row&gt; Ed, {{date '02.02.2002' format='dd.MM.yyyy'}}&lt;/e:row&gt;
+&lt;/e:db-check&gt;
+</code></pre>
+        </dd>
+        <dt><code><a cc:run="concordion" href="db/dbverify/DbVerify.html" class="success">db-verify</a></code></dt>
+        <dd>
+            <p>Verifies that database matches a state described in a DbUnit datasets:</p>
+            <pre class="doc-code language-xml"><code>&lt;e:db-verify datasets="/data/db/adam.xml, /data/db/bob.json, /data/db/carl/person.csv"/&gt; </code></pre>
+        </dd>
+    </dl><h5>Debug database</h5><dl>
+        <dt><code><a cc:run="concordion" href="db/dbshow/DbShow.html" class="success">db-show</a></code></dt>
+        <dd>
+            <p>Creates a DbUnit dataset files and prints content of specified database table:</p>
+            <pre class="doc-code language-xml"><code>&lt;e:db-show table="person" saveToResources="/data/db/person.xml"/&gt;</code></pre>
+        </dd>
+    </dl>
+    <h3>Web Service plugin</h3><hr /><p>
+        <strong>WsPlugin</strong> enables to document and verify <i>REST/SOAP API</i>.
+    </p><h4>Usage</h4><p>1. Add dependency <pre class="doc-code language-java"><code>testImplementation "io.github.adven27:exam-ws:{{version}}"</code></pre></p><p>2. Configure and attach the <a cc:run="concordion" href="ws/WsPlugin.html" class="success">WsPlugin</a></p><h4>Commands</h4><p>
+        There are commands for specifying use cases of <code>REST</code> and <code>SOAP</code> endpoints.
+    </p><h5>Verify REST API</h5><dl>
+        <dt><code><a cc:run="concordion" href="ws/WsGet.html" class="ignored">get</a></code></dt>
+        <dd>
+            <p>Specifying use cases of a <code>GET</code>-endpoint:</p>
+            <pre class="doc-code language-xml"><code>&lt;e:get url="/some/url" contentType="application/json"&gt;
+    &lt;e:case desc="use-case 1" urlParams="param1=1"&gt;
+        &lt;e:expected statusCode="200"&gt;
+            { "response": "body" }
+        &lt;/e:expected&gt;
+    &lt;/e:case&gt;
+    &lt;e:case desc="use-case 2" urlParams="param1=1&amp;amp;param2=2"&gt;
+        &lt;e:expected from="/ws/response.json" statusCode="200"/&gt;
+    &lt;/e:case&gt;
+&lt;/e:get&gt;
+</code></pre>
+        </dd>
+        <dt><code><a cc:run="concordion" href="ws/WsPost.html" class="ignored">post</a></code></dt>
+        <dd>
+            <p>Specifying use cases of a <code>POST</code>-endpoint:</p>
+            <pre class="doc-code language-xml"><code>&lt;e:post url="/some/url" contentType="application/json"&gt;
+    &lt;e:case desc="use-case 1"&gt;
+        &lt;e:body&gt;
+            {"request": "body"}
+        &lt;/e:body&gt;
+        &lt;e:expected statusCode="201" reasonPhrase="Created"&gt;
+            { "response": "body" }
+        &lt;/e:expected&gt;
+    &lt;/e:case&gt;
+    &lt;e:case desc="use-case 2"&gt;
+        &lt;e:body from="/ws/request.json"/&gt;
+        &lt;e:expected from="/ws/response.json" statusCode="201" reasonPhrase="Created"/&gt;
+    &lt;/e:case&gt;
+&lt;/e:post&gt;
+</code></pre>
+        </dd>
+        <dt><code><a cc:run="concordion" href="ws/WsPut.html" class="ignored">put</a></code></dt>
+        <dd>
+            <p>Specifying use cases of a <code>PUT</code>-endpoint:</p>
+            <pre class="doc-code language-xml"><code>
+&lt;e:put url="/some/url" contentType="application/json"&gt;
+    &lt;e:case desc="use-case 1"&gt;
+        &lt;e:body&gt;
+            {"request": "body"}
+        &lt;/e:body&gt;
+        &lt;e:expected&gt;
+            { "response": "body" }
+        &lt;/e:expected&gt;
+    &lt;/e:case&gt;
+    &lt;e:case desc="use-case 2"&gt;
+        &lt;e:body from="/ws/request.json"/&gt;
+        &lt;e:expected from="/ws/response.json"/&gt;
+    &lt;/e:case&gt;
+&lt;/e:put&gt;
+</code></pre>
+        </dd>
+        <dt><code><a cc:run="concordion" href="ws/WsDelete.html" class="ignored">delete</a></code></dt>
+        <dd>
+            <p>Specifying use cases of a <code>DELETE</code>-endpoint:</p>
+            <pre class="doc-code language-xml"><code>
+&lt;e:delete url="/some/{{id}}" contentType="application/json"&gt;
+    &lt;e:case desc="use-case 1" cookies="cook={{var}}, anotherCook=asd"&gt;
+        &lt;e:expected statusCode="200"&gt;
+            { "response": "body" }
+        &lt;/e:expected&gt;
+    &lt;/e:case&gt;
+    &lt;e:case desc="use-case 2"&gt;
+        &lt;e:expected from="/ws/response.json" statusCode="200"/&gt;
+    &lt;/e:case&gt;
+&lt;/e:delete&gt;
+</code></pre>
+        </dd>
+    </dl><h5>Verify SOAP API</h5><dl>
+        <dt><code><a cc:run="concordion" href="ws/WsSoap.html" class="ignored">soap</a></code></dt>
+        <dd>
+            <p>Specifying use cases of a <code>SOAP</code>-endpoint:</p>
+            <pre class="doc-code language-xml"><code>
+&lt;e:soap url="/some/url"&gt;
+    &lt;e:case desc="use-case 1"&gt;
+        &lt;e:body&gt;
+        &lt;! [CDATA[
+            &lt;soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"&gt;
+                &lt;soap:Body&gt;
+                    &lt;ns2:getItemRequest xmlns:ns2="http://ws.io"&gt;
+                        &lt;date&gt;{{now 'yyyy-MM-dd'}}&lt;/date&gt;
+                    &lt;/ns2:getItemRequest&gt;
+                &lt;/soap:Body&gt;
+            &lt;/soap:Envelope&gt;
+        ] ]&gt;
+        &lt;/e:body&gt;
+        &lt;e:expected&gt;
+        &lt;! [CDATA[
+            &lt;soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"&gt;
+                &lt;soap:Body&gt;
+                    &lt;ns2:getItemResponse xmlns:ns2="http://ws.io"&gt;
+                        &lt;val&gt;{{placeholder}}&lt;/val&gt;
+                    &lt;/ns2:getItemResponse&gt;
+                &lt;/soap:Body&gt;
+            &lt;/soap:Envelope&gt;
+        ] ]&gt;
+        &lt;/e:expected&gt;
+    &lt;/e:case&gt;
+    &lt;e:case desc="use-case 2"&gt;
+        &lt;e:body from="/ws/request.xml"/&gt;
+        &lt;e:expected from="/ws/response.xml"/&gt;
+    &lt;/e:case&gt;
+&lt;/e:soap&gt;
+</code></pre>
+        </dd>
+    </dl>
+    <h3>Message Queue plugin</h3><hr /><p>
+        <strong>MqPlugin</strong> enables to set up and verify the state of some message queue. A message queue is represented as
+        an implementation of the <code>io.github.adven27.concordion.extensions.exam.mq.MqTester</code> interface
+        and that implementation <mark>is completely responsible for interacting with that specific queue</mark>.
+    </p><figure class="figure">
+        <canvas class="nomnoml container" from="/specs/mq/mq.nomnoml">#.exam: fill=#0ee
+#.interface: fill=#0ee
+#.mq: fill=#0e0 bold visual=transceiver
+
+#gravity: 3
+#padding: 18
+#spacing: 45
+#direction: right
+
+[&lt;interface&gt;MqTester|start();stop();send();receive();purge()]
+
+[&lt;exam&gt;MqPlugin]uses-&gt;[MqTester]
+[MqTester]&lt;:-- implements[&lt;class&gt; RabbitTesterImpl]
+[MqTester]&lt;:-- implements[&lt;class&gt; KafkaTesterImpl]
+[MqTester]&lt;:--[&lt;label&gt; ...]
+[MqTester]&lt;:-- implements[&lt;class&gt; AnyCustomImpl]
+
+[RabbitTesterImpl]interacts with-&gt;[&lt;mq&gt; Rabbit MQ]
+[KafkaTesterImpl]interacts with-&gt;[&lt;mq&gt; Kafka]
+[AnyCustomImpl]interacts with-&gt;[&lt;mq&gt; Any other MQ]</canvas>
+        <figcaption class="figure-caption text-center">Exam integration with MQ</figcaption>
+    </figure><p>
+       There are several out-of-the-box implementations that can be used directly or as an example for custom ones:
+        <a href="https://github.com/Adven27/Exam/tree/master/exam-mq-kafka">exam-mq-kafka</a>,
+        <a href="https://github.com/Adven27/Exam/tree/master/exam-mq-rabbit">exam-mq-rabbit</a>,
+        <a href="https://github.com/Adven27/Exam/tree/master/exam-mq-ibmmq">exam-mq-ibmmq</a>,
+        <a href="https://github.com/Adven27/Exam/tree/master/exam-mq-redis">exam-mq-redis</a>.
+    </p><h4>Usage</h4><p>1. Add dependency <pre class="doc-code language-java"><code>testImplementation "io.github.adven27:exam-mq:{{version}}"</code></pre></p><p>2. Configure and attach the <a cc:run="concordion" href="mq/MqPlugin.html" class="success">MqPlugin</a></p><h4>Commands</h4><p>
+        There are commands for setting up and verifying queue state.
+    </p><h5>Set up queue</h5><dl>
+        <dt><code><a cc:run="concordion" href="mq/MqSend.html" class="success">mq-send</a></code></dt>
+        <dd>
+            <p>Sends a message to specified queue:</p>
+            <pre class="doc-code language-xml"><code>&lt;e:mq-send name="someQueue" from="/data/message.json"/&gt; </code></pre>
+        </dd>
+        <dt><code><a cc:run="concordion" href="mq/MqPurge.html" class="success">mq-purge</a></code></dt>
+        <dd>
+            <p>Purges specified queue:</p>
+            <pre class="doc-code language-xml"><code>&lt;e:mq-purge name="someQueue"/&gt;</code></pre>
+        </dd>
+    </dl><h5>Verify queue</h5><dl>
+        <dt><code><a cc:run="concordion" href="mq/MqCheck.html" class="ignored">mq-check</a></code></dt>
+        <dd>
+            <p>Verifies that specified messages exist in a queue:</p>
+            <pre class="doc-code language-xml"><code>
+&lt;e:mq-check name="someQueue"&gt;
+    &lt;e:message&gt;{"msg" : "1"}&lt;/e:message&gt;
+    &lt;e:message from="/data/mq/msg2.json"/&gt;
+&lt;/e:mq-check&gt;
+</code></pre>
+        </dd>
+    </dl>
+    <h3>UI plugin</h3><hr /><p>
+        <strong>UiPlugin</strong> is a wrapper around <a href="https://selenide.org/">Selenide</a> and
+        <a href="https://github.com/bonigarcia/webdrivermanager">WebDriverManager</a> libraries and
+        enables to verify Web UI.
+    </p><figure class="figure">
+        <canvas class="nomnoml container" from="/specs/ui/ui.nomnoml">#.exam: fill=#0ee
+#.browser: fill=#0e0 visual=frame
+
+#gravity: 3
+#padding: 18
+#spacing: 40
+#direction: right
+
+[&lt;exam&gt;WebDriver]
+[&lt;exam&gt;UiPlugin]configures-&gt;[WebDriver]
+[WebDriver]interacts with-&gt;[&lt;browser&gt; http://...| Web UI]</canvas>
+        <figcaption class="figure-caption text-center">Exam interactions with Web UI</figcaption>
+    </figure><h4>Usage</h4><p>1. Add dependency <pre class="doc-code language-java"><code>testImplementation "io.github.adven27:exam-ui:{{version}}"</code></pre></p><p>2. Configure and attach the <a cc:run="concordion" href="ui/UiPlugin.html" class="success">UiPlugin</a></p><h4>Commands</h4><p>
+        There is a command for starting browser, open an URL and executing step methods.
+    </p><h5>Open browser</h5><dl>
+        <dt><code><a cc:run="concordion" href="ui/Ui.html" class="ignored">browser</a></code></dt>
+        <dd>
+            <p>Starts browser and executes step methods:</p>
+            <pre class="doc-code language-xml"><code>
+&lt;e:browser url=":8888/sut/url" failFast="false"&gt;
+    &lt;e:step name="someTextCheck" set="checkResult" desc="Checking text and setting result to variable"&gt;text to check&lt;/e:step&gt;
+    &lt;e:step name="usePrevResultAndText(#checkResult, #TEXT)" desc="Do something with previous check result and some text"&gt;some text&lt;/e:step&gt;
+    &lt;e:step name="doSomething" desc="Just execute doSomething method"/&gt;
+&lt;/e:db-check&gt;
+</code></pre>
+        </dd>
+    </dl>
+
+    <h2>Appendices</h2>
+
+    <h3>Commands</h3>
+
+    <p>List of all commands provided by Exam.</p>
+
+    <h3>Examples</h3>
+
+    <p>Example projects.</p>
+
+    <a cc:run="concordion" href="gettingstarted/GettingStarted.html" class="success">Getting Started</a>
+
+    <h3>Markdown support</h3>
+
+    <p>Markdown support.</p>
+
+    <a cc:run="concordion" href="md/Markdown.html" class="ignored">Markdown support</a>
+
+</div></main></div></div><div class="footer">Results generated by <a href="http://www.concordion.org" style="font-weight: bold; text-decoration: none; color: #89C;">Concordion</a><div class="testTime">in 26866 ms on 12-Mar-2022 at 15:26:43 MSK</div></div></body>
+<button id="btnToTop" onclick="topFunction()" type="button" class="btn btn-light btn-sm text-muted me-1"><i class="fa fa-arrow-up"></i></button></html>

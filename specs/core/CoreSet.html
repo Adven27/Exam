@@ -1,0 +1,356 @@
+<?xml version="1.0" encoding="UTF-8"?><html xmlns:e="http://exam.extension.io" xmlns:cc="http://www.concordion.org/2007/concordion"><head><script type="text/javascript">document.addEventListener('DOMContentLoaded', function (event) {
+    Array.from(document.getElementsByClassName("nomnoml")).forEach(function(el) {
+        nomnoml.draw(el, el.textContent); 
+    });  
+});</script><script type="text/javascript">window.addEventListener('DOMContentLoaded', function (event) {
+    anchors.options = {
+        placement: 'left',
+        icon: '#'
+    };
+    anchors.add();
+    tocbot.init({
+        tocSelector: '.js-toc',
+        contentSelector: '.bd-content',
+        headingSelector: 'h1, h2, h3, h4, h5, h6',
+        hasInnerContainers: true,
+        collapseDepth: 3,
+        scrollSmooth: false,
+        fixedSidebarOffset: 'auto',
+        includeHtml: true
+    });
+    var collapseDepth = 3; 
+    jQuery( "#example-summary-badge" ).click(function() {
+        if (collapseDepth === 3) {
+            collapseDepth = 30;
+        } else {
+            collapseDepth = 3;
+        }
+        tocbot.refresh({
+            tocSelector: '.js-toc',
+            contentSelector: '.bd-content',
+            headingSelector: 'h1, h2, h3, h4, h5, h6',
+            hasInnerContainers: true,
+            collapseDepth: collapseDepth,
+            scrollSmooth: false,
+            fixedSidebarOffset: 'auto',
+            includeHtml: true
+        });
+        if (collapseDepth === 30) {
+            jQuery( ".toc-link" ).filter(function( index ) {
+                return jQuery( "i", this ).length !== 1
+            }).css("display", "none");
+        } else {
+            jQuery( ".toc-link" ).filter(function( index ) {
+                return jQuery( "i", this ).length !== 1
+            }).css("display", "unset");
+        }
+    });
+}); </script><script type="text/javascript">document.addEventListener('DOMContentLoaded', function (event) {
+    hljs.configure({
+        cssSelector: 'pre code, pre.code'
+    });
+    hljs.highlightAll();
+});</script><style>* {
+  font-family: Arial;
+}
+body {
+  padding: 32px;  
+}
+pre {
+  padding: 6px 28px 6px 28px;
+  background-color: #E8EEF7;
+}
+pre, pre *, code, code *, kbd {
+  font-family: Courier New, Courier;
+  font-size: 10pt;
+}
+h1, h1 * {
+  font-size: 24pt;	
+}
+p, td, th, li, .breadcrumbs {
+  font-size: 10pt;
+}
+p, li {
+  line-height: 140%;
+  max-width: 720px;
+}
+table {
+  border-collapse: collapse;
+  empty-cells: show;
+  margin: 8px 0px 8px 0px;
+}
+th, td {
+  border: 1px solid black;
+  padding: 3px;
+}
+td {
+  background-color: white;
+  vertical-align: top;
+}
+th {
+  background-color: #C3D9FF;
+}
+li {
+  margin-top: 6px;
+  margin-bottom: 6px; 
+}
+
+.example, :not(th)[cc\:example] {
+  padding: 6px 16px 6px 16px;
+  border: 1px solid #C3D9FF;
+  margin: 6px 0px 28px 0px;
+  background-color: #F5F9FD;
+}
+.example h3, [cc\:example] h3 {
+  margin-top: 8px;
+  margin-bottom: 8px;
+  font-size: 12pt;
+}
+
+p.success {
+  padding: 2px;
+}
+.success, .success * {
+  background-color: #afa !important;
+}
+.success pre {
+  background-color: #bbffbb;
+}
+.failure, .failure * {
+  background-color: #ffb0b0;
+  padding: 1px;
+}
+.failure .expected {
+  text-decoration: line-through;
+  color: #bb5050;
+}
+.ignored, .ignored * {
+  background-color: #f0f0f0 !important;	
+}
+
+ins {
+  text-decoration: none;	
+}
+
+.exceptionMessage {
+  background-color: #fdd;
+  font-family: Courier New, Courier, Monospace;
+  font-size: 10pt;
+  display: block;
+  font-weight: normal;
+  padding: 4px;
+  text-decoration: none !important;
+}
+.stackTrace, .stackTrace * {
+  font-weight: normal;
+}
+.stackTrace {
+  display: none;
+  padding: 1px 4px 4px 4px;
+  background-color: #fdd;
+  border-top: 1px dotted black;
+}
+.stackTraceExceptionMessage {
+  display: block;
+  font-family: Courier New, Courier, Monospace;
+  font-size: 8pt;
+  white-space: wrap;
+  padding: 1px 0px 1px 0px;
+}
+.stackTraceEntry {
+  white-space: nowrap;
+  font-family: Courier New, Courier, Monospace;
+  display: block;
+  font-size: 8pt;
+  padding: 1px 0px 1px 32px;
+}
+.stackTraceButton {
+  font-size: 8pt;
+  margin: 2px 8px 2px 0px;
+  font-weight: normal;
+  font-family: Arial;
+}
+
+.special {
+  font-style: italic;
+}
+.missing, .missing * {
+  background-color: #ff9999;
+  color:#bb5050;
+  text-decoration: line-through;
+}
+.surplus, .surplus * {
+  background-color: #ff9999;
+}
+.footer {
+  text-align: right;
+  margin-top: 40px;
+  font-size: 8pt;
+  width: 100%;
+  color: #999;
+}
+.footer .testTime {
+  padding: 2px 10px 0px 0px;
+}
+
+.idea {
+  font-size: 9pt;
+  color: #888;
+  font-style: italic;	
+}
+.tight li {
+  margin-top: 1px;
+  margin-bottom: 1px; 
+}
+.commentary {
+  float: right;
+  width: 200px;
+  background-color: #ffffd0;
+  padding:8px;
+  border: 3px solid #eeeeb0;	 
+  margin: 10px 0px 10px 10px;	 
+}
+.commentary, .commentary * {
+  font-size: 8pt;
+}
+</style><meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<link type="text/css" rel="stylesheet" href="../../ext/codemirror/codemirror.css" /><link type="text/css" rel="stylesheet" href="../../ext/codemirror/enable-codemirror.css" /><link type="text/css" rel="stylesheet" href="../../ext/codemirror/merge.css" /><link type="text/css" rel="stylesheet" href="../../ext/codemirror/foldgutter.css" /><link type="text/css" rel="stylesheet" href="../../ext/codemirror/simplescrollbar.css" /><script type="text/javascript" src="../../ext/codemirror/codemirror.js"></script><script type="text/javascript" src="../../ext/codemirror/enable-codemirror.js"></script><script type="text/javascript" src="../../ext/codemirror/javascript.js"></script><script type="text/javascript" src="../../ext/codemirror/xml.js"></script><script type="text/javascript" src="../../ext/codemirror/addon/mode/simple.js"></script><script type="text/javascript" src="../../ext/codemirror/http.js"></script><script type="text/javascript" src="../../ext/codemirror/diff_match_patch.js"></script><script type="text/javascript" src="../../ext/codemirror/merge.js"></script><script type="text/javascript" src="../../ext/codemirror/xml-fold.js"></script><script type="text/javascript" src="../../ext/codemirror/simplescrollbar.js"></script><link type="text/css" rel="stylesheet" href="../../ext/highlight/stackoverflow-light.min.css" /><script type="text/javascript" src="../../ext/highlight/highlight.min.js"></script><script type="text/javascript" src="../../ext/highlight/http.min.js"></script><script type="text/javascript" src="../../ext/highlight/java.min.js"></script><link type="text/css" rel="stylesheet" href="../../ext/tocbot/tocbot.css" /><script type="text/javascript" src="../../ext/tocbot/tocbot.min.js"></script><link type="text/css" rel="stylesheet" href="../../ext/fontawesome/css/all.min.css" /><link type="text/css" rel="stylesheet" href="../../ext/fontawesome/css/regular.min.css" /><link type="text/css" rel="stylesheet" href="../../ext/fontawesome/css/solid.min.css" /><link type="text/css" rel="stylesheet" href="../../ext/fontawesome/css/all.min.css" /><link type="text/css" rel="stylesheet" href="../../ext/bootstrap/bootstrap.min.css" /><link type="text/css" rel="stylesheet" href="../../ext/bootstrap/enable-bootstrap.css" /><link type="text/css" rel="stylesheet" href="../../ext/bootstrap/doc.min.css" /><link type="text/css" rel="stylesheet" href="../../ext/bootstrap/scrollToTop.css" /><script type="text/javascript" src="../../ext/bootstrap/bootstrap.bundle.min.js"></script><script type="text/javascript" src="../../ext/bootstrap/jquery-3.2.1.slim.min.js"></script><script type="text/javascript" src="../../ext/bootstrap/sidebar.js"></script><script type="text/javascript" src="../../ext/bootstrap/doc.min.js"></script><script type="text/javascript" src="../../ext/bootstrap/scrollToTop.js"></script><script type="text/javascript" src="../../ext/nomnoml/graphre.js"></script><script type="text/javascript" src="../../ext/nomnoml/nomnoml.min.js"></script></head><body><span class="breadcrumbs"><a href="../Specs.html">Exam</a> &gt;</span><div class="container-fluid"><div class="container-xxl my-md-4 bd-layout"><main class="bd-main order-1"><div class="bd-toc mt-4 mb-5 my-md-0 ps-xl-3 mb-lg-5 text-muted"><div class="row my-2 pb-2 border-bottom"><div class="col-9"><strong class="h6">On this page</strong></div><div class="col-2"><i id="example-summary-badge" class="fa fa-list-check"></i></div></div><nav id="table-of-contents" class="js-toc toc toc-right" /></div><div class="bd-content ps-lg-4" id="content">
+<h1>Core set command</h1>
+
+<p class="lead">Handlebars aware set command.</p>
+
+<h2>Overview</h2>
+
+<p>
+    Command may be used as drop-in replacements for
+    <a href="https://concordion.org/instrumenting/java/html/#set-command">Concordion set command</a>
+    when handlebars-template support is needed.
+</p>
+
+<h2>Examples</h2>
+
+<p>
+    New variable could be created in the following ways:
+</p>
+
+<div xmlns:c="http://www.concordion.org/2007/concordion" name="before" cmdId="9bdfca56-9cd0-455b-92b9-a91c16eb25da" c:example="before" c:status="ExpectedToPass" e:example="" id="before"><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p>
+    Given concordion variable <code>ccVar</code> = <code cc:set="#ccVar">1</code>
+</div>
+
+
+<h3>Embedded command</h3>
+
+<p>
+    Recommended idiomatic way.
+</p>
+
+<h4>From value attribute</h4>
+
+<div xmlns:c="http://www.concordion.org/2007/concordion" name="embedded - no body" cmdId="583142db-ee50-49fd-bb68-c2b0b79e33ee" c:example="embedded - no body" c:status="ExpectedToPass" e:example="" class="exam-example mb-3" data-type="example" id="embedded - no body" data-summary-success="1" data-summary-ignore="0" data-summary-failure="0" data-summary-exception="0" data-summary-status="ExpectedToPass"><div data-bs-toggle="collapse" data-bs-target="#e22436a05-0586-4287-9e32-8d1d3a169b33" aria-expanded="true"><h5 style="visibility: hidden; height:0;" class="test-class"><i class="example-badge fa fa-check m-1 text-success"></i>embedded - no body</h5><i class="far fa-caret-square-down"></i><span> </span><a class="bd-example-title text-muted fw-lighter">embedded - no body</a></div><div class="bd-example collapse show rounded bg-light bg-gradient" id="e22436a05-0586-4287-9e32-8d1d3a169b33">
+    Let's create new variable  <code>veNoBody</code> with the value equal to <code>ccVar</code>.
+    <div class="mb-4 mt-4"><mark>The following markup:</mark><pre class="doc-code language-xml mt-2"><code>&lt;pre e:set="#veNoBody" value="{{ccVar}}"/&gt;</code></pre><mark>will be rendered as:</mark></div><pre e:set="#veNoBody" value="{{ccVar}}" print="true">1</pre>
+    New variable <code>veNoBody</code> has value: <code cc:assertEquals="#veNoBody" class="success">1</code>
+</div></div>
+
+<h4>From tag body</h4>
+
+<div xmlns:c="http://www.concordion.org/2007/concordion" name="embedded - body" cmdId="df567e0f-ac8f-47f6-bde0-381dfb6b307a" c:example="embedded - body" c:status="ExpectedToPass" e:example="" class="exam-example mb-3" data-type="example" id="embedded - body" data-summary-success="1" data-summary-ignore="0" data-summary-failure="0" data-summary-exception="0" data-summary-status="ExpectedToPass"><div data-bs-toggle="collapse" data-bs-target="#e2bda6a42-f2e1-4375-b505-cf4fa975e804" aria-expanded="true"><h5 style="visibility: hidden; height:0;" class="test-class"><i class="example-badge fa fa-check m-1 text-success"></i>embedded - body</h5><i class="far fa-caret-square-down"></i><span> </span><a class="bd-example-title text-muted fw-lighter">embedded - body</a></div><div class="bd-example collapse show rounded bg-light bg-gradient" id="e2bda6a42-f2e1-4375-b505-cf4fa975e804">
+    Let's create new variable  <code>veBody</code> with the value equal to <var>concordion var = </var> + <var>ccVar</var> value.
+    <div class="mb-4 mt-4"><mark>The following markup:</mark><pre class="doc-code language-xml mt-2"><code>&lt;pre e:set="#veBody"&gt;concordion var = {{ccVar}}&lt;/pre&gt;</code></pre><mark>will be rendered as:</mark></div><pre e:set="#veBody" print="true">concordion var = 1</pre>
+    New variable <code>veBody</code> has value: <code cc:assertEquals="#veBody" class="success">concordion var = 1</code>
+</div></div>
+
+<h4>From file</h4>
+
+<div xmlns:c="http://www.concordion.org/2007/concordion" name="embedded - file" cmdId="01f83943-19b7-4479-8ec3-0ad2ac0c79f8" c:example="embedded - file" c:status="ExpectedToPass" e:example="" class="exam-example mb-3" data-type="example" id="embedded - file" data-summary-success="1" data-summary-ignore="0" data-summary-failure="0" data-summary-exception="0" data-summary-status="ExpectedToPass"><div data-bs-toggle="collapse" data-bs-target="#e04e77925-1ecb-4a58-b0c8-dabc24d5e600" aria-expanded="true"><h5 style="visibility: hidden; height:0;" class="test-class"><i class="example-badge fa fa-check m-1 text-success"></i>embedded - file</h5><i class="far fa-caret-square-down"></i><span> </span><a class="bd-example-title text-muted fw-lighter">embedded - file</a></div><div class="bd-example collapse show rounded bg-light bg-gradient" id="e04e77925-1ecb-4a58-b0c8-dabc24d5e600">
+    Let's create new variable  <code>veFile</code> with the value equal to: <pre>File template:  ccVar = {{ccVar}}</pre>
+    <div class="mb-4 mt-4"><mark>The following markup:</mark><pre class="doc-code language-xml mt-2"><code>&lt;pre e:set="#veFile" from="/data/core/file.txt"/&gt;</code></pre><mark>will be rendered as:</mark></div><pre e:set="#veFile" from="/data/core/file.txt" print="true">File template:  ccVar = 1</pre>
+    New variable <code>veFile</code> has value: <code cc:assertEquals="#veFile" class="success">File template:  ccVar = 1</code>
+</div></div>
+
+<h3>Custom tag command</h3>
+
+<p>
+    Not recommended legacy-style.
+</p>
+
+<h4>From value attribute</h4>
+
+<div xmlns:c="http://www.concordion.org/2007/concordion" name="custom tag - no body" cmdId="b9fd5dcf-70b5-4d63-8c3e-e5a519c25ca8" c:example="custom tag - no body" c:status="ExpectedToPass" e:example="" class="exam-example mb-3" data-type="example" id="custom tag - no body" data-summary-success="1" data-summary-ignore="0" data-summary-failure="0" data-summary-exception="0" data-summary-status="ExpectedToPass"><div data-bs-toggle="collapse" data-bs-target="#ed4103fe9-50a4-4465-92f2-11864734a009" aria-expanded="true"><h5 style="visibility: hidden; height:0;" class="test-class"><i class="example-badge fa fa-check m-1 text-success"></i>custom tag - no body</h5><i class="far fa-caret-square-down"></i><span> </span><a class="bd-example-title text-muted fw-lighter">custom tag - no body</a></div><div class="bd-example collapse show rounded bg-light bg-gradient" id="ed4103fe9-50a4-4465-92f2-11864734a009">
+    Let's create new variable  <code>vcNoBody</code> with the value equal to <code>ccVar</code>.
+    <div class="mb-4 mt-4"><mark>The following markup:</mark><pre class="doc-code language-xml mt-2"><code>&lt;e:set var="#vcNoBody" value="{{ccVar}}"/&gt;</code></pre><mark>will be rendered as:</mark></div><pre var="#vcNoBody" value="{{ccVar}}" print="true" cmdId="248b205d-7b89-43f7-9eb5-321597baac03" e:set="">1</pre>
+    New variable <code>vcNoBody</code> has value: <code cc:assertEquals="#vcNoBody" class="success">1</code>
+</div></div>
+
+<h4>From body</h4>
+
+<div xmlns:c="http://www.concordion.org/2007/concordion" name="custom tag - body" cmdId="e4e3c506-9f56-467d-b299-277247ae3b35" c:example="custom tag - body" c:status="ExpectedToPass" e:example="" class="exam-example mb-3" data-type="example" id="custom tag - body" data-summary-success="1" data-summary-ignore="0" data-summary-failure="0" data-summary-exception="0" data-summary-status="ExpectedToPass"><div data-bs-toggle="collapse" data-bs-target="#ef1ceb3a5-e2b2-4b6a-8abe-cc8b016452c0" aria-expanded="true"><h5 style="visibility: hidden; height:0;" class="test-class"><i class="example-badge fa fa-check m-1 text-success"></i>custom tag - body</h5><i class="far fa-caret-square-down"></i><span> </span><a class="bd-example-title text-muted fw-lighter">custom tag - body</a></div><div class="bd-example collapse show rounded bg-light bg-gradient" id="ef1ceb3a5-e2b2-4b6a-8abe-cc8b016452c0">
+    Let's create new variable  <code>vcBody</code> with the value equal to: <code>concordion var = </code> + <code>ccVar value</code>.
+    <div class="mb-4 mt-4"><mark>The following markup:</mark><pre class="doc-code language-xml mt-2"><code>&lt;e:set var="#vcBody"&gt;concordion var = {{ccVar}}&lt;/e:set&gt;</code></pre><mark>will be rendered as:</mark></div><pre var="#vcBody" print="true" cmdId="f83a24b4-b245-4bc1-a25c-98fa9e45b3be" e:set="">concordion var = 1</pre>
+    New variable <code>vcBody</code> has value: <code cc:assertEquals="#vcBody" class="success">concordion var = 1</code>
+</div></div>
+
+<h4>From file</h4>
+
+<div xmlns:c="http://www.concordion.org/2007/concordion" name="custom tag - file" cmdId="c529503d-3629-4b40-8bc5-da680bbfb680" c:example="custom tag - file" c:status="ExpectedToPass" e:example="" class="exam-example mb-3" data-type="example" id="custom tag - file" data-summary-success="1" data-summary-ignore="0" data-summary-failure="0" data-summary-exception="0" data-summary-status="ExpectedToPass"><div data-bs-toggle="collapse" data-bs-target="#eed7e6df2-9fe2-4c32-b7bf-b6ce3bd0259b" aria-expanded="true"><h5 style="visibility: hidden; height:0;" class="test-class"><i class="example-badge fa fa-check m-1 text-success"></i>custom tag - file</h5><i class="far fa-caret-square-down"></i><span> </span><a class="bd-example-title text-muted fw-lighter">custom tag - file</a></div><div class="bd-example collapse show rounded bg-light bg-gradient" id="eed7e6df2-9fe2-4c32-b7bf-b6ce3bd0259b">
+    Let's create new variable  <code>vcFile</code> with the value equal to: <pre>File template:  ccVar = {{ccVar}}</pre>
+    <div class="mb-4 mt-4"><mark>The following markup:</mark><pre class="doc-code language-xml mt-2"><code>&lt;e:set var="#vcFile" from="/data/core/file.txt"/&gt;</code></pre><mark>will be rendered as:</mark></div><pre var="#vcFile" from="/data/core/file.txt" print="true" cmdId="5e125af9-d2f2-418b-865e-c6d7f72592f6" e:set="">File template:  ccVar = 1</pre>
+    New variable <code>vcFile</code> has value: <code cc:assertEquals="#vcFile" class="success">File template:  ccVar = 1</code>
+</div></div>
+
+<h3>Silent set</h3>
+
+<p>
+    To set variable silently without rendering in report just set <code>display: none</code> style attribute.
+</p>
+
+<div xmlns:c="http://www.concordion.org/2007/concordion" name="silent" cmdId="f6a35c47-6b34-4cbe-a9ec-ab75d9d042c9" c:example="silent" c:status="ExpectedToPass" e:example="" class="exam-example mb-3" data-type="example" id="silent" data-summary-success="2" data-summary-ignore="0" data-summary-failure="0" data-summary-exception="0" data-summary-status="ExpectedToPass"><div data-bs-toggle="collapse" data-bs-target="#e5a204b31-1755-4f75-b9ef-6c54c919659a" aria-expanded="true"><h4 style="visibility: hidden; height:0;" class="test-class"><i class="example-badge fa fa-check m-1 text-success"></i>silent</h4><i class="far fa-caret-square-down"></i><span> </span><a class="bd-example-title text-muted fw-lighter">silent</a></div><div class="bd-example collapse show rounded bg-light bg-gradient" id="e5a204b31-1755-4f75-b9ef-6c54c919659a">
+    Let's create new variable  <code>v1Silent</code> with the value equal to <code>1</code>:
+    <div class="mb-4 mt-4"><mark>The following markup:</mark><pre class="doc-code language-xml mt-2"><code>&lt;e:set var="#v1Silent" hidden=""&gt;1&lt;/e:set&gt;</code></pre><mark>will be rendered as:</mark></div><pre var="#v1Silent" hidden="" print="true" cmdId="bb078333-4d60-40a6-bc19-c2b02d7143d1" e:set="">1</pre>
+
+    and <code>v2Silent</code> with the value equal to <code>2</code>:
+    <div class="mb-4 mt-4"><mark>The following markup:</mark><pre class="doc-code language-xml mt-2"><code>&lt;pre e:set="#v2Silent" hidden=""&gt;2&lt;/pre&gt;</code></pre><mark>will be rendered as:</mark></div><pre e:set="#v2Silent" hidden="" print="true">2</pre>
+
+    <p>
+        New variable <code>v1Silent</code> has value: <code cc:assertEquals="#v1Silent" class="success">1</code>
+    </p>
+    <p>
+        New variable <code>v2Silent</code> has value: <code cc:assertEquals="#v2Silent" class="success">2</code>
+    </p>
+</div></div>
+
+<h3>Pretty-print</h3>
+
+<p>
+    Exam uses <a href="https://highlightjs.org/">highlightjs library</a> for code highlighting,
+    which can be used according to documentation:
+</p>
+
+<blockquote class="blockquote blockquote-custom bg-white p-5 shadow rounded">
+    <i class="fas fa-quote-left fa-lg text-info me-2"> </i>
+    <p class="mb-0 mt-2">
+        <em>
+        "This will find and highlight code inside of <strong>&lt;pre&gt;&lt;code&gt;</strong> tags;
+        it tries to detect the language automatically.
+        If automatic detection doesn’t work for you, or you simply prefer to be explicit,
+        you can specify the language manually in the using the class attribute..."
+        </em>
+    </p>
+    <footer class="blockquote-footer pt-1 mt-1">
+        <a href="https://highlightjs.org/usage/">https://highlightjs.org/usage/</a>
+    </footer>
+</blockquote>
+
+<div xmlns:c="http://www.concordion.org/2007/concordion" name="Pretty-print" cmdId="552146eb-70b5-4df2-8a3b-ea7f79ec7edf" c:example="Pretty-print" c:status="ExpectedToPass" e:example="" class="exam-example mb-3" data-type="example" id="Pretty-print" data-summary-success="1" data-summary-ignore="0" data-summary-failure="0" data-summary-exception="0" data-summary-status="ExpectedToPass"><div data-bs-toggle="collapse" data-bs-target="#e29ee631b-0bb8-4466-bb67-ef8de11522f5" aria-expanded="true"><h4 style="visibility: hidden; height:0;" class="test-class"><i class="example-badge fa fa-check m-1 text-success"></i>Pretty-print</h4><i class="far fa-caret-square-down"></i><span> </span><a class="bd-example-title text-muted fw-lighter">Pretty-print</a></div><div class="bd-example collapse show rounded bg-light bg-gradient" id="e29ee631b-0bb8-4466-bb67-ef8de11522f5">
+    Let's create new variable  <code>vPretty</code> with the value equal to <code>{ "a" : 1 }</code>:
+    <div class="mb-4 mt-4"><mark>The following markup:</mark><pre class="doc-code language-xml mt-2"><code>&lt;pre class="language-json"&gt;
+  &lt;code e:set="#vPretty"&gt;{ "a" : 1 }&lt;/code&gt;
+&lt;/pre&gt;</code></pre><mark>will be rendered as:</mark></div><pre class="language-json" print="true"><code e:set="#vPretty">{ "a" : 1 }</code></pre>
+
+    <p>
+        New variable <code>vPretty</code> has value: <code cc:assertEquals="#vPretty" class="success">{ "a" : 1 }</code>
+    </p>
+</div></div>
+
+</div></main></div></div><div class="footer">Results generated by <a href="http://www.concordion.org" style="font-weight: bold; text-decoration: none; color: #89C;">Concordion</a><div class="testTime">in 58 ms on 12-Mar-2022 at 15:26:16 MSK</div></div></body>
+<button id="btnToTop" onclick="topFunction()" type="button" class="btn btn-light btn-sm text-muted me-1"><i class="fa fa-arrow-up"></i></button></html>
