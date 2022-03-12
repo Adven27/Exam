@@ -7,6 +7,7 @@ import io.github.adven27.concordion.extensions.exam.core.commands.BeforeParseExa
 import io.github.adven27.concordion.extensions.exam.core.handlebars.HelperMissing.Companion.helpersDesc
 import io.github.adven27.concordion.extensions.exam.core.handlebars.MissingHelperException
 import io.github.adven27.concordion.extensions.exam.core.html.Html
+import io.github.adven27.concordion.extensions.exam.core.html.badge
 import io.github.adven27.concordion.extensions.exam.core.html.codeHighlight
 import io.github.adven27.concordion.extensions.exam.core.html.div
 import io.github.adven27.concordion.extensions.exam.core.html.italic
@@ -50,10 +51,8 @@ internal class ExamExampleListener(private val skipDecider: SkipDecider) : Examp
     override fun beforeExample(event: ExampleEvent) {
         val name = event.resultSummary.specificationDescription.substringAfterLast(File.separator)
         val elem = event.element
-        val header = elem.childElements[0]
-        elem.removeChild(header)
         Html(elem).panel(
-            elem.getAttributeValue("name") ?: header.text,
+            elem.getAttributeValue("name") ?: elem.childElements[0].also { elem.removeChild(it) }.text,
             levelOfOwnerHeader(elem) + 1
         )
         if (skipDecider.test(event)) {
@@ -91,17 +90,26 @@ internal class ExamExampleListener(private val skipDecider: SkipDecider) : Examp
             "data-summary-exception" to summary.exceptionCount.toString(),
             "data-summary-status" to summary.implementationStatus.tag,
         )
-        card.first("div")!!.childs().first().let {
-            if (summary.failureCount == 0L && summary.exceptionCount == 0L) {
-                it.prependChild(italic("").css("example-badge fa fa-check m-1 text-success"))
-            } else {
-                card.el.rootElement.getElementById("example-summary-badge").addStyleClass("text-danger")
-                it.prependChild(italic("").css("example-badge fa fa-bug m-1 text-danger"))
+        card.first("div")?.let { title ->
+            title.childs().first().let {
+                if (summary.implementationStatus != EXPECTED_TO_PASS) {
+                    title(badge(event.resultSummary.implementationStatus.tag, "warning"))
+                    it.prependChild(badge(event.resultSummary.implementationStatus.tag, "warning"))
+                }
+                if (summary.passed()) {
+                    it.prependChild(italic("").css("example-badge fa fa-check m-1 text-success"))
+                } else {
+                    card.el.rootElement.getElementById("example-summary-badge").addStyleClass("text-danger")
+                    it.prependChild(italic("").css("example-badge fa fa-bug m-1 text-danger"))
+                }
             }
         }
         removeConcordionExpectedToFailWarning(card)
         exampleResults[card.attr("id")!!] = summary
     }
+
+    private fun ResultSummary.passed() =
+        failureCount == 0L && exceptionCount == 0L && implementationStatus == EXPECTED_TO_PASS
 
     private fun removeConcordionExpectedToFailWarning(card: Html) {
         card.first("p")?.let { card.remove(it) }
