@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?><html xmlns:e="http://exam.extension.io" xmlns:cc="http://www.concordion.org/2007/concordion"><head><script type="text/javascript">document.addEventListener('DOMContentLoaded', function (event) {
+    Array.from(document.getElementsByClassName("nomnoml")).forEach(function(el) {
+        nomnoml.draw(el, el.textContent); 
+    });  
+});</script><script type="text/javascript">window.addEventListener('DOMContentLoaded', function (event) {
+     jQuery("table").wrap(unescape("&lt;div class='table-responsive'&gt;&lt;/div&gt;"));
+}); </script><script type="text/javascript">window.addEventListener('DOMContentLoaded', function (event) {
+     jQuery(".details").wrap(unescape("&lt;details&gt;&lt;/details&gt;"));
+}); </script><script type="text/javascript">window.addEventListener('DOMContentLoaded', function (event) {
+    anchors.options = {
+        placement: 'left',
+        icon: '#'
+    };
+    anchors.add();
+    tocbot.init({
+        tocSelector: '.js-toc',
+        contentSelector: '.bd-content',
+        headingSelector: 'h1, h2, h3, h4, h5, h6',
+        hasInnerContainers: true,
+        collapseDepth: 3,
+        scrollSmooth: false,
+        fixedSidebarOffset: 'auto',
+        includeHtml: true
+    });
+    var collapseDepth = 3; 
+    jQuery( "#example-summary-badge" ).click(function() {
+        if (collapseDepth === 3) {
+            collapseDepth = 30;
+        } else {
+            collapseDepth = 3;
+        }
+        tocbot.refresh({
+            tocSelector: '.js-toc',
+            contentSelector: '.bd-content',
+            headingSelector: 'h1, h2, h3, h4, h5, h6',
+            hasInnerContainers: true,
+            collapseDepth: collapseDepth,
+            scrollSmooth: false,
+            fixedSidebarOffset: 'auto',
+            includeHtml: true
+        });
+        if (collapseDepth === 30) {
+            jQuery( ".toc-link" ).filter(function( index ) {
+                return jQuery( "i", this ).length !== 1
+            }).css("display", "none");
+        } else {
+            jQuery( ".toc-link" ).filter(function( index ) {
+                return jQuery( "i", this ).length !== 1
+            }).css("display", "unset");
+        }
+    });
+}); </script><script type="text/javascript">document.addEventListener('DOMContentLoaded', function (event) {
+    hljs.configure({
+        cssSelector: 'pre code, pre.code'
+    });
+    hljs.highlightAll();
+});</script><meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<link type="text/css" rel="stylesheet" href="../../../ext/codemirror/codemirror.css" /><link type="text/css" rel="stylesheet" href="../../../ext/codemirror/enable-codemirror.css" /><link type="text/css" rel="stylesheet" href="../../../ext/codemirror/merge.css" /><link type="text/css" rel="stylesheet" href="../../../ext/codemirror/foldgutter.css" /><link type="text/css" rel="stylesheet" href="../../../ext/codemirror/simplescrollbar.css" /><script type="text/javascript" src="../../../ext/codemirror/codemirror.js"></script><script type="text/javascript" src="../../../ext/codemirror/enable-codemirror.js"></script><script type="text/javascript" src="../../../ext/codemirror/javascript.js"></script><script type="text/javascript" src="../../../ext/codemirror/xml.js"></script><script type="text/javascript" src="../../../ext/codemirror/addon/mode/simple.js"></script><script type="text/javascript" src="../../../ext/codemirror/http.js"></script><script type="text/javascript" src="../../../ext/codemirror/diff_match_patch.js"></script><script type="text/javascript" src="../../../ext/codemirror/merge.js"></script><script type="text/javascript" src="../../../ext/codemirror/xml-fold.js"></script><script type="text/javascript" src="../../../ext/codemirror/simplescrollbar.js"></script><link type="text/css" rel="stylesheet" href="../../../ext/highlight/stackoverflow-light.min.css" /><script type="text/javascript" src="../../../ext/highlight/highlight.min.js"></script><script type="text/javascript" src="../../../ext/highlight/http.min.js"></script><script type="text/javascript" src="../../../ext/highlight/java.min.js"></script><link type="text/css" rel="stylesheet" href="../../../ext/tocbot/tocbot.css" /><script type="text/javascript" src="../../../ext/tocbot/tocbot.min.js"></script><link type="text/css" rel="stylesheet" href="../../../ext/fontawesome/css/all.min.css" /><link type="text/css" rel="stylesheet" href="../../../ext/fontawesome/css/regular.min.css" /><link type="text/css" rel="stylesheet" href="../../../ext/fontawesome/css/solid.min.css" /><link type="text/css" rel="stylesheet" href="../../../ext/fontawesome/css/all.min.css" /><link type="text/css" rel="stylesheet" href="../../../ext/bootstrap/bootstrap.min.css" /><link type="text/css" rel="stylesheet" href="../../../ext/bootstrap/enable-bootstrap.css" /><link type="text/css" rel="stylesheet" href="../../../ext/bootstrap/doc.min.css" /><link type="text/css" rel="stylesheet" href="../../../ext/bootstrap/scrollToTop.css" /><script type="text/javascript" src="../../../ext/bootstrap/bootstrap.bundle.min.js"></script><script type="text/javascript" src="../../../ext/bootstrap/jquery-3.2.1.slim.min.js"></script><script type="text/javascript" src="../../../ext/bootstrap/sidebar.js"></script><script type="text/javascript" src="../../../ext/bootstrap/doc.min.js"></script><script type="text/javascript" src="../../../ext/bootstrap/scrollToTop.js"></script><script type="text/javascript" src="../../../ext/nomnoml/graphre.js"></script><script type="text/javascript" src="../../../ext/nomnoml/nomnoml.min.js"></script></head><body><span class="breadcrumbs"><a href="../../Specs.html">Exam</a> &gt; <a href="Handlebar.html">Handlebar support</a> &gt;</span><div class="container-fluid"><div class="container-xxl my-md-4 bd-layout"><main class="bd-main order-1"><div class="bd-toc mt-4 mb-5 my-md-0 ps-xl-3 mb-lg-5 text-muted"><div class="row my-2 pb-2 border-bottom"><div class="col-9"><strong class="h6">On this page</strong></div><div class="col-2"><i id="example-summary-badge" class="fa fa-list-check"></i></div></div><nav id="table-of-contents" class="js-toc toc toc-right" /></div><div class="bd-content ps-lg-4" id="content">
+<h1>Handlebar support</h1>
+
+<p class="lead">
+    <a href="https://github.com/jknack/handlebars.java">The Handlebars templates</a> may be used
+    for templating values in Exam commands.
+</p>
+
+<h2>Overview</h2>
+
+<p>
+    Exam provides following built-in <a href="https://github.com/jknack/handlebars.java#helpers">helpers</a> groups:
+</p>
+<dl>
+    <dt>Date helpers</dt>
+    <dd>
+        <pre><code cc:echo="dateHelpers">{{now "yyyy-MM-dd'T'HH:mm Z" tz="GMT+3" minus="1 y, 2 months, d 3" plus="4 h, 5 min, 6 s"}} will produce: "2021-02-02T02:00 +0300" 
+{{today "yyyy-MM-dd" minus="1 y, 2 months, d 3"}} will produce: "2021-02-01" 
+{{date '01.02.2000 10:20' format="dd.MM.yyyy HH:mm" minus="1 h" plus="1 h"}} will produce: object of class java.util.Date = "Tue Feb 01 10:20:00 MSK 2000" 
+{{weeksAgo 2}} will produce: object of class java.util.Date = "Mon Mar 21 00:00:00 MSK 2022" 
+{{daysAgo 2}} will produce: object of class java.util.Date = "Sat Apr 02 00:00:00 MSK 2022" 
+{{dateFormat date "yyyy-MM-dd'T'HH:mm O" tz="GMT+3" minus="1 y, 2 months, d 3" plus="4 h, 5 min, 6 s"}} will produce: "1998-10-30T14:25 GMT+3" (given context has variables: {date=Sun Jan 02 10:20:00 MSK 2000})</code></pre>
+    </dd>
+    <dt>Data matcher helpers</dt>
+    <dd>
+        <pre><code cc:echo="matcherHelpers">{{string}} will produce: "${json-unit.any-string}" (given context has variables: {placeholder_type=json})
+{{number}} will produce: "${json-unit.any-number}" (given context has variables: {placeholder_type=json})
+{{bool}} will produce: "${json-unit.any-boolean}" (given context has variables: {placeholder_type=json})
+{{ignore}} will produce: "${json-unit.ignore}" (given context has variables: {placeholder_type=json})
+{{regex '\d+'}} will produce: "${json-unit.regex}\d+" (given context has variables: {placeholder_type=json})
+{{matches 'name' 'params'}} will produce: "${json-unit.matches:name}params" (given context has variables: {placeholder_type=json})
+{{formattedAs "yyyy-MM-dd'T'hh:mm:ss"}} will produce: "${json-unit.matches:formattedAs}yyyy-MM-dd'T'hh:mm:ss" (given context has variables: {placeholder_type=json})
+{{isoLocalDate}} will produce: "${json-unit.matches:formattedAs}yyyy-MM-dd" (given context has variables: {placeholder_type=json})
+{{isoLocalDateTime}} will produce: "${json-unit.matches:formattedAs}ISO_LOCAL" (given context has variables: {placeholder_type=json})
+{{formattedAndWithinNow "yyyy-MM-dd'T'hh:mm:ss" "5s"}} will produce: "${json-unit.matches:formattedAndWithinNow}yyyy-MM-dd'T'hh:mm:ss|param|5s" (given context has variables: {placeholder_type=json})
+{{isoLocalDateAndWithinNow "5s"}} will produce: "${json-unit.matches:formattedAndWithinNow}yyyy-MM-dd|param|5s" (given context has variables: {placeholder_type=json})
+{{isoLocalDateTimeAndWithinNow "5s"}} will produce: "${json-unit.matches:formattedAndWithinNow}ISO_LOCAL|param|5s" (given context has variables: {placeholder_type=json})
+{{formattedAndWithin 'yyyy-MM-dd' '5s' '1951-05-13'}} will produce: "${json-unit.matches:formattedAndWithin}yyyy-MM-dd|param|5s|param|1951-05-13" (given context has variables: {placeholder_type=json})
+{{isoLocalDateAndWithin '5s' '1951-05-13'}} will produce: "${json-unit.matches:formattedAndWithin}yyyy-MM-dd|param|5s|param|1951-05-13" (given context has variables: {placeholder_type=json})
+{{isoLocalDateTimeAndWithin '5s' '1951-05-13'}} will produce: "${json-unit.matches:formattedAndWithin}ISO_LOCAL|param|5s|param|1951-05-13" (given context has variables: {placeholder_type=json})
+{{after '2000-01-31T23:59:59.000'}} will produce: "${json-unit.matches:after}2000-01-31T23:59:59.000" (given context has variables: {placeholder_type=json})
+{{before '2000-01-31T23:59:59.000'}} will produce: "${json-unit.matches:before}2000-01-31T23:59:59.000" (given context has variables: {placeholder_type=json})</code></pre>
+    </dd>
+    <dt>Misc helpers</dt>
+    <dd>
+        <pre><code cc:echo="miscHelpers">{{set 1 "someVar"}} will produce: object of class java.lang.Integer = "1" 
+{{getOr var "default value"}} will produce: "default value" 
+{{map key='value'}} will produce: object of class java.util.Collections$SingletonMap = "{key=value}" 
+{{NULL}} will produce: null 
+{{eval '#var'}} will produce: object of class java.lang.Integer = "2" (given context has variables: {var=2})
+{{resolve 'today is {{today}}'}} will produce: "today is Mon Apr 04 00:00:00 MSK 2022" 
+{{resolveFile '/hb/some-file.txt'}} will produce: "today is Mon Apr 04 00:00:00 MSK 2022" 
+{{prop 'system.property' 'optional default'}} will produce: "optional default" 
+{{env 'env.property' 'optional default'}} will produce: "optional default" </code></pre>
+    </dd>
+</dl>
+
+<h2>Examples</h2>
+
+<h3>Data matchers</h3>
+
+<div xmlns:c="http://www.concordion.org/2007/concordion" name="Data types matchers" cmdId="7548b15c-9529-4852-a0d2-7ba9ca3b3360" c:example="Data types matchers" c:status="ExpectedToPass" e:example="" class="exam-example mb-3" data-type="example" id="Data types matchers" data-summary-success="1" data-summary-ignore="0" data-summary-failure="0" data-summary-exception="0" data-summary-status="ExpectedToPass"><div data-bs-toggle="collapse" data-bs-target="#e5c53cc75-32f1-4e7e-abea-d84b5541211c" aria-expanded="true"><h4 style="visibility: hidden; height:0;" class="test-class"><i class="example-badge fa fa-check m-1 text-success"></i>Data types matchers</h4><i class="far fa-caret-square-down"></i><span> </span><a class="bd-example-title text-muted fw-lighter">Data types matchers</a></div><div class="bd-example collapse show rounded bg-light bg-gradient" id="e5c53cc75-32f1-4e7e-abea-d84b5541211c">
+
+    <div cmdId="224bb756-e283-46c6-ad1c-0845b06b0e7d" e:given="" class="given"><p class="lead text-primary">Given</p><hr />
+        <code>givenDataJson</code>:
+        <pre class="language-json"><code cc:echo="givenDataJson">{
+  "string": "some string",
+  "number": 123,
+  "bool": true,
+  "ignore": "anything 123",
+  "regex": "123"
+}</code></pre>
+    </div>
+
+    <div cmdId="5fe18c99-eb7a-470b-b60e-6bfb607597de" e:then="" class="then"><p class="lead text-success">Then</p><hr />
+        <div class="mb-4 mt-4"><mark>The following markup:</mark><pre class="doc-code language-xml mt-2"><code>&lt;e:json-check actual="givenDataJson"&gt; { "string": "{{string}}", "number": "{{number}}", "bool": "{{bool}}", "ignore": "{{ignore}}", "regex": "{{regex '\\d+'}}" } &lt;/e:json-check&gt;</code></pre><mark>will be rendered as:</mark></div><div actual="givenDataJson" print="true" cmdId="8b992a2c-c6f5-4eae-8501-3defdcf3caae" e:json-check=""><table class="table table-sm caption-top"><tr><td class="json exp-body rest-success">{
+  "string": "${json-unit.any-string}",
+  "number": "${json-unit.any-number}",
+  "bool": "${json-unit.any-boolean}",
+  "ignore": "${json-unit.ignore}",
+  "regex": "${json-unit.regex}\\d+"
+}</td></tr></table></div>
+    </div>
+
+</div></div>
+
+<div xmlns:c="http://www.concordion.org/2007/concordion" name="Date matchers" cmdId="1f4f4dc8-69d4-4d38-851d-2ba49eac8282" c:example="Date matchers" c:status="ExpectedToPass" e:example="" class="exam-example mb-3" data-type="example" id="Date matchers" data-summary-success="1" data-summary-ignore="0" data-summary-failure="0" data-summary-exception="0" data-summary-status="ExpectedToPass"><div data-bs-toggle="collapse" data-bs-target="#e0de13f13-ef91-42a5-9d00-698defd7cb8d" aria-expanded="true"><h4 style="visibility: hidden; height:0;" class="test-class"><i class="example-badge fa fa-check m-1 text-success"></i>Date matchers</h4><i class="far fa-caret-square-down"></i><span> </span><a class="bd-example-title text-muted fw-lighter">Date matchers</a></div><div class="bd-example collapse show rounded bg-light bg-gradient" id="e0de13f13-ef91-42a5-9d00-698defd7cb8d">
+
+    <div cmdId="ab75c308-7531-43d5-ab8f-865184ccc4d1" e:given="" class="given"><p class="lead text-primary">Given</p><hr />
+        <code>givenDateJson</code>:
+        <pre class="language-json"><code cc:echo="givenDateJson">{ 
+  "formattedAs": "2022/04/04T21:55.42",
+  "isoLocalDate": "2022-04-04",
+  "isoLocalDateTime": "2022-04-04T21:55:42",
+  
+  "formattedAndWithinNow": "2022/04/04T21:55.42",
+  "isoLocalDateAndWithinNow": "2022-04-04",
+  "isoLocalDateTimeAndWithinNow": "2022-04-04T21:55:42",
+  
+  "formattedAndWithin": "2022/04/04T21:55.42",
+  "isoLocalDateAndWithin": "2022-04-04",
+  "isoLocalDateTimeAndWithin": "2022-04-04T21:55:42",
+  
+  "after": "2022-04-04T21:55:42",
+  "before": "2022-04-04T21:55:42"
+}</code></pre>
+    </div>
+
+    <div cmdId="d42911fc-be7d-4fb1-b61f-648467d15337" e:then="" class="then"><p class="lead text-success">Then</p><hr />
+        <div class="mb-4 mt-4"><mark>The following markup:</mark><pre class="doc-code language-xml mt-2"><code>&lt;e:json-check actual="givenDateJson"&gt; { "formattedAs": "{{formattedAs 'yyyy/MM/dd\'T\'HH:mm.ss'}}", "isoLocalDate": "{{isoLocalDate}}", "isoLocalDateTime": "{{isoLocalDateTime}}", "formattedAndWithinNow": "{{formattedAndWithinNow 'yyyy/MM/dd\'T\'HH:mm.ss' '5s'}}", "isoLocalDateAndWithinNow": "{{isoLocalDateAndWithinNow '1d'}}", "isoLocalDateTimeAndWithinNow": "{{isoLocalDateTimeAndWithinNow '5s'}}", "formattedAndWithin": "{{formattedAndWithin 'yyyy/MM/dd\'T\'HH:mm.ss' '5s' (dateFormat (now))}}", "isoLocalDateAndWithin": "{{isoLocalDateAndWithin '1d' (dateFormat (now))}}", "isoLocalDateTimeAndWithin": "{{isoLocalDateTimeAndWithin '5s' (dateFormat (now))}}", "after": "{{after (dateFormat (now minus='1 hour'))}}", "before": "{{before (dateFormat (now plus='1 hour'))}}" } &lt;/e:json-check&gt;</code></pre><mark>will be rendered as:</mark></div><div actual="givenDateJson" print="true" cmdId="7cf07d52-1bae-4691-b830-6a0eb4f1865d" e:json-check=""><table class="table table-sm caption-top"><tr><td class="json exp-body rest-success">{
+  "formattedAs": "${json-unit.matches:formattedAs}yyyy/MM/dd'T'HH:mm.ss",
+  "isoLocalDate": "${json-unit.matches:formattedAs}yyyy-MM-dd",
+  "isoLocalDateTime": "${json-unit.matches:formattedAs}ISO_LOCAL",
+  "formattedAndWithinNow": "${json-unit.matches:formattedAndWithinNow}yyyy/MM/dd'T'HH:mm.ss|param|5s",
+  "isoLocalDateAndWithinNow": "${json-unit.matches:formattedAndWithinNow}yyyy-MM-dd|param|1d",
+  "isoLocalDateTimeAndWithinNow": "${json-unit.matches:formattedAndWithinNow}ISO_LOCAL|param|5s",
+  "formattedAndWithin": "${json-unit.matches:formattedAndWithin}yyyy/MM/dd'T'HH:mm.ss|param|5s|param|2022-04-04T21:55:42",
+  "isoLocalDateAndWithin": "${json-unit.matches:formattedAndWithin}yyyy-MM-dd|param|1d|param|2022-04-04T21:55:42",
+  "isoLocalDateTimeAndWithin": "${json-unit.matches:formattedAndWithin}ISO_LOCAL|param|5s|param|2022-04-04T21:55:42",
+  "after": "${json-unit.matches:after}2022-04-04T20:55:42",
+  "before": "${json-unit.matches:before}2022-04-04T22:55:42"
+}</td></tr></table></div>
+    </div>
+
+</div></div>
+
+</div></main></div></div><div class="footer">Results generated by <a href="http://www.concordion.org" style="font-weight: bold; text-decoration: none; color: #89C;">Concordion</a><div class="testTime">in 80 ms on 04-Apr-2022 at 21:55:42 MSK</div></div></body>
+<button id="btnToTop" onclick="topFunction()" type="button" class="btn btn-light btn-sm text-muted me-1"><i class="fa fa-arrow-up"></i></button></html>

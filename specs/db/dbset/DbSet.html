@@ -1,0 +1,283 @@
+<?xml version="1.0" encoding="UTF-8"?><html xmlns:e="http://exam.extension.io" xmlns:cc="http://www.concordion.org/2007/concordion"><head><script type="text/javascript">document.addEventListener('DOMContentLoaded', function (event) {
+    Array.from(document.getElementsByClassName("nomnoml")).forEach(function(el) {
+        nomnoml.draw(el, el.textContent); 
+    });  
+});</script><script type="text/javascript">window.addEventListener('DOMContentLoaded', function (event) {
+     jQuery("table").wrap(unescape("&lt;div class='table-responsive'&gt;&lt;/div&gt;"));
+}); </script><script type="text/javascript">window.addEventListener('DOMContentLoaded', function (event) {
+     jQuery(".details").wrap(unescape("&lt;details&gt;&lt;/details&gt;"));
+}); </script><script type="text/javascript">window.addEventListener('DOMContentLoaded', function (event) {
+    anchors.options = {
+        placement: 'left',
+        icon: '#'
+    };
+    anchors.add();
+    tocbot.init({
+        tocSelector: '.js-toc',
+        contentSelector: '.bd-content',
+        headingSelector: 'h1, h2, h3, h4, h5, h6',
+        hasInnerContainers: true,
+        collapseDepth: 3,
+        scrollSmooth: false,
+        fixedSidebarOffset: 'auto',
+        includeHtml: true
+    });
+    var collapseDepth = 3; 
+    jQuery( "#example-summary-badge" ).click(function() {
+        if (collapseDepth === 3) {
+            collapseDepth = 30;
+        } else {
+            collapseDepth = 3;
+        }
+        tocbot.refresh({
+            tocSelector: '.js-toc',
+            contentSelector: '.bd-content',
+            headingSelector: 'h1, h2, h3, h4, h5, h6',
+            hasInnerContainers: true,
+            collapseDepth: collapseDepth,
+            scrollSmooth: false,
+            fixedSidebarOffset: 'auto',
+            includeHtml: true
+        });
+        if (collapseDepth === 30) {
+            jQuery( ".toc-link" ).filter(function( index ) {
+                return jQuery( "i", this ).length !== 1
+            }).css("display", "none");
+        } else {
+            jQuery( ".toc-link" ).filter(function( index ) {
+                return jQuery( "i", this ).length !== 1
+            }).css("display", "unset");
+        }
+    });
+}); </script><script type="text/javascript">document.addEventListener('DOMContentLoaded', function (event) {
+    hljs.configure({
+        cssSelector: 'pre code, pre.code'
+    });
+    hljs.highlightAll();
+});</script><meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<link type="text/css" rel="stylesheet" href="../../../ext/codemirror/codemirror.css" /><link type="text/css" rel="stylesheet" href="../../../ext/codemirror/enable-codemirror.css" /><link type="text/css" rel="stylesheet" href="../../../ext/codemirror/merge.css" /><link type="text/css" rel="stylesheet" href="../../../ext/codemirror/foldgutter.css" /><link type="text/css" rel="stylesheet" href="../../../ext/codemirror/simplescrollbar.css" /><script type="text/javascript" src="../../../ext/codemirror/codemirror.js"></script><script type="text/javascript" src="../../../ext/codemirror/enable-codemirror.js"></script><script type="text/javascript" src="../../../ext/codemirror/javascript.js"></script><script type="text/javascript" src="../../../ext/codemirror/xml.js"></script><script type="text/javascript" src="../../../ext/codemirror/addon/mode/simple.js"></script><script type="text/javascript" src="../../../ext/codemirror/http.js"></script><script type="text/javascript" src="../../../ext/codemirror/diff_match_patch.js"></script><script type="text/javascript" src="../../../ext/codemirror/merge.js"></script><script type="text/javascript" src="../../../ext/codemirror/xml-fold.js"></script><script type="text/javascript" src="../../../ext/codemirror/simplescrollbar.js"></script><link type="text/css" rel="stylesheet" href="../../../ext/highlight/stackoverflow-light.min.css" /><script type="text/javascript" src="../../../ext/highlight/highlight.min.js"></script><script type="text/javascript" src="../../../ext/highlight/http.min.js"></script><script type="text/javascript" src="../../../ext/highlight/java.min.js"></script><link type="text/css" rel="stylesheet" href="../../../ext/tocbot/tocbot.css" /><script type="text/javascript" src="../../../ext/tocbot/tocbot.min.js"></script><link type="text/css" rel="stylesheet" href="../../../ext/fontawesome/css/all.min.css" /><link type="text/css" rel="stylesheet" href="../../../ext/fontawesome/css/regular.min.css" /><link type="text/css" rel="stylesheet" href="../../../ext/fontawesome/css/solid.min.css" /><link type="text/css" rel="stylesheet" href="../../../ext/fontawesome/css/all.min.css" /><link type="text/css" rel="stylesheet" href="../../../ext/bootstrap/bootstrap.min.css" /><link type="text/css" rel="stylesheet" href="../../../ext/bootstrap/enable-bootstrap.css" /><link type="text/css" rel="stylesheet" href="../../../ext/bootstrap/doc.min.css" /><link type="text/css" rel="stylesheet" href="../../../ext/bootstrap/scrollToTop.css" /><script type="text/javascript" src="../../../ext/bootstrap/bootstrap.bundle.min.js"></script><script type="text/javascript" src="../../../ext/bootstrap/jquery-3.2.1.slim.min.js"></script><script type="text/javascript" src="../../../ext/bootstrap/sidebar.js"></script><script type="text/javascript" src="../../../ext/bootstrap/doc.min.js"></script><script type="text/javascript" src="../../../ext/bootstrap/scrollToTop.js"></script><script type="text/javascript" src="../../../ext/nomnoml/graphre.js"></script><script type="text/javascript" src="../../../ext/nomnoml/nomnoml.min.js"></script></head><body><span class="breadcrumbs"><a href="../../Specs.html">Exam</a> &gt;</span><div class="container-fluid"><div class="container-xxl my-md-4 bd-layout"><main class="bd-main order-1"><div class="bd-toc mt-4 mb-5 my-md-0 ps-xl-3 mb-lg-5 text-muted"><div class="row my-2 pb-2 border-bottom"><div class="col-9"><strong class="h6">On this page</strong></div><div class="col-2"><i id="example-summary-badge" class="fa fa-list-check"></i></div></div><nav id="table-of-contents" class="js-toc toc toc-right" /></div><div class="bd-content ps-lg-4" id="content">
+    <h1>db-set</h1>
+    <p class="lead">Creates <a href="http://dbunit.sourceforge.net/">DbUnit</a> dataset for specified table and applies it to database</p>
+    <h2>Overview</h2>
+
+    <pre var="cmd" hidden="" value="e:db-set" cmdId="874fff82-38af-4c26-a5ab-c7fbb8939988" e:set="">e:db-set</pre>
+    <pre var="cmdExample" hidden="" cmdId="e5a3b92b-8c68-484b-9f44-4b7d5aca9329" e:set="">&lt;e:db-set caption="optional caption" operation="clean_insert" table="ANDROIDS_TABLE" cols="id, name" separator=","&gt;
+    &lt;e:row&gt;1, Adam&lt;/e:row&gt;
+    &lt;e:row&gt;2, Bob&lt;/e:row&gt;
+&lt;/e:db-set&gt;  </pre>
+    <h3>Usage</h3><p>1. Configure a connection to database via <a cc:run="concordion" href="../DbPlugin.html" class="success">DbPlugin</a>.</p><p>
+        2. Use <code cc:echo="#cmd">e:db-set</code> tag in specification:
+        <div class="card">
+            <div class="card-header filename">src/test/resources/specs/Specs.html</div>
+            <div class="card-body">
+                <pre class="doc-code language-xml"><code cc:echo="#cmdExample">&lt;e:db-set caption="optional caption" operation="clean_insert" table="ANDROIDS_TABLE" cols="id, name" separator=","&gt;
+    &lt;e:row&gt;1, Adam&lt;/e:row&gt;
+    &lt;e:row&gt;2, Bob&lt;/e:row&gt;
+&lt;/e:db-set&gt;  </code></pre>
+            </div>
+        </div>
+    </p>
+
+    <h3>Attributes</h3>
+
+    <table class="table" style="table-layout: fixed;">
+        <thead><tr><th style="width: 100px;">attribute</th><th style="width: 300px;">desc</th><th>example</th></tr></thead>
+        <tr>
+        <td><code>table</code></td>
+        <td><span>Table name</span></td>
+        <td><var>Required</var>. <var>Default: -</var><pre class="doc-code language-json"><code>table="androids_table"</code></pre></td>
+    </tr>
+        <tr>
+        <td><code>cols</code></td>
+        <td><span>List of comma-separated column names with optionally provided values to include in dataset</span></td>
+        <td><var>Optional</var>. <var>Default: -</var><pre class="doc-code language-json"><code>cols="id=1..10, name, height=170, manufactured={{now}}"</code></pre></td>
+    </tr>
+        <tr>
+        <td><code>operation</code></td>
+        <td><span>DbUnit operation to apply</span></td>
+        <td><var>Optional</var>. <var>Default: <strong>clean_insert</strong></var><pre class="doc-code language-json"><code>operation="update"</code></pre><sub>other options: insert, update, refresh, delete, delete_all, truncate_table, truncate_insert</sub></td>
+    </tr>
+        <tr>
+        <td><code>separator</code></td>
+        <td><span>Value separator in <code>e:row</code></span></td>
+        <td><var>Optional</var>. <var>Default: <strong>,</strong></var><pre class="doc-code language-json"><code>separator="|"</code></pre></td>
+    </tr>
+        <tr>
+        <td><code>ds</code></td>
+        <td><span>Datasource to which dataset will be applied. By default only 1 datasource with name <strong>default</strong> exists, other may be added by DbPlugin configuration. <!--TODO add link to config example--></span></td>
+        <td><var>Optional</var>. <var>Default: <strong>default</strong></var><pre class="doc-code language-json"><code>ds="myOtherDatasource"</code></pre></td>
+    </tr>
+        <tr>
+        <td><code>caption</code></td>
+        <td><span>Caption to display instead of table name in report</span></td>
+        <td><var>Optional</var>. <var>Default: -</var><pre class="doc-code language-json"><code>caption="Androids"</code></pre></td>
+    </tr>
+    </table>
+    <p>
+        Each dataset record will be zipped from cols and rows declarations (hence order of cols and order of values inside rows should match).
+    </p>
+    <div xmlns:c="http://www.concordion.org/2007/concordion" name="Dummy example" cmdId="62f80dce-c223-481c-a836-961846d2e1c2" c:example="Dummy example" c:status="ExpectedToPass" e:example="" class="exam-example mb-3" data-type="example" id="Dummy example" data-summary-success="0" data-summary-ignore="0" data-summary-failure="0" data-summary-exception="0" data-summary-status="ExpectedToPass"><div data-bs-toggle="collapse" data-bs-target="#efaf713b2-0be0-4756-84ec-82337f0bc19b" aria-expanded="true"><h4 style="visibility: hidden; height:0;" class="test-class"><i class="example-badge fa fa-check m-1 text-success"></i>Dummy example</h4><i class="far fa-caret-square-down"></i><span> </span><a class="bd-example-title text-muted fw-lighter">Dummy example</a></div><div class="bd-example collapse show rounded bg-light bg-gradient" id="efaf713b2-0be0-4756-84ec-82337f0bc19b">
+        <div cmdId="c4f899a2-1703-4361-915b-3cfebd29b178" e:given="" class="given"><p class="lead text-primary">Given</p><hr />
+            Empty table:
+            <table class="table table-sm caption-top"><caption style="width:max-content"><i class="fa fa-database me-1"> </i>  ANDROIDS_TABLE</caption><thead class="thead-default"><tr><th /></tr></thead><tbody><tr><td colspan="0">EMPTY</td></tr></tbody></table>
+        </div>
+        <div cmdId="cd8f8d11-3a84-4a85-9813-6271084b2bfd" e:when="" class="when"><p class="lead text-warning">When</p><hr />
+            <div class="mb-4 mt-4"><mark>The following markup:</mark><pre class="doc-code language-xml mt-2"><code>&lt;e:db-set table="ANDROIDS_TABLE" cols="id, name, height, manufactured"&gt;
+  &lt;e:row&gt;1, Adam, 170, {{now}}&lt;/e:row&gt;
+  &lt;e:row&gt;2, Bob, 200, {{now}}&lt;/e:row&gt;
+&lt;/e:db-set&gt;</code></pre><mark>will be rendered as:</mark></div><table class="table table-sm caption-top"><caption style="width:max-content"><i class="fa fa-database me-1"> </i>  ANDROIDS_TABLE</caption><thead class="thead-default"><tr><th class="">id</th><th class="">name</th><th class="">height</th><th class="">manufactured</th></tr></thead><tbody><tr><td class=""><span>1</span></td><td class=""><span>Adam</span></td><td class=""><span>170</span></td><td class=""><span>2022-04-04 21:55:42.604</span></td></tr><tr><td class=""><span>2</span></td><td class=""><span>Bob</span></td><td class=""><span>200</span></td><td class=""><span>2022-04-04 21:55:42.605</span></td></tr></tbody></table>
+        </div>
+        <div cmdId="858b2140-26e0-4c6c-adfd-63378de5329d" e:then="" class="then"><p class="lead text-success">Then</p><hr />
+            Table will have the following records after applying the following dataset:
+            <div table="ANDROIDS_TABLE" cmdId="939f9426-f3ec-4ebc-b912-ade7535fa04e" e:db-show=""><table class="table table-sm caption-top"><caption style="width:max-content"><i class="fa fa-database me-1"> </i>  ANDROIDS_TABLE</caption><thead class="thead-default"><tr><th class="">ID</th><th class="">NAME</th><th class="">HEIGHT</th><th class="">WEIGHT</th><th class="">MANUFACTURED</th></tr></thead><tbody><tr><td class=""><span>1</span></td><td class=""><span>Adam</span></td><td class=""><span>1.7E+2</span></td><td class=""><span>(null)</span></td><td class=""><span>2022-04-04 21:55:42.600</span></td></tr><tr><td class=""><span>2</span></td><td class=""><span>Bob</span></td><td class=""><span>2E+2</span></td><td class=""><span>(null)</span></td><td class=""><span>2022-04-04 21:55:42.602</span></td></tr></tbody></table></div>
+        </div>
+    </div></div>
+
+    <p>
+        If all rows should have the same value declaration for specific column, then value assignment may be inlined
+        with column declaration. Values declaration for such columns should be omitted in <code>e:row</code> tag.
+    </p>
+    <p>
+        The next example produces the same result as the previous one:
+    </p>
+    <div xmlns:c="http://www.concordion.org/2007/concordion" name="Declaration inlining" cmdId="4baa448c-fe48-45d8-83e2-70faf34c0624" c:example="Declaration inlining" c:status="ExpectedToPass" e:example="" class="exam-example mb-3" data-type="example" id="Declaration inlining" data-summary-success="0" data-summary-ignore="0" data-summary-failure="0" data-summary-exception="0" data-summary-status="ExpectedToPass"><div data-bs-toggle="collapse" data-bs-target="#e08d1365a-2535-4515-a2ca-efb19157c1aa" aria-expanded="true"><h4 style="visibility: hidden; height:0;" class="test-class"><i class="example-badge fa fa-check m-1 text-success"></i>Declaration inlining</h4><i class="far fa-caret-square-down"></i><span> </span><a class="bd-example-title text-muted fw-lighter">Declaration inlining</a></div><div class="bd-example collapse show rounded bg-light bg-gradient" id="e08d1365a-2535-4515-a2ca-efb19157c1aa">
+        <div cmdId="da994e14-8bb0-40f0-888e-5ad07ed4f8c0" e:given="" class="given"><p class="lead text-primary">Given</p><hr />
+            Empty table:
+            <table class="table table-sm caption-top"><caption style="width:max-content"><i class="fa fa-database me-1"> </i>  ANDROIDS_TABLE</caption><thead class="thead-default"><tr><th /></tr></thead><tbody><tr><td colspan="0">EMPTY</td></tr></tbody></table>
+        </div>
+        <div cmdId="d5ab8d83-be60-49d6-b580-29fe67c6c23c" e:when="" class="when"><p class="lead text-warning">When</p><hr />
+            <div class="mb-4 mt-4"><mark>The following markup:</mark><pre class="doc-code language-xml mt-2"><code>&lt;e:db-set table="ANDROIDS_TABLE" cols="id=1..10, name, height, manufactured={{now}}"&gt;
+  &lt;e:row&gt;Adam, 170&lt;/e:row&gt;
+  &lt;e:row&gt; Bob, 200&lt;/e:row&gt;
+&lt;/e:db-set&gt;</code></pre><mark>will be rendered as:</mark></div><table class="table table-sm caption-top"><caption style="width:max-content"><i class="fa fa-database me-1"> </i>  ANDROIDS_TABLE</caption><thead class="thead-default"><tr><th class="">id</th><th class="">name</th><th class="">height</th><th class="">manufactured</th></tr></thead><tbody><tr><td class=""><span>1</span></td><td class=""><span>Adam</span></td><td class=""><span>170</span></td><td class=""><span>2022-04-04 21:55:42.636</span></td></tr><tr><td class=""><span>2</span></td><td class=""><span>Bob</span></td><td class=""><span>200</span></td><td class=""><span>2022-04-04 21:55:42.637</span></td></tr></tbody></table>
+        </div>
+        <div cmdId="c565dd69-fbf8-486f-a893-b73afeb09348" e:then="" class="then"><p class="lead text-success">Then</p><hr />
+            Table will have the following records after applying the following dataset:
+            <div table="ANDROIDS_TABLE" cmdId="a4ee3031-bfc3-474f-9008-5f1e0b7931c5" e:db-show=""><table class="table table-sm caption-top"><caption style="width:max-content"><i class="fa fa-database me-1"> </i>  ANDROIDS_TABLE</caption><thead class="thead-default"><tr><th class="">ID</th><th class="">NAME</th><th class="">HEIGHT</th><th class="">WEIGHT</th><th class="">MANUFACTURED</th></tr></thead><tbody><tr><td class=""><span>1</span></td><td class=""><span>Adam</span></td><td class=""><span>1.7E+2</span></td><td class=""><span>(null)</span></td><td class=""><span>2022-04-04 21:55:42.633</span></td></tr><tr><td class=""><span>2</span></td><td class=""><span>Bob</span></td><td class=""><span>2E+2</span></td><td class=""><span>(null)</span></td><td class=""><span>2022-04-04 21:55:42.635</span></td></tr></tbody></table></div>
+        </div>
+    </div></div>
+
+    <h2>Examples</h2>
+
+    <h3>Value declaration</h3>
+    <p>
+        Value can be declared as <strong>simple text</strong>, <strong>Handlebar helpers invocation</strong> or <strong>ranges</strong>.
+    </p>
+    <div xmlns:c="http://www.concordion.org/2007/concordion" name="Value declaration" cmdId="9a74a608-23b0-4a7d-b59e-531616665fed" c:example="Value declaration" c:status="ExpectedToPass" e:example="" class="exam-example mb-3" data-type="example" id="Value declaration" data-summary-success="0" data-summary-ignore="0" data-summary-failure="0" data-summary-exception="0" data-summary-status="ExpectedToPass"><div data-bs-toggle="collapse" data-bs-target="#ef1e9c5bc-a8e4-4574-869a-d975ddb39842" aria-expanded="true"><h4 style="visibility: hidden; height:0;" class="test-class"><i class="example-badge fa fa-check m-1 text-success"></i>Value declaration</h4><i class="far fa-caret-square-down"></i><span> </span><a class="bd-example-title text-muted fw-lighter">Value declaration</a></div><div class="bd-example collapse show rounded bg-light bg-gradient" id="ef1e9c5bc-a8e4-4574-869a-d975ddb39842">
+        <div cmdId="bcb374b7-a3be-41a0-a472-3f17a58220ac" e:given="" class="given"><p class="lead text-primary">Given</p><hr />
+            Empty table:
+            <table class="table table-sm caption-top"><caption style="width:max-content"><i class="fa fa-database me-1"> </i>  ANDROIDS_TABLE</caption><thead class="thead-default"><tr><th /></tr></thead><tbody><tr><td colspan="0">EMPTY</td></tr></tbody></table>
+        </div>
+        <div cmdId="3d48c5f7-ed62-4f69-994f-48587f175e6f" e:when="" class="when"><p class="lead text-warning">When</p><hr />
+            <ul>
+                <li><code>id</code> value is declared as <strong>range</strong> and will be assigned from 1 to 10 in circle</li>
+                <li><code>name</code> and <code>weight</code> values are declared as <strong>simple text</strong> values (value will be casted to column type be DbUnit)</li>
+                <li><code>manufactured</code> value is declared as <strong>Handlebar helpers invocation</strong> and will be assigned to result of invocation (which will be casted to column type by DbUnit)</li>
+            </ul>
+            <div class="mb-4 mt-4"><mark>The following markup:</mark><pre class="doc-code language-xml mt-2"><code>&lt;e:db-set table="ANDROIDS_TABLE" cols="id=1..10, name, weight, height=180, manufactured={{now minus='1 d'}}"&gt;
+  &lt;e:row&gt;Adam, 70&lt;/e:row&gt;
+  &lt;e:row&gt;Bob , 90&lt;/e:row&gt;
+&lt;/e:db-set&gt;</code></pre><mark>will be rendered as:</mark></div><table class="table table-sm caption-top"><caption style="width:max-content"><i class="fa fa-database me-1"> </i>  ANDROIDS_TABLE</caption><thead class="thead-default"><tr><th class="">id</th><th class="">name</th><th class="">weight</th><th class="">height</th><th class="">manufactured</th></tr></thead><tbody><tr><td class=""><span>1</span></td><td class=""><span>Adam</span></td><td class=""><span>70</span></td><td class=""><span>180</span></td><td class=""><span>2022-04-03 21:55:42.649</span></td></tr><tr><td class=""><span>2</span></td><td class=""><span>Bob</span></td><td class=""><span>90</span></td><td class=""><span>180</span></td><td class=""><span>2022-04-03 21:55:42.650</span></td></tr></tbody></table>
+        </div>
+        <div cmdId="de335810-639c-4b55-a173-9f1a450ad559" e:then="" class="then"><p class="lead text-success">Then</p><hr />
+            Table will have the following records after applying the following dataset:
+            <div table="ANDROIDS_TABLE" cmdId="8dad380d-382d-4ba9-9994-485ae2a5b1b4" e:db-show=""><table class="table table-sm caption-top"><caption style="width:max-content"><i class="fa fa-database me-1"> </i>  ANDROIDS_TABLE</caption><thead class="thead-default"><tr><th class="">ID</th><th class="">NAME</th><th class="">HEIGHT</th><th class="">WEIGHT</th><th class="">MANUFACTURED</th></tr></thead><tbody><tr><td class=""><span>1</span></td><td class=""><span>Adam</span></td><td class=""><span>1.8E+2</span></td><td class=""><span>7E+1</span></td><td class=""><span>2022-04-03 21:55:42.646</span></td></tr><tr><td class=""><span>2</span></td><td class=""><span>Bob</span></td><td class=""><span>1.8E+2</span></td><td class=""><span>9E+1</span></td><td class=""><span>2022-04-03 21:55:42.648</span></td></tr></tbody></table></div>
+        </div>
+    </div></div>
+
+    <h3>Trimmed spaces</h3>
+    <p>
+        Values declarations a trimmed by default, if there is a need to preserve spaces, then declaration should be
+        surrounded by <code>'</code>
+    </p>
+    <div xmlns:c="http://www.concordion.org/2007/concordion" name="Trimmed spaces" cmdId="4c919781-b086-4b28-8a4c-435f6ef801b6" c:example="Trimmed spaces" c:status="ExpectedToPass" e:example="" class="exam-example mb-3" data-type="example" id="Trimmed spaces" data-summary-success="0" data-summary-ignore="0" data-summary-failure="0" data-summary-exception="0" data-summary-status="ExpectedToPass"><div data-bs-toggle="collapse" data-bs-target="#e844a408a-cc3c-4fb3-8698-55738b9f799e" aria-expanded="true"><h4 style="visibility: hidden; height:0;" class="test-class"><i class="example-badge fa fa-check m-1 text-success"></i>Trimmed spaces</h4><i class="far fa-caret-square-down"></i><span> </span><a class="bd-example-title text-muted fw-lighter">Trimmed spaces</a></div><div class="bd-example collapse show rounded bg-light bg-gradient" id="e844a408a-cc3c-4fb3-8698-55738b9f799e">
+        <div cmdId="211a33bf-5e3a-497e-8bb6-fd2b7bcb87bf" e:given="" class="given"><p class="lead text-primary">Given</p><hr />
+            Empty table:
+            <table class="table table-sm caption-top"><caption style="width:max-content"><i class="fa fa-database me-1"> </i>  ANDROIDS_TABLE</caption><thead class="thead-default"><tr><th /></tr></thead><tbody><tr><td colspan="0">EMPTY</td></tr></tbody></table>
+        </div>
+        <div cmdId="82a587e9-172f-4930-a0df-f490eeef5800" e:when="" class="when"><p class="lead text-warning">When</p><hr />
+            First <code>name</code> equals to <code> A </code> (surrounded by spaces).<br />
+            Second <code>name</code> equals to just <code>A</code>.
+            <div class="mb-4 mt-4"><mark>The following markup:</mark><pre class="doc-code language-xml mt-2"><code>&lt;e:db-set table="ANDROIDS_TABLE" cols="id=1..10, name, weight"&gt;
+  &lt;e:row&gt; ' A ' , 70&lt;/e:row&gt;
+  &lt;e:row&gt; A , 90&lt;/e:row&gt;
+&lt;/e:db-set&gt;</code></pre><mark>will be rendered as:</mark></div><table class="table table-sm caption-top"><caption style="width:max-content"><i class="fa fa-database me-1"> </i>  ANDROIDS_TABLE</caption><thead class="thead-default"><tr><th class="">id</th><th class="">name</th><th class="">weight</th></tr></thead><tbody><tr><td class=""><span>1</span></td><td class=""><span> A </span></td><td class=""><span>70</span></td></tr><tr><td class=""><span>2</span></td><td class=""><span>A</span></td><td class=""><span>90</span></td></tr></tbody></table>
+        </div>
+        <div cmdId="3f758c0d-b889-478d-b145-2b9ec8f12352" e:then="" class="then"><p class="lead text-success">Then</p><hr />
+            Table will have the following records after applying the following dataset:
+            <div table="ANDROIDS_TABLE" cmdId="50ee71f1-1cff-413b-ad5a-46188cd40803" e:db-show=""><table class="table table-sm caption-top"><caption style="width:max-content"><i class="fa fa-database me-1"> </i>  ANDROIDS_TABLE</caption><thead class="thead-default"><tr><th class="">ID</th><th class="">NAME</th><th class="">HEIGHT</th><th class="">WEIGHT</th><th class="">MANUFACTURED</th></tr></thead><tbody><tr><td class=""><span>1</span></td><td class=""><span> A </span></td><td class=""><span>(null)</span></td><td class=""><span>7E+1</span></td><td class=""><span>(null)</span></td></tr><tr><td class=""><span>2</span></td><td class=""><span>A</span></td><td class=""><span>(null)</span></td><td class=""><span>9E+1</span></td><td class=""><span>(null)</span></td></tr></tbody></table></div>
+        </div>
+    </div></div>
+
+
+    <h3>Values with commas</h3>
+    <p>
+        Comma is used as default values separator, so using it as part as the value declaration will break parsing.
+        To workaround this custom value separator may be set by <code>separator</code> attribute.
+    </p>
+    <div xmlns:c="http://www.concordion.org/2007/concordion" name="Values with commas" cmdId="dd5efaeb-a94c-411a-a280-0a9e3c05aa87" c:example="Values with commas" c:status="ExpectedToPass" e:example="" class="exam-example mb-3" data-type="example" id="Values with commas" data-summary-success="0" data-summary-ignore="0" data-summary-failure="0" data-summary-exception="0" data-summary-status="ExpectedToPass"><div data-bs-toggle="collapse" data-bs-target="#e59534979-ed5f-4f42-a4d5-49d796eff8d0" aria-expanded="true"><h4 style="visibility: hidden; height:0;" class="test-class"><i class="example-badge fa fa-check m-1 text-success"></i>Values with commas</h4><i class="far fa-caret-square-down"></i><span> </span><a class="bd-example-title text-muted fw-lighter">Values with commas</a></div><div class="bd-example collapse show rounded bg-light bg-gradient" id="e59534979-ed5f-4f42-a4d5-49d796eff8d0">
+        <div cmdId="a2662123-2036-4cd4-923b-eed9971e024e" e:given="" class="given"><p class="lead text-primary">Given</p><hr />
+            Empty table:
+            <table class="table table-sm caption-top"><caption style="width:max-content"><i class="fa fa-database me-1"> </i>  ANDROIDS_TABLE</caption><thead class="thead-default"><tr><th /></tr></thead><tbody><tr><td colspan="0">EMPTY</td></tr></tbody></table>
+        </div>
+        <div cmdId="06893663-8ace-4043-92f1-fb9b382ca72a" e:when="" class="when"><p class="lead text-warning">When</p><hr />
+            <code>name</code> equals to <code>a , b</code>:
+            <div class="mb-4 mt-4"><mark>The following markup:</mark><pre class="doc-code language-xml mt-2"><code>&lt;e:db-set table="ANDROIDS_TABLE" cols="id=1..10, name, weight" separator="|"&gt;
+  &lt;e:row&gt; a , b | 70&lt;/e:row&gt;
+&lt;/e:db-set&gt;</code></pre><mark>will be rendered as:</mark></div><table class="table table-sm caption-top"><caption style="width:max-content"><i class="fa fa-database me-1"> </i>  ANDROIDS_TABLE</caption><thead class="thead-default"><tr><th class="">id</th><th class="">name</th><th class="">weight</th></tr></thead><tbody><tr><td class=""><span>1</span></td><td class=""><span>a , b</span></td><td class=""><span>70</span></td></tr></tbody></table>
+        </div>
+        <div cmdId="6645341c-89b2-49f3-80e8-958c3b8ee0c9" e:then="" class="then"><p class="lead text-success">Then</p><hr />
+            Table will have the following records after applying the following dataset:
+            <div table="ANDROIDS_TABLE" cmdId="0428a959-785a-4a51-85ba-1d9f3dc6d988" e:db-show=""><table class="table table-sm caption-top"><caption style="width:max-content"><i class="fa fa-database me-1"> </i>  ANDROIDS_TABLE</caption><thead class="thead-default"><tr><th class="">ID</th><th class="">NAME</th><th class="">HEIGHT</th><th class="">WEIGHT</th><th class="">MANUFACTURED</th></tr></thead><tbody><tr><td class=""><span>1</span></td><td class=""><span>a , b</span></td><td class=""><span>(null)</span></td><td class=""><span>7E+1</span></td><td class=""><span>(null)</span></td></tr></tbody></table></div>
+        </div>
+    </div></div>
+
+    <!--<e:example name="DbUnit operations support">-->
+    <!--    <e:given>-->
+    <!--        Given record <b cc:set="#id">1</b>-->
+    <!--        <b cc:set="#name">Bob</b>-->
+    <!--        <b cc:set="#age">50</b>-->
+    <!--        <b cc:set="#bd">2000-10-10</b>-->
+    <!--        <span cc:assertTrue="addRecord(#id, #name, #age, #bd)">present</span> in PERSON-->
+    <!--        <e:db-show table="PERSON"/>-->
+    <!--    </e:given>-->
+    <!--    <e:when print="true">-->
+    <!--        <e:db-set operation="insert" caption="Append records" table="PERSON" cols="ID=10..20, NAME, AGE">-->
+    <!--            <e:row>Andrew,30</e:row>-->
+    <!--            <e:row>Carl,20</e:row>-->
+    <!--        </e:db-set>-->
+    <!--    </e:when>-->
+    <!--    <e:then>-->
+    <!--        <e:db-check caption="Records was appended" table="PERSON" cols="NAME, AGE">-->
+    <!--            <e:row>{{name}}, {{age}}</e:row>-->
+    <!--            <e:row>Andrew , 30</e:row>-->
+    <!--            <e:row>Carl , 20</e:row>-->
+    <!--        </e:db-check>-->
+    <!--    </e:then>-->
+    <!--    <e:when print="true">-->
+    <!--        <e:db-set operation="update" caption="Update by primary key" table="PERSON" cols="ID=1, NAME, AGE">-->
+    <!--            <e:row>not Bob, 500</e:row>-->
+    <!--        </e:db-set>-->
+    <!--    </e:when>-->
+    <!--    <e:then>-->
+    <!--        <e:db-check caption="Record was updated" table="PERSON" cols="NAME, AGE">-->
+    <!--            <e:row>not Bob , 500</e:row>-->
+    <!--            <e:row>Andrew , 30</e:row>-->
+    <!--            <e:row>Carl , 20</e:row>-->
+    <!--        </e:db-check>-->
+    <!--    </e:then>-->
+    <!--    <e:when print="true">-->
+    <!--        <e:db-set caption="Clean insert by default" table="PERSON" cols="ID=10..20, NAME, AGE, BIRTHDAY">-->
+    <!--            <e:row>' Andrew ', 30 , {{date '1990-10-10'}}</e:row>-->
+    <!--            <e:row>Carl , 20 , {{date '1980-02-01'}}</e:row>-->
+    <!--        </e:db-set>-->
+    <!--    </e:when>-->
+    <!--    <e:then>-->
+    <!--        <e:db-check caption="Table was cleaned and records was inserted" table="PERSON" cols="NAME, AGE, BIRTHDAY">-->
+    <!--            <e:row>' Andrew ', 30, {{date '1990-10-10'}}</e:row>-->
+    <!--            <e:row>Carl , 20, {{date '1980-02-01'}}</e:row>-->
+    <!--        </e:db-check>-->
+    <!--    </e:then>-->
+    <!--</e:example>-->
+</div></main></div></div><div class="footer">Results generated by <a href="http://www.concordion.org" style="font-weight: bold; text-decoration: none; color: #89C;">Concordion</a><div class="testTime">in 150 ms on 04-Apr-2022 at 21:55:42 MSK</div></div></body>
+<button id="btnToTop" onclick="topFunction()" type="button" class="btn btn-light btn-sm text-muted me-1"><i class="fa fa-arrow-up"></i></button></html>

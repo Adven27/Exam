@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?><html xmlns:e="http://exam.extension.io" xmlns:cc="http://www.concordion.org/2007/concordion"><head><script type="text/javascript">document.addEventListener('DOMContentLoaded', function (event) {
+    Array.from(document.getElementsByClassName("nomnoml")).forEach(function(el) {
+        nomnoml.draw(el, el.textContent); 
+    });  
+});</script><script type="text/javascript">window.addEventListener('DOMContentLoaded', function (event) {
+     jQuery("table").wrap(unescape("&lt;div class='table-responsive'&gt;&lt;/div&gt;"));
+}); </script><script type="text/javascript">window.addEventListener('DOMContentLoaded', function (event) {
+     jQuery(".details").wrap(unescape("&lt;details&gt;&lt;/details&gt;"));
+}); </script><script type="text/javascript">window.addEventListener('DOMContentLoaded', function (event) {
+    anchors.options = {
+        placement: 'left',
+        icon: '#'
+    };
+    anchors.add();
+    tocbot.init({
+        tocSelector: '.js-toc',
+        contentSelector: '.bd-content',
+        headingSelector: 'h1, h2, h3, h4, h5, h6',
+        hasInnerContainers: true,
+        collapseDepth: 3,
+        scrollSmooth: false,
+        fixedSidebarOffset: 'auto',
+        includeHtml: true
+    });
+    var collapseDepth = 3; 
+    jQuery( "#example-summary-badge" ).click(function() {
+        if (collapseDepth === 3) {
+            collapseDepth = 30;
+        } else {
+            collapseDepth = 3;
+        }
+        tocbot.refresh({
+            tocSelector: '.js-toc',
+            contentSelector: '.bd-content',
+            headingSelector: 'h1, h2, h3, h4, h5, h6',
+            hasInnerContainers: true,
+            collapseDepth: collapseDepth,
+            scrollSmooth: false,
+            fixedSidebarOffset: 'auto',
+            includeHtml: true
+        });
+        if (collapseDepth === 30) {
+            jQuery( ".toc-link" ).filter(function( index ) {
+                return jQuery( "i", this ).length !== 1
+            }).css("display", "none");
+        } else {
+            jQuery( ".toc-link" ).filter(function( index ) {
+                return jQuery( "i", this ).length !== 1
+            }).css("display", "unset");
+        }
+    });
+}); </script><script type="text/javascript">document.addEventListener('DOMContentLoaded', function (event) {
+    hljs.configure({
+        cssSelector: 'pre code, pre.code'
+    });
+    hljs.highlightAll();
+});</script><meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<link type="text/css" rel="stylesheet" href="../../ext/codemirror/codemirror.css" /><link type="text/css" rel="stylesheet" href="../../ext/codemirror/enable-codemirror.css" /><link type="text/css" rel="stylesheet" href="../../ext/codemirror/merge.css" /><link type="text/css" rel="stylesheet" href="../../ext/codemirror/foldgutter.css" /><link type="text/css" rel="stylesheet" href="../../ext/codemirror/simplescrollbar.css" /><script type="text/javascript" src="../../ext/codemirror/codemirror.js"></script><script type="text/javascript" src="../../ext/codemirror/enable-codemirror.js"></script><script type="text/javascript" src="../../ext/codemirror/javascript.js"></script><script type="text/javascript" src="../../ext/codemirror/xml.js"></script><script type="text/javascript" src="../../ext/codemirror/addon/mode/simple.js"></script><script type="text/javascript" src="../../ext/codemirror/http.js"></script><script type="text/javascript" src="../../ext/codemirror/diff_match_patch.js"></script><script type="text/javascript" src="../../ext/codemirror/merge.js"></script><script type="text/javascript" src="../../ext/codemirror/xml-fold.js"></script><script type="text/javascript" src="../../ext/codemirror/simplescrollbar.js"></script><link type="text/css" rel="stylesheet" href="../../ext/highlight/stackoverflow-light.min.css" /><script type="text/javascript" src="../../ext/highlight/highlight.min.js"></script><script type="text/javascript" src="../../ext/highlight/http.min.js"></script><script type="text/javascript" src="../../ext/highlight/java.min.js"></script><link type="text/css" rel="stylesheet" href="../../ext/tocbot/tocbot.css" /><script type="text/javascript" src="../../ext/tocbot/tocbot.min.js"></script><link type="text/css" rel="stylesheet" href="../../ext/fontawesome/css/all.min.css" /><link type="text/css" rel="stylesheet" href="../../ext/fontawesome/css/regular.min.css" /><link type="text/css" rel="stylesheet" href="../../ext/fontawesome/css/solid.min.css" /><link type="text/css" rel="stylesheet" href="../../ext/fontawesome/css/all.min.css" /><link type="text/css" rel="stylesheet" href="../../ext/bootstrap/bootstrap.min.css" /><link type="text/css" rel="stylesheet" href="../../ext/bootstrap/enable-bootstrap.css" /><link type="text/css" rel="stylesheet" href="../../ext/bootstrap/doc.min.css" /><link type="text/css" rel="stylesheet" href="../../ext/bootstrap/scrollToTop.css" /><script type="text/javascript" src="../../ext/bootstrap/bootstrap.bundle.min.js"></script><script type="text/javascript" src="../../ext/bootstrap/jquery-3.2.1.slim.min.js"></script><script type="text/javascript" src="../../ext/bootstrap/sidebar.js"></script><script type="text/javascript" src="../../ext/bootstrap/doc.min.js"></script><script type="text/javascript" src="../../ext/bootstrap/scrollToTop.js"></script><script type="text/javascript" src="../../ext/nomnoml/graphre.js"></script><script type="text/javascript" src="../../ext/nomnoml/nomnoml.min.js"></script></head><body><span class="breadcrumbs"><a href="../Specs.html">Exam</a> &gt;</span><div class="container-fluid"><div class="container-xxl my-md-4 bd-layout"><main class="bd-main order-1"><div class="bd-toc mt-4 mb-5 my-md-0 ps-xl-3 mb-lg-5 text-muted"><div class="row my-2 pb-2 border-bottom"><div class="col-9"><strong class="h6">On this page</strong></div><div class="col-2"><i id="example-summary-badge" class="fa fa-list-check"></i></div></div><nav id="table-of-contents" class="js-toc toc toc-right" /></div><div class="bd-content ps-lg-4" id="content">
+<h1>mq-purge</h1>
+
+<p class="lead">Purges specified queue</p>
+
+<h2>Overview</h2>
+
+<pre var="cmd" hidden="" value="e:mq-purge" cmdId="eda2c0f0-d4e0-42db-a3cb-65dbcf8275d1" e:set="">e:mq-purge</pre>
+<pre var="cmdExample" hidden="" cmdId="da4b7d43-d9db-4705-9b0c-7f9eb680d73c" e:set="">&lt;e:mq-purge name="someQueue"/&gt;</pre>
+<h3>Usage</h3><p>1. Configure a map of queue aliases to <code>MqTester</code> implementations via <a cc:run="concordion" href="MqPlugin.html" class="success">MqPlugin</a>.</p><p>
+        2. Use <code cc:echo="#cmd">e:mq-purge</code> tag in specification:
+        <div class="card">
+            <div class="card-header filename">src/test/resources/specs/Specs.html</div>
+            <div class="card-body">
+                <pre class="doc-code language-xml"><code cc:echo="#cmdExample">&lt;e:mq-purge name="someQueue"/&gt;</code></pre>
+            </div>
+        </div>
+    </p>
+
+<h3>Attributes</h3>
+<table class="table" style="table-layout: fixed;">
+    <thead><tr><th style="width: 100px;">attribute</th><th style="width: 300px;">desc</th><th>example</th></tr></thead>
+    <tr>
+        <td><code>name</code></td>
+        <td>
+            <span>
+                Key from the map of a queue aliases to <strong>MqTester</strong> implementations
+                configured in <a cc:run="concordion" href="MqPlugin.html" class="success">MqPlugin</a>.
+            </span>
+        </td>
+        <td><var>Required</var>. <var>Default: -</var><pre class="doc-code language-json"><code>name="myQueue"</code></pre></td>
+    </tr>
+</table>
+
+</div></main></div></div><div class="footer">Results generated by <a href="http://www.concordion.org" style="font-weight: bold; text-decoration: none; color: #89C;">Concordion</a><div class="testTime">in 33 ms on 04-Apr-2022 at 21:55:46 MSK</div></div></body>
+<button id="btnToTop" onclick="topFunction()" type="button" class="btn btn-light btn-sm text-muted me-1"><i class="fa fa-arrow-up"></i></button></html>

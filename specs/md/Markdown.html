@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?><html xmlns:concordion="http://www.concordion.org/2007/concordion" xmlns:e="http://exam.extension.io" xmlns:c="http://www.concordion.org/2007/concordion"><head><script type="text/javascript">document.addEventListener('DOMContentLoaded', function (event) {
+    Array.from(document.getElementsByClassName("nomnoml")).forEach(function(el) {
+        nomnoml.draw(el, el.textContent); 
+    });  
+});</script><script type="text/javascript">window.addEventListener('DOMContentLoaded', function (event) {
+     jQuery("table").wrap(unescape("&lt;div class='table-responsive'&gt;&lt;/div&gt;"));
+}); </script><script type="text/javascript">window.addEventListener('DOMContentLoaded', function (event) {
+     jQuery(".details").wrap(unescape("&lt;details&gt;&lt;/details&gt;"));
+}); </script><script type="text/javascript">window.addEventListener('DOMContentLoaded', function (event) {
+    anchors.options = {
+        placement: 'left',
+        icon: '#'
+    };
+    anchors.add();
+    tocbot.init({
+        tocSelector: '.js-toc',
+        contentSelector: '.bd-content',
+        headingSelector: 'h1, h2, h3, h4, h5, h6',
+        hasInnerContainers: true,
+        collapseDepth: 3,
+        scrollSmooth: false,
+        fixedSidebarOffset: 'auto',
+        includeHtml: true
+    });
+    var collapseDepth = 3; 
+    jQuery( "#example-summary-badge" ).click(function() {
+        if (collapseDepth === 3) {
+            collapseDepth = 30;
+        } else {
+            collapseDepth = 3;
+        }
+        tocbot.refresh({
+            tocSelector: '.js-toc',
+            contentSelector: '.bd-content',
+            headingSelector: 'h1, h2, h3, h4, h5, h6',
+            hasInnerContainers: true,
+            collapseDepth: collapseDepth,
+            scrollSmooth: false,
+            fixedSidebarOffset: 'auto',
+            includeHtml: true
+        });
+        if (collapseDepth === 30) {
+            jQuery( ".toc-link" ).filter(function( index ) {
+                return jQuery( "i", this ).length !== 1
+            }).css("display", "none");
+        } else {
+            jQuery( ".toc-link" ).filter(function( index ) {
+                return jQuery( "i", this ).length !== 1
+            }).css("display", "unset");
+        }
+    });
+}); </script><script type="text/javascript">document.addEventListener('DOMContentLoaded', function (event) {
+    hljs.configure({
+        cssSelector: 'pre code, pre.code'
+    });
+    hljs.highlightAll();
+});</script><meta http-equiv="content-type" content="text/html; charset=UTF-8" /><link type="text/css" rel="stylesheet" href="../../ext/codemirror/codemirror.css" /><link type="text/css" rel="stylesheet" href="../../ext/codemirror/enable-codemirror.css" /><link type="text/css" rel="stylesheet" href="../../ext/codemirror/merge.css" /><link type="text/css" rel="stylesheet" href="../../ext/codemirror/foldgutter.css" /><link type="text/css" rel="stylesheet" href="../../ext/codemirror/simplescrollbar.css" /><script type="text/javascript" src="../../ext/codemirror/codemirror.js"></script><script type="text/javascript" src="../../ext/codemirror/enable-codemirror.js"></script><script type="text/javascript" src="../../ext/codemirror/javascript.js"></script><script type="text/javascript" src="../../ext/codemirror/xml.js"></script><script type="text/javascript" src="../../ext/codemirror/addon/mode/simple.js"></script><script type="text/javascript" src="../../ext/codemirror/http.js"></script><script type="text/javascript" src="../../ext/codemirror/diff_match_patch.js"></script><script type="text/javascript" src="../../ext/codemirror/merge.js"></script><script type="text/javascript" src="../../ext/codemirror/xml-fold.js"></script><script type="text/javascript" src="../../ext/codemirror/simplescrollbar.js"></script><link type="text/css" rel="stylesheet" href="../../ext/highlight/stackoverflow-light.min.css" /><script type="text/javascript" src="../../ext/highlight/highlight.min.js"></script><script type="text/javascript" src="../../ext/highlight/http.min.js"></script><script type="text/javascript" src="../../ext/highlight/java.min.js"></script><link type="text/css" rel="stylesheet" href="../../ext/tocbot/tocbot.css" /><script type="text/javascript" src="../../ext/tocbot/tocbot.min.js"></script><link type="text/css" rel="stylesheet" href="../../ext/fontawesome/css/all.min.css" /><link type="text/css" rel="stylesheet" href="../../ext/fontawesome/css/regular.min.css" /><link type="text/css" rel="stylesheet" href="../../ext/fontawesome/css/solid.min.css" /><link type="text/css" rel="stylesheet" href="../../ext/fontawesome/css/all.min.css" /><link type="text/css" rel="stylesheet" href="../../ext/bootstrap/bootstrap.min.css" /><link type="text/css" rel="stylesheet" href="../../ext/bootstrap/enable-bootstrap.css" /><link type="text/css" rel="stylesheet" href="../../ext/bootstrap/doc.min.css" /><link type="text/css" rel="stylesheet" href="../../ext/bootstrap/scrollToTop.css" /><script type="text/javascript" src="../../ext/bootstrap/bootstrap.bundle.min.js"></script><script type="text/javascript" src="../../ext/bootstrap/jquery-3.2.1.slim.min.js"></script><script type="text/javascript" src="../../ext/bootstrap/sidebar.js"></script><script type="text/javascript" src="../../ext/bootstrap/doc.min.js"></script><script type="text/javascript" src="../../ext/bootstrap/scrollToTop.js"></script><script type="text/javascript" src="../../ext/nomnoml/graphre.js"></script><script type="text/javascript" src="../../ext/nomnoml/nomnoml.min.js"></script></head><body><span class="breadcrumbs"><a href="../Specs.html">Exam</a> &gt;</span><div class="container-fluid"><div class="container-xxl my-md-4 bd-layout"><main class="bd-main order-1"><div class="bd-toc mt-4 mb-5 my-md-0 ps-xl-3 mb-lg-5 text-muted"><div class="row my-2 pb-2 border-bottom"><div class="col-9"><strong class="h6">On this page</strong></div><div class="col-2"><i id="example-summary-badge" class="fa fa-list-check text-danger"></i></div></div><nav id="table-of-contents" class="js-toc toc toc-right" /></div><div class="bd-content ps-lg-4" id="content"><h1>Markdown example</h1>
+<h2>Commands</h2>
+<p><a href="https://concordion.github.io/concordion/latest/spec/specificationType/markdown/Markdown.html">https://concordion.github.io/concordion/latest/spec/specificationType/markdown/Markdown.html</a> <a href="https://www.markdownguide.org/extended-syntax/#definition-lists">https://www.markdownguide.org/extended-syntax/#definition-lists</a></p>
+<h2>Examples</h2>
+<div concordion:example="before" id="before"><p></p><p></p>
+<h3>Before each example</h3>
+<ul>
+<li>Purge queue <strong><span e:mq-purge="#TEXT">myQueue</span></strong>.</li>
+<li>Clean tables: <strong><span e:db-clean="#TEXT">orders</span></strong>.</li>
+</ul>
+</div>
+<h3>MQ and DB support<a class="examples" href="#mq-2"></a></h3>
+<div concordion:example="mq-example-1" class="exam-example mb-3" data-type="example" id="mq-example-1" data-summary-success="3" data-summary-ignore="0" data-summary-failure="0" data-summary-exception="0" data-summary-status="ExpectedToPass"><a style="font-size: 9pt; font-weight: bold; float: right; display: inline-block; margin-top: 20px; text-decoration: none; color: #89C;" href="Markdown[mq-example-1]LogViewer.html">Log File</a><div data-bs-toggle="collapse" data-bs-target="#e946388a8-1e5b-4570-bd6d-06d278a468a9" aria-expanded="true"><h4 style="visibility: hidden; height:0;" class="test-class"><i class="example-badge fa fa-check m-1 text-success"></i>Mq example 1</h4><i class="far fa-caret-square-down"></i><span> </span><a class="bd-example-title text-muted fw-lighter collapsed">Mq example 1</a></div><div id="e946388a8-1e5b-4570-bd6d-06d278a468a9" class="bd-example collapse rounded bg-light bg-gradient">
+
+<p><strong>Given</strong></p>
+<table class="table table-sm caption-top"><caption style="width:max-content"><i class="fa fa-database me-1"> </i>  Orders list</caption><thead class="thead-default"><tr><th /></tr></thead><tbody><tr><td colspan="0">EMPTY</td></tr></tbody></table>
+<table class="table table-sm caption-top"><caption style="width:max-content"><i class="fa fa-database me-1"> </i>  orders</caption><thead class="thead-default"><tr><th /></tr></thead><tbody><tr><td colspan="1" class="table-success">EMPTY</td></tr></tbody></table>
+<p><strong>When</strong></p>
+<p>send to myQueue</p><div class="mq-send">
+    <table class="table table-sm caption-top">
+        <caption><i class="fa fa-envelope me-1"> </i><span>myQueue</span></caption>
+        <tbody> 
+<tr><td class="exp-body"><div class="json">{
+  "a": 1
+}</div></td></tr>
+
+<tr><td class="exp-body"><div class="xml">&lt;message&gt;123&lt;/message&gt;</div></td></tr>
+    <tr><td> 
+        <table class="table table-sm caption-top">
+            <caption class="small">Headers</caption>
+            <tbody> <tr><td>d1</td><td>1</td></tr>
+<tr><td>d2</td><td>2</td></tr> </tbody>
+        </table> 
+    </td></tr>
+<tr><td class="exp-body"><div class="xml">&lt;message&gt;123&lt;/message&gt;</div></td></tr>
+
+<tr><td class="exp-body"><div class="json">{
+  "date": "2022-04-04",
+  "var1": "1",
+  "var2": "2",
+  "var3": "3"
+}</div></td></tr>
+    <tr><td> 
+        <table class="table table-sm caption-top">
+            <caption class="small">Headers</caption>
+            <tbody> <tr><td>d1</td><td>1</td></tr>
+<tr><td>d2</td><td>2</td></tr> </tbody>
+        </table> 
+    </td></tr>
+<tr><td class="exp-body"><div class="json">{
+  "date": "2022-04-04",
+  "var1": "1",
+  "var2": "2",
+  "var3": "3"
+}</div></td></tr> </tbody>
+    </table>
+</div>
+<p><strong>Then</strong></p>
+<p>Events are sent to myQueue</p><div class="mq-check">
+        <table class="table table-sm caption-top">
+            <caption><i class="fa fa-envelope-open me-1"> </i><span>myQueue</span></caption>
+            <tbody>     
+    <tr><td class="exp-body"><div class="json rest-success">{
+  "a": 1
+}</div></td></tr>
+
+<tr><td class="exp-body"><div class="xml rest-success">&lt;message&gt;123&lt;/message&gt;</div></td></tr>
+        <tr><td> 
+        <table class="table table-sm caption-top">
+            <caption class="small">Headers</caption>
+            <tbody> <tr><td class="rest-success">d1</td><td class="rest-success">1</td></tr>
+<tr><td class="rest-success">d2</td><td class="rest-success">2</td></tr> </tbody>
+        </table> 
+    </td></tr>
+    <tr><td class="exp-body"><div class="xml rest-success">&lt;message&gt;123&lt;/message&gt;</div></td></tr>
+    
+    <tr><td class="exp-body"><div class="json rest-success">{
+  "date": "2022-04-04",
+  "var1": "1",
+  "var2": "2",
+  "var3": "3"
+}</div></td></tr>
+        <tr><td> 
+        <table class="table table-sm caption-top">
+            <caption class="small">Headers</caption>
+            <tbody> <tr><td class="rest-success">d1</td><td class="rest-success">1</td></tr>
+<tr><td class="rest-success">d2</td><td class="rest-success">2</td></tr> </tbody>
+        </table> 
+    </td></tr>
+    <tr><td class="exp-body"><div class="json rest-success">{
+  "date": "2022-04-04",
+  "var1": "1",
+  "var2": "2",
+  "var3": "3"
+}</div></td></tr> </tbody>
+        </table>
+    </div>
+<table class="table table-sm caption-top"><caption style="width:max-content"><i class="fa fa-database me-1"> </i>  Set orders</caption><thead class="thead-default"><tr><th class="">id</th><th class="">client</th><th class="">driver</th><th class="">status</th><th class="">created</th><th class="">updated</th></tr></thead><tbody><tr><td class=""><span>1</span></td><td class=""><span>111</span></td><td class=""><span>(null)</span></td><td class=""><span>PLACED</span></td><td class=""><span>2022-04-04 00:00:00.000</span></td><td class=""><span>2022-04-04 00:00:00.000</span></td></tr><tr><td class=""><span>2</span></td><td class=""><span>222</span></td><td class=""><span>11</span></td><td class=""><span>COMPLETED</span></td><td class=""><span>2022-04-03 00:00:00.000</span></td><td class=""><span>2022-04-04 00:00:00.000</span></td></tr></tbody></table>
+<p>Orders updated:</p>
+<table class="table table-sm caption-top"><caption style="width:max-content"><i class="fa fa-database me-1"> </i>  Check orders</caption><thead class="thead-default"><tr><th class="">id</th><th class="">client</th><th class="">driver</th><th class="">status</th><th class="">created</th><th class="">updated</th></tr></thead><tbody><tr><td class=" table-success"><span title="!{number}" data-toggle="tooltip" data-placement="top" style="text-decoration: underline grey dashed !important;">1</span></td><td class=" table-success"><span title="111" data-toggle="tooltip" data-placement="top" style="">111</span></td><td class=" table-success"><span title="(null)" data-toggle="tooltip" data-placement="top" style="">(null)</span></td><td class=" table-success"><span title="PLACED" data-toggle="tooltip" data-placement="top" style="">PLACED</span></td><td class=" table-success"><span title="2022-04-04 00:00:00.000" data-toggle="tooltip" data-placement="top" style="">2022-04-04 00:00:00.000</span></td><td class=" table-success"><span title="2022-04-04 00:00:00.000" data-toggle="tooltip" data-placement="top" style="">2022-04-04 00:00:00.000</span></td></tr><tr><td class=" table-success"><span title="!{string}" data-toggle="tooltip" data-placement="top" style="text-decoration: underline grey dashed !important;">2</span></td><td class=" table-success"><span title="222" data-toggle="tooltip" data-placement="top" style="">222</span></td><td class=" table-success"><span title="!{notNull}" data-toggle="tooltip" data-placement="top" style="text-decoration: underline grey dashed !important;">11</span></td><td class=" table-success"><span title="COMPLETED" data-toggle="tooltip" data-placement="top" style="">COMPLETED</span></td><td class=" table-success"><span title="2022-04-03 00:00:00.000" data-toggle="tooltip" data-placement="top" style="">2022-04-03 00:00:00.000</span></td><td class=" table-success"><span title="!{within 2d}" data-toggle="tooltip" data-placement="top" style="text-decoration: underline grey dashed !important;">2022-04-04 00:00:00.000</span></td></tr></tbody></table>
+</div></div>
+<p>Next example:</p>
+<div concordion:example="mq-2" concordion:status="ExpectedToFail" class="exam-example mb-3" data-type="example" id="mq-2" data-summary-success="0" data-summary-ignore="0" data-summary-failure="1" data-summary-exception="0" data-summary-status="ExpectedToFail"><div data-bs-toggle="collapse" data-bs-target="#e05513c36-b093-479f-ad02-23deb53693cd" aria-expanded="true"><h4 style="visibility: hidden; height:0;" class="test-class"><i class="example-badge fa fa-bug m-1 text-danger"></i><span class="badge bg-warning me-1 ms-1">ExpectedToFail</span>Mq example 2</h4><i class="far fa-caret-square-down"></i><span> </span><a class="bd-example-title text-muted fw-lighter">Mq example 2</a><span class="badge bg-warning me-1 ms-1">ExpectedToFail</span></div><div class="bd-example collapse show rounded bg-light bg-gradient" id="e05513c36-b093-479f-ad02-23deb53693cd">
+
+<p>simplest form of mq-check</p><div class="card border-danger alert-warning shadow-lg">
+      
+      <div class="card-body mb-1 mt-1">
+        <div id="error--1757003895"> <pre class="doc-code language-json"><code>Size verifying error: expected:&lt;2&gt; but was:&lt;0&gt;</code></pre><div><span>Expected:</span><div class="mq-check">
+        <table class="table table-sm caption-top">
+            <caption><i class="fa fa-envelope-open me-1"> </i><span>myQueue</span></caption>
+            <tbody>     
+    <tr><td class="exp-body"><div class="json rest-success">{
+  "a": 1
+}</div></td></tr>
+    
+    <tr><td class="exp-body"><div class="json rest-success">{
+  "date": "2022-04-04",
+  "var1": "1",
+  "var2": "2",
+  "var3": "3"
+}</div></td></tr> </tbody>
+        </table>
+    </div><span>but was:</span><div class="mq-check">
+    <table class="table table-sm caption-top">
+        <caption><i class="fa fa-envelope-open me-1"> </i><span>myQueue</span></caption>
+        <tbody> <tr><td class="exp-body">EMPTY</td></tr> </tbody>
+    </table>
+</div></div></div>
+        
+      </div>
+    </div></div></div>
+<p>Some text</p>
+<h3>Bootstrap</h3>
+<h4>Notes</h4>
+<p><strong>Note:</strong> some note</p>
+<h4>Font Awesome</h4>
+<p><i class="fas fa-puzzle-piece" aria-hidden="true"> </i> Puzzle Icon</p>
+<h4>Cards</h4>
+<div class="card">
+  <div class="card-header">Header</div>
+  <div class="card-body">
+    DESCRIPTION
+  </div>
+  <div class="card-footer">footer</div>
+</div>
+<hr />
+<div class="card">
+  <div class="card-header bg-info text-white">Info</div>
+  <div class="card-body">
+    DESCRIPTION
+  </div>
+</div>
+<h4>Callouts</h4>
+<div class="bd-callout bd-callout-info">Info</div>
+<div class="bd-callout bd-callout-danger bg-warning text-danger shadow-lg">Warning</div></div></main></div></div><div class="footer">Results generated by <a href="http://www.concordion.org" style="font-weight: bold; text-decoration: none; color: #89C;">Concordion</a><div class="testTime">in 113 ms on 04-Apr-2022 at 21:56:05 MSK</div></div></body><button id="btnToTop" onclick="topFunction()" type="button" class="btn btn-light btn-sm text-muted me-1"><i class="fa fa-arrow-up"></i></button></html>
