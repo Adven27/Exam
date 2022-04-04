@@ -133,6 +133,8 @@ class ExamExtension constructor(private vararg var plugins: ExamPlugin) : Concor
         TocbotExtension().addTo(ex)
         FontAwesomeExtension().addTo(ex)
         BootstrapExtension().addTo(ex)
+        DetailsExtension().addTo(ex)
+        ResponsiveTableExtension().addTo(ex)
         NomNomlExtension().addTo(ex)
         LoggingFormatterExtension().addTo(ex)
 

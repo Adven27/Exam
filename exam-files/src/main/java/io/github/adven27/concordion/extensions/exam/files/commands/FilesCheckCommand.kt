@@ -53,7 +53,7 @@ class FilesCheckCommand(name: String?, tag: String?, filesLoader: FilesLoader) :
             for (f in table.childs()) {
                 if ("file" == f.localName()) {
                     val (name1, content1, autoFormat, lineNumbers) = filesLoader.readFileTag(f, evaluator)
-                    val resolvedName = resolveToObj(name1, evaluator)
+                    val resolvedName = evaluator.resolveToObj(name1)
                     val expectedName = resolvedName?.toString() ?: name1!!
                     val fileNameTD = td(expectedName)
                     var pre = codeXml("")

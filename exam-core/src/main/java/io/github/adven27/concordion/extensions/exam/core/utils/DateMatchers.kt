@@ -1,27 +1,16 @@
 package io.github.adven27.concordion.extensions.exam.core.utils
 
-import io.github.adven27.concordion.extensions.exam.core.parseDate
-import io.github.adven27.concordion.extensions.exam.core.periodBy
-import io.github.adven27.concordion.extensions.exam.core.toZonedDateTime
 import mu.KLogging
 import net.javacrumbs.jsonunit.core.ParametrizedMatcher
 import org.hamcrest.BaseMatcher
 import org.hamcrest.Description
-import java.lang.Character.isDigit
-import java.time.LocalDateTime
-import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.temporal.TemporalAmount
 import java.util.Date
 import javax.xml.datatype.DatatypeFactory
 
 open class DateFormatMatcher(var pattern: String? = null) : BaseMatcher<Any>(), ParametrizedMatcher {
-    override fun matches(item: Any): Boolean = try {
-        (item as String).parseDate(pattern)
-        true
-    } catch (expected: Exception) {
-        false
-    }
+    override fun matches(item: Any): Boolean = date(item, pattern).map { true }.getOrDefault(false)
 
     override fun describeTo(description: Description) {
         description.appendValue(pattern)
@@ -49,16 +38,13 @@ open class DateWithin(
     private lateinit var expected: ZonedDateTime
     private var parseError = false
 
-    override fun matches(item: Any): Boolean {
-        val target = try {
-            date(item, pattern)
-        } catch (expected: Exception) {
-            logger.warn("Parsing error: $item, expected to match pattern '$pattern'", expected)
+    override fun matches(item: Any) = date(item, pattern)
+        .map { isBetweenInclusive(expected.minus(period), expected.plus(period), it) }
+        .getOrElse {
+            logger.warn("Parsing error: $item, expected to match pattern '$pattern'", it)
             parseError = true
-            return false
+            false
         }
-        return isBetweenInclusive(expected.minus(period), expected.plus(period), target)
-    }
 
     private fun isBetweenInclusive(start: ZonedDateTime, end: ZonedDateTime, target: ZonedDateTime): Boolean =
         !target.isBefore(start) && !target.isAfter(end)
@@ -124,14 +110,7 @@ abstract class ExpectedDateMatcher(
 ) : BaseMatcher<Any>(), ParametrizedMatcher {
     protected lateinit var expected: ZonedDateTime
 
-    override fun matches(item: Any): Boolean {
-        val actual = try {
-            date(item)
-        } catch (expected: Exception) {
-            return false
-        }
-        return check(expected, actual)
-    }
+    override fun matches(item: Any) = date(item).map { check(expected, it) }.getOrDefault(false)
 
     override fun describeTo(description: Description) {
         description.appendValue(expected)
@@ -142,26 +121,8 @@ abstract class ExpectedDateMatcher(
     }
 
     override fun setParameter(date: String) {
-        expected = date.parseDate().toZonedDateTime()
+        expected = date(date).getOrThrow()
     }
-}
-
-fun parsePeriod(within: String): TemporalAmount {
-    var i = 0
-    while (i < within.length && isDigit(within[i])) {
-        i++
-    }
-    return periodBy(
-        within.substring(0, i).toInt(),
-        within.substring(i, within.length).trim()
-    )
-}
-
-fun date(item: Any, pattern: String? = null): ZonedDateTime = when (item) {
-    is ZonedDateTime -> item
-    is LocalDateTime -> item.atZone(ZoneId.systemDefault())
-    is Date -> item.toZonedDateTime()
-    else -> item.toString().parseDate(pattern).toZonedDateTime()
 }
 
 fun Any.asString(): String = when (this) {

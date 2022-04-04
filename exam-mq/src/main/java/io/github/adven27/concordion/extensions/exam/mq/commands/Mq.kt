@@ -1,13 +1,13 @@
 package io.github.adven27.concordion.extensions.exam.mq.commands
 
 import io.github.adven27.concordion.extensions.exam.core.readFile
-import io.github.adven27.concordion.extensions.exam.core.resolveNoType
+import io.github.adven27.concordion.extensions.exam.core.resolveToObj
 import org.concordion.api.Element
 import org.concordion.api.Evaluator
 
 fun parsePayload(link: Element, eval: Evaluator): String {
     link.childElements.filter { it.localName == "code" }.forEach {
-        parseOption(it).also { (name, value) -> eval.setVariable("#$name", eval.resolveNoType(value)) }
+        parseOption(it).also { (name, value) -> eval.setVariable("#$name", eval.resolveToObj(value)) }
     }
     return link.getAttributeValue("href").readFile(eval)
 }

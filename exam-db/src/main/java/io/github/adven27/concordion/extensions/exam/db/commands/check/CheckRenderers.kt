@@ -47,7 +47,7 @@ abstract class BaseResultRenderer(private val printer: ValuePrinter) : SuitableR
     }
 
     private fun Html.success(expected: Any?, actual: Any?): Html = this(
-        Html(printer.wrap(expected)).tooltip(printer.print(actual), expected.isDbMatcher())
+        Html(printer.wrap(actual)).tooltip(printer.print(expected), expected.isDbMatcher())
     ).css("table-success")
 
     override fun failureReported(event: VerifyFailureEvent<Expected>) = with(root(event)) {

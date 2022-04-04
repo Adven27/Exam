@@ -4,13 +4,12 @@ import com.github.jknack.handlebars.Options
 import com.github.jknack.handlebars.internal.lang3.LocaleUtils
 import com.github.jknack.handlebars.internal.lang3.Validate
 import io.github.adven27.concordion.extensions.exam.core.handlebars.ExamHelper
-import io.github.adven27.concordion.extensions.exam.core.handlebars.HB_RESULT
-import io.github.adven27.concordion.extensions.exam.core.minus
-import io.github.adven27.concordion.extensions.exam.core.parseDate
-import io.github.adven27.concordion.extensions.exam.core.parsePeriodFrom
-import io.github.adven27.concordion.extensions.exam.core.plus
-import io.github.adven27.concordion.extensions.exam.core.toDate
-import io.github.adven27.concordion.extensions.exam.core.toString
+import io.github.adven27.concordion.extensions.exam.core.utils.minus
+import io.github.adven27.concordion.extensions.exam.core.utils.parseDate
+import io.github.adven27.concordion.extensions.exam.core.utils.parsePeriodFrom
+import io.github.adven27.concordion.extensions.exam.core.utils.plus
+import io.github.adven27.concordion.extensions.exam.core.utils.toDate
+import io.github.adven27.concordion.extensions.exam.core.utils.toString
 import java.time.LocalDate.now
 import java.time.LocalDateTime
 import java.time.ZoneId
@@ -144,7 +143,6 @@ enum class DateHelpers(
         } catch (expected: Exception) {
             throw ExamHelper.InvocationFailed(name, context, options, expected)
         }
-        HB_RESULT.set(result)
         return result
     }
 

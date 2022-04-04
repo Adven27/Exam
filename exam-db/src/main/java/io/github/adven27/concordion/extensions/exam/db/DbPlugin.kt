@@ -4,7 +4,7 @@ import com.github.jknack.handlebars.Options
 import io.github.adven27.concordion.extensions.exam.core.ExamPlugin
 import io.github.adven27.concordion.extensions.exam.core.commands.NamedExamCommand
 import io.github.adven27.concordion.extensions.exam.core.html.span
-import io.github.adven27.concordion.extensions.exam.core.toDatePattern
+import io.github.adven27.concordion.extensions.exam.core.utils.toDatePattern
 import io.github.adven27.concordion.extensions.exam.db.builder.SeedStrategy
 import io.github.adven27.concordion.extensions.exam.db.commands.DBCleanCommand
 import io.github.adven27.concordion.extensions.exam.db.commands.DataSetExecuteCommand
@@ -222,9 +222,10 @@ open class RowComparator {
     }
 }
 
-open class DbHelpers(private val dbTester: DbTester) {
+@Suppress("unused")
+open class DbHelpers(protected val dbTester: DbTester) {
 
-    protected fun queryStringFrom(table: String, target: String, filter: Map<String, Any>) =
+    protected fun queryStringFrom(table: String, target: String, filter: Map<String, Any>): String =
         dbTester.useStatement {
             it.query(target, table, filter)
                 .getString(target)

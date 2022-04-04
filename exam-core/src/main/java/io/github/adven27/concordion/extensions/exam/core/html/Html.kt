@@ -2,7 +2,7 @@
 
 package io.github.adven27.concordion.extensions.exam.core.html
 
-import io.github.adven27.concordion.extensions.exam.core.resolve
+import io.github.adven27.concordion.extensions.exam.core.resolveToObj
 import org.concordion.api.CommandCall
 import org.concordion.api.Element
 import org.concordion.api.Evaluator
@@ -109,7 +109,7 @@ class Html(val el: Element) {
     fun takeAwayAttr(name: String, eval: Evaluator? = null): String? {
         var attr = attr(name)
         if (attr != null) {
-            attr = eval?.resolve(attr) ?: attr
+            attr = eval?.resolveToObj(attr)?.toString() ?: attr
 //            el.removeAttribute(name)
         }
         return attr

@@ -6,7 +6,6 @@ import io.github.adven27.concordion.extensions.exam.core.html.CLASS
 import io.github.adven27.concordion.extensions.exam.core.html.Html
 import io.github.adven27.concordion.extensions.exam.core.html.attr
 import io.github.adven27.concordion.extensions.exam.core.html.caption
-import io.github.adven27.concordion.extensions.exam.core.html.div
 import io.github.adven27.concordion.extensions.exam.core.html.italic
 import io.github.adven27.concordion.extensions.exam.core.html.table
 import io.github.adven27.concordion.extensions.exam.core.html.tbody
@@ -59,18 +58,16 @@ fun renderTable(
     ifEmpty: Html.() -> Unit = { }
 ): Html {
     val cols = t.columnsSortedBy(sortCols)
-    return div("class" to "table-responsive mb-1 p-1")(
-        table()(
-            tableCaption(caption, t.tableName()),
-            if (t.empty()) thead()(tr()(th())) else thead()(tr()(cols.map { th(it, CLASS to styleCol(it)) })),
-            tbody()(
-                if (t.empty()) {
-                    listOf(tr()(td("EMPTY").attrs("colspan" to "${cols.size}").apply(ifEmpty)))
-                } else {
-                    t.mapRows { row -> cols.map { cell(td(CLASS to styleCol(it)), row, it) } }
-                        .map { tr()(*it.toTypedArray()) }
-                }
-            )
+    return table()(
+        tableCaption(caption, t.tableName()),
+        if (t.empty()) thead()(tr()(th())) else thead()(tr()(cols.map { th(it, CLASS to styleCol(it)) })),
+        tbody()(
+            if (t.empty()) {
+                listOf(tr()(td("EMPTY").attrs("colspan" to "${cols.size}").apply(ifEmpty)))
+            } else {
+                t.mapRows { row -> cols.map { cell(td(CLASS to styleCol(it)), row, it) } }
+                    .map { tr()(*it.toTypedArray()) }
+            }
         )
     )
 }

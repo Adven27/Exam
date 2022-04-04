@@ -7,8 +7,8 @@ import io.github.adven27.concordion.extensions.exam.core.commands.matchesAnyStri
 import io.github.adven27.concordion.extensions.exam.core.commands.matchesAnyUuid
 import io.github.adven27.concordion.extensions.exam.core.commands.matchesRegex
 import io.github.adven27.concordion.extensions.exam.core.resolveToObj
-import io.github.adven27.concordion.extensions.exam.core.toLocalDateTime
 import io.github.adven27.concordion.extensions.exam.core.utils.parsePeriod
+import io.github.adven27.concordion.extensions.exam.core.utils.toLocalDateTime
 import io.github.adven27.concordion.extensions.exam.db.RowComparator
 import org.concordion.api.Evaluator
 import org.dbunit.assertion.comparer.value.IsActualEqualToExpectedValueComparer

@@ -3,7 +3,6 @@ package io.github.adven27.concordion.extensions.exam.core.handlebars.matchers
 import com.github.jknack.handlebars.Context
 import com.github.jknack.handlebars.Options
 import io.github.adven27.concordion.extensions.exam.core.handlebars.ExamHelper
-import io.github.adven27.concordion.extensions.exam.core.handlebars.HB_RESULT
 import io.github.adven27.concordion.extensions.exam.core.utils.DateWithin.Companion.PARAMS_SEPARATOR
 import io.github.adven27.concordion.extensions.exam.core.utils.asString
 import org.concordion.api.Evaluator
@@ -187,7 +186,6 @@ enum class MatcherHelpers(
         } catch (expected: Exception) {
             throw ExamHelper.InvocationFailed(name, context, options, expected)
         }
-        HB_RESULT.set(result)
         return result
     }
 

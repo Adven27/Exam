@@ -27,36 +27,34 @@
     </e:given>
 
     <e:then>
-        <div class="table-responsive">
-            <table cc:execute="#result = lowercase(#param)" print="true">
-                <tr>
-                    <th e:set="#param">Param</th>
-                    <th e:equals="#result.text">Text</th>
-                    <th e:equalsFile="#result.text">Text from file</th>
-                    <th e:jsonEquals="#result.json">JSON</th>
-                    <th e:jsonEqualsFile="#result.json">JSON from file</th>
-                    <th e:xmlEquals="#result.xml">XML</th>
-                    <th e:xmlEqualsFile="#result.xml">XML from file</th>
-                    <th cc:echo="#result.json">Echo JSON</th>
-                    <th cc:echo="#result.xml">Echo XML</th>
-                </tr>
-                <tr>
-                    <td><pre class="code language-json">ABC {{someVar}}</pre></td>
+        <table cc:execute="#result = lowercase(#param)" print="true">
+            <tr>
+                <th e:set="#param">Param</th>
+                <th e:equals="#result.text">Text</th>
+                <th e:equalsFile="#result.text">Text from file</th>
+                <th e:jsonEquals="#result.json">JSON</th>
+                <th e:jsonEqualsFile="#result.json">JSON from file</th>
+                <th e:xmlEquals="#result.xml">XML</th>
+                <th e:xmlEqualsFile="#result.xml">XML from file</th>
+                <th cc:echo="#result.json">Echo JSON</th>
+                <th cc:echo="#result.xml">Echo XML</th>
+            </tr>
+            <tr>
+                <td><pre class="code language-json">ABC {{someVar}}</pre></td>
 
-                    <td>abc {{someVar}}</td>
-                    <td>/data/core/expected.txt</td>
+                <td>abc {{someVar}}</td>
+                <td>/data/core/expected.txt</td>
 
-                    <td>{"result": "abc {{someVar}}"}</td>
-                    <td>/data/core/expected.json</td>
+                <td>{"result": "abc {{someVar}}"}</td>
+                <td>/data/core/expected.json</td>
 
-                    <td><![CDATA[ <result>abc {{someVar}}</result>]]></td>
-                    <td>/data/core/expected.xml</td>
+                <td><![CDATA[ <result>abc {{someVar}}</result>]]></td>
+                <td>/data/core/expected.xml</td>
 
-                    <td> <pre class="code language-json"/> </td>
-                    <td> <pre class="code"/> </td>
-                </tr>
-            </table>
-        </div>
+                <td> <pre class="code language-json"/> </td>
+                <td> <pre class="code details"/> </td>
+            </tr>
+        </table>
     </e:then>
 
 </e:example>

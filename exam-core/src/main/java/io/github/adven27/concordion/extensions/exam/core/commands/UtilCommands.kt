@@ -6,7 +6,6 @@ import io.github.adven27.concordion.extensions.exam.core.XmlContentTypeConfig
 import io.github.adven27.concordion.extensions.exam.core.html.Html
 import io.github.adven27.concordion.extensions.exam.core.html.html
 import io.github.adven27.concordion.extensions.exam.core.readFile
-import io.github.adven27.concordion.extensions.exam.core.resolve
 import io.github.adven27.concordion.extensions.exam.core.resolveNoType
 import io.github.adven27.concordion.extensions.exam.core.resolveToObj
 import io.github.adven27.concordion.extensions.exam.core.vars
@@ -41,7 +40,7 @@ open class SetVarCommand(
         val value = when {
             valueAttr != null -> eval.resolveToObj(valueAttr)
             valueFrom != null -> eval.resolveNoType(valueFrom.readFile())
-            else -> eval.resolveNoType(el.text().trimIndent())
+            else -> eval.resolveToObj(el.text().trimIndent())
         }
 
         eval.setVariable(varExp(varAttr(el) ?: cmd.expression), value)
@@ -61,20 +60,20 @@ class WaitCommand(tag: String) : ExamCommand("await", tag) {
     override fun setUp(cmd: CommandCall, eval: Evaluator, resultRecorder: ResultRecorder, fixture: Fixture) {
         val el = cmd.html()
         val untilTrue = el.takeAwayAttr("untilTrue")
-        val untilGet = eval.resolve(el.takeAwayAttr("untilHttpGet", ""))
-        val untilPost = eval.resolve(el.takeAwayAttr("untilHttpPost", ""))
+        val untilGet = eval.resolveToObj(el.takeAwayAttr("untilHttpGet", "")).toString()
+        val untilPost = eval.resolveToObj(el.takeAwayAttr("untilHttpPost", "")).toString()
         val withBody = (el.takeAwayAttr("withBodyFrom")?.readFile() ?: el.text()).let {
-            eval.resolve(it)
+            eval.resolveToObj(it).toString()
         }
-        val withContentType = eval.resolve(el.takeAwayAttr("withContentType", "application/json"))
+        val withContentType = eval.resolveToObj(el.takeAwayAttr("withContentType", "application/json")).toString()
         val hasBody = el.takeAwayAttr("hasBody") ?: el.takeAwayAttr("hasBodyFrom")?.readFile()?.let {
-            eval.resolve(it)
+            eval.resolveToObj(it).toString()
         }
         val hasStatus = el.takeAwayAttr("hasStatusCode")
 
         el.removeChildren()
 
-        Thread.sleep(1000L * eval.resolve(el.takeAwayAttr("seconds", "0")).toInt())
+        Thread.sleep(1000L * eval.resolveToObj(el.takeAwayAttr("seconds", "0")).toString().toInt())
         (cmd.html().awaitConfig("") ?: AwaitConfig()).await().let { await ->
             when {
                 untilTrue != null -> await.alias(untilTrue).until { eval.evaluate(untilTrue) == true }

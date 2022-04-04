@@ -5,7 +5,7 @@ import io.github.adven27.concordion.extensions.exam.core.handlebars.matchers.ISO
 import io.github.adven27.concordion.extensions.exam.core.handlebars.matchers.ISO_LOCAL_DATE_FORMAT
 import io.github.adven27.concordion.extensions.exam.core.handlebars.matchers.MatcherHelpers
 import io.github.adven27.concordion.extensions.exam.core.handlebars.misc.MiscHelpers
-import io.github.adven27.concordion.extensions.exam.core.toString
+import io.github.adven27.concordion.extensions.exam.core.utils.toString
 import specs.Specs
 import java.util.Date
 

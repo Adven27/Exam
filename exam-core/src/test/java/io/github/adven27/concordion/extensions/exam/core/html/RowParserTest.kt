@@ -1,6 +1,6 @@
 package io.github.adven27.concordion.extensions.exam.core.html
 
-import io.github.adven27.concordion.extensions.exam.core.toDate
+import io.github.adven27.concordion.extensions.exam.core.utils.toDate
 import org.concordion.internal.FixtureInstance
 import org.concordion.internal.OgnlEvaluator
 import org.junit.Test
@@ -46,7 +46,7 @@ class RowParserTest {
     @Test
     fun resolveOneOrMorePlaceholdersToString() {
         val html = Html("table")(
-            Html("row", "{{resolve \"{{now 'dd'}} {{now 'MM'}}\"}}, {{resolve '{{today}}'}}")
+            Html("row", """{{resolve "{{now 'dd'}} {{now 'MM'}}"}}, {{resolve '{{today}}'}}""")
         )
         val dd = SimpleDateFormat("dd").format(now().toDate())
         val mm = SimpleDateFormat("MM").format(now().toDate())

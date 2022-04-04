@@ -2,9 +2,8 @@ package io.github.adven27.concordion.extensions.exam
 
 import io.github.adven27.concordion.extensions.exam.core.resolveJson
 import io.github.adven27.concordion.extensions.exam.core.resolveToObj
-import io.github.adven27.concordion.extensions.exam.core.toDate
-import io.github.adven27.concordion.extensions.exam.core.toString
-import io.github.adven27.concordion.extensions.exam.core.toStringOr
+import io.github.adven27.concordion.extensions.exam.core.utils.toDate
+import io.github.adven27.concordion.extensions.exam.core.utils.toString
 import org.assertj.core.api.Assertions
 import org.concordion.internal.FixtureInstance
 import org.concordion.internal.OgnlEvaluator
@@ -34,13 +33,6 @@ class PlaceholdersResolverTest {
         val expected = date.toString("dd.MM.yyyy HH:mm")
         assertThat(eval.resolveToObj("{{dateFormat value \"dd.MM.yyyy HH:mm\"}}").toString(), `is`(expected))
         assertThat(eval.resolveToObj("{{dateFormat (now plus='1 d') 'dd.MM.yyyy HH:mm' minus='1 d'}}").toString(), `is`(expected))
-    }
-
-    @Test
-    fun `resolveToObj should skip resolving if starts and ends with apostrophe`() {
-        assertThat(eval.resolveToObj(" '{{resolve \"some\"}}'").toStringOr(""), `is`("some"))
-        assertThat(eval.resolveToObj("'{{resolve \"some\"}}' ").toStringOr(""), `is`("some"))
-        assertThat(eval.resolveToObj("'{{resolve \"some\"}}'").toStringOr(""), `is`("{{resolve \"some\"}}"))
     }
 
     @Test

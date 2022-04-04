@@ -134,6 +134,30 @@ class TocbotExtension : ConcordionExtension {
     }
 }
 
+class DetailsExtension : ConcordionExtension {
+    override fun addTo(e: ConcordionExtender) {
+        e.withEmbeddedJavaScript( // language=js
+            """
+            window.addEventListener('DOMContentLoaded', function (event) {
+                 jQuery(".details").wrap(unescape("<details></details>"));
+            }); 
+            """.trimIndent()
+        )
+    }
+}
+
+class ResponsiveTableExtension : ConcordionExtension {
+    override fun addTo(e: ConcordionExtender) {
+        e.withEmbeddedJavaScript( // language=js
+            """
+            window.addEventListener('DOMContentLoaded', function (event) {
+                 jQuery("table").wrap(unescape("<div class='table-responsive'></div>"));
+            }); 
+            """.trimIndent()
+        )
+    }
+}
+
 class FontAwesomeExtension : ConcordionExtension {
     override fun addTo(e: ConcordionExtender) {
         e.linkedCss(

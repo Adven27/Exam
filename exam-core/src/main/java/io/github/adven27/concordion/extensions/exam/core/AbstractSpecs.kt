@@ -2,6 +2,7 @@ package io.github.adven27.concordion.extensions.exam.core
 
 import org.concordion.api.AfterSuite
 import org.concordion.api.BeforeSuite
+import org.concordion.api.ConcordionResources
 import org.concordion.api.extension.Extension
 import org.concordion.api.option.ConcordionOptions
 import org.concordion.api.option.MarkdownExtensions.AUTOLINKS
@@ -19,6 +20,7 @@ import org.junit.runner.RunWith
     markdownExtensions = [WIKILINKS, AUTOLINKS, FENCED_CODE_BLOCKS, DEFINITIONS, FORCELISTITEMPARA, TASKLISTITEMS],
     declareNamespaces = ["c", "http://www.concordion.org/2007/concordion", "e", ExamExtension.NS]
 )
+@ConcordionResources(includeDefaultStyling = false)
 abstract class AbstractSpecs {
 
     @Extension
@@ -56,6 +58,7 @@ abstract class AbstractSpecs {
 
     companion object {
         const val PROP_SPECS_SUT_START = "SPECS_SUT_START"
+
         @JvmField
         val SPECS_SUT_START: Boolean = System.getProperty(PROP_SPECS_SUT_START, "true").toBoolean()
         private var EXAM: ExamExtension? = null

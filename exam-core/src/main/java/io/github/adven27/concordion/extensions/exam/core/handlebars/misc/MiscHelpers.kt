@@ -2,12 +2,10 @@ package io.github.adven27.concordion.extensions.exam.core.handlebars.misc
 
 import com.github.jknack.handlebars.Options
 import io.github.adven27.concordion.extensions.exam.core.handlebars.ExamHelper
-import io.github.adven27.concordion.extensions.exam.core.handlebars.HB_RESULT
 import io.github.adven27.concordion.extensions.exam.core.handlebars.evaluator
 import io.github.adven27.concordion.extensions.exam.core.readFile
-import io.github.adven27.concordion.extensions.exam.core.resolve
 import io.github.adven27.concordion.extensions.exam.core.resolveToObj
-import io.github.adven27.concordion.extensions.exam.core.toDate
+import io.github.adven27.concordion.extensions.exam.core.utils.toDate
 import java.time.LocalDate
 
 @Suppress("EnumNaming")
@@ -29,7 +27,7 @@ enum class MiscHelpers(
         override fun invoke(context: Any?, options: Options): Any? = options.hash
     },
     NULL("{{NULL}}", emptyMap(), null) {
-        override fun invoke(context: Any?, options: Options): Any? = null
+        override fun invoke(context: Any?, options: Options): Any = Result.success(null)
     },
     eval("{{eval '#var'}}", mapOf("var" to 2), 2) {
         override fun invoke(context: Any?, options: Options): Any? = options.evaluator().evaluate("$context")
@@ -40,7 +38,7 @@ enum class MiscHelpers(
             options.hash.forEach { (key, value) ->
                 evaluator.setVariable("#$key", evaluator.resolveToObj(value as String?))
             }
-            return evaluator.resolve("$context")
+            return evaluator.resolveToObj("$context")
         }
     },
     resolveFile("{{resolveFile '/hb/some-file.txt'}}", emptyMap(), "today is ${LocalDate.now().toDate()}") {
@@ -49,7 +47,7 @@ enum class MiscHelpers(
             options.hash.forEach { (key, value) ->
                 evaluator.setVariable("#$key", evaluator.resolveToObj(value as String?))
             }
-            return evaluator.resolve(context.toString().readFile())
+            return evaluator.resolveToObj(context.toString().readFile())
         }
     },
     prop("{{prop 'system.property' 'optional default'}}", emptyMap(), "optional default") {
@@ -66,7 +64,6 @@ enum class MiscHelpers(
         } catch (expected: Exception) {
             throw ExamHelper.InvocationFailed(name, context, options, expected)
         }
-        HB_RESULT.set(result)
         return result
     }
 

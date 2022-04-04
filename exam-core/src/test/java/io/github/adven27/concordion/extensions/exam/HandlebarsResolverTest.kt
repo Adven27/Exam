@@ -1,18 +1,14 @@
 package io.github.adven27.concordion.extensions.exam
 
-import com.github.jknack.handlebars.Handlebars
 import com.github.jknack.handlebars.HandlebarsException
 import io.github.adven27.concordion.extensions.exam.core.handlebars.ExamHelper
-import io.github.adven27.concordion.extensions.exam.core.handlebars.HANDLEBARS
 import io.github.adven27.concordion.extensions.exam.core.handlebars.date.DateHelpers
 import io.github.adven27.concordion.extensions.exam.core.handlebars.date.DateHelpers.Companion.DEFAULT_FORMAT
 import io.github.adven27.concordion.extensions.exam.core.handlebars.matchers.MatcherHelpers
-import io.github.adven27.concordion.extensions.exam.core.handlebars.resolve
-import io.github.adven27.concordion.extensions.exam.core.handlebars.resolveObj
 import io.github.adven27.concordion.extensions.exam.core.html.Html
-import io.github.adven27.concordion.extensions.exam.core.parseDate
 import io.github.adven27.concordion.extensions.exam.core.resolveToObj
-import io.github.adven27.concordion.extensions.exam.core.toDate
+import io.github.adven27.concordion.extensions.exam.core.utils.parseDate
+import io.github.adven27.concordion.extensions.exam.core.utils.toDate
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.concordion.internal.FixtureInstance
@@ -24,7 +20,6 @@ import kotlin.test.assertEquals
 
 class HandlebarsResolverTest {
     private val eval = OgnlEvaluator(FixtureInstance(Html("div").el))
-    private val sut: Handlebars = HANDLEBARS
     private val defaultFormat = DEFAULT_FORMAT.format()
 
     @Test
@@ -43,11 +38,11 @@ class HandlebarsResolverTest {
     fun date_defaults() {
         assertEquals(
             "2019-06-30T09:10:00".parseDate("yyyy-MM-dd'T'HH:mm:ss"),
-            sutObj("{{date \"2019-06-30T09:10:00\"}}")
+            sut("{{date \"2019-06-30T09:10:00\"}}")
         )
         assertEquals(
             "2019-06-30T00:00:00".parseDate("yyyy-MM-dd'T'HH:mm:ss"),
-            sutObj("{{date \"2019-06-30\"}}")
+            sut("{{date \"2019-06-30\"}}")
         )
     }
 
@@ -112,6 +107,5 @@ class HandlebarsResolverTest {
         return eval.resolveToObj(h.example)
     }
 
-    private fun sut(placeholder: String) = sut.resolve(eval, placeholder)
-    private fun sutObj(placeholder: String) = sut.resolveObj(eval, placeholder)
+    private fun sut(placeholder: String) = eval.resolveToObj(placeholder)
 }
